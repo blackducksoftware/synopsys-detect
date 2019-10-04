@@ -17,7 +17,5 @@ public class BazelWorkspaceTest {
         final BazelWorkspace bazelWorkspace = new BazelWorkspace(workspaceFile);
 
         assertEquals(WorkspaceRule.MAVEN_INSTALL, bazelWorkspace.getDependencyRule());
-        assertEquals("maven_install", bazelWorkspace.getDependencyRule().getName());
-
     }
 }

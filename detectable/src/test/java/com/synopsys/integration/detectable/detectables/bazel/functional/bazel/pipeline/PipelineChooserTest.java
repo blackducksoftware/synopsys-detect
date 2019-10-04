@@ -23,7 +23,6 @@ public class PipelineChooserTest {
         assertEquals(StepType.EDIT, loadedSteps.get(4).getType());
     }
 
-
     @Test
     public void testProvidedBazelDependencyRule() throws IOException, IntegrationException {
         final List<Step> loadedSteps = run("maven_install");

@@ -22,10 +22,9 @@ public class BazelCodeLocationBuilderTest {
             .build();
 
         assertEquals(1, codeLocations.size());
-        //assertEquals("src/test/resources/bazel/multiLevel", codeLocations.get(0).getExternalId().path); //TODO: Fails on windows because of slashes
         assertEquals(1, codeLocations.get(0).getDependencyGraph().getRootDependencies().size());
 
-        Dependency dep = codeLocations.get(0).getDependencyGraph().getRootDependencies().iterator().next();
+        final Dependency dep = codeLocations.get(0).getDependencyGraph().getRootDependencies().iterator().next();
         assertEquals("testArtifact", dep.name);
         assertEquals("testVersion", dep.version);
         assertEquals("testGroup", dep.externalId.group);
