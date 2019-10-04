@@ -49,13 +49,13 @@ public class BazelCommandExecutor {
     }
 
     public Optional<String> executeToString(final List<String> args) throws IntegrationException {
-        final ExecutableOutput targetDependenciesQueryResults = execute(args);
-        final String targetDependenciesQueryOutput = targetDependenciesQueryResults.getStandardOutput();
-        if ((StringUtils.isBlank(targetDependenciesQueryOutput))) {
+        final ExecutableOutput executableOutput = execute(args);
+        final String cmdStdOut = executableOutput.getStandardOutput();
+        if ((StringUtils.isBlank(cmdStdOut))) {
             logger.debug("bazel command produced no output");
             return Optional.empty();
         }
-        return Optional.of(targetDependenciesQueryOutput);
+        return Optional.of(cmdStdOut);
     }
 
     @NotNull

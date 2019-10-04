@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorSplitEach implements StepExecutor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -42,7 +41,7 @@ public class StepExecutorSplitEach implements StepExecutor {
     }
 
     @Override
-    public List<String> process(final Step step, final List<String> input) throws IntegrationException {
+    public List<String> process(final Step step, final List<String> input) {
         final List<String> results = new ArrayList<>();
         for (final String inputItem : input) {
             final String[] splitLines = inputItem.split(step.getArgs().get(0));

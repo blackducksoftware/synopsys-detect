@@ -66,10 +66,12 @@ public class BazelExtractor {
             final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
             final List<StepExecutor> stepExecutors = StepExecutors.create(bazelCommandExecutor, bazelVariableSubstitutor);
 
+            // Execute pipeline steps (like linux cmd piping with '|'); each step processes the output of the previous step
             List<String> pipelineData = new ArrayList<>();
             for (final Step step : pipelineSteps) {
-                pipelineData = execute(stepExecutors, pipelineData, step);
+                pipelineData = executePipelineStep(stepExecutors, pipelineData, step);
             }
+            // final pipelineData is a list of group:artifact:version strings
             for (String artifactString : pipelineData) {
                 BazelExternalId externalId = BazelExternalId.fromBazelArtifactString(artifactString, ":");
                 logger.debug(String.format("Adding externalId: %s", externalId));
@@ -88,7 +90,7 @@ public class BazelExtractor {
         }
     }
 
-    private List<String> execute(final List<StepExecutor> stepExecutors, List<String> pipelineData, final Step step) throws IntegrationException {
+    private List<String> executePipelineStep(final List<StepExecutor> stepExecutors, List<String> pipelineData, final Step step) throws IntegrationException {
         final Optional<StepExecutor> stepExecutorSelected = selectStepExecutor(stepExecutors, step);
         if (!stepExecutorSelected.isPresent()) {
             final String msg = String.format("Bazel processing failed. Unable to find an executor for step type: %s", step.getType());

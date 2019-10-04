@@ -56,7 +56,7 @@ public class BazelWorkspace {
     @NotNull
     private List<String> readWorkspaceFileLines(final File workspaceFile) throws IOException {
         final List<String> workspaceFileLines;
-        // Assumes ascii or UTF-8, which is what other detectors do
+        // Assumes ascii or UTF-8, like other detectors
         workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
         return workspaceFileLines;
     }

@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorEdit implements StepExecutor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -41,7 +40,7 @@ public class StepExecutorEdit implements StepExecutor {
     }
 
     @Override
-    public List<String> process(final Step step, final List<String> input) throws IntegrationException {
+    public List<String> process(final Step step, final List<String> input) {
         final List<String> results = new ArrayList<>();
         final String targetPattern = step.getArgs().get(0);
         final String replacementString = step.getArgs().get(1);
