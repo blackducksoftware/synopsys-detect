@@ -95,7 +95,8 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
         assertEquals(codeLocationNameSuffixesToCheck.size(), matches);
 
         List<VersionBomComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(projectVersionWrapper.getProjectVersionView());
-        Optional<VersionBomComponentView> blackDuckCommonComponent = bomComponents.stream().filter(versionBomComponentView -> "blackduck-common".equals(versionBomComponentView.getComponentName())).findFirst();
+        // We used to look for blackduck-common, but we adopt new versions faster than KB can pick them up
+        Optional<VersionBomComponentView> blackDuckCommonComponent = bomComponents.stream().filter(versionBomComponentView -> "jackson-core".equals(versionBomComponentView.getComponentName())).findFirst();
         assertTrue(blackDuckCommonComponent.isPresent());
     }
 
