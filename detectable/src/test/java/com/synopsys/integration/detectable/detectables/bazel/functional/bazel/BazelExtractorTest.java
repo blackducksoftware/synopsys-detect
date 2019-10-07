@@ -18,6 +18,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
+import com.synopsys.integration.detectable.detectables.bazel.BazelProjectNameGenerator;
 import com.synopsys.integration.detectable.detectables.bazel.BazelWorkspace;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.BazelCodeLocationBuilder;
@@ -95,7 +96,7 @@ public class BazelExtractorTest {
         Mockito.when(bazelCmdExecutableOutputGetDependencyDetailsGuava.getStandardOutput()).thenReturn(guavaXml);
         Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgsGetDependencyDetailsGuava)).thenReturn(bazelCmdExecutableOutputGetDependencyDetailsGuava);
 
-        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", null);
+        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", new BazelProjectNameGenerator(), null);
 
         assertEquals(1, result.getCodeLocations().size());
         final Set<Dependency> dependencies = result.getCodeLocations().get(0).getDependencyGraph().getRootDependencies();
@@ -148,7 +149,7 @@ public class BazelExtractorTest {
                 "  tags = [\"maven_coordinates=com.google.errorprone:error_prone_annotations:2.2.0\"],");
         Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgsGetDependencies)).thenReturn(bazelCmdExecutableOutputGetDependencies);
 
-        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", null);
+        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", new BazelProjectNameGenerator(), null);
 
         assertEquals(1, result.getCodeLocations().size());
         final Set<Dependency> dependencies = result.getCodeLocations().get(0).getDependencyGraph().getRootDependencies();

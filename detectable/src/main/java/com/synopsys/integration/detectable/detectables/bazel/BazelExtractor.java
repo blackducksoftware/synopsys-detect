@@ -52,7 +52,8 @@ public class BazelExtractor {
         this.workspaceRuleChooser = workspaceRuleChooser;
     }
 
-    public Extraction extract(final File bazelExe, final File workspaceDir, final BazelWorkspace bazelWorkspace, final String bazelTarget, final String providedBazelDependencyType) {
+    public Extraction extract(final File bazelExe, final File workspaceDir, final BazelWorkspace bazelWorkspace, final String bazelTarget,
+        final BazelProjectNameGenerator bazelProjectNameGenerator, final String providedBazelDependencyType) {
         logger.debug("Bazel extraction:");
         try {
             final WorkspaceRule ruleFromWorkspaceFile = bazelWorkspace.getDependencyRule();
@@ -61,7 +62,6 @@ public class BazelExtractor {
             final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor);
             final WorkspaceRule workspaceRule = workspaceRuleChooser.choose(ruleFromWorkspaceFile, providedBazelDependencyType);
             final List<StepExecutor> pipeline = pipelines.get(workspaceRule);
-
 
             // Execute pipeline steps (like linux cmd piping with '|'); each step processes the output of the previous step
             List<String> pipelineData = new ArrayList<>();
@@ -75,7 +75,7 @@ public class BazelExtractor {
                 codeLocationGenerator.addDependency(externalId);
             }
             final List<CodeLocation> codeLocations = codeLocationGenerator.build();
-            final String projectName = cleanProjectName(bazelTarget);
+            final String projectName = bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget);
             final Extraction.Builder builder = new Extraction.Builder()
                                                    .success(codeLocations)
                                                    .projectName(projectName);
@@ -85,14 +85,5 @@ public class BazelExtractor {
             logger.debug(msg, e);
             return new Extraction.Builder().failure(msg).build();
         }
-    }
-
-    private String cleanProjectName(final String bazelTarget) {
-        String projectName = bazelTarget
-                                 .replaceAll("^//", "")
-                                 .replaceAll("^:", "")
-                                 .replaceAll("/", "_")
-                                 .replaceAll(":", "_");
-        return projectName;
     }
 }

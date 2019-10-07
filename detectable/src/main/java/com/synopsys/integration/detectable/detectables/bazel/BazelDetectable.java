@@ -25,8 +25,6 @@ package com.synopsys.integration.detectable.detectables.bazel;
 import java.io.File;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -83,7 +81,8 @@ public class BazelDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), bazelWorkspace, bazelDetectableOptions.getTargetName(), bazelDetectableOptions.getBazelDependencyRule());
+        final BazelProjectNameGenerator projectNameGenerator = new BazelProjectNameGenerator();
+        Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), bazelWorkspace, bazelDetectableOptions.getTargetName(), projectNameGenerator, bazelDetectableOptions.getBazelDependencyRule());
         return extractResult;
     }
 }
