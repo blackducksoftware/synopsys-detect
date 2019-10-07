@@ -32,20 +32,15 @@ public class WorkspaceRuleChooser {
 
     @NotNull
     public WorkspaceRule choose(final WorkspaceRule ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
-        final WorkspaceRule finalBazelDependencyType = deriveDependencyType(ruleFromWorkspaceFile, providedBazelDependencyType);
-        return finalBazelDependencyType;
-    }
-
-    @NotNull
-    private WorkspaceRule deriveDependencyType(final WorkspaceRule ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
-        final WorkspaceRule finalBazelDependencyType;
+        final WorkspaceRule finalBazelDependencyType1;
         if (StringUtils.isNotBlank(providedBazelDependencyType) && !"UNSPECIFIED".equalsIgnoreCase(providedBazelDependencyType)) {
-            finalBazelDependencyType = WorkspaceRule.lookup(providedBazelDependencyType);
+            finalBazelDependencyType1 = WorkspaceRule.lookup(providedBazelDependencyType);
         } else if (ruleFromWorkspaceFile != WorkspaceRule.UNKNOWN) {
-            finalBazelDependencyType = ruleFromWorkspaceFile;
+            finalBazelDependencyType1 = ruleFromWorkspaceFile;
         } else {
             throw new IntegrationException("Unable to determine BazelWorkspace dependency rule; try setting it via the property");
         }
+        final WorkspaceRule finalBazelDependencyType = finalBazelDependencyType1;
         return finalBazelDependencyType;
     }
 }

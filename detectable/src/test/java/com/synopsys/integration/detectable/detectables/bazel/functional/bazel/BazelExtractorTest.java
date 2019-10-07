@@ -36,7 +36,6 @@ public class BazelExtractorTest {
         final BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
         final BazelVariableSubstitutor bazelVariableSubstitutor = Mockito.mock(BazelVariableSubstitutor.class);
         final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor);
-        final List<StepExecutor> steps = pipelines.get(WorkspaceRule.MAVEN_JAR);
 
         final String commonsIoXml = "<?xml version=\"1.1\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
                                         + "<query version=\"2\">\n"
