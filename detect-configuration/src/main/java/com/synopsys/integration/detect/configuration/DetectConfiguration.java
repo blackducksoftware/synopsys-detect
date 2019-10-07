@@ -60,7 +60,6 @@ public class DetectConfiguration {
         return detectPropertySource.getCurrentProperties();
     }
 
-    // TODO: Remove override code in version 6.
     private void init() {
         Arrays.stream(DetectProperty.values()).forEach(currentProperty -> {
             final DetectProperty override = fromDeprecatedToOverride(currentProperty);
@@ -125,12 +124,10 @@ public class DetectConfiguration {
         }
     }
 
-    // TODO: Remove in version 6.
     private DetectProperty fromDeprecatedToOverride(final DetectProperty detectProperty) {
         return DetectPropertyDeprecations.PROPERTY_OVERRIDES.getOrDefault(detectProperty, null);
     }
 
-    // TODO: Remove in version 6.
     private DetectProperty fromOverrideToDeprecated(final DetectProperty detectProperty) {
         final Optional<DetectProperty> found = DetectPropertyDeprecations.PROPERTY_OVERRIDES.entrySet().stream()
                                                    .filter(it -> it.getValue().equals(detectProperty))
@@ -229,8 +226,7 @@ public class DetectConfiguration {
         if (isLocked) {
             throw new RuntimeException("Detect configuration has been locked. You may not change properties.");
         }
-
-        // TODO: Remove overrides in a future version of detect.
+        
         final DetectProperty override = fromDeprecatedToOverride(detectProperty);
         final DetectProperty deprecated = fromOverrideToDeprecated(detectProperty);
 
