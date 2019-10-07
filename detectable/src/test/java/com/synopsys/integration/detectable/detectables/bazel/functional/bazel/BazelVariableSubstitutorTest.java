@@ -30,7 +30,7 @@ public class BazelVariableSubstitutorTest {
         final List<String> origArgs = new ArrayList<>();
         origArgs.add("query");
         origArgs.add("filter(\"@.*:jar\", deps(${detect.bazel.target}))");
-        origArgs.add("kind(maven_jar, ${0})");
+        origArgs.add("kind(maven_jar, ${input.item})");
 
         final List<String> adjustedArgs = substitutor.substitute(origArgs, "//external:org_apache_commons_commons_io");
         assertEquals(3, adjustedArgs.size());

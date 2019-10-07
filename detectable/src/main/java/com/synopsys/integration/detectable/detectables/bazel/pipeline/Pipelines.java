@@ -49,7 +49,7 @@ public class Pipelines {
         mavenJarPipeline.add(new StepExecutorEdit("^@", ""));
         mavenJarPipeline.add(new StepExecutorEdit("//.*", ""));
         mavenJarPipeline.add(new StepExecutorEdit("^", "//external:"));
-        mavenJarPipeline.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "kind(maven_jar, ${0})", "--output", "xml")));
+        mavenJarPipeline.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "kind(maven_jar, ${input.item})", "--output", "xml")));
         mavenJarPipeline.add(new StepExecutorParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value"));
         availablePipelines.put(WorkspaceRule.MAVEN_JAR, mavenJarPipeline);
 

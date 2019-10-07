@@ -46,7 +46,7 @@ public class BazelVariableSubstitutor {
     private String substitute(final String origString, final String input) {
         String modifiedString = origString;
         if (input != null) {
-            substitutions.put("\\$\\{0}", input);
+            substitutions.put("\\$\\{input.item}", input);
         }
         for (String variablePattern : substitutions.keySet()) {
             modifiedString = modifiedString.replaceAll(variablePattern, substitutions.get(variablePattern));
