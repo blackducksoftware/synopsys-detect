@@ -32,7 +32,7 @@ import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorEdit;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorReplaceInEach;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorExecuteBazelOnEach;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorFilter;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorParseEachXml;
@@ -46,9 +46,9 @@ public class Pipelines {
         final List<StepExecutor> mavenJarPipeline = new ArrayList<>();
         mavenJarPipeline.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "filter('@.*:jar', deps(${detect.bazel.target}))")));
         mavenJarPipeline.add(new StepExecutorSplitEach("\\s+"));
-        mavenJarPipeline.add(new StepExecutorEdit("^@", ""));
-        mavenJarPipeline.add(new StepExecutorEdit("//.*", ""));
-        mavenJarPipeline.add(new StepExecutorEdit("^", "//external:"));
+        mavenJarPipeline.add(new StepExecutorReplaceInEach("^@", ""));
+        mavenJarPipeline.add(new StepExecutorReplaceInEach("//.*", ""));
+        mavenJarPipeline.add(new StepExecutorReplaceInEach("^", "//external:"));
         mavenJarPipeline.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "kind(maven_jar, ${input.item})", "--output", "xml")));
         mavenJarPipeline.add(new StepExecutorParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value"));
         availablePipelines.put(WorkspaceRule.MAVEN_JAR, mavenJarPipeline);
@@ -57,8 +57,8 @@ public class Pipelines {
         mavenInstallPipeline.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("cquery", "--noimplicit_deps", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")));
         mavenInstallPipeline.add(new StepExecutorSplitEach("\n"));
         mavenInstallPipeline.add(new StepExecutorFilter(".*maven_coordinates=.*"));
-        mavenInstallPipeline.add(new StepExecutorEdit("^\\s*tags\\s*\\s*=\\s*\\[\\s*\"maven_coordinates=", ""));
-        mavenInstallPipeline.add(new StepExecutorEdit("\".*", ""));
+        mavenInstallPipeline.add(new StepExecutorReplaceInEach("^\\s*tags\\s*\\s*=\\s*\\[\\s*\"maven_coordinates=", ""));
+        mavenInstallPipeline.add(new StepExecutorReplaceInEach("\".*", ""));
         availablePipelines.put(WorkspaceRule.MAVEN_INSTALL, mavenInstallPipeline);
     }
 

@@ -9,14 +9,14 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorEdit;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorReplaceInEach;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class StepExecutorEditTest {
+public class StepExecutorReplaceInEachTest {
 
     @Test
     public void testRemoveLeadingAtSign() throws IntegrationException {
-        final StepExecutor stepExecutor = new StepExecutorEdit("^@", "");
+        final StepExecutor stepExecutor = new StepExecutorReplaceInEach("^@", "");
         final List<String> input = Arrays.asList("@org_apache_commons_commons_io//jar:jar", "@com_google_guava_guava//jar:jar");
         final List<String> output = stepExecutor.process(input);
         assertEquals(2, output.size());
@@ -26,7 +26,7 @@ public class StepExecutorEditTest {
 
     @Test
     public void testRemoveTrailingJunk() throws IntegrationException {
-        final StepExecutor stepExecutor = new StepExecutorEdit("//.*", "");
+        final StepExecutor stepExecutor = new StepExecutorReplaceInEach("//.*", "");
         final List<String> input = Arrays.asList("org_apache_commons_commons_io//jar:jar", "com_google_guava_guava//jar:jar");
         final List<String> output = stepExecutor.process(input);
         assertEquals(2, output.size());
@@ -36,7 +36,7 @@ public class StepExecutorEditTest {
 
     @Test
     public void testInsertPrefix() throws IntegrationException {
-        final StepExecutor stepExecutor = new StepExecutorEdit("^", "//external:");
+        final StepExecutor stepExecutor = new StepExecutorReplaceInEach("^", "//external:");
         final List<String> input = Arrays.asList("org_apache_commons_commons_io", "com_google_guava_guava");
         final List<String> output = stepExecutor.process(input);
         assertEquals(2, output.size());
@@ -47,10 +47,10 @@ public class StepExecutorEditTest {
     @Test
     public void testMavenInstallBuildOutputExtractMavenCoordinates() throws IntegrationException {
         final List<String> input = Arrays.asList("  tags = [\"maven_coordinates=com.google.guava:guava:27.0-jre\"],");
-        final StepExecutor stepExecutorOne = new StepExecutorEdit("^\\s*tags\\s*\\s*=\\s*\\[\\s*\"maven_coordinates=", "");
+        final StepExecutor stepExecutorOne = new StepExecutorReplaceInEach("^\\s*tags\\s*\\s*=\\s*\\[\\s*\"maven_coordinates=", "");
         final List<String> stepOneOutput = stepExecutorOne.process(input);
 
-        final StepExecutor stepExecutorTwo = new StepExecutorEdit("\".*", "");
+        final StepExecutor stepExecutorTwo = new StepExecutorReplaceInEach("\".*", "");
         final List<String> output = stepExecutorTwo.process(stepOneOutput);
 
         assertEquals(1, output.size());

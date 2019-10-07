@@ -28,12 +28,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StepExecutorEdit implements StepExecutor {
+public class StepExecutorReplaceInEach implements StepExecutor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     final String targetPattern;
     final String replacementString;
 
-    public StepExecutorEdit(final String targetPattern, final String replacementString) {
+    public StepExecutorReplaceInEach(final String targetPattern, final String replacementString) {
         this.targetPattern = targetPattern;
         this.replacementString = replacementString;
     }
@@ -41,7 +41,7 @@ public class StepExecutorEdit implements StepExecutor {
     @Override
     public List<String> process(final List<String> input) {
         final List<String> results = new ArrayList<>();
-        logger.trace(String.format("Edit target pattern: %s; replacement string: %s", targetPattern, replacementString));
+        logger.trace(String.format("Replace target pattern: %s; replacement string: %s", targetPattern, replacementString));
         for (final String inputItem : input) {
             final String modifiedInputItem = inputItem.replaceAll(targetPattern, replacementString);
             logger.trace(String.format("Edit changed %s to %s", inputItem, modifiedInputItem));
