@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
@@ -70,9 +69,8 @@ public class BazelExtractor {
             }
             // final pipelineData is a list of group:artifact:version strings
             for (String artifactString : pipelineData) {
-                BazelExternalId externalId = BazelExternalId.fromBazelArtifactString(artifactString, ":");
-                logger.debug(String.format("Adding externalId: %s", externalId));
-                codeLocationGenerator.addDependency(externalId);
+                final String[] gavParts = artifactString.split(":");
+                codeLocationGenerator.addDependency(gavParts[0], gavParts[1], gavParts[2]);
             }
             final List<CodeLocation> codeLocations = codeLocationGenerator.build();
             final String projectName = bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget);

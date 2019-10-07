@@ -34,7 +34,6 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
 
 public class BazelCodeLocationBuilder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -46,14 +45,14 @@ public class BazelCodeLocationBuilder {
         dependencyGraph = new MutableMapDependencyGraph();
     }
 
-    public BazelCodeLocationBuilder addDependency(final BazelExternalId bazelExternalId) {
+    public BazelCodeLocationBuilder addDependency(final String group, final String artifact, final String version) {
         try {
-            logger.debug(String.format("Adding dependency from external id: %s", bazelExternalId));
-            final ExternalId externalId = externalIdFactory.createMavenExternalId(bazelExternalId.getGroup(), bazelExternalId.getArtifact(), bazelExternalId.getVersion());
-            final Dependency artifactDependency = new Dependency(bazelExternalId.getArtifact(), bazelExternalId.getVersion(), externalId);
+            logger.debug(String.format("Adding dependency from external id: %s:%s:%s", group, artifact, version));
+            final ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
+            final Dependency artifactDependency = new Dependency(artifact, version, externalId);
             dependencyGraph.addChildToRoot(artifactDependency);
         } catch (final Exception e) {
-            logger.error(String.format("Unable to parse group:artifact:version from %s", bazelExternalId));
+            logger.error(String.format("Unable to create dependency from %s:%s:%s", group, artifact, version));
         }
         return this;
     }

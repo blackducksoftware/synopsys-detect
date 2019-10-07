@@ -9,7 +9,6 @@ import org.junit.Test;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
 import com.synopsys.integration.detectable.detectables.bazel.BazelCodeLocationBuilder;
 
 public class BazelCodeLocationBuilderTest {
@@ -18,7 +17,7 @@ public class BazelCodeLocationBuilderTest {
     public void test() {
         BazelCodeLocationBuilder bdioBuilder = new BazelCodeLocationBuilder(new ExternalIdFactory());
         final List<CodeLocation> codeLocations = bdioBuilder
-            .addDependency(BazelExternalId.fromBazelArtifactString("testGroup:testArtifact:testVersion", ":"))
+            .addDependency("testGroup", "testArtifact", "testVersion")
             .build();
 
         assertEquals(1, codeLocations.size());
