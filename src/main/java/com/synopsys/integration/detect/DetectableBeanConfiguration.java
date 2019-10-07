@@ -63,6 +63,7 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
+import com.synopsys.integration.detectable.detectables.bazel.BazelDependencyParser;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
@@ -241,7 +242,8 @@ public class DetectableBeanConfiguration {
     @Bean
     public BazelExtractor bazelExtractor() {
         final WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
-        return new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
+        final BazelDependencyParser bazelDependencyParser = new BazelDependencyParser(externalIdFactory);
+        return new BazelExtractor(executableRunner, bazelDependencyParser, workspaceRuleChooser);
     }
 
     public FilePathGenerator filePathGenerator() {

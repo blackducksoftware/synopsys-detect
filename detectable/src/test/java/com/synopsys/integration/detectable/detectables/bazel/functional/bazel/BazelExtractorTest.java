@@ -17,6 +17,7 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectables.bazel.BazelDependencyParser;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.BazelProjectNameGenerator;
 import com.synopsys.integration.detectable.detectables.bazel.BazelWorkspace;
@@ -60,7 +61,7 @@ public class BazelExtractorTest {
         Mockito.when(bazelWorkspace.getDependencyRule()).thenReturn(WorkspaceRule.MAVEN_JAR);
         final WorkspaceRuleChooser workspaceRuleChooser = Mockito.mock(WorkspaceRuleChooser.class);
         Mockito.when(workspaceRuleChooser.choose(Mockito.eq(WorkspaceRule.MAVEN_JAR), Mockito.isNull())).thenReturn(WorkspaceRule.MAVEN_JAR);
-        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
+        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, new BazelDependencyParser(externalIdFactory), workspaceRuleChooser);
         final File bazelExe = new File("/usr/bin/bazel");
 
         // bazel query 'filter("@.*:jar", deps(//:ProjectRunner))'
@@ -128,7 +129,7 @@ public class BazelExtractorTest {
         Mockito.when(bazelWorkspace.getDependencyRule()).thenReturn(WorkspaceRule.MAVEN_INSTALL);
         final WorkspaceRuleChooser workspaceRuleChooser = Mockito.mock(WorkspaceRuleChooser.class);
         Mockito.when(workspaceRuleChooser.choose(Mockito.eq(WorkspaceRule.MAVEN_INSTALL), Mockito.isNull())).thenReturn(WorkspaceRule.MAVEN_INSTALL);
-        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
+        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, new BazelDependencyParser(externalIdFactory), workspaceRuleChooser);
         final File bazelExe = new File("/usr/bin/bazel");
 
         // bazel cquery --noimplicit_deps "kind(j.*import, deps(//:ProjectRunner))" --output build

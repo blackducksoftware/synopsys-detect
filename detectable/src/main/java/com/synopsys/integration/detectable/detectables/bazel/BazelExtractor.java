@@ -34,8 +34,6 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
@@ -48,13 +46,13 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecut
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
-    private final ExternalIdFactory externalIdFactory;
+    private final BazelDependencyParser bazelDependencyParser;
     private final WorkspaceRuleChooser workspaceRuleChooser;
 
     public BazelExtractor(final ExecutableRunner executableRunner,
-        final ExternalIdFactory externalIdFactory, final WorkspaceRuleChooser workspaceRuleChooser) {
+        final BazelDependencyParser bazelDependencyParser, final WorkspaceRuleChooser workspaceRuleChooser) {
         this.executableRunner = executableRunner;
-        this.externalIdFactory = externalIdFactory;
+        this.bazelDependencyParser = bazelDependencyParser;
         this.workspaceRuleChooser = workspaceRuleChooser;
     }
 
@@ -93,18 +91,12 @@ public class BazelExtractor {
     @NotNull
     private MutableDependencyGraph gavStringsToDependencyGraph(final List<String> gavStrings) {
         final MutableDependencyGraph dependencyGraph  = new MutableMapDependencyGraph();
-        for (String artifactString : gavStrings) {
-            final String[] gavParts = artifactString.split(":");
-            final String group = gavParts[0];
-            final String artifact = gavParts[1];
-            final String version = gavParts[2];
+        for (String gavString : gavStrings) {
+            final Dependency artifactDependency = bazelDependencyParser.gavStringToDependency(gavString, ":");
             try {
-                logger.debug(String.format("Adding dependency from external id: %s:%s:%s", group, artifact, version));
-                final ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
-                final Dependency artifactDependency = new Dependency(artifact, version, externalId);
                 dependencyGraph.addChildToRoot(artifactDependency);
             } catch (final Exception e) {
-                logger.error(String.format("Unable to create dependency from %s:%s:%s", group, artifact, version));
+                logger.error(String.format("Unable to create dependency from %s", gavString));
             }
         }
         return dependencyGraph;
