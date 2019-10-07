@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("integration")
 public class SignatureScanTest extends BlackDuckIntegrationTest {
-    private static final long ONE_MILLION_BYTES = 1_000_000;
+    private static final long HALF_MILLION_BYTES = 500_000;
 
     @Test
     @ExtendWith(TempDirectory.class)
@@ -66,7 +66,7 @@ public class SignatureScanTest extends BlackDuckIntegrationTest {
 
         File[] dataFiles = dataDirectory.listFiles();
         assertEquals(1, dataFiles.length);
-        assertTrue(dataFiles[0].length() > ONE_MILLION_BYTES);
+        assertTrue(dataFiles[0].length() > HALF_MILLION_BYTES);
     }
 
 }
