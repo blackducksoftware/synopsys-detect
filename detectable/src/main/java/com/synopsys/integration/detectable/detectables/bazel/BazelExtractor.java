@@ -24,11 +24,18 @@ package com.synopsys.integration.detectable.detectables.bazel;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
@@ -41,13 +48,13 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecut
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
-    private final BazelCodeLocationBuilder codeLocationGenerator;
+    private final ExternalIdFactory externalIdFactory;
     private final WorkspaceRuleChooser workspaceRuleChooser;
 
     public BazelExtractor(final ExecutableRunner executableRunner,
-        final BazelCodeLocationBuilder codeLocationGenerator, final WorkspaceRuleChooser workspaceRuleChooser) {
+        final ExternalIdFactory externalIdFactory, final WorkspaceRuleChooser workspaceRuleChooser) {
         this.executableRunner = executableRunner;
-        this.codeLocationGenerator = codeLocationGenerator;
+        this.externalIdFactory = externalIdFactory;
         this.workspaceRuleChooser = workspaceRuleChooser;
     }
 
@@ -68,11 +75,9 @@ public class BazelExtractor {
                 pipelineData = pipelineStep.process(pipelineData);
             }
             // final pipelineData is a list of group:artifact:version strings
-            for (String artifactString : pipelineData) {
-                final String[] gavParts = artifactString.split(":");
-                codeLocationGenerator.addDependency(gavParts[0], gavParts[1], gavParts[2]);
-            }
-            final List<CodeLocation> codeLocations = codeLocationGenerator.build();
+            final MutableDependencyGraph dependencyGraph = gavStringsToDependencyGraph(pipelineData);
+            final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
+            final List<CodeLocation> codeLocations = Arrays.asList(codeLocation);
             final String projectName = bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget);
             final Extraction.Builder builder = new Extraction.Builder()
                                                    .success(codeLocations)
@@ -83,5 +88,25 @@ public class BazelExtractor {
             logger.debug(msg, e);
             return new Extraction.Builder().failure(msg).build();
         }
+    }
+
+    @NotNull
+    private MutableDependencyGraph gavStringsToDependencyGraph(final List<String> gavStrings) {
+        final MutableDependencyGraph dependencyGraph  = new MutableMapDependencyGraph();
+        for (String artifactString : gavStrings) {
+            final String[] gavParts = artifactString.split(":");
+            final String group = gavParts[0];
+            final String artifact = gavParts[1];
+            final String version = gavParts[2];
+            try {
+                logger.debug(String.format("Adding dependency from external id: %s:%s:%s", group, artifact, version));
+                final ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
+                final Dependency artifactDependency = new Dependency(artifact, version, externalId);
+                dependencyGraph.addChildToRoot(artifactDependency);
+            } catch (final Exception e) {
+                logger.error(String.format("Unable to create dependency from %s:%s:%s", group, artifact, version));
+            }
+        }
+        return dependencyGraph;
     }
 }

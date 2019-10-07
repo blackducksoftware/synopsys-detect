@@ -65,7 +65,6 @@ import com.synopsys.integration.detectable.detectable.inspector.PipInspectorReso
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
-import com.synopsys.integration.detectable.detectables.bazel.BazelCodeLocationBuilder;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
@@ -241,9 +240,8 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public BazelExtractor bazelExtractor() {
-        final BazelCodeLocationBuilder codeLocationGenerator = new BazelCodeLocationBuilder(externalIdFactory);
         final WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
-        return new BazelExtractor(executableRunner, codeLocationGenerator, workspaceRuleChooser);
+        return new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
     }
 
     public FilePathGenerator filePathGenerator() {
