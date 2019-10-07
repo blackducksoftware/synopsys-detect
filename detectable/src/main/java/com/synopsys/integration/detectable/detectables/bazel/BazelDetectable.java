@@ -62,16 +62,16 @@ public class BazelDetectable extends Detectable {
         if (StringUtils.isBlank(bazelDetectableOptions.getTargetName())) {
             return new PropertyInsufficientDetectableResult();
         }
-        final File workspaceFile = fileFinder.findFile(environment.getDirectory(), WORKSPACE_FILENAME);
-        if (workspaceFile == null) {
-            return new FilesNotFoundDetectableResult(WORKSPACE_FILENAME);
-        }
-        bazelWorkspace = new BazelWorkspace(workspaceFile);
         return new PassedDetectableResult();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
+        final File workspaceFile = fileFinder.findFile(environment.getDirectory(), WORKSPACE_FILENAME);
+        if (workspaceFile == null) {
+            return new FilesNotFoundDetectableResult(WORKSPACE_FILENAME);
+        }
+        bazelWorkspace = new BazelWorkspace(workspaceFile);
         bazelExe = bazelResolver.resolveBazel();
         if (bazelExe == null) {
             return new ExecutableNotFoundDetectableResult("bazel");
