@@ -43,23 +43,21 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.synopsys.integration.detectable.detectables.bazel.model.Step;
-import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorParseEachXml implements StepExecutor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final String xPathToElement;
+    private final String targetAttributeName;
 
-    @Override
-    public boolean applies(final StepType stepType) {
-        return stepType.equals(StepType.PARSE_EACH_XML);
+    public StepExecutorParseEachXml(final String xPathToElement, final String targetAttributeName) {
+        this.xPathToElement = xPathToElement;
+        this.targetAttributeName = targetAttributeName;
     }
 
     @Override
-    public List<String> process(final Step step, final List<String> input) throws IntegrationException {
+    public List<String> process(final List<String> input) throws IntegrationException {
         final List<String> results = new ArrayList<>();
-        final String xPathToElement = step.getArgs().get(0);
-        final String targetAttributeName = step.getArgs().get(1);
         for (final String xmlDoc : input) {
             final List<String> values;
             try {

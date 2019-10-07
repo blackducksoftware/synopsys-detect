@@ -28,22 +28,19 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.bazel.model.Step;
-import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
-
 public class StepExecutorEdit implements StepExecutor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    final String targetPattern;
+    final String replacementString;
 
-    @Override
-    public boolean applies(final StepType stepType) {
-        return stepType.equals(StepType.EDIT);
+    public StepExecutorEdit(final String targetPattern, final String replacementString) {
+        this.targetPattern = targetPattern;
+        this.replacementString = replacementString;
     }
 
     @Override
-    public List<String> process(final Step step, final List<String> input) {
+    public List<String> process(final List<String> input) {
         final List<String> results = new ArrayList<>();
-        final String targetPattern = step.getArgs().get(0);
-        final String replacementString = step.getArgs().get(1);
         logger.trace(String.format("Edit target pattern: %s; replacement string: %s", targetPattern, replacementString));
         for (final String inputItem : input) {
             final String modifiedInputItem = inputItem.replaceAll(targetPattern, replacementString);

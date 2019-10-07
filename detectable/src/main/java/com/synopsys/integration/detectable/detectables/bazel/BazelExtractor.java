@@ -25,7 +25,6 @@ package com.synopsys.integration.detectable.detectables.bazel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,42 +33,40 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalId;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.PipelineChooser;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelVariableSubstitutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutors;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
     private final BazelCodeLocationBuilder codeLocationGenerator;
-    private final PipelineChooser pipelineChooser;
+    private final WorkspaceRuleChooser workspaceRuleChooser;
 
     public BazelExtractor(final ExecutableRunner executableRunner,
-        final BazelCodeLocationBuilder codeLocationGenerator, final PipelineChooser pipelineChooser) {
+        final BazelCodeLocationBuilder codeLocationGenerator, final WorkspaceRuleChooser workspaceRuleChooser) {
         this.executableRunner = executableRunner;
         this.codeLocationGenerator = codeLocationGenerator;
-        this.pipelineChooser = pipelineChooser;
+        this.workspaceRuleChooser = workspaceRuleChooser;
     }
 
     public Extraction extract(final File bazelExe, final File workspaceDir, final BazelWorkspace bazelWorkspace, final String bazelTarget, final String providedBazelDependencyType) {
         logger.debug("Bazel extraction:");
         try {
             final WorkspaceRule ruleFromWorkspaceFile = bazelWorkspace.getDependencyRule();
-            final Pipelines pipelines = new Pipelines();
-            final List<Step> pipelineSteps = pipelineChooser.choose(pipelines, ruleFromWorkspaceFile, providedBazelDependencyType);
             final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget);
-            final List<StepExecutor> stepExecutors = StepExecutors.create(bazelCommandExecutor, bazelVariableSubstitutor);
+            final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor);
+            final WorkspaceRule workspaceRule = workspaceRuleChooser.choose(ruleFromWorkspaceFile, providedBazelDependencyType);
+            final List<StepExecutor> pipeline = pipelines.get(workspaceRule);
+
 
             // Execute pipeline steps (like linux cmd piping with '|'); each step processes the output of the previous step
             List<String> pipelineData = new ArrayList<>();
-            for (final Step step : pipelineSteps) {
-                pipelineData = executePipelineStep(stepExecutors, pipelineData, step);
+            for (final StepExecutor pipelineStep : pipeline) {
+                pipelineData = pipelineStep.process(pipelineData);
             }
             // final pipelineData is a list of group:artifact:version strings
             for (String artifactString : pipelineData) {
@@ -88,26 +85,6 @@ public class BazelExtractor {
             logger.debug(msg, e);
             return new Extraction.Builder().failure(msg).build();
         }
-    }
-
-    private List<String> executePipelineStep(final List<StepExecutor> stepExecutors, List<String> pipelineData, final Step step) throws IntegrationException {
-        final Optional<StepExecutor> stepExecutorSelected = selectStepExecutor(stepExecutors, step);
-        if (!stepExecutorSelected.isPresent()) {
-            final String msg = String.format("Bazel processing failed. Unable to find an executor for step type: %s", step.getType());
-            logger.debug(msg);
-            throw new IntegrationException(msg);
-        }
-        pipelineData = stepExecutorSelected.get().process(step, pipelineData);
-        return pipelineData;
-    }
-
-    private Optional<StepExecutor> selectStepExecutor(final List<StepExecutor> stepExecutors, final Step step) {
-        for (final StepExecutor stepExecutorCandidate : stepExecutors) {
-            if (stepExecutorCandidate.applies(step.getType())) {
-                return Optional.of(stepExecutorCandidate);
-            }
-        }
-        return Optional.empty();
     }
 
     private String cleanProjectName(final String bazelTarget) {

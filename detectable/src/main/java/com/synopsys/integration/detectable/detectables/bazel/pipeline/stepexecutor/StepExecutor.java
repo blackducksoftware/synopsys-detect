@@ -24,12 +24,9 @@ package com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecu
 
 import java.util.List;
 
-import com.synopsys.integration.detectable.detectables.bazel.model.Step;
-import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public interface StepExecutor {
 
-    boolean applies(final StepType stepType);
-    List<String> process(final Step step, final List<String> input) throws IntegrationException;
+    List<String> process(final List<String> input) throws IntegrationException;
 }

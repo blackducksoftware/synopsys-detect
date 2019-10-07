@@ -29,22 +29,19 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.bazel.model.Step;
-import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
-
 public class StepExecutorSplitEach implements StepExecutor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final String regex;
 
-    @Override
-    public boolean applies(final StepType stepType) {
-        return stepType.equals(StepType.SPLIT_EACH);
+    public StepExecutorSplitEach(final String regex) {
+        this.regex = regex;
     }
 
     @Override
-    public List<String> process(final Step step, final List<String> input) {
+    public List<String> process(final List<String> input) {
         final List<String> results = new ArrayList<>();
         for (final String inputItem : input) {
-            final String[] splitLines = inputItem.split(step.getArgs().get(0));
+            final String[] splitLines = inputItem.split(regex);
             results.addAll(Arrays.asList(splitLines));
         }
         logger.trace(String.format("SplitEach returning %d lines", results.size()));

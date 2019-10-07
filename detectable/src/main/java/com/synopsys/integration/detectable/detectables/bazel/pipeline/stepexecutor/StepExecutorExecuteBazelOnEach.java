@@ -26,26 +26,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.synopsys.integration.detectable.detectables.bazel.model.Step;
-import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorExecuteBazelOnEach implements StepExecutor {
     private final BazelCommandExecutor bazelCommandExecutor;
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
+    private final List<String> bazelCommandArgs;
 
-    public StepExecutorExecuteBazelOnEach(final BazelCommandExecutor bazelCommandExecutor, final BazelVariableSubstitutor bazelVariableSubstitutor) {
+    public StepExecutorExecuteBazelOnEach(final BazelCommandExecutor bazelCommandExecutor, final BazelVariableSubstitutor bazelVariableSubstitutor, final List<String> bazelCommandArgs) {
         this.bazelCommandExecutor = bazelCommandExecutor;
         this.bazelVariableSubstitutor = bazelVariableSubstitutor;
+        this.bazelCommandArgs = bazelCommandArgs;
     }
 
     @Override
-    public boolean applies(final StepType stepType) {
-        return stepType.equals(StepType.EXECUTE_BAZEL_ON_EACH);
-    }
-
-    @Override
-    public List<String> process(final Step step, final List<String> input) throws IntegrationException {
+    public List<String> process(final List<String> input) throws IntegrationException {
         final List<String> adjustedInput;
         if (input.size() == 0) {
             adjustedInput = new ArrayList<>(1);
@@ -55,7 +50,7 @@ public class StepExecutorExecuteBazelOnEach implements StepExecutor {
         }
         final List<String> results = new ArrayList<>();
         for (final String inputItem : adjustedInput) {
-            final List<String> finalizedArgs = bazelVariableSubstitutor.substitute(step.getArgs(), inputItem);
+            final List<String> finalizedArgs = bazelVariableSubstitutor.substitute(bazelCommandArgs, inputItem);
             final Optional<String> cmdOutput = bazelCommandExecutor.executeToString(finalizedArgs);
             if (cmdOutput.isPresent()) {
                 results.add(cmdOutput.get());

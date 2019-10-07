@@ -28,21 +28,17 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.bazel.model.Step;
-import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
-
 public class StepExecutorFilter implements StepExecutor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final String regex;
 
-    @Override
-    public boolean applies(final StepType stepType) {
-        return stepType.equals(StepType.FILTER);
+    public StepExecutorFilter(final String regex) {
+        this.regex = regex;
     }
 
     @Override
-    public List<String> process(final Step step, final List<String> input) {
+    public List<String> process(final List<String> input) {
         final List<String> output = new ArrayList<>();
-        final String regex = step.getArgs().get(0);
         logger.trace(String.format("Filtering with regex %s", regex));
         for (final String inputItem : input) {
             if (inputItem.matches(regex)) {

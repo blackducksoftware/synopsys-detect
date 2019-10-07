@@ -22,22 +22,18 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
-import com.synopsys.integration.detectable.detectables.bazel.model.Step;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class PipelineChooser {
+public class WorkspaceRuleChooser {
 
     @NotNull
-    public List<Step> choose(final Pipelines pipelines, final WorkspaceRule ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
+    public WorkspaceRule choose(final WorkspaceRule ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
         final WorkspaceRule finalBazelDependencyType = deriveDependencyType(ruleFromWorkspaceFile, providedBazelDependencyType);
-        final List<Step> pipeline = pipelines.get(finalBazelDependencyType);
-        return pipeline;
+        return finalBazelDependencyType;
     }
 
     @NotNull

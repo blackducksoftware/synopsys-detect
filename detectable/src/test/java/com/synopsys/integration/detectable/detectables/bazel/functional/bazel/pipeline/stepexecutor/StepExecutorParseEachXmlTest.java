@@ -1,15 +1,12 @@
 package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline.stepexecutor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.bazel.model.Step;
-import com.synopsys.integration.detectable.detectables.bazel.model.StepType;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorParseEachXml;
 import com.synopsys.integration.exception.IntegrationException;
@@ -34,14 +31,10 @@ public class StepExecutorParseEachXmlTest {
 
     @Test
     public void test() throws IntegrationException {
-        final StepExecutor stepExecutor = new StepExecutorParseEachXml();
-
-        assertTrue(stepExecutor.applies(StepType.PARSE_EACH_XML));
-
-        final Step step = new Step(StepType.PARSE_EACH_XML, Arrays.asList("/query/rule[@class='maven_jar']/string[@name='artifact']", "value"));
+        final StepExecutor stepExecutor = new StepExecutorParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value");
         final List<String> input = Arrays.asList(COMMONS_IO_XML, GUAVA_XML);
 
-        final List<String> results = stepExecutor.process(step, input);
+        final List<String> results = stepExecutor.process(input);
 
         assertEquals(2, results.size());
         assertEquals("org.apache.commons:commons-io:1.3.2", results.get(0));
