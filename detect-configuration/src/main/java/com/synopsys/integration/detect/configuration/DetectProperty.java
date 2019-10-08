@@ -150,9 +150,9 @@ public enum DetectProperty {
     DETECT_BAZEL_TARGET("detect.bazel.target", "Bazel Target", "5.2.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = GROUP_SOURCE_SCAN)
-    @HelpDescription("The path to a file containing a list of BazelExternalIdExtractionXPathRule objects in json for overriding the default behavior).")
-    @HelpDetailed("This property is normally not set, but could potentially be used to customize the Bazel detector.")
-    DETECT_BAZEL_ADVANCED_RULES_PATH("detect.bazel.advanced.rules.path", "Bazel Advanced Rules File", "5.2.0", PropertyType.STRING, PropertyAuthority.NONE),
+    @HelpDescription("The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.")
+    @AcceptableValues(value = { "maven_jar", "maven_install", "UNSPECIFIED" }, caseSensitive = true, strict = true)
+    DETECT_BAZEL_DEPENDENCY_RULE("detect.bazel.dependency.type", "Bazel workspace external dependency rule", "6.0.0", PropertyType.STRING, PropertyAuthority.NONE, "UNSPECIFIED"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path to the output directory for all BDIO files.")

@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.bazel.parse.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelVariableSubstitutor;
 
 public class BazelVariableSubstitutorTest {
 
@@ -18,21 +18,21 @@ public class BazelVariableSubstitutorTest {
         origArgs.add("query");
         origArgs.add("filter(\"@.*:jar\", deps(${detect.bazel.target}))");
 
-        final List<String> adjustedArgs = substitutor.substitute(origArgs);
+        final List<String> adjustedArgs = substitutor.substitute(origArgs, null);
         assertEquals(2, adjustedArgs.size());
         assertEquals("query", adjustedArgs.get(0));
         assertEquals("filter(\"@.*:jar\", deps(//foo:foolib))", adjustedArgs.get(1));
     }
 
     @Test
-    public void testBoth() {
-        BazelVariableSubstitutor substitutor = new BazelVariableSubstitutor("//foo:foolib", "//external:org_apache_commons_commons_io");
+    public void testInput() {
+        BazelVariableSubstitutor substitutor = new BazelVariableSubstitutor("//foo:foolib");
         final List<String> origArgs = new ArrayList<>();
         origArgs.add("query");
         origArgs.add("filter(\"@.*:jar\", deps(${detect.bazel.target}))");
-        origArgs.add("kind(maven_jar, ${detect.bazel.target.dependency})");
+        origArgs.add("kind(maven_jar, ${input.item})");
 
-        final List<String> adjustedArgs = substitutor.substitute(origArgs);
+        final List<String> adjustedArgs = substitutor.substitute(origArgs, "//external:org_apache_commons_commons_io");
         assertEquals(3, adjustedArgs.size());
         assertEquals("query", adjustedArgs.get(0));
         assertEquals("filter(\"@.*:jar\", deps(//foo:foolib))", adjustedArgs.get(1));

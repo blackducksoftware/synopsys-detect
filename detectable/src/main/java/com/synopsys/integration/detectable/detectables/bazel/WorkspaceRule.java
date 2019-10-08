@@ -22,19 +22,30 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel;
 
-public class BazelDetectableOptions {
-    private final String targetName;
-    private final String bazelDependencyRule;
-    public BazelDetectableOptions(final String targetName, final String bazelDependencyRule) {
-        this.targetName = targetName;
-        this.bazelDependencyRule = bazelDependencyRule;
+import com.synopsys.integration.exception.IntegrationException;
+
+public enum WorkspaceRule {
+    MAVEN_JAR("maven_jar"),
+    MAVEN_INSTALL("maven_install"),
+    UNKNOWN(null);
+
+    private String name;
+
+    WorkspaceRule(final String name) {
+        this.name = name;
     }
 
-    public String getTargetName() {
-        return targetName;
+    public String getName() {
+        return name;
     }
 
-    public String getBazelDependencyRule() {
-        return bazelDependencyRule;
+    public static WorkspaceRule lookup(final String targetName) throws IntegrationException {
+        final String trimmedTargetName = targetName.trim();
+        for (final WorkspaceRule candidate : WorkspaceRule.values()) {
+            if ((candidate != WorkspaceRule.UNKNOWN) && candidate.getName().equals(trimmedTargetName)) {
+                return candidate;
+            }
+        }
+        throw new IntegrationException(String.format("Unsupported bazel workspace rule: %s", targetName));
     }
 }
