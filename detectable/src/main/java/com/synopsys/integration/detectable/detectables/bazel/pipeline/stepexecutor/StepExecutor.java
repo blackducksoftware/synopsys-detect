@@ -20,21 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor;
 
-public class BazelDetectableOptions {
-    private final String targetName;
-    private final String bazelDependencyRule;
-    public BazelDetectableOptions(final String targetName, final String bazelDependencyRule) {
-        this.targetName = targetName;
-        this.bazelDependencyRule = bazelDependencyRule;
-    }
+import java.util.List;
 
-    public String getTargetName() {
-        return targetName;
-    }
+import com.synopsys.integration.exception.IntegrationException;
 
-    public String getBazelDependencyRule() {
-        return bazelDependencyRule;
-    }
+public interface StepExecutor {
+
+    List<String> process(final List<String> input) throws IntegrationException;
 }

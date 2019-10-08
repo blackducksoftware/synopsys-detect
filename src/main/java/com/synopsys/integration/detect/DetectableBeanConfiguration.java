@@ -63,12 +63,10 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
+import com.synopsys.integration.detectable.detectables.bazel.BazelDependencyParser;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
-import com.synopsys.integration.detectable.detectables.bazel.model.BazelExternalIdExtractionFullRuleJsonProcessor;
-import com.synopsys.integration.detectable.detectables.bazel.parse.BazelCodeLocationBuilder;
-import com.synopsys.integration.detectable.detectables.bazel.parse.BazelQueryXmlOutputParser;
-import com.synopsys.integration.detectable.detectables.bazel.parse.XPathParser;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeExtractor;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeRecipesToLayerMapConverter;
@@ -243,10 +241,9 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public BazelExtractor bazelExtractor() {
-        final BazelQueryXmlOutputParser parser = new BazelQueryXmlOutputParser(new XPathParser());
-        final BazelCodeLocationBuilder codeLocationGenerator = new BazelCodeLocationBuilder(externalIdFactory);
-        final BazelExternalIdExtractionFullRuleJsonProcessor bazelExternalIdExtractionFullRuleJsonProcessor = new BazelExternalIdExtractionFullRuleJsonProcessor(gson);
-        return new BazelExtractor(executableRunner, parser, codeLocationGenerator, bazelExternalIdExtractionFullRuleJsonProcessor);
+        final WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
+        final BazelDependencyParser bazelDependencyParser = new BazelDependencyParser(externalIdFactory);
+        return new BazelExtractor(executableRunner, bazelDependencyParser, workspaceRuleChooser);
     }
 
     public FilePathGenerator filePathGenerator() {
@@ -701,7 +698,7 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public BazelDetectable bazelDetectable(final DetectableEnvironment environment) {
-        return new BazelDetectable(environment, bazelExtractor(), detectExecutableResolver, detectableOptionFactory.createBazelDetectableOptions());
+        return new BazelDetectable(environment, fileFinder, bazelExtractor(), detectExecutableResolver, detectableOptionFactory.createBazelDetectableOptions());
     }
 
     @Bean

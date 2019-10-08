@@ -22,19 +22,14 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel;
 
-public class BazelDetectableOptions {
-    private final String targetName;
-    private final String bazelDependencyRule;
-    public BazelDetectableOptions(final String targetName, final String bazelDependencyRule) {
-        this.targetName = targetName;
-        this.bazelDependencyRule = bazelDependencyRule;
-    }
+public class BazelProjectNameGenerator {
 
-    public String getTargetName() {
-        return targetName;
-    }
-
-    public String getBazelDependencyRule() {
-        return bazelDependencyRule;
+    public String generateFromBazelTarget(final String bazelTarget) {
+        String projectName = bazelTarget
+                                 .replaceAll("^//", "")
+                                 .replaceAll("^:", "")
+                                 .replaceAll("/", "_")
+                                 .replaceAll(":", "_");
+        return projectName;
     }
 }

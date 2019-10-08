@@ -108,7 +108,7 @@ public class DockerExtractor {
                 // The -c is a bash option, the following String is the command we want to run
                 final List<String> dockerImportArguments = Arrays.asList(
                     "-c",
-                    "docker load -i \"" + imageToImport.getCanonicalPath() + "\"");
+                    "docker fromJsonString -i \"" + imageToImport.getCanonicalPath() + "\"");
 
                 final Executable dockerImportImageExecutable = new Executable(directory, environmentVariables, bashExe.toString(), dockerImportArguments);
                 executableRunner.execute(dockerImportImageExecutable);
