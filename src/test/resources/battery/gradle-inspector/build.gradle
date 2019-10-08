@@ -1,0 +1,44 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+group = 'com.blackducksoftware.test'
+sourceCompatibility = 1.8
+version = '0.1'
+
+eclipse {
+	classpath {
+		downloadSources=true
+		containers = [ 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8' ]
+	}
+}
+
+repositories {
+    mavenCentral()
+}
+
+//Don't bring in transitive dependencies for the example results
+configurations.all {
+    transitive = false
+}
+
+//Most of these are here for the security results, not because they are actually used
+dependencies {
+	compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+	compile group: 'args4j', name: 'args4j', version: '2.33'
+	compile group: 'javax.inject', name: 'javax.inject', version: '1'
+	compile group: 'org.springframework', name: 'spring-context', version: '4.2.5.RELEASE'
+	compile group: 'commons-logging', name: 'commons-logging', version: '1.0.2'
+	compile group: 'commons-io', name: 'commons-io', version: '2.0'
+	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.5'
+	compile group: 'org.apache.httpcomponents', name: 'httpcomponents-core', version: '4.3.3'
+	compile group: 'commons-net', name: 'commons-net', version: '3.3'
+	compile group: 'commons-codec', name: 'commons-codec', version: '1.6'
+	compile group: 'org.apache.poi', name: 'poi', version: '3.6'
+	compile group: 'commons-beanutils', name: 'commons-beanutils', version: '1.9.0'
+	compile group: 'commons-collections', name: 'commons-collections', version: '1.0'
+	compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.2.1'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.2'
+}
