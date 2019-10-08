@@ -4,11 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +31,8 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
 
 public final class BatteryTest {
-    private final Map<DetectProperty, List<String>> executablesWithResourceFiles = new HashMap<>();
-    private final Map<DetectProperty, List<String>> executablesWithText = new HashMap<>();
+    private final List<BatteryExecutable> executables = new ArrayList<>();
+
     private final List<String> additionalProperties = new ArrayList<>();
     private final List<String> emptyFileNames = new ArrayList<>();
     private final List<String> resourceFileNames = new ArrayList<>();
@@ -60,16 +57,16 @@ public final class BatteryTest {
         this.name = name;
     }
 
-    public void executableFromResourceFile(final DetectProperty detectProperty, final String resourceFile) {
-        executablesWithResourceFiles.put(detectProperty, Collections.singletonList(resourceFile));
+    public void executableFromResourceFiles(final DetectProperty detectProperty, final String... resourceFiles) {
+        executables.add(new ResourceTypingExecutable(detectProperty, Arrays.asList(resourceFiles)));
     }
 
-    public void executableFromResourceFiles(final DetectProperty detectProperty, final String... resourceFiles) {
-        executablesWithResourceFiles.put(detectProperty, Arrays.asList(resourceFiles));
+    public void executableThatCopiesFiles(final DetectProperty detectProperty, final String... resourceFiles) {
+        executables.add(new ResourceCopyingExecutable(detectProperty, Arrays.asList(resourceFiles)));
     }
 
     public void executable(final DetectProperty detectProperty, final String... responses) {
-        executablesWithText.put(detectProperty, Arrays.asList(responses));
+        executables.add(new StringTypingExecutable(detectProperty, Arrays.asList(responses)));
     }
 
     public void git(final String origin, final String branch) {
@@ -190,69 +187,12 @@ public final class BatteryTest {
     private List<String> createExecutables() throws IOException {
         final List<String> properties = new ArrayList<>();
 
-        for (final Map.Entry<DetectProperty, List<String>> entry : executablesWithResourceFiles.entrySet()) {
-            final List<String> commands = new ArrayList<>();
-            for (final String filename : entry.getValue()) {
-                final String commandTextFileFromText = createCommandTextFileFromResource("/" + name + "/" + filename);
-                commands.add(commandTextFileFromText);
-            }
-            final String executable = createExecutableThatTypesFiles(entry.getKey(), commands);
-            properties.add(executable);
-        }
-
-        for (final Map.Entry<DetectProperty, List<String>> entry : executablesWithText.entrySet()) {
-            final List<String> commands = new ArrayList<>();
-            for (final String s : entry.getValue()) {
-                final String commandTextFileFromText = createCommandTextFileFromText(s);
-                commands.add(commandTextFileFromText);
-            }
-
-            final String executable = createExecutableThatTypesFiles(entry.getKey(), commands);
-            properties.add(executable);
+        for (final BatteryExecutable executable : executables) {
+            final int id = executableCount.getAndIncrement();
+            final File commandFile = executable.createExecutable(id, mockDirectory, commandCount);
+            properties.add("--" + executable.detectProperty.getPropertyKey() + "=" + commandFile.getCanonicalPath());
         }
         return properties;
-    }
-
-    private String createCommandTextFileFromText(final String text) throws IOException {
-        final File commandTextFile = new File(mockDirectory, "cmd-" + commandCount.getAndIncrement() + ".txt");
-        FileUtils.writeStringToFile(commandTextFile, text, Charset.defaultCharset());
-        return commandTextFile.getCanonicalPath();
-    }
-
-    private String createCommandTextFileFromResource(final String resource) throws IOException {
-        final InputStream commandText = BatteryFiles.asInputStream(resource);
-        Assertions.assertNotNull(commandText, "Unable to find resource: " + resource);
-        final File commandTextFile = new File(mockDirectory, "cmd-" + commandCount.getAndIncrement() + ".txt");
-        Files.copy(commandText, commandTextFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        return commandTextFile.getCanonicalPath();
-    }
-
-    private String createExecutableThatTypesFiles(final DetectProperty detectProperty, final String... filePaths) throws IOException {
-        return createExecutableThatTypesFiles(detectProperty, Arrays.asList(filePaths));
-    }
-
-    private String createExecutableThatTypesFiles(final DetectProperty detectProperty, final List<String> filePaths) throws IOException {
-        final int id = executableCount.getAndIncrement();
-        final File dataFile = new File(mockDirectory, "exe-" + id + ".dat");
-        FileUtils.writeStringToFile(dataFile, "0", Charset.defaultCharset());
-
-        String proxyCommand = "@echo off\r\nsetlocal enabledelayedexpansion\r\n";
-        proxyCommand += "for /f %%x in (" + dataFile.getCanonicalPath() + ") do (\r\n";
-        proxyCommand += "set /a var=%%x\r\n";
-        proxyCommand += ")\r\n";
-        proxyCommand += "set /a out=%var%+1\r\n";
-        proxyCommand += ">" + dataFile.getCanonicalPath() + " echo %out%\r\n";
-        int cnt = 0;
-        for (final String fileName : filePaths) {
-            proxyCommand += "set cmd[" + cnt + "]=\"" + fileName + "\"\r\n";
-            cnt++;
-        }
-        proxyCommand += "type !cmd[%var%]!\r\n";
-
-        final File commandFile = new File(mockDirectory, "exe-" + id + ".bat");
-        FileUtils.writeStringToFile(commandFile, proxyCommand, Charset.defaultCharset());
-
-        return "--" + detectProperty.getPropertyKey() + "=" + commandFile.getCanonicalPath();
     }
 
     private void createFiles() throws IOException {
