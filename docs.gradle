@@ -74,7 +74,7 @@ task generatedPropertyMarkdown() {
         helpData.helpJson.options.forEach { property ->
             def found = groups.find { group -> group.groupName == property.group }
             if (found == null) {
-                found = [groupName: property.group, options: []]
+                found = [groupName: property.group, superGroup: property.superGroup, options: []]
                 groups.add(found)
             }
             found.options.add(property)
@@ -84,11 +84,21 @@ task generatedPropertyMarkdown() {
         def split_groups = []
         groups.forEach { group ->
             def template = helpData.templates.getTemplate("property-group.ftl")
-            def target = new File(propertiesFolder.asFile, "${group.groupName}.md")
+            def parentFolder = propertiesFolder.asFile;
+            if (group.superGroup) {
+                parentFolder = new File(parentFolder, group.superGroup)
+                parentFolder.mkdirs()
+            } else {
+                parentFolder = new File(parentFolder, "General")
+                parentFolder.mkdirs()
+            }
+            def target = new File(parentFolder, "${group.groupName}.md")
             def simple = []
             def advanced = []
             def deprecated = []
             group.options.forEach { property ->
+                println property.propertyName.replaceAll(" ", "-")
+                property.location = parentFolder.getName() + "/" + group.groupName + "#" + property.propertyName.replaceAll(" ", "-");
                 if (property.deprecated) {
                     deprecated.add(property)
                 } else if (property.category == "simple") {

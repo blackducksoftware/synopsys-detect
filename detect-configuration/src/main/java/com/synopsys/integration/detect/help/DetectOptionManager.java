@@ -264,6 +264,7 @@ public class DetectOptionManager {
 
         final HelpGroup groupAnnotation = field.getAnnotation(HelpGroup.class);
         help.primaryGroup = groupAnnotation.primary().getName();
+        help.superGroup = groupAnnotation.primary().getSuperGroup();
         if (groupAnnotation.additional().length > 0) {
             help.additionalGroups.addAll(Arrays.stream(groupAnnotation.additional()).map(HelpGroups::getName).collect(Collectors.toList()));
         } else {

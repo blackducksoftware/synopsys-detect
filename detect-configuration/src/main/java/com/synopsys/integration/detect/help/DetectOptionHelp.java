@@ -34,6 +34,7 @@ public class DetectOptionHelp {
 
     public List<String> additionalGroups = new ArrayList<>();
     public String primaryGroup = "";
+    public String superGroup = "";
 
     public boolean isDeprecated = false;
     public String deprecation = "";
