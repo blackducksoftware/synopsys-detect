@@ -45,6 +45,7 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBui
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.HelpGroups;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
@@ -262,10 +263,9 @@ public class DetectOptionManager {
         help.category = descriptionAnnotation.category();
 
         final HelpGroup groupAnnotation = field.getAnnotation(HelpGroup.class);
-        help.primaryGroup = groupAnnotation.primary();
-        final String[] additionalGroups = groupAnnotation.additional();
-        if (additionalGroups.length > 0) {
-            help.additionalGroups.addAll(Arrays.stream(additionalGroups).collect(Collectors.toList()));
+        help.primaryGroup = groupAnnotation.primary().getName();
+        if (groupAnnotation.additional().length > 0) {
+            help.additionalGroups.addAll(Arrays.stream(groupAnnotation.additional()).map(HelpGroups::getName).collect(Collectors.toList()));
         } else {
             if (StringUtils.isNotBlank(help.primaryGroup)) {
                 help.additionalGroups.add(help.primaryGroup);

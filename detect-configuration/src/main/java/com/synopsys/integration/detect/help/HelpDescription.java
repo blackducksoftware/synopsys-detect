@@ -27,12 +27,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.HelpConstants;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface HelpDescription {
-    String category() default DetectProperty.PropertyConstants.SIMPLE;
+    String category() default HelpConstants.SIMPLE;
 
     String value();
 }

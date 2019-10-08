@@ -20,19 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.help;
+package com.synopsys.integration.detect.configuration;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public class HelpConstants {
+    //Print Config
+    public static final String PRINT_GROUP_DEFAULT = HelpGroups.DEFAULT_HELP.getName();
 
-import com.synopsys.integration.detect.configuration.HelpGroups;
-
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface HelpGroup {
-    HelpGroups primary() default HelpGroups.DEFAULT_HELP;
-
-    HelpGroups[] additional() default {};
+    public static final String DETECTORS_SUPER_GROUP = "Detectors";
+    public static final String ADVANCED = "advanced";
+    public static final String SIMPLE = "simple";
 }
