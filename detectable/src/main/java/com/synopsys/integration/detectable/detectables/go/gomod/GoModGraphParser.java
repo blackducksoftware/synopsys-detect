@@ -44,20 +44,20 @@ public class GoModGraphParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    DependencyGraph parseGoModGraph(List<String> goModGraph, String rootModule) {
-        MutableDependencyGraph mutableDependencyGraph = new MutableMapDependencyGraph();
+    DependencyGraph parseGoModGraph(final List<String> goModGraph, final String rootModule) {
+        final MutableDependencyGraph mutableDependencyGraph = new MutableMapDependencyGraph();
 
-        for (String line : goModGraph) {
+        for (final String line : goModGraph) {
             //example: github.com/gomods/athens cloud.google.com/go@v0.26.0
-            String[] parts = line.split(" ");
+            final String[] parts = line.split(" ");
             if (parts.length != 2) {
                 logger.warn("Unknown graph line format: " + line);
             } else {
-                Dependency to = parseDependency(parts[1]);
+                final Dependency to = parseDependency(parts[1]);
                 if (rootModule.equals(parts[0])) {
                     mutableDependencyGraph.addChildToRoot(to);
                 } else {
-                    Dependency from = parseDependency(parts[0]);
+                    final Dependency from = parseDependency(parts[0]);
                     mutableDependencyGraph.addChildWithParent(to, from);
                 }
             }
@@ -66,15 +66,19 @@ public class GoModGraphParser {
         return mutableDependencyGraph;
     }
 
-    private Dependency parseDependency(String dependencyPart) {
+    private Dependency parseDependency(final String dependencyPart) {
         if (dependencyPart.contains("@")) {
-            String[] parts = dependencyPart.split("@");
+            final String[] parts = dependencyPart.split("@");
             if (parts.length != 2) {
                 logger.warn("Unknown graph dependency format, using entire line as name: " + dependencyPart);
                 return new Dependency(dependencyPart, externalIdFactory.createNameVersionExternalId(Forge.GOLANG, dependencyPart, null));
             } else {
-                String name = parts[0];
+                final String name = parts[0];
                 String version = parts[1];
+                if (version.contains("-")) { //The KB only supports the git hash, unfortunately we must strip out the rest. This gets just the commit has from a go.mod psuedo version.
+                    final String[] versionPieces = version.split("-");
+                    version = versionPieces[versionPieces.length - 1];
+                }
                 return new Dependency(name, version, externalIdFactory.createNameVersionExternalId(Forge.GOLANG, name, version));
             }
         } else {
@@ -83,9 +87,9 @@ public class GoModGraphParser {
     }
 
     public List<CodeLocation> parseListAndGoModGraph(final List<String> listOutput, final List<String> modGraphOutput) {
-        List<CodeLocation> codeLocations = new ArrayList<>();
-        for (String module : listOutput) {
-            DependencyGraph graph = parseGoModGraph(modGraphOutput, module);
+        final List<CodeLocation> codeLocations = new ArrayList<>();
+        for (final String module : listOutput) {
+            final DependencyGraph graph = parseGoModGraph(modGraphOutput, module);
             codeLocations.add(new CodeLocation(graph, externalIdFactory.createNameVersionExternalId(Forge.GOLANG, module, null)));
         }
         return codeLocations;
