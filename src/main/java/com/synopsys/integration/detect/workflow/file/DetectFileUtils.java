@@ -25,7 +25,6 @@ package com.synopsys.integration.detect.workflow.file;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -52,7 +51,7 @@ public class DetectFileUtils {
             return null;
         }
         if (overwrite && file.exists()) {
-            Files.delete(file.toPath());
+            FileUtils.deleteQuietly(file);
         }
         if (file.exists()) {
             logger.info(String.format("%s exists and not being overwritten", file.getAbsolutePath()));

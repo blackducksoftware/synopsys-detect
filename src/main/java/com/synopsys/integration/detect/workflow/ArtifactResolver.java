@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -147,7 +146,7 @@ public class ArtifactResolver {
         final IntHttpClient restConnection = connectionManager.createUnauthenticatedRestConnection(source);
         try (final Response response = restConnection.execute(request)) {
             logger.debug("Deleting existing file.");
-            Files.delete(target.toPath());
+            FileUtils.deleteQuietly(target);
             logger.debug("Writing to file.");
             final InputStream jarBytesInputStream = response.getContent();
             FileUtils.copyInputStreamToFile(jarBytesInputStream, target);
