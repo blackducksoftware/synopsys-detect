@@ -1,0 +1,5 @@
+DETECT META DATA START
+rootProjectGroup:com.blackducksoftware.test
+rootProjectName:linux-gradle
+rootProjectVersion:0.1
+DETECT META DATA END

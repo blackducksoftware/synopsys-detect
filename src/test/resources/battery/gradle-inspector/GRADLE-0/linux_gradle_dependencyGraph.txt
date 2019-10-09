@@ -1,0 +1,160 @@
+
+------------------------------------------------------------
+Root project
+------------------------------------------------------------
+
+archives - Configuration for archive artifacts.
+No dependencies
+
+compile - Dependencies for source set 'main'.
++--- com.google.code.findbugs:jsr305:3.0.1
++--- args4j:args4j:2.33
++--- javax.inject:javax.inject:1
++--- org.springframework:spring-context:4.2.5.RELEASE
++--- commons-logging:commons-logging:1.0.2
++--- commons-io:commons-io:2.0
++--- org.apache.httpcomponents:httpclient:4.3.5
++--- org.apache.httpcomponents:httpcomponents-core:4.3.3
++--- commons-net:commons-net:3.3
++--- commons-codec:commons-codec:1.6
++--- org.apache.poi:poi:3.6
++--- commons-beanutils:commons-beanutils:1.9.0
++--- commons-collections:commons-collections:1.0
+\--- commons-fileupload:commons-fileupload:1.2.1
+
+compileClasspath - Compile classpath for source set 'main'.
++--- com.google.code.findbugs:jsr305:3.0.1
++--- args4j:args4j:2.33
++--- javax.inject:javax.inject:1
++--- org.springframework:spring-context:4.2.5.RELEASE
++--- commons-logging:commons-logging:1.0.2
++--- commons-io:commons-io:2.0
++--- org.apache.httpcomponents:httpclient:4.3.5
++--- org.apache.httpcomponents:httpcomponents-core:4.3.3
++--- commons-net:commons-net:3.3
++--- commons-codec:commons-codec:1.6
++--- org.apache.poi:poi:3.6
++--- commons-beanutils:commons-beanutils:1.9.0
++--- commons-collections:commons-collections:1.0
+\--- commons-fileupload:commons-fileupload:1.2.1
+
+compileOnly - Compile dependencies for source set 'main'.
++--- com.google.code.findbugs:jsr305:3.0.1
++--- args4j:args4j:2.33
++--- javax.inject:javax.inject:1
++--- org.springframework:spring-context:4.2.5.RELEASE
++--- commons-logging:commons-logging:1.0.2
++--- commons-io:commons-io:2.0
++--- org.apache.httpcomponents:httpclient:4.3.5
++--- org.apache.httpcomponents:httpcomponents-core:4.3.3
++--- commons-net:commons-net:3.3
++--- commons-codec:commons-codec:1.6
++--- org.apache.poi:poi:3.6
++--- commons-beanutils:commons-beanutils:1.9.0
++--- commons-collections:commons-collections:1.0
+\--- commons-fileupload:commons-fileupload:1.2.1
+
+default - Configuration for default artifacts.
++--- com.google.code.findbugs:jsr305:3.0.1
++--- args4j:args4j:2.33
++--- javax.inject:javax.inject:1
++--- org.springframework:spring-context:4.2.5.RELEASE
++--- commons-logging:commons-logging:1.0.2
++--- commons-io:commons-io:2.0
++--- org.apache.httpcomponents:httpclient:4.3.5
++--- org.apache.httpcomponents:httpcomponents-core:4.3.3
++--- commons-net:commons-net:3.3
++--- commons-codec:commons-codec:1.6
++--- org.apache.poi:poi:3.6
++--- commons-beanutils:commons-beanutils:1.9.0
++--- commons-collections:commons-collections:1.0
+\--- commons-fileupload:commons-fileupload:1.2.1
+
+runtime - Runtime dependencies for source set 'main'.
++--- com.google.code.findbugs:jsr305:3.0.1
++--- args4j:args4j:2.33
++--- javax.inject:javax.inject:1
++--- org.springframework:spring-context:4.2.5.RELEASE
++--- commons-logging:commons-logging:1.0.2
++--- commons-io:commons-io:2.0
++--- org.apache.httpcomponents:httpclient:4.3.5
++--- org.apache.httpcomponents:httpcomponents-core:4.3.3
++--- commons-net:commons-net:3.3
++--- commons-codec:commons-codec:1.6
++--- org.apache.poi:poi:3.6
++--- commons-beanutils:commons-beanutils:1.9.0
++--- commons-collections:commons-collections:1.0
+\--- commons-fileupload:commons-fileupload:1.2.1
+
+testCompile - Dependencies for source set 'test'.
++--- com.google.code.findbugs:jsr305:3.0.1
++--- args4j:args4j:2.33
++--- javax.inject:javax.inject:1
++--- org.springframework:spring-context:4.2.5.RELEASE
++--- commons-logging:commons-logging:1.0.2
++--- commons-io:commons-io:2.0
++--- org.apache.httpcomponents:httpclient:4.3.5
++--- org.apache.httpcomponents:httpcomponents-core:4.3.3
++--- commons-net:commons-net:3.3
++--- commons-codec:commons-codec:1.6
++--- org.apache.poi:poi:3.6
++--- commons-beanutils:commons-beanutils:1.9.0
++--- commons-collections:commons-collections:1.0
+\--- commons-fileupload:commons-fileupload:1.2.1
+
+testCompileClasspath - Compile classpath for source set 'test'.
++--- com.google.code.findbugs:jsr305:3.0.1
++--- args4j:args4j:2.33
++--- javax.inject:javax.inject:1
++--- org.springframework:spring-context:4.2.5.RELEASE
++--- commons-logging:commons-logging:1.0.2
++--- commons-io:commons-io:2.0
++--- org.apache.httpcomponents:httpclient:4.3.5
++--- org.apache.httpcomponents:httpcomponents-core:4.3.3
++--- commons-net:commons-net:3.3
++--- commons-codec:commons-codec:1.6
++--- org.apache.poi:poi:3.6
++--- commons-beanutils:commons-beanutils:1.9.0
++--- commons-collections:commons-collections:1.0
+\--- commons-fileupload:commons-fileupload:1.2.1
+
+testCompileOnly - Compile dependencies for source set 'test'.
++--- com.google.code.findbugs:jsr305:3.0.1
++--- args4j:args4j:2.33
++--- javax.inject:javax.inject:1
++--- org.springframework:spring-context:4.2.5.RELEASE
++--- commons-logging:commons-logging:1.0.2
++--- commons-io:commons-io:2.0
++--- org.apache.httpcomponents:httpclient:4.3.5
++--- org.apache.httpcomponents:httpcomponents-core:4.3.3
++--- commons-net:commons-net:3.3
++--- commons-codec:commons-codec:1.6
++--- org.apache.poi:poi:3.6
++--- commons-beanutils:commons-beanutils:1.9.0
++--- commons-collections:commons-collections:1.0
+\--- commons-fileupload:commons-fileupload:1.2.1
+
+testRuntime - Runtime dependencies for source set 'test'.
++--- com.google.code.findbugs:jsr305:3.0.1
++--- args4j:args4j:2.33
++--- javax.inject:javax.inject:1
++--- org.springframework:spring-context:4.2.5.RELEASE
++--- commons-logging:commons-logging:1.0.2
++--- commons-io:commons-io:2.0
++--- org.apache.httpcomponents:httpclient:4.3.5
++--- org.apache.httpcomponents:httpcomponents-core:4.3.3
++--- commons-net:commons-net:3.3
++--- commons-codec:commons-codec:1.6
++--- org.apache.poi:poi:3.6
++--- commons-beanutils:commons-beanutils:1.9.0
++--- commons-collections:commons-collections:1.0
+\--- commons-fileupload:commons-fileupload:1.2.1
+
+DETECT META DATA START
+rootProjectGroup:com.blackducksoftware.test
+rootProjectName:linux-gradle
+rootProjectVersion:0.1
+projectGroup:com.blackducksoftware.test
+projectName:linux-gradle
+projectVersion:0.1
+DETECT META DATA END
