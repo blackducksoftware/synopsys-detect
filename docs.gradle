@@ -89,7 +89,7 @@ task generatedPropertyMarkdown() {
                 parentFolder = new File(parentFolder, group.superGroup)
                 parentFolder.mkdirs()
             } else {
-                parentFolder = new File(parentFolder, "General")
+                parentFolder = new File(parentFolder, "Configuration")
                 parentFolder.mkdirs()
             }
             def target = new File(parentFolder, "${group.groupName}.md")
@@ -97,7 +97,6 @@ task generatedPropertyMarkdown() {
             def advanced = []
             def deprecated = []
             group.options.forEach { property ->
-                println property.propertyName.replaceAll(" ", "-")
                 property.location = parentFolder.getName() + "/" + group.groupName + "#" + property.propertyName.replaceAll(" ", "-");
                 if (property.deprecated) {
                     deprecated.add(property)
