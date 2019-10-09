@@ -1,8 +1,11 @@
 package com.synopsys.integration.detect.battery;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -12,6 +15,11 @@ import java.util.stream.Collectors;
 import org.junit.Assert;
 
 import com.synopsys.integration.util.ResourceUtil;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import jdk.internal.util.xml.impl.ReaderUTF8;
 
 public class BatteryFiles {
     private static final String resourcePrefix = "/battery";
@@ -36,6 +44,22 @@ public class BatteryFiles {
 
     public static InputStream asInputStream(final String relativeResourcePath) {
         return BatteryFiles.class.getResourceAsStream(resourcePrefix + relativeResourcePath);
+    }
+
+    public static Reader asReader(final String relativeResourcePath) {
+        return new ReaderUTF8(asInputStream(relativeResourcePath));
+    }
+
+    public static Template asTemplate(final String relativeResourcePath) throws IOException {
+        final Configuration templates = new Configuration(Configuration.VERSION_2_3_26);
+        return new Template(relativeResourcePath, BatteryFiles.asReader(relativeResourcePath), templates);
+    }
+
+    public static void processTemplate(final String relativeResourcePath, final File target, final Object model) throws IOException, TemplateException {
+        final Template template = BatteryFiles.asTemplate(relativeResourcePath);
+        try (final Writer fileWriter = new FileWriter(target)) {
+            template.process(model, fileWriter);
+        }
     }
 
     public static String resolvePath(final String relativeResourcePath) {

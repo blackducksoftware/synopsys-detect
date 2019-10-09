@@ -30,6 +30,8 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
 
+import freemarker.template.TemplateException;
+
 public final class BatteryTest {
     private final List<BatteryExecutable> executables = new ArrayList<>();
 
@@ -57,12 +59,18 @@ public final class BatteryTest {
         this.name = name;
     }
 
-    public void executableFromResourceFiles(final DetectProperty detectProperty, final String... resourceFiles) {
-        executables.add(new ResourceTypingExecutable(detectProperty, Arrays.asList(resourceFiles)));
+    private List<String> prefixResources(final String... resourceFiles) {
+        return Arrays.stream(resourceFiles)
+                   .map(it -> "/" + this.name + "/" + it)
+                   .collect(Collectors.toList());
     }
 
-    public void executableThatCopiesFiles(final DetectProperty detectProperty, final String... resourceFiles) {
-        executables.add(new ResourceCopyingExecutable(detectProperty, Arrays.asList(resourceFiles)));
+    public void executableFromResourceFiles(final DetectProperty detectProperty, final String... resourceFiles) {
+        executables.add(new ResourceTypingExecutable(detectProperty, prefixResources(resourceFiles)));
+    }
+
+    public void executableThatCopiesFiles(final DetectProperty detectProperty, final int extractionFolderIndex, final String extractionFolderPrefix, final String... resourceFiles) {
+        executables.add(new ResourceCopyingExecutable(detectProperty, prefixResources(resourceFiles), extractionFolderIndex, extractionFolderPrefix));
     }
 
     public void executable(final DetectProperty detectProperty, final String... responses) {
@@ -107,14 +115,14 @@ public final class BatteryTest {
             runDetect(executableArguments);
 
             assertBdio();
-        } catch (final ExecutableRunnerException | IOException | JSONException e) {
+        } catch (final ExecutableRunnerException | IOException | JSONException | TemplateException e) {
             Assertions.assertNull(e, "An exception should not have been thrown!");
         }
     }
 
     private void runDetect(final List<String> additionalArguments) throws IOException, ExecutableRunnerException {
         final List<String> detectArguments = new ArrayList<>();
-        detectArguments.addAll(Arrays.asList("--detect.tools=DETECTOR", "--blackduck.offline.mode=true", "--detect.output.directory=" + outputDirectory, "--detect.bdio.output.path=" + bdioDirectory));
+        detectArguments.addAll(Arrays.asList("--detect.tools=DETECTOR", "--blackduck.offline.mode=true", "--detect.output.path=" + outputDirectory, "--detect.bdio.output.path=" + bdioDirectory, "--detect.cleanup=false"));
 
         detectArguments.add("--logging.level.detect=DEBUG");
         detectArguments.add("--detect.source.path=" + sourceDirectory.getCanonicalPath());
@@ -184,7 +192,7 @@ public final class BatteryTest {
         Assertions.assertTrue(batteryDirectory.exists(), "The detect battery path must exist.");
     }
 
-    private List<String> createExecutables() throws IOException {
+    private List<String> createExecutables() throws IOException, TemplateException {
         final List<String> properties = new ArrayList<>();
 
         for (final BatteryExecutable executable : executables) {

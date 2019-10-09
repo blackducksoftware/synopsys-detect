@@ -6,6 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.synopsys.integration.detect.configuration.DetectProperty;
 
+import freemarker.template.TemplateException;
+
 public abstract class BatteryExecutable {
     public final DetectProperty detectProperty;
 
@@ -13,5 +15,5 @@ public abstract class BatteryExecutable {
         this.detectProperty = detectProperty;
     }
 
-    public abstract File createExecutable(final int id, final File mockDirectory, AtomicInteger commandCount) throws IOException;
+    public abstract File createExecutable(final int id, final File mockDirectory, AtomicInteger commandCount) throws IOException, TemplateException;
 }
