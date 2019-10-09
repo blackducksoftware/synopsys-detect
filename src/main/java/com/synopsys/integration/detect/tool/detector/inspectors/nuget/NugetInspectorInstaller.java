@@ -25,9 +25,9 @@ package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.Optional;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +82,7 @@ public class NugetInspectorInstaller {
             artifactResolver.downloadArtifact(nupkgFile, source);
             logger.debug("Extracting nuget inspector.");
             DetectZipUtil.unzip(nupkgFile, inspectorFolder, Charset.defaultCharset());
-            Files.delete(nupkgFile.toPath());
+            FileUtils.deleteQuietly(nupkgFile);
             return inspectorFolder;
         } else {
             logger.debug("Inspector is already downloaded, folder exists.");

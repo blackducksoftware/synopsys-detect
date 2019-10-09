@@ -24,8 +24,8 @@ package com.synopsys.integration.detect.workflow.airgap;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
+import org.apache.commons.io.FileUtils;
 import org.zeroturnaround.zip.ZipUtil;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -44,7 +44,7 @@ public class DockerAirGapCreator {
         try {
             final File dockerZip = dockerInspectorInstaller.installAirGap(dockerFolder);
             ZipUtil.unpack(dockerZip, dockerFolder);
-            Files.delete(dockerZip.toPath());
+            FileUtils.deleteQuietly(dockerZip);
         } catch (final IntegrationException | IOException e) {
             throw new DetectUserFriendlyException("An error occurred installing docker inspector.", e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }

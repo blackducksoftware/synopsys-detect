@@ -23,8 +23,6 @@
 package com.synopsys.integration.detectable.detectables.clang.dependencyfile;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,11 +65,7 @@ public class FilePathGenerator {
         if (depsMkFile.isPresent()) {
             final List<String> files = dependenyListFileParser.parseDepsMk(depsMkFile.get());
             if (cleanup) {
-                try {
-                    Files.delete(depsMkFile.get().toPath());
-                } catch (final IOException e) {
-                    logger.debug(String.format("Failed to delete file at %s", depsMkFile.get().getAbsoluteFile()), e);
-                }
+                FileUtils.deleteQuietly(depsMkFile.get());
             }
             return files;
         } else {
