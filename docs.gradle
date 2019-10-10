@@ -88,10 +88,13 @@ task generatedPropertyMarkdown() {
             if (group.superGroup) {
                 parentFolder = new File(parentFolder, group.superGroup)
                 parentFolder.mkdirs()
+                group.location = group.superGroup + "/" + group.groupName
             } else {
                 parentFolder = new File(parentFolder, "Configuration")
                 parentFolder.mkdirs()
+                group.location = "Configuration/" + group.groupName
             }
+
             def target = new File(parentFolder, "${group.groupName}.md")
             def simple = []
             def advanced = []
@@ -106,7 +109,7 @@ task generatedPropertyMarkdown() {
                     advanced.add(property)
                 }
             }
-            def split_group = [groupName: group.groupName, simple: simple, advanced: advanced, deprecated: deprecated]
+            def split_group = [groupName: group.groupName, simple: simple, advanced: advanced, deprecated: deprecated, location: group.location]
             split_groups.add(split_group)
             target.withWriter('utf-8') { out -> template.process(split_group, out) }
             group.options = simple

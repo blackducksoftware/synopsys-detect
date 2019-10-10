@@ -2,7 +2,7 @@ This page lists only detect's basic properties, for advanced and deprecated prop
 
 <#list groups as group>
 
-[${group.groupName}](../${group.groupName}/)
+[${group.groupName}](../${group.location})
 
 | Property | Description |
 | --- | --- |

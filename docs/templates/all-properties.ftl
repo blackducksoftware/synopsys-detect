@@ -2,7 +2,7 @@ This page lists all detect properties including deprecated and advanced, for mos
 
 <#list groups as group>
 
-[${group.groupName}](../${group.groupName}/)
+[${group.groupName}](../${group.location})
 
 | Property | Description |
 | --- | --- |
