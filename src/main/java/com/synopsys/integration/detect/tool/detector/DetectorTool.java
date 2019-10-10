@@ -225,7 +225,8 @@ public class DetectorTool {
         return statusMap;
     }
 
-    private Optional<DetectorType> preferredDetectorTypeFromString(final String detectorType) {
+    private Optional<DetectorType> preferredDetectorTypeFromString(final String detectorTypeRaw) {
+        final String detectorType = detectorTypeRaw.trim().toUpperCase();
         if (StringUtils.isNotBlank(detectorType)) {
             if (DetectorType.POSSIBLE_NAMES.contains(detectorType)) {
                 return Optional.of(DetectorType.valueOf(detectorType));

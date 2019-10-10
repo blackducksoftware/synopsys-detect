@@ -96,7 +96,7 @@ public class DetectorRuleBuilder {
     }
 
     public DetectorRuleBuilder notSelfNestable() {
-        return isSelfNestable(true);
+        return isSelfNestable(false);
     }
 
     public DetectorRule build() {

@@ -33,6 +33,7 @@ public class HelpJsonOption {
     public String addedInVersion = "";
     public String category = "";
     public String group = "";
+    public String superGroup = "";
     public List<String> additionalGroups = new ArrayList<>();
     public String description = "";
     public String detailedDescription = "";

@@ -2,12 +2,12 @@ This page lists only detect's basic properties, for advanced and deprecated prop
 
 <#list groups as group>
 
-[${group.groupName}](../${group.groupName}/)
+[${group.groupName}](../${group.location})
 
 | Property | Description |
 | --- | --- |
 <#list group.options as option>
-| [${option.propertyKey}](../${group.groupName}/<#if option.propertyName?has_content>#${option.propertyName?replace(" ", "-")}</#if>) | <#if option.defaultValue??>default: ${option.defaultValue} <br /><br /> </#if><#if option.hasAcceptableValues> Acceptable Values: ${option.acceptableValues?join(", ")} <br /><br /></#if><#if option.propertyName?has_content>${option.propertyName}: </#if>${option.description} <br /><br /> <#if option.deprecated>**DEPRECATED: ${option.deprecatedDescription!"This property is deprecated."}**</#if> |
+| [${option.propertyKey}](../${option.location}) | <#if option.defaultValue??>default: ${option.defaultValue} <br /><br /> </#if><#if option.hasAcceptableValues> Acceptable Values: ${option.acceptableValues?join(", ")} <br /><br /></#if><#if option.propertyName?has_content>${option.propertyName}: </#if>${option.description} <br /><br /> <#if option.deprecated>**DEPRECATED: ${option.deprecatedDescription!"This property is deprecated."}**</#if> |
 </#list>
 
 </#list>

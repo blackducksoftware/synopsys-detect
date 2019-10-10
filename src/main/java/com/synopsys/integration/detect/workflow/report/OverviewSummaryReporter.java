@@ -47,10 +47,9 @@ public class OverviewSummaryReporter {
                     writer.writeLine("DIRECTORY: " + detectorEvaluationTree.getDirectory());
                     writer.writeLine("DETECTOR: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
                     writer.writeLine("\tEXTRACTABLE: " + detectorEvaluation.getExtractabilityMessage());
-                    writer.writeLine("\tEXTRACTED: " + detectorEvaluation);
-                    final String description = detectorEvaluation.getExtraction().getDescription();
-                    if (StringUtils.isNotBlank(description)) {
-                        writer.writeLine("\tERROR: " + description);
+                    writer.writeLine("\tEXTRACTED: " + detectorEvaluation.wasExtractionSuccessful());
+                    if (detectorEvaluation.getExtraction() != null && StringUtils.isNotBlank(detectorEvaluation.getExtraction().getDescription())) {
+                        writer.writeLine("\tEXTRACTION: " + detectorEvaluation.getExtraction().getDescription());
 
                     }
                     final Map<String, String> data = new HashMap<>();

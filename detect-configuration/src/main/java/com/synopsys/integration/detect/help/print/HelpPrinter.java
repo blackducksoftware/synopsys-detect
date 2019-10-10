@@ -27,18 +27,18 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.HelpConstants;
 import com.synopsys.integration.detect.help.DetectArgumentState;
 import com.synopsys.integration.detect.help.DetectOption;
 import com.synopsys.integration.detect.help.DetectOptionHelp;
 
 public class HelpPrinter {
     private static final String DIAGNOSTIC_HELP_TEXT = "\nDiagnostics mode:\n\n" +
-        "In diagnostics mode, Detect will produce a diagnostics zip file that contains a collection of intermediate and output files\n" +
-        "that can be very useful for troubleshooting. Extended diagnostics mode writes additional files to the diagnostics zip file.\n" +
-        "Invoke diagnostics mode by adding -d (diagnostics mode) or -de (extended diagnostics mode) to the command line.\n" +
-        "The path to the generated diagnostics file can be found in the log (look for: \"Diagnostics file created at: ...\").\n" +
-        "The diagnostics file can be large, so you may want to generate it only when you will actually use it.\n";
+                                                           "In diagnostics mode, Detect will produce a diagnostics zip file that contains a collection of intermediate and output files\n" +
+                                                           "that can be very useful for troubleshooting. Extended diagnostics mode writes additional files to the diagnostics zip file.\n" +
+                                                           "Invoke diagnostics mode by adding -d (diagnostics mode) or -de (extended diagnostics mode) to the command line.\n" +
+                                                           "The path to the generated diagnostics file can be found in the log (look for: \"Diagnostics file created at: ...\").\n" +
+                                                           "The diagnostics file can be large, so you may want to generate it only when you will actually use it.\n";
 
     private static final Comparator<DetectOption> SORT_BY_GROUP_THEN_KEY = (o1, o2) -> {
         if (o1.getDetectOptionHelp().primaryGroup.equals(o2.getDetectOptionHelp().primaryGroup)) {
@@ -97,7 +97,7 @@ public class HelpPrinter {
     }
 
     private void printDefaultHelp(final HelpTextWriter writer, final List<DetectOption> options) {
-        printHelpFilteredByPrintGroup(writer, options, DetectProperty.PropertyConstants.PRINT_GROUP_DEFAULT);
+        printHelpFilteredByPrintGroup(writer, options, HelpConstants.PRINT_GROUP_DEFAULT);
     }
 
     private void printHelpFilteredByPrintGroup(final HelpTextWriter writer, final List<DetectOption> options, final String filterGroup) {

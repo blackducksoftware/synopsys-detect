@@ -22,48 +22,46 @@
  */
 package com.synopsys.integration.detect.configuration;
 
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.ADVANCED;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.DEFAULT_HELP;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_BAZEL;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_BITBAKE;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_BLACKDUCK_SERVER;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_CLEANUP;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_CONDA;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_CPAN;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_DETECTOR;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_DOCKER;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_GENERAL;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_GO;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_GRADLE;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_HEX;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_HUB_CONFIGURATION;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_LOGGING;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_MAVEN;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_NPM;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_NUGET;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_PACKAGIST;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_PATHS;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_PEAR;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_PIP;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_POLARIS;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_PROJECT;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_PROJECT_INFO;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_PROXY;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_PYTHON;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_REPORT;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_RUBY;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_SBT;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_SIGNATURE_SCANNER;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_SOURCE_PATH;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_SOURCE_SCAN;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.GROUP_YARN;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_BLACKDUCK;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_GLOBAL;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_HUB;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_OFFLINE;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_POLICY;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_PROJECT_SETTING;
-import static com.synopsys.integration.detect.configuration.DetectProperty.PropertyConstants.SEARCH_GROUP_REPORT_SETTING;
+import static com.synopsys.integration.detect.configuration.HelpConstants.ADVANCED;
+import static com.synopsys.integration.detect.configuration.HelpGroups.DEFAULT_HELP;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_BAZEL;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_BITBAKE;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_BLACKDUCK_SERVER;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_CLEANUP;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_CONDA;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_CPAN;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_DETECTOR;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_DOCKER;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_GENERAL;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_GO;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_GRADLE;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_HEX;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_LOGGING;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_MAVEN;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_NPM;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_NUGET;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_PACKAGIST;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_PATHS;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_PEAR;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_PIP;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_POLARIS;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_PROJECT;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_PROJECT_INFO;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_PROXY;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_PYTHON;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_REPORT;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_RUBY;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_SBT;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_SIGNATURE_SCANNER;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_SOURCE_PATH;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_SOURCE_SCAN;
+import static com.synopsys.integration.detect.configuration.HelpGroups.GROUP_YARN;
+import static com.synopsys.integration.detect.configuration.HelpGroups.SEARCH_GROUP_BLACKDUCK;
+import static com.synopsys.integration.detect.configuration.HelpGroups.SEARCH_GROUP_GLOBAL;
+import static com.synopsys.integration.detect.configuration.HelpGroups.SEARCH_GROUP_OFFLINE;
+import static com.synopsys.integration.detect.configuration.HelpGroups.SEARCH_GROUP_POLICY;
+import static com.synopsys.integration.detect.configuration.HelpGroups.SEARCH_GROUP_PROJECT_SETTING;
+import static com.synopsys.integration.detect.configuration.HelpGroups.SEARCH_GROUP_REPORT_SETTING;
 
 import com.synopsys.integration.detect.DetectMajorVersion;
 import com.synopsys.integration.detect.help.AcceptableValues;
@@ -150,9 +148,9 @@ public enum DetectProperty {
     DETECT_BAZEL_TARGET("detect.bazel.target", "Bazel Target", "5.2.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = GROUP_SOURCE_SCAN)
-    @HelpDescription("The path to a file containing a list of BazelExternalIdExtractionXPathRule objects in json for overriding the default behavior).")
-    @HelpDetailed("This property is normally not set, but could potentially be used to customize the Bazel detector.")
-    DETECT_BAZEL_ADVANCED_RULES_PATH("detect.bazel.advanced.rules.path", "Bazel Advanced Rules File", "5.2.0", PropertyType.STRING, PropertyAuthority.NONE),
+    @HelpDescription("The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.")
+    @AcceptableValues(value = { "maven_jar", "maven_install", "UNSPECIFIED" }, caseSensitive = true, strict = true)
+    DETECT_BAZEL_DEPENDENCY_RULE("detect.bazel.dependency.type", "Bazel workspace external dependency rule", "6.0.0", PropertyType.STRING, PropertyAuthority.NONE, "UNSPECIFIED"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path to the output directory for all BDIO files.")
@@ -801,91 +799,91 @@ public enum DetectProperty {
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.url in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER)
     @HelpDescription("URL of the Hub server.")
     BLACKDUCK_HUB_URL("blackduck.hub.url", "", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.timeout in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER)
     @HelpDescription("The time to wait for rest connections to complete in seconds.")
     BLACKDUCK_HUB_TIMEOUT("blackduck.hub.timeout", "", "3.0.0", PropertyType.INTEGER, PropertyAuthority.NONE, "120"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.username in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER)
     @HelpDescription("Hub username.")
     BLACKDUCK_HUB_USERNAME("blackduck.hub.username", "", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.password in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER)
     @HelpDescription("Hub password.")
     BLACKDUCK_HUB_PASSWORD("blackduck.hub.password", "", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.api.token in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER)
     @HelpDescription("Hub API Token.")
     BLACKDUCK_HUB_API_TOKEN("blackduck.hub.api.token", "", "3.1.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.host in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, GROUP_PROXY })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { GROUP_PROXY })
     @HelpDescription("Proxy host.")
     BLACKDUCK_HUB_PROXY_HOST("blackduck.hub.proxy.host", "", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.port in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, GROUP_PROXY })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { GROUP_PROXY })
     @HelpDescription("Proxy port.")
     BLACKDUCK_HUB_PROXY_PORT("blackduck.hub.proxy.port", "", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.username in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, GROUP_PROXY })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { GROUP_PROXY })
     @HelpDescription("Proxy username.")
     BLACKDUCK_HUB_PROXY_USERNAME("blackduck.hub.proxy.username", "", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.password in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, GROUP_PROXY })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { GROUP_PROXY })
     @HelpDescription("Proxy password.")
     BLACKDUCK_HUB_PROXY_PASSWORD("blackduck.hub.proxy.password", "", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.ntlm.domain in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, GROUP_PROXY })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { GROUP_PROXY })
     @HelpDescription("NTLM Proxy domain.")
     BLACKDUCK_HUB_PROXY_NTLM_DOMAIN("blackduck.hub.proxy.ntlm.domain", "", "3.1.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.ignored.hosts in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, GROUP_PROXY })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { GROUP_PROXY })
     @HelpDescription("A comma-separated list of host patterns that should not use the proxy.")
     BLACKDUCK_HUB_PROXY_IGNORED_HOSTS("blackduck.hub.proxy.ignored.hosts", "", "3.2.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.proxy.ntlm.workstation in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, GROUP_PROXY })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { GROUP_PROXY })
     @HelpDescription("NTLM Proxy workstation.")
     BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION("blackduck.hub.proxy.ntlm.workstation", "", "3.1.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.trust.cert in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER)
     @HelpDescription("If true, automatically trusts the certificate for the current run of Detect only.")
     BLACKDUCK_HUB_TRUST_CERT("blackduck.hub.trust.cert", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --blackduck.offline.mode in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB, SEARCH_GROUP_OFFLINE })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_OFFLINE })
     @HelpDescription("This disables any Hub communication. If true, Detect does not upload BDIO files, does not check policies, and does not download and install the signature scanner.")
     BLACKDUCK_HUB_OFFLINE_MODE("blackduck.hub.offline.mode", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.ignore.connection.failures in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_HUB_CONFIGURATION, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_BLACKDUCK_SERVER)
     @HelpDescription("If true, during initialization Detect will check for Hub connectivity and exit with status code 0 if it cannot connect.")
     DETECT_DISABLE_WITHOUT_HUB("detect.disable.without.hub", "", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
 
@@ -979,44 +977,44 @@ public enum DetectProperty {
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.dry.run in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER)
     @HelpDescription("If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.")
     DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN("detect.hub.signature.scanner.dry.run", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.snippet.mode in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER)
     @HelpDescription("If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.")
     DETECT_HUB_SIGNATURE_SCANNER_SNIPPET_MODE("detect.hub.signature.scanner.snippet.mode", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.patterns in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER)
     @HelpDescription("A comma-separated list of values to be used with the Signature Scanner --exclude flag.")
     DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS("detect.hub.signature.scanner.exclusion.patterns", "", "3.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.paths in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER)
     @HelpDescription("These paths and only these paths will be scanned.")
     DETECT_HUB_SIGNATURE_SCANNER_PATHS("detect.hub.signature.scanner.paths", "", "3.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.name.patterns in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER)
     @HelpDescription("A comma-separated list of directory name patterns Detect will search for and add to the Signature Scanner --exclude flag values.")
     @HelpDetailed("Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner.\r\nThese patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns.")
     DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS("detect.hub.signature.scanner.exclusion.name.patterns", "", "4.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.NONE, "node_modules"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.memory in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER)
     @HelpDescription("The memory for the scanner to use.")
     DETECT_HUB_SIGNATURE_SCANNER_MEMORY("detect.hub.signature.scanner.memory", "", "3.0.0", PropertyType.INTEGER, PropertyAuthority.NONE, "4096"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.tools in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER)
     @HelpDescription("Set to true to disable the Hub Signature Scanner.")
     DETECT_HUB_SIGNATURE_SCANNER_DISABLED("detect.hub.signature.scanner.disabled", "", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
 
@@ -1028,19 +1026,19 @@ public enum DetectProperty {
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.offline.local.path in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_OFFLINE, SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_OFFLINE })
     @HelpDescription("To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
     DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH("detect.hub.signature.scanner.offline.local.path", "", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.local.path in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_OFFLINE, SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_OFFLINE })
     @HelpDescription("To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
     DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH("detect.hub.signature.scanner.local.path", "", "4.2.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.host.url in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER)
     @HelpDescription("If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.")
     DETECT_HUB_SIGNATURE_SCANNER_HOST_URL("detect.hub.signature.scanner.host.url", "", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
@@ -1052,13 +1050,13 @@ public enum DetectProperty {
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.parallel.processors in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER)
     @HelpDescription("The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
     DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS("detect.hub.signature.scanner.parallel.processors", "", "3.0.0", PropertyType.INTEGER, PropertyAuthority.NONE, "1"),
 
     @Deprecated
     @DetectDeprecation(description = "This property is changing. Please use --detect.blackduck.signature.scanner.arguments in the future.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
-    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_HUB })
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER)
     @HelpDescription("Additional arguments to use when running the Hub signature scanner.")
     DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS("detect.hub.signature.scanner.arguments", "", "4.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
@@ -1144,72 +1142,4 @@ public enum DetectProperty {
         return value.equals(defaultValue);
     }
 
-    public final class PropertyConstants {
-        //Category
-        public static final String SIMPLE = "simple";
-        public static final String ADVANCED = "advanced";
-
-        //Group
-        public static final String GROUP_ARTIFACTORY = "artifactory";
-        public static final String GROUP_BLACKDUCK_SERVER = "blackduck server";
-        public static final String GROUP_CLEANUP = "cleanup";
-        public static final String GROUP_CODELOCATION = "codelocation";
-        public static final String GROUP_GENERAL = "general";
-        public static final String GROUP_LOGGING = "logging";
-        public static final String GROUP_PATHS = "paths";
-        public static final String GROUP_POLICY_CHECK = "policy check";
-        public static final String GROUP_PROJECT = "project";
-        public static final String GROUP_PROJECT_INFO = "project info";
-        public static final String GROUP_PROXY = "proxy";
-        public static final String GROUP_REPORT = "report";
-        public static final String GROUP_SOURCE_SCAN = "source scan";
-        public static final String GROUP_SOURCE_PATH = "source path";
-
-        //Tool Groups
-        public static final String GROUP_DETECTOR = "detector";
-        public static final String GROUP_POLARIS = "polaris";
-        public static final String GROUP_SIGNATURE_SCANNER = "signature scanner";
-
-        //Detector Groups
-        public static final String GROUP_BAZEL = "bazel";
-        public static final String GROUP_BITBAKE = "bitbake";
-        public static final String GROUP_CONDA = "conda";
-        public static final String GROUP_CPAN = "cpan";
-        public static final String GROUP_DOCKER = "docker";
-        public static final String GROUP_GO = "go";
-        public static final String GROUP_GRADLE = "gradle";
-        public static final String GROUP_HEX = "hex";
-        public static final String GROUP_MAVEN = "maven";
-        public static final String GROUP_NPM = "npm";
-        public static final String GROUP_NUGET = "nuget";
-        public static final String GROUP_PACKAGIST = "packagist";
-        public static final String GROUP_PEAR = "pear";
-        public static final String GROUP_PIP = "pip";
-        public static final String GROUP_PYTHON = "python";
-        public static final String GROUP_RUBY = "ruby";
-        public static final String GROUP_SBT = "sbt";
-        public static final String GROUP_YARN = "yarn";
-
-        //Additional groups (should not be used as a primary group
-        public static final String SEARCH_GROUP_BLACKDUCK = "blackduck";
-        public static final String SEARCH_GROUP_DEBUG = "debug";
-        public static final String SEARCH_GROUP_GLOBAL = "global";
-        public static final String SEARCH_GROUP_OFFLINE = "offline";
-        public static final String SEARCH_GROUP_POLICY = "policy";
-        public static final String SEARCH_GROUP_PROJECT_SETTING = "project setting";
-        public static final String SEARCH_GROUP_REPORT_SETTING = "report setting";
-        public static final String SEARCH_GROUP_SEARCH = "search";
-        public static final String DEFAULT_HELP = "default";
-
-        //Print Config
-        public static final String PRINT_GROUP_DEFAULT = DEFAULT_HELP;
-
-        //All Deprecated Groups
-        @Deprecated
-        public static final String GROUP_BOMTOOL = "detector";
-        @Deprecated
-        public static final String GROUP_HUB_CONFIGURATION = "hub configuration";
-        @Deprecated
-        public static final String SEARCH_GROUP_HUB = "hub";
-    }
 }

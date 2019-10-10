@@ -1,14 +1,14 @@
 {
   "name": "DeckOfPlayingCards",
-  "url": "/Users/jakem/workspace/sleuthifer/swift/example-package-deckofplayingcards",
+  "url": "/Users/jakem/bazelWorkspace/sleuthifer/swift/example-package-deckofplayingcards",
   "version": "unspecified",
-  "path": "/Users/jakem/workspace/sleuthifer/swift/example-package-deckofplayingcards",
+  "path": "/Users/jakem/bazelWorkspace/sleuthifer/swift/example-package-deckofplayingcards",
   "dependencies": [
     {
       "name": "FisherYates",
       "url": "https://github.com/apple/example-package-fisheryates.git",
       "version": "2.0.5",
-      "path": "/Users/jakem/workspace/sleuthifer/swift/example-package-deckofplayingcards/.build/checkouts/example-package-fisheryates",
+      "path": "/Users/jakem/bazelWorkspace/sleuthifer/swift/example-package-deckofplayingcards/.build/checkouts/example-package-fisheryates",
       "dependencies": [
 
       ]
@@ -17,7 +17,7 @@
       "name": "PlayingCard",
       "url": "https://github.com/apple/example-package-playingcard.git",
       "version": "3.0.5",
-      "path": "/Users/jakem/workspace/sleuthifer/swift/example-package-deckofplayingcards/.build/checkouts/example-package-playingcard",
+      "path": "/Users/jakem/bazelWorkspace/sleuthifer/swift/example-package-deckofplayingcards/.build/checkouts/example-package-playingcard",
       "dependencies": [
 
       ]

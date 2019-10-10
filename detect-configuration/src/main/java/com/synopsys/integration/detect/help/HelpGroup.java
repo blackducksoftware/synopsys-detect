@@ -27,10 +27,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.synopsys.integration.detect.configuration.HelpGroups;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface HelpGroup {
-    String primary() default "";
+    HelpGroups primary() default HelpGroups.DEFAULT_HELP;
 
-    String[] additional() default {};
+    HelpGroups[] additional() default {};
 }

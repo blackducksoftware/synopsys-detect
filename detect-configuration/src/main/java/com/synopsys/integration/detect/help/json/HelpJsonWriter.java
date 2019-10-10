@@ -86,6 +86,7 @@ public class HelpJsonWriter {
 
         final DetectOptionHelp optionHelp = detectOption.getDetectOptionHelp();
         helpJsonOption.group = optionHelp.primaryGroup;
+        helpJsonOption.superGroup = optionHelp.superGroup;
         helpJsonOption.additionalGroups = optionHelp.additionalGroups;
         helpJsonOption.category = optionHelp.category;
         helpJsonOption.description = optionHelp.description;
