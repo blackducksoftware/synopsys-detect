@@ -81,6 +81,8 @@ ${option.description}
 
 ${option.detailedDescription!""}
 
+**DEPRECATED: ${option.deprecatedDescription!"This property is deprecated."}**
+
 |Details||
 |---|---|
 |Added|${option.addedInVersion}|
