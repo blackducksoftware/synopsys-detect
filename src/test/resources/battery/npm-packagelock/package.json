@@ -1,0 +1,24 @@
+{
+  "name": "example-npm-travis",
+  "version": "1.0.0",
+  "description": "Example project for setting up CoPilot with an NPM project built with Travis CI",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js test arguments"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BlackDuckCoPilot/example-npm-travis.git"
+  },
+  "author": "BlackDuckCoPilot",
+  "bugs": {
+    "url": "https://github.com/BlackDuckCoPilot/example-npm-travis/issues"
+  },
+  "homepage": "https://github.com/BlackDuckCoPilot/example-npm-travis#readme",
+  "dependencies": {
+    "express": "^4.15.4",
+    "moment": "^2.18.1",
+    "request": "^2.81.0",
+    "uuid": "^3.1.0"
+  }
+}
