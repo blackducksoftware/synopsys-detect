@@ -200,7 +200,7 @@ public class DetectorEvaluator {
                         detectorEvaluation.setDiscovery(new Discovery.Builder().exception(e).build());
                     }
                 } else {
-                    logger.info("Project discovery already found information, this detector will be skipped.");
+                    logger.debug("Project discovery already found information, this detector will be skipped.");
                     detectorEvaluation.setDiscovery(new Discovery.Builder().skipped().build());
                 }
 
