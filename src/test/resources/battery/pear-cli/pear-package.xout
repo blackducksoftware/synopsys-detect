@@ -1,0 +1,7 @@
+DEPENDENCIES FOR HTTP
+=====================
+REQUIRED? TYPE           NAME      VERSIONING          GROUP
+Yes       Php                       (version >= 4.0.6)
+Yes       Pear Installer            (version >= 1.7.1)
+Yes       Package        pear/PEAR
+Yes       Extension      pcre
