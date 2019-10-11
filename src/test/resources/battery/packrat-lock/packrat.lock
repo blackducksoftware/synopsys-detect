@@ -1,0 +1,22 @@
+PackratFormat: 1.4
+PackratVersion: 0.4.8.1
+RVersion: 3.4.1
+Repos: CRAN=http://cran.rstudio.com/
+
+Package: DBI
+Source: CRAN
+Version: 1.0.0
+
+Package: RJDBC
+Source: CRAN
+Version: 0.2-7.1
+Requires: DBI, rJava
+
+Package: packrat
+Source: CRAN
+Version: 0.4.8-1
+Hash: 6ad605ba7b4b476d84be6632393f5765
+
+Package: rJava
+Source: CRAN
+Version: 0.9-11
