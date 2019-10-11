@@ -583,8 +583,12 @@ public enum DetectProperty {
     POLARIS_ACCESS_TOKEN("polaris.access.token", "Polaris Access Token", "5.3.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, GROUP_SOURCE_SCAN })
-    @HelpDescription("Additional arguments to pass to polaris.")
+    @HelpDescription("Additional arguments to pass to polaris separated by space. The polaris.command takes precedence.")
     POLARIS_ARGUMENTS("polaris.arguments", "Polaris Arguments", "5.3.0", PropertyType.STRING, PropertyAuthority.NONE),
+
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, GROUP_SOURCE_SCAN })
+    @HelpDescription("A replacement command to pass to polaris separated by space. Include the analyze or setup command itself. If specified, polaris.arguments will be ignored and this will take precedence.")
+    POLARIS_COMMAND("polaris.command", "Polaris Command", "6.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_POLICY })
     @HelpDescription("A comma-separated list of policy violation severities that will fail Detect. If this is not set, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except UNSPECIFIED.")
