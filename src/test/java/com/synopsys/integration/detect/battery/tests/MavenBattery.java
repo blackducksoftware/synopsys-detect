@@ -10,7 +10,6 @@ import com.synopsys.integration.detect.configuration.DetectProperty;
 public class MavenBattery {
     @Test
     void inspector() {
-        //Note about this test: The paths have been removed from the inspector meta data.
         final BatteryTest test = new BatteryTest("maven-cli");
         test.sourceDirectoryNamed("linux-maven");
         test.sourceFileNamed("pom.xml");
