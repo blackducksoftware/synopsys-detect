@@ -19,14 +19,36 @@ import freemarker.template.TemplateException;
 
 public class ResourceCopyingExecutable extends BatteryExecutable {
     private final List<String> toCopy;
-    private final int extractionFolderIndex;
-    private final String extractionFolderPrefix;
+    private OperatingSystemInfo windowsInfo = null;
+    private OperatingSystemInfo linuxInfo = null;
 
-    protected ResourceCopyingExecutable(final DetectProperty detectProperty, final List<String> toCopy, final int extractionFolderIndex, final String extractionFolderPrefix) {
+    private class OperatingSystemInfo {
+        public final int extractionFolderIndex;
+        public final String extractionFolderPrefix;
+
+        private OperatingSystemInfo(final int extractionFolderIndex, final String extractionFolderPrefix) {
+            this.extractionFolderIndex = extractionFolderIndex;
+            this.extractionFolderPrefix = extractionFolderPrefix;
+        }
+    }
+
+    protected ResourceCopyingExecutable(final DetectProperty detectProperty, final List<String> toCopy) {
         super(detectProperty);
         this.toCopy = toCopy;
-        this.extractionFolderIndex = extractionFolderIndex;
-        this.extractionFolderPrefix = extractionFolderPrefix;
+    }
+
+    public ResourceCopyingExecutable onAnySystem(final int extractionFolderIndex, final String extractionFolderPrefix) {
+        return onWindows(extractionFolderIndex, extractionFolderPrefix).onLinux(extractionFolderIndex, extractionFolderPrefix);
+    }
+
+    public ResourceCopyingExecutable onWindows(final int extractionFolderIndex, final String extractionFolderPrefix) {
+        this.windowsInfo = new OperatingSystemInfo(extractionFolderIndex, extractionFolderPrefix);
+        return this;
+    }
+
+    public ResourceCopyingExecutable onLinux(final int extractionFolderIndex, final String extractionFolderPrefix) {
+        this.linuxInfo = new OperatingSystemInfo(extractionFolderIndex, extractionFolderPrefix);
+        return this;
     }
 
     //Map of Names to Data file paths.
@@ -47,10 +69,16 @@ public class ResourceCopyingExecutable extends BatteryExecutable {
 
     @Override
     public File createExecutable(final int id, final File mockDirectory, final AtomicInteger commandCount) throws IOException, TemplateException {
-
         final Map<String, Object> model = new HashMap<>();
-        model.put("extractionFolderIndex", extractionFolderIndex);
-        model.put("extractionFolderPrefix", extractionFolderPrefix);
+        Assertions.assertNotNull(linuxInfo, "If you have a resource copying executable, you must specify operating system information for both windows and linux but linux information could not be found.");
+        Assertions.assertNotNull(windowsInfo, "If you have a resource copying executable, you must specify operating system information for both windows and linux but windows information could not be found.");
+        if (SystemUtils.IS_OS_WINDOWS) {
+            model.put("extractionFolderIndex", windowsInfo.extractionFolderIndex);
+            model.put("extractionFolderPrefix", windowsInfo.extractionFolderPrefix);
+        } else {
+            model.put("extractionFolderIndex", linuxInfo.extractionFolderIndex);
+            model.put("extractionFolderPrefix", linuxInfo.extractionFolderPrefix);
+        }
         final List<Object> files = new ArrayList<>();
         getFilePaths(mockDirectory, commandCount).forEach((key, value) -> {
             final Map<String, String> modelEntry = new HashMap<>();

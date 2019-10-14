@@ -71,8 +71,10 @@ public final class BatteryTest {
         executables.add(new ResourceTypingExecutable(detectProperty, prefixResources(resourceFiles)));
     }
 
-    public void executableThatCopiesFiles(final DetectProperty detectProperty, final int extractionFolderIndex, final String extractionFolderPrefix, final String... resourceFiles) {
-        executables.add(new ResourceCopyingExecutable(detectProperty, prefixResources(resourceFiles), extractionFolderIndex, extractionFolderPrefix));
+    public ResourceCopyingExecutable executableThatCopiesFiles(final DetectProperty detectProperty, final String... resourceFiles) {
+        final ResourceCopyingExecutable resourceCopyingExecutable = new ResourceCopyingExecutable(detectProperty, prefixResources(resourceFiles));
+        executables.add(resourceCopyingExecutable);
+        return resourceCopyingExecutable;
     }
 
     public void executable(final DetectProperty detectProperty, final String... responses) {
