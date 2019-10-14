@@ -1,11 +1,6 @@
 package com.synopsys.integration.detect.battery;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -19,7 +14,6 @@ import com.synopsys.integration.util.ResourceUtil;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import jdk.internal.util.xml.impl.ReaderUTF8;
 
 public class BatteryFiles {
     private static final String resourcePrefix = "/battery";
@@ -47,7 +41,7 @@ public class BatteryFiles {
     }
 
     public static Reader asReader(final String relativeResourcePath) {
-        return new ReaderUTF8(asInputStream(relativeResourcePath));
+        return new StringReader(asString(relativeResourcePath));
     }
 
     public static Template asTemplate(final String relativeResourcePath) throws IOException {
