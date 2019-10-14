@@ -36,7 +36,6 @@ public class ResourceCopyingExecutable extends BatteryExecutable {
             final File[] files = copyingFolder.listFiles();
             Assertions.assertNotNull(files, "Unable to find resources: " + resource);
             for (final File file : files) {
-                Assertions.assertNotNull(file, "Unable to find resource: " + resource);
                 final File commandTextFile = new File(mockDirectory, "data-" + commandCount.getAndIncrement() + ".dat");
                 Files.copy(file.toPath(), commandTextFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 filePaths.put(commandTextFile.getCanonicalPath(), file.getName());
@@ -61,7 +60,7 @@ public class ResourceCopyingExecutable extends BatteryExecutable {
         model.put("files", files);
 
         final File commandFile = new File(mockDirectory, "exe-" + id + ".bat");
-        BatteryFiles.processTemplate("/util/copying-exe.ftl", commandFile, model);
+        BatteryFiles.processTemplate("/copying-exe.ftl", commandFile, model, BatteryFiles.UTIL_RESOURCE_PREFIX);
 
         return commandFile;
     }

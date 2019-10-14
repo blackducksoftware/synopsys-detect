@@ -34,7 +34,7 @@ public abstract class TypingExecutable extends BatteryExecutable {
         model.put("dataFile", dataFile.getCanonicalPath());
         model.put("files", Lists.newArrayList(getFilePaths(mockDirectory, commandCount)));
         final File commandFile = new File(mockDirectory, "exe-" + id + ".bat");
-        BatteryFiles.processTemplate("/util/typing-exe.ftl", commandFile, model);
+        BatteryFiles.processTemplate("/typing-exe.ftl", commandFile, model, BatteryFiles.UTIL_RESOURCE_PREFIX);
 
         return commandFile;
     }
