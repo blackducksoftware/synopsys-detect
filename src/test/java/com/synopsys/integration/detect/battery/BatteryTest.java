@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONParser;
+import org.zeroturnaround.zip.ZipUtil;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -38,6 +39,7 @@ public final class BatteryTest {
     private final List<String> additionalProperties = new ArrayList<>();
     private final List<String> emptyFileNames = new ArrayList<>();
     private final List<String> resourceFileNames = new ArrayList<>();
+    private final List<String> resourceZipNames = new ArrayList<>();
     private final Map<String, Integer> bdioSizes = new HashMap<>();
     private boolean shouldExpectBdioResources = false;
     private String sourceDirectoryName = "source";
@@ -84,6 +86,10 @@ public final class BatteryTest {
 
     public void sourceFileNamed(final String filename) {
         emptyFileNames.add(filename);
+    }
+
+    public void sourceFolderFromExpandedResource(final String filename) {
+        resourceZipNames.add(filename);
     }
 
     public void sourceFileFromResource(final String filename) {
@@ -214,6 +220,12 @@ public final class BatteryTest {
             final File file = new File(sourceDirectory, resourceFileName);
             Assertions.assertNotNull(inputStream, "Could not find resource file: " + file);
             FileUtils.copyInputStreamToFile(inputStream, file);
+        }
+
+        for (final String resourceZipFileName : resourceZipNames) {
+            final File zipFile = BatteryFiles.asFile("/" + name + "/" + resourceZipFileName + ".zip");
+            final File target = new File(sourceDirectory, resourceZipFileName);
+            ZipUtil.unpack(zipFile, target);
         }
     }
 
