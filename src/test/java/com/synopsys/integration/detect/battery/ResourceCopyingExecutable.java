@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.detect.configuration.DetectProperty;
@@ -60,7 +61,11 @@ public class ResourceCopyingExecutable extends BatteryExecutable {
         model.put("files", files);
 
         final File commandFile = new File(mockDirectory, "exe-" + id + ".bat");
-        BatteryFiles.processTemplate("/copying-exe.ftl", commandFile, model, BatteryFiles.UTIL_RESOURCE_PREFIX);
+        if (SystemUtils.IS_OS_WINDOWS) {
+            BatteryFiles.processTemplate("/typing-exe.ftl", commandFile, model, BatteryFiles.UTIL_RESOURCE_PREFIX);
+        } else {
+            BatteryFiles.processTemplate("/typing-sh.ftl", commandFile, model, BatteryFiles.UTIL_RESOURCE_PREFIX);
+        }
 
         return commandFile;
     }
