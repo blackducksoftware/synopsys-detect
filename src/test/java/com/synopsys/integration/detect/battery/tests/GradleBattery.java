@@ -14,8 +14,8 @@ public class GradleBattery {
         final BatteryTest test = new BatteryTest("gradle-inspector");
         test.sourceDirectoryNamed("linux-gradle");
         test.sourceFileNamed("build.gradle");
-        test.executableThatCopiesFiles(DetectProperty.DETECT_GRADLE_PATH, 5, "", "GRADLE-0");
-        test.git("https://github.com/BlackDuckCoPilot/example-gradle-travis", "HEAD");
+        test.executableThatCopiesFiles(DetectProperty.DETECT_GRADLE_PATH, 3, "-DGRADLEEXTRACTIONDIR=", "GRADLE-0");
+        //test.git("https://github.com/BlackDuckCoPilot/example-gradle-travis", "HEAD");
         test.expectBdioResources();
         test.run();
     }

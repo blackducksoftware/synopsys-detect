@@ -60,11 +60,14 @@ public class ResourceCopyingExecutable extends BatteryExecutable {
         });
         model.put("files", files);
 
-        final File commandFile = new File(mockDirectory, "exe-" + id + ".bat");
+        final File commandFile;
         if (SystemUtils.IS_OS_WINDOWS) {
-            BatteryFiles.processTemplate("/typing-exe.ftl", commandFile, model, BatteryFiles.UTIL_RESOURCE_PREFIX);
+            commandFile = new File(mockDirectory, "exe-" + id + ".bat");
+            BatteryFiles.processTemplate("/copying-exe.ftl", commandFile, model, BatteryFiles.UTIL_RESOURCE_PREFIX);
         } else {
-            BatteryFiles.processTemplate("/typing-sh.ftl", commandFile, model, BatteryFiles.UTIL_RESOURCE_PREFIX);
+            commandFile = new File(mockDirectory, "sh-" + id + ".sh");
+            BatteryFiles.processTemplate("/copying-sh.ftl", commandFile, model, BatteryFiles.UTIL_RESOURCE_PREFIX);
+            commandFile.setExecutable(true);
         }
 
         return commandFile;
