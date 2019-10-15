@@ -1,0 +1,14 @@
+{
+    "require": {
+        "php": ">=7.0.0",
+        "smarty/smarty": "3.1.31",
+        "pear/mail_mime": "1.10.0",
+				"pear/mail": "dev-trunk"
+    },
+		"config": {
+			"optimize-autoloader": true,
+			"preferred-install": "dist",
+			"notify-on-install": false
+		},
+		"minimum-stability": "dev"
+}
