@@ -4,22 +4,39 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.BatteryTest;
+import com.synopsys.integration.detect.battery.ResourceCopyingExecutableCreator;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 
 @Tag("battery")
 public class GradleBattery {
+    private static final String RESOURCE_FOLDER = "GRADLE-0";
+
     @Test
-    void inspector() {
-        //Note about this test: The paths have been removed from the inspector meta data.
-        final BatteryTest test = new BatteryTest("gradle-inspector");
+    void property() {
+        final BatteryTest test = sharedInspectorTest("gradle-property");
+        addGradleArguments(test.executableThatCopiesFiles(DetectProperty.DETECT_GRADLE_PATH, RESOURCE_FOLDER));
+        test.run();
+    }
+
+    @Test
+    void wrapper() {
+        final BatteryTest test = sharedInspectorTest("gradle-wrapper");
+        addGradleArguments(test.executableSourceFileThatCopiesFiles("gradlew.bat", "gradlew", RESOURCE_FOLDER));
+        test.run();
+    }
+
+    //Note about this test: The paths have been removed from the inspector meta data.
+    BatteryTest sharedInspectorTest(final String name) {
+        final BatteryTest test = new BatteryTest(name, "gradle-inspector");
         test.sourceDirectoryNamed("linux-gradle");
         test.sourceFileNamed("build.gradle");
-        test.executableThatCopiesFiles(DetectProperty.DETECT_GRADLE_PATH, "GRADLE-0")
-            .onWindows(5, "")
-            .onLinux(3, "-DGRADLEEXTRACTIONDIR=");
         test.git("https://github.com/BlackDuckCoPilot/example-gradle-travis", "HEAD");
         test.expectBdioResources();
-        test.run();
+        return test;
+    }
+
+    void addGradleArguments(final ResourceCopyingExecutableCreator resourceCopyingExecutableCreator) {
+        resourceCopyingExecutableCreator.onWindows(5, "").onLinux(3, "-DGRADLEEXTRACTIONDIR=");
     }
 }
 
