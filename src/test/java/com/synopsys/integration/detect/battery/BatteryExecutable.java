@@ -1,19 +1,25 @@
 package com.synopsys.integration.detect.battery;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.synopsys.integration.detect.configuration.DetectProperty;
 
-import freemarker.template.TemplateException;
+public class BatteryExecutable {
+    public DetectProperty detectProperty = null;
+    public String windowsSourceFileName = null;
+    public String linuxSourceFileName = null;
+    public BatteryExecutableCreator creator = null;
 
-public abstract class BatteryExecutable {
-    public final DetectProperty detectProperty;
-
-    protected BatteryExecutable(final DetectProperty detectProperty) {
-        this.detectProperty = detectProperty;
+    public static BatteryExecutable sourceFileExecutable(final String windowsSourceFileName, final String linuxSourceFileName, final BatteryExecutableCreator creator) {
+        final BatteryExecutable executable = new BatteryExecutable();
+        executable.creator = creator;
+        executable.linuxSourceFileName = linuxSourceFileName;
+        executable.windowsSourceFileName = windowsSourceFileName;
+        return executable;
     }
 
-    public abstract File createExecutable(final int id, final File mockDirectory, AtomicInteger commandCount) throws IOException, TemplateException;
+    public static BatteryExecutable propertyOverrideExecutable(final DetectProperty detectProperty, final BatteryExecutableCreator creator) {
+        final BatteryExecutable executable = new BatteryExecutable();
+        executable.creator = creator;
+        executable.detectProperty = detectProperty;
+        return executable;
+    }
 }

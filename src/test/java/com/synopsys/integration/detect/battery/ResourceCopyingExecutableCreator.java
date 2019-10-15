@@ -13,11 +13,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.Assertions;
 
-import com.synopsys.integration.detect.configuration.DetectProperty;
-
 import freemarker.template.TemplateException;
 
-public class ResourceCopyingExecutable extends BatteryExecutable {
+public class ResourceCopyingExecutableCreator extends BatteryExecutableCreator {
     private final List<String> toCopy;
     private OperatingSystemInfo windowsInfo = null;
     private OperatingSystemInfo linuxInfo = null;
@@ -32,21 +30,20 @@ public class ResourceCopyingExecutable extends BatteryExecutable {
         }
     }
 
-    protected ResourceCopyingExecutable(final DetectProperty detectProperty, final List<String> toCopy) {
-        super(detectProperty);
+    protected ResourceCopyingExecutableCreator(final List<String> toCopy) {
         this.toCopy = toCopy;
     }
 
-    public ResourceCopyingExecutable onAnySystem(final int extractionFolderIndex, final String extractionFolderPrefix) {
+    public ResourceCopyingExecutableCreator onAnySystem(final int extractionFolderIndex, final String extractionFolderPrefix) {
         return onWindows(extractionFolderIndex, extractionFolderPrefix).onLinux(extractionFolderIndex, extractionFolderPrefix);
     }
 
-    public ResourceCopyingExecutable onWindows(final int extractionFolderIndex, final String extractionFolderPrefix) {
+    public ResourceCopyingExecutableCreator onWindows(final int extractionFolderIndex, final String extractionFolderPrefix) {
         this.windowsInfo = new OperatingSystemInfo(extractionFolderIndex, extractionFolderPrefix);
         return this;
     }
 
-    public ResourceCopyingExecutable onLinux(final int extractionFolderIndex, final String extractionFolderPrefix) {
+    public ResourceCopyingExecutableCreator onLinux(final int extractionFolderIndex, final String extractionFolderPrefix) {
         this.linuxInfo = new OperatingSystemInfo(extractionFolderIndex, extractionFolderPrefix);
         return this;
     }

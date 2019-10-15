@@ -12,16 +12,10 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.assertj.core.util.Lists;
 
-import com.synopsys.integration.detect.configuration.DetectProperty;
-
 import freemarker.template.TemplateException;
 
 //This executable types text from a set of files when executed.
-public abstract class TypingExecutable extends BatteryExecutable {
-
-    protected TypingExecutable(final DetectProperty detectProperty) {
-        super(detectProperty);
-    }
+public abstract class TypingExecutableCreator extends BatteryExecutableCreator {
 
     @Override
     public File createExecutable(final int id, final File mockDirectory, final AtomicInteger commandCount) throws IOException, TemplateException {

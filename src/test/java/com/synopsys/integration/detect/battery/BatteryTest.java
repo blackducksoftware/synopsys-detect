@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
@@ -52,33 +53,52 @@ public final class BatteryTest {
     private File sourceDirectory;
 
     private final Gson gson = new Gson();
-    private final String name;
+    private final String testName;
+    private final String resourcePrefix;
 
     private final AtomicInteger commandCount = new AtomicInteger();
     private final AtomicInteger executableCount = new AtomicInteger();
 
     public BatteryTest(final String name) {
-        this.name = name;
+        this.testName = name;
+        this.resourcePrefix = name;
+    }
+
+    public BatteryTest(final String testName, final String resourcePrefix) {
+        this.testName = testName;
+        this.resourcePrefix = resourcePrefix;
     }
 
     private List<String> prefixResources(final String... resourceFiles) {
         return Arrays.stream(resourceFiles)
-                   .map(it -> "/" + this.name + "/" + it)
+                   .map(it -> "/" + this.resourcePrefix + "/" + it)
                    .collect(Collectors.toList());
     }
 
     public void executableFromResourceFiles(final DetectProperty detectProperty, final String... resourceFiles) {
-        executables.add(new ResourceTypingExecutable(detectProperty, prefixResources(resourceFiles)));
+        final ResourceTypingExecutableCreator creator = new ResourceTypingExecutableCreator(prefixResources(resourceFiles));
+        executables.add(BatteryExecutable.propertyOverrideExecutable(detectProperty, creator));
     }
 
-    public ResourceCopyingExecutable executableThatCopiesFiles(final DetectProperty detectProperty, final String... resourceFiles) {
-        final ResourceCopyingExecutable resourceCopyingExecutable = new ResourceCopyingExecutable(detectProperty, prefixResources(resourceFiles));
-        executables.add(resourceCopyingExecutable);
+    public void executableSourceFileFromResourceFiles(final String windowsName, final String linuxName, final String... resourceFiles) {
+        final ResourceTypingExecutableCreator creator = new ResourceTypingExecutableCreator(prefixResources(resourceFiles));
+        executables.add(BatteryExecutable.sourceFileExecutable(windowsName, linuxName, creator));
+    }
+
+    public ResourceCopyingExecutableCreator executableThatCopiesFiles(final DetectProperty detectProperty, final String... resourceFiles) {
+        final ResourceCopyingExecutableCreator resourceCopyingExecutable = new ResourceCopyingExecutableCreator(prefixResources(resourceFiles));
+        executables.add(BatteryExecutable.propertyOverrideExecutable(detectProperty, resourceCopyingExecutable));
+        return resourceCopyingExecutable;
+    }
+
+    public ResourceCopyingExecutableCreator executableSourceFileThatCopiesFiles(final String windowsName, final String linuxName, final String... resourceFiles) {
+        final ResourceCopyingExecutableCreator resourceCopyingExecutable = new ResourceCopyingExecutableCreator(prefixResources(resourceFiles));
+        executables.add(BatteryExecutable.sourceFileExecutable(windowsName, linuxName, resourceCopyingExecutable));
         return resourceCopyingExecutable;
     }
 
     public void executable(final DetectProperty detectProperty, final String... responses) {
-        executables.add(new StringTypingExecutable(detectProperty, Arrays.asList(responses)));
+        executables.add(BatteryExecutable.propertyOverrideExecutable(detectProperty, new StringTypingExecutableCreator(Arrays.asList(responses))));
     }
 
     public void git(final String origin, final String branch) {
@@ -176,7 +196,7 @@ public final class BatteryTest {
     }
 
     private void initializeDirectories() throws IOException {
-        testDirectory = new File(batteryDirectory, name);
+        testDirectory = new File(batteryDirectory, testName);
 
         if (testDirectory.exists()) {
             FileUtils.deleteDirectory(testDirectory);
@@ -205,8 +225,21 @@ public final class BatteryTest {
 
         for (final BatteryExecutable executable : executables) {
             final int id = executableCount.getAndIncrement();
-            final File commandFile = executable.createExecutable(id, mockDirectory, commandCount);
-            properties.add("--" + executable.detectProperty.getPropertyKey() + "=" + commandFile.getCanonicalPath());
+            Assertions.assertNotNull(executable.creator, "Every battery executable must have a 'creator' or a way to actually generate the executable..");
+            final File commandFile = executable.creator.createExecutable(id, mockDirectory, commandCount);
+            if (executable.detectProperty != null) {
+                properties.add("--" + executable.detectProperty.getPropertyKey() + "=" + commandFile.getCanonicalPath());
+            } else if (executable.linuxSourceFileName != null && executable.windowsSourceFileName != null) {
+                final File target;
+                if (SystemUtils.IS_OS_WINDOWS) {
+                    target = new File(sourceDirectory, executable.windowsSourceFileName);
+                } else {
+                    target = new File(sourceDirectory, executable.linuxSourceFileName);
+                }
+                FileUtils.moveFile(commandFile, target);
+            } else {
+                throw new RuntimeException("Every battery executable must either specify an override property or a location (for both linux and windows) in the source directory for the executable to go.");
+            }
         }
         return properties;
     }
@@ -218,14 +251,14 @@ public final class BatteryTest {
         }
 
         for (final String resourceFileName : resourceFileNames) {
-            final InputStream inputStream = BatteryFiles.asInputStream("/" + name + "/" + resourceFileName);
+            final InputStream inputStream = BatteryFiles.asInputStream("/" + resourcePrefix + "/" + resourceFileName);
             final File file = new File(sourceDirectory, resourceFileName);
             Assertions.assertNotNull(inputStream, "Could not find resource file: " + file);
             FileUtils.copyInputStreamToFile(inputStream, file);
         }
 
         for (final String resourceZipFileName : resourceZipNames) {
-            final File zipFile = BatteryFiles.asFile("/" + name + "/" + resourceZipFileName + ".zip");
+            final File zipFile = BatteryFiles.asFile("/" + resourcePrefix + "/" + resourceZipFileName + ".zip");
             final File target = new File(sourceDirectory, resourceZipFileName);
             ZipUtil.unpack(zipFile, target);
         }
@@ -236,7 +269,7 @@ public final class BatteryTest {
         Assertions.assertTrue(bdio != null && bdio.length > 0, "Bdio output files could not be found.");
 
         if (shouldExpectBdioResources) {
-            final File expectedBdioFolder = BatteryFiles.asFile("/" + name + "/bdio");
+            final File expectedBdioFolder = BatteryFiles.asFile("/" + resourcePrefix + "/bdio");
             final File[] expectedBdioFiles = expectedBdioFolder.listFiles();
             Assertions.assertTrue(expectedBdioFiles != null && expectedBdioFiles.length > 0, "Expected bdio resource files could not be found: " + expectedBdioFolder.getCanonicalPath());
             Assertions.assertEquals(expectedBdioFiles.length, bdio.length, "Detect did not create the expected number of bdio files.");
