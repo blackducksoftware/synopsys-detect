@@ -54,7 +54,7 @@ public class ResourceCopyingExecutableCreator extends BatteryExecutableCreator {
         for (final String resource : toCopy) {
             final File copyingFolder = BatteryFiles.asFile(resource);
             final File[] files = copyingFolder.listFiles();
-            Assertions.assertNotNull(files, "Unable to find resources: " + resource);
+            Assertions.assertNotNull(files, "When a resource copying executable is used, it should be provided a resource folder. Verify it is a folder and has at least one file: " + resource);
             for (final File file : files) {
                 final File commandTextFile = new File(mockDirectory, "data-" + commandCount.getAndIncrement() + ".dat");
                 Files.copy(file.toPath(), commandTextFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
