@@ -61,8 +61,8 @@ public class DiscoveryLogger {
         final boolean projectInformationFound = StringUtils.isNotBlank(detectorEvaluation.getDiscovery().getProjectName());
         logger.debug("Project information found: " + projectInformationFound);
         if (projectInformationFound) {
-            logger.debug("Project name: " + detectorEvaluation.getDiscovery().getProjectName());
-            logger.debug("Project version: " + detectorEvaluation.getDiscovery().getProjectVersion());
+            logger.debug("Project name found: " + detectorEvaluation.getDiscovery().getProjectName());
+            logger.debug("Project version found: " + detectorEvaluation.getDiscovery().getProjectVersion());
         }
         if (detectorEvaluation.getDiscovery().getResult() == Discovery.DiscoveryResultType.EXCEPTION) {
             logger.debug("Exception: " + ExceptionUtil.oneSentenceDescription(detectorEvaluation.getDiscovery().getError()));
