@@ -8,15 +8,30 @@ import com.synopsys.integration.detect.configuration.DetectProperty;
 
 @Tag("battery")
 public class MavenBattery {
+    private static final String MAVEN_OUTPUT_RESOURCE = "maven-dependencytree.xout";
+
     @Test
-    void inspector() {
-        final BatteryTest test = new BatteryTest("maven-cli");
+    void property() {
+        final BatteryTest test = sharedCliTest("maven-property");
+        test.executableFromResourceFiles(DetectProperty.DETECT_MAVEN_PATH, MAVEN_OUTPUT_RESOURCE);
+        test.run();
+    }
+
+    @Test
+    void wrapper() {
+        final BatteryTest test = sharedCliTest("maven-wrapper");
+        test.executableSourceFileFromResourceFiles("mvnw.cmd", "mvnw", MAVEN_OUTPUT_RESOURCE);
+        test.run();
+    }
+
+    @Test
+    BatteryTest sharedCliTest(final String name) {
+        final BatteryTest test = new BatteryTest(name, "maven-cli");
         test.sourceDirectoryNamed("linux-maven");
         test.sourceFileNamed("pom.xml");
-        test.executableFromResourceFiles(DetectProperty.DETECT_MAVEN_PATH, "maven-dependencytree.xout");
         test.git("https://github.com/BlackDuckCoPilot/example-maven-travis", "HEAD");
         test.expectBdioResources();
-        test.run();
+        return test;
     }
 }
 
