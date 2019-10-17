@@ -7,5 +7,5 @@ import java.util.concurrent.atomic.AtomicInteger;
 import freemarker.template.TemplateException;
 
 public abstract class BatteryExecutableCreator {
-    public abstract File createExecutable(final int id, final File mockDirectory, AtomicInteger commandCount) throws IOException, TemplateException;
+    public abstract File createExecutable(final int id, final BatteryExecutableInfo executableInfo, AtomicInteger commandCount) throws IOException, TemplateException;
 }

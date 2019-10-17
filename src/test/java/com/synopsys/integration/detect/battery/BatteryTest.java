@@ -226,7 +226,8 @@ public final class BatteryTest {
         for (final BatteryExecutable executable : executables) {
             final int id = executableCount.getAndIncrement();
             Assertions.assertNotNull(executable.creator, "Every battery executable must have a 'creator' or a way to actually generate the executable..");
-            final File commandFile = executable.creator.createExecutable(id, mockDirectory, commandCount);
+            final BatteryExecutableInfo info = new BatteryExecutableInfo(mockDirectory, sourceDirectory);
+            final File commandFile = executable.creator.createExecutable(id, info, commandCount);
             if (executable.detectProperty != null) {
                 properties.add("--" + executable.detectProperty.getPropertyKey() + "=" + commandFile.getCanonicalPath());
             } else if (executable.linuxSourceFileName != null && executable.windowsSourceFileName != null) {

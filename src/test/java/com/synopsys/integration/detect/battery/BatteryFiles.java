@@ -1,6 +1,12 @@
 package com.synopsys.integration.detect.battery;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -8,6 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
+import org.zeroturnaround.zip.commons.FileUtils;
 
 import com.synopsys.integration.util.ResourceUtil;
 
@@ -23,8 +30,8 @@ public class BatteryFiles {
         return asString(relativeResourcePath, DEFAULT_RESOURCE_PREFIX);
     }
 
-    public static String asString(final String relativeResourcePath, String prefix) {
-        String path = prefix + relativeResourcePath;
+    public static String asString(final String relativeResourcePath, final String prefix) {
+        final String path = prefix + relativeResourcePath;
         String data = null;
         try {
             data = ResourceUtil.getResourceAsString(BatteryFiles.class, path, StandardCharsets.UTF_8);
@@ -37,11 +44,11 @@ public class BatteryFiles {
                    .collect(Collectors.joining(System.lineSeparator()));
     }
 
-    public static List<String> asListOfStrings(final String relativeResourcePath){
+    public static List<String> asListOfStrings(final String relativeResourcePath) {
         return asListOfStrings(relativeResourcePath, DEFAULT_RESOURCE_PREFIX);
     }
 
-    public static List<String> asListOfStrings(final String relativeResourcePath, String prefix) {
+    public static List<String> asListOfStrings(final String relativeResourcePath, final String prefix) {
         final String data = asString(relativeResourcePath, prefix);
 
         return Arrays.asList(data.split(System.lineSeparator()));
@@ -51,7 +58,7 @@ public class BatteryFiles {
         return asInputStream(relativeResourcePath, DEFAULT_RESOURCE_PREFIX);
     }
 
-    public static InputStream asInputStream(final String relativeResourcePath, String prefix) {
+    public static InputStream asInputStream(final String relativeResourcePath, final String prefix) {
         return BatteryFiles.class.getResourceAsStream(prefix + relativeResourcePath);
     }
 
@@ -59,7 +66,7 @@ public class BatteryFiles {
         return asReader(relativeResourcePath, DEFAULT_RESOURCE_PREFIX);
     }
 
-    public static Reader asReader(final String relativeResourcePath, String prefix) {
+    public static Reader asReader(final String relativeResourcePath, final String prefix) {
         return new StringReader(asString(relativeResourcePath, prefix));
     }
 
@@ -67,17 +74,29 @@ public class BatteryFiles {
         return asTemplate(relativeResourcePath, DEFAULT_RESOURCE_PREFIX);
     }
 
-    public static Template asTemplate(final String relativeResourcePath, String prefix) throws IOException {
+    public static Template asTemplate(final String relativeResourcePath, final String prefix) throws IOException {
+        return asTemplate(BatteryFiles.asFile(relativeResourcePath, prefix));
+    }
+
+    public static Template asTemplate(final File fullPath) throws IOException {
         final Configuration templates = new Configuration(Configuration.VERSION_2_3_26);
-        return new Template(relativeResourcePath, BatteryFiles.asReader(relativeResourcePath, prefix), templates);
+        return new Template(fullPath.getName(), FileUtils.readFileToString(fullPath), templates);
     }
 
     public static void processTemplate(final String relativeResourcePath, final File target, final Object model) throws IOException, TemplateException {
         processTemplate(relativeResourcePath, target, model, DEFAULT_RESOURCE_PREFIX);
     }
 
-    public static void processTemplate(final String relativeResourcePath, final File target, final Object model, String prefix) throws IOException, TemplateException {
-        final Template template = BatteryFiles.asTemplate(relativeResourcePath, prefix);
+    public static void processTemplate(final String relativeResourcePath, final File target, final Object model, final String prefix) throws IOException, TemplateException {
+        final Template resourceTemplate = BatteryFiles.asTemplate(relativeResourcePath, prefix);
+        processTemplate(resourceTemplate, target, model);
+    }
+
+    public static void processTemplate(final File file, final File target, final Object model) throws IOException, TemplateException {
+        processTemplate(asTemplate(file), target, model);
+    }
+
+    public static void processTemplate(final Template template, final File target, final Object model) throws IOException, TemplateException {
         try (final Writer fileWriter = new FileWriter(target)) {
             template.process(model, fileWriter);
         }
@@ -87,15 +106,15 @@ public class BatteryFiles {
         return resolvePath(relativeResourcePath, DEFAULT_RESOURCE_PREFIX);
     }
 
-    public static String resolvePath(final String relativeResourcePath, String prefix) {
+    public static String resolvePath(final String relativeResourcePath, final String prefix) {
         return BatteryFiles.asFile(relativeResourcePath, prefix).getAbsolutePath();
     }
 
-    public static File asFile(final String relativeResourcePath){
+    public static File asFile(final String relativeResourcePath) {
         return asFile(relativeResourcePath, DEFAULT_RESOURCE_PREFIX);
     }
 
-    public static File asFile(final String relativeResourcePath, String prefix) {
+    public static File asFile(final String relativeResourcePath, final String prefix) {
         final URL resource = BatteryFiles.class.getResource(prefix + relativeResourcePath);
         Assertions.assertNotNull(resource, "Could not find resource path: " + prefix + relativeResourcePath);
         final File file = new File(resource.getFile());

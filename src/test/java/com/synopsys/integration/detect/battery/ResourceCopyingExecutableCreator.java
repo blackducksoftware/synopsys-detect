@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.lang3.SystemUtils;
+import org.codehaus.plexus.util.StringUtils;
 import org.junit.jupiter.api.Assertions;
 
 import freemarker.template.TemplateException;
@@ -49,23 +50,30 @@ public class ResourceCopyingExecutableCreator extends BatteryExecutableCreator {
     }
 
     //Map of Names to Data file paths.
-    private Map<String, String> getFilePaths(final File mockDirectory, final AtomicInteger commandCount) throws IOException {
+    private Map<String, String> getFilePaths(final BatteryExecutableInfo executableInfo, final AtomicInteger commandCount) throws IOException, TemplateException {
         final Map<String, String> filePaths = new HashMap<>();
         for (final String resource : toCopy) {
             final File copyingFolder = BatteryFiles.asFile(resource);
             final File[] files = copyingFolder.listFiles();
             Assertions.assertNotNull(files, "When a resource copying executable is used, it should be provided a resource folder. Verify it is a folder and has at least one file: " + resource);
             for (final File file : files) {
-                final File commandTextFile = new File(mockDirectory, "data-" + commandCount.getAndIncrement() + ".dat");
-                Files.copy(file.toPath(), commandTextFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                filePaths.put(commandTextFile.getCanonicalPath(), file.getName());
+                final File commandTextFile = new File(executableInfo.getMockDirectory(), "data-" + commandCount.getAndIncrement() + ".dat");
+                if (file.getName().endsWith(".ftl")) {
+                    final Map<String, String> dataModel = new HashMap<>();
+                    dataModel.put("sourcePath", executableInfo.getSourceDirectory().getCanonicalPath());
+                    BatteryFiles.processTemplate(file, commandTextFile, dataModel);
+                    filePaths.put(commandTextFile.getCanonicalPath(), StringUtils.chompLast(file.getName(), ".ftl"));
+                } else {
+                    Files.copy(file.toPath(), commandTextFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    filePaths.put(commandTextFile.getCanonicalPath(), file.getName());
+                }
             }
         }
         return filePaths;
     }
 
     @Override
-    public File createExecutable(final int id, final File mockDirectory, final AtomicInteger commandCount) throws IOException, TemplateException {
+    public File createExecutable(final int id, final BatteryExecutableInfo executableInfo, final AtomicInteger commandCount) throws IOException, TemplateException {
         final Map<String, Object> model = new HashMap<>();
         Assertions.assertNotNull(linuxInfo, "If you have a resource copying executable, you must specify operating system information for both windows and linux but linux information could not be found.");
         Assertions.assertNotNull(windowsInfo, "If you have a resource copying executable, you must specify operating system information for both windows and linux but windows information could not be found.");
@@ -77,7 +85,7 @@ public class ResourceCopyingExecutableCreator extends BatteryExecutableCreator {
             model.put("extractionFolderPrefix", linuxInfo.extractionFolderPrefix);
         }
         final List<Object> files = new ArrayList<>();
-        getFilePaths(mockDirectory, commandCount).forEach((key, value) -> {
+        getFilePaths(executableInfo, commandCount).forEach((key, value) -> {
             final Map<String, String> modelEntry = new HashMap<>();
             modelEntry.put("from", key);
             modelEntry.put("to", value);
@@ -87,10 +95,10 @@ public class ResourceCopyingExecutableCreator extends BatteryExecutableCreator {
 
         final File commandFile;
         if (SystemUtils.IS_OS_WINDOWS) {
-            commandFile = new File(mockDirectory, "exe-" + id + ".bat");
+            commandFile = new File(executableInfo.getMockDirectory(), "exe-" + id + ".bat");
             BatteryFiles.processTemplate("/copying-exe.ftl", commandFile, model, BatteryFiles.UTIL_RESOURCE_PREFIX);
         } else {
-            commandFile = new File(mockDirectory, "sh-" + id + ".sh");
+            commandFile = new File(executableInfo.getMockDirectory(), "sh-" + id + ".sh");
             BatteryFiles.processTemplate("/copying-sh.ftl", commandFile, model, BatteryFiles.UTIL_RESOURCE_PREFIX);
             Assertions.assertTrue(commandFile.setExecutable(true));
         }
