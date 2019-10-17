@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
@@ -73,19 +72,17 @@ public class BitbakeExtractor {
         this.bitbakeArchitectureParser = bitbakeArchitectureParser;
     }
 
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment, final File buildEnvScript, final String[] packageNames, final File bash, final String referenceImplementation) {
-        final File outputDirectory = extractionEnvironment.getOutputDirectory();
-
+    public Extraction extract(final File workingDirectory, final File buildEnvScript, final String[] packageNames, final File bash, final String referenceImplementation) {
         final List<CodeLocation> codeLocations = new ArrayList<>();
         for (final String packageName : packageNames) {
             try {
-                final Optional<BitbakeResult> bitbakeResult = executeBitbakeForDependencies(outputDirectory, buildEnvScript, packageName, bash);
+                final Optional<BitbakeResult> bitbakeResult = executeBitbakeForDependencies(workingDirectory, buildEnvScript, packageName, bash);
                 if (!bitbakeResult.isPresent()) {
                     final String filesSearchedFor = StringUtils.joinWith(", ", Arrays.stream(BitbakeFileType.values()).map(BitbakeFileType::getFileName).collect(Collectors.toList()));
                     throw new IntegrationException(String.format("Failed to find any bitbake results. Looked for: %s", filesSearchedFor));
                 }
 
-                final String targetArchitecture = executeBitbakeForTargetArchitecture(outputDirectory, buildEnvScript, packageName, bash)
+                final String targetArchitecture = executeBitbakeForTargetArchitecture(workingDirectory, buildEnvScript, packageName, bash)
                                                       .map(architecture -> architecture.replace(referenceImplementation, ""))
                                                       .map(StringUtils::stripToNull)
                                                       .orElseThrow(() -> new IntegrationException("Failed to find a target architecture"));
@@ -123,15 +120,15 @@ public class BitbakeExtractor {
         return extraction;
     }
 
-    private Optional<BitbakeResult> executeBitbakeForDependencies(final File outputDirectory, final File buildEnvScript, final String packageName, final File bash) throws ExecutableRunnerException, IOException {
+    private Optional<BitbakeResult> executeBitbakeForDependencies(final File workingDirectory, final File buildEnvScript, final String packageName, final File bash) throws ExecutableRunnerException, IOException {
         final String bitbakeCommand = "bitbake -g " + packageName;
-        final ExecutableOutput executableOutput = runBitbake(outputDirectory, buildEnvScript, bitbakeCommand, bash);
+        final ExecutableOutput executableOutput = runBitbake(workingDirectory, buildEnvScript, bitbakeCommand, bash);
         final int returnCode = executableOutput.getReturnCode();
         BitbakeResult bitbakeResult = null;
 
         if (returnCode == 0) {
             for (final BitbakeFileType bitbakeFileType : BitbakeFileType.values()) {
-                final File file = fileFinder.findFiles(outputDirectory, bitbakeFileType.getFileName(), 1).stream().findFirst().orElse(null);
+                final File file = fileFinder.findFiles(workingDirectory, bitbakeFileType.getFileName(), 5).stream().findFirst().orElse(null);
 
                 if (file != null) {
                     bitbakeResult = new BitbakeResult(bitbakeFileType, file);
@@ -145,9 +142,9 @@ public class BitbakeExtractor {
         return Optional.ofNullable(bitbakeResult);
     }
 
-    private Optional<String> executeBitbakeForTargetArchitecture(final File outputDirectory, final File buildEnvScript, final String packageName, final File bash) throws ExecutableRunnerException, IOException {
+    private Optional<String> executeBitbakeForTargetArchitecture(final File workingDirectory, final File buildEnvScript, final String packageName, final File bash) throws ExecutableRunnerException, IOException {
         final String bitbakeCommand = "bitbake -c listtasks " + packageName;
-        final ExecutableOutput executableOutput = runBitbake(outputDirectory, buildEnvScript, bitbakeCommand, bash);
+        final ExecutableOutput executableOutput = runBitbake(workingDirectory, buildEnvScript, bitbakeCommand, bash);
         final int returnCode = executableOutput.getReturnCode();
         String targetArchitecture = null;
 
@@ -160,9 +157,9 @@ public class BitbakeExtractor {
         return Optional.ofNullable(targetArchitecture);
     }
 
-    private ExecutableOutput runBitbake(final File outputDirectory, final File buildEnvScript, final String bitbakeCommand, final File bash) throws ExecutableRunnerException, IOException {
+    private ExecutableOutput runBitbake(final File workingDirectory, final File buildEnvScript, final String bitbakeCommand, final File bash) throws ExecutableRunnerException, IOException {
         try {
-            return executableRunner.execute(outputDirectory, bash, "-c", "source " + buildEnvScript.getCanonicalPath() + "; " + bitbakeCommand);
+            return executableRunner.execute(workingDirectory, bash, "-c", "source " + buildEnvScript.getCanonicalPath() + "; " + bitbakeCommand);
         } catch (final ExecutableRunnerException e) {
             logger.error(String.format("Failed executing bitbake command. %s", bitbakeCommand));
             logger.debug(e.getMessage(), e);
