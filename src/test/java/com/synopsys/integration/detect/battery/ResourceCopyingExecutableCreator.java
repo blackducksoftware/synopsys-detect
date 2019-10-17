@@ -20,9 +20,9 @@ public class ResourceCopyingExecutableCreator extends BatteryExecutableCreator {
     private OperatingSystemInfo windowsInfo = null;
     private OperatingSystemInfo linuxInfo = null;
 
-    private class OperatingSystemInfo {
-        public final int extractionFolderIndex;
-        public final String extractionFolderPrefix;
+    private static class OperatingSystemInfo {
+        final int extractionFolderIndex;
+        final String extractionFolderPrefix;
 
         private OperatingSystemInfo(final int extractionFolderIndex, final String extractionFolderPrefix) {
             this.extractionFolderIndex = extractionFolderIndex;
@@ -30,7 +30,7 @@ public class ResourceCopyingExecutableCreator extends BatteryExecutableCreator {
         }
     }
 
-    protected ResourceCopyingExecutableCreator(final List<String> toCopy) {
+    ResourceCopyingExecutableCreator(final List<String> toCopy) {
         this.toCopy = toCopy;
     }
 
@@ -49,7 +49,7 @@ public class ResourceCopyingExecutableCreator extends BatteryExecutableCreator {
     }
 
     //Map of Names to Data file paths.
-    public Map<String, String> getFilePaths(final File mockDirectory, final AtomicInteger commandCount) throws IOException {
+    private Map<String, String> getFilePaths(final File mockDirectory, final AtomicInteger commandCount) throws IOException {
         final Map<String, String> filePaths = new HashMap<>();
         for (final String resource : toCopy) {
             final File copyingFolder = BatteryFiles.asFile(resource);
@@ -92,7 +92,7 @@ public class ResourceCopyingExecutableCreator extends BatteryExecutableCreator {
         } else {
             commandFile = new File(mockDirectory, "sh-" + id + ".sh");
             BatteryFiles.processTemplate("/copying-sh.ftl", commandFile, model, BatteryFiles.UTIL_RESOURCE_PREFIX);
-            commandFile.setExecutable(true);
+            Assertions.assertTrue(commandFile.setExecutable(true));
         }
 
         return commandFile;
