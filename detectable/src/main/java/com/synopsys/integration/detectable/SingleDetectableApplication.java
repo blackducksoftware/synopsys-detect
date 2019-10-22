@@ -87,7 +87,6 @@ public class SingleDetectableApplication {
 
         //Data
         final File sourceDirectory = new File("");
-        final File outputDirectory = new File("");
 
         //Objects
         final FileFinder simpleFileFinder = utilityFactory.simpleFileFinder();
@@ -99,6 +98,6 @@ public class SingleDetectableApplication {
         final File bashExecutable = executableResolver.resolveBash();
 
         //Extraction
-        return bitbakeExtractor.extract(sourceDirectory, new ExtractionEnvironment(outputDirectory), bitbakeFile, new String[] { "" }, new String[] { "" }, bashExecutable);
+        return bitbakeExtractor.extract(sourceDirectory, bitbakeFile, new String[] { "" }, new String[] { "" }, bashExecutable);
     }
 }

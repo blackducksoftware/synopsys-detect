@@ -48,17 +48,17 @@ public class BitbakeSession {
     private final FileFinder fileFinder;
     private final ExecutableRunner executableRunner;
     private final BitbakeRecipesParser bitbakeRecipesParser;
-    private final File outputDirectory;
+    private final File workingDirectory;
     private final File buildEnvScript;
     private final String[] sourceArguments;
     private final File bashExecutable;
 
-    public BitbakeSession(final FileFinder fileFinder, final ExecutableRunner executableRunner, final BitbakeRecipesParser bitbakeRecipesParser, final File outputDirectory, final File buildEnvScript, final String[] sourceArguments,
+    public BitbakeSession(final FileFinder fileFinder, final ExecutableRunner executableRunner, final BitbakeRecipesParser bitbakeRecipesParser, final File workingDirectory, final File buildEnvScript, final String[] sourceArguments,
         final File bashExecutable) {
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;
         this.bitbakeRecipesParser = bitbakeRecipesParser;
-        this.outputDirectory = outputDirectory;
+        this.workingDirectory = workingDirectory;
         this.buildEnvScript = buildEnvScript;
         this.sourceArguments = sourceArguments;
         this.bashExecutable = bashExecutable;
@@ -76,7 +76,7 @@ public class BitbakeSession {
         }
 
         return Arrays.stream(BitbakeFileType.values())
-                   .map(bitbakeFileType -> getBitbakeResult(sourceDirectory, outputDirectory, bitbakeFileType))
+                   .map(bitbakeFileType -> getBitbakeResult(sourceDirectory, workingDirectory, bitbakeFileType))
                    .findFirst();
     }
 
@@ -111,7 +111,7 @@ public class BitbakeSession {
                 sourceCommand.append(" ");
                 sourceCommand.append(sourceArgument);
             }
-            return executableRunner.execute(outputDirectory, bashExecutable, "-c", sourceCommand.toString() + "; " + bitbakeCommand);
+            return executableRunner.execute(workingDirectory, bashExecutable, "-c", sourceCommand.toString() + "; " + bitbakeCommand);
         } catch (final ExecutableRunnerException e) {
             logger.error(String.format("Failed executing bitbake command. %s", bitbakeCommand));
             throw e;

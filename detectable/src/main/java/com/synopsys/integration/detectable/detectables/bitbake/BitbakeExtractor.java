@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
 import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
@@ -74,11 +73,9 @@ public class BitbakeExtractor {
         this.bitbakeRecipesToLayerMap = bitbakeRecipesToLayerMap;
     }
 
-    public Extraction extract(final File sourceDirectory, final ExtractionEnvironment extractionEnvironment, final File buildEnvScript, final String[] sourceArguments, final String[] packageNames, final File bash) {
-        final File outputDirectory = extractionEnvironment.getOutputDirectory();
-
+    public Extraction extract(final File sourceDirectory, final File buildEnvScript, final String[] sourceArguments, final String[] packageNames, final File bash) {
         final List<CodeLocation> codeLocations = new ArrayList<>();
-        final BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, outputDirectory, buildEnvScript, sourceArguments, bash);
+        final BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash);
         for (final String packageName : packageNames) {
             try {
                 final BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName);
