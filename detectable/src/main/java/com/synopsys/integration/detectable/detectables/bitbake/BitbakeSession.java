@@ -64,7 +64,7 @@ public class BitbakeSession {
         this.bashExecutable = bashExecutable;
     }
 
-    public Optional<BitbakeResult> executeBitbakeForDependencies(final File sourceDirectory, final String packageName)
+    public Optional<BitbakeResult> executeBitbakeForDependencies(final File sourceDirectory, final String packageName, final Integer searchDepth)
         throws ExecutableRunnerException, IOException {
         final String bitbakeCommand = "bitbake -g " + packageName;
         final ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
@@ -76,15 +76,15 @@ public class BitbakeSession {
         }
 
         return Arrays.stream(BitbakeFileType.values())
-                   .map(bitbakeFileType -> getBitbakeResult(sourceDirectory, workingDirectory, bitbakeFileType))
+                   .map(bitbakeFileType -> getBitbakeResult(sourceDirectory, workingDirectory, bitbakeFileType, searchDepth))
                    .findFirst();
     }
 
     @Nullable
-    private BitbakeResult getBitbakeResult(final File sourceDirectory, final File outputDirectory, final BitbakeFileType bitbakeFileType) {
-        File file = fileFinder.findFile(outputDirectory, bitbakeFileType.getFileName(), 1);
+    private BitbakeResult getBitbakeResult(final File sourceDirectory, final File outputDirectory, final BitbakeFileType bitbakeFileType, final Integer searchDepth) {
+        File file = fileFinder.findFile(outputDirectory, bitbakeFileType.getFileName(), searchDepth);
         if (file == null) {
-            file = fileFinder.findFile(sourceDirectory, bitbakeFileType.getFileName(), 1);
+            file = fileFinder.findFile(sourceDirectory, bitbakeFileType.getFileName(), searchDepth);
             if (file == null) {
                 return null;
             }

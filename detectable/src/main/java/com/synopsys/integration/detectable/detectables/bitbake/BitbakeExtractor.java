@@ -73,12 +73,12 @@ public class BitbakeExtractor {
         this.bitbakeRecipesToLayerMap = bitbakeRecipesToLayerMap;
     }
 
-    public Extraction extract(final File sourceDirectory, final File buildEnvScript, final String[] sourceArguments, final String[] packageNames, final File bash) {
+    public Extraction extract(final File sourceDirectory, final File buildEnvScript, final String[] sourceArguments, final String[] packageNames, final Integer searchDepth, final File bash) {
         final List<CodeLocation> codeLocations = new ArrayList<>();
         final BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash);
         for (final String packageName : packageNames) {
             try {
-                final BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName);
+                final BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, searchDepth);
                 final List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
                 final Map<String, String> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes);
 
@@ -107,8 +107,8 @@ public class BitbakeExtractor {
         return extraction;
     }
 
-    private BitbakeGraph generateBitbakeGraph(final BitbakeSession bitbakeSession, final File sourceDirectory, final String packageName) throws ExecutableRunnerException, IOException, IntegrationException {
-        final BitbakeResult bitbakeResult = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName).orElseThrow(() -> {
+    private BitbakeGraph generateBitbakeGraph(final BitbakeSession bitbakeSession, final File sourceDirectory, final String packageName, final Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
+        final BitbakeResult bitbakeResult = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, searchDepth).orElseThrow(() -> {
             final String filesSearchedFor = Arrays.stream(BitbakeFileType.values())
                                                 .map(BitbakeFileType::getFileName)
                                                 .collect(Collectors.joining(", "));

@@ -98,6 +98,6 @@ public class SingleDetectableApplication {
         final File bashExecutable = executableResolver.resolveBash();
 
         //Extraction
-        return bitbakeExtractor.extract(sourceDirectory, bitbakeFile, new String[] { "" }, new String[] { "" }, bashExecutable);
+        return bitbakeExtractor.extract(sourceDirectory, bitbakeFile, new String[] { "" }, new String[] { "" }, 1, bashExecutable);
     }
 }

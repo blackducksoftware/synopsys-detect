@@ -75,7 +75,8 @@ public class DetectableOptionFactory {
         final String buildEnvName = detectConfiguration.getProperty(DetectProperty.DETECT_BITBAKE_BUILD_ENV_NAME, PropertyAuthority.NONE);
         final String[] sourceArguments = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_SOURCE_ARGUMENTS, PropertyAuthority.NONE);
         final String[] packageNames = detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_BITBAKE_PACKAGE_NAMES, PropertyAuthority.NONE);
-        return new BitbakeDetectableOptions(buildEnvName, sourceArguments, packageNames);
+        final Integer searchDepth = detectConfiguration.getIntegerProperty(DetectProperty.DETECT_BITBAKE_SEARCH_DEPTH, PropertyAuthority.NONE);
+        return new BitbakeDetectableOptions(buildEnvName, sourceArguments, packageNames, searchDepth);
     }
 
     public ClangDetectableOptions createClangDetectableOptions() {

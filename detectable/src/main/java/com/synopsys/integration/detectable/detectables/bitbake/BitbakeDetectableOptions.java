@@ -26,11 +26,13 @@ public class BitbakeDetectableOptions {
     private final String buildEnvName;
     private final String[] sourceArguments;
     private final String[] packageNames;
+    private final Integer searchDepth;
 
-    public BitbakeDetectableOptions(final String buildEnvName, final String[] sourceArguments, final String[] packageNames) {
+    public BitbakeDetectableOptions(final String buildEnvName, final String[] sourceArguments, final String[] packageNames, final Integer searchDepth) {
         this.buildEnvName = buildEnvName;
         this.sourceArguments = sourceArguments;
         this.packageNames = packageNames;
+        this.searchDepth = searchDepth;
     }
 
     public String getBuildEnvName() {
@@ -43,5 +45,9 @@ public class BitbakeDetectableOptions {
 
     public String[] getPackageNames() {
         return packageNames;
+    }
+
+    public Integer getSearchDepth() {
+        return searchDepth;
     }
 }

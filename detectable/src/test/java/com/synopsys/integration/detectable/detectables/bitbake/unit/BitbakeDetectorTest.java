@@ -2,10 +2,7 @@ package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
-
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
@@ -25,7 +22,7 @@ public class BitbakeDetectorTest {
         final BitbakeExtractor bitbakeExtractor = null;
         final BashResolver bashResolver = null;
 
-        final BitbakeDetectableOptions bitbakeDetectableOptions = new BitbakeDetectableOptions(BUILD_ENV_NAME, new String[] {}, new String[] { "testPkgName" });
+        final BitbakeDetectableOptions bitbakeDetectableOptions = new BitbakeDetectableOptions(BUILD_ENV_NAME, new String[] {}, new String[] { "testPkgName" }, 1);
         final FileFinder fileFinder = MockFileFinder.withFileNamed(BUILD_ENV_NAME);
 
         final BitbakeDetectable detectable = new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor, bashResolver);
