@@ -50,7 +50,7 @@ public class BazelDetectable extends Detectable {
 
     public BazelDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final BazelExtractor bazelExtractor,
         final BazelResolver bazelResolver, final BazelDetectableOptions bazelDetectableOptions) {
-        super(environment, "bazel", "bazel");
+        super(environment, "Bazel", "BAZEL");
         this.fileFinder = fileFinder;
         this.bazelExtractor = bazelExtractor;
         this.bazelResolver = bazelResolver;
@@ -80,9 +80,9 @@ public class BazelDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         final BazelProjectNameGenerator projectNameGenerator = new BazelProjectNameGenerator();
-        Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), bazelWorkspace, bazelDetectableOptions.getTargetName(), projectNameGenerator, bazelDetectableOptions.getBazelDependencyRule());
+        final Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), bazelWorkspace, bazelDetectableOptions.getTargetName(), projectNameGenerator, bazelDetectableOptions.getBazelDependencyRule());
         return extractResult;
     }
 }

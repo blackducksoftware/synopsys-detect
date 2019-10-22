@@ -134,7 +134,7 @@ public class RunManager {
         if (productRunData.shouldUsePolarisProduct()) {
             runPolarisProduct(productRunData, detectConfiguration, directoryManager, eventSystem, executableRunner, detectToolFilter);
         } else {
-            logger.info("Polaris tools will NOT be run.");
+            logger.info("Polaris tools will not be run.");
         }
 
         final UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, runResult, runOptions, detectToolFilter);
@@ -144,7 +144,7 @@ public class RunManager {
             runBlackDuckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
                 universalToolsResult.getNameVersion(), aggregateOptions);
         } else {
-            logger.info("Black Duck tools will NOT be run.");
+            logger.info("Black Duck tools will not be run.");
         }
 
         logger.info("All tools have finished.");
@@ -187,7 +187,7 @@ public class RunManager {
 
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
-            logger.info("Will include the bazel tool.");
+            logger.info("Will include the Bazel tool.");
             final DetectableTool detectableTool = new DetectableTool(detectableFactory::createBazelDetectable, extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL, eventSystem);
             final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
             runResult.addDetectableToolResult(detectableToolResult);

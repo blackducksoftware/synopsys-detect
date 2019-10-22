@@ -50,7 +50,7 @@ public class BlackDuckConnectivityChecker {
     public BlackDuckConnectivityResult determineConnectivity(final BlackDuckServerConfig blackDuckServerConfig)
         throws DetectUserFriendlyException {
 
-        logger.debug("Detect will check if it can communicate with the Black Duck Server.");
+        logger.debug("Detect will check communication with the Black Duck server.");
 
         final ConnectionResult connectionResult = blackDuckServerConfig.attemptConnection(new SilentIntLogger());
 
@@ -60,7 +60,7 @@ public class BlackDuckConnectivityChecker {
             return BlackDuckConnectivityResult.failure(connectionResult.getFailureMessage().orElse("Could not reach the Black Duck server or the credentials were invalid."));
         }
 
-        logger.info("Connection to the Black Duck server was successful");
+        logger.info("Connection to the Black Duck server was successful.");
 
         final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new Slf4jIntLogger(logger));
 
@@ -68,7 +68,7 @@ public class BlackDuckConnectivityChecker {
             final BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService();
             final CurrentVersionView currentVersion = blackDuckService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
 
-            logger.info(String.format("Successfully connected to BlackDuck (version %s)!", currentVersion.getVersion()));
+            logger.info(String.format("Successfully connected to Black Duck (version %s)!", currentVersion.getVersion()));
 
             final UserView userView = blackDuckService.getResponse(ApiDiscovery.CURRENT_USER_LINK_RESPONSE);
             logger.debug("Connected as: " + userView.getUserName());

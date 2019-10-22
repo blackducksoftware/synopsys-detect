@@ -274,12 +274,12 @@ public class DetectProjectService {
 
     public void setApplicationId(final ProjectView projectView, final String applicationId) throws DetectUserFriendlyException {
         if (StringUtils.isBlank(applicationId)) {
-            logger.debug("No Application ID to set.");
+            logger.debug("No 'Application ID' to set.");
             return;
         }
 
         try {
-            logger.debug("Populating project Application ID");
+            logger.debug("Populating project 'Application ID'");
             projectMappingService.populateApplicationId(projectView, applicationId);
         } catch (final IntegrationException e) {
             throw new DetectUserFriendlyException(String.format("Unable to set Application ID for project: %s", projectView.getName()), e, ExitCodeType.FAILURE_CONFIGURATION);
