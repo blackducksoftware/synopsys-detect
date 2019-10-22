@@ -61,11 +61,15 @@ public class NpmShrinkwrapDetectable extends Detectable {
         lockfile = fileFinder.findFile(environment.getDirectory(), SHRINKWRAP_JSON);
         if (lockfile == null) {
             return new FileNotFoundDetectableResult(SHRINKWRAP_JSON);
+        } else {
+            relevantFiles.add(lockfile);
         }
 
         packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
         if (packageJson == null) {
             logger.warn("Npm applied but it could not find a package.json so dependencies may not be entirely accurate.");
+        } else {
+            relevantFiles.add(packageJson);
         }
 
         return new PassedDetectableResult();

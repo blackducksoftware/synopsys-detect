@@ -70,9 +70,10 @@ public class NpmCliDetectable extends Detectable {
 
         if (packageJson == null) {
             return new FileNotFoundDetectableResult(PACKAGE_JSON);
+        } else {
+            relevantFiles.add(packageJson);
         }
 
-        // addRelevantDiagnosticFile(packageJson); // TODO: Jordan fix me
         return new PassedDetectableResult();
     }
 

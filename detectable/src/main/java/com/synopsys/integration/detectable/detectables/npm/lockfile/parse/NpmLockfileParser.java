@@ -55,17 +55,13 @@ public class NpmLockfileParser {
 
     public NpmParseResult parse(final Optional<String> packageJsonText, final String lockFileText, final boolean includeDevDependencies) {
         final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        logger.debug("Parsing lock file text: ");
-        logger.debug(lockFileText);
 
         Optional<PackageJson> packageJson = Optional.empty();
         if (packageJsonText.isPresent()) {
-            logger.debug(packageJsonText.get());
             packageJson = Optional.of(gson.fromJson(packageJsonText.get(), PackageJson.class));
         }
 
         final PackageLock packageLock = gson.fromJson(lockFileText, PackageLock.class);
-        logger.debug(lockFileText);
 
         logger.debug("Processing project.");
         if (packageLock.dependencies != null) {
@@ -118,10 +114,10 @@ public class NpmLockfileParser {
             return;
 
         npmDependency.getRequires().forEach(required -> {
-            logger.debug("Required package: " + required.getName() + " of version: " + required.getFuzzyVersion());
+            logger.trace("Required package: " + required.getName() + " of version: " + required.getFuzzyVersion());
             final NpmDependency resolved = lookupDependency(npmDependency, npmProject, required.getName());
             if (resolved != null) {
-                logger.debug("Found package: " + resolved.getName() + "with version: " + resolved.getVersion());
+                logger.trace("Found package: " + resolved.getName() + "with version: " + resolved.getVersion());
                 dependencyGraph.addChildWithParent(resolved.getGraphDependency(), npmDependency.getGraphDependency());
             } else {
                 logger.error("No dependency found for package: " + required.getName());
