@@ -131,12 +131,12 @@ public abstract class InteractiveMode {
 
     public void readyToStartDetect() {
         printStream.println();
-        printStream.println("Ready to start detect. Hit enter to proceed.");
+        printStream.println("Ready to start Detect. Hit enter to proceed.");
         interactiveReader.readLine();
     }
 
     public void printSuccess() {
-        printStream.println("Interactive Mode Succesfull!");
+        printStream.println("Interactive Mode Successful!");
         printStream.println();
     }
 
