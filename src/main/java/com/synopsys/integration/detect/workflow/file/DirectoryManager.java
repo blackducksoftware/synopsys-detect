@@ -58,6 +58,7 @@ public class DirectoryManager {
         BINARY("binary"),
         EXTRACTION("extractions"),
         LOG("logs"),
+        EXECUTABLES("executables"),
         RELEVANT("relevant"),
         REPORT("reports"),
         SCAN("scan"),
@@ -185,6 +186,10 @@ public class DirectoryManager {
 
     public File getLogOutputDirectory() {
         return getRunDirectory(RunDirectory.LOG);
+    }
+
+    public File getExecutableOutputDirectory() {
+        return getRunDirectory(RunDirectory.EXECUTABLES);
     }
 
     public File getRunHomeDirectory() {
