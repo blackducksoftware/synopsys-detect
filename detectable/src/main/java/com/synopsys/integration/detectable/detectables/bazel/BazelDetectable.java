@@ -82,7 +82,8 @@ public class BazelDetectable extends Detectable {
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         final BazelProjectNameGenerator projectNameGenerator = new BazelProjectNameGenerator();
-        final Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), bazelWorkspace, bazelDetectableOptions.getTargetName(), projectNameGenerator, bazelDetectableOptions.getBazelDependencyRule());
+        final Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), bazelWorkspace, bazelDetectableOptions.getTargetName(), projectNameGenerator, bazelDetectableOptions.getBazelDependencyRule(),
+            bazelDetectableOptions.getBazelCqueryAdditionalOptions());
         return extractResult;
     }
 }

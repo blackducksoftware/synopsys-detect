@@ -22,12 +22,17 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel;
 
+import java.util.List;
+
 public class BazelDetectableOptions {
     private final String targetName;
     private final String bazelDependencyRule;
-    public BazelDetectableOptions(final String targetName, final String bazelDependencyRule) {
+    private final List<String> bazelCqueryAdditionalOptions;
+    public BazelDetectableOptions(final String targetName, final String bazelDependencyRule,
+        final List<String> bazelCqueryAdditionalOptions) {
         this.targetName = targetName;
         this.bazelDependencyRule = bazelDependencyRule;
+        this.bazelCqueryAdditionalOptions = bazelCqueryAdditionalOptions;
     }
 
     public String getTargetName() {
@@ -36,5 +41,9 @@ public class BazelDetectableOptions {
 
     public String getBazelDependencyRule() {
         return bazelDependencyRule;
+    }
+
+    public List<String> getBazelCqueryAdditionalOptions() {
+        return bazelCqueryAdditionalOptions;
     }
 }

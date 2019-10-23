@@ -94,7 +94,8 @@ public class BazelExtractorTest {
         Mockito.when(bazelCmdExecutableOutputGetDependencyDetailsGuava.getStandardOutput()).thenReturn(guavaXml);
         Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgsGetDependencyDetailsGuava)).thenReturn(bazelCmdExecutableOutputGetDependencyDetailsGuava);
 
-        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", new BazelProjectNameGenerator(), null);
+        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", new BazelProjectNameGenerator(), null,
+            null);
 
         assertEquals(1, result.getCodeLocations().size());
         final Set<Dependency> dependencies = result.getCodeLocations().get(0).getDependencyGraph().getRootDependencies();
@@ -146,7 +147,7 @@ public class BazelExtractorTest {
                 "  tags = [\"maven_coordinates=com.google.errorprone:error_prone_annotations:2.2.0\"],");
         Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgsGetDependencies)).thenReturn(bazelCmdExecutableOutputGetDependencies);
 
-        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", new BazelProjectNameGenerator(), null);
+        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", new BazelProjectNameGenerator(), null, null);
 
         assertEquals(1, result.getCodeLocations().size());
         final Set<Dependency> dependencies = result.getCodeLocations().get(0).getDependencyGraph().getRootDependencies();
