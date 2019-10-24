@@ -85,12 +85,20 @@ public class PolarisTool {
             polarisServerConfig.populateEnvironmentVariables(environmentVariables::put);
 
             logger.info("Found polaris cli: " + polarisCliPath.get());
-            final List<String> arguments = new ArrayList<>();
-            arguments.add("analyze");
 
             final String additionalArgs = detectConfiguration.getProperty(DetectProperty.POLARIS_ARGUMENTS, PropertyAuthority.NONE);
-            if (StringUtils.isNotBlank(additionalArgs)) {
+            final String commandOverride = detectConfiguration.getProperty(DetectProperty.POLARIS_COMMAND, PropertyAuthority.NONE);
+            final List<String> arguments = new ArrayList<>();
+            if (StringUtils.isNotBlank(commandOverride)) {
+                if (StringUtils.isNotBlank(additionalArgs)) {
+                    logger.error("The provided polaris command will be used and the additional polaris arguments will be discarded. You should only set command or arguments, not both.");
+                }
+                arguments.addAll(Arrays.asList(commandOverride.split(" ")));
+            } else if (StringUtils.isNotBlank(additionalArgs)) {
+                arguments.add("analyze");
                 arguments.addAll(Arrays.asList(additionalArgs.split(" ")));
+            } else {
+                arguments.add("analyze");
             }
 
             final Executable swipExecutable = new Executable(projectDirectory, environmentVariables, polarisCliPath.get(), arguments);
