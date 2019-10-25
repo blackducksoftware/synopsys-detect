@@ -23,19 +23,15 @@
 package com.synopsys.integration.detectable.detectables.yarn;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import org.apache.commons.io.FileUtils;
+
+import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListNode;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
@@ -56,26 +52,15 @@ public class YarnLockExtractor {
         this.yarnTransformer = yarnTransformer;
     }
 
-    public Extraction extract(final File directory, final File yarnlock, final File yarnExe) {
+    public Extraction extract(final File directory, final File yarnLockFile, final File packageJsonFile) {
         try {
-            final List<String> yarnLockText = Files.readAllLines(yarnlock.toPath(), StandardCharsets.UTF_8);
-            final List<String> exeArgs = Stream.of("list", "--emoji", "false").collect(Collectors.toCollection(ArrayList::new));
+            final Gson gson = new Gson();
 
-            if (yarnLockOptions.useProductionOnly()) {
-                exeArgs.add("--prod");
-            }
+            final PackageJson packageJson = gson.fromJson(FileUtils.readFileToString(packageJsonFile), PackageJson.class);
 
-            final ExecutableOutput executableOutput = executableRunner.execute(directory, yarnExe, exeArgs);
+            final YarnLock yarnLock = yarnLockParser.parseYarnLock(FileUtils.readLines(yarnLockFile));
 
-            if (executableOutput.getReturnCode() != 0) {
-                final Extraction.Builder builder = new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", exeArgs), executableOutput.getReturnCode()));
-                return builder.build();
-            }
-
-            final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
-            final List<YarnListNode> yarnList = yarnListParser.parseYarnList(executableOutput.getStandardOutputAsList());
-
-            final DependencyGraph dependencyGraph = yarnTransformer.transform(yarnList, yarnLock);
+            final DependencyGraph dependencyGraph = yarnTransformer.transform(packageJson, yarnLock);
 
             final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
 

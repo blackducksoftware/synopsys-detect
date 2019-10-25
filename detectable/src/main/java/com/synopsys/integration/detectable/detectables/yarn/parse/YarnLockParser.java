@@ -23,11 +23,9 @@
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -45,7 +43,11 @@ public class YarnLockParser {
     public YarnLock parseYarnLock(final List<String> yarnLockFileAsList) {
         final Map<String, String> yarnLockResolvedVersions = new HashMap<>();
 
-        final List<String> fuzzyIds = new ArrayList<>();
+        final List<YarnLockEntry> entries = new ArrayList<>();
+        String resolvedVersion = "";
+        List<YarnLockDependency> dependencies = new ArrayList<>();
+        List<YarnLockEntryId> ids = new ArrayList<>();
+
         for (final String line : yarnLockFileAsList) {
             if (StringUtils.isBlank(line) || line.trim().startsWith(COMMENT_PREFIX)) {
                 continue;
@@ -54,21 +56,48 @@ public class YarnLockParser {
             final String trimmedLine = line.trim();
             final int level = lineLevelParser.parseIndentLevel(line);
             if (level == 0) {
-                fuzzyIds.addAll(getFuzzyIdsFromLine(line));
+                entries.add(new YarnLockEntry(ids, resolvedVersion, dependencies));
+                resolvedVersion = "";
+                dependencies = new ArrayList<>();
+                ids = getFuzzyIdsFromLine(line);
             } else if (level == 1 && trimmedLine.startsWith(VERSION_PREFIX)) {
-                final String resolvedVersion = trimmedLine.substring(VERSION_PREFIX.length(), trimmedLine.lastIndexOf(VERSION_SUFFIX));
-                fuzzyIds.stream().forEach(fuzzyId -> yarnLockResolvedVersions.put(fuzzyId, resolvedVersion));
-                fuzzyIds.clear();
+                resolvedVersion = getVersionFromLine(trimmedLine);
+            } else if (level == 2) {
+                dependencies.add(getDependencyFromLine(trimmedLine));
             }
         }
+        if (StringUtils.isNotBlank(resolvedVersion)) {
+            entries.add(new YarnLockEntry(ids, resolvedVersion, dependencies));
+        }
 
-        return new YarnLock(yarnLockResolvedVersions);
+        return new YarnLock(entries);
     }
 
-    private List<String> getFuzzyIdsFromLine(final String s) {
+    private YarnLockDependency getDependencyFromLine(final String line) {
+        final String[] pieces = StringUtils.split(line, " ", 2);
+        return new YarnLockDependency(removeWrappingQuotes(pieces[0]), removeWrappingQuotes(pieces[1]));
+    }
+
+    private String removeWrappingQuotes(final String s) {
+        return StringUtils.removeStart(StringUtils.removeEnd(s.trim(), "\""), "\"");
+    }
+
+    private List<YarnLockEntryId> getFuzzyIdsFromLine(final String s) {
+        final List<YarnLockEntryId> ids = new ArrayList<YarnLockEntryId>();
         final String[] lines = s.split(",");
-        return Arrays.stream(lines)
-                   .map(line -> line.trim().replaceAll("\"", "").replaceAll(":", ""))
-                   .collect(Collectors.toList());
+        for (final String line : lines) {
+            final String cleanedLine = removeWrappingQuotes(StringUtils.removeEnd(line.trim(), ":"));
+            final int last = cleanedLine.trim().lastIndexOf("@");
+            final String name = cleanedLine.substring(0, last);
+            final String version = cleanedLine.substring(last + 1);
+            ids.add(new YarnLockEntryId(name, version));
+        }
+        return ids;
+    }
+
+    private String getVersionFromLine(final String s) {
+        final String[] lines = s.split(",");
+        final String rawVersion = s.substring(VERSION_PREFIX.length(), s.lastIndexOf(VERSION_SUFFIX));
+        return removeWrappingQuotes(rawVersion);
     }
 }
