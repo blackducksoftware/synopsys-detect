@@ -4,7 +4,7 @@ Inspectors are typically plugins that detect uses to access the internal resourc
 
 There are currently three inspectors that detect might download and one inspector it has internally. 
   
-If Detect decides that your package manager needs an external inspector, you must either be online or have the applicable Air Gap files. 
+If ${solution_name} decides that your package manager needs an external inspector, you must either be online or have the applicable Air Gap files.
 
 ## Gradle Inspector
 

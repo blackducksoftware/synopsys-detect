@@ -205,6 +205,16 @@ task generatedContent() {
             def mdFile = new File(advancedOutputDir, mdFilename)
             mdFile.withWriter('utf-8') { out -> fmTemplate.process(helpData.ext.helpJson.properties, out) }
         }
+
+        File troubleshootingOutputDir = new File(helpData.output, "troubleshooting")
+        troubleshootingOutputDir.mkdirs()
+        new File("${projectDir}/docs/templates/content/troubleshooting").eachFile(FileType.FILES) { file ->
+            String fmTemplateFilename = file.getName()
+            def fmTemplate = helpData.templates.getTemplate("content/troubleshooting/${fmTemplateFilename}")
+            String mdFilename = fmTemplateFilename.take(fmTemplateFilename.lastIndexOf('.')) + ".md"
+            def mdFile = new File(troubleshootingOutputDir, mdFilename)
+            mdFile.withWriter('utf-8') { out -> fmTemplate.process(helpData.ext.helpJson.properties, out) }
+        }
     }
 }
 
