@@ -33,12 +33,6 @@ public class YarnLockParser {
     private static final String VERSION_SUFFIX = "\"";
     private static final String OPTIONAL_DEPENDENCIES_TOKEN = "optionalDependencies:";
 
-    private final YarnLineLevelParser lineLevelParser;
-
-    public YarnLockParser(final YarnLineLevelParser lineLevelParser) {
-        this.lineLevelParser = lineLevelParser;
-    }
-
     public YarnLock parseYarnLock(final List<String> yarnLockFileAsList) {
         boolean started = false;
         final List<YarnLockEntry> entries = new ArrayList<>();
@@ -53,17 +47,17 @@ public class YarnLockParser {
             }
 
             final String trimmedLine = line.trim();
-            final int level = lineLevelParser.parseIndentLevel(line);
+            final int level = countIndent(line);
             if (level == 0) {
                 if (started) {
                     entries.add(new YarnLockEntry(ids, resolvedVersion, dependencies));
                     resolvedVersion = "";
                     dependencies = new ArrayList<>();
-                    ids = getFuzzyIdsFromLine(line);
                     inOptionalDependencies = false;
                 } else {
                     started = true;
                 }
+                ids = getFuzzyIdsFromLine(line);
             } else if (level == 1 && trimmedLine.startsWith(VERSION_PREFIX)) {
                 resolvedVersion = getVersionFromLine(trimmedLine);
             } else if (level == 1 && trimmedLine.startsWith(OPTIONAL_DEPENDENCIES_TOKEN)) {
@@ -77,6 +71,15 @@ public class YarnLockParser {
         }
 
         return new YarnLock(entries);
+    }
+
+    public int countIndent(String line) {
+        int count = 0;
+        while (line.startsWith("  ")) {
+            count++;
+            line = line.substring(2);
+        }
+        return count;
     }
 
     private YarnLockDependency getDependencyFromLine(final String line, final boolean optional) {

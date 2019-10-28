@@ -3,7 +3,7 @@ package com.synopsys.integration.detectable.detectables.yarn.unit;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLineLevelParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 
 //These examples came from the babel yarn.lock
 public class YarnIndentLineLevelTest {
@@ -27,9 +27,9 @@ public class YarnIndentLineLevelTest {
         checkLineLevel("    \"@types/node\" \"*\"", 2);
     }
 
-    private void checkLineLevel(String line, int level){
-        YarnLineLevelParser lineLevelParser = new YarnLineLevelParser();
-        int actual = lineLevelParser.parseIndentLevel(line);
+    private void checkLineLevel(final String line, final int level) {
+        final YarnLockParser yarnLockParser = new YarnLockParser();
+        final int actual = yarnLockParser.countIndent(line);
         Assert.assertEquals(level, actual);
     }
 }
