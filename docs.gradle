@@ -168,7 +168,9 @@ task generatedDetectorMarkdown() {
         buildlessGroups.sort { it.groupName }
 
         def template = helpData.templates.getTemplate("detectors.ftl")
-        def markdown = new File(helpData.output, "detectors.md")
+        // TODO duplicated:
+        File structureOutputDir = new File(helpData.output, "program-structure")
+        def markdown = new File(structureOutputDir, "detectors.md")
         markdown.withWriter('utf-8') { out -> template.process([build: buildGroups, buildless: buildlessGroups], out) }
     }
 }
@@ -181,6 +183,26 @@ task generatedContent() {
             def fmTemplate = helpData.templates.getTemplate("content/${fmTemplateFilename}")
             String mdFilename = fmTemplateFilename.take(fmTemplateFilename.lastIndexOf('.')) + ".md"
             def mdFile = new File(helpData.output, mdFilename)
+            mdFile.withWriter('utf-8') { out -> fmTemplate.process(helpData.ext.helpJson.properties, out) }
+        }
+
+        File structureOutputDir = new File(helpData.output, "program-structure")
+        structureOutputDir.mkdirs()
+        new File("${projectDir}/docs/templates/content/program-structure").eachFile(FileType.FILES) { file ->
+            String fmTemplateFilename = file.getName()
+            def fmTemplate = helpData.templates.getTemplate("content/program-structure/${fmTemplateFilename}")
+            String mdFilename = fmTemplateFilename.take(fmTemplateFilename.lastIndexOf('.')) + ".md"
+            def mdFile = new File(structureOutputDir, mdFilename)
+            mdFile.withWriter('utf-8') { out -> fmTemplate.process(helpData.ext.helpJson.properties, out) }
+        }
+        
+        File advancedOutputDir = new File(helpData.output, "advanced")
+        advancedOutputDir.mkdirs()
+        new File("${projectDir}/docs/templates/content/advanced").eachFile(FileType.FILES) { file ->
+            String fmTemplateFilename = file.getName()
+            def fmTemplate = helpData.templates.getTemplate("content/advanced/${fmTemplateFilename}")
+            String mdFilename = fmTemplateFilename.take(fmTemplateFilename.lastIndexOf('.')) + ".md"
+            def mdFile = new File(advancedOutputDir, mdFilename)
             mdFile.withWriter('utf-8') { out -> fmTemplate.process(helpData.ext.helpJson.properties, out) }
         }
     }
