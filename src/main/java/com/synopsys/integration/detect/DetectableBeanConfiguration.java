@@ -332,7 +332,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public GitFileTransformer gitFileTransformer() {
-        return new GitFileTransformer();
+        return new GitFileTransformer(gitUrlParser());
     }
 
     @Bean
