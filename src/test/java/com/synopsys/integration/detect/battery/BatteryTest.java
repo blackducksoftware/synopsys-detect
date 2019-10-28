@@ -150,10 +150,18 @@ public final class BatteryTest {
 
     private void runDetect(final List<String> additionalArguments) throws IOException, ExecutableRunnerException {
         final List<String> detectArguments = new ArrayList<>();
-        detectArguments.addAll(Arrays.asList("--detect.tools=DETECTOR", "--blackduck.offline.mode=true", "--detect.output.path=" + outputDirectory, "--detect.bdio.output.path=" + bdioDirectory, "--detect.cleanup=false"));
-
-        detectArguments.add("--logging.level.detect=DEBUG");
-        detectArguments.add("--detect.source.path=" + sourceDirectory.getCanonicalPath());
+        final Map<DetectProperty, String> properties = new HashMap<>();
+        
+        properties.put(DetectProperty.DETECT_TOOLS, "DETECTOR");
+        properties.put(DetectProperty.BLACKDUCK_OFFLINE_MODE, "true");
+        properties.put(DetectProperty.DETECT_OUTPUT_PATH, outputDirectory.getCanonicalPath());
+        properties.put(DetectProperty.DETECT_BDIO_OUTPUT_PATH, bdioDirectory.getCanonicalPath());
+        properties.put(DetectProperty.DETECT_CLEANUP, "false");
+        properties.put(DetectProperty.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
+        properties.put(DetectProperty.DETECT_SOURCE_PATH, sourceDirectory.getCanonicalPath());
+        for (final Map.Entry<DetectProperty, String> entry : properties.entrySet()) {
+            detectArguments.add("--" + entry.getKey().getPropertyKey() + "=" + entry.getValue());
+        }
 
         detectArguments.addAll(additionalArguments);
         detectArguments.addAll(additionalProperties);
