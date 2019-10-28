@@ -540,17 +540,12 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public YarnLockParser yarnLockParser() {
-        return new YarnLockParser(yarnLineLevelParser());
+        return new YarnLockParser();
     }
 
     @Bean
     public YarnTransformer yarnTransformer() {
         return new YarnTransformer(externalIdFactory);
-    }
-
-    @Bean
-    public YarnLineLevelParser yarnLineLevelParser() {
-        return new YarnLineLevelParser();
     }
 
     @Bean
