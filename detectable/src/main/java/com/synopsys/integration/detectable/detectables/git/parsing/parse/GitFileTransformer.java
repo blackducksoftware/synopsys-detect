@@ -23,17 +23,21 @@
 package com.synopsys.integration.detectable.detectables.git.parsing.parse;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
-
+import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigElement;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class GitFileTransformer {
+    private final GitUrlParser gitUrlParser;
+
+    public GitFileTransformer(final GitUrlParser gitUrlParser) {
+        this.gitUrlParser = gitUrlParser;
+    }
+
     public NameVersion transformGitConfigElements(final List<GitConfigElement> gitConfigElements, final String gitHead) throws IntegrationException, MalformedURLException {
         final Optional<GitConfigElement> currentBranch = gitConfigElements.stream()
                                                              .filter(gitConfigElement -> gitConfigElement.getElementType().equals("branch"))
@@ -61,9 +65,7 @@ public class GitFileTransformer {
             throw new IntegrationException("Failed to find a remote url.");
         }
 
-        final URL remoteURL = new URL(remoteUrlOptional.get());
-        final String path = remoteURL.getPath();
-        final String projectName = StringUtils.removeEnd(StringUtils.removeStart(path, "/"), ".git");
+        final String projectName = gitUrlParser.getRepoName(remoteUrlOptional.get());
         final String projectVersionName = currentBranch.get().getName().orElse(null);
 
         return new NameVersion(projectName, projectVersionName);
