@@ -88,12 +88,33 @@ public class BitbakeGraphTransformer {
         return dependencyGraph;
     }
 
+    // Temporarily we must strip the epoch and the build revision from the version string. TODO: Remove this when the KB is ready. KBENG-961
+    // 1:1.2.3-r5 -> 1.2.3
+    public String cleanVersion(final String version) {
+        String cleanedVersion = version;
+        final int lastHyphenIndex = cleanedVersion.lastIndexOf('-');
+        if (lastHyphenIndex != -1 && lastHyphenIndex < cleanedVersion.length()) {
+            final String suffix = cleanedVersion.substring(lastHyphenIndex);
+            if (suffix.startsWith("-r")) {
+                cleanedVersion = cleanedVersion.substring(0, lastHyphenIndex);
+            }
+        }
+
+        final int epochSeparatorIndex = cleanedVersion.indexOf(':');
+        if (epochSeparatorIndex != -1 && epochSeparatorIndex < cleanedVersion.length()) {
+            cleanedVersion = cleanedVersion.substring(epochSeparatorIndex + 1);
+        }
+
+        return cleanedVersion;
+    }
+
     private Optional<ExternalId> generateExternalId(final String dependencyName, final String dependencyVersion, final Map<String, String> recipeLayerMap) {
         final String priorityLayerName = recipeLayerMap.get(dependencyName);
         ExternalId externalId = null;
 
         if (priorityLayerName != null) {
-            externalId = externalIdFactory.createYoctoExternalId(priorityLayerName, dependencyName, dependencyVersion);
+            final String version = cleanVersion(dependencyVersion);
+            externalId = externalIdFactory.createYoctoExternalId(priorityLayerName, dependencyName, version);
         } else {
             logger.debug(String.format("Failed to find component '%s' in component layer map.", dependencyName));
 

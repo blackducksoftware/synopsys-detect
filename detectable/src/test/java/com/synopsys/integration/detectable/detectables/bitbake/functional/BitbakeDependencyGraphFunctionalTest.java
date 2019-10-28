@@ -61,8 +61,10 @@ public class BitbakeDependencyGraphFunctionalTest {
         final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeLayerMap);
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
-        final ExternalId attr = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "attr", "2.4.47-r0"));
-        final ExternalId acl = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "acl", "2.2.52-r0"));
+        //        final ExternalId attr = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "attr", "2.4.47-r0"));
+        //        final ExternalId acl = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "acl", "2.2.52-r0"));
+        final ExternalId attr = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "attr", "2.4.47"));
+        final ExternalId acl = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "acl", "2.2.52"));
         graphAssert.hasParentChildRelationship(acl, attr);
         graphAssert.hasRootSize(2);
     }
@@ -103,8 +105,11 @@ public class BitbakeDependencyGraphFunctionalTest {
         final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeToLayerLayerMap);
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
-        final ExternalId busybox = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "busybox", "1.23.2-r0"));
-        final ExternalId shadow = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "shadow", "4.2.1-r0"));
+        //        final ExternalId busybox = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "busybox", "1.23.2-r0"));
+        //        final ExternalId shadow = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "shadow", "4.2.1-r0"));
+        final ExternalId busybox = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "busybox", "1.23.2"));
+        final ExternalId shadow = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "shadow", "4.2.1"));
+
         graphAssert.hasParentChildRelationship(busybox, shadow);
         graphAssert.hasRootSize(2);
     }
