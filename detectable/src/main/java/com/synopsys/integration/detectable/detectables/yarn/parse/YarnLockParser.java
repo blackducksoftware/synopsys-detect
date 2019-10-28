@@ -40,6 +40,7 @@ public class YarnLockParser {
     }
 
     public YarnLock parseYarnLock(final List<String> yarnLockFileAsList) {
+        boolean started = false;
         final List<YarnLockEntry> entries = new ArrayList<>();
         String resolvedVersion = "";
         List<YarnLockDependency> dependencies = new ArrayList<>();
@@ -54,11 +55,15 @@ public class YarnLockParser {
             final String trimmedLine = line.trim();
             final int level = lineLevelParser.parseIndentLevel(line);
             if (level == 0) {
-                entries.add(new YarnLockEntry(ids, resolvedVersion, dependencies));
-                resolvedVersion = "";
-                dependencies = new ArrayList<>();
-                ids = getFuzzyIdsFromLine(line);
-                inOptionalDependencies = false;
+                if (started) {
+                    entries.add(new YarnLockEntry(ids, resolvedVersion, dependencies));
+                    resolvedVersion = "";
+                    dependencies = new ArrayList<>();
+                    ids = getFuzzyIdsFromLine(line);
+                    inOptionalDependencies = false;
+                } else {
+                    started = true;
+                }
             } else if (level == 1 && trimmedLine.startsWith(VERSION_PREFIX)) {
                 resolvedVersion = getVersionFromLine(trimmedLine);
             } else if (level == 1 && trimmedLine.startsWith(OPTIONAL_DEPENDENCIES_TOKEN)) {
