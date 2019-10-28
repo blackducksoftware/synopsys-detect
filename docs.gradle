@@ -7,6 +7,8 @@ buildscript {
     }
 }
 
+import groovy.io.FileType
+
 def outputPath = "docs/generated"
 def templatePath = "docs/templates"
 def staticPath = "docs/static"
@@ -183,18 +185,22 @@ task generatedDetectorMarkdown() {
     }
 }
 
-task generatedIndex() {
+task generatedContent() {
     dependsOn helpData
     doLast {
-        def indexTemplate = helpData.templates.getTemplate("content/index.ftl")
-        def indexMd = new File(helpData.output, "index.md")
-        indexMd.withWriter('utf-8') { out -> indexTemplate.process(helpData.ext.helpJson.properties, out) }
+        new File("${projectDir}/docs/templates/content").eachFile(FileType.FILES) { file ->
+            String fmTemplateFilename = file.getName()
+            def fmTemplate = helpData.templates.getTemplate("content/${fmTemplateFilename}")
+            String mdFilename = fmTemplateFilename.take(fmTemplateFilename.lastIndexOf('.')) + ".md"
+            def mdFile = new File(helpData.output, mdFilename)
+            mdFile.withWriter('utf-8') { out -> fmTemplate.process(helpData.ext.helpJson.properties, out) }
+        }
     }
 }
 
 task docs() {
     dependsOn staticMarkdown
-    dependsOn generatedIndex
+    dependsOn generatedContent
     dependsOn generatedPropertyMarkdown
     dependsOn generatedExitCodeMarkdown
     dependsOn generatedDetectorMarkdown
