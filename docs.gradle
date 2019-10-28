@@ -10,6 +10,7 @@ buildscript {
 def outputPath = "docs/generated"
 def templatePath = "docs/templates"
 def staticPath = "docs/static"
+def helpPropertiesPath = "docs/data/help.properties"
 
 task helpJson(type: JavaExec) {
     dependsOn build
@@ -25,6 +26,14 @@ task helpData() {
     doLast {
         def jsonHelpFile = "synopsys-detect-${version}-help.json"
         def helpJson = new groovy.json.JsonSlurper().parseText(file(jsonHelpFile).text)
+        Properties helpProperties = new Properties()
+        File propertiesFile = new File(helpPropertiesPath)
+        propertiesFile.withInputStream {
+            helpProperties.load(it)
+        }
+        helpProperties.setProperty("program_version", "${version}")
+        helpJson.properties = helpProperties
+
         def cfg = new freemarker.template.Configuration()
         cfg.setDirectoryForTemplateLoading(file(templatePath))
         cfg.setDefaultEncoding("UTF-8")
@@ -177,9 +186,9 @@ task generatedDetectorMarkdown() {
 task generatedIndex() {
     dependsOn helpData
     doLast {
-        def indexTemplate = helpData.templates.getTemplate("index.ftl")
+        def indexTemplate = helpData.templates.getTemplate("content/index.ftl")
         def indexMd = new File(helpData.output, "index.md")
-        indexMd.withWriter('utf-8') { out -> indexTemplate.process([version: version], out) }
+        indexMd.withWriter('utf-8') { out -> indexTemplate.process(helpData.ext.helpJson.properties, out) }
     }
 }
 

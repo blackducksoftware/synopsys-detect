@@ -1,6 +1,6 @@
 # Overview
 
-Synopsys Detect Documentation: ${version}
+${solution_name} Documentation: ${program_version}
 
 This documentation was generated from the Detect source code.
 
