@@ -24,15 +24,26 @@ package com.synopsys.integration.detectable.detectables.yarn.parse;
 
 import java.util.List;
 
-public class YarnLock {
+public class YarnLockEntry {
+    private final List<YarnLockEntryId> ids;
+    private final String version;
+    private final List<YarnLockDependency> dependencies;
 
-    public YarnLock(final List<YarnLockEntry> entries) {
-        this.entries = entries;
+    public YarnLockEntry(final List<YarnLockEntryId> ids, final String version, final List<YarnLockDependency> dependencies) {
+        this.ids = ids;
+        this.version = version;
+        this.dependencies = dependencies;
     }
 
-    public List<YarnLockEntry> getEntries() {
-        return entries;
+    public List<YarnLockEntryId> getIds() {
+        return ids;
     }
 
-    private final List<YarnLockEntry> entries;
+    public List<YarnLockDependency> getDependencies() {
+        return dependencies;
+    }
+
+    public String getVersion() {
+        return version;
+    }
 }

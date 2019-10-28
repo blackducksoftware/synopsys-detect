@@ -22,32 +22,26 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
-public class YarnListNode {
-    private int depth;
-    private String fuzzyId;
-    private String packageName;
-    private String fuzzyPackageVersion;
+public class YarnLockDependency {
+    private final String name;
+    private final String version;
+    private final boolean optional;
 
-    public YarnListNode(final int depth, final String fuzzyId, final String packageName, final String fuzzyPackageVersion) {
-        this.depth = depth;
-        this.fuzzyId = fuzzyId;
-        this.packageName = packageName;
-        this.fuzzyPackageVersion = fuzzyPackageVersion;
+    public YarnLockDependency(final String name, final String version, final boolean optional) {
+        this.name = name;
+        this.version = version;
+        this.optional = optional;
     }
 
-    public int getDepth() {
-        return depth;
+    public String getName() {
+        return name;
     }
 
-    public String getFuzzyId() {
-        return fuzzyId;
+    public String getVersion() {
+        return version;
     }
 
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public String getFuzzyPackageVersion() {
-        return fuzzyPackageVersion;
+    public boolean isOptional() {
+        return optional;
     }
 }

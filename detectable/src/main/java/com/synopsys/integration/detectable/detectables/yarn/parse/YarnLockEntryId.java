@@ -22,17 +22,20 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
-import java.util.List;
+public class YarnLockEntryId {
+    private final String name;
+    private final String version;
 
-public class YarnLock {
-
-    public YarnLock(final List<YarnLockEntry> entries) {
-        this.entries = entries;
+    public YarnLockEntryId(final String name, final String version) {
+        this.name = name;
+        this.version = version;
     }
 
-    public List<YarnLockEntry> getEntries() {
-        return entries;
+    public String getName() {
+        return name;
     }
 
-    private final List<YarnLockEntry> entries;
+    public String getVersion() {
+        return version;
+    }
 }

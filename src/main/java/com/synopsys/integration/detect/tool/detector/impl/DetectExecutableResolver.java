@@ -54,12 +54,11 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.Pipenv
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.YarnResolver;
 import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 
 public class DetectExecutableResolver
-    implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
-                   DockerResolver, DotNetResolver, GitResolver, SwiftResolver, GoResolver {
+    implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, DockerResolver,
+                   DotNetResolver, GitResolver, SwiftResolver, GoResolver {
 
     private final SimpleExecutableResolver simpleExecutableResolver;
     private final DetectConfiguration detectConfiguration;
@@ -161,11 +160,6 @@ public class DetectExecutableResolver
     @Override
     public File resolveRebar3() throws DetectableException {
         return resolveExecutable("rebar3", simpleExecutableResolver::resolveRebar3, detectConfiguration.getProperty(DetectProperty.DETECT_HEX_REBAR3_PATH, PropertyAuthority.NONE));
-    }
-
-    @Override
-    public File resolveYarn() throws DetectableException {
-        return resolveExecutable("yarn", simpleExecutableResolver::resolveYarn, detectConfiguration.getProperty(DetectProperty.DETECT_YARN_PATH, PropertyAuthority.NONE));
     }
 
     @Override
