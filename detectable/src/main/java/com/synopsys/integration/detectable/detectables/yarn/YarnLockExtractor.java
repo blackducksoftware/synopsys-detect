@@ -52,7 +52,7 @@ public class YarnLockExtractor {
         this.yarnTransformer = yarnTransformer;
     }
 
-    public Extraction extract(final File directory, final File yarnLockFile, final File packageJsonFile) {
+    public Extraction extract(final File directory, final File yarnLockFile, final File packageJsonFile, final YarnLockOptions yarnLockOptions) {
         try {
             final Gson gson = new Gson();
 
@@ -60,7 +60,7 @@ public class YarnLockExtractor {
 
             final YarnLock yarnLock = yarnLockParser.parseYarnLock(FileUtils.readLines(yarnLockFile));
 
-            final DependencyGraph dependencyGraph = yarnTransformer.transform(packageJson, yarnLock);
+            final DependencyGraph dependencyGraph = yarnTransformer.transform(packageJson, yarnLock, yarnLockOptions);
 
             final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
 

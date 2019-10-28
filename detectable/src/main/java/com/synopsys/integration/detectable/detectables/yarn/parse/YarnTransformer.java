@@ -33,6 +33,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 
 public class YarnTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -42,15 +43,17 @@ public class YarnTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(final PackageJson packageJson, final YarnLock yarnLock) {
+    public DependencyGraph transform(final PackageJson packageJson, final YarnLock yarnLock, final YarnLockOptions yarnLockOptions) {
         final LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
         for (final Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
             graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
         }
 
-        for (final Map.Entry<String, String> packageDependency : packageJson.devDependencies.entrySet()) {
-            graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
+        if (!yarnLockOptions.useProductionOnly()) {
+            for (final Map.Entry<String, String> packageDependency : packageJson.devDependencies.entrySet()) {
+                graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
+            }
         }
 
         for (final YarnLockEntry entry : yarnLock.getEntries()) {
@@ -58,7 +61,12 @@ public class YarnTransformer {
                 final StringDependencyId id = new StringDependencyId(entryId.getName() + "@" + entryId.getVersion());
                 graphBuilder.setDependencyExternalId(id, externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
                 for (final YarnLockDependency dependency : entry.getDependencies()) {
-                    graphBuilder.addChildWithParent(new StringDependencyId(dependency.getName() + "@" + dependency.getVersion()), id);
+                    final StringDependencyId stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());
+                    if ((yarnLockOptions.useProductionOnly() && !dependency.isOptional()) || (!yarnLockOptions.useProductionOnly())) {
+                        graphBuilder.addChildWithParent(stringDependencyId, id);
+                    } else {
+                        logger.debug(String.format("Eluding optional dependency: %s", stringDependencyId.value));
+                    }
                 }
             }
         }

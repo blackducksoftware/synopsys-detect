@@ -33,6 +33,7 @@ public class YarnLockParser {
     public static final String COMMENT_PREFIX = "#";
     public static final String VERSION_PREFIX = "version \"";
     public static final String VERSION_SUFFIX = "\"";
+    public static final String OPTIONAL_DEPENDENCIES_TOKEN = "optionalDependencies:";
 
     private final YarnLineLevelParser lineLevelParser;
 
@@ -47,6 +48,7 @@ public class YarnLockParser {
         String resolvedVersion = "";
         List<YarnLockDependency> dependencies = new ArrayList<>();
         List<YarnLockEntryId> ids = new ArrayList<>();
+        boolean inOptionalDependencies = false;
 
         for (final String line : yarnLockFileAsList) {
             if (StringUtils.isBlank(line) || line.trim().startsWith(COMMENT_PREFIX)) {
@@ -60,10 +62,13 @@ public class YarnLockParser {
                 resolvedVersion = "";
                 dependencies = new ArrayList<>();
                 ids = getFuzzyIdsFromLine(line);
+                inOptionalDependencies = false;
             } else if (level == 1 && trimmedLine.startsWith(VERSION_PREFIX)) {
                 resolvedVersion = getVersionFromLine(trimmedLine);
+            } else if (level == 1 && trimmedLine.startsWith(OPTIONAL_DEPENDENCIES_TOKEN)) {
+                inOptionalDependencies = true;
             } else if (level == 2) {
-                dependencies.add(getDependencyFromLine(trimmedLine));
+                dependencies.add(getDependencyFromLine(trimmedLine, inOptionalDependencies));
             }
         }
         if (StringUtils.isNotBlank(resolvedVersion)) {
@@ -73,9 +78,9 @@ public class YarnLockParser {
         return new YarnLock(entries);
     }
 
-    private YarnLockDependency getDependencyFromLine(final String line) {
+    private YarnLockDependency getDependencyFromLine(final String line, final boolean optional) {
         final String[] pieces = StringUtils.split(line, " ", 2);
-        return new YarnLockDependency(removeWrappingQuotes(pieces[0]), removeWrappingQuotes(pieces[1]));
+        return new YarnLockDependency(removeWrappingQuotes(pieces[0]), removeWrappingQuotes(pieces[1]), optional);
     }
 
     private String removeWrappingQuotes(final String s) {

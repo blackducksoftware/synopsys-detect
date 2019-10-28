@@ -42,15 +42,17 @@ public class YarnLockDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final YarnResolver yarnResolver;
     private final YarnLockExtractor yarnLockExtractor;
+    private final YarnLockOptions yarnLockOptions;
 
     private File yarnLock;
     private File packageJson;
 
-    public YarnLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final YarnResolver yarnResolver, final YarnLockExtractor yarnLockExtractor) {
+    public YarnLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final YarnResolver yarnResolver, final YarnLockExtractor yarnLockExtractor, final YarnLockOptions yarnLockOptions) {
         super(environment, "Yarn Lock", "YARN");
         this.fileFinder = fileFinder;
         this.yarnLockExtractor = yarnLockExtractor;
         this.yarnResolver = yarnResolver;
+        this.yarnLockOptions = yarnLockOptions;
     }
 
     @Override
@@ -76,7 +78,7 @@ public class YarnLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return yarnLockExtractor.extract(environment.getDirectory(), yarnLock, packageJson);
+        return yarnLockExtractor.extract(environment.getDirectory(), yarnLock, packageJson, yarnLockOptions);
     }
 
 }

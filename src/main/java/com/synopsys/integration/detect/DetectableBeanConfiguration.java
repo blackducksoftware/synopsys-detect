@@ -902,6 +902,6 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public YarnLockDetectable yarnLockBomTool(final DetectableEnvironment environment) {
-        return new YarnLockDetectable(environment, fileFinder, detectExecutableResolver, yarnLockExtractor());
+        return new YarnLockDetectable(environment, fileFinder, detectExecutableResolver, yarnLockExtractor(), detectableOptionFactory.createYarnLockOptions());
     }
 }
