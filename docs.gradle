@@ -11,7 +11,6 @@ import groovy.io.FileType
 
 def outputPath = "docs/generated"
 def templatePath = "docs/templates"
-def staticPath = "docs/static"
 def helpPropertiesPath = "docs/data/help.properties"
 
 task helpJson(type: JavaExec) {
@@ -50,17 +49,6 @@ task helpData() {
         helpData.ext.helpJson = helpJson
         helpData.ext.templates = cfg
         helpData.ext.output = output
-    }
-}
-
-task staticMarkdown() {
-    dependsOn helpData
-    doLast {
-        def staticFiles = file(staticPath)
-        copy {
-            from staticFiles
-            into helpData.output
-        }
     }
 }
 
@@ -199,7 +187,6 @@ task generatedContent() {
 }
 
 task docs() {
-    dependsOn staticMarkdown
     dependsOn generatedContent
     dependsOn generatedPropertyMarkdown
     dependsOn generatedExitCodeMarkdown
