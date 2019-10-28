@@ -24,7 +24,6 @@ package com.synopsys.integration.detectable.detectables.yarn.parse;
 
 import java.util.List;
 
-//All we need from a 'Yarn Lock' is the ability to resolve a real version from a fuzzy version.
 public class YarnLock {
 
     public YarnLock(final List<YarnLockEntry> entries) {

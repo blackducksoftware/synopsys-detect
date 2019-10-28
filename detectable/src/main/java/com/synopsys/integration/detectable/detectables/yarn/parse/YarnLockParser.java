@@ -23,17 +23,15 @@
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
 public class YarnLockParser {
-    public static final String COMMENT_PREFIX = "#";
-    public static final String VERSION_PREFIX = "version \"";
-    public static final String VERSION_SUFFIX = "\"";
-    public static final String OPTIONAL_DEPENDENCIES_TOKEN = "optionalDependencies:";
+    private static final String COMMENT_PREFIX = "#";
+    private static final String VERSION_PREFIX = "version \"";
+    private static final String VERSION_SUFFIX = "\"";
+    private static final String OPTIONAL_DEPENDENCIES_TOKEN = "optionalDependencies:";
 
     private final YarnLineLevelParser lineLevelParser;
 
@@ -42,8 +40,6 @@ public class YarnLockParser {
     }
 
     public YarnLock parseYarnLock(final List<String> yarnLockFileAsList) {
-        final Map<String, String> yarnLockResolvedVersions = new HashMap<>();
-
         final List<YarnLockEntry> entries = new ArrayList<>();
         String resolvedVersion = "";
         List<YarnLockDependency> dependencies = new ArrayList<>();
@@ -88,11 +84,11 @@ public class YarnLockParser {
     }
 
     private List<YarnLockEntryId> getFuzzyIdsFromLine(final String s) {
-        final List<YarnLockEntryId> ids = new ArrayList<YarnLockEntryId>();
+        final List<YarnLockEntryId> ids = new ArrayList<>();
         final String[] lines = s.split(",");
         for (final String line : lines) {
             final String cleanedLine = removeWrappingQuotes(StringUtils.removeEnd(line.trim(), ":"));
-            final int last = cleanedLine.trim().lastIndexOf("@");
+            final int last = cleanedLine.trim().lastIndexOf('@');
             final String name = cleanedLine.substring(0, last);
             final String version = cleanedLine.substring(last + 1);
             ids.add(new YarnLockEntryId(name, version));
@@ -100,9 +96,8 @@ public class YarnLockParser {
         return ids;
     }
 
-    private String getVersionFromLine(final String s) {
-        final String[] lines = s.split(",");
-        final String rawVersion = s.substring(VERSION_PREFIX.length(), s.lastIndexOf(VERSION_SUFFIX));
+    private String getVersionFromLine(final String line) {
+        final String rawVersion = line.substring(VERSION_PREFIX.length(), line.lastIndexOf(VERSION_SUFFIX));
         return removeWrappingQuotes(rawVersion);
     }
 }

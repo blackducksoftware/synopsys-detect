@@ -45,13 +45,12 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.Pipenv
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.YarnResolver;
 import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 
 //this will cache the find result.
 public class SimpleExecutableResolver
-    implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, YarnResolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, JavaResolver,
-                   DotNetResolver, DockerResolver, GitResolver, SwiftResolver, GoResolver {
+    implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, JavaResolver, DotNetResolver,
+                   DockerResolver, GitResolver, SwiftResolver, GoResolver {
 
     private final CachedExecutableResolverOptions executableResolverOptions;
     private final SimpleLocalExecutableFinder localExecutableFinder;
@@ -116,11 +115,6 @@ public class SimpleExecutableResolver
     @Override
     public File resolveRebar3() {
         return findCachedSystem("rebar3");
-    }
-
-    @Override
-    public File resolveYarn() {
-        return findCachedSystem("yarn");
     }
 
     @Override

@@ -28,8 +28,6 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.resolver.YarnResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
@@ -40,19 +38,15 @@ public class YarnLockDetectable extends Detectable {
     private static final String YARN_PACKAGE_JSON = "package.json";
 
     private final FileFinder fileFinder;
-    private final YarnResolver yarnResolver;
     private final YarnLockExtractor yarnLockExtractor;
-    private final YarnLockOptions yarnLockOptions;
 
     private File yarnLock;
     private File packageJson;
 
-    public YarnLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final YarnResolver yarnResolver, final YarnLockExtractor yarnLockExtractor, final YarnLockOptions yarnLockOptions) {
+    public YarnLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final YarnLockExtractor yarnLockExtractor) {
         super(environment, "Yarn Lock", "YARN");
         this.fileFinder = fileFinder;
         this.yarnLockExtractor = yarnLockExtractor;
-        this.yarnResolver = yarnResolver;
-        this.yarnLockOptions = yarnLockOptions;
     }
 
     @Override
@@ -71,14 +65,12 @@ public class YarnLockDetectable extends Detectable {
     }
 
     @Override
-    public DetectableResult extractable() throws DetectableException {
-
+    public DetectableResult extractable() {
         return new PassedDetectableResult();
     }
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return yarnLockExtractor.extract(environment.getDirectory(), yarnLock, packageJson, yarnLockOptions);
+        return yarnLockExtractor.extract(yarnLock, packageJson);
     }
-
 }

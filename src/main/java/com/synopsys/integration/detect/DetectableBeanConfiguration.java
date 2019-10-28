@@ -183,7 +183,6 @@ import com.synopsys.integration.detectable.detectables.swift.SwiftPackageTransfo
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLineLevelParser;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 
@@ -541,11 +540,6 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
-    public YarnListParser yarnListParser() {
-        return new YarnListParser(yarnLineLevelParser());
-    }
-
-    @Bean
     public YarnLockParser yarnLockParser() {
         return new YarnLockParser(yarnLineLevelParser());
     }
@@ -562,7 +556,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public YarnLockExtractor yarnLockExtractor() {
-        return new YarnLockExtractor(yarnListParser(), executableRunner, yarnLockParser(), detectableOptionFactory.createYarnLockOptions(), yarnTransformer());
+        return new YarnLockExtractor(yarnLockParser(), detectableOptionFactory.createYarnLockOptions(), yarnTransformer(), gson);
     }
 
     @Bean
@@ -902,6 +896,6 @@ public class DetectableBeanConfiguration {
     @Bean
     @Scope(scopeName = BeanDefinition.SCOPE_PROTOTYPE)
     public YarnLockDetectable yarnLockBomTool(final DetectableEnvironment environment) {
-        return new YarnLockDetectable(environment, fileFinder, detectExecutableResolver, yarnLockExtractor(), detectableOptionFactory.createYarnLockOptions());
+        return new YarnLockDetectable(environment, fileFinder, yarnLockExtractor());
     }
 }
