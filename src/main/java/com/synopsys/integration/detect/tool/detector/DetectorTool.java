@@ -106,10 +106,10 @@ public class DetectorTool {
         detectorEvaluator.searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
 
         final Set<DetectorType> applicable = detectorEvaluations.stream()
-                                           .filter(DetectorEvaluation::isApplicable)
-                                           .map(DetectorEvaluation::getDetectorRule)
-                                           .map(DetectorRule::getDetectorType)
-                                           .collect(Collectors.toSet());
+                                                 .filter(DetectorEvaluation::isApplicable)
+                                                 .map(DetectorEvaluation::getDetectorRule)
+                                                 .map(DetectorRule::getDetectorType)
+                                                 .collect(Collectors.toSet());
 
         eventSystem.publishEvent(Event.ApplicableCompleted, applicable);
         eventSystem.publishEvent(Event.SearchCompleted, rootEvaluation);
@@ -156,7 +156,21 @@ public class DetectorTool {
         final Map<DetectorType, StatusType> statusMap = extractStatus(detectorEvaluations);
         statusMap.forEach((detectorType, statusType) -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(detectorType, statusType)));
         if (statusMap.containsValue(StatusType.FAILURE)) {
-            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "One or more detectors were not succesfull."));
+            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "One or more detectors were not successful."));
+        }
+
+        logger.debug("Publishing file events.");
+        for (final DetectorEvaluation detectorEvaluation : detectorEvaluations) {
+            if (detectorEvaluation.getDetectable() != null) {
+                for (final File file : detectorEvaluation.getDetectable().getFoundRelevantFiles()) {
+                    eventSystem.publishEvent(Event.CustomerFileOfInterest, file);
+                }
+            }
+            if (detectorEvaluation.getExtraction() != null) {
+                for (final File file : detectorEvaluation.getExtraction().getRelevantFiles()) {
+                    eventSystem.publishEvent(Event.CustomerFileOfInterest, file);
+                }
+            }
         }
 
         final DetectorToolResult detectorToolResult = new DetectorToolResult();
