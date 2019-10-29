@@ -1,7 +1,7 @@
-# Black Duck user role requirements
+# ${blackduck_product_name} user role requirements
 
 Overview:
-* Project Creator role is required to create Black Duck projects.
+* Project Creator role is required to create ${blackduck_product_name} projects.
 * Global Code Scanner is required to populate the project BOM.
 * BOM Manager is required to generate reports.
 

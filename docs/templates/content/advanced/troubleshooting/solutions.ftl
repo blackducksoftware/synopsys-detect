@@ -30,12 +30,12 @@ DETECT_SOURCE was not set or computed correctly, please check your configuration
 
 If the curl command described above does not successfully return a value for property DETECT_LATEST, you must determine why, and make the changes necessary so that curl command works.
 
-## Docker Inspector error fails after logging: "The Black Duck url must be specified"
+## Docker Inspector error fails after logging: "The ${blackduck_product_name} url must be specified"
 
 ### Symptom
 
 When running a version of ${solution_name} prior to ${solution_name} version 5.6.0, the ${solution_name} Status block reports DOCKER: FAILURE, and the following error appears in the Docker Inspector log:
-Docker Inspector error: Error inspecting image: The Black Duck url must be specified. Either an API token or a username/password must be specified.
+Docker Inspector error: Error inspecting image: The ${blackduck_product_name} url must be specified. Either an API token or a username/password must be specified.
 
 ### Possible cause
 
@@ -47,7 +47,7 @@ There are two possible solutions:
 1. Upgrade to ${solution_name} 5.6.0 or newer, or:
 1. Configure ${solution_name} to use Docker Inspector 8.1.6 with the argument: --detect.docker.inspector.version=8.1.6
 
-## ${solution_name} fails and a TRACE log shows an HTTP response from Black Duck of "402 Payment Required" or "502 Bad Gateway"
+## ${solution_name} fails and a TRACE log shows an HTTP response from ${blackduck_product_name} of "402 Payment Required" or "502 Bad Gateway"
 
 ### Symptom
 
@@ -55,8 +55,8 @@ ${solution_name} fails, and a TRACE log contains "402 Payment Required" or "502 
 
 ### Possible cause
 
-Black Duck does not have a required feature (notifications, binary analysis, etc.) enabled.
+${blackduck_product_name} does not have a required feature (notifications, binary analysis, etc.) enabled.
 
 ### Solution
 
-Enable the required feature on the Black Duck server.
+Enable the required feature on the ${blackduck_product_name} server.
