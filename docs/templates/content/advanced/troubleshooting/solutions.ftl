@@ -60,3 +60,21 @@ ${blackduck_product_name} does not have a required feature (notifications, binar
 ### Solution
 
 Enable the required feature on the ${blackduck_product_name} server.
+
+## Unexpected behavior running ${solution_name} on a project that uses Spring Boot
+
+### Symptom
+
+Unexpected behavior, and/or unexpected property values shown in the log.
+
+### Possible cause
+
+If your source directory contains Spring Framework configuration files named application.properties, application.yml,
+or application.xml that are written for any application other than ${solution_name}, you should not run ${solution_name} from your source directory.
+
+### Solution
+
+To prevent ${solution_name} from reading those files, run ${solution_name} from a different directory. Use the following property to point to your source directory.
+```
+--detect.source.path={project directory path}
+```
