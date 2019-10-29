@@ -169,7 +169,7 @@ task generatedDetectorMarkdown() {
 
         def template = helpData.templates.getTemplate("detectors.ftl")
         // TODO duplicated:
-        File structureOutputDir = new File(helpData.output, "program-structure")
+        File structureOutputDir = new File(helpData.output, "components")
         def markdown = new File(structureOutputDir, "detectors.md")
         markdown.withWriter('utf-8') { out -> template.process([build: buildGroups, buildless: buildlessGroups], out) }
     }
@@ -186,11 +186,11 @@ task generatedContent() {
             mdFile.withWriter('utf-8') { out -> fmTemplate.process(helpData.ext.helpJson.properties, out) }
         }
 
-        File structureOutputDir = new File(helpData.output, "program-structure")
+        File structureOutputDir = new File(helpData.output, "components")
         structureOutputDir.mkdirs()
-        new File("${projectDir}/docs/templates/content/program-structure").eachFile(FileType.FILES) { file ->
+        new File("${projectDir}/docs/templates/content/components").eachFile(FileType.FILES) { file ->
             String fmTemplateFilename = file.getName()
-            def fmTemplate = helpData.templates.getTemplate("content/program-structure/${fmTemplateFilename}")
+            def fmTemplate = helpData.templates.getTemplate("content/components/${fmTemplateFilename}")
             String mdFilename = fmTemplateFilename.take(fmTemplateFilename.lastIndexOf('.')) + ".md"
             def mdFile = new File(structureOutputDir, mdFilename)
             mdFile.withWriter('utf-8') { out -> fmTemplate.process(helpData.ext.helpJson.properties, out) }
@@ -205,12 +205,22 @@ task generatedContent() {
             def mdFile = new File(advancedOutputDir, mdFilename)
             mdFile.withWriter('utf-8') { out -> fmTemplate.process(helpData.ext.helpJson.properties, out) }
         }
-
-        File troubleshootingOutputDir = new File(helpData.output, "troubleshooting")
-        troubleshootingOutputDir.mkdirs()
-        new File("${projectDir}/docs/templates/content/troubleshooting").eachFile(FileType.FILES) { file ->
+        
+        File detailsOutputDir = new File(advancedOutputDir, "language-and-package-manager-support-details")
+        detailsOutputDir.mkdirs()
+        new File("${projectDir}/docs/templates/content/advanced/language-and-package-manager-support-details").eachFile(FileType.FILES) { file ->
             String fmTemplateFilename = file.getName()
-            def fmTemplate = helpData.templates.getTemplate("content/troubleshooting/${fmTemplateFilename}")
+            def fmTemplate = helpData.templates.getTemplate("content/advanced/language-and-package-manager-support-details/${fmTemplateFilename}")
+            String mdFilename = fmTemplateFilename.take(fmTemplateFilename.lastIndexOf('.')) + ".md"
+            def mdFile = new File(detailsOutputDir, mdFilename)
+            mdFile.withWriter('utf-8') { out -> fmTemplate.process(helpData.ext.helpJson.properties, out) }
+        }
+
+        File troubleshootingOutputDir = new File(advancedOutputDir, "troubleshooting")
+        troubleshootingOutputDir.mkdirs()
+        new File("${projectDir}/docs/templates/content/advanced/troubleshooting").eachFile(FileType.FILES) { file ->
+            String fmTemplateFilename = file.getName()
+            def fmTemplate = helpData.templates.getTemplate("content/advanced/troubleshooting/${fmTemplateFilename}")
             String mdFilename = fmTemplateFilename.take(fmTemplateFilename.lastIndexOf('.')) + ".md"
             def mdFile = new File(troubleshootingOutputDir, mdFilename)
             mdFile.withWriter('utf-8') { out -> fmTemplate.process(helpData.ext.helpJson.properties, out) }

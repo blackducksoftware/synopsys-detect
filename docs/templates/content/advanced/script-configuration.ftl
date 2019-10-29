@@ -1,6 +1,6 @@
 # Shell script configuration
 
-The ${solution_name} bash and powershell scripts use the following (optional) environment variables.
+The ${solution_name} Bash and PowerShell scripts use the following (optional) environment variables.
 
 ### DETECT_SOURCE
 
@@ -16,21 +16,21 @@ If neither DETECT_SOURCE nor DETECT_LATEST_RELEASE_VERSION is specified, the scr
 
 ### DETECT_JAR_PATH
 
-If DETECT_JAR_PATH is provided, the script will use this location when downloading and running detect. The location of the jar will be DETECT_JAR_PATH/${project_name}-{version}.jar. The bash script will default to '/tmp' if no option is specified.
+If DETECT_JAR_PATH is provided, the script will use this location when downloading and running detect. The location of the jar will be DETECT_JAR_PATH/${project_name}-{version}.jar. The Bash script will default to '/tmp' if no option is specified.
 
-### TMP (Powershell Only)
+### TMP (PowerShell Only)
 
 If DETECT_JAR_PATH is not provided, the script will use the environment 'TMP' variable as the folder for the ${solution_name} jar path.
 
-### $HOME (Powershell Only)
+### $HOME (PowerShell Only)
 
 If DETECT_JAR_PATH is not provided and no 'TMP' variable can be found, the '$HOME/tmp' folder will be used for the ${solution_name} jar path.
 
-### DETECT_EXIT_CODE_PASSTHRU (Powershell Only)
+### DETECT_EXIT_CODE_PASSTHRU (PowerShell Only)
 
 Setting this variable to '1' will cause the script to simply return the exit code but not exit. By default, the ${solution_name} PowerShell script will exit with the exit code of ${solution_name}. This is desirable because many CI's such as TFS will look at the scripts exit code to decide build status. However it may be undesirable to exit the script such as when debugging in a terminal.
 
-### DETECT_SKIP_JAVA_TEST (Powershell Only)
+### DETECT_SKIP_JAVA_TEST (PowerShell Only)
 
 Setting this variable to '1' causes the script not to ensure that java is on the path. By default the script will attempt to execute "java -version" to ensure that java is available and executable.
 
