@@ -26,6 +26,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Extraction;
@@ -50,7 +51,12 @@ public class GitCliExtractor {
     public Extraction extract(final File gitExecutable, final File directory) {
         try {
             final String repoName = getRepoName(gitExecutable, directory);
-            final String branch = getRepoBranch(gitExecutable, directory);
+            String branch = getRepoBranch(gitExecutable, directory);
+
+            if ("HEAD".equals(branch)) {
+                logger.info("HEAD is detached for this repo, using heuristics to find Git branch.");
+                branch = getRepoBranchBackup(gitExecutable, directory);
+            }
 
             return new Extraction.Builder()
                        .success()
@@ -72,6 +78,19 @@ public class GitCliExtractor {
 
     private String getRepoBranch(final File gitExecutable, final File directory) throws ExecutableRunnerException, IntegrationException {
         return runGitSingleLinesResponse(gitExecutable, directory, "rev-parse", "--abbrev-ref", "HEAD").trim();
+    }
+
+    private String getRepoBranchBackup(final File gitExecutable, final File directory) throws ExecutableRunnerException, IntegrationException {
+        String output = runGitSingleLinesResponse(gitExecutable, directory, "log", "-n", "1", "--pretty=%d", "HEAD").trim();
+        output = StringUtils.removeStart(output, "(");
+        output = StringUtils.removeEnd(output, ")");
+        final String[] pieces = output.split(", ");
+
+        if (pieces.length != 2 || pieces[1].startsWith("tag: ")) {
+            throw new IntegrationException("Failed to extract branch on second attempt.");
+        }
+
+        return pieces[1];
     }
 
     private String runGitSingleLinesResponse(final File gitExecutable, final File directory, final String... commands) throws ExecutableRunnerException, IntegrationException {

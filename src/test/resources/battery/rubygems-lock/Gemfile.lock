@@ -1,0 +1,39 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    addressable (2.6.0)
+      public_suffix (>= 2.0.2, < 4.0)
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
+    http (3.0.0)
+      addressable (~> 2.3)
+      http-cookie (~> 1.0)
+      http-form_data (>= 2.0.0.pre.pre2, < 3)
+      http_parser.rb (~> 0.6.0)
+    http-cookie (1.0.3)
+      domain_name (~> 0.5)
+    http-form_data (2.1.1)
+    http_parser.rb (0.6.0)
+    m2h (0.2.0)
+      redcarpet (>= 3.0.0)
+    public_suffix (2.0.5)
+    rack (1.6.11)
+    rake (12.3.3)
+    redcarpet (3.5.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.6)
+    zip (2.0.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  http
+  m2h
+  rack
+  rake
+  zip
+
+BUNDLED WITH
+   1.16.4

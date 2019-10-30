@@ -22,22 +22,17 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.List;
 
-//All we need from a 'Yarn Lock' is the ability to resolve a real version from a fuzzy version.
 public class YarnLock {
-    private Map<String, String> fuzzyIdToResolvedVersionMap;
 
-    public YarnLock(final Map<String, String> fuzzyIdToResolvedVersionMap) {
-        this.fuzzyIdToResolvedVersionMap = fuzzyIdToResolvedVersionMap;
+    public YarnLock(final List<YarnLockEntry> entries) {
+        this.entries = entries;
     }
 
-    public Optional<String> versionForFuzzyId(String fuzzyId) {
-        if (fuzzyIdToResolvedVersionMap.containsKey(fuzzyId)){
-            return Optional.of(fuzzyIdToResolvedVersionMap.get(fuzzyId));
-        } else {
-            return Optional.empty();
-        }
+    public List<YarnLockEntry> getEntries() {
+        return entries;
     }
+
+    private final List<YarnLockEntry> entries;
 }

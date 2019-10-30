@@ -32,6 +32,7 @@ import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectResult;
 import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorType;
@@ -59,6 +60,6 @@ public class Event {
     public static final EventType<Status> StatusSummary = new EventType<>(Status.class);
     public static final EventType<DetectIssue> Issue = new EventType<>(DetectIssue.class);
     public static final EventType<DetectResult> ResultProduced = new EventType<>(DetectResult.class);
-    public static final EventType<File> OutputFileOfInterest = new EventType<>(File.class);
     public static final EventType<File> CustomerFileOfInterest = new EventType<>(File.class);
+    public static final EventType<ExecutableOutput> Executable = new EventType<>(ExecutableOutput.class);
 }

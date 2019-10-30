@@ -60,13 +60,15 @@ public class NpmPackageLockDetectable extends Detectable {
         lockfile = fileFinder.findFile(environment.getDirectory(), PACKAGE_LOCK_JSON);
         if (lockfile == null) {
             return new FileNotFoundDetectableResult(PACKAGE_LOCK_JSON);
+        } else {
+            relevantFiles.add(lockfile);
         }
 
-        final File foundPackageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
-        if (foundPackageJson == null) {
+        packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
+        if (packageJson == null) {
             logger.warn("Npm applied but it could not find a package.json so dependencies may not be entirely accurate.");
         } else {
-            packageJson = foundPackageJson;
+            relevantFiles.add(packageJson);
         }
 
         return new PassedDetectableResult();

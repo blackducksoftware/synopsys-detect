@@ -39,6 +39,7 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
+import com.synopsys.integration.detect.tool.detector.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.DetectFileFinder;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
@@ -58,7 +59,6 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleLocalExecutableFinder;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -152,7 +152,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public ExecutableRunner executableRunner() {
-        return new SimpleExecutableRunner();
+        return new DetectExecutableRunner(eventSystem);
     }
 
     @Bean

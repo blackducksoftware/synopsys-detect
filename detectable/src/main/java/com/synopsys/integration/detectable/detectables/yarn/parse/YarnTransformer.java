@@ -22,20 +22,18 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 
 public class YarnTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -45,35 +43,33 @@ public class YarnTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(List<YarnListNode> yarnList, YarnLock yarnLock){
-        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        final DependencyHistory history = new DependencyHistory();
+    public DependencyGraph transform(final PackageJson packageJson, final YarnLock yarnLock, final YarnLockOptions yarnLockOptions) {
+        final LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
-        for (YarnListNode yarnListNode : yarnList){
-            int actualDepth = yarnListNode.getDepth() - 1;//"yarn list" is the root node, so we need to shift the entire tree 1 level to the left.
-            try {
-                history.clearDependenciesDeeperThan(actualDepth);
-            } catch (final IllegalStateException e) {
-                logger.warn(String.format("Problem parsing yarn list '%s': %s", yarnListNode.getFuzzyId(), e.getMessage()));
-            }
-
-            String name = yarnListNode.getPackageName();
-            Optional<String> resolvedVersion = yarnLock.versionForFuzzyId(yarnListNode.getFuzzyId());
-            String version = resolvedVersion.orElse(yarnListNode.getFuzzyPackageVersion());
-
-            final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
-            Dependency dependency = new Dependency(name, version, externalId);
-
-
-            if (history.isEmpty()) {
-                graph.addChildToRoot(dependency);
-            } else {
-                graph.addChildWithParents(dependency, history.getLastDependency());
-            }
-
-            history.add(dependency);
+        for (final Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
+            graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
         }
 
-        return graph;
+        if (!yarnLockOptions.useProductionOnly()) {
+            for (final Map.Entry<String, String> packageDependency : packageJson.devDependencies.entrySet()) {
+                graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
+            }
+        }
+
+        for (final YarnLockEntry entry : yarnLock.getEntries()) {
+            for (final YarnLockEntryId entryId : entry.getIds()) {
+                final StringDependencyId id = new StringDependencyId(entryId.getName() + "@" + entryId.getVersion());
+                graphBuilder.setDependencyExternalId(id, externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
+                for (final YarnLockDependency dependency : entry.getDependencies()) {
+                    final StringDependencyId stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());
+                    if ((yarnLockOptions.useProductionOnly() && !dependency.isOptional()) || (!yarnLockOptions.useProductionOnly())) {
+                        graphBuilder.addChildWithParent(stringDependencyId, id);
+                    } else {
+                        logger.debug(String.format("Eluding optional dependency: %s", stringDependencyId.value));
+                    }
+                }
+            }
+        }
+        return graphBuilder.build();
     }
 }

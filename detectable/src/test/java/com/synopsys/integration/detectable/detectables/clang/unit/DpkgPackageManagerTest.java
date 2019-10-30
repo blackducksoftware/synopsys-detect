@@ -53,11 +53,11 @@ public class DpkgPackageManagerTest {
 
         final String pkgMgrVersionOutput = sb.toString();
 
-        String packageName = "libc6-dev";
+        final String packageName = "libc6-dev";
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput(0, pkgMgrVersionOutput, ""));
+        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput("", 0, pkgMgrVersionOutput, ""));
 
-        DpkgVersionResolver dpkgVersionResolver = new DpkgVersionResolver();
+        final DpkgVersionResolver dpkgVersionResolver = new DpkgVersionResolver();
         final DpkgPackageManagerResolver pkgMgr = new DpkgPackageManagerResolver(dpkgVersionResolver);
 
         final List<PackageDetails> pkgs = pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().dpkg(), executableRunner, null, pkgMgrOwnedByOutput);
@@ -108,11 +108,11 @@ public class DpkgPackageManagerTest {
 
         final String pkgMgrVersionOutput = sb.toString();
 
-        String packageName = "login";
+        final String packageName = "login";
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput(0, pkgMgrVersionOutput, ""));
+        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput("", 0, pkgMgrVersionOutput, ""));
 
-        DpkgVersionResolver dpkgVersionResolver = new DpkgVersionResolver();
+        final DpkgVersionResolver dpkgVersionResolver = new DpkgVersionResolver();
         final DpkgPackageManagerResolver pkgMgr = new DpkgPackageManagerResolver(dpkgVersionResolver);
 
         final List<PackageDetails> pkgs = pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().dpkg(), executableRunner, null, pkgMgrOwnedByOutput);

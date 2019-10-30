@@ -1,0 +1,56 @@
+{
+  "GID": 1002,
+  "UID": 1000,
+  "channels": [
+    "https://conda.anaconda.org/conda-forge/linux-64",
+    "https://conda.anaconda.org/conda-forge/noarch",
+    "https://repo.continuum.io/pkgs/free/linux-64",
+    "https://repo.continuum.io/pkgs/free/noarch",
+    "https://repo.continuum.io/pkgs/r/linux-64",
+    "https://repo.continuum.io/pkgs/r/noarch",
+    "https://repo.continuum.io/pkgs/pro/linux-64",
+    "https://repo.continuum.io/pkgs/pro/noarch"
+  ],
+  "conda_build_version": "3.0.15",
+  "conda_env_version": "4.3.25",
+  "conda_location": "/home/jenkins/miniconda3/lib/python3.6/site-packages/conda",
+  "conda_prefix": "/home/jenkins/miniconda3",
+  "conda_private": false,
+  "conda_version": "4.3.25",
+  "default_prefix": "/home/jenkins/miniconda3",
+  "env_vars": {
+    "CIO_TEST": "<not set>",
+    "CONDA_DEFAULT_ENV": "<not set>",
+    "CONDA_ENVS_PATH": "<not set>",
+    "LD_LIBRARY_PATH": "<not set>",
+    "PATH": "/var/lib/jenkins_slave/workspace/linux-conda/venv/bin:/usr/lib/jvm/java-openjdk//bin:/home/jenkins/miniconda3/bin:/usr/local/bin:/usr/bin:/opt/puppetlabs/bin:/home/jenkins/go/bin/:/home/jenkin/miniconda3/bin:/usr/local/bin/:/home/jenkins/.linuxbrew/bin/:/usr/local/go/bin/:/usr/bin/:/opt/rh/rh-php56/root/usr/bin/:/usr/lib/apache-maven-3.5.0/bin:/home/jenkins/go/bin/:/home/jenkin/miniconda3/bin:/usr/local/bin/:/home/jenkins/.linuxbrew/bin/:/usr/local/go/bin/:/usr/bin/:/opt/rh/rh-php56/root/usr/bin/:/usr/lib/apache-maven-3.5.0/bin:/home/jenkins/go/bin/:/home/jenkin/miniconda3/bin:/usr/local/bin/:/home/jenkins/.linuxbrew/bin/:/usr/local/go/bin/:/usr/bin/:/opt/rh/rh-php56/root/usr/bin/:/usr/lib/apache-maven-3.5.0/bin",
+    "PYTHONHOME": "<not set>",
+    "PYTHONPATH": "<not set>"
+  },
+  "envs": [
+    "/home/jenkins/miniconda3/envs/cate"
+  ],
+  "envs_dirs": [
+    "/home/jenkins/miniconda3/envs",
+    "/home/jenkins/.conda/envs"
+  ],
+  "netrc_file": null,
+  "offline": false,
+  "pkgs_dirs": [
+    "/home/jenkins/miniconda3/pkgs",
+    "/home/jenkins/.conda/pkgs"
+  ],
+  "platform": "linux-64",
+  "python_version": "3.6.1.final.0",
+  "rc_path": "/home/jenkins/.condarc",
+  "requests_version": "2.14.2",
+  "root_prefix": "/home/jenkins/miniconda3",
+  "root_writable": true,
+  "site_dirs": [],
+  "sys.executable": "/home/jenkins/miniconda3/bin/python",
+  "sys.prefix": "/home/jenkins/miniconda3",
+  "sys.version": "3.6.1 |Continuum Analytics, Inc.| (default, May 11 2017, 13:09:58) \n[GCC 4.4.7 20120313 (Red Hat 4.4.7-1)]",
+  "sys_rc_path": "/home/jenkins/miniconda3/.condarc",
+  "user_agent": "conda/4.3.25 requests/2.14.2 CPython/3.6.1 Linux/3.10.0-514.26.2.el7.x86_64 CentOS Linux/7.3.1611 glibc/2.17",
+  "user_rc_path": "/home/jenkins/.condarc"
+}

@@ -22,7 +22,9 @@
  */
 package com.synopsys.integration.detectable;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,7 @@ import com.synopsys.integration.util.NameVersion;
 
 public class Extraction {
     private final List<CodeLocation> codeLocations;
+    private final List<File> relevantFiles;
     private final ExtractionResultType result;
     private final Exception error;
     private final String description;
@@ -50,6 +53,7 @@ public class Extraction {
         this.projectVersion = builder.projectVersion;
         this.projectName = builder.projectName;
         this.metaData = builder.metaData;
+        this.relevantFiles = builder.relevantFiles;
 
         if (result == null) {
             throw new IllegalArgumentException("An extraction requires a result type.");
@@ -58,8 +62,8 @@ public class Extraction {
 
     public <T> Optional<T> getMetaData(final ExtractionMetadata<T> extractionMetadata) {
         if (metaData.containsKey(extractionMetadata)) {
-            Class<T> clazz = extractionMetadata.getMetadataClass();
-            Object value = metaData.get(extractionMetadata);
+            final Class<T> clazz = extractionMetadata.getMetadataClass();
+            final Object value = metaData.get(extractionMetadata);
             if (value != null && clazz.isAssignableFrom(value.getClass())) {
                 return Optional.of(clazz.cast(value));
             }
@@ -97,8 +101,13 @@ public class Extraction {
         return result;
     }
 
+    public List<File> getRelevantFiles() {
+        return relevantFiles;
+    }
+
     public static class Builder {
         private final List<CodeLocation> codeLocations = new ArrayList<>();
+        private final List<File> relevantFiles = new ArrayList<>();
         private ExtractionResultType result;
         private Exception error;
         private String description;
@@ -166,6 +175,11 @@ public class Extraction {
 
         public <T> Builder metaData(final ExtractionMetadata<T> key, final T value) {
             this.metaData.put(key, value);
+            return this;
+        }
+
+        public Builder relevantFiles(final File... files) {
+            this.relevantFiles.addAll(Arrays.asList(files));
             return this;
         }
 

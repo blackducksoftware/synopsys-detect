@@ -58,6 +58,8 @@ public class NpmPackageJsonParseDetectable extends Detectable {
 
         if (packageJsonFile == null) {
             return new FileNotFoundDetectableResult(PACKAGE_JSON);
+        } else {
+            relevantFiles.add(packageJsonFile);
         }
 
         return new PassedDetectableResult();

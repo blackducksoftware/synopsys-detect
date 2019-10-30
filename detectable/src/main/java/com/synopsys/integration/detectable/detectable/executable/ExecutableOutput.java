@@ -29,15 +29,13 @@ public class ExecutableOutput {
     private int returnCode = 0;
     private final String standardOutput;
     private final String errorOutput;
+    private final String commandDescription;
 
-    public ExecutableOutput(final int returnCode, final String standardOutput, final String errorOutput) {
+    public ExecutableOutput(final String commandDescription, final int returnCode, final String standardOutput, final String errorOutput) {
+        this.commandDescription = commandDescription;
         this.returnCode = returnCode;
         this.standardOutput = standardOutput;
         this.errorOutput = errorOutput;
-    }
-
-    public ExecutableOutput(final String standardOutput, final String errorOutput) {
-        this(0, standardOutput, errorOutput);
     }
 
     public List<String> getStandardOutputAsList() {
@@ -58,5 +56,9 @@ public class ExecutableOutput {
 
     public int getReturnCode() {
         return returnCode;
+    }
+
+    public String getCommandDescription() {
+        return commandDescription;
     }
 }

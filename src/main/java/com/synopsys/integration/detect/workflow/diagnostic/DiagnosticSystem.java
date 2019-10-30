@@ -43,6 +43,8 @@ public class DiagnosticSystem {
     private final List<DetectOption> detectOptions;
     private DiagnosticReportHandler diagnosticReportHandler;
     private DiagnosticLogSystem diagnosticLogSystem;
+    private DiagnosticExecutableCapture diagnosticExecutableCapture;
+    private DiagnosticFileCapture diagnosticFileCapture;
     private final DetectRun detectRun;
     private final DetectInfo detectInfo;
     private final DirectoryManager directoryManager;
@@ -74,6 +76,10 @@ public class DiagnosticSystem {
         try {
             diagnosticReportHandler = new DiagnosticReportHandler(directoryManager.getReportOutputDirectory(), detectRun.getRunId(), eventSystem);
             diagnosticLogSystem = new DiagnosticLogSystem(directoryManager.getLogOutputDirectory(), eventSystem);
+            diagnosticExecutableCapture = new DiagnosticExecutableCapture(directoryManager.getExecutableOutputDirectory(), eventSystem);
+            if (isExtendedMode) {
+                diagnosticFileCapture = new DiagnosticFileCapture(directoryManager.getRelevantOutputDirectory(), eventSystem);
+            }
         } catch (final Exception e) {
             logger.error("Failed to process.", e);
         }
@@ -106,6 +112,22 @@ public class DiagnosticSystem {
             diagnosticLogSystem.finish();
         } catch (final Exception e) {
             logger.error("Failed to finish.", e);
+        }
+
+        try {
+            logger.info("Finishing executable capture.");
+            diagnosticExecutableCapture.finish();
+        } catch (final Exception e) {
+            logger.error("Failed to finish.", e);
+        }
+
+        if (diagnosticFileCapture != null) {
+            try {
+                logger.info("Finishing file capture.");
+                diagnosticFileCapture.finish();
+            } catch (final Exception e) {
+                logger.error("Failed to finish.", e);
+            }
         }
 
         logger.info("Creating diagnostics zip.");
