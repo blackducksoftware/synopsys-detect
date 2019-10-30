@@ -22,11 +22,16 @@
  */
 package com.synopsys.integration.detectable;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 
 public abstract class Detectable {
     protected DetectableEnvironment environment;
+    protected List<File> relevantFiles = new ArrayList<>();
     private final String name;
     private final String group;
 
@@ -73,5 +78,9 @@ public abstract class Detectable {
 
     public String getDescriptiveName() {
         return String.format("%s - %s", getGroupName(), getName());
+    }
+
+    public List<File> getFoundRelevantFiles() {
+        return relevantFiles;
     }
 }

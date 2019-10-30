@@ -1,0 +1,182 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "dwCheckApi/2.0.0.0/dwCheckApi.DTO/dwCheckApi.DTO.csproj/dwCheckApi/2.0.0.0 nuget/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-6.0.0-SNAPSHOT",
+        "Tool: IntegrationBdio-18.1.0"
+      ],
+      "spdx:created": "2019-10-01T16:47:50.875Z"
+    },
+    "@id": "uuid:01541de0-c1f9-41bf-b233-367e6d3d4dd7",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "dwCheckApi",
+    "revision": "2.0.0.0",
+    "@id": "http:nuget/dwCheckApi/2_0_0_0",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "dwCheckApi/2.0.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "name": "dwCheckApi",
+        "version": "2.0.0.0"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft_NETCore_App/2_0_0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft.NETCore.App",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft_NETCore_App/2_0_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.NETCore.App/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "name": "Microsoft.NETCore.App",
+        "version": "2.0.0"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft_NETCore_Platforms/2_0_0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/NETStandard_Library/2_0_0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:nuget/Microsoft_NETCore_DotNetHostPolicy/2_0_0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft.NETCore.Platforms",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft_NETCore_Platforms/2_0_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.NETCore.Platforms/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "name": "Microsoft.NETCore.Platforms",
+        "version": "2.0.0"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "NETStandard.Library",
+    "revision": "2.0.0",
+    "@id": "http:nuget/NETStandard_Library/2_0_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "NETStandard.Library/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "name": "NETStandard.Library",
+        "version": "2.0.0"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft_NETCore_Platforms/2_0_0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft.NETCore.DotNetHostPolicy",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft_NETCore_DotNetHostPolicy/2_0_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.NETCore.DotNetHostPolicy/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "name": "Microsoft.NETCore.DotNetHostPolicy",
+        "version": "2.0.0"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft_NETCore_DotNetHostResolver/2_0_0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft.NETCore.DotNetHostResolver",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft_NETCore_DotNetHostResolver/2_0_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.NETCore.DotNetHostResolver/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "name": "Microsoft.NETCore.DotNetHostResolver",
+        "version": "2.0.0"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:nuget/Microsoft_NETCore_DotNetAppHost/2_0_0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "Microsoft.NETCore.DotNetAppHost",
+    "revision": "2.0.0",
+    "@id": "http:nuget/Microsoft_NETCore_DotNetAppHost/2_0_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "nuget",
+      "externalId": "Microsoft.NETCore.DotNetAppHost/2.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "nuget",
+          "separator": "/"
+        },
+        "name": "Microsoft.NETCore.DotNetAppHost",
+        "version": "2.0.0"
+      }
+    },
+    "relationship": []
+  }
+]

@@ -34,10 +34,10 @@ public class ApkPackageManagerTest {
         final ApkArchitectureResolver architectureResolver = Mockito.mock(ApkArchitectureResolver.class);
         Mockito.when(architectureResolver.resolveArchitecture(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Optional.of("x86_64"));
 
-        ApkPackageManagerResolver apkPackageManagerResolver = new ApkPackageManagerResolver(architectureResolver);
+        final ApkPackageManagerResolver apkPackageManagerResolver = new ApkPackageManagerResolver(architectureResolver);
 
-        ClangPackageManagerInfo apk = new ClangPackageManagerInfoFactory().apk();
-        List<PackageDetails> pkgs = apkPackageManagerResolver.resolvePackages(apk, null, null, pkgMgrOwnedByOutput);
+        final ClangPackageManagerInfo apk = new ClangPackageManagerInfoFactory().apk();
+        final List<PackageDetails> pkgs = apkPackageManagerResolver.resolvePackages(apk, null, null, pkgMgrOwnedByOutput);
 
         assertEquals(1, pkgs.size());
         assertEquals("musl-dev", pkgs.get(0).getPackageName());
@@ -47,13 +47,13 @@ public class ApkPackageManagerTest {
 
     @Test
     public void canParseArchitecture() throws ExecutableRunnerException {
-        String exampleOutput = "x86_64\n";
+        final String exampleOutput = "x86_64\n";
 
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        Mockito.when(executableRunner.execute(null, "apk", Arrays.asList("info", "--print-arch"))).thenReturn(new ExecutableOutput(0, exampleOutput, ""));
+        Mockito.when(executableRunner.execute(null, "apk", Arrays.asList("info", "--print-arch"))).thenReturn(new ExecutableOutput("", 0, exampleOutput, ""));
 
         final ApkArchitectureResolver architectureResolver = new ApkArchitectureResolver();
-        Optional<String> architecture = architectureResolver.resolveArchitecture(new ClangPackageManagerInfoFactory().apk(), null, executableRunner);
+        final Optional<String> architecture = architectureResolver.resolveArchitecture(new ClangPackageManagerInfoFactory().apk(), null, executableRunner);
 
         assertTrue(architecture.isPresent());
         assertEquals("x86_64", architecture.get());

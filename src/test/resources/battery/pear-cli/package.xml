@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.7.1" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+http://pear.php.net/dtd/tasks-1.0.xsd
+http://pear.php.net/dtd/package-2.0
+http://pear.php.net/dtd/package-2.0.xsd">
+ <name>HTTP</name>
+ <channel>pear.php.net</channel>
+ <summary>Miscellaneous HTTP utilities</summary>
+ <description>The HTTP class is a class with static methods for doing
+miscellaneous HTTP related stuff like date formatting,
+language negotiation or HTTP redirection.
+
+ </description>
+ <lead>
+  <name>Michael Wallner</name>
+  <user>mike</user>
+  <email>mike@php.net</email>
+  <active>yes</active>
+ </lead>
+ <lead>
+  <name>Philippe Jausions</name>
+  <user>jausions</user>
+  <email>jausions@php.net</email>
+  <active>yes</active>
+ </lead>
+ <date>2008-08-31</date>
+ <time>16:07:15</time>
+ <version>
+  <release>1.4.1</release>
+  <api>1.4.1</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://www.opensource.org/licenses/bsd-license.php">New BSD License</license>
+ <notes>* Fixed bug #7130 - HTTP::absoluteUri(&quot;?foo&quot;) loses path
+* Fixed bug #12672 - PHP_SELF ending on / causes incorrect redirects
+* Fixed bug #12571 - Wrong license in package.xml
+* Fixed bug #12759 - DOS linebreaks
+* Fixed req #9148 - Added negotiateCharset() method
+* Fixed req #11060 - Added negotiateMimeType() method
+* Added regression tests
+* Bump to package.xml v2.0
+* Added failover JavaScript for redirect()
+ </notes>
+ <contents>
+  <dir name="/">
+   <file name="HTTP.php" role="php" />
+   <dir name="tests">
+    <file name="absoluteURI.inc" role="test" />
+    <file name="test1a.phpt" role="test" />
+    <file name="test2a.phpt" role="test" />
+    <file name="test3a.phpt" role="test" />
+    <file name="test4a.phpt" role="test" />
+    <file name="test5a.phpt" role="test" />
+    <file name="test6a.phpt" role="test" />
+    <file name="negotiateLanguage.phpt" role="test" />
+    <file name="negotiateMimeType.phpt" role="test" />
+    <file name="negotiateCharset.phpt" role="test" />
+    <file name="negotiateCharset2.phpt" role="test" />
+   </dir> <!-- /tests -->
+  </dir> <!-- / -->
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>4.0.6</min>
+   </php>
+   <pearinstaller>
+    <min>1.7.1</min>
+   </pearinstaller>
+   <package>
+    <name>PEAR</name>
+    <channel>pear.php.net</channel>
+   </package>
+   <extension>
+    <name>pcre</name>
+   </extension>
+  </required>
+ </dependencies>
+ <phprelease />
+</package>

@@ -43,4 +43,13 @@ class GitUrlParserTest {
 
         Assertions.assertEquals("blackducksoftware/synopsys-detect", repoName);
     }
+
+    @Test
+    void httpsEncodedUsernamePasswordUrl() throws MalformedURLException, IntegrationException {
+        final GitUrlParser gitUrlParser = new GitUrlParser();
+        final String remoteUrl = "https://USERNAME:PASSWORD@SERVER/test/path/to/blackducksoftware/synopsys-detect.git";
+        final String repoName = gitUrlParser.getRepoName(remoteUrl);
+
+        Assertions.assertEquals("blackducksoftware/synopsys-detect", repoName);
+    }
 }

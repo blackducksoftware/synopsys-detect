@@ -84,7 +84,6 @@ public class DiagnosticLogSystem {
         final File logFile = new File(logDir, extractionId.toUniqueString() + ".txt");
         extractionLogger = new DiagnosticLogger(logFile, Level.ALL);
         extractionLogger.startLogging();
-        logger.info("Redirected to file: " + logFile);
     }
 
     public void stopLoggingExtraction(final ExtractionId extractionId) {

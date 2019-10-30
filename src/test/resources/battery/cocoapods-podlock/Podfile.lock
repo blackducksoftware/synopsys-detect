@@ -1,0 +1,46 @@
+PODS:
+  - PromiseKit (4.4.0):
+    - PromiseKit/Foundation (= 4.4.0)
+    - PromiseKit/QuartzCore (= 4.4.0)
+    - PromiseKit/UIKit (= 4.4.0)
+  - PromiseKit/CorePromise (4.4.0)
+  - PromiseKit/Foundation (4.4.0):
+    - PromiseKit/CorePromise
+  - PromiseKit/QuartzCore (4.4.0):
+    - PromiseKit/CorePromise
+  - PromiseKit/UIKit (4.4.0):
+    - PromiseKit/CorePromise
+  - Socket.IO-Client-Swift (11.1.1):
+    - StarscreamSocketIO (~> 8.0.4)
+  - StarscreamSocketIO (8.0.4)
+  - SwiftHTTP (2.0.2)
+  - SwiftyJSON (3.1.4)
+  - ZIPFoundation (0.9.9)
+
+DEPENDENCIES:
+  - PromiseKit (~> 4.4)
+  - Socket.IO-Client-Swift (~> 11.1)
+  - SwiftHTTP
+  - SwiftyJSON (~> 3.1)
+  - ZIPFoundation (~> 0.9)
+
+SPEC REPOS:
+  trunk:
+    - PromiseKit
+    - Socket.IO-Client-Swift
+    - StarscreamSocketIO
+    - SwiftHTTP
+    - SwiftyJSON
+    - ZIPFoundation
+
+SPEC CHECKSUMS:
+  PromiseKit: ecf5fe92275d57ee77c9ede858af47a162e9b97e
+  Socket.IO-Client-Swift: 2e3a9602edf9d6e8d0b6869cf4f6014c7ca2924f
+  StarscreamSocketIO: 06614e7dad097dccee071a33550f1d775524c9b4
+  SwiftHTTP: faa1a5f7670568ffc9361898229dbe84a6088468
+  SwiftyJSON: c2842d878f95482ffceec5709abc3d05680c0220
+  ZIPFoundation: 89df685c971926b0323087952320bdfee9f0b6ef
+
+PODFILE CHECKSUM: b35b7e468682e9a2ad22f9d6ce5a9be7b523b743
+
+COCOAPODS: 1.8.1

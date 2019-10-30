@@ -148,6 +148,10 @@ public enum DetectProperty {
     DETECT_BAZEL_TARGET("detect.bazel.target", "Bazel Target", "5.2.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = GROUP_SOURCE_SCAN)
+    @HelpDescription("A comma-separated list of additional options to pass to the bazel cquery command.")
+    DETECT_BAZEL_CQUERY_OPTIONS("detect.bazel.cquery.options", "Bazel cquery additional options", "6.1.0", PropertyType.STRING, PropertyAuthority.NONE),
+
+    @HelpGroup(primary = GROUP_BAZEL, additional = GROUP_SOURCE_SCAN)
     @HelpDescription("The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.")
     @AcceptableValues(value = { "maven_jar", "maven_install", "UNSPECIFIED" }, caseSensitive = true, strict = true)
     DETECT_BAZEL_DEPENDENCY_RULE("detect.bazel.dependency.type", "Bazel workspace external dependency rule", "6.0.0", PropertyType.STRING, PropertyAuthority.NONE, "UNSPECIFIED"),
@@ -772,10 +776,6 @@ public enum DetectProperty {
     @HelpDetailed("This property and detect.tools provide control over which tools Detect runs.")
     @AcceptableValues(value = { "BAZEL", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
     DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "Detect Tools Excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.NONE),
-
-    @HelpDescription("The path to the Yarn executable.")
-    @HelpGroup(primary = GROUP_YARN, additional = { SEARCH_GROUP_GLOBAL })
-    DETECT_YARN_PATH("detect.yarn.path", "Yarn Executable", "4.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpDescription("Set this to true to only scan production dependencies.")
     @HelpGroup(primary = GROUP_YARN, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })

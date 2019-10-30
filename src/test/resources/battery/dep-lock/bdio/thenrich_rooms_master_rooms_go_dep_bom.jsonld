@@ -1,0 +1,472 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "thenrich/rooms/master/rooms go_dep/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-6.0.0-SNAPSHOT",
+        "Tool: IntegrationBdio-18.1.0"
+      ],
+      "spdx:created": "2019-10-07T22:16:58.694Z"
+    },
+    "@id": "uuid:bba57f21-825d-4c8b-bafa-13e5f53e1000",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "thenrich/rooms",
+    "revision": "master",
+    "@id": "http:detect/rooms",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "detect",
+      "externalId": "rooms",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "detect",
+          "separator": "/"
+        },
+        "path": "rooms"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:golang/github_com_stretchr_testify_assert/v1_4_0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/google_golang_org_appengine_internal_user/v1_6_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/google_golang_org_appengine_internal_log/v1_6_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/google_golang_org_appengine_aetest/v1_6_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/google_golang_org_appengine_internal_datastore/v1_6_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/google_golang_org_appengine_internal_base/v1_6_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github_com_davecgh_go_spew_spew/v1_1_1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/google_golang_org_appengine_internal_remote_api/v1_6_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github_com_gorilla_mux/v1_7_3",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/google_golang_org_appengine/v1_6_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/google_golang_org_appengine_internal_app_identity/v1_6_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/gopkg_in_yaml_v2/v2_2_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/google_golang_org_appengine_internal/v1_6_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/google_golang_org_appengine_log/v1_6_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/google_golang_org_appengine_internal_modules/v1_6_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/net_context/72f939374954d0a1b2a1e27dcda950e2724dd5c1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github_com_pmezard_go_difflib_difflib/v1_0_0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/github_com_golang_protobuf_proto/v1_3_2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:golang/google_golang_org_appengine_user/v1_6_4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "github.com/stretchr/testify/assert",
+    "revision": "v1.4.0",
+    "@id": "http:golang/github_com_stretchr_testify_assert/v1_4_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/stretchr/testify/assert:v1.4.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "github.com/stretchr/testify/assert",
+        "version": "v1.4.0"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/appengine/internal/user",
+    "revision": "v1.6.4",
+    "@id": "http:golang/google_golang_org_appengine_internal_user/v1_6_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/appengine/internal/user:v1.6.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "google.golang.org/appengine/internal/user",
+        "version": "v1.6.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/appengine/internal/log",
+    "revision": "v1.6.4",
+    "@id": "http:golang/google_golang_org_appengine_internal_log/v1_6_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/appengine/internal/log:v1.6.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "google.golang.org/appengine/internal/log",
+        "version": "v1.6.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/appengine/aetest",
+    "revision": "v1.6.4",
+    "@id": "http:golang/google_golang_org_appengine_aetest/v1_6_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/appengine/aetest:v1.6.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "google.golang.org/appengine/aetest",
+        "version": "v1.6.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/appengine/internal/datastore",
+    "revision": "v1.6.4",
+    "@id": "http:golang/google_golang_org_appengine_internal_datastore/v1_6_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/appengine/internal/datastore:v1.6.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "google.golang.org/appengine/internal/datastore",
+        "version": "v1.6.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/appengine/internal/base",
+    "revision": "v1.6.4",
+    "@id": "http:golang/google_golang_org_appengine_internal_base/v1_6_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/appengine/internal/base:v1.6.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "google.golang.org/appengine/internal/base",
+        "version": "v1.6.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/davecgh/go-spew/spew",
+    "revision": "v1.1.1",
+    "@id": "http:golang/github_com_davecgh_go_spew_spew/v1_1_1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/davecgh/go-spew/spew:v1.1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "github.com/davecgh/go-spew/spew",
+        "version": "v1.1.1"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/appengine/internal/remote_api",
+    "revision": "v1.6.4",
+    "@id": "http:golang/google_golang_org_appengine_internal_remote_api/v1_6_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/appengine/internal/remote_api:v1.6.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "google.golang.org/appengine/internal/remote_api",
+        "version": "v1.6.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/gorilla/mux",
+    "revision": "v1.7.3",
+    "@id": "http:golang/github_com_gorilla_mux/v1_7_3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/gorilla/mux:v1.7.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "github.com/gorilla/mux",
+        "version": "v1.7.3"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/appengine",
+    "revision": "v1.6.4",
+    "@id": "http:golang/google_golang_org_appengine/v1_6_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/appengine:v1.6.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "google.golang.org/appengine",
+        "version": "v1.6.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/appengine/internal/app_identity",
+    "revision": "v1.6.4",
+    "@id": "http:golang/google_golang_org_appengine_internal_app_identity/v1_6_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/appengine/internal/app_identity:v1.6.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "google.golang.org/appengine/internal/app_identity",
+        "version": "v1.6.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "gopkg.in/yaml.v2",
+    "revision": "v2.2.4",
+    "@id": "http:golang/gopkg_in_yaml_v2/v2_2_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "gopkg.in/yaml.v2:v2.2.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "gopkg.in/yaml.v2",
+        "version": "v2.2.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/appengine/internal",
+    "revision": "v1.6.4",
+    "@id": "http:golang/google_golang_org_appengine_internal/v1_6_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/appengine/internal:v1.6.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "google.golang.org/appengine/internal",
+        "version": "v1.6.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/appengine/log",
+    "revision": "v1.6.4",
+    "@id": "http:golang/google_golang_org_appengine_log/v1_6_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/appengine/log:v1.6.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "google.golang.org/appengine/log",
+        "version": "v1.6.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/appengine/internal/modules",
+    "revision": "v1.6.4",
+    "@id": "http:golang/google_golang_org_appengine_internal_modules/v1_6_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/appengine/internal/modules:v1.6.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "google.golang.org/appengine/internal/modules",
+        "version": "v1.6.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "net/context",
+    "revision": "72f939374954d0a1b2a1e27dcda950e2724dd5c1",
+    "@id": "http:golang/net_context/72f939374954d0a1b2a1e27dcda950e2724dd5c1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "net/context:72f939374954d0a1b2a1e27dcda950e2724dd5c1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "net/context",
+        "version": "72f939374954d0a1b2a1e27dcda950e2724dd5c1"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/pmezard/go-difflib/difflib",
+    "revision": "v1.0.0",
+    "@id": "http:golang/github_com_pmezard_go_difflib_difflib/v1_0_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/pmezard/go-difflib/difflib:v1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "github.com/pmezard/go-difflib/difflib",
+        "version": "v1.0.0"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "github.com/golang/protobuf/proto",
+    "revision": "v1.3.2",
+    "@id": "http:golang/github_com_golang_protobuf_proto/v1_3_2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/golang/protobuf/proto:v1.3.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "github.com/golang/protobuf/proto",
+        "version": "v1.3.2"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "google.golang.org/appengine/user",
+    "revision": "v1.6.4",
+    "@id": "http:golang/google_golang_org_appengine_user/v1_6_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "google.golang.org/appengine/user:v1.6.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "name": "google.golang.org/appengine/user",
+        "version": "v1.6.4"
+      }
+    },
+    "relationship": []
+  }
+]

@@ -54,7 +54,7 @@ public class Pipelines {
         availablePipelines.put(WorkspaceRule.MAVEN_JAR, mavenJarPipeline);
 
         final List<StepExecutor> mavenInstallPipeline = new ArrayList<>();
-        mavenInstallPipeline.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("cquery", "--noimplicit_deps", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")));
+        mavenInstallPipeline.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("cquery", "--noimplicit_deps", "${detect.bazel.cquery.options}", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")));
         mavenInstallPipeline.add(new StepExecutorSplitEach("\n"));
         mavenInstallPipeline.add(new StepExecutorFilter(".*maven_coordinates=.*"));
         mavenInstallPipeline.add(new StepExecutorReplaceInEach("^\\s*tags\\s*\\s*=\\s*\\[\\s*\"maven_coordinates=", ""));

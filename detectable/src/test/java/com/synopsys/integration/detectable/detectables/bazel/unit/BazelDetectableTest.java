@@ -24,7 +24,7 @@ public class BazelDetectableTest {
         Mockito.when(fileFinder.findFile(new File("."), "WORKSPACE")).thenReturn(new File("src/test/resources/functional/bazel/WORKSPACE"));
         final BazelExtractor bazelExtractor = null;
         final BazelResolver bazelResolver = null;
-        final BazelDetectableOptions bazelDetectableOptions = new BazelDetectableOptions("target", "");
+        final BazelDetectableOptions bazelDetectableOptions = new BazelDetectableOptions("target", "", null);
         final BazelDetectable detectable = new BazelDetectable(environment, fileFinder, bazelExtractor, bazelResolver, bazelDetectableOptions);
 
         assertTrue(detectable.applicable().getPassed());

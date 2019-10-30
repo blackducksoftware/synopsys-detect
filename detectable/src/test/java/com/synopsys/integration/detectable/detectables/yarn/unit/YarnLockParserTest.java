@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.yarn.unit;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +9,15 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLineLevelParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockEntry;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockEntryId;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 
 @UnitTest
 public class YarnLockParserTest {
+
     @Test
     void testThatYarnLockIsParsedCorrectlyToMap() {
         final List<String> yarnLockText = new ArrayList<>();
@@ -24,15 +28,15 @@ public class YarnLockParserTest {
         yarnLockText.add("async@0.9.0:");
         yarnLockText.add("  version \"0.9.0\"");
         yarnLockText.add("  resolved \"http://nexus.fr.murex.com/nexus3/repository/npm-all/async/-/async-0.9.0.tgz#ac3613b1da9bed1b47510bb4651b8931e47146c7\"");
-        yarnLockText.add("colors@1.0.3:");
+        yarnLockText.add("colors@~1.0.3:");
         yarnLockText.add("  version \"1.0.3\"");
         yarnLockText.add("  resolved \"http://nexus.fr.murex.com/nexus3/repository/npm-all/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b\"");
 
-        final YarnLockParser yarnLockParser = new YarnLockParser(new YarnLineLevelParser());
+        final YarnLockParser yarnLockParser = new YarnLockParser();
         final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
-        assertEquals("0.9.0", yarnLock.versionForFuzzyId("async@0.9.0").get());
-        assertEquals("1.0.3", yarnLock.versionForFuzzyId("colors@1.0.3").get());
+        assertEntry(yarnLock, "async", "0.9.0", "0.9.0");
+        assertEntry(yarnLock, "colors", "~1.0.3", "1.0.3");
     }
 
     @Test
@@ -48,11 +52,11 @@ public class YarnLockParserTest {
         yarnLockText.add("  version \"0.9.0\"");
         yarnLockText.add("  resolved \"http://nexus.fr.murex.com/nexus3/repository/npm-all/http-server/-/http-server-0.9.0.tgz#8f1b06bdc733618d4dc42831c7ba1aff4e06001a\"");
 
-        final YarnLockParser yarnLockParser = new YarnLockParser(new YarnLineLevelParser());
+        final YarnLockParser yarnLockParser = new YarnLockParser();
         final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
-        assertEquals("1.16.2", yarnLock.versionForFuzzyId("http-proxy@^1.8.1").get());
-        assertEquals("0.9.0", yarnLock.versionForFuzzyId("http-server@^0.9.0").get());
+        assertEntry(yarnLock, "http-proxy", "^1.8.1", "1.16.2", new YarnLockDependency("eventemitter3", "1.x.x", false), new YarnLockDependency("requires-port", "1.x.x", false));
+        assertEntry(yarnLock, "http-server", "^0.9.0", "0.9.0");
     }
 
     @Test
@@ -64,15 +68,16 @@ public class YarnLockParserTest {
         yarnLockText.add("  dependencies:");
         yarnLockText.add("    ms \"2.0.0\"");
 
-        final YarnLockParser yarnLockParser = new YarnLockParser(new YarnLineLevelParser());
+        final YarnLockParser yarnLockParser = new YarnLockParser();
         final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
-        assertEquals("2.6.9", yarnLock.versionForFuzzyId("debug@2").get());
-        assertEquals("2.6.9", yarnLock.versionForFuzzyId("debug@2.6.9").get());
-        assertEquals("2.6.9", yarnLock.versionForFuzzyId("debug@^2.2.0").get());
-        assertEquals("2.6.9", yarnLock.versionForFuzzyId("debug@^2.3.3").get());
-        assertEquals("2.6.9", yarnLock.versionForFuzzyId("debug@~2.6.4").get());
-        assertEquals("2.6.9", yarnLock.versionForFuzzyId("debug@~2.6.6").get());
+        assertEntry(yarnLock, "debug", "2", "2.6.9", new YarnLockDependency("ms", "2.0.0", false));
+        assertEntry(yarnLock, "debug", "2.6.9", "2.6.9", new YarnLockDependency("ms", "2.0.0", false));
+        assertEntry(yarnLock, "debug", "^2.2.0", "2.6.9", new YarnLockDependency("ms", "2.0.0", false));
+        assertEntry(yarnLock, "debug", "^2.3.3", "2.6.9", new YarnLockDependency("ms", "2.0.0", false));
+        assertEntry(yarnLock, "debug", "~2.6.4", "2.6.9", new YarnLockDependency("ms", "2.0.0", false));
+        assertEntry(yarnLock, "debug", "~2.6.6", "2.6.9", new YarnLockDependency("ms", "2.0.0", false));
+
     }
 
     @Test
@@ -84,10 +89,32 @@ public class YarnLockParserTest {
         yarnLockText.add("  dependencies:");
         yarnLockText.add("    cssom \"0.3.x\"");
 
-        final YarnLockParser yarnLockParser = new YarnLockParser(new YarnLineLevelParser());
+        final YarnLockParser yarnLockParser = new YarnLockParser();
         final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
-        assertEquals("0.2.37", yarnLock.versionForFuzzyId("cssstyle@>= 0.2.37 < 0.3.0").get());
+        assertEntry(yarnLock, "cssstyle", ">= 0.2.37 < 0.3.0", "0.2.37", new YarnLockDependency("cssom", "0.3.x", false));
     }
 
+    void assertEntry(final YarnLock yarnLock, final String idName, final String idVersion, final String resolvedVersion, final YarnLockDependency... dependencies) {
+        boolean found = false;
+        for (final YarnLockEntry entry : yarnLock.getEntries()) {
+            for (final YarnLockEntryId entryId : entry.getIds()) {
+                if (entryId.getName().equals(idName) && entryId.getVersion().equals(idVersion)) {
+                    found = true;
+                    assertEquals(resolvedVersion, entry.getVersion(), "Yarn entry should have found correct resolved version.");
+                    assertEquals(dependencies.length, entry.getDependencies().size(), "Yarn entry should have found correct number of dependencies.");
+                    for (final YarnLockDependency dependency : dependencies) {
+                        boolean dFound = false;
+                        for (final YarnLockDependency entryDependency : entry.getDependencies()) {
+                            if (entryDependency.getName().equals(dependency.getName()) && entryDependency.getVersion().equals(dependency.getVersion()) && entryDependency.isOptional() == dependency.isOptional()) {
+                                dFound = true;
+                            }
+                        }
+                        assertTrue(dFound, "Could not find yarn dependency for entry " + idName + " with name " + dependency.getName() + " and version " + dependency.getVersion() + " and optional " + dependency.isOptional() + ".");
+                    }
+                }
+            }
+        }
+        assertTrue(found, "Could not find yarn lock entry with name " + idName + " and version " + idVersion + ".");
+    }
 }

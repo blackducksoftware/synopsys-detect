@@ -24,58 +24,41 @@ package com.synopsys.integration.detectable.detectables.yarn;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import org.apache.commons.io.FileUtils;
+
+import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListNode;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnListParser;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 
 public class YarnLockExtractor {
-    private final YarnListParser yarnListParser;
     private final YarnLockParser yarnLockParser;
     private final YarnLockOptions yarnLockOptions;
-    private final ExecutableRunner executableRunner;
     private final YarnTransformer yarnTransformer;
+    private final Gson gson;
 
-    public YarnLockExtractor(final YarnListParser yarnListParser, final ExecutableRunner executableRunner, final YarnLockParser yarnLockParser, final YarnLockOptions yarnLockOptions, final YarnTransformer yarnTransformer) {
-        this.yarnListParser = yarnListParser;
+    public YarnLockExtractor(final YarnLockParser yarnLockParser, final YarnLockOptions yarnLockOptions, final YarnTransformer yarnTransformer, final Gson gson) {
         this.yarnLockParser = yarnLockParser;
-        this.executableRunner = executableRunner;
         this.yarnLockOptions = yarnLockOptions;
         this.yarnTransformer = yarnTransformer;
+        this.gson = gson;
     }
 
-    public Extraction extract(final File directory, final File yarnlock, final File yarnExe) {
+    public Extraction extract(final File yarnLockFile, final File packageJsonFile) {
         try {
-            final List<String> yarnLockText = Files.readAllLines(yarnlock.toPath(), StandardCharsets.UTF_8);
-            final List<String> exeArgs = Stream.of("list", "--emoji", "false").collect(Collectors.toCollection(ArrayList::new));
+            final String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
+            final PackageJson packageJson = gson.fromJson(packageJsonText, PackageJson.class);
 
-            if (yarnLockOptions.useProductionOnly()) {
-                exeArgs.add("--prod");
-            }
+            final List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
+            final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
 
-            final ExecutableOutput executableOutput = executableRunner.execute(directory, yarnExe, exeArgs);
-
-            if (executableOutput.getReturnCode() != 0) {
-                final Extraction.Builder builder = new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", exeArgs), executableOutput.getReturnCode()));
-                return builder.build();
-            }
-
-            final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
-            final List<YarnListNode> yarnList = yarnListParser.parseYarnList(executableOutput.getStandardOutputAsList());
-
-            final DependencyGraph dependencyGraph = yarnTransformer.transform(yarnList, yarnLock);
+            final DependencyGraph dependencyGraph = yarnTransformer.transform(packageJson, yarnLock, yarnLockOptions);
 
             final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
 
