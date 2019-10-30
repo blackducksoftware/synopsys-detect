@@ -28,28 +28,59 @@ import java.util.List;
 import java.util.Map;
 
 public class BazelVariableSubstitutor {
-    private final Map<String, String> substitutions;
+    private final Map<String, String> stringSubstitutions;
+    private final Map<String, List<String>> listInsertions;
 
-    public BazelVariableSubstitutor(final String bazelTarget) {
-        substitutions = new HashMap<>(1);
-        substitutions.put("\\$\\{detect.bazel.target}", bazelTarget);
+    public BazelVariableSubstitutor(final String bazelTarget, final List<String> cqueryAdditionalOptions) {
+        // the keys are regex's, requiring regex special character escaping
+        stringSubstitutions = new HashMap<>(1);
+        stringSubstitutions.put("\\$\\{detect.bazel.target}", bazelTarget);
+
+        // the keys are plain strings
+        listInsertions = new HashMap<>(1);
+        listInsertions.put("${detect.bazel.cquery.options}", cqueryAdditionalOptions);
     }
 
     public List<String> substitute(final List<String> origStrings, final String input) {
         final List<String> modifiedStrings = new ArrayList<>(origStrings.size());
         for (String origString : origStrings) {
-            modifiedStrings.add(substitute(origString, input));
+            boolean foundListInsertionPlaceholder = handleListInsertion(modifiedStrings, origString, input);
+            if (!foundListInsertionPlaceholder) {
+                handleStringSubstitutions(input, modifiedStrings, origString);
+            }
         }
         return modifiedStrings;
+    }
+
+    private void handleStringSubstitutions(final String input, final List<String> modifiedStrings, final String origString) {
+        modifiedStrings.add(substitute(origString, input));
+    }
+
+    private boolean handleListInsertion(final List<String> modifiedStrings, final String origString, final String input) {
+        boolean foundListInsertionVariable = false;
+        for (final String listInsertionKey : listInsertions.keySet()) {
+            if (origString.equals(listInsertionKey)) {
+                foundListInsertionVariable = true;
+                final List<String> valuesToInsert = listInsertions.get(listInsertionKey);
+                if (valuesToInsert != null) {
+                    for (final String valueToInsert : valuesToInsert) {
+                        // Substituting here gives user the ability to use ${detect.bazel.target} and ${input.item} in list insertion values
+                        handleStringSubstitutions(input, modifiedStrings, valueToInsert);
+                    }
+                }
+                break; // it'll only match one
+            }
+        }
+        return foundListInsertionVariable;
     }
 
     private String substitute(final String origString, final String input) {
         String modifiedString = origString;
         if (input != null) {
-            substitutions.put("\\$\\{input.item}", input);
+            stringSubstitutions.put("\\$\\{input.item}", input);
         }
-        for (String variablePattern : substitutions.keySet()) {
-            modifiedString = modifiedString.replaceAll(variablePattern, substitutions.get(variablePattern));
+        for (final String variablePattern : stringSubstitutions.keySet()) {
+            modifiedString = modifiedString.replaceAll(variablePattern, stringSubstitutions.get(variablePattern));
         }
         return modifiedString;
     }

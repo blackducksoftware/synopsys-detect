@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detect.configuration;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -68,7 +70,16 @@ public class DetectableOptionFactory {
     public BazelDetectableOptions createBazelDetectableOptions() {
         final String targetName = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_TARGET, PropertyAuthority.NONE);
         final String bazelDependencyRule = detectConfiguration.getProperty(DetectProperty.DETECT_BAZEL_DEPENDENCY_RULE, PropertyAuthority.NONE);
-        return new BazelDetectableOptions(targetName, bazelDependencyRule);
+        final String bazelCqueryAdditionalOptionsString = detectConfiguration.getPropertyValueAsString(DetectProperty.DETECT_BAZEL_CQUERY_OPTIONS, PropertyAuthority.NONE);
+
+        final List<String> bazelCqueryAdditionalOptions;
+        if (StringUtils.isBlank(bazelCqueryAdditionalOptionsString)) {
+            bazelCqueryAdditionalOptions = null;
+        } else {
+            final String[] bazelCqueryAdditionalOptionsArray = bazelCqueryAdditionalOptionsString.split(",");
+            bazelCqueryAdditionalOptions = Arrays.asList(bazelCqueryAdditionalOptionsArray);
+        }
+        return new BazelDetectableOptions(targetName, bazelDependencyRule, bazelCqueryAdditionalOptions);
     }
 
     public BitbakeDetectableOptions createBitbakeDetectableOptions() {
