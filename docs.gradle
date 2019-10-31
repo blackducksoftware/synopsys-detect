@@ -206,11 +206,11 @@ task generatedContent() {
             mdFile.withWriter('utf-8') { out -> fmTemplate.process(helpData.ext.helpJson.properties, out) }
         }
         
-        File detailsOutputDir = new File(advancedOutputDir, "language-and-package-manager-support-details")
+        File detailsOutputDir = new File(advancedOutputDir, "language-and-package-managers")
         detailsOutputDir.mkdirs()
-        new File("${projectDir}/docs/templates/content/advanced/language-and-package-manager-support-details").eachFile(FileType.FILES) { file ->
+        new File("${projectDir}/docs/templates/content/advanced/language-and-package-managers").eachFile(FileType.FILES) { file ->
             String fmTemplateFilename = file.getName()
-            def fmTemplate = helpData.templates.getTemplate("content/advanced/language-and-package-manager-support-details/${fmTemplateFilename}")
+            def fmTemplate = helpData.templates.getTemplate("content/advanced/language-and-package-managers/${fmTemplateFilename}")
             String mdFilename = fmTemplateFilename.take(fmTemplateFilename.lastIndexOf('.')) + ".md"
             def mdFile = new File(detailsOutputDir, mdFilename)
             mdFile.withWriter('utf-8') { out -> fmTemplate.process(helpData.ext.helpJson.properties, out) }

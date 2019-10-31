@@ -20,6 +20,8 @@ Source: https://github.com/blackducksoftware/blackduck-nuget-inspector
 
 Binary: https://repo.blackducksoftware.com:443/artifactory/bds-integrations-nuget-release/BlackduckNugetInspector
 
+Requires: .NET framework version 4.5
+
 ### Classic inspector
 
 Source: https://github.com/blackducksoftware/integration-nuget-inspector
