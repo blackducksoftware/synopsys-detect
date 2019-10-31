@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.docs
 
 import com.google.gson.Gson
 import freemarker.template.Configuration
+import freemarker.template.Template
 import org.apache.commons.io.FileUtils
 import org.apache.commons.lang3.StringUtils
 import org.gradle.api.DefaultTask
@@ -41,75 +42,72 @@ open class GenerateDocTask : DefaultTask() {
         outputDir.deleteRecursively()
         outputDir.mkdirs()
 
-        val cfg = Configuration(Configuration.VERSION_2_3_26);
-        cfg.setDirectoryForTemplateLoading(File("docs/templates"))
-        cfg.defaultEncoding = "UTF-8"
+        val templateProvider = TemplateProvider()
 
         FileUtils.copyDirectory(File("docs/static"), outputDir)
 
-        createFromFreemarker(cfg, outputDir, "exit-codes", ExitCodePage(helpJson.exitCodes))
-        createFromFreemarker(cfg, outputDir, "index", IndexPage(project.version.toString()))
+        createFromFreemarker(templateProvider, outputDir, "exit-codes", ExitCodePage(helpJson.exitCodes))
+        createFromFreemarker(templateProvider, outputDir, "index", IndexPage(project.version.toString()))
 
-        handleDetectors(cfg, outputDir, helpJson)
-        handleProperties(cfg, outputDir, helpJson)
+        handleDetectors(templateProvider, outputDir, helpJson)
+        handleProperties(templateProvider, outputDir, helpJson)
     }
 
-    private fun createFromFreemarker(cfg: Configuration, outputDir: File, templateName: String, data: Any) {
-        createFromFreemarker(cfg, "$templateName.ftl", File(outputDir, "$templateName.md"), data);
+    private fun createFromFreemarker(templateProvider: TemplateProvider, outputDir: File, templateName: String, data: Any) {
+        createFromFreemarker(templateProvider, "$templateName.ftl", File(outputDir, "$templateName.md"), data);
     }
 
-    private fun createFromFreemarker(cfg: Configuration, templatePath: String, to: File, data: Any) {
+    private fun createFromFreemarker(templateProvider: TemplateProvider, templatePath: String, to: File, data: Any) {
         to.parentFile.mkdirs()
-        val template = cfg.getTemplate(templatePath)
+        val template = templateProvider.getTemplate(templatePath)
         FileOutputStream(to, true).buffered().writer().use { writer ->
             template.process(data, writer)
         }
     }
 
-    private fun handleDetectors(cfg: Configuration, outputDir: File, helpJson: HelpJsonData) {
+    private fun handleDetectors(templateProvider: TemplateProvider, outputDir: File, helpJson: HelpJsonData) {
         val build = helpJson.buildDetectors.groupBy { it.detectorType }
                 .map { group -> DetectorGroup(group.key, group.value.map { detector -> detector.detectorName }) }
 
         val buildless = helpJson.buildlessDetectors.groupBy { it.detectorType }
                 .map { group -> DetectorGroup(group.key, group.value.map { detector -> detector.detectorName }) }
 
-        createFromFreemarker(cfg, outputDir, "detectors", DetectorsPage(buildless, build));
+        createFromFreemarker(templateProvider, outputDir, "detectors", DetectorsPage(buildless, build))
     }
 
-    private fun handleProperties(cfg: Configuration, outputDir: File, helpJson: HelpJsonData) {
-
+    private fun handleProperties(templateProvider: TemplateProvider, outputDir: File, helpJson: HelpJsonData) {
         val superGroups = createSuperGroupLookup(helpJson);
         val groupLocations = superGroups.entries.associate { it.key to it.value + "/" + it.key } //ex: superGroup/group
 
         //Updating the location on all the json options so that a new object with only 1 new property did not have to be created (and then populated) from the existing.
         helpJson.options.forEach {
-            val groupLocation = groupLocations[it.group] ?: error("Missing group location!")
+            val groupLocation = groupLocations[it.group] ?: error("Missing group location: ${it.group}")
             it.location = "${groupLocation}#${it.propertyName.replace(" ", "-").toLowerCase()}" //ex: superGroup/group#property_name
         }
 
-        val grouped = helpJson.options.groupBy { it -> it.group }
-        val splitGroups = grouped.map { group ->
+        val groupedOptions = helpJson.options.groupBy { it -> it.group }
+        val splitGroupOptions = groupedOptions.map { group ->
             val deprecated = group.value.filter { it.deprecated }
             val simple = group.value.filter { !deprecated.contains(it) && it.category == "simple" }
             val advanced = group.value.filter { !simple.contains(it) && !deprecated.contains(it) }
-            val superGroupName = superGroups[group.key] ?: error("Missing super group!");
-            val groupLocation = groupLocations[group.key] ?: error("Missing group location!")
+            val superGroupName = superGroups[group.key] ?: error("Missing super group: ${group.key}");
+            val groupLocation = groupLocations[group.key] ?: error("Missing group location: ${group.key}")
             SplitGroup(group.key, superGroupName, groupLocation, simple, advanced, deprecated)
         }
 
         val propertiesFolder = File(outputDir, "properties")
-        splitGroups.forEach { group ->
+        splitGroupOptions.forEach { group ->
             val superGroupFolder = File(propertiesFolder, group.superGroup)
             val targetMarkdown = File(superGroupFolder, "${group.groupName}.md")
-            createFromFreemarker(cfg, "property-group.ftl", targetMarkdown, group)
+            createFromFreemarker(templateProvider, "property-group.ftl", targetMarkdown, group)
         }
 
-        val simplePropertyTableData = splitGroups
+        val simplePropertyTableData = splitGroupOptions
                 .filter { it.simple.isNotEmpty() }
-                .map { SimplePropertyTableGroup(it.groupName, groupLocations[it.groupName] ?: error("Missing group location!"), it.simple) }
+                .map { SimplePropertyTableGroup(it.groupName, groupLocations[it.groupName] ?: error("Missing group location: ${it.groupName}"), it.simple) }
 
-        createFromFreemarker(cfg, propertiesFolder, "basic-properties", SimplePropertyTablePage(simplePropertyTableData))
-        createFromFreemarker(cfg, propertiesFolder, "all-properties", AdvancedPropertyTablePage(splitGroups))
+        createFromFreemarker(templateProvider, propertiesFolder, "basic-properties", SimplePropertyTablePage(simplePropertyTableData))
+        createFromFreemarker(templateProvider, propertiesFolder, "all-properties", AdvancedPropertyTablePage(splitGroupOptions))
     }
 
     //Technically each group has exactly 1 super group (but this is not enforced in the json) so here we check that assumption and return the mapping.
@@ -120,12 +118,25 @@ open class GenerateDocTask : DefaultTask() {
         helpJson.options.forEach { option ->
             val superGroup = if (StringUtils.isBlank(option.superGroup)) "Configuration" else option.superGroup
             if (lookup.containsKey(option.group) && lookup[option.group] != superGroup) {
-                throw RuntimeException("The created detect help JSON had a group '${option.group}' whose super group '${superGroup}' did not match a different options super group in the same group '${lookup[option.group]}'.");
+                throw RuntimeException("The created detect help JSON had a group '${option.group}' whose super group '${superGroup}' did not match a different options super group in the same group '${lookup[option.group]}'.")
             } else if (!lookup.containsKey(option.group)) {
                 lookup[option.group] = superGroup
             }
         }
         return lookup;
+    }
+}
+
+class TemplateProvider {
+    private val configuration: Configuration = Configuration(Configuration.VERSION_2_3_26);
+
+    init {
+        configuration.setDirectoryForTemplateLoading(File("docs/templates"))
+        configuration.defaultEncoding = "UTF-8"
+    }
+
+    fun getTemplate(templateName: String): Template {
+        return configuration.getTemplate(templateName)
     }
 }
 
