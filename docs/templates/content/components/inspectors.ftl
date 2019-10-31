@@ -1,8 +1,8 @@
 # Inspectors
 
-Inspectors are typically plugins that detect uses to access the internal resources of a package manager.
+An inspectors is typically a plugin that a ${solution_name} Detector uses to access the internal resources of a package manager through it's API.
 
-There are currently three inspectors that detect might download and one inspector it has internally. 
+There are currently three inspectors that ${solution_name} might download and one inspector it has internally.
   
 If ${solution_name} decides that your package manager needs an external inspector, you must either be online or have the applicable Air Gap files.
 
@@ -43,8 +43,8 @@ The source code for the NuGet dotnet inspector is located on [GitHub](https://gi
 
 ## Python Inspector
 
-While Python has an inspector, this inspector is not downloaded from an external source and is contained in the detect source code.
+While Python has an inspector, this inspector is not downloaded from an external source and is contained in the ${solution_name} source code.
 
-The Python Inspector is simply a python script that detect executes using python. 
+The Python Inspector is simply a python script that ${solution_name} executes using python.
 
 This script uses pip's internal methods to extract dependencies.
