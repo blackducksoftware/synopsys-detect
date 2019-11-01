@@ -23,6 +23,9 @@
 package com.synopsys.integration.detect.docs
 
 import com.google.gson.Gson
+import com.synopsys.integration.detect.docs.copied.HelpJsonData
+import com.synopsys.integration.detect.docs.copied.HelpJsonExitCode
+import com.synopsys.integration.detect.docs.copied.HelpJsonOption
 import freemarker.template.Configuration
 import freemarker.template.Template
 import org.apache.commons.io.FileUtils
@@ -32,7 +35,7 @@ import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.io.FileOutputStream
 
-open class GenerateDocTask : DefaultTask() {
+open class GenerateDocsTask : DefaultTask() {
     @TaskAction
     fun generateDocs() {
         val file = File("synopsys-detect-${project.version}-help.json")

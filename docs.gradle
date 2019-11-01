@@ -1,4 +1,4 @@
-import com.synopsys.integration.detect.docs.GenerateDocTask
+import com.synopsys.integration.detect.docs.GenerateDocsTask
 
 task helpJson(type: JavaExec) {
     dependsOn build
@@ -9,7 +9,7 @@ task helpJson(type: JavaExec) {
     args = ['--helpjson']
 }
 
-task generateDocs(type: GenerateDocTask) {
+task generateDocs(type: GenerateDocsTask) {
     dependsOn helpJson
 }
 
