@@ -5,7 +5,7 @@
 ```
 <#if option.hasAcceptableValues>
 --${option.propertyKey}=${option.acceptableValues?join(",")} 
-<#elseif option.defaultValue??>
+<#elseif option.defaultValue?has_content>
 --${option.propertyKey}=${option.defaultValue}
 <#else>
 --${option.propertyKey}
@@ -21,7 +21,7 @@ ${option.detailedDescription!""}
 |Added|${option.addedInVersion}|
 |Type|${option.propertyType}|
 |Default Value|${option.defaultValue!"None"}|
-|Comma Seperated|${option.isCommaSeparatedList?then("Yes", "No")}|
+|Comma Seperated|${option.commaSeparatedList?then("Yes", "No")}|
 |Case Sensative|${option.caseSensitiveValues?then("Yes", "No")}|
 <#if option.hasAcceptableValues>
 |Acceptable Values|${option.acceptableValues?join(", ")}|
@@ -37,7 +37,7 @@ ${option.detailedDescription!""}
 ```
 <#if option.hasAcceptableValues>
 --${option.propertyKey}=${option.acceptableValues?join(",")} 
-<#elseif option.defaultValue??>
+<#elseif option.defaultValue?has_content>
 --${option.propertyKey}=${option.defaultValue}
 <#else>
 --${option.propertyKey}
@@ -53,7 +53,7 @@ ${option.detailedDescription!""}
 |Added|${option.addedInVersion}|
 |Type|${option.propertyType}|
 |Default Value|${option.defaultValue!"None"}|
-|Comma Seperated|${option.isCommaSeparatedList?then("Yes", "No")}|
+|Comma Seperated|${option.commaSeparatedList?then("Yes", "No")}|
 |Case Sensative|${option.caseSensitiveValues?then("Yes", "No")}|
 <#if option.hasAcceptableValues>
 |Acceptable Values|${option.acceptableValues?join(", ")}|
@@ -70,7 +70,7 @@ ${option.detailedDescription!""}
 ```
 <#if option.hasAcceptableValues>
 --${option.propertyKey}=${option.acceptableValues?join(",")} 
-<#elseif option.defaultValue??>
+<#elseif option.defaultValue?has_content>
 --${option.propertyKey}=${option.defaultValue}
 <#else>
 --${option.propertyKey}
@@ -88,7 +88,7 @@ ${option.detailedDescription!""}
 |Added|${option.addedInVersion}|
 |Type|${option.propertyType}|
 |Default Value|${option.defaultValue!"None"}|
-|Comma Seperated|${option.isCommaSeparatedList?then("Yes", "No")}|
+|Comma Seperated|${option.commaSeparatedList?then("Yes", "No")}|
 |Case Sensative|${option.caseSensitiveValues?then("Yes", "No")}|
 <#if option.hasAcceptableValues>
 |Acceptable Values|${option.acceptableValues?join(", ")}|
