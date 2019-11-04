@@ -96,3 +96,44 @@ You can use the ${solution_name} Bash script (${bash_script_name}) to download t
     export DETECT_DOWNLOAD_ONLY=1
     ./${bash_script_name}
 
+## Including and excluding tools and detectors
+
+[Properties](/properties/all-properties) provide a variety of options for configuring ${solution_name} behavior. One of the
+most fundamental ways to modify ${solution_name} is by including and excluding [tools](/components/tools) and [detectors](/components/detectors).
+
+### Tools
+
+By default, all tools are eligible to run (the set of tools that actually run
+depends on which properties you set).
+To limit the eligible tools to a given list, use:
+
+    --detect.tools={comma-separated list of tool names, all uppercase}
+
+To exclude specific tools, use:
+
+    --detect.tools.excluded={comma-separated list of tool names, all uppercase}
+
+Exclusions take precedence over inclusions.
+
+See [Tools](/components/tools) for the list of tool names.
+
+See [Properties](/properties/all-properties) for details.
+
+### Detectors
+
+By default, all detectors are eligible to run (the set of detectors that actually
+run depends on what files exist in your project directory).
+To limit the eligible detectors to a given list, use:
+
+    --detect.included.detector.types={comma-separated list of detector names}
+
+To exclude specific detectors, use:
+
+    --detect.excluded.detector.types={comma-separated list of detector names}
+
+Exclusions take precedence over inclusions.
+
+See [Detectors](/components/detectors) for the list of detector names.
+
+See [Properties](/properties/all-properties) for details.
+
