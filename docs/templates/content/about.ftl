@@ -12,7 +12,7 @@ ${solution_name} can be used either for ${blackduck_product_name} SCA (open sour
 Although ${solution_name} can support large projects, care should be taken to ensure that scans are performed to optimize platform performance and produce manageable and meaningful results.
 For applications containing multiple sub-projects, it may be advantageous to scan sub-projects separately and combine results as a project of projects, or other techniques.
 
-# Detect components
+# ${solution_name} components
 
 Depending on the property values you pass to ${solution_name}, ${solution_name} will run one or more "tools" (Detectors, signature scanner, etc.).
 See [Tools](components/tools.md).
