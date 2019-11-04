@@ -7,7 +7,7 @@ The available ${solution_name} Tools (in order of execution, with the correspond
 * [Polaris](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect#SynopsysDetect-#get-start-coverityGettingStartedwithSynopsysDetectforSASTusingCoverity(onPolaris)) (--detect.tools=POLARIS)
 * [Docker Inspector](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect#SynopsysDetect-config-docker-scan) (--detect.tools=DOCKER)
 * [Bazel](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/108331118/Synopsys+Detect+Additional+Features#SynopsysDetectAdditionalFeatures-Bazelsupport) (--detect.tools=BAZEL)
-* Detector (--detect.tools=DETECTOR): See Detector list below.
+* Detector (--detect.tools=DETECTOR): See [Detectors](detectors.md).
 * [Black Duck Signature Scanner](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect#SynopsysDetect-SignaturescannerinvocationforSCA) (--detect.tools=SIGNATURE_SCAN)
 * [Black Duck Binary Scanner](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect#SynopsysDetect-get-start-BAGettingStartedwithSynopsysDetectforSCAofbinaryfilesusingBlackDuckBinaryAnalysis) (--detect.tools=BINARY_SCAN)
 

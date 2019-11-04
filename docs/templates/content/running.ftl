@@ -1,4 +1,4 @@
-# Running ${solution_name}
+# Running
 
 ## Positioning ${solution_name} in the build process
 

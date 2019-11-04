@@ -1,4 +1,4 @@
-# Configuring ${solution_name}
+# Configuring
 
 The primary means for configuring ${solution_name} is by setting [${solution_name} property values](properties/all-properties.md).
 

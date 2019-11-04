@@ -1,4 +1,4 @@
-# About ${solution_name}
+# About
 
 ${solution_name} consolidates the functionality of ${blackduck_product_name}(TM) and Coverity™ on Polaris™ to support
 Software Composition Analysis (SCA: open source software detection) and Static Application Security Testing (SAST: code analysis).
@@ -27,3 +27,14 @@ Detect optionally performs post actions:
 * Generates a risk report
 * Checks for policy violations
 
+# ${solution_name} processing
+
+During the initialization phase, ${solution_name} performs verification checks on the user-provided configration, checks to see if it
+can connect to any external systems needed for the run, and creates any directories that it needs.
+
+During the run phase, ${solution_name} processes and ordered list of [tools](/components/tools), invoking any/all that apply.
+One of those tools is the Detector tool, which will invoke any/all [Detectors](/components/detectors) that apply.
+At the end of the run phase, ${solution_name} will upload results to the appropriate external
+system(s) (Black Duck and/or Polaris).
+
+During the cleanup phase, ${solution_name} removes temporary files and directories.
