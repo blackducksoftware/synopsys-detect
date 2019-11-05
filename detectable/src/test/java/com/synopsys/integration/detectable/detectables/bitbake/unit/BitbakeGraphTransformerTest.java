@@ -3,7 +3,6 @@ package com.synopsys.integration.detectable.detectables.bitbake.unit;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -35,7 +34,7 @@ public class BitbakeGraphTransformerTest {
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, dependencyGraph);
 
-        final ExternalId example = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "example", "75"));
+        final ExternalId example = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "example", "1:75-r50"));
         final ExternalId foobar = graphAssert.hasDependency(externalIdFactory.createYoctoExternalId("meta", "foobar", "12"));
         graphAssert.hasParentChildRelationship(example, foobar);
     }
@@ -76,16 +75,5 @@ public class BitbakeGraphTransformerTest {
         final GraphAssert graphAssert = new GraphAssert(Forge.YOCTO, dependencyGraph);
         graphAssert.hasNoDependency(externalIdFactory.createYoctoExternalId("meta", "example", null));
         graphAssert.hasRootSize(0);
-    }
-
-    @Test
-    void cleanVersion() {
-        final BitbakeGraphTransformer bitbakeGraphTransformer = new BitbakeGraphTransformer(new ExternalIdFactory());
-
-        Assertions.assertEquals("1.2.3", bitbakeGraphTransformer.cleanVersion("1.2.3"), "The simple case should not be different when cleaned.");
-        Assertions.assertEquals("1.2.3", bitbakeGraphTransformer.cleanVersion("1:1.2.3"), "The epoch should have been stripped from the version.");
-        Assertions.assertEquals("1.2.3", bitbakeGraphTransformer.cleanVersion("1.2.3-r5"), "The build revision should have been stripped from the version.");
-        Assertions.assertEquals("1.2.3-SNAPSHOT", bitbakeGraphTransformer.cleanVersion("1.2.3-SNAPSHOT-r5"), "The build revision should have been stripped from the version while keeping the rest of the version.");
-        Assertions.assertEquals("1.2.3", bitbakeGraphTransformer.cleanVersion("1:1.2.3-r5"), "The epoch and build revision should have been stripped from the version.");
     }
 }
