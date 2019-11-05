@@ -1,8 +1,8 @@
 # Tools
 
-Each ${solution_name} run consists of running any applicable ${solution_name} Tools.
+Each ${solution_name} run consists of running any applicable ${solution_name} tools.
 
-The available ${solution_name} Tools (in order of execution, with the corresponding --detect.tools value specified in parentheses) are:
+The available ${solution_name} tools (in order of execution, with the corresponding --detect.tools value specified in parentheses) are:
 
 * [Polaris](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect#SynopsysDetect-#get-start-coverityGettingStartedwithSynopsysDetectforSASTusingCoverity(onPolaris)) (--detect.tools=POLARIS)
 * [Docker Inspector](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect#SynopsysDetect-config-docker-scan) (--detect.tools=DOCKER)
@@ -11,4 +11,4 @@ The available ${solution_name} Tools (in order of execution, with the correspond
 * [Black Duck Signature Scanner](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect#SynopsysDetect-SignaturescannerinvocationforSCA) (--detect.tools=SIGNATURE_SCAN)
 * [Black Duck Binary Scanner](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect#SynopsysDetect-get-start-BAGettingStartedwithSynopsysDetectforSCAofbinaryfilesusingBlackDuckBinaryAnalysis) (--detect.tools=BINARY_SCAN)
 
-The Detector Tool runs any applicable [Detectors](detectors.md)
+The detector tool runs any applicable [detectors](detectors.md)

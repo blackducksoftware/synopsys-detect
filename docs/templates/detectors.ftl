@@ -1,20 +1,20 @@
 # Detectors
 
-Detect uses "Detectors" to find and extract dependencies from all supported package managers.
+Detect uses "detectors" to find and extract dependencies from all supported package managers.
 
-Each package manager ecosystem is given a Detector Type. Each Detector Type may have multiple ways it extracts dependencies.
+Each package manager ecosystem is given a detector type. Each detector type may have multiple ways it extracts dependencies.
 
-All supported Detector Types are listed here.
+All supported detector types are listed here.
 
-## Build Detectors
-|Detector Type|Detectors|
+## Build detectors
+|Detector type|Detectors|
 |---|---|
 <#list build as group>
 |${group.groupName}|${group.detectors?join(", ")}|
 </#list>
 
-## Buildless Detectors
-|Detector Type|Detectors|
+## Buildless detectors
+|Detector type|Detectors|
 |---|---|
 <#list buildless as group>
 |${group.groupName}|${group.detectors?join(", ")}|
@@ -28,4 +28,4 @@ Detectors then check that your environment is "extractable", meaning you have al
 
 Inspectors are used by detectors when the package manager requires an integration or embedded plugin to work. For example, Gradle uses an inspector as a plugin that executes a custom task. Most detectors do not require an inspector.
 
-Finally, Detectors perform their "extraction" to find your dependencies. This may require but is not limited to: running executables, performing builds, parsing files and talking to web services.
+Finally, detectors perform their "extraction" to find your dependencies. This may require but is not limited to: running executables, performing builds, parsing files and talking to web services.

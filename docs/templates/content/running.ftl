@@ -3,7 +3,7 @@
 ## Positioning ${solution_name} in the build process
 
 In most cases, ${solution_name} must be executed as a post-build step in the build environment of the project.
-Building your project prior to running Synopsys Detect is often required for the Detector to run successfully,
+Building your project prior to running Synopsys Detect is often required for the detector to run successfully,
 and helps ensure that the build artifacts are available for signature scanning.
 
 ## Choosing the working directory

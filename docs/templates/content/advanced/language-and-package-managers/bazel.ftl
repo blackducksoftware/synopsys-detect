@@ -1,14 +1,14 @@
 # Bazel support
 
-The Bazel Detector can discover dependencies of Bazel projects that declare dependencies using either the maven_install or maven_jar workspace rule.
+The Bazel tool can discover dependencies of Bazel projects that declare dependencies using either the maven_install or maven_jar workspace rule.
 
-The Bazel Detector will attempt to run on your project if you provide a Bazel build target via the Bazel target property.
+The Bazel tool will attempt to run on your project if you provide a Bazel build target via the Bazel target property.
 
-The Bazel Detector also requires a bazel executable on $PATH.
+The Bazel tool also requires a bazel executable on $PATH.
 
 ## Processing for the maven_install workspace rule
 
-The Bazel Detector runs a bazel cquery on the given target to produce output from which it can parse artifact details (group, artifact, version) for dependencies.
+The Bazel tool runs a bazel cquery on the given target to produce output from which it can parse artifact details (group, artifact, version) for dependencies.
 
 Here’s an example (using commands similar to those that ${solution_name} runs, but from the command line) of how ${solution_name}’s bazel detector currently identifies components:
 ```
@@ -27,7 +27,7 @@ Then, it parses the group/artifact/version details from the values of the maven_
 
 ## Processing for the maven_jar workspace rule
 
-The Bazel Detector runs a bazel query on the given target to get a list of jar dependencies. On each jar dependency, the Bazel Detector runs another bazel query to get its artifact details (group, artifact, version).
+The Bazel tool runs a bazel query on the given target to get a list of jar dependencies. On each jar dependency, the Bazel tool runs another bazel query to get its artifact details (group, artifact, version).
 
 Here’s an example (using the equivalent commands that Detect runs, but from the command line) of how Detect’s bazel detector currently identifies components:
 First, it gets a list of dependencies:

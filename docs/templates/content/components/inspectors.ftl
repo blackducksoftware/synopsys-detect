@@ -1,6 +1,6 @@
 # Inspectors
 
-An inspectors is typically a plugin that a ${solution_name} Detector uses to access the internal resources of a package manager through it's API.
+An inspectors is typically a plugin that a ${solution_name} detector uses to access the internal resources of a package manager through it's API.
 
 There are currently three inspectors that ${solution_name} might download and one inspector it has internally.
   
