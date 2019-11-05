@@ -1,9 +1,10 @@
 plugins {
     `kotlin-dsl`
 }
-// Required since Gradle 4.10+.
+
 repositories {
-    jcenter()
+    mavenCentral()
+    maven (url = "https://plugins.gradle.org/m2/")
 }
 
 dependencies {
