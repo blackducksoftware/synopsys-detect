@@ -22,6 +22,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zeroturnaround.zip.ZipUtil;
 
 import com.google.gson.Gson;
@@ -35,6 +37,7 @@ import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExec
 import freemarker.template.TemplateException;
 
 public final class BatteryTest {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final List<BatteryExecutable> executables = new ArrayList<>();
 
     private final List<String> additionalProperties = new ArrayList<>();
@@ -143,7 +146,7 @@ public final class BatteryTest {
             runDetect(executableArguments);
 
             assertBdio();
-        } catch (final ExecutableRunnerException | IOException | JSONException | TemplateException e) {
+        } catch (final ExecutableRunnerException | IOException | JSONException | TemplateException | BdioCompare.BdioCompareException e) {
             Assertions.assertNull(e, "An exception should not have been thrown!");
         }
     }
@@ -273,7 +276,7 @@ public final class BatteryTest {
         }
     }
 
-    private void assertBdio() throws IOException, JSONException {
+    private void assertBdio() throws IOException, JSONException, BdioCompare.BdioCompareException {
         final File[] bdio = bdioDirectory.listFiles();
         Assertions.assertTrue(bdio != null && bdio.length > 0, "Bdio output files could not be found.");
 
@@ -295,14 +298,21 @@ public final class BatteryTest {
                 final String actualJson = FileUtils.readFileToString(actual, Charset.defaultCharset());
 
                 final JSONArray expectedJsonArray = (JSONArray) JSONParser.parseJSON(expectedJson);
-                expectedJsonArray.getJSONObject(0).remove("creationInfo");
-                expectedJsonArray.getJSONObject(0).remove("@id");
-
                 final JSONArray actualJsonArray = (JSONArray) JSONParser.parseJSON(actualJson);
-                actualJsonArray.getJSONObject(0).remove("creationInfo");
-                actualJsonArray.getJSONObject(0).remove("@id");
 
-                JSONAssert.assertEquals(expectedJsonArray, actualJsonArray, false);
+                BdioCompare compare = new BdioCompare();
+                List<BdioCompare.BdioIssue> issues = compare.compare(expectedJsonArray, actualJsonArray);
+
+                if (issues.size() > 0) {
+                    logger.error("=================");
+                    logger.error("BDIO Issues");
+                    logger.error("Expected: " + expected.getCanonicalPath());
+                    logger.error("Actual: " + actual.getCanonicalPath());
+                    logger.error("=================");
+                    issues.forEach(issue -> logger.error(issue.getIssue()));
+                    logger.error("=================");
+                }
+                Assertions.assertEquals(0, issues.size(), "The BDIO comparison failed, one or more issues were found, please check the logs.");
             }
 
         } else {
