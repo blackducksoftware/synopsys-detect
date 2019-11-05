@@ -1,7 +1,7 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "petrkle/zonglovani.info/HEAD/windows-cpanm packagist/bom",
+    "spdx:name": "petrkle/zonglovani.info/master/windows-cpanm packagist/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-6.0.0-SNAPSHOT",
@@ -15,7 +15,7 @@
   },
   {
     "name": "petrkle/zonglovani.info",
-    "revision": "HEAD",
+    "revision": "master",
     "@id": "http:detect/windows_cpanm",
     "@type": "Project",
     "externalIdentifier": {

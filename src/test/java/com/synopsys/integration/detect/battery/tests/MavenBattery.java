@@ -29,7 +29,7 @@ public class MavenBattery {
         final BatteryTest test = new BatteryTest(name, "maven-cli");
         test.sourceDirectoryNamed("linux-maven");
         test.sourceFileNamed("pom.xml");
-        test.git("https://github.com/BlackDuckCoPilot/example-maven-travis", "HEAD");
+        test.git("https://github.com/BlackDuckCoPilot/example-maven-travis", "master");
         test.expectBdioResources();
         return test;
     }

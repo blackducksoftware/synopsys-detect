@@ -30,7 +30,7 @@ public class GradleBattery {
         final BatteryTest test = new BatteryTest(name, "gradle-inspector");
         test.sourceDirectoryNamed("linux-gradle");
         test.sourceFileNamed("build.gradle");
-        test.git("https://github.com/BlackDuckCoPilot/example-gradle-travis", "HEAD");
+        test.git("https://github.com/BlackDuckCoPilot/example-gradle-travis", "master");
         test.expectBdioResources();
         return test;
     }

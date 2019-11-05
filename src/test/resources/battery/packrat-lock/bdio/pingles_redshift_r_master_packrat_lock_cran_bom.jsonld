@@ -1,7 +1,7 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "pingles/redshift-r/HEAD/packrat-lock cran/bom",
+    "spdx:name": "pingles/redshift-r/master/packrat-lock cran/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-6.0.0-SNAPSHOT",
@@ -15,7 +15,7 @@
   },
   {
     "name": "pingles/redshift-r",
-    "revision": "HEAD",
+    "revision": "master",
     "@id": "http:detect/packrat_lock",
     "@type": "Project",
     "externalIdentifier": {

@@ -1,7 +1,7 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "BlackDuckCoPilot/example-cocoapods-travis/HEAD/linux-cocoapods cocoapods/bom",
+    "spdx:name": "BlackDuckCoPilot/example-cocoapods-travis/master/linux-cocoapods cocoapods/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-6.0.0-SNAPSHOT",
@@ -15,7 +15,7 @@
   },
   {
     "name": "BlackDuckCoPilot/example-cocoapods-travis",
-    "revision": "HEAD",
+    "revision": "master",
     "@id": "http:detect/linux_cocoapods",
     "@type": "Project",
     "externalIdentifier": {

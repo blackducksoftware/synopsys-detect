@@ -13,7 +13,7 @@ public class SbtBattery {
         test.sourceDirectoryNamed("linux-sbt");
         test.sourceFileNamed("build.sbt");
         test.sourceFolderFromExpandedResource("target");
-        test.git("https://github.com/sbt/sbt-bintray.git", "HEAD");
+        test.git("https://github.com/sbt/sbt-bintray.git", "master");
         test.expectBdioResources();
         test.run();
     }

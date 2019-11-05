@@ -1,7 +1,7 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "BlackDuckCoPilot/example-rubygems-travis/HEAD/linux-rubygems rubygems/bom",
+    "spdx:name": "BlackDuckCoPilot/example-rubygems-travis/master/linux-rubygems rubygems/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-6.0.0-SNAPSHOT",
@@ -15,7 +15,7 @@
   },
   {
     "name": "BlackDuckCoPilot/example-rubygems-travis",
-    "revision": "HEAD",
+    "revision": "master",
     "@id": "http:detect/linux_rubygems",
     "@type": "Project",
     "externalIdentifier": {

@@ -13,7 +13,7 @@ public class CpanmBattery {
         test.sourceDirectoryNamed("windows-cpanm");
         test.sourceFileFromResource("composer.json");
         test.sourceFileFromResource("composer.lock");
-        test.git("https://github.com/petrkle/zonglovani.info.git", "HEAD");
+        test.git("https://github.com/petrkle/zonglovani.info.git", "master");
         test.expectBdioResources();
         test.run();
     }

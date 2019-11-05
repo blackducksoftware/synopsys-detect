@@ -1,7 +1,7 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "moby/moby/HEAD/linux-vndr go_vndr/bom",
+    "spdx:name": "moby/moby/master/linux-vndr go_vndr/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-6.0.0-SNAPSHOT",
@@ -15,7 +15,7 @@
   },
   {
     "name": "moby/moby",
-    "revision": "HEAD",
+    "revision": "master",
     "@id": "http:detect/linux_vndr",
     "@type": "Project",
     "externalIdentifier": {
