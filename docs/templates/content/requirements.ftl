@@ -6,8 +6,8 @@ Requirements for Synopsys Detect are:
 
 * Normally, access to the internet is required to download and run Synopsys Detect and components from GitHub and other locations. For running without internet access, see [Air gap and offline modes](air-gap.md).
 * Minimum 8GB RAM.
-* Java. Versions 8 and 11 are supported.
-* curl version 7.34.0.
+* OpenJDK 8 or OpenJDK 11.
+* curl version 7.34.0 or later.
 * Bash.
 * The source code for your project must be buildable.
 
