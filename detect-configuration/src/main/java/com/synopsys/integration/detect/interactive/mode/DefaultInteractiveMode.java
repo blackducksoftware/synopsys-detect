@@ -23,7 +23,7 @@
 package com.synopsys.integration.detect.interactive.mode;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.configuration.ConnectionResult;
+import com.synopsys.integration.rest.client.ConnectionResult;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.help.DetectOptionManager;
 import com.synopsys.integration.log.SilentIntLogger;
