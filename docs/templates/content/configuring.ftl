@@ -21,8 +21,12 @@ The most common ways to pass a property value to ${solution_name} are:
 
 When setting a property value on the command line, prefix the property name with two hyphens ("--").
 
-When setting a property value using an environment variable, the environment variable name
+On Linux, when setting a property value using an environment variable, the environment variable name
 is the property name converted to uppercase, with period characters (".") converted to underscore
+characters ("_").
+
+On Windows, the environment variable name can either be the original property
+name, or the property name converted to uppercase, with period characters (".") converted to underscore
 characters ("_").
 
 The most common location for a configuration (.properties) file is in a file named application.properties

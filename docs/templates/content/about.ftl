@@ -47,13 +47,15 @@ can connect to any external systems needed for the run, and creates any director
 
 During the run phase, ${solution_name} processes and ordered list of [tools](/components/tools), invoking any/all that apply.
 Tool applicability depends on how ${solution_name} is configured (what property values you set).
+The detector tool runs by default. The signature scan tool runs by default when ${blackduck_product_name} connection
+details are provided.
 
-One of those tools is the detector tool, which runs by default and will invoke any/all [detectors](/components/detectors) that apply.
+The detector tool will invoke any/all [detectors](/components/detectors) that apply.
 Detector applicability depends on what ${solution_name} finds in your project. For example, if ${solution_name}
-finds a pom.xml file, it will run the Maven detector.
+finds a pom.xml file, it will run the Maven detector. If it finds Gradle files, it will run the Gradle detector.
 
 In the typical run described above, two tools applied: The detector tool (which ran the Maven detector),
-and the Signature Scan tool (which ran the ${blackduck_product_name} signature scanner).
+and the signature scan tool (which ran the ${blackduck_product_name} signature scanner).
 
 At the end of the run phase, ${solution_name} will upload results to the appropriate external
 system(s) (${blackduck_product_name} and/or ${polaris_product_name}), and optionally perform post actions, such as generating

@@ -3,7 +3,7 @@
 Overview:
 
 * Project Creator role is required to create ${blackduck_product_name} projects.
-* Global Code Scanner is required to populate the project BOM.
+* Global code scanner (or project code scanner for the project) is required to populate the project BOM.
 * BOM Manager is required to generate reports.
 
 Additional details:
