@@ -61,7 +61,7 @@ public class DockerDetectableOptions {
         return suppliedDockerTar;
     }
 
-    public boolean hasDockerImageOrTag() {
+    public boolean hasDockerImageOrTar() {
         return StringUtils.isNotBlank(getSuppliedDockerImage()) || StringUtils.isNotBlank(getSuppliedDockerTar());
     }
 
