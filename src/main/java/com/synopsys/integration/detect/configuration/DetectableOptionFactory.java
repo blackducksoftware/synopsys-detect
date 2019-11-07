@@ -107,7 +107,8 @@ public class DetectableOptionFactory {
         final Map<String, String> additionalDockerProperties = detectConfiguration.getDockerProperties();
         diagnosticSystemOptional.ifPresent(diagnosticSystem -> additionalDockerProperties.putAll(diagnosticSystem.getAdditionalDockerProperties()));
         final String dockerInspectorPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH, PropertyAuthority.NONE);
-        return new DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath);
+        final String dockerPlatformTopLayerId = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_PLATFORM_TOP_LAYER_ID, PropertyAuthority.NONE);
+        return new DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath, dockerPlatformTopLayerId);
     }
 
     public GradleInspectorOptions createGradleInspectorOptions() {

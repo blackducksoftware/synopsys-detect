@@ -20,7 +20,6 @@ public class DockerDetectableTest {
 
     @Test
     public void testApplicable() {
-
         final DetectableEnvironment environment = null;
         final DockerInspectorResolver dockerInspectorResolver = null;
         final JavaResolver javaResolver = null;
