@@ -167,7 +167,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified.")
-    DETECT_BINARY_SCAN_FILE_NAME_PATTERNS("detect.binary.scan.file.name.patterns", "Binary Scan Target", "6.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.NONE),
+    DETECT_BINARY_SCAN_FILE_NAME_PATTERNS("detect.binary.scan.file.name.patterns", "Binary Scan Filename Patterns", "6.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
     @HelpDescription("The name of the build environment init script.")
