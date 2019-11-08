@@ -5,15 +5,15 @@
 When ${blackduck_product_name} connection details are provided, ${solution_name} will execute
 the following by default:
 
-* The detector tool, which runs the appropriate package manager-specific detector (the Maven detector
+* The [detector tool](/components/detectors), which runs the appropriate package manager-specific detector (the Maven detector
 for Maven projects, the Gradle detector for Gradle projects, etc.).
-* The ${blackduck_product_name} signature scan tool, which runs the signature scanner on the
+* The ${blackduck_product_name} [signature scan tool](/properties/Configuration/signature%20scanner/), which runs the signature scanner on the
 project directory.
 
 ${solution_name} can be configured to perform additional tasks, including the following:
 
-* Enable any of the supported snippet matching modes in the signature scanner.
-* Run the ${blackduck_product_name} [binary scanner]() on a given binary files.
+* Enable any of the supported snippet matching modes in the [signature scanner](/properties/Configuration/signature%20scanner).
+* Run the ${blackduck_product_name} [binary scanner](/properties/Configuration/signature%20scanner) on a given binary files.
 * Run the ${dockerinspector_name} on a given [Docker image](/advanced/language-and-package-managers/docker-images).
 * Generate a [report](http://localhost:8000/properties/Configuration/report/).
 
