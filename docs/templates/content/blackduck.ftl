@@ -13,7 +13,9 @@ project directory.
 ${solution_name} can be configured to perform additional tasks, including the following:
 
 * Enable any of the supported snippet matching modes in the signature scanner.
-* Run the ${blackduck_product_name} binary scanner on a given binary files.
-* Run the ${dockerinspector_name} on a given Docker image.
+* Run the ${blackduck_product_name} [binary scanner]() on a given binary files.
+* Run the ${dockerinspector_name} on a given [Docker image](/advanced/language-and-package-managers/docker-images).
+* Generate a [report](http://localhost:8000/properties/Configuration/report/).
 
-See [Properties](/properties/Configuration/blackduck%20server) for details.
+See [Black Duck Server properties](/properties/Configuration/blackduck%20server)
+and [Signature Scanner properties](/properties/Configuration/signature%20scanner/) for details.
