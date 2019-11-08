@@ -508,8 +508,8 @@ public enum DetectProperty {
     DETECT_NOTICES_REPORT_PATH("detect.notices.report.path", "Notices Report Path", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE, "."),
 
     @HelpGroup(primary = GROUP_NPM, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("A space-separated list of additional arguments to use when running Detect against an NPM project.")
-    DETECT_NPM_ARGUMENTS("detect.npm.arguments", "NPM Arguments", "4.3.0", PropertyType.STRING, PropertyAuthority.NONE),
+    @HelpDescription("A space-separated list of additional arguments to add to the npm command line when running Detect against an NPM project.")
+    DETECT_NPM_ARGUMENTS("detect.npm.arguments", "Additional NPM Command Arguments", "4.3.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_NPM, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("Set this value to false if you would like to exclude your dev dependencies when ran.")
