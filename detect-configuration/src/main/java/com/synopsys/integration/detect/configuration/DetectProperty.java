@@ -375,6 +375,14 @@ public enum DetectProperty {
     @HelpDescription(category = ADVANCED, value = "If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable.")
     DETECT_DOCKER_PATH_REQUIRED("detect.docker.path.required", "Run Without Docker in Path", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
 
+    @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
+    @HelpDescription(category = ADVANCED, value = "To exclude components from platform layers from the results, assign to this property the ID of the top layer of the platform image. " +
+         "Get the platform top layer ID from the output of 'docker inspect platformimage:tag'. The platform top layer ID is the last item in RootFS.Layers. " +
+         "For more information, see 'Isolating application components' in the Docker Inspector documentation.")
+    @HelpDetailed("If you are interested in components from the application layers of your image, but not interested in components from the underlying platform layers, you can exclude components from platform layers from the results " +
+        "by using this property to specify the boundary between platform layers and application layers. ")
+    DETECT_DOCKER_PLATFORM_TOP_LAYER_ID("detect.docker.platform.top.layer.id", "Platform Top Layer ID", "6.1.0", PropertyType.STRING, PropertyAuthority.NONE, ""),
+
     @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("A saved Docker image - must be a .tar file. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.")
     DETECT_DOCKER_TAR("detect.docker.tar", "Docker Image Archive File", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
