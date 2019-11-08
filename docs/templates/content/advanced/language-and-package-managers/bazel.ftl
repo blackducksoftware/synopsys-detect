@@ -1,10 +1,17 @@
 # Bazel support
 
-The Bazel tool can discover dependencies of Bazel projects that declare dependencies using either the maven_install or maven_jar workspace rule.
+As of ${solution_name} versions 5.2.0 and higher, ${solution_name} provides limited support for Bazel projects.
+
+As of ${solution_name} version 5.2.0, ${solution_name} supports dependencies specified in maven_jar workspace rules.
+As of ${solution_name} version 6.0.0, ${solution_name} also supports dependencies specified in maven_install workspace rules.
 
 The Bazel tool will attempt to run on your project if you provide a Bazel build target via the Bazel target property.
 
 The Bazel tool also requires a bazel executable on $PATH.
+
+${solution_name} attempts to determine the workspace dependency rule (maven_jar or maven_install) from the WORKSPACE file.
+In case it can’t, you can specify which rule you use with the Bazel dependency type property.
+See [Properties](/properties/Detectors/bazel) for details.
 
 ## Processing for the maven_install workspace rule
 
@@ -29,7 +36,7 @@ Then, it parses the group/artifact/version details from the values of the maven_
 
 The Bazel tool runs a bazel query on the given target to get a list of jar dependencies. On each jar dependency, the Bazel tool runs another bazel query to get its artifact details (group, artifact, version).
 
-Here’s an example (using the equivalent commands that Detect runs, but from the command line) of how Detect’s bazel detector currently identifies components:
+Here’s an example (using the equivalent commands that ${solution_name} runs, but from the command line) of how ${solution_name}’s bazel detector currently identifies components:
 First, it gets a list of dependencies:
 ```
 $ bazel query 'filter("@.*:jar", deps(//:ProjectRunner))'

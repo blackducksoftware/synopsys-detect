@@ -16,4 +16,4 @@ ${solution_name} can be configured to perform additional tasks, including the fo
 * Run the ${blackduck_product_name} binary scanner on a given binary files.
 * Run the ${dockerinspector_name} on a given Docker image.
 
-See [Properties](/properties/all-properties) for details.
+See [Properties](/properties/Configuration/blackduck%20server) for details.

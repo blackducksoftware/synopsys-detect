@@ -68,7 +68,7 @@ the Maven detector and the ${blackduck_product_name} signature scanner
 
 During the cleanup phase, ${solution_name} removes temporary files and directories before exiting.
 
-## Modifying ${solution_name} processing
+## Controlling ${solution_name} processing
 
 For information on controlling which tools and detectors ${solution_name} executes, see
 [Including/excluding tools/detectors](/running/#including-and-excluding-tools-and-detectors).

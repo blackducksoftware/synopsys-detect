@@ -1,16 +1,16 @@
 # Docker image support
 
-Detect can invoke Docker Inspector to inspect Docker Images. For simple use cases, just add either ```--detect.docker.image=<repo>:<tag>``` or ```--detect.docker.tar=<path to a Docker saved tarfile>``` to the Detect command line.
+${solution_name} can invoke Docker Inspector to inspect Docker Images. For simple use cases, just add either ```--detect.docker.image=<repo>:<tag>``` or ```--detect.docker.tar=<path to a Docker saved tarfile>``` to the ${solution_name} command line.
 
 The documentation for Docker Inspector is available [here](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/622613/Black+Duck+Docker+Inspector).
 
-When passed a value for either detect.docker.image or detect.docker.tar, Detect will run Docker Inspector on the given image (the "target image"), creating one code location. Detect then (by default) runs the signature scanner on the image (actually the file system a container created from the image would have at startup time; see [Detect's scan target](#scantarget) for more details). This creates a second code location.
+When passed a value for either detect.docker.image or detect.docker.tar, ${solution_name} will run Docker Inspector on the given image (the "target image"), creating one code location. ${solution_name} then (by default) runs the signature scanner on the image (actually the file system a container created from the image would have at startup time; see [${solution_name}'s scan target](#scantarget) for more details). This creates a second code location.
 
-### Passing Docker Inspector property values to Docker Inspector from Detect
+### Passing Docker Inspector property values to Docker Inspector from ${solution_name}
 
-For more complex use cases, you may need to pass Docker Inspector property values to Docker Inspector via Detect. To do this, construct the Detect property name by prefixing the Docker Inspector property name with ```detect.docker.passthrough.```.
+For more complex use cases, you may need to pass Docker Inspector property values to Docker Inspector via ${solution_name}. To do this, construct the ${solution_name} property name by prefixing the Docker Inspector property name with ```detect.docker.passthrough.```.
 
-For example, suppose you need to set Docker Inspector's service.timeout value (the length of time Docker Inspector will wait for a response from the Image Inspector services that it uses) to 480000. You would add the prefix to the Docker Inspector property name to derive the Detect property name ```detect.docker.passthrough.service.timeout```. Therefore you would add ```--detect.docker.passthrough.service.timeout=480000``` to the Detect command line.
+For example, suppose you need to set Docker Inspector's service.timeout value (the length of time Docker Inspector will wait for a response from the Image Inspector services that it uses) to 480000. You would add the prefix to the Docker Inspector property name to derive the ${solution_name} property name ```detect.docker.passthrough.service.timeout```. Therefore you would add ```--detect.docker.passthrough.service.timeout=480000``` to the ${solution_name} command line.
 
 For example:
 ```
@@ -20,19 +20,19 @@ For example:
 You can set any Docker Inspector property via this method.
 
 <a name="scantarget"></a>
-### Detect's scan target
+### ${solution_name}'s scan target
 
 When a Docker image is run (for example, via a `docker run` command), a container is created. That container has a file system (the "container file system"). The container file system at the instant the container is created (the "initial container file system") can be determined in advance from the image without running the image. Because the target image is not yet trusted, Docker Inspector does not run the image (that is, it does not create a container from the image), but it does construct the initial container file system (the file system a container would have at the instant it is created).
 
-When Detect invokes both Docker Inspector (because either detect.docker.image or detect.docker.tar is set), and the signature scanner (as it does by default), the target of that signature scan is the initial container file system constructed by Docker Inspector, packaged in a way to optimize results from Black Duck's matching algorithms. Rather than running the signature scanner on the initial container file system directly, Detect runs the signature scanner on a new image (the "squashed image") constructed using the initial container file system (built by Docker Inspector). Packaging the initial container file system in a Docker image triggers matching algorithms within Black Duck that optimize match results for Linux file systems.
+When ${solution_name} invokes both Docker Inspector (because either detect.docker.image or detect.docker.tar is set), and the signature scanner (as it does by default), the target of that signature scan is the initial container file system constructed by Docker Inspector, packaged in a way to optimize results from Black Duck's matching algorithms. Rather than running the signature scanner on the initial container file system directly, ${solution_name} runs the signature scanner on a new image (the "squashed image") constructed using the initial container file system (built by Docker Inspector). Packaging the initial container file system in a Docker image triggers matching algorithms within Black Duck that optimize match results for Linux file systems.
 
-In early versions of Detect / Docker Inspector, Detect ran the signature scanner directly on the target image. This approach had the disadvantage of potentially producing false positives under certain circumstances. For example, suppose your target image consists of multiple layers. If version 1 of a package is installed in layer 0, and then replaced with a newer version of that package in layer 1, both versions exist in the image, even though the initial container file system will only include version 2. A signature scan of the target image would show both versions, even though version 1 has been effectively replaced with version 2. The current Detect / Docker Inspector functionality avoids this potential for false positives.
+In early versions of ${solution_name} / Docker Inspector, ${solution_name} ran the signature scanner directly on the target image. This approach had the disadvantage of potentially producing false positives under certain circumstances. For example, suppose your target image consists of multiple layers. If version 1 of a package is installed in layer 0, and then replaced with a newer version of that package in layer 1, both versions exist in the image, even though the initial container file system will only include version 2. A signature scan of the target image would show both versions, even though version 1 has been effectively replaced with version 2. The current ${solution_name} / Docker Inspector functionality avoids this potential for false positives.
 
 ### Isolating application components
 
 If you are interested in components from the application layers of your image, but not interested in components from the underlying platform layers, you can exclude components from platform layers from the results.
 
-For example, if you build your application on ubuntu:latest (your Dockerfile starts with FROM ubuntu:latest), you can exclude components from the ubuntu layer(s) so that the components generated by Detect (via Docker Inspector and the signature scanner) contain only components from your application layers.
+For example, if you build your application on ubuntu:latest (your Dockerfile starts with FROM ubuntu:latest), you can exclude components from the ubuntu layer(s) so that the components generated by ${solution_name} (via Docker Inspector and the signature scanner) contain only components from your application layers.
 
 First, find the layer ID of the platform's top layer. To do this:
 

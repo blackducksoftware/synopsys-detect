@@ -1,6 +1,6 @@
 # Gradle support
 
-Detect has two detectors for Gradle:
+${solution_name} has two detectors for Gradle:
 
 * [Gradle inspector ietector](#gradleinspectordetector)
 * [Gradle parse detector](#gradleparsedetector)
@@ -14,8 +14,8 @@ The Gradle inspector detector will attempt to run on your project if it finds a 
 
 The Gradle inspector detector also requires either gradlew or gradle:
 
-1. Detect looks for gradlew in the source directory (top level). You can override this by setting the gradle path property. If not overridden and not found:
-1. Detect looks for gradle on $PATH.
+1. ${solution_name} looks for gradlew in the source directory (top level). You can override this by setting the gradle path property. If not overridden and not found:
+1. ${solution_name} looks for gradle on $PATH.
 
 The Gradle inspector detector runs `gradlew dependencies` to get a list of the project's dependencies, and then parses the output.
 

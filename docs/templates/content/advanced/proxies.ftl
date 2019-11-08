@@ -17,7 +17,7 @@ including:
 * blackduck.proxy.username (proxy username)
 * blackduck.proxy.password (proxy password)
 
-See [properties](/properties/all-properties) for more information.
+See [properties](/properties/Configuration/proxy) for more information.
 
 ## Providing proxy details to ${bash_script_name}
 

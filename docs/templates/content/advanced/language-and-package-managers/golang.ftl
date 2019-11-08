@@ -26,8 +26,8 @@ The GoDepCli detector can discover dependencies of go language (GoLang) projects
 The GoDepCli detector will attempt to run on your project if files are found in your source directory with extension "go" ("*.go").
 
 The GoDepCli detector requires "go" and "dep" executables:
-* Detect looks for go on $PATH.
-* Detect looks for dep in your source directory.
+* ${solution_name} looks for go on $PATH.
+* ${solution_name} looks for dep in your source directory.
 
 The GoDepCli detector looks in your source directory for a Gopkg.lock file. If it does not exist, it runs dep command(s) to create it. Then the GoDepCli detector parses Gopkg.lock for dependencies.
 

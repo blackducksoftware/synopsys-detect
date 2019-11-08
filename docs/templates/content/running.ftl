@@ -3,12 +3,12 @@
 ## Positioning ${solution_name} in the build process
 
 In most cases, ${solution_name} must be executed as a post-build step in the build environment of the project.
-Building your project prior to running Synopsys Detect is often required for the detector to run successfully,
+Building your project prior to running ${solution_name} is often required for the detector to run successfully,
 and helps ensure that the build artifacts are available for signature scanning.
 
 ## Choosing the working directory
 
-You can run ${solution_name} from any directory. If you are not running Detect from the project directory,
+You can run ${solution_name} from any directory. If you are not running ${solution_name} from the project directory,
 provide the project directory via the detect.source.path property. When that property is not set,
 ${solution_name} assumes the current working directory is the project directory.
 

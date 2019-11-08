@@ -8,9 +8,9 @@ There are two Nuget detectors (Nuget Solution detector, and NuGet Project detect
 
 On non-Windows systems: Only the dotnet inspector is supported. A dotnet executable is required.
 
-On Windows systems: Both inspectors (dotnet and classic) are supported. A dotnet executable is not required. If no dotnet executable is found, Detect runs the classic inspector.
+On Windows systems: Both inspectors (dotnet and classic) are supported. A dotnet executable is not required. If no dotnet executable is found, ${solution_name} runs the classic inspector.
 
-By default, Detect looks for dotnet on $PATH. You can override this by setting the dotnet path property to point to your dotnet executable.
+By default, ${solution_name} looks for dotnet on $PATH. You can override this by setting the dotnet path property to point to your dotnet executable.
 
 The NuGet detectors do not work with mono.
 
@@ -95,4 +95,4 @@ The NuGet Inspectors derive dependency information from the first type of file i
 4. project.json
 5. XML of the project file
 
-After discovering dependencies both the dotnet inspector (BlackduckNugetInspector) and the classic inspector (IntegrationNugetInspector) use NuGet client libraries to collect further information about the dependencies and write it to a JSON file (`<projectname>_inspection.json`). Detect then parses that file for the dependency information.
+After discovering dependencies both the dotnet inspector (BlackduckNugetInspector) and the classic inspector (IntegrationNugetInspector) use NuGet client libraries to collect further information about the dependencies and write it to a JSON file (`<projectname>_inspection.json`). ${solution_name} then parses that file for the dependency information.
