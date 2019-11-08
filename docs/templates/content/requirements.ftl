@@ -9,6 +9,7 @@ Requirements for Synopsys Detect are:
 * OpenJDK 8 or OpenJDK 11.
 * curl version 7.34.0 or later.
 * Bash.
+* If using ${powershell_script_name}: PowerShell version 4.0 or higher.
 * The source code for your project must be buildable.
 
 ## ${blackduck_product_name} requirements
