@@ -133,7 +133,7 @@ if ("true" == project.findProperty('refresh.cache')) {
     project.repositories.clear()
     project.repositories {
         maven {
-            url 'https://repo.blackducksoftware.com:443/artifactory/bds-integration-public-cache'
+            url "${project.ext.deployArtifactoryUrl}/bds-integration-public-cache"
             credentials {
                 username = project.ext.artifactoryDeployerUsername
                 password = project.ext.artifactoryDeployerPassword
