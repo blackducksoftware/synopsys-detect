@@ -167,7 +167,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified.")
-    DETECT_BINARY_SCAN_FILE_NAME_PATTERNS("detect.binary.scan.file.name.patterns", "Binary Scan Target", "6.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.NONE),
+    DETECT_BINARY_SCAN_FILE_NAME_PATTERNS("detect.binary.scan.file.name.patterns", "Binary Scan Filename Patterns", "6.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_BITBAKE, additional = GROUP_SOURCE_SCAN)
     @HelpDescription("The name of the build environment init script.")
@@ -375,6 +375,14 @@ public enum DetectProperty {
     @HelpDescription(category = ADVANCED, value = "If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable.")
     DETECT_DOCKER_PATH_REQUIRED("detect.docker.path.required", "Run Without Docker in Path", "4.0.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
 
+    @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
+    @HelpDescription(category = ADVANCED, value = "To exclude components from platform layers from the results, assign to this property the ID of the top layer of the platform image. " +
+         "Get the platform top layer ID from the output of 'docker inspect platformimage:tag'. The platform top layer ID is the last item in RootFS.Layers. " +
+         "For more information, see 'Isolating application components' in the Docker Inspector documentation.")
+    @HelpDetailed("If you are interested in components from the application layers of your image, but not interested in components from the underlying platform layers, you can exclude components from platform layers from the results " +
+        "by using this property to specify the boundary between platform layers and application layers. ")
+    DETECT_DOCKER_PLATFORM_TOP_LAYER_ID("detect.docker.platform.top.layer.id", "Platform Top Layer ID", "6.1.0", PropertyType.STRING, PropertyAuthority.NONE, ""),
+
     @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("A saved Docker image - must be a .tar file. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.")
     DETECT_DOCKER_TAR("detect.docker.tar", "Docker Image Archive File", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
@@ -500,8 +508,8 @@ public enum DetectProperty {
     DETECT_NOTICES_REPORT_PATH("detect.notices.report.path", "Notices Report Path", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE, "."),
 
     @HelpGroup(primary = GROUP_NPM, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("A space-separated list of additional arguments to use when running Detect against an NPM project.")
-    DETECT_NPM_ARGUMENTS("detect.npm.arguments", "NPM Arguments", "4.3.0", PropertyType.STRING, PropertyAuthority.NONE),
+    @HelpDescription("A space-separated list of additional arguments to add to the npm command line when running Detect against an NPM project.")
+    DETECT_NPM_ARGUMENTS("detect.npm.arguments", "Additional NPM Command Arguments", "4.3.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_NPM, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("Set this value to false if you would like to exclude your dev dependencies when ran.")

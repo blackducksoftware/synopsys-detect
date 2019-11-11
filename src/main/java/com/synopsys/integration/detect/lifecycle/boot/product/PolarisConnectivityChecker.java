@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.lifecycle.boot.product;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.configuration.ConnectionResult;
+import com.synopsys.integration.rest.client.ConnectionResult;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 import com.synopsys.integration.polaris.common.rest.AccessTokenPolarisHttpClient;
@@ -53,6 +53,7 @@ public class PolarisConnectivityChecker {
 
     private ConnectionResult attemptConnection(final PolarisServerConfig polarisServerConfig) {
         String errorMessage = null;
+        Exception caughtException = null;
         int httpStatusCode = 0;
 
         try {
@@ -66,11 +67,12 @@ public class PolarisConnectivityChecker {
             }
         } catch (final Exception e) {
             errorMessage = e.getMessage();
+            caughtException = e;
         }
 
         if (null != errorMessage) {
             logger.error(errorMessage);
-            return ConnectionResult.FAILURE(httpStatusCode, errorMessage);
+            return ConnectionResult.FAILURE(httpStatusCode, errorMessage, caughtException);
         }
 
         logger.info("A successful connection was made.");

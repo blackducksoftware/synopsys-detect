@@ -20,7 +20,6 @@ public class DockerDetectableTest {
 
     @Test
     public void testApplicable() {
-
         final DetectableEnvironment environment = null;
         final DockerInspectorResolver dockerInspectorResolver = null;
         final JavaResolver javaResolver = null;
@@ -29,7 +28,7 @@ public class DockerDetectableTest {
         final DockerExtractor dockerExtractor = null;
         final DockerDetectableOptions dockerDetectableOptions = Mockito.mock(DockerDetectableOptions.class);
 
-        Mockito.when(dockerDetectableOptions.hasDockerImageOrTag()).thenReturn(Boolean.TRUE);
+        Mockito.when(dockerDetectableOptions.hasDockerImageOrTar()).thenReturn(Boolean.TRUE);
 
         final DockerDetectable detectable = new DockerDetectable(environment, dockerInspectorResolver, javaResolver, bashResolver, dockerResolver,
          dockerExtractor, dockerDetectableOptions);
