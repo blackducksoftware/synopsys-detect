@@ -66,7 +66,7 @@ public class BdioCompare {
         List<BdioNode> missingExpected = new ArrayList<>();
         Set<String> actualIds = actual.nodes.stream().skip(1).map(bdioNode -> bdioNode.id).collect(Collectors.toSet());
         Set<String> expectedIds = actual.nodes.stream().skip(1).map(bdioNode -> bdioNode.id).collect(Collectors.toSet());
-        Set<String> differentIds = SetUtils.difference(actualIds, expectedIds);
+        Set<String> differentIds = SetUtils.disjunction(actualIds, expectedIds);
 
         for (String differentId: differentIds) {
             Optional<BdioNode> expectedNode = expected.nodes.stream().filter(it -> it.id.equals(differentId)).findFirst();
@@ -88,12 +88,12 @@ public class BdioCompare {
             if (first) { first = false; continue; }
             for (BdioNode actualNode : actual.nodes) {
                 if (expectedNode.id.equals(actualNode.id)) {
-                    Set<String> differenceRelated = SetUtils.difference(new HashSet<>(expectedNode.relatedIds), new HashSet<>(actualNode.relatedIds));
+                    Set<String> differenceRelated = SetUtils.disjunction(new HashSet<>(expectedNode.relatedIds), new HashSet<>(actualNode.relatedIds));
                     for (String difference : differenceRelated) {
                         if (expectedNode.relatedIds.contains(difference)) {
-                            issues.add(new BdioIssue("There was an additional relationship in the component " + expectedNode.toDescription() + " to the component " + firstComponent(difference, expected, actual).toDescription() + "."));
+                            issues.add(new BdioIssue("There was a missing relationship (in expected but not actual) in the component " + expectedNode.toDescription() + " to the component " + firstComponent(difference, expected, actual).toDescription() + "."));
                         } else if (actualNode.relatedIds.contains(difference)) {
-                            issues.add(new BdioIssue("There was an additional relationship in the component " + expectedNode.toDescription() + " to the component " + firstComponent(difference, expected, actual).toDescription() + "."));
+                            issues.add(new BdioIssue("There was an additional relationship (in actual but not in expected) in the component " + expectedNode.toDescription() + " to the component " + firstComponent(difference, expected, actual).toDescription() + "."));
                         } else {
                             throw new BdioCompareException("Something went wrong comparing BDIO. An related id was different in actual and in expected BDIO nodes, but neither actually had the relationship.");
                         }
