@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 
 public class PipInspectorExtractor {
@@ -61,7 +61,7 @@ public class PipInspectorExtractor {
 
             for (final String requirementFilePath : requirementsPaths) {
                 final List<String> inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
-                final Optional<PipParseResult> result = pipInspectorTreeParser.parse(inspectorOutput, directory.toString());
+                final Optional<PipenvResult> result = pipInspectorTreeParser.parse(inspectorOutput, directory.toString());
                 if (result.isPresent()) {
                     codeLocations.add(result.get().getCodeLocation());
                     final String potentialProjectVersion = result.get().getProjectVersion();

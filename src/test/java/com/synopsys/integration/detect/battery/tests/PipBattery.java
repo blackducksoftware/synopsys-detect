@@ -19,5 +19,17 @@ public class PipBattery {
         test.run();
         //detect.pip.requirements.path = requirements.txt
     }
+
+    @Test
+    void pipenv_cli() {
+        final BatteryTest test = new BatteryTest("pipenv-cli");
+        test.sourceDirectoryNamed("battery-pipenv");
+        test.sourceFileNamed("Pipfile.lock");
+        test.sourceFileNamed("Pipfile");
+        test.executable(DetectProperty.DETECT_PYTHON_PATH, "battery-pipenv-project-name", "battery-pipenv-project-version");
+        test.executableFromResourceFiles(DetectProperty.DETECT_PIPENV_PATH, "pip-freeze.xout", "pipenv-graph.xout");
+        test.expectBdioResources();
+        test.run();
+    }
 }
 

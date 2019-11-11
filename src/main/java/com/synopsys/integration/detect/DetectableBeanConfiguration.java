@@ -167,7 +167,9 @@ import com.synopsys.integration.detectable.detectables.pip.PipInspectorExtractor
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipenvExtractor;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
+import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvGraphParser;
+import com.synopsys.integration.detectable.detectables.pip.parser.PipenvTransformer;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockExtractor;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
@@ -507,10 +509,18 @@ public class DetectableBeanConfiguration {
     public PipenvGraphParser pipenvGraphParser() {
         return new PipenvGraphParser(externalIdFactory);
     }
+    @Bean
+    public PipenvFreezeParser pipenvFreezeParser() {
+        return new PipenvFreezeParser(externalIdFactory);
+    }
+    @Bean
+    public PipenvTransformer pipenvTransformer() {
+        return new PipenvTransformer(externalIdFactory);
+    }
 
     @Bean
     public PipenvExtractor pipenvExtractor() {
-        return new PipenvExtractor(executableRunner, pipenvGraphParser());
+        return new PipenvExtractor(executableRunner, pipenvTransformer(), pipenvFreezeParser(), pipenvGraphParser());
     }
 
     @Bean

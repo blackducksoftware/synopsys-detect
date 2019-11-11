@@ -22,28 +22,29 @@
  */
 package com.synopsys.integration.detectable.detectables.pip.model;
 
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import java.util.List;
 
-public class PipParseResult {
-    private final String projectName;
-    private final String projectVersion;
-    private final CodeLocation codeLocation;
+public class PipenvGraphDependency {
+    private final String name;
+    //Not Currently Used: public List<String> requiredVersions;
+    private final String installedVersion;
+    private final List<PipenvGraphDependency> children;
 
-    public PipParseResult(final String projectName, final String projectVersion, final CodeLocation codeLocation) {
-        this.projectName = projectName;
-        this.projectVersion = projectVersion;
-        this.codeLocation = codeLocation;
+    public PipenvGraphDependency(final String name, final String installedVersion, final List<PipenvGraphDependency> children) {
+        this.name = name;
+        this.installedVersion = installedVersion;
+        this.children = children;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getName() {
+        return name;
     }
 
-    public String getProjectVersion() {
-        return projectVersion;
+    public String getInstalledVersion() {
+        return installedVersion;
     }
 
-    public CodeLocation getCodeLocation() {
-        return codeLocation;
+    public List<PipenvGraphDependency> getChildren() {
+        return children;
     }
 }

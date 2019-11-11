@@ -33,4 +33,16 @@ public class DetectableStringUtils {
 
         return line.substring(0, indexToCut);
     }
+
+    public static int parseIndentationLevel(final String line, String indentation) {
+        String consumableLine = line;
+        int level = 0;
+
+        while (consumableLine.startsWith(indentation)) {
+            consumableLine = consumableLine.replaceFirst(indentation, "");
+            level++;
+        }
+
+        return level;
+    }
 }
