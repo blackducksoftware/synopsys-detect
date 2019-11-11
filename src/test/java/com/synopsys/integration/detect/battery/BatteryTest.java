@@ -18,18 +18,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeroturnaround.zip.ZipUtil;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.synopsys.integration.detect.Application;
 import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
@@ -44,18 +43,18 @@ public final class BatteryTest {
     private final List<String> emptyFileNames = new ArrayList<>();
     private final List<String> resourceFileNames = new ArrayList<>();
     private final List<String> resourceZipNames = new ArrayList<>();
-    private final Map<String, Integer> bdioSizes = new HashMap<>();
     private boolean shouldExpectBdioResources = false;
     private String sourceDirectoryName = "source";
 
+    private String detectVersion = "";
+    private boolean useDetectScript = false;
+
     private File batteryDirectory;
-    private File testDirectory;
     private File mockDirectory;
     private File outputDirectory;
     private File bdioDirectory;
     private File sourceDirectory;
 
-    private final Gson gson = new Gson();
     private final String testName;
     private final String resourcePrefix;
 
@@ -121,10 +120,6 @@ public final class BatteryTest {
         resourceFileNames.add(filename);
     }
 
-    public void expectBdioFile(final String named, final int size) {
-        bdioSizes.put(named, size);
-    }
-
     public void expectBdioResources() {
         shouldExpectBdioResources = true;
     }
@@ -135,6 +130,16 @@ public final class BatteryTest {
 
     public void property(final String property, final String value) {
         additionalProperties.add("--" + property + "=" + value);
+    }
+
+    public void withDetectLatest(){
+        useDetectScript = true;
+        detectVersion = "";
+    }
+
+    public void withDetectVersion(String version){
+        useDetectScript = true;
+        detectVersion = version;
     }
 
     public void run() {
@@ -169,7 +174,12 @@ public final class BatteryTest {
         detectArguments.addAll(additionalArguments);
         detectArguments.addAll(additionalProperties);
 
-        if (!executeDetectJar(detectArguments)) {
+        if (executeDetectScript(detectArguments)) {
+            logger.info("Executed as script.");
+        }else if (executeDetectJar(detectArguments)) {
+            logger.info("Executed as jar.");
+        } else  {
+            logger.info("Executed as static.");
             executeDetectStatic(detectArguments);
         }
     }
@@ -181,6 +191,40 @@ public final class BatteryTest {
         Application.SHOULD_EXIT = previous;
     }
 
+    private boolean executeDetectScript(final List<String> detectArguments) throws ExecutableRunnerException {
+        if (!useDetectScript) {
+            return false;
+        }
+
+        final List<String> shellArguments = new ArrayList<>();
+        String target = "";
+        if (SystemUtils.IS_OS_WINDOWS) {
+            target = "powershell";
+            shellArguments.add("\"[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect\"");
+        } else {
+            target = "bash";
+            shellArguments.add("<(curl -s -L https://detect.synopsys.com/detect.sh)");
+        }
+        shellArguments.addAll(detectArguments);
+
+        Map<String, String> environmentVariables = new HashMap<>();
+
+        if (StringUtils.isNotBlank(detectVersion)){
+            environmentVariables.put("DETECT_LATEST_RELEASE_VERSION", detectVersion);
+        }
+
+        final Executable executable = new Executable(outputDirectory, environmentVariables, target, shellArguments);
+        final SimpleExecutableRunner executableRunner = new SimpleExecutableRunner();
+        final ExecutableOutput result = executableRunner.execute(executable);
+
+        Assertions.assertEquals(0, result.getReturnCode(), "Detect returned a non-zero exit code:" + result.getReturnCode());
+
+        final List<String> lines = result.getStandardOutputAsList();
+
+        Assertions.assertTrue(lines.size() > 0, "Detect wrote nothing to standard out.");
+
+        return true;
+    }
     private boolean executeDetectJar(final List<String> detectArguments) throws ExecutableRunnerException {
         final String java = System.getenv("BATTERY_TESTS_JAVA_PATH");
         final String detectJar = System.getenv("BATTERY_TESTS_DETECT_JAR_PATH");
@@ -207,7 +251,7 @@ public final class BatteryTest {
     }
 
     private void initializeDirectories() throws IOException {
-        testDirectory = new File(batteryDirectory, testName);
+        final File testDirectory = new File(batteryDirectory, testName);
 
         if (testDirectory.exists()) {
             FileUtils.deleteDirectory(testDirectory);
@@ -218,10 +262,10 @@ public final class BatteryTest {
         bdioDirectory = new File(testDirectory, "bdio");
         sourceDirectory = new File(testDirectory, sourceDirectoryName);
 
-        outputDirectory.mkdirs();
-        sourceDirectory.mkdirs();
-        bdioDirectory.mkdirs();
-        mockDirectory.mkdirs();
+        Assert.assertTrue(outputDirectory.mkdirs());
+        Assert.assertTrue(sourceDirectory.mkdirs());
+        Assert.assertTrue(bdioDirectory.mkdirs());
+        Assert.assertTrue(mockDirectory.mkdirs());
     }
 
     private void checkEnvironment() {
@@ -314,20 +358,8 @@ public final class BatteryTest {
                 }
                 Assertions.assertEquals(0, issues.size(), "The BDIO comparison failed, one or more issues were found, please check the logs.");
             }
-
         } else {
-            Assertions.assertEquals(bdio.length, bdioSizes.keySet().size(), "Detect did not create the expected number of bdio files.");
-            for (final String key : bdioSizes.keySet()) {
-                File file = null;
-                for (final File bdioFile : bdio) {
-                    if (bdioFile.getName().equals(key)) {
-                        file = bdioFile;
-                    }
-                }
-                Assertions.assertNotNull(file, "Could not find bdio file.");
-                final JsonArray json = gson.fromJson(FileUtils.readFileToString(file, Charset.defaultCharset()), JsonArray.class);
-                Assertions.assertEquals((int) bdioSizes.get(key), json.size(), "A bdio file did not have the required number of components.");
-            }
+            Assertions.assertEquals(0, bdio.length, "No bdio resources were asserted but detect created bdio files. Add resource bdio assertion or add a new type of assertion.");
         }
     }
 
