@@ -58,6 +58,7 @@ import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanToolResult;
 import com.synopsys.integration.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
+import com.synopsys.integration.detect.tool.detector.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorTool;
@@ -93,6 +94,7 @@ import com.synopsys.integration.detect.workflow.status.DetectResult;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
@@ -123,7 +125,6 @@ public class RunManager {
         final BdioCodeLocationCreator bdioCodeLocationCreator = detectContext.getBean(BdioCodeLocationCreator.class);
         final ConnectionManager connectionManager = detectContext.getBean(ConnectionManager.class);
         final DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
-        final ExecutableRunner executableRunner = detectContext.getBean(ExecutableRunner.class);
 
         final RunResult runResult = new RunResult();
         final RunOptions runOptions = detectConfigurationFactory.createRunOptions();
@@ -132,7 +133,7 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
 
         if (productRunData.shouldUsePolarisProduct()) {
-            runPolarisProduct(productRunData, detectConfiguration, directoryManager, eventSystem, executableRunner, detectToolFilter);
+            runPolarisProduct(productRunData, detectConfiguration, directoryManager, eventSystem, detectToolFilter);
         } else {
             logger.info("Polaris tools will not be run.");
         }
@@ -245,13 +246,14 @@ public class RunManager {
         }
     }
 
-    private void runPolarisProduct(final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final EventSystem eventSystem, final ExecutableRunner executableRunner,
+    private void runPolarisProduct(final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final EventSystem eventSystem,
         final DetectToolFilter detectToolFilter) {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
             logger.info("Will include the Polaris tool.");
             final PolarisServerConfig polarisServerConfig = productRunData.getPolarisRunData().getPolarisServerConfig();
-            final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, executableRunner, detectConfiguration, polarisServerConfig);
+            final ExecutableRunner polarisExecutableRunner = DetectExecutableRunner.newInfo(eventSystem);
+            final PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, polarisExecutableRunner, detectConfiguration, polarisServerConfig);
             polarisTool.runPolaris(new Slf4jIntLogger(logger), directoryManager.getSourceDirectory());
             logger.info("Polaris actions finished.");
         } else {
