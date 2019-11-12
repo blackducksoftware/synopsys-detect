@@ -31,5 +31,20 @@ public class PipBattery {
         test.expectBdioResources();
         test.run();
     }
+
+    @Test
+    void pipenv_cli_projectonly() {
+        final BatteryTest test = new BatteryTest("pipenv-cli-projectonly");
+        test.sourceDirectoryNamed("pipenv-cli-projectonly");
+        test.sourceFileNamed("Pipfile.lock");
+        test.sourceFileNamed("Pipfile");
+        test.executable(DetectProperty.DETECT_PYTHON_PATH, "battery-pipenv-project-name", "battery-pipenv-project-version");
+        test.executableFromResourceFiles(DetectProperty.DETECT_PIPENV_PATH, "pip-freeze.xout", "pipenv-graph.xout");
+        test.property(DetectProperty.DETECT_PIP_ONLY_PROJECT_TREE, "true");
+        test.property(DetectProperty.DETECT_PIP_PROJECT_NAME, "lime");
+        test.property(DetectProperty.DETECT_PIP_PROJECT_VERSION_NAME, "0.1.1.33");
+        test.expectBdioResources();
+        test.run();
+    }
 }
 

@@ -45,7 +45,7 @@ public class PipenvTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public PipenvResult transform(final String projectName, final String projectVersionName, final PipFreeze pipFreeze, final PipenvGraph pipenvGraph) {
+    public PipenvResult transform(final String projectName, final String projectVersionName, final PipFreeze pipFreeze, final PipenvGraph pipenvGraph, boolean includeOnlyProjectTree) {
         final MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
         for (PipenvGraphEntry entry : pipenvGraph.getEntries()){
@@ -53,19 +53,15 @@ public class PipenvTransformer {
             List<Dependency> children = addDependenciesToGraph(entry.getChildren(), dependencyGraph, pipFreeze);
             if (matchesProject(entryDependency, projectName, projectVersionName)) { //the project appears as an entry, we don't want the project to be a dependency of itself
                 dependencyGraph.addChildrenToRoot(children);
-            } else {
+            } else if (!includeOnlyProjectTree) { //only add non-project matches if we are not project tree only
                 dependencyGraph.addChildToRoot(entryDependency);
                 dependencyGraph.addParentWithChildren(entryDependency, children);
             }
         }
 
-        if (!dependencyGraph.getRootDependencyExternalIds().isEmpty()) {
-            final ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, projectName, projectVersionName);
-            final CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectExternalId);
-            return new PipenvResult(projectName, projectVersionName, codeLocation);
-        } else {
-            return null;
-        }
+        final ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, projectName, projectVersionName);
+        final CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectExternalId);
+        return new PipenvResult(projectName, projectVersionName, codeLocation);
     }
 
     private List<Dependency> addDependenciesToGraph(List<PipenvGraphDependency> graphDependencies, MutableMapDependencyGraph graph, PipFreeze pipFreeze) {

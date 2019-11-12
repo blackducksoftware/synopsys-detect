@@ -507,11 +507,11 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public PipenvGraphParser pipenvGraphParser() {
-        return new PipenvGraphParser(externalIdFactory);
+        return new PipenvGraphParser();
     }
     @Bean
     public PipenvFreezeParser pipenvFreezeParser() {
-        return new PipenvFreezeParser(externalIdFactory);
+        return new PipenvFreezeParser();
     }
     @Bean
     public PipenvTransformer pipenvTransformer() {

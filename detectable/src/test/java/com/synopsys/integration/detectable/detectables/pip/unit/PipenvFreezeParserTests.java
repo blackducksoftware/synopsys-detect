@@ -6,18 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.pip.model.PipFreeze;
 import com.synopsys.integration.detectable.detectables.pip.model.PipFreezeEntry;
-import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraphDependency;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
-import com.synopsys.integration.detectable.detectables.pip.parser.PipenvGraphParser;
 
 @UnitTest
 public class PipenvFreezeParserTests {
@@ -28,7 +23,7 @@ public class PipenvFreezeParserTests {
         pipFreezeText.add("with-dashes==2.0");
         pipFreezeText.add("dots.and-dashes==3.1.2");
 
-        final PipenvFreezeParser pipenvFreezeParser = new PipenvFreezeParser(new ExternalIdFactory());
+        final PipenvFreezeParser pipenvFreezeParser = new PipenvFreezeParser();
         final PipFreeze pipFreeze = pipenvFreezeParser.parse(pipFreezeText);
 
         Assertions.assertEquals(3, pipFreeze.getEntries().size(), "Pip freeze should have created three entries.");

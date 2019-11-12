@@ -582,6 +582,10 @@ public enum DetectProperty {
     @HelpDescription("A comma-separated list of paths to requirements.txt files.")
     DETECT_PIP_REQUIREMENTS_PATH("detect.pip.requirements.path", "PIP Requirements Path", "3.0.0", PropertyType.STRING_ARRAY, PropertyAuthority.NONE, null),
 
+    @HelpGroup(primary = GROUP_PIP, additional = { GROUP_SOURCE_SCAN })
+    @HelpDescription("By default, pipenv includes all dependencies found in the graph. Set to true to only include dependencies found underneath the dependency that matches the provided pip project and version name.")
+    DETECT_PIP_ONLY_PROJECT_TREE("detect.pip.only.project.tree", "PIP Include Only Project Tree", "6.1.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
+
     @HelpGroup(primary = GROUP_PIP, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path to the Pipenv executable.")
     DETECT_PIPENV_PATH("detect.pipenv.path", "Pipenv Executable", "4.1.0", PropertyType.STRING, PropertyAuthority.NONE),

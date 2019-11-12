@@ -7,10 +7,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +46,7 @@ public class PipenvTransformerTest {
         PipenvGraph pipenvGraph = new PipenvGraph(pipenvGraphEntries);
 
         PipenvTransformer pipenvTransformer = new PipenvTransformer(new ExternalIdFactory());
-        PipenvResult result = pipenvTransformer.transform("", "", pipFreeze, pipenvGraph);
+        PipenvResult result = pipenvTransformer.transform("", "", pipFreeze, pipenvGraph, false);
         DependencyGraph graph = result.getCodeLocation().getDependencyGraph();
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, graph);
@@ -62,7 +64,7 @@ public class PipenvTransformerTest {
         PipenvGraph pipenvGraph = new PipenvGraph(pipenvGraphEntries);
 
         PipenvTransformer pipenvTransformer = new PipenvTransformer(new ExternalIdFactory());
-        PipenvResult result = pipenvTransformer.transform("", "", pipFreeze, pipenvGraph);
+        PipenvResult result = pipenvTransformer.transform("", "", pipFreeze, pipenvGraph, false);
         DependencyGraph graph = result.getCodeLocation().getDependencyGraph();
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, graph);
@@ -80,10 +82,28 @@ public class PipenvTransformerTest {
         PipenvGraph pipenvGraph = new PipenvGraph(pipenvGraphEntries);
 
         PipenvTransformer pipenvTransformer = new PipenvTransformer(new ExternalIdFactory());
-        PipenvResult result = pipenvTransformer.transform("projectName", "projectVersion", pipFreeze, pipenvGraph);
+        PipenvResult result = pipenvTransformer.transform("projectName", "projectVersion", pipFreeze, pipenvGraph, false);
         DependencyGraph graph = result.getCodeLocation().getDependencyGraph();
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, graph);
         graphAssert.hasRootDependency("shouldBeAtRoot", "shouldbeAtRootVersion");
+    }
+
+    @Test
+    void ignoresNonProject() {
+        PipFreeze pipFreeze = new PipFreeze(new ArrayList<>());
+
+        List<PipenvGraphEntry> pipenvGraphEntries = new ArrayList<>();
+        pipenvGraphEntries.add(new PipenvGraphEntry("projectName", "projectVersion", Collections.singletonList(new PipenvGraphDependency("child", "childVersion", Collections.emptyList()))));
+        pipenvGraphEntries.add(new PipenvGraphEntry("non-projectName", "non-projectVersion", new ArrayList<>()));
+        PipenvGraph pipenvGraph = new PipenvGraph(pipenvGraphEntries);
+
+        PipenvTransformer pipenvTransformer = new PipenvTransformer(new ExternalIdFactory());
+        PipenvResult result = pipenvTransformer.transform("projectName", "projectVersion", pipFreeze, pipenvGraph, true);
+        DependencyGraph graph = result.getCodeLocation().getDependencyGraph();
+
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, graph);
+        graphAssert.hasRootDependency("child", "childVersion");
+        graphAssert.noDependency("non-projectName", "non-projectVersion");
     }
 }

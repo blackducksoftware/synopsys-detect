@@ -45,12 +45,6 @@ public class PipenvGraphParser {
     private static final String DEPENDENCY_VERSION_PREFIX = "installed: ";
     private static final String DEPENDENCY_INFO_CLOSING = "]";
 
-    private final ExternalIdFactory externalIdFactory;
-
-    public PipenvGraphParser(final ExternalIdFactory externalIdFactory) {
-        this.externalIdFactory = externalIdFactory;
-    }
-
     public PipenvGraph parse(final List<String> pipenvGraphOutput) {
         PipenvGraphEntry entry = null;
         ParentStack<PipenvGraphDependency> parentStack = new ParentStack<>();
@@ -81,14 +75,14 @@ public class PipenvGraphParser {
         return new PipenvGraph(entries);
     }
 
-    public PipenvGraphEntry parseEntryFromLine(String line){
+    private PipenvGraphEntry parseEntryFromLine(String line){
         final String[] splitLine = line.trim().split(VERSION_SEPARATOR);
         String name = splitLine[0];
         String version = splitLine[1];
         return new PipenvGraphEntry(name, version, new ArrayList<>());
     }
 
-    public PipenvGraphDependency parseDependencyFromLine( final String line) {
+    private PipenvGraphDependency parseDependencyFromLine( final String line) {
         String startPiece = StringUtils.substringBefore(line, DEPENDENCY_INFO_OPENING);
         String name = StringUtils.substringAfter(startPiece, DEPENDENCY_NAME_PREFIX).trim();
 

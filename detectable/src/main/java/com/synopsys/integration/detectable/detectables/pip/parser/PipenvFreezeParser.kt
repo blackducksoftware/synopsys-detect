@@ -20,28 +20,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip;
+package com.synopsys.integration.detectable.detectables.pip.parser
 
-public class PipenvDetectableOptions {
-    private final String pipProjectName;
-    private final String pipProjectVersionName;
-    private final boolean pipProjectTreeOnly;
+import com.synopsys.integration.detectable.detectables.pip.model.PipFreeze
+import com.synopsys.integration.detectable.detectables.pip.model.PipFreezeEntry
 
-    public PipenvDetectableOptions(final String pipProjectName, final String pipProjectVersionName, final boolean pipProjectTreeOnly) {
-        this.pipProjectName = pipProjectName;
-        this.pipProjectVersionName = pipProjectVersionName;
-        this.pipProjectTreeOnly = pipProjectTreeOnly;
-    }
+class PipenvFreezeParser {
+    private val versionSeparator = "==".toRegex()
 
-    public String getPipProjectName() {
-        return pipProjectName;
-    }
+    fun parse(pipFreezeOutput: List<String>): PipFreeze {
+        val entries = pipFreezeOutput
+                .map { line -> line.split(versionSeparator) }
+                .filter { pieces -> pieces.size == 2 }
+                .map { pieces -> PipFreezeEntry(pieces[0], pieces[1]) }
 
-    public String getPipProjectVersionName() {
-        return pipProjectVersionName;
-    }
-
-    public boolean isPipProjectTreeOnly() {
-        return pipProjectTreeOnly;
+        return PipFreeze(entries)
     }
 }

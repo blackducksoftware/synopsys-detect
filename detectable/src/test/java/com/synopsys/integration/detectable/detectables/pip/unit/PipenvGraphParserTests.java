@@ -23,7 +23,7 @@ public class PipenvGraphParserTests {
         pipGraphText.add("entry-one==1");
         pipGraphText.add("entry-two==2.0");
 
-        final PipenvGraphParser pipenvGraphParser = new PipenvGraphParser(new ExternalIdFactory());
+        final PipenvGraphParser pipenvGraphParser = new PipenvGraphParser();
         final PipenvGraph pipenvGraph = pipenvGraphParser.parse(pipGraphText);
 
         Assertions.assertEquals(2, pipenvGraph.getEntries().size(), "Pip graph should have created 2 entries.");
@@ -38,7 +38,7 @@ public class PipenvGraphParserTests {
         pipGraphText.add("  - dependency-parent [required: Any, installed: 1.0.0]");
         pipGraphText.add("    - dependency-child [required: Any, installed: 2.0.0]");
 
-        final PipenvGraphParser pipenvGraphParser = new PipenvGraphParser(new ExternalIdFactory());
+        final PipenvGraphParser pipenvGraphParser = new PipenvGraphParser();
         final PipenvGraph pipenvGraph = pipenvGraphParser.parse(pipGraphText);
 
         PipenvGraphEntry entry = pipenvGraph.getEntries().get(0);
@@ -60,7 +60,7 @@ public class PipenvGraphParserTests {
         pipGraphText.add("entry==1");
         pipGraphText.add("  - dependency-parent [required: >=2.0.1,!=2.1.6,!=2.1.2,!=2.0.4, installed: 1.0.0]");
 
-        final PipenvGraphParser pipenvGraphParser = new PipenvGraphParser(new ExternalIdFactory());
+        final PipenvGraphParser pipenvGraphParser = new PipenvGraphParser();
         final PipenvGraph pipenvGraph = pipenvGraphParser.parse(pipGraphText);
 
         PipenvGraphDependency parentDep = pipenvGraph.getEntries().get(0).getChildren().get(0);
@@ -84,7 +84,7 @@ public class PipenvGraphParserTests {
         pipGraphText.add("entry3==3");
         pipGraphText.add("  - dependency-parent4 [required: Any, installed: 4.0.0]");
 
-        final PipenvGraphParser pipenvGraphParser = new PipenvGraphParser(new ExternalIdFactory());
+        final PipenvGraphParser pipenvGraphParser = new PipenvGraphParser();
         final PipenvGraph pipenvGraph = pipenvGraphParser.parse(pipGraphText);
 
         Assertions.assertEquals(3, pipenvGraph.getEntries().size(), "Pip graph should have created 3 entries.");
