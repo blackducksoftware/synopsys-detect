@@ -798,6 +798,11 @@ public enum DetectProperty {
     @AcceptableValues(value = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
     LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION("logging.level.com.synopsys.integration", "Logging Level", "5.3.0", PropertyType.STRING, PropertyAuthority.NONE, "INFO"),
 
+    @HelpGroup(primary = GROUP_LOGGING, additional = { SEARCH_GROUP_GLOBAL })
+    @HelpDescription("Shorthand for the logging level of detect. Equivalent to setting logging.level.com.synopsys.integration.")
+    @AcceptableValues(value = { "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL", "OFF" }, caseSensitive = false, strict = true)
+    LOGGING_LEVEL_DETECT("logging.level.detect", "Logging Level Shorthand", "5.5.0", PropertyType.STRING, PropertyAuthority.NONE, "INFO"),
+
     @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If set to true, Detect will wait for Synopsys products until results are available or the blackduck.timeout is exceeded.")
     DETECT_WAIT_FOR_RESULTS("detect.wait.for.results", "Wait For Results", "5.5.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
