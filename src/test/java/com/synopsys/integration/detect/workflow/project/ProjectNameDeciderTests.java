@@ -8,13 +8,13 @@ import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.synopsys.integration.detect.kotlin.nameversion.DetectorNameVersionHandler;
-import com.synopsys.integration.detect.kotlin.nameversion.DetectorProjectInfoMetadata;
-import com.synopsys.integration.detect.kotlin.nameversion.PreferredDetectorNameVersionHandler;
+import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
+import com.synopsys.integration.detect.workflow.nameversion.DetectorProjectInfoMetadata;
+import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.util.NameVersion;
-import com.synopsys.integration.detect.kotlin.nameversion.DetectorProjectInfo;
+import com.synopsys.integration.detect.workflow.nameversion.DetectorProjectInfo;
 
 public class ProjectNameDeciderTests {
 

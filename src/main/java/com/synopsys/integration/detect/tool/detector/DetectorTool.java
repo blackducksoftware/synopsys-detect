@@ -40,9 +40,9 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.detect.kotlin.nameversion.DetectorNameVersionHandler;
-import com.synopsys.integration.detect.kotlin.nameversion.NameVersionDecision;
-import com.synopsys.integration.detect.kotlin.nameversion.PreferredDetectorNameVersionHandler;
+import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
+import com.synopsys.integration.detect.workflow.nameversion.NameVersionDecision;
+import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.event.Event;

@@ -24,9 +24,9 @@ package com.synopsys.integration.detect.tool.detector;
 
 import org.codehaus.plexus.util.StringUtils;
 
-import com.synopsys.integration.detect.kotlin.nameversion.DetectorNameVersionHandler;
-import com.synopsys.integration.detect.kotlin.nameversion.DetectorProjectInfo;
-import com.synopsys.integration.detect.kotlin.nameversion.DetectorProjectInfoMetadata;
+import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
+import com.synopsys.integration.detect.workflow.nameversion.DetectorProjectInfo;
+import com.synopsys.integration.detect.workflow.nameversion.DetectorProjectInfoMetadata;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detector.base.DetectorEvaluation;

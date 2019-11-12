@@ -20,10 +20,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.kotlin.nameversion
+package com.synopsys.integration.detect.workflow.nameversion
 
 import com.synopsys.integration.detector.base.DetectorType
-import com.synopsys.integration.util.NameVersion
 import org.codehaus.plexus.util.StringUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

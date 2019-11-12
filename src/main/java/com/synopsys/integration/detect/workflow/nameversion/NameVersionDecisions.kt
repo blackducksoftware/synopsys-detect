@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.kotlin.nameversion
+package com.synopsys.integration.detect.workflow.nameversion
 
 import com.synopsys.integration.detect.configuration.DetectProperty
 import java.util.Optional

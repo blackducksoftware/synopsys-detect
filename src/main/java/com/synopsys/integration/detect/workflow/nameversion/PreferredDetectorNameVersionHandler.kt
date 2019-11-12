@@ -20,13 +20,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.kotlin.nameversion
+package com.synopsys.integration.detect.workflow.nameversion
 
 import com.synopsys.integration.detector.base.DetectorType
-import com.synopsys.integration.util.NameVersion
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.util.*
 
 /*
 Originally, name version could be decided after all detectors had ran, there was no benefit calculating the name 'on the fly'.
