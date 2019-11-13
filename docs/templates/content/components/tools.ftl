@@ -4,11 +4,11 @@ Each ${solution_name} run consists of running any applicable ${solution_name} to
 
 The available ${solution_name} tools (in order of execution, with the corresponding --detect.tools value specified in parentheses) are:
 
-* [Polaris](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect#SynopsysDetect-#get-start-coverityGettingStartedwithSynopsysDetectforSASTusingCoverity(onPolaris)) (--detect.tools=POLARIS)
-* [Docker Inspector](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect#SynopsysDetect-config-docker-scan) (--detect.tools=DOCKER)
-* [Bazel](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/108331118/Synopsys+Detect+Additional+Features#SynopsysDetectAdditionalFeatures-Bazelsupport) (--detect.tools=BAZEL)
-* Detector (--detect.tools=DETECTOR): See [Detectors](detectors.md).
-* [Black Duck signature scanner](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect#SynopsysDetect-SignaturescannerinvocationforSCA) (--detect.tools=SIGNATURE_SCAN)
-* [Black Duck binary scanner](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect#SynopsysDetect-get-start-BAGettingStartedwithSynopsysDetectforSCAofbinaryfilesusingBlackDuckBinaryAnalysis) (--detect.tools=BINARY_SCAN)
+* [Polaris](/polaris) (--detect.tools=POLARIS)
+* [Docker Inspector](/advanced/language-and-package-managers/docker-images) (--detect.tools=DOCKER)
+* [Bazel](/advanced/language-and-package-managers/bazel) (--detect.tools=BAZEL)
+* [Detector](/components/detectors) (--detect.tools=DETECTOR)
+* [Black Duck signature scanner](/properties/Configuration/signature%20scanner) (--detect.tools=SIGNATURE_SCAN)
+* [Black Duck binary scanner](/properties/Configuration/signature%20scanner) (--detect.tools=BINARY_SCAN)
 
 The detector tool runs any applicable [detectors](detectors.md)
