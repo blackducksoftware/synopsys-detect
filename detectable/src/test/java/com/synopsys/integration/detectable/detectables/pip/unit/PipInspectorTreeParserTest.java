@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 
 @UnitTest
@@ -76,7 +76,7 @@ public class PipInspectorTreeParserTest {
         pipInspectorOutput.add("       decorator==4.3.0");
         pipInspectorOutput.add("   wcwidth==0.1.7");
 
-        final Optional<PipParseResult> validParse = parser.parse(pipInspectorOutput, "");
+        final Optional<PipenvResult> validParse = parser.parse(pipInspectorOutput, "");
         Assert.assertTrue(validParse.isPresent());
         Assert.assertEquals("projectName", validParse.get().getProjectName());
         Assert.assertEquals("projectVersionName", validParse.get().getProjectVersion());
@@ -87,7 +87,7 @@ public class PipInspectorTreeParserTest {
         final List<String> invalidText = new ArrayList<>();
         invalidText.add("i am not a valid file");
         invalidText.add("the status should be optional.empty()");
-        final Optional<PipParseResult> invalidParse = parser.parse(invalidText, "");
+        final Optional<PipenvResult> invalidParse = parser.parse(invalidText, "");
         Assert.assertFalse(invalidParse.isPresent());
     }
 
@@ -97,7 +97,7 @@ public class PipInspectorTreeParserTest {
         invalidText.add(PipInspectorTreeParser.UNKNOWN_PACKAGE_PREFIX + "probably_an_internal_dependency_PY");
         invalidText.add(PipInspectorTreeParser.UNPARSEABLE_REQUIREMENTS_PREFIX + "/not/a/real/path/encrypted/requirements.txt");
         invalidText.add(PipInspectorTreeParser.UNKNOWN_REQUIREMENTS_PREFIX + "/not/a/real/path/requirements.txt");
-        final Optional<PipParseResult> invalidParse = parser.parse(invalidText, "");
+        final Optional<PipenvResult> invalidParse = parser.parse(invalidText, "");
         Assert.assertFalse(invalidParse.isPresent());
     }
 }

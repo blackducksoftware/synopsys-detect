@@ -12,7 +12,7 @@ public class RubygemsBattery {
         final BatteryTest test = new BatteryTest("rubygems-lock");
         test.sourceDirectoryNamed("linux-rubygems");
         test.sourceFileFromResource("Gemfile.lock");
-        test.git("https://github.com/BlackDuckCoPilot/example-rubygems-travis", "HEAD");
+        test.git("https://github.com/BlackDuckCoPilot/example-rubygems-travis", "master");
         test.expectBdioResources();
         test.run();
     }

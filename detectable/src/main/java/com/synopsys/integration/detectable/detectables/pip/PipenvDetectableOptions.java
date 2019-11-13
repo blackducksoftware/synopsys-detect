@@ -25,10 +25,12 @@ package com.synopsys.integration.detectable.detectables.pip;
 public class PipenvDetectableOptions {
     private final String pipProjectName;
     private final String pipProjectVersionName;
+    private final boolean pipProjectTreeOnly;
 
-    public PipenvDetectableOptions(final String pipProjectName, final String pipProjectVersionName) {
+    public PipenvDetectableOptions(final String pipProjectName, final String pipProjectVersionName, final boolean pipProjectTreeOnly) {
         this.pipProjectName = pipProjectName;
         this.pipProjectVersionName = pipProjectVersionName;
+        this.pipProjectTreeOnly = pipProjectTreeOnly;
     }
 
     public String getPipProjectName() {
@@ -37,5 +39,9 @@ public class PipenvDetectableOptions {
 
     public String getPipProjectVersionName() {
         return pipProjectVersionName;
+    }
+
+    public boolean isPipProjectTreeOnly() {
+        return pipProjectTreeOnly;
     }
 }

@@ -152,7 +152,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public ExecutableRunner executableRunner() {
-        return new DetectExecutableRunner(eventSystem);
+        return DetectExecutableRunner.newDebug(eventSystem);
     }
 
     @Bean

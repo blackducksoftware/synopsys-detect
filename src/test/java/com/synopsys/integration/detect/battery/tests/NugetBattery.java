@@ -16,7 +16,7 @@ public class NugetBattery {
         test.executableThatCopiesFiles(DetectProperty.DETECT_DOTNET_PATH, "NUGET-0")
             .onWindows(5, "")
             .onLinux(3, "--output_directory=");
-        test.git("https://github.com/GaProgMan/dwCheckApi.git", "HEAD");
+        test.git("https://github.com/GaProgMan/dwCheckApi.git", "master");
         test.expectBdioResources();
         test.run();
     }

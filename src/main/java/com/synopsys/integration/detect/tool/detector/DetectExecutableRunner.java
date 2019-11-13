@@ -22,6 +22,11 @@
  */
 package com.synopsys.integration.detect.tool.detector;
 
+import java.util.function.Consumer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detectable.detectable.executable.Executable;
@@ -32,8 +37,19 @@ import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExec
 public class DetectExecutableRunner extends SimpleExecutableRunner {
     private final EventSystem eventSystem;
 
-    public DetectExecutableRunner(final EventSystem eventSystem) {
+    public DetectExecutableRunner(final Consumer<String> outputConsumer, final Consumer<String> traceConsumer, EventSystem eventSystem) {
+        super(outputConsumer, traceConsumer);
         this.eventSystem = eventSystem;
+    }
+
+    public static DetectExecutableRunner newDebug(EventSystem eventSystem) {
+        Logger logger = LoggerFactory.getLogger(SimpleExecutableRunner.class);
+        return new DetectExecutableRunner(logger::debug, logger::trace, eventSystem);
+    }
+
+    public static DetectExecutableRunner newInfo(EventSystem eventSystem) {
+        Logger logger = LoggerFactory.getLogger(SimpleExecutableRunner.class);
+        return new DetectExecutableRunner(logger::info, logger::trace, eventSystem);
     }
 
     @Override

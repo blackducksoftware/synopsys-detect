@@ -8,13 +8,10 @@ import com.synopsys.integration.blackduck.service.ProjectService
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper
 import com.synopsys.integration.log.PrintStreamIntLogger
 
-import java.nio.file.Files
-import java.nio.file.Paths
-
 buildscript {
     ext {
         springBootVersion = '2.1.5.RELEASE'
-        blackDuckCommonVersion = '44.4.0'
+        blackDuckCommonVersion = '44.4.5'
         polarisCommonVersion = '0.13.2'
         junitPlatformDefaultTestTags = "integration, performance, battery"
     }

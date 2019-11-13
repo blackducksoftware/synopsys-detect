@@ -94,7 +94,7 @@ public class PipenvDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return pipenvExtractor.extract(environment.getDirectory(), pythonExe, pipenvExe, setupFile, pipenvDetectableOptions.getPipProjectName(), pipenvDetectableOptions.getPipProjectVersionName());
+        return pipenvExtractor.extract(environment.getDirectory(), pythonExe, pipenvExe, setupFile, pipenvDetectableOptions.getPipProjectName(), pipenvDetectableOptions.getPipProjectVersionName(), pipenvDetectableOptions.isPipProjectTreeOnly());
     }
 
 }

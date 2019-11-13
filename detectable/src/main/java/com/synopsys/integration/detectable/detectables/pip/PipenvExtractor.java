@@ -32,36 +32,42 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
+import com.synopsys.integration.detectable.detectables.pip.model.PipFreeze;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraph;
+import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvGraphParser;
+import com.synopsys.integration.detectable.detectables.pip.parser.PipenvTransformer;
 
 public class PipenvExtractor {
     private final ExecutableRunner executableRunner;
-    private final PipenvGraphParser pipenvTreeParser;
+    private final PipenvTransformer pipenvTransformer;
+    private final PipenvFreezeParser pipenvFreezeParser;
+    private final PipenvGraphParser pipenvGraphParser;
 
-    public PipenvExtractor(final ExecutableRunner executableRunner, final PipenvGraphParser pipenvTreeParser) {
+    public PipenvExtractor(final ExecutableRunner executableRunner, PipenvTransformer pipenvTransformer, final PipenvFreezeParser pipenvFreezeParser,
+        final PipenvGraphParser pipenvGraphParser) {
         this.executableRunner = executableRunner;
-        this.pipenvTreeParser = pipenvTreeParser;
+        this.pipenvTransformer = pipenvTransformer;
+        this.pipenvFreezeParser = pipenvFreezeParser;
+        this.pipenvGraphParser = pipenvGraphParser;
     }
 
-    public Extraction extract(final File directory, final File pythonExe, final File pipenvExe, final File setupFile, final String providedProjectName, final String providedProjectVersionName) {
+    public Extraction extract(final File directory, final File pythonExe, final File pipenvExe, final File setupFile, final String providedProjectName, final String providedProjectVersionName, boolean includeOnlyProjectTree) {
         Extraction extraction;
 
         try {
             final String projectName = resolveProjectName(directory, pythonExe, setupFile, providedProjectName);
             final String projectVersionName = resolveProjectVersionName(directory, pythonExe, setupFile, providedProjectVersionName);
-            final PipParseResult result;
 
             final ExecutableOutput pipFreezeOutput = executableRunner.execute(directory, pipenvExe, Arrays.asList("run", "pip", "freeze"));
             final ExecutableOutput graphOutput = executableRunner.execute(directory, pipenvExe, Arrays.asList("graph", "--bare"));
 
-            result = pipenvTreeParser.parse(projectName, projectVersionName, pipFreezeOutput.getStandardOutputAsList(), graphOutput.getStandardOutputAsList());
+            final PipFreeze pipFreeze = pipenvFreezeParser.parse(pipFreezeOutput.getStandardOutputAsList());
+            final PipenvGraph pipenvGraph = pipenvGraphParser.parse(graphOutput.getStandardOutputAsList());
+            PipenvResult result = pipenvTransformer.transform(projectName, projectVersionName, pipFreeze, pipenvGraph, includeOnlyProjectTree);
 
-            if (result != null) {
-                extraction = new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
-            } else {
-                extraction = new Extraction.Builder().failure("Pipenv graph could not successfully be parsed").build();
-            }
+            return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
         } catch (final Exception e) {
             extraction = new Extraction.Builder().exception(e).build();
         }

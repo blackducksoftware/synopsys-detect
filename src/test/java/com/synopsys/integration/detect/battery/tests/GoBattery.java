@@ -22,7 +22,7 @@ public class GoBattery {
         final BatteryTest test = new BatteryTest("go_vndr-lock");
         test.sourceDirectoryNamed("linux-vndr");
         test.sourceFileFromResource("vendor.conf");
-        test.git("https://github.com/moby/moby.git", "HEAD");
+        test.git("https://github.com/moby/moby.git", "master");
         test.expectBdioResources();
         test.run();
     }

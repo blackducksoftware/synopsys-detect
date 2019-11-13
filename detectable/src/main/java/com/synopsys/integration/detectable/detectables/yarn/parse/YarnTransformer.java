@@ -59,7 +59,7 @@ public class YarnTransformer {
         for (final YarnLockEntry entry : yarnLock.getEntries()) {
             for (final YarnLockEntryId entryId : entry.getIds()) {
                 final StringDependencyId id = new StringDependencyId(entryId.getName() + "@" + entryId.getVersion());
-                graphBuilder.setDependencyExternalId(id, externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
+                graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
                 for (final YarnLockDependency dependency : entry.getDependencies()) {
                     final StringDependencyId stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());
                     if ((yarnLockOptions.useProductionOnly() && !dependency.isOptional()) || (!yarnLockOptions.useProductionOnly())) {

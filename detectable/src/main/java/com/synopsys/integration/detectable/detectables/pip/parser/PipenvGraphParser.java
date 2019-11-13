@@ -22,133 +22,78 @@
  */
 package com.synopsys.integration.detectable.detectables.pip.parser;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Stack;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
+import com.synopsys.integration.detectable.detectable.util.DetectableStringUtils;
+import com.synopsys.integration.detectable.detectable.util.ParentStack;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraph;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraphDependency;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraphEntry;
 
 public class PipenvGraphParser {
-    private static final String TOP_LEVEL_SEPARATOR = "==";
-    public static final String DEPENDENCY_INDENTATION = "  ";
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final String VERSION_SEPARATOR = "==";
+    private static final String DEPENDENCY_INDENTATION = "  ";
     private static final String DEPENDENCY_NAME_PREFIX = "- ";
-    private static final String DEPENDENCY_NAME_SUFFIX = " [";
+    private static final String DEPENDENCY_INFO_OPENING = "[";
     private static final String DEPENDENCY_VERSION_PREFIX = "installed: ";
-    private static final String DEPENDENCY_VERSION_SUFFIX = "]";
+    private static final String DEPENDENCY_INFO_CLOSING = "]";
 
-    private final ExternalIdFactory externalIdFactory;
+    public PipenvGraph parse(final List<String> pipenvGraphOutput) {
+        PipenvGraphEntry entry = null;
+        ParentStack<PipenvGraphDependency> parentStack = new ParentStack<>();
+        List<PipenvGraphEntry> entries = new ArrayList<>();
 
-    public PipenvGraphParser(final ExternalIdFactory externalIdFactory) {
-        this.externalIdFactory = externalIdFactory;
-    }
-
-    public PipParseResult parse(final String projectName, final String projectVersionName, final List<String> pipFreezeOutput, final List<String> pipenvGraphOutput) {
-        final MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        final Stack<Dependency> dependencyStack = new Stack<>();
-
-        final Map<String, String[]> pipFreezeMap = pipFreezeOutput.stream()
-                                                       .map(line -> line.split(TOP_LEVEL_SEPARATOR))
-                                                       .filter(splitLine -> splitLine.length == 2)
-                                                       .collect(Collectors.toMap(splitLine -> splitLine[0].trim().toLowerCase(), splitLine -> splitLine));
-
-        int lastLevel = -1;
         for (final String line : pipenvGraphOutput) {
-            final int currentLevel = getLevel(line);
-            final Optional<Dependency> parsedDependency = getDependencyFromLine(pipFreezeMap, line);
+            final int currentLevel = DetectableStringUtils.parseIndentationLevel(line, DEPENDENCY_INDENTATION);
+            if (currentLevel == 0){
+                entry = parseEntryFromLine(line);
+                entries.add(entry);
+            } else if (currentLevel == 1) {
+                PipenvGraphDependency dependency = parseDependencyFromLine(line);
+                parentStack.clear();
+                parentStack.add(dependency);
 
-            if (!parsedDependency.isPresent()) {
-                continue;
-            }
-
-            final Dependency dependency = parsedDependency.get();
-
-            if (currentLevel == lastLevel) {
-                dependencyStack.pop();
-            } else {
-                for (; lastLevel >= currentLevel; lastLevel--) {
-                    dependencyStack.pop();
-                }
-            }
-
-            if (dependencyStack.size() > 0) {
-                final Dependency peeked = dependencyStack.peek();
-                if (matchesProject(peeked, projectName, projectVersionName)) {
-                    dependencyGraph.addChildToRoot(dependency);
+                if (entry != null) {
+                    entry.getChildren().add(dependency);
                 } else {
-                    dependencyGraph.addChildWithParent(dependency, peeked);
+                    logger.warn("Invalid tree indentation on line: " + line);
                 }
             } else {
-                if (!matchesProject(dependency, projectName, projectVersionName)) {
-                    dependencyGraph.addChildrenToRoot(dependency);
-                }
+                PipenvGraphDependency dependency = parseDependencyFromLine(line);
+                parentStack.clearDeeperThan(currentLevel - 1); //minus 1 because 0 is the entry and 1 is the first dependency.
+                parentStack.getCurrent().getChildren().add(dependency);
+                parentStack.add(dependency);
             }
-
-            lastLevel = currentLevel;
-            dependencyStack.push(dependency);
         }
-
-        if (!dependencyGraph.getRootDependencyExternalIds().isEmpty()) {
-            final ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, projectName, projectVersionName);
-            final CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectExternalId);
-            return new PipParseResult(projectName, projectVersionName, codeLocation);
-        } else {
-            return null;
-        }
+        return new PipenvGraph(entries);
     }
 
-    private boolean matchesProject(final Dependency dependency, final String projectName, final String projectVersion) {
-        return dependency.name != null && dependency.version != null && dependency.name.equals(projectName) && dependency.version.equals(projectVersion);
+    private PipenvGraphEntry parseEntryFromLine(String line){
+        final String[] splitLine = line.trim().split(VERSION_SEPARATOR);
+        String name = splitLine[0];
+        String version = splitLine[1];
+        return new PipenvGraphEntry(name, version, new ArrayList<>());
     }
 
-    public int getLevel(final String line) {
-        String consumableLine = line;
-        int level = 0;
+    private PipenvGraphDependency parseDependencyFromLine( final String line) {
+        String startPiece = StringUtils.substringBefore(line, DEPENDENCY_INFO_OPENING);
+        String name = StringUtils.substringAfter(startPiece, DEPENDENCY_NAME_PREFIX).trim();
 
-        while (consumableLine.startsWith(DEPENDENCY_INDENTATION)) {
-            consumableLine = consumableLine.replaceFirst(DEPENDENCY_INDENTATION, "");
-            level++;
+        String fromBracket = StringUtils.substringAfter(line, DEPENDENCY_INFO_OPENING);
+        String insideBrackets = StringUtils.substringBefore(fromBracket, DEPENDENCY_INFO_CLOSING);
+        String installed = StringUtils.substringAfterLast(insideBrackets, DEPENDENCY_VERSION_PREFIX).trim();
+        if (StringUtils.isBlank(installed) || StringUtils.isBlank(name)) {
+            logger.warn("Failed to find dependency information for line: " + line);
         }
 
-        return level;
-    }
-
-    public Optional<Dependency> getDependencyFromLine(final Map<String, String[]> pipFreezeMap, final String line) {
-        Dependency dependency = null;
-        String name = null;
-        String version = null;
-        final String trimmedLine = line.trim();
-
-        if (line.contains(DEPENDENCY_NAME_PREFIX) && line.contains(DEPENDENCY_NAME_SUFFIX) && line.contains(DEPENDENCY_VERSION_PREFIX) && line.contains(DEPENDENCY_VERSION_SUFFIX)) {
-            name = trimmedLine.substring(trimmedLine.indexOf(DEPENDENCY_NAME_PREFIX) + DEPENDENCY_NAME_PREFIX.length(), trimmedLine.indexOf(DEPENDENCY_NAME_SUFFIX));
-            version = trimmedLine.substring(trimmedLine.indexOf(DEPENDENCY_VERSION_PREFIX) + DEPENDENCY_VERSION_PREFIX.length(), trimmedLine.indexOf(DEPENDENCY_VERSION_SUFFIX));
-        } else if (trimmedLine.contains(TOP_LEVEL_SEPARATOR)) {
-            final String[] splitLine = trimmedLine.split(TOP_LEVEL_SEPARATOR);
-            name = splitLine[0];
-            version = splitLine[1];
-        }
-
-        if (StringUtils.isNotBlank(name) && StringUtils.isNotBlank(version)) {
-            final String[] pipFreezeResult = pipFreezeMap.get(name.toLowerCase());
-            if (pipFreezeResult != null) {
-                name = pipFreezeResult[0].trim();
-                version = pipFreezeResult[1].trim();
-            }
-
-            final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version);
-            dependency = new Dependency(name, version, externalId);
-        }
-
-        return Optional.ofNullable(dependency);
+        return new PipenvGraphDependency(name, installed, new ArrayList<>());
     }
 
 }

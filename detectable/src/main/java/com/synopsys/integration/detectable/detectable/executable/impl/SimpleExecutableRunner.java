@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,18 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 
 public class SimpleExecutableRunner implements ExecutableRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Consumer<String> outputConsumer;
+    private final Consumer<String> traceConsumer;
+
+    public SimpleExecutableRunner() {
+        this.outputConsumer = logger::debug;
+        this.traceConsumer = logger::trace;
+    }
+
+    public SimpleExecutableRunner(final Consumer<String> outputConsumer, final Consumer<String> traceConsumer) {
+        this.outputConsumer = outputConsumer;
+        this.traceConsumer = traceConsumer;
+    }
 
     @Override
     public ExecutableOutput execute(final File workingDirectory, final String exeCmd, final String... args) throws ExecutableRunnerException {
@@ -67,10 +80,10 @@ public class SimpleExecutableRunner implements ExecutableRunner {
             final Process process = processBuilder.start();
 
             try (final InputStream standardOutputStream = process.getInputStream(); final InputStream standardErrorStream = process.getErrorStream()) {
-                final ExecutableStreamThread standardOutputThread = new ExecutableStreamThread(standardOutputStream, logger::debug, logger::trace);
+                final ExecutableStreamThread standardOutputThread = new ExecutableStreamThread(standardOutputStream, outputConsumer, traceConsumer);
                 standardOutputThread.start();
 
-                final ExecutableStreamThread errorOutputThread = new ExecutableStreamThread(standardErrorStream, logger::debug, logger::trace);
+                final ExecutableStreamThread errorOutputThread = new ExecutableStreamThread(standardErrorStream, outputConsumer, traceConsumer);
                 errorOutputThread.start();
 
                 final int returnCode = process.waitFor();

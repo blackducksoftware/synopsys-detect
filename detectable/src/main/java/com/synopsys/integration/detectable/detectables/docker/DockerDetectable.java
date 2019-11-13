@@ -73,7 +73,7 @@ public class DockerDetectable extends Detectable {
             return new WrongOperatingSystemResult(OperatingSystemType.determineFromSystem());
         }
 
-        if (!dockerDetectableOptions.hasDockerImageOrTag()) {
+        if (!dockerDetectableOptions.hasDockerImageOrTar()) {
             return new PropertyInsufficientDetectableResult();
         }
         return new PassedDetectableResult();

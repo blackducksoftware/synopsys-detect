@@ -13,7 +13,7 @@ public class ComposerBattery {
         test.sourceDirectoryNamed("linux-composer");
         test.sourceFileFromResource("composer.json");
         test.sourceFileFromResource("composer.lock");
-        test.git("git@sig-gitlab.internal.synopsys.com:blackduck/integrations/integrations-tests/aura-sql.git", "HEAD");
+        test.git("git@sig-gitlab.internal.synopsys.com:blackduck/integrations/integrations-tests/aura-sql.git", "master");
         test.expectBdioResources();
         test.run();
     }

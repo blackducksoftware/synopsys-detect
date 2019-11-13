@@ -12,7 +12,7 @@ public class CocoapodsBattery {
         final BatteryTest test = new BatteryTest("cocoapods-podlock");
         test.sourceDirectoryNamed("linux-cocoapods");
         test.sourceFileFromResource("Podfile.lock");
-        test.git("https://github.com/BlackDuckCoPilot/example-cocoapods-travis.git", "HEAD");
+        test.git("https://github.com/BlackDuckCoPilot/example-cocoapods-travis.git", "master");
         test.expectBdioResources();
         test.run();
     }

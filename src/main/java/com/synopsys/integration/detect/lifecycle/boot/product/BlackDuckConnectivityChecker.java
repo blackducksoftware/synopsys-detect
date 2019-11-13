@@ -34,7 +34,6 @@ import com.synopsys.integration.blackduck.api.generated.view.RoleAssignmentView;
 import com.synopsys.integration.blackduck.api.generated.view.UserGroupView;
 import com.synopsys.integration.blackduck.api.generated.view.UserView;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.rest.client.ConnectionResult;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.UserGroupService;
@@ -43,6 +42,7 @@ import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
+import com.synopsys.integration.rest.client.ConnectionResult;
 
 public class BlackDuckConnectivityChecker {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

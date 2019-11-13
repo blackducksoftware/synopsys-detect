@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class DockerProperties {
     private final DockerDetectableOptions dockerDetectableOptions;
 
@@ -48,6 +50,9 @@ public class DockerProperties {
         // DI 8.1.0 and newer will provide both; Detect will prefer squashedimage
         dockerProperties.setProperty("output.include.containerfilesystem", "true");
         dockerProperties.setProperty("output.include.squashedimage", "true");
+        if (StringUtils.isNotBlank(dockerDetectableOptions.getDockerPlatformTopLayerId())) {
+            dockerProperties.setProperty("docker.platform.top.layer.id", dockerDetectableOptions.getDockerPlatformTopLayerId());
+        }
 
         final Map<String, String> additionalDockerProperties = dockerDetectableOptions.getAdditionalDockerProperties();
         dockerProperties.putAll(additionalDockerProperties);

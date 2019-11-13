@@ -12,7 +12,7 @@ public class PackratBattery {
         final BatteryTest test = new BatteryTest("packrat-lock");
         test.sourceDirectoryNamed("packrat-lock");
         test.sourceFileFromResource("packrat.lock");
-        test.git("https://github.com/pingles/redshift-r.git", "HEAD");
+        test.git("https://github.com/pingles/redshift-r.git", "master");
         test.expectBdioResources();
         test.run();
     }

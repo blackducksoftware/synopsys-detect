@@ -13,7 +13,7 @@ public class NpmBattery {
         test.sourceDirectoryNamed("linux-npm");
         test.sourceFileFromResource("package-lock.json");
         test.sourceFileFromResource("package.json");
-        test.git("https://github.com/BlackDuckCoPilot/example-npm-travis.git", "HEAD");
+        test.git("https://github.com/BlackDuckCoPilot/example-npm-travis.git", "master");
         test.expectBdioResources();
         test.run();
     }

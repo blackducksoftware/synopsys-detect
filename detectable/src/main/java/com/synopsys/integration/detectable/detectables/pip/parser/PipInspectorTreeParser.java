@@ -37,7 +37,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
-import com.synopsys.integration.detectable.detectables.pip.model.PipParseResult;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
 
 public class PipInspectorTreeParser {
     private final Logger logger = LoggerFactory.getLogger(PipInspectorTreeParser.class);
@@ -57,8 +57,8 @@ public class PipInspectorTreeParser {
     }
 
 
-    public Optional<PipParseResult> parse(final List<String> pipInspectorOutputAsList, final String sourcePath) {
-        PipParseResult parseResult = null;
+    public Optional<PipenvResult> parse(final List<String> pipInspectorOutputAsList, final String sourcePath) {
+        PipenvResult parseResult = null;
 
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
         final DependencyHistory history = new DependencyHistory();
@@ -95,7 +95,7 @@ public class PipInspectorTreeParser {
 
         if (project != null) {
             final CodeLocation codeLocation = new CodeLocation(graph, project.externalId);
-            parseResult = new PipParseResult(project.name, project.version, codeLocation);
+            parseResult = new PipenvResult(project.name, project.version, codeLocation);
         }
 
         return Optional.ofNullable(parseResult);

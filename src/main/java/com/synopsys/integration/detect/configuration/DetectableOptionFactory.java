@@ -119,7 +119,8 @@ public class DetectableOptionFactory {
         final Map<String, String> additionalDockerProperties = detectConfiguration.getDockerProperties();
         diagnosticSystemOptional.ifPresent(diagnosticSystem -> additionalDockerProperties.putAll(diagnosticSystem.getAdditionalDockerProperties()));
         final String dockerInspectorPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH, PropertyAuthority.NONE);
-        return new DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath);
+        final String dockerPlatformTopLayerId = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_PLATFORM_TOP_LAYER_ID, PropertyAuthority.NONE);
+        return new DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath, dockerPlatformTopLayerId);
     }
 
     public GradleInspectorOptions createGradleInspectorOptions() {
@@ -173,7 +174,8 @@ public class DetectableOptionFactory {
     public PipenvDetectableOptions createPipenvDetectableOptions() {
         final String pipProjectName = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_PROJECT_NAME, PropertyAuthority.NONE);
         final String pipProjectVersionName = detectConfiguration.getProperty(DetectProperty.DETECT_PIP_PROJECT_VERSION_NAME, PropertyAuthority.NONE);
-        return new PipenvDetectableOptions(pipProjectName, pipProjectVersionName);
+        final boolean pipProjectTreeOnly = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PIP_ONLY_PROJECT_TREE, PropertyAuthority.NONE);
+        return new PipenvDetectableOptions(pipProjectName, pipProjectVersionName, pipProjectTreeOnly);
     }
 
     public PipInspectorDetectableOptions createPipInspectorDetectableOptions() {
