@@ -126,7 +126,7 @@ public class BlackDuckBinaryScannerTool {
         throws DetectUserFriendlyException {
         final String prefix = binaryScanOptions.getCodeLocationPrefix();
         final String suffix = binaryScanOptions.getCodeLocationSuffix();
-        final String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(binaryScanFile.getName(), projectName, projectVersionName, prefix, suffix);
+        final String codeLocationName = codeLocationNameManager.createBinaryScanCodeLocationName(binaryScanFile, projectName, projectVersionName, prefix, suffix);
         try {
             logger.info("Preparing to upload binary scan file: " + codeLocationName);
             final BinaryScan binaryScan = new BinaryScan(binaryScanFile, projectName, projectVersionName, codeLocationName);

@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.workflow.codelocation;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,14 +71,7 @@ public class BdioCodeLocationCreator {
         final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.NONE);
 
         final List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
-        final String canonicalDetectSourcePath;
-        try {
-            canonicalDetectSourcePath = directoryManager.getSourceDirectory().getCanonicalPath();
-        } catch (final IOException e) {
-            final String msg = String.format("Unable to get canonical path for %s", directoryManager.getSourceDirectory().getAbsolutePath());
-            throw new DetectUserFriendlyException(msg, e, ExitCodeType.FAILURE_UNKNOWN_ERROR);
-        }
-        final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, canonicalDetectSourcePath, projectNameVersion, prefix, suffix);
+        final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, directoryManager.getSourceDirectory(), projectNameVersion, prefix, suffix);
 
         final Map<String, List<DetectCodeLocation>> codeLocationsByName = seperateCodeLocationsByName(codeLocationsAndNames);
 
@@ -88,7 +82,7 @@ public class BdioCodeLocationCreator {
         return result;
     }
 
-    private Map<DetectCodeLocation, String> createCodeLocationNameMap(final List<DetectCodeLocation> codeLocations, final String detectSourcePath, final NameVersion projectNameVersion, final String prefix,
+    private Map<DetectCodeLocation, String> createCodeLocationNameMap(final List<DetectCodeLocation> codeLocations, final File detectSourcePath, final NameVersion projectNameVersion, final String prefix,
         final String suffix) {
         final Map<DetectCodeLocation, String> nameMap = new HashMap<>();
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {

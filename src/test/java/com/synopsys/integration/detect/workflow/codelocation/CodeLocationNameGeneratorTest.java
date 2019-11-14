@@ -14,6 +14,8 @@ package com.synopsys.integration.detect.workflow.codelocation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -28,12 +30,12 @@ import com.synopsys.integration.detect.configuration.PropertyAuthority;
 
 public class CodeLocationNameGeneratorTest {
     @Test
-    public void testScanCodeLocationName() {
+    public void testScanCodeLocationName() throws IOException {
         final String expected = "common-rest/target/common-rest/2.5.1-SNAPSHOT scan";
         final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
 
-        final String sourcePath = "/Users/ekerwin/Documents/source/functional/common-rest";
-        final String scanTargetPath = "/Users/ekerwin/Documents/source/functional/common-rest/target";
+        final File sourcePath = mockCanonical("/Users/ekerwin/Documents/source/functional/common-rest");
+        final File scanTargetPath = mockCanonical("/Users/ekerwin/Documents/source/functional/common-rest/target");
         final String projectName = "common-rest";
         final String projectVersionName = "2.5.1-SNAPSHOT";
         final String prefix = "";
@@ -43,17 +45,23 @@ public class CodeLocationNameGeneratorTest {
         assertEquals(expected, actual);
     }
 
+    private File mockCanonical(String mock) throws IOException {
+        File mockFile =  Mockito.mock(File.class);
+        Mockito.when(mockFile.getCanonicalPath()).thenReturn(mock);
+        return mockFile;
+    }
+
     @Test
     public void testDockerScanCodeLocationName() {
         final String expected = "dockerTar.tar.gz/common-rest/2.5.1-SNAPSHOT scan";
         final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
 
-        final String dockerTarFileName = "dockerTar.tar.gz";
+        final File dockerTar = new File("dockerTar.tar.gz");
         final String projectName = "common-rest";
         final String projectVersionName = "2.5.1-SNAPSHOT";
         final String prefix = "";
         final String suffix = "";
-        final String actual = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTarFileName, projectName, projectVersionName, prefix, suffix);
+        final String actual = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTar, projectName, projectVersionName, prefix, suffix);
 
         assertEquals(expected, actual);
     }
@@ -71,8 +79,8 @@ public class CodeLocationNameGeneratorTest {
         Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
         Mockito.when(detectCodeLocation.getCreatorName()).thenReturn(Optional.of("NPM"));
 
-        final String sourcePath = "/Users/ekerwin/Documents/source/functional/common-rest";
-        final String codeLocationPath = "/Users/ekerwin/Documents/source/functional/common-rest/child";
+        final File sourcePath = new File("/Users/ekerwin/Documents/source/functional/common-rest");
+        final File codeLocationPath = new File("/Users/ekerwin/Documents/source/functional/common-rest/child");
 
         final String prefix = "";
         final String suffix = "";
@@ -92,8 +100,8 @@ public class CodeLocationNameGeneratorTest {
         Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
         Mockito.when(detectCodeLocation.getCreatorName()).thenReturn(Optional.of("NPM"));
 
-        final String sourcePath = "/Users/ekerwin/Documents/source/functional/common-rest";
-        final String codeLocationPath = "/Users/ekerwin/Documents/source/functional/common-rest/common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest";
+        final File sourcePath = new File("/Users/ekerwin/Documents/source/functional/common-rest");
+        final File codeLocationPath = new File("/Users/ekerwin/Documents/source/functional/common-rest/common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest");
         final String prefix = "";
         final String suffix = "";
         final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, "projectName", "projectVersion", detectCodeLocation, prefix, suffix);
@@ -114,7 +122,7 @@ public class CodeLocationNameGeneratorTest {
         externalId.path = "externalIdPath";
         Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
 
-        String actual = codeLocationNameGenerator.createBomCodeLocationName("/tmp/aaa", "/tmp/aaa/bbb", "projectName", "projectVersion", detectCodeLocation, "testPrefix", "testSuffix");
+        String actual = codeLocationNameGenerator.createBomCodeLocationName(new File("/tmp/aaa"), new File("/tmp/aaa/bbb"), "projectName", "projectVersion", detectCodeLocation, "testPrefix", "testSuffix");
         assertEquals("testPrefix/projectName/projectVersion/bbb/externalIdPath/testSuffix detect/bom", actual);
     }
 

@@ -22,18 +22,19 @@
  */
 package com.synopsys.integration.detect.tool.signaturescanner;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
 public class SignatureScanPath {
-    private String targetPath;
+    private File targetPath;
     private final Set<String> exclusions = new HashSet<>();
 
-    public String getTargetPath() {
+    public File getTargetPath() {
         return targetPath;
     }
 
-    public void setTargetPath(final String targetPath) {
+    public void setTargetPath(final File targetPath) {
         this.targetPath = targetPath;
     }
 
