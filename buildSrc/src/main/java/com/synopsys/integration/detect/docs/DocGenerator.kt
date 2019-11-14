@@ -68,9 +68,11 @@ open class GenerateDocsTask : DefaultTask() {
                 val curDirPathLength = projectDirPath.length + "docs/templates/".length
                 val helpContentTemplateFileRelativePath = it.canonicalPath.substring(curDirPathLength+1)
                 if (helpContentTemplateFileRelativePath.endsWith(".ftl")) {
-                    val helpContentTemplateFileBase = helpContentTemplateFileRelativePath.substring(0, helpContentTemplateFileRelativePath.length - ".ftl".length)
-                    println("Generating markdown from template file: ${helpContentTemplateFileBase}.ftl")
-                    createFromFreemarker(templateProvider, outputDir, helpContentTemplateFileBase, terms.termMap)
+                    //////val helpContentTemplateFileBase = helpContentTemplateFileRelativePath.substring(0, helpContentTemplateFileRelativePath.length - ".ftl".length)
+                    val outputFileRelativePath = helpContentTemplateFileRelativePath.substring("content/".length, helpContentTemplateFileRelativePath.length - ".ftl".length) + ".md"
+                    val outputFile = File(outputDir, outputFileRelativePath)
+                    println("Generating markdown from template file: ${helpContentTemplateFileRelativePath} --> ${outputFile.canonicalPath}")
+                    createFromFreemarker(templateProvider, helpContentTemplateFileRelativePath, outputFile, terms.termMap)
                 }
             } else {
                 println("WARNING: Help content file ${it.canonicalPath} does not seem to be in the project directory (${projectDirPath}. It will be omitted from the help.")
