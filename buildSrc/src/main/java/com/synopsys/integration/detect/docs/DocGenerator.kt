@@ -59,15 +59,19 @@ open class GenerateDocsTask : DefaultTask() {
         //////////// new
         val terms = Terms()
         terms.termMap.put("program_version", project.version.toString())
-        createFromFreemarker(templateProvider, outputDir, "content/index", terms.termMap)
-        createFromFreemarker(templateProvider, outputDir, "content/about", terms.termMap)
+        ////createFromFreemarker(templateProvider, outputDir, "content/index", terms.termMap)
+        /////createFromFreemarker(templateProvider, outputDir, "content/about", terms.termMap)
 
-        project.file("docs/generated/content").walkTopDown().forEach {
+        project.file("docs/templates/content").walkTopDown().forEach {
             val projectDirPath = project.file(".").canonicalPath
             if (it.canonicalPath.startsWith(projectDirPath)) {
-                val curDirPathLength = projectDirPath.length
-                val relativePath = it.canonicalPath.substring(curDirPathLength+1)
-                println("Processing help content file: ${relativePath}")
+                val curDirPathLength = projectDirPath.length + "docs/templates/".length
+                val helpContentTemplateFileRelativePath = it.canonicalPath.substring(curDirPathLength+1)
+                if (helpContentTemplateFileRelativePath.endsWith(".ftl")) {
+                    val helpContentTemplateFileBase = helpContentTemplateFileRelativePath.substring(0, helpContentTemplateFileRelativePath.length - ".ftl".length)
+                    println("Generating markdown from template file: ${helpContentTemplateFileBase}.ftl")
+                    createFromFreemarker(templateProvider, outputDir, helpContentTemplateFileBase, terms.termMap)
+                }
             } else {
                 println("WARNING: Help content file ${it.canonicalPath} does not seem to be in the project directory (${projectDirPath}. It will be omitted from the help.")
             }
