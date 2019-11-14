@@ -20,15 +20,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.docs.copied;
+package com.synopsys.integration.detect.help.json
 
-import java.util.ArrayList;
-import java.util.List;
-
-//Copied from detect-configuration
-public class HelpJsonData {
-    public final List<HelpJsonExitCode> exitCodes = new ArrayList<>();
-    public List<HelpJsonDetector> buildDetectors = new ArrayList<>();
-    public List<HelpJsonDetector> buildlessDetectors = new ArrayList<>();
-    public final List<HelpJsonOption> options = new ArrayList<>();
+class HelpJsonExitCode {
+    var exitCodeKey = ""
+    var exitCodeDescription = ""
+    var exitCodeValue = 0
 }

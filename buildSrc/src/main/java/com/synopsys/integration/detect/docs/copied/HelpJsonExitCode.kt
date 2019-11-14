@@ -20,22 +20,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.help.json;
+package com.synopsys.integration.detect.docs.copied
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class HelpJsonDetector {
-    public String detectableName = "";
-    public String detectableDescriptiveName = "";
-    public String detectableGroup = "";
-    public String detectorType = "";
-    public String detectorName = "";
-    public String detectorDescriptiveName = "";
-    public int maxDepth = 0;
-    public boolean nestable = false;
-    public boolean nestInvisible = false;
-
-    public List<String> yieldsTo = new ArrayList<>();
-    public String fallbackTo = "";
+//Copied from detect-configuration
+class HelpJsonExitCode {
+    var exitCodeKey = ""
+    var exitCodeDescription = ""
+    var exitCodeValue = 0
 }

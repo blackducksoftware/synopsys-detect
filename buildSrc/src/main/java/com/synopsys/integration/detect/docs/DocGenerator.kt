@@ -119,7 +119,8 @@ open class GenerateDocsTask : DefaultTask() {
     private fun createSuperGroupLookup(helpJson: HelpJsonData): HashMap<String, String> {
         val lookup = HashMap<String, String>();
         helpJson.options.forEach { option ->
-            val superGroup = if (StringUtils.isBlank(option.superGroup)) "Configuration" else option.superGroup
+            val defaultSuperGroup = "Configuration"
+            val superGroup = if (StringUtils.isBlank(option.superGroup)) defaultSuperGroup else option.superGroup?:defaultSuperGroup
             if (lookup.containsKey(option.group) && lookup[option.group] != superGroup) {
                 throw RuntimeException("The created detect help JSON had a group '${option.group}' whose super group '${superGroup}' did not match a different options super group in the same group '${lookup[option.group]}'.")
             } else if (!lookup.containsKey(option.group)) {
