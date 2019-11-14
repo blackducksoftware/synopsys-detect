@@ -61,6 +61,17 @@ open class GenerateDocsTask : DefaultTask() {
         terms.termMap.put("program_version", project.version.toString())
         createFromFreemarker(templateProvider, outputDir, "content/index", terms.termMap)
         createFromFreemarker(templateProvider, outputDir, "content/about", terms.termMap)
+
+        project.file("docs/generated/content").walkTopDown().forEach {
+            val projectDirPath = project.file(".").canonicalPath
+            if (it.canonicalPath.startsWith(projectDirPath)) {
+                val curDirPathLength = projectDirPath.length
+                val relativePath = it.canonicalPath.substring(curDirPathLength+1)
+                println("Processing help content file: ${relativePath}")
+            } else {
+                println("WARNING: Help content file ${it.canonicalPath} does not seem to be in the project directory (${projectDirPath}. It will be omitted from the help.")
+            }
+        }
     }
 
     private fun createFromFreemarker(templateProvider: TemplateProvider, outputDir: File, templateName: String, data: Any) {
