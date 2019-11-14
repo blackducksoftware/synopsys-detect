@@ -41,13 +41,13 @@ open class GenerateDocsTask : DefaultTask() {
         val file = File("synopsys-detect-${project.version}-help.json")
         val helpJson: HelpJsonData = Gson().fromJson(file.reader(), HelpJsonData::class.java)
 
-        val outputDir = File("docs/generated");
+        val outputDir = project.file("docs/generated");
         outputDir.deleteRecursively()
         outputDir.mkdirs()
 
-        val templateProvider = TemplateProvider()
+        val templateProvider = TemplateProvider(project.file("docs/templates"))
 
-        FileUtils.copyDirectory(File("docs/static"), outputDir)
+        FileUtils.copyDirectory(project.file("docs/static"), outputDir)
 
         createFromFreemarker(templateProvider, outputDir, "exit-codes", ExitCodePage(helpJson.exitCodes))
         createFromFreemarker(templateProvider, outputDir, "index", IndexPage(project.version.toString()))
@@ -131,11 +131,11 @@ open class GenerateDocsTask : DefaultTask() {
     }
 }
 
-class TemplateProvider {
+class TemplateProvider(templateDirectory: File) {
     private val configuration: Configuration = Configuration(Configuration.VERSION_2_3_26);
 
     init {
-        configuration.setDirectoryForTemplateLoading(File("docs/templates"))
+        configuration.setDirectoryForTemplateLoading(templateDirectory)
         configuration.defaultEncoding = "UTF-8"
     }
 
