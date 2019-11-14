@@ -20,10 +20,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.help.json;
+package com.synopsys.integration.detect.help.json
 
-public class HelpJsonExitCode {
-    public String exitCodeKey = "";
-    public String exitCodeDescription = "";
-    public int exitCodeValue = 0;
+class HelpJsonExitCode {
+    var exitCodeKey = ""
+    var exitCodeDescription = ""
+    var exitCodeValue = 0
 }

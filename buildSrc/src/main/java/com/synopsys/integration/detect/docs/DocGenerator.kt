@@ -26,6 +26,7 @@ import com.google.gson.Gson
 import com.synopsys.integration.detect.docs.copied.HelpJsonData
 import com.synopsys.integration.detect.docs.copied.HelpJsonExitCode
 import com.synopsys.integration.detect.docs.copied.HelpJsonOption
+import com.synopsys.integration.detect.docs.content.Terms
 import freemarker.template.Configuration
 import freemarker.template.Template
 import org.apache.commons.io.FileUtils
@@ -41,19 +42,25 @@ open class GenerateDocsTask : DefaultTask() {
         val file = File("synopsys-detect-${project.version}-help.json")
         val helpJson: HelpJsonData = Gson().fromJson(file.reader(), HelpJsonData::class.java)
 
-        val outputDir = File("docs/generated");
+        val outputDir = project.file("docs/generated");
         outputDir.deleteRecursively()
         outputDir.mkdirs()
 
-        val templateProvider = TemplateProvider()
+        val templateProvider = TemplateProvider(project.file("docs/templates"))
 
-        FileUtils.copyDirectory(File("docs/static"), outputDir)
+        FileUtils.copyDirectory(project.file("docs/static"), outputDir)
 
         createFromFreemarker(templateProvider, outputDir, "exit-codes", ExitCodePage(helpJson.exitCodes))
-        createFromFreemarker(templateProvider, outputDir, "content/index", IndexPage(project.version.toString()))
+        ///////////createFromFreemarker(templateProvider, outputDir, "content/index", IndexPage(project.version.toString()))
 
         handleDetectors(templateProvider, outputDir, helpJson)
         handleProperties(templateProvider, outputDir, helpJson)
+
+        //////////// new
+        val terms = Terms()
+        terms.termMap.put("program_version", project.version.toString())
+        createFromFreemarker(templateProvider, outputDir, "content/index", terms.termMap)
+        createFromFreemarker(templateProvider, outputDir, "content/about", terms.termMap)
     }
 
     private fun createFromFreemarker(templateProvider: TemplateProvider, outputDir: File, templateName: String, data: Any) {
@@ -62,7 +69,6 @@ open class GenerateDocsTask : DefaultTask() {
 
     private fun createFromFreemarker(templateProvider: TemplateProvider, templatePath: String, to: File, data: Any) {
         to.parentFile.mkdirs()
-        println("******** templatePath: $templatePath")
         val template = templateProvider.getTemplate(templatePath)
         FileOutputStream(to, true).buffered().writer().use { writer ->
             template.process(data, writer)
@@ -120,7 +126,8 @@ open class GenerateDocsTask : DefaultTask() {
     private fun createSuperGroupLookup(helpJson: HelpJsonData): HashMap<String, String> {
         val lookup = HashMap<String, String>();
         helpJson.options.forEach { option ->
-            val superGroup = if (StringUtils.isBlank(option.superGroup)) "Configuration" else option.superGroup
+            val defaultSuperGroup = "Configuration"
+            val superGroup = if (StringUtils.isBlank(option.superGroup)) defaultSuperGroup else option.superGroup?:defaultSuperGroup
             if (lookup.containsKey(option.group) && lookup[option.group] != superGroup) {
                 throw RuntimeException("The created detect help JSON had a group '${option.group}' whose super group '${superGroup}' did not match a different options super group in the same group '${lookup[option.group]}'.")
             } else if (!lookup.containsKey(option.group)) {
@@ -131,11 +138,11 @@ open class GenerateDocsTask : DefaultTask() {
     }
 }
 
-class TemplateProvider {
+class TemplateProvider(templateDirectory: File) {
     private val configuration: Configuration = Configuration(Configuration.VERSION_2_3_26);
 
     init {
-        configuration.setDirectoryForTemplateLoading(File("docs/templates"))
+        configuration.setDirectoryForTemplateLoading(templateDirectory)
         configuration.defaultEncoding = "UTF-8"
     }
 

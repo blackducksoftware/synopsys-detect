@@ -262,14 +262,14 @@ public class DetectBoot {
 
     private HelpJsonDetector convertDetectorRule(final DetectorRule rule, final DetectorRuleSet ruleSet) {
         final HelpJsonDetector helpData = new HelpJsonDetector();
-        helpData.detectorName = rule.getName();
-        helpData.detectorDescriptiveName = rule.getDescriptiveName();
-        helpData.detectorType = rule.getDetectorType().toString();
-        helpData.maxDepth = rule.getMaxDepth();
-        helpData.nestable = rule.isNestable();
-        helpData.nestInvisible = rule.isNestInvisible();
-        helpData.yieldsTo = ruleSet.getYieldsTo(rule).stream().map(DetectorRule::getDescriptiveName).collect(Collectors.toList());
-        helpData.fallbackTo = ruleSet.getFallbackFrom(rule).map(DetectorRule::getDescriptiveName).orElse("");
+        helpData.setDetectorName(rule.getName());
+        helpData.setDetectorDescriptiveName(rule.getDescriptiveName());
+        helpData.setDetectorType(rule.getDetectorType().toString());
+        helpData.setMaxDepth(rule.getMaxDepth());
+        helpData.setNestable(rule.isNestable());
+        helpData.setNestInvisible(rule.isNestInvisible());
+        helpData.setYieldsTo(ruleSet.getYieldsTo(rule).stream().map(DetectorRule::getDescriptiveName).collect(Collectors.toList()));
+        helpData.setFallbackTo(ruleSet.getFallbackFrom(rule).map(DetectorRule::getDescriptiveName).orElse(""));
 
         //Attempt to create the detectable.
         //Not currently possible. Need a full DetectableConfiguration to be able to make Detectables.

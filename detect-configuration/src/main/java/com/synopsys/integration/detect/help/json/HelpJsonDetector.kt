@@ -20,22 +20,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.help.json;
+package com.synopsys.integration.detect.help.json
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList
 
-public class HelpJsonDetector {
-    public String detectableName = "";
-    public String detectableDescriptiveName = "";
-    public String detectableGroup = "";
-    public String detectorType = "";
-    public String detectorName = "";
-    public String detectorDescriptiveName = "";
-    public int maxDepth = 0;
-    public boolean nestable = false;
-    public boolean nestInvisible = false;
+class HelpJsonDetector {
+    var detectableName = ""
+    var detectableDescriptiveName = ""
+    var detectableGroup = ""
+    var detectorType = ""
+    var detectorName = ""
+    var detectorDescriptiveName = ""
+    var maxDepth = 0
+    var nestable = false
+    var nestInvisible = false
 
-    public List<String> yieldsTo = new ArrayList<>();
-    public String fallbackTo = "";
+    var yieldsTo: List<String> = ArrayList()
+    var fallbackTo = ""
 }
