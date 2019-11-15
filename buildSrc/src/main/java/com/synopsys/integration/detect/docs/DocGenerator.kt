@@ -51,24 +51,21 @@ open class GenerateDocsTask : DefaultTask() {
         FileUtils.copyDirectory(project.file("docs/static"), outputDir)
 
         createFromFreemarker(templateProvider, outputDir, "exit-codes", ExitCodePage(helpJson.exitCodes))
-        ///////////createFromFreemarker(templateProvider, outputDir, "content/index", IndexPage(project.version.toString()))
 
         handleDetectors(templateProvider, outputDir, helpJson)
         handleProperties(templateProvider, outputDir, helpJson)
+        handleContent(outputDir, templateProvider)
+    }
 
-        //////////// new
+    private fun handleContent(outputDir: File, templateProvider: TemplateProvider) {
         val terms = Terms()
         terms.termMap.put("program_version", project.version.toString())
-        ////createFromFreemarker(templateProvider, outputDir, "content/index", terms.termMap)
-        /////createFromFreemarker(templateProvider, outputDir, "content/about", terms.termMap)
-
         project.file("docs/templates/content").walkTopDown().forEach {
             val projectDirPath = project.file(".").canonicalPath
             if (it.canonicalPath.startsWith(projectDirPath)) {
                 val curDirPathLength = projectDirPath.length + "docs/templates/".length
-                val helpContentTemplateFileRelativePath = it.canonicalPath.substring(curDirPathLength+1)
+                val helpContentTemplateFileRelativePath = it.canonicalPath.substring(curDirPathLength + 1)
                 if (helpContentTemplateFileRelativePath.endsWith(".ftl")) {
-                    //////val helpContentTemplateFileBase = helpContentTemplateFileRelativePath.substring(0, helpContentTemplateFileRelativePath.length - ".ftl".length)
                     val outputFileRelativePath = helpContentTemplateFileRelativePath.substring("content/".length, helpContentTemplateFileRelativePath.length - ".ftl".length) + ".md"
                     val outputFile = File(outputDir, outputFileRelativePath)
                     println("Generating markdown from template file: ${helpContentTemplateFileRelativePath} --> ${outputFile.canonicalPath}")
