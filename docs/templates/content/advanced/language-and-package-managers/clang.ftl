@@ -18,7 +18,10 @@ when run with the following option:
 The CLang detector will run when it finds a compile_commands.json file
 in the project directory. If the compile_commands.json file resides in a sub-directory,
 adjust the [detector search depth](/properties/Configuration/paths/#detector-search-depth)
-to enable ${solution_name} to find it.
+to enable ${solution_name} to find it. If the compile_commands.json file
+resides and a normally excluded subdirectory (for example: ./build),
+you can turn off the [default detector search exclusions](/properties/Configuration/paths/#detector-exclude-default-directories),
+or fine tune the [detector search directory exclusion patterns](/properties/Configuration/paths/#-detector-directory-patterns-exclusions).
 
 For each compile command in the compile_commands.json file, the CLang detector
 runs a version of the command that has been modified to (a) ensure that it does

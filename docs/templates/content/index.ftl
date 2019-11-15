@@ -7,7 +7,6 @@ All other documentation is located on [Confluence](https://synopsys.atlassian.ne
 ## Quick Links
 * [All Properties](properties/all-properties)
 * [Exit Codes](exit-codes)
-* [Error Codes](error-codes)
 
 ## ${solution_name} Modes
 * Help Mode: `-h` Quickly search and filter help.
