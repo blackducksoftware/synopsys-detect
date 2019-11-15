@@ -97,6 +97,10 @@ open class GenerateDocsTask : DefaultTask() {
             val advanced = group.value.filter { !simple.contains(it) && !deprecated.contains(it) }
             val superGroupName = superGroups[group.key] ?: error("Missing super group: ${group.key}");
             val groupLocation = groupLocations[group.key] ?: error("Missing group location: ${group.key}")
+
+            advanced.forEach{property -> property.location += "-advanced"};
+            deprecated.forEach{property -> property.location += "-deprecated"};
+
             SplitGroup(group.key, superGroupName, groupLocation, simple, advanced, deprecated)
         }
 
