@@ -61,7 +61,7 @@ open class GenerateDocsTask : DefaultTask() {
         val terms = Terms()
         terms.termMap.put("program_version", project.version.toString())
         project.file("docs/templates/content").walkTopDown().forEach {
-            val projectDirPath = project.file(".").canonicalPath
+            val projectDirPath = project.getProjectDir().canonicalPath
             if (it.canonicalPath.startsWith(projectDirPath)) {
                 val curDirPathLength = projectDirPath.length + "docs/templates/".length
                 val helpContentTemplateFileRelativePath = it.canonicalPath.substring(curDirPathLength + 1)
@@ -89,7 +89,8 @@ open class GenerateDocsTask : DefaultTask() {
         }
     }
 
-    private fun handleDetectors(templateProvider: TemplateProvider, outputDir: File, helpJson: HelpJsonData) {
+    private fun handleDetectors(templateProvider: TemplateProvider, baseOutputDir: File, helpJson: HelpJsonData) {
+        val outputDir = File(baseOutputDir, "components")
         val build = helpJson.buildDetectors.groupBy { it.detectorType }
                 .map { group -> DetectorGroup(group.key, group.value.map { detector -> detector.detectorName }) }
 
