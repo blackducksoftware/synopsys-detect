@@ -34,6 +34,32 @@ import org.slf4j.LoggerFactory;
 public class DetectFileUtils {
     private static final Logger logger = LoggerFactory.getLogger(DetectFileUtils.class);
 
+    //About Canonical File Path. This should really only fail/throw in applets or in a truly restricted security context, so most of the time it should work.
+    //If we can't get the canonical file path it is acceptable to fall back onto file path - the main drawback being capitalization or subtle things like that may differ between runs on the same file.
+    public static String tryGetCanonicalName(File file) {
+        return tryGetCanonicalFile(file).getName();
+    }
+
+    public static String tryGetCanonicalPath(File file) {
+        try {
+            return file.getCanonicalPath();
+        } catch (IOException e) {
+            return file.getPath();
+        }
+    }
+
+    public static File tryGetCanonicalFile(File file) {
+        try {
+            return file.getCanonicalFile();
+        } catch (IOException e) {
+            return file;
+        }
+    }
+
+    public static String tryExtractFinalPieceFromCanonicalPath(final File file) {
+        return extractFinalPieceFromPath(tryGetCanonicalPath(file));
+    }
+
     public static String extractFinalPieceFromPath(final String path) {
         if (path == null || path.length() == 0) {
             return "";

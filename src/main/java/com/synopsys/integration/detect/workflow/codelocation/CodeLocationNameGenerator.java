@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.workflow.codelocation;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -43,9 +44,11 @@ public class CodeLocationNameGenerator {
         this.codeLocationNameOverride = codeLocationNameOverride;
     }
 
-    public String createBomCodeLocationName(final String detectSourcePath, final String sourcePath, final String projectName, final String projectVersionName, final DetectCodeLocation detectCodeLocation, final String prefix,
+    public String createBomCodeLocationName(final File detectSourcePath, final File sourcePath, final String projectName, final String projectVersionName, final DetectCodeLocation detectCodeLocation, final String prefix,
         final String suffix) {
-        final String pathPiece = FileNameUtils.relativize(detectSourcePath, sourcePath);
+        final String canonicalDetectSourcePath = DetectFileUtils.tryGetCanonicalPath(detectSourcePath);
+        final String canonicalSourcePath = DetectFileUtils.tryGetCanonicalPath(sourcePath);
+        final String pathPiece = FileNameUtils.relativize(canonicalDetectSourcePath, canonicalSourcePath);
 
         final String externalIdPiece = StringUtils.join(detectCodeLocation.getExternalId().getExternalIdPieces(), "/");
 
@@ -65,9 +68,10 @@ public class CodeLocationNameGenerator {
         return createCodeLocationName(prefix, bomCodeLocationNamePieces, suffix, bomCodeLocationEndPieces);
     }
 
-    public String createDockerCodeLocationName(final String sourcePath, final String projectName, final String projectVersionName, final String dockerImage, final String prefix,
+    public String createDockerCodeLocationName(final File sourcePath, final String projectName, final String projectVersionName, final String dockerImage, final String prefix,
         final String suffix) {
-        final String finalSourcePathPiece = DetectFileUtils.extractFinalPieceFromPath(sourcePath);
+        final String canonicalSourcePath = DetectFileUtils.tryGetCanonicalPath(sourcePath);
+        final String finalSourcePathPiece = DetectFileUtils.extractFinalPieceFromPath(canonicalSourcePath);
         final String codeLocationTypeString = CodeLocationNameType.DOCKER.toString().toLowerCase();
         final String bomToolTypeString = "docker";
 
@@ -77,16 +81,17 @@ public class CodeLocationNameGenerator {
         return createCodeLocationName(prefix, dockerCodeLocationNamePieces, suffix, dockerCodeLocationEndPieces);
     }
 
-    public String createDockerScanCodeLocationName(final String dockerTarFilename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+    public String createDockerScanCodeLocationName(final File dockerTar, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String codeLocationTypeString = CodeLocationNameType.SCAN.toString().toLowerCase();
 
-        final List<String> fileCodeLocationNamePieces = Arrays.asList(dockerTarFilename, projectName, projectVersionName);
+        String dockerTarFileName = DetectFileUtils.tryGetCanonicalName(dockerTar);
+        final List<String> fileCodeLocationNamePieces = Arrays.asList(dockerTarFileName, projectName, projectVersionName);
         final List<String> fileCodeLocationEndPieces = Arrays.asList(codeLocationTypeString);
 
         return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
     }
 
-    public String createScanCodeLocationName(final String sourcePath, final String scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+    public String createScanCodeLocationName(final File sourcePath, final File scanTargetPath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String pathPiece = cleanScanTargetPath(scanTargetPath, sourcePath);
         final String codeLocationTypeString = CodeLocationNameType.SCAN.toString().toLowerCase();
 
@@ -96,10 +101,11 @@ public class CodeLocationNameGenerator {
         return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
     }
 
-    public String createBinaryScanCodeLocationName(final String filename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+    public String createBinaryScanCodeLocationName(final File targetFile, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String codeLocationTypeString = CodeLocationNameType.SCAN.toString().toLowerCase();
 
-        final List<String> fileCodeLocationNamePieces = Arrays.asList(filename, projectName, projectVersionName);
+        final String canonicalFileName = DetectFileUtils.tryGetCanonicalName(targetFile);
+        final List<String> fileCodeLocationNamePieces = Arrays.asList(canonicalFileName, projectName, projectVersionName);
         final List<String> fileCodeLocationEndPieces = Arrays.asList(codeLocationTypeString);
 
         return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
@@ -115,11 +121,14 @@ public class CodeLocationNameGenerator {
         return codeLocationName;
     }
 
-    private String cleanScanTargetPath(final String scanTargetPath, final String sourcePath) {
-        final String finalSourcePathPiece = DetectFileUtils.extractFinalPieceFromPath(sourcePath);
+    private String cleanScanTargetPath(final File scanTargetPath, final File sourcePath) {
+        String canonicalTargetPath = DetectFileUtils.tryGetCanonicalPath(scanTargetPath);
+        String canonicalSourcePath = DetectFileUtils.tryGetCanonicalPath(sourcePath);
+
+        final String finalSourcePathPiece = DetectFileUtils.extractFinalPieceFromPath(canonicalSourcePath);
         String cleanedTargetPath = "";
-        if (StringUtils.isNotBlank(scanTargetPath) && StringUtils.isNotBlank(finalSourcePathPiece)) {
-            cleanedTargetPath = scanTargetPath.replace(sourcePath, finalSourcePathPiece);
+         if (StringUtils.isNotBlank(canonicalTargetPath) && StringUtils.isNotBlank(finalSourcePathPiece)) {
+            cleanedTargetPath = canonicalTargetPath.replace(canonicalSourcePath, finalSourcePathPiece);
         }
 
         return cleanedTargetPath;

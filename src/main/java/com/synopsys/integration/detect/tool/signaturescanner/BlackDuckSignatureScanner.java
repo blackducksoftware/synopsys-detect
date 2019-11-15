@@ -49,6 +49,7 @@ import com.synopsys.integration.detect.workflow.blackduck.ExclusionPatternCreato
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.status.SignatureScanStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -138,7 +139,7 @@ public class BlackDuckSignatureScanner {
             }
 
             anyFailed = anyFailed || scanStatus == StatusType.FAILURE;
-            eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(target.getTargetPath(), scanStatus));
+            eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(target.getTargetPath().toString(), scanStatus));
         }
 
         if (anyFailed) {
@@ -184,23 +185,18 @@ public class BlackDuckSignatureScanner {
         return signatureScanPaths;
     }
 
-    private SignatureScanPath createScanPath(final String path, final Integer maxDepth, final String[] signatureScannerExclusionNamePatterns, final String[] providedExclusionPatterns) throws IntegrationException {
-        try {
-            final File target = new File(path);
-            final String targetPath = target.getCanonicalPath();
-            final ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(fileFinder, target);
+    private SignatureScanPath createScanPath(final String path, final Integer maxDepth, final String[] signatureScannerExclusionNamePatterns, final String[] providedExclusionPatterns) {
+        final File target = new File(path);
+        final ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(fileFinder, target);
 
-            final Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepth, signatureScannerExclusionNamePatterns);
-            if (null != providedExclusionPatterns) {
-                scanExclusionPatterns.addAll(Arrays.asList(providedExclusionPatterns));
-            }
-            final SignatureScanPath signatureScanPath = new SignatureScanPath();
-            signatureScanPath.setTargetPath(targetPath);
-            signatureScanPath.getExclusions().addAll(scanExclusionPatterns);
-            return signatureScanPath;
-        } catch (final IOException e) {
-            throw new IntegrationException(e.getMessage(), e);
+        final Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepth, signatureScannerExclusionNamePatterns);
+        if (null != providedExclusionPatterns) {
+            scanExclusionPatterns.addAll(Arrays.asList(providedExclusionPatterns));
         }
+        final SignatureScanPath signatureScanPath = new SignatureScanPath();
+        signatureScanPath.setTargetPath(target);
+        signatureScanPath.getExclusions().addAll(scanExclusionPatterns);
+        return signatureScanPath;
     }
 
     protected ScanBatchBuilder createDefaultScanBatchBuilder(final NameVersion projectNameVersion, final File installDirectory, final List<SignatureScanPath> signatureScanPaths, final File dockerTarFile) throws DetectUserFriendlyException {
@@ -225,17 +221,13 @@ public class BlackDuckSignatureScanner {
         final String projectVersionName = projectNameVersion.getVersion();
         scanJobBuilder.projectAndVersionNames(projectName, projectVersionName);
 
-        final String sourcePath = directoryManager.getSourceDirectory().getAbsolutePath();
+        final File sourcePath = directoryManager.getSourceDirectory();
         final String prefix = signatureScannerOptions.getCodeLocationPrefix();
         final String suffix = signatureScannerOptions.getCodeLocationSuffix();
 
-        String dockerTarFilename = null;
-        if (dockerTarFile != null) {
-            dockerTarFilename = dockerTarFile.getName();
-        }
         for (final SignatureScanPath scanPath : signatureScanPaths) {
-            final String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, scanPath.getTargetPath(), dockerTarFilename, projectName, projectVersionName, prefix, suffix);
-            scanJobBuilder.addTarget(ScanTarget.createBasicTarget(scanPath.getTargetPath(), scanPath.getExclusions(), codeLocationName));
+            final String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, scanPath.getTargetPath(), dockerTarFile, projectName, projectVersionName, prefix, suffix);
+            scanJobBuilder.addTarget(ScanTarget.createBasicTarget(DetectFileUtils.tryGetCanonicalPath(scanPath.getTargetPath()), scanPath.getExclusions(), codeLocationName));
         }
 
         return scanJobBuilder;

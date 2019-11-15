@@ -22,9 +22,11 @@
  */
 package com.synopsys.integration.detect.workflow.codelocation;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.lang.Nullable;
 
 import com.synopsys.integration.util.NameVersion;
 
@@ -46,7 +48,7 @@ public class CodeLocationNameManager {
         return aggregateCodeLocationName;
     }
 
-    public String createCodeLocationName(final DetectCodeLocation detectCodeLocation, final String detectSourcePath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+    public String createCodeLocationName(final DetectCodeLocation detectCodeLocation, final File detectSourcePath, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String codeLocationName;
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
             if (detectCodeLocation.getDockerImageName().isPresent()) {
@@ -55,41 +57,35 @@ public class CodeLocationNameManager {
                 codeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameSourcedBom(detectCodeLocation);
             }
         } else {
-            String sourcePath;
-            try {
-                sourcePath = detectCodeLocation.getSourcePath().getCanonicalPath();
-            } catch (final IOException e) {
-                sourcePath = detectCodeLocation.getSourcePath().toString();
-            }
             if (detectCodeLocation.getDockerImageName().isPresent()) {
                 final String dockerImage = detectCodeLocation.getDockerImageName().get();
-                codeLocationName = codeLocationNameGenerator.createDockerCodeLocationName(sourcePath, projectName, projectVersionName, dockerImage, prefix, suffix);
+                codeLocationName = codeLocationNameGenerator.createDockerCodeLocationName(detectCodeLocation.getSourcePath(), projectName, projectVersionName, dockerImage, prefix, suffix);
             } else {
-                codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, sourcePath, projectName, projectVersionName, detectCodeLocation, prefix, suffix);
+                codeLocationName = codeLocationNameGenerator.createBomCodeLocationName(detectSourcePath, detectCodeLocation.getSourcePath(), projectName, projectVersionName, detectCodeLocation, prefix, suffix);
             }
         }
         return codeLocationName;
     }
 
-    public String createScanCodeLocationName(final String sourcePath, final String scanTargetPath, final String dockerTarFilename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+    public String createScanCodeLocationName(final File sourcePath, final File scanTargetPath, @Nullable final File dockerTar, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String scanCodeLocationName;
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
             scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN);
-        } else if (StringUtils.isNotBlank(dockerTarFilename)) {
-            scanCodeLocationName = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTarFilename, projectName, projectVersionName, prefix, suffix);
+        } else if (dockerTar != null) {
+            scanCodeLocationName = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTar, projectName, projectVersionName, prefix, suffix);
         } else {
             scanCodeLocationName = codeLocationNameGenerator.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
         }
         return scanCodeLocationName;
     }
 
-    public String createBinaryScanCodeLocationName(final String filename, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
+    public String createBinaryScanCodeLocationName(final File targetFile, final String projectName, final String projectVersionName, final String prefix, final String suffix) {
         final String scanCodeLocationName;
 
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
             scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN);
         } else {
-            scanCodeLocationName = codeLocationNameGenerator.createBinaryScanCodeLocationName(filename, projectName, projectVersionName, prefix, suffix);
+            scanCodeLocationName = codeLocationNameGenerator.createBinaryScanCodeLocationName(targetFile, projectName, projectVersionName, prefix, suffix);
         }
         return scanCodeLocationName;
     }
