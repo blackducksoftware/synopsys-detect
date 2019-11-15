@@ -63,6 +63,12 @@ import static com.synopsys.integration.detect.configuration.HelpGroups.SEARCH_GR
 import static com.synopsys.integration.detect.configuration.HelpGroups.SEARCH_GROUP_PROJECT_SETTING;
 import static com.synopsys.integration.detect.configuration.HelpGroups.SEARCH_GROUP_REPORT_SETTING;
 
+import java.util.Arrays;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.synopsys.integration.detect.DetectMajorVersion;
 import com.synopsys.integration.detect.help.AcceptableValues;
 import com.synopsys.integration.detect.help.DetectDeprecation;
@@ -1128,7 +1134,13 @@ public enum DetectProperty {
 
     DetectProperty(final String propertyKey, final String propertyName, final String asOf, final PropertyType propertyType, final PropertyAuthority propertyAuthority, final String defaultValue) {
         this.propertyKey = propertyKey;
-        this.propertyName = propertyName;
+        if (StringUtils.isBlank(propertyName)) {
+            this.propertyName = Arrays.stream(propertyKey.split(Pattern.quote(".")))
+                                    .map(StringUtils::capitalize)
+                                    .collect(Collectors.joining(" "));
+        } else {
+            this.propertyName = propertyName;
+        }
         this.asOf = asOf;
         this.propertyType = propertyType;
         this.defaultValue = defaultValue;
