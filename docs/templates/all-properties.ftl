@@ -1,3 +1,4 @@
+<#ftl output_format="Markdown">
 This page lists all detect properties including deprecated and advanced, for most use cases see [basic properties](../basic-properties).
 
 <#list groups as group>

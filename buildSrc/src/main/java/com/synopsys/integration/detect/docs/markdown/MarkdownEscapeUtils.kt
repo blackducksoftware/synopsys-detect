@@ -20,11 +20,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.docs.copied
+package com.synopsys.integration.detect.docs.markdown
 
-//Copied from detect-configuration
-class HelpJsonExitCode {
-    var exitCodeKey = ""
-    var exitCodeDescription = ""
-    var exitCodeValue = 0
+import org.apache.commons.lang3.StringUtils
+
+//Escapes using a backslash all supported characters in a markdown text literal based on: https://daringfireball.net/projects/markdown/syntax#backslash
+class MarkdownEscapeUtils {
+    companion object {
+        private val characters: List<String>;
+
+        init {
+            characters = "\\`*_{}[]()#+-.!".toCharArray()
+                    .map { c -> c.toString() }
+                    .toList()
+        }
+
+        fun escape(text: String) : String {
+            var cleanedText = text;
+            for (c in characters) {
+                cleanedText = StringUtils.replace(cleanedText, c, "\\" + c);
+            }
+            return cleanedText;
+        }
+    }
 }

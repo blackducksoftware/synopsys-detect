@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * buildSrc
  *
  * Copyright (c) 2019 Synopsys, Inc.
  *
@@ -20,12 +20,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package com.synopsys.integration.detect.docs
 
 import com.google.gson.Gson
 import com.synopsys.integration.detect.docs.copied.HelpJsonData
 import com.synopsys.integration.detect.docs.copied.HelpJsonExitCode
 import com.synopsys.integration.detect.docs.copied.HelpJsonOption
+import com.synopsys.integration.detect.docs.markdown.MarkdownOutputFormat
 import freemarker.template.Configuration
 import freemarker.template.Template
 import org.apache.commons.io.FileUtils
@@ -137,10 +139,13 @@ class TemplateProvider(templateDirectory: File) {
     init {
         configuration.setDirectoryForTemplateLoading(templateDirectory)
         configuration.defaultEncoding = "UTF-8"
+        configuration.registeredCustomOutputFormats = listOf(MarkdownOutputFormat.INSTANCE);
     }
 
     fun getTemplate(templateName: String): Template {
-        return configuration.getTemplate(templateName)
+        val template =  configuration.getTemplate(templateName)
+
+        return template;
     }
 }
 

@@ -1,8 +1,9 @@
+<#ftl output_format="Markdown">
 # ${groupName}
 
 <#list simple as option>
 ##${option.propertyName}
-```
+```<#noautoesc>
 <#if option.hasAcceptableValues>
 --${option.propertyKey}=${option.acceptableValues?join(",")} 
 <#elseif option.defaultValue?has_content>
@@ -10,7 +11,7 @@
 <#else>
 --${option.propertyKey}
 </#if>
-```
+```</#noautoesc>
 
 ${option.description}
 
@@ -34,7 +35,7 @@ ${option.detailedDescription!""}
 
 <#list advanced as option>
 ##${option.propertyName} (Advanced)
-```
+```<#noautoesc>
 <#if option.hasAcceptableValues>
 --${option.propertyKey}=${option.acceptableValues?join(",")} 
 <#elseif option.defaultValue?has_content>
@@ -42,7 +43,7 @@ ${option.detailedDescription!""}
 <#else>
 --${option.propertyKey}
 </#if>
-```
+```</#noautoesc>
 
 ${option.description}
 
@@ -67,7 +68,7 @@ ${option.detailedDescription!""}
 
 <#list deprecated as option>
 ##${option.propertyName} (Deprecated) 
-```
+```<#noautoesc>
 <#if option.hasAcceptableValues>
 --${option.propertyKey}=${option.acceptableValues?join(",")} 
 <#elseif option.defaultValue?has_content>
@@ -75,7 +76,7 @@ ${option.detailedDescription!""}
 <#else>
 --${option.propertyKey}
 </#if>
-```
+```</#noautoesc>
 
 ${option.description}
 

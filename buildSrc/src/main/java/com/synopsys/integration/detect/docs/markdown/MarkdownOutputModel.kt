@@ -20,11 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.docs.copied
+package com.synopsys.integration.detect.docs.markdown
 
-//Copied from detect-configuration
-class HelpJsonExitCode {
-    var exitCodeKey = ""
-    var exitCodeDescription = ""
-    var exitCodeValue = 0
+import freemarker.core.CommonMarkupOutputFormat
+import freemarker.core.CommonTemplateMarkupOutputModel
+
+class MarkdownOutputModel(plainTextContent: String?, markupContent: String?) : CommonTemplateMarkupOutputModel<MarkdownOutputModel>(plainTextContent, markupContent) {
+    override fun getOutputFormat(): CommonMarkupOutputFormat<MarkdownOutputModel> {
+        return MarkdownOutputFormat.INSTANCE;
+    }
 }
