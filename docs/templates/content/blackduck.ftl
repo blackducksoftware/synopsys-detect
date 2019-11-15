@@ -19,3 +19,9 @@ ${solution_name} can be configured to perform additional tasks, including the fo
 
 See [Black Duck Server properties](/properties/Configuration/blackduck%20server)
 and [Signature Scanner properties](/properties/Configuration/signature%20scanner/) for details.
+
+## Offline mode
+
+If you have no ${blackduck_product_name} instance, or if your network is down, you can still run ${solution_name} in offline mode.
+In offline mode, ${solution_name} creates the BDIO content and the dry run signature scan output files without attempting to upload them to Black Duck.
+You can run ${solution_name} in offline mode using the [offline mode property](/properties/Configuration/blackduck%20server/#offline-mode).
