@@ -8,5 +8,5 @@ Overview:
 
 Additional details:
 
-* The Project Code Scanner role is insufficient to run any detect post build actions (policy check, notices report, risk report)
+* The Project Code Scanner role is insufficient to run any ${solution_name} post build actions (policy check, notices report, risk report)
 * A user with the Global Code Scanner role can (as of ${blackduck_product_name} 2019.6) run generate a report, but cannot delete the report when it’s done with it. BOM Manager role is required for the delete.

@@ -60,5 +60,5 @@ including:
 
 Values provided on the command line may be visible to other users that can view process details.
 Setting sensitive value using environment variables is usually considered more secure.
-Connecting to another system (e.g. Black Duck or Polaris) using an access token (also called an API token)
+Connecting to another system (e.g. ${blackduck_product_name} or ${polaris_product_name}) using an access token (also called an API token)
 is usually considered more secure than connecting using username and password. 

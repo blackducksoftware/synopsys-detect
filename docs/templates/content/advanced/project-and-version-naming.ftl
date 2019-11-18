@@ -18,7 +18,7 @@ You can use the following property to customize the timestamp format:
 ## Project and version naming for Git projects
 
 If no package manager provides project and version names, you have not provided the project and version names through properties, and the project uses Git, ${solution_name} attempts to use Git to determine project information
-Project information is extracted from the remote URL for the current branch. The version is the current branch name.  This is performed by the Git detector. If you do not want Detect to use Git data, you can omit the Git detector using the following property:
+Project information is extracted from the remote URL for the current branch. The version is the current branch name.  This is performed by the Git detector. If you do not want ${solution_name} to use Git data, you can omit the Git detector using the following property:
 ```
 --detect.excluded.detector.types=GIT
 ```
@@ -26,8 +26,8 @@ Project information is extracted from the remote URL for the current branch. The
 For example, for a project with a remote URL of "https://github.com/blackducksoftware/synopsys-detect" and a checked-out branch "5.5.0",
 ${solution_name} will (by default) use project name "blackducksoftware/synopsys-detect" and project version "5.5.0".
 
-Detect attempts to derive project and version information by running the Git executable. If that is not successful, it will attempt to derive
+${solution_name} attempts to derive project and version information by running the Git executable. If that is not successful, it will attempt to derive
 project and version information by parsing Git files.
 
-In Detect versions 5.5.0 and higher, there is a new Detect property for providing the
+In ${solution_name} versions 5.5.0 and higher, there is a new ${solution_name} property for providing the
 path to the Git executable: detect.git.path.

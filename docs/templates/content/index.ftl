@@ -11,5 +11,5 @@ All other documentation is located on [Confluence](https://synopsys.atlassian.ne
 ## ${solution_name} Modes
 * Help Mode: `-h` Quickly search and filter help.
 * Interactive Mode: `-i` Guided property setup.
-* Air Gap Creation Mode: `-z` Create detect zips that can run offline.
+* Air Gap Creation Mode: `-z` Create ${solution_name} zips that can run offline.
 * Diagnostic Mode: `-d` Create debug zips for support.

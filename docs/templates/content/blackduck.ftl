@@ -17,11 +17,11 @@ ${solution_name} can be configured to perform additional tasks, including the fo
 * Run the ${dockerinspector_name} on a given [Docker image](/advanced/language-and-package-managers/docker-images).
 * Generate a [report](http://localhost:8000/properties/Configuration/report/).
 
-See [Black Duck Server properties](/properties/Configuration/blackduck%20server)
+See [${blackduck_product_name} Server properties](/properties/Configuration/blackduck%20server)
 and [Signature Scanner properties](/properties/Configuration/signature%20scanner/) for details.
 
 ## Offline mode
 
 If you have no ${blackduck_product_name} instance, or if your network is down, you can still run ${solution_name} in offline mode.
-In offline mode, ${solution_name} creates the BDIO content and the dry run signature scan output files without attempting to upload them to Black Duck.
+In offline mode, ${solution_name} creates the BDIO content and the dry run signature scan output files without attempting to upload them to ${blackduck_product_name}.
 You can run ${solution_name} in offline mode using the [offline mode property](/properties/Configuration/blackduck%20server/#offline-mode).
