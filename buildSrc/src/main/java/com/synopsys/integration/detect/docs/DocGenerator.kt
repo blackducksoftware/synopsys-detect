@@ -82,10 +82,8 @@ open class GenerateDocsTask : DefaultTask() {
     }
 
     private fun deriveTemplateRelativePath(templateFile: File): String {
-        val projectDirPath = project.getProjectDir().canonicalPath
-        val curDirPathLength = projectDirPath.length + "docs/templates/".length
-        val helpContentTemplateFileRelativePath = templateFile.canonicalPath.substring(curDirPathLength + 1)
-        return helpContentTemplateFileRelativePath
+        val templatesDir = File(project.projectDir, "docs/templates")
+        return templateFile.relativeTo(templatesDir).toString()
     }
 
     private fun createFromFreemarker(templateProvider: TemplateProvider, outputDir: File, templateName: String, data: Any) {
