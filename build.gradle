@@ -51,6 +51,12 @@ def createBatteryPath() {
 allprojects {
     apply plugin: 'org.jetbrains.kotlin.jvm'
     apply plugin: 'io.spring.dependency-management'
+    
+    configurations.all {
+        resolutionStrategy {
+            force 'commons-beanutils:commons-beanutils:1.9.3', 'commons-beanutils:commons-beanutils:1.9.4'
+        }
+    }
 
     dependencies {
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
