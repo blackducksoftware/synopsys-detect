@@ -60,21 +60,17 @@ open class GenerateDocsTask : DefaultTask() {
     }
 
     private fun handleContent(outputDir: File, templateProvider: TemplateProvider) {
-        val terms = Terms()
-        terms.termMap.put("program_version", project.version.toString())
+        val helpContentTerms = Terms()
+        helpContentTerms.termMap.put("program_version", project.version.toString())
         project.file("docs/templates/content").walkTopDown().forEach {
-            val projectDirPath = project.getProjectDir().canonicalPath
-            if (it.canonicalPath.startsWith(projectDirPath)) {
+            if (it.canonicalPath.endsWith((".ftl"))) {
+                val projectDirPath = project.getProjectDir().canonicalPath
                 val curDirPathLength = projectDirPath.length + "docs/templates/".length
                 val helpContentTemplateFileRelativePath = it.canonicalPath.substring(curDirPathLength + 1)
-                if (helpContentTemplateFileRelativePath.endsWith(".ftl")) {
-                    val outputFileRelativePath = helpContentTemplateFileRelativePath.substring("content/".length, helpContentTemplateFileRelativePath.length - ".ftl".length) + ".md"
-                    val outputFile = File(outputDir, outputFileRelativePath)
-                    println("Generating markdown from template file: ${helpContentTemplateFileRelativePath} --> ${outputFile.canonicalPath}")
-                    createFromFreemarker(templateProvider, helpContentTemplateFileRelativePath, outputFile, terms.termMap)
-                }
-            } else {
-                println("WARNING: Help content file ${it.canonicalPath} does not seem to be in the project directory (${projectDirPath}. It will be omitted from the help.")
+                val outputFileRelativePath = helpContentTemplateFileRelativePath.substring("content/".length, helpContentTemplateFileRelativePath.length - ".ftl".length) + ".md"
+                val outputFile = File(outputDir, outputFileRelativePath)
+                println("Generating markdown from template file: ${helpContentTemplateFileRelativePath} --> ${outputFile.canonicalPath}")
+                createFromFreemarker(templateProvider, helpContentTemplateFileRelativePath, outputFile, helpContentTerms.termMap)
             }
         }
     }
