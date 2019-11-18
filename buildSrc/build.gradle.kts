@@ -1,6 +1,19 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven ( url = "https://plugins.gradle.org/m2/" )
+    }
+    dependencies {
+        "classpath"(group = "com.blackducksoftware.integration", name = "common-gradle-plugin", version = "0.0.+")
+    }
+}
+
 plugins {
     `kotlin-dsl`
 }
+
+version = "1.0.0-SNAPSHOT"
+apply(plugin = "com.blackducksoftware.integration.simple")
 
 repositories {
     mavenCentral()

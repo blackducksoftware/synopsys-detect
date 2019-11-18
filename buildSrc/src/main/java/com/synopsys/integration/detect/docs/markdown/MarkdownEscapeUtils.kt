@@ -20,23 +20,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.docs.copied;
+package com.synopsys.integration.detect.docs.markdown
 
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.commons.lang3.StringUtils
 
-//Copied from detect-configuration
-public class HelpJsonDetector {
-    public String detectableName = "";
-    public String detectableDescriptiveName = "";
-    public String detectableGroup = "";
-    public String detectorType = "";
-    public String detectorName = "";
-    public String detectorDescriptiveName = "";
-    public int maxDepth = 0;
-    public boolean nestable = false;
-    public boolean nestInvisible = false;
+//Escapes using a backslash all supported characters in a markdown text literal based on: https://daringfireball.net/projects/markdown/syntax#backslash
+class MarkdownEscapeUtils {
+    companion object {
+        private val characters: List<String>;
 
-    public List<String> yieldsTo = new ArrayList<>();
-    public String fallbackTo = "";
+        init {
+            characters = "\\`*_{}[]()#+-.!".toCharArray()
+                    .map { c -> c.toString() }
+                    .toList()
+        }
+
+        fun escape(text: String) : String {
+            var cleanedText = text;
+            for (c in characters) {
+                cleanedText = StringUtils.replace(cleanedText, c, "\\" + c);
+            }
+            return cleanedText;
+        }
+    }
 }

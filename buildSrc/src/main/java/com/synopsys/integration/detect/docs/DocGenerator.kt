@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * buildSrc
  *
  * Copyright (c) 2019 Synopsys, Inc.
  *
@@ -20,6 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package com.synopsys.integration.detect.docs
 
 import com.google.gson.Gson
@@ -27,6 +28,7 @@ import com.synopsys.integration.detect.docs.copied.HelpJsonData
 import com.synopsys.integration.detect.docs.copied.HelpJsonExitCode
 import com.synopsys.integration.detect.docs.copied.HelpJsonOption
 import com.synopsys.integration.detect.docs.content.Terms
+import com.synopsys.integration.detect.docs.markdown.MarkdownOutputFormat
 import freemarker.template.Configuration
 import freemarker.template.Template
 import org.apache.commons.io.FileUtils
@@ -117,6 +119,10 @@ open class GenerateDocsTask : DefaultTask() {
             val advanced = group.value.filter { !simple.contains(it) && !deprecated.contains(it) }
             val superGroupName = superGroups[group.key] ?: error("Missing super group: ${group.key}");
             val groupLocation = groupLocations[group.key] ?: error("Missing group location: ${group.key}")
+
+            advanced.forEach{property -> property.location += "-advanced"};
+            deprecated.forEach{property -> property.location += "-deprecated"};
+
             SplitGroup(group.key, superGroupName, groupLocation, simple, advanced, deprecated)
         }
 
@@ -159,10 +165,13 @@ class TemplateProvider(templateDirectory: File) {
     init {
         configuration.setDirectoryForTemplateLoading(templateDirectory)
         configuration.defaultEncoding = "UTF-8"
+        configuration.registeredCustomOutputFormats = listOf(MarkdownOutputFormat.INSTANCE);
     }
 
     fun getTemplate(templateName: String): Template {
-        return configuration.getTemplate(templateName)
+        val template =  configuration.getTemplate(templateName)
+
+        return template;
     }
 }
 

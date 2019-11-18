@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * buildSrc
  *
  * Copyright (c) 2019 Synopsys, Inc.
  *

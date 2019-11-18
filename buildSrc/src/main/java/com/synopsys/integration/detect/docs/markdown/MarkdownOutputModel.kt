@@ -20,23 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.docs.copied;
+package com.synopsys.integration.detect.docs.markdown
 
-import java.util.ArrayList;
-import java.util.List;
+import freemarker.core.CommonMarkupOutputFormat
+import freemarker.core.CommonTemplateMarkupOutputModel
 
-//Copied from detect-configuration
-public class HelpJsonDetector {
-    public String detectableName = "";
-    public String detectableDescriptiveName = "";
-    public String detectableGroup = "";
-    public String detectorType = "";
-    public String detectorName = "";
-    public String detectorDescriptiveName = "";
-    public int maxDepth = 0;
-    public boolean nestable = false;
-    public boolean nestInvisible = false;
-
-    public List<String> yieldsTo = new ArrayList<>();
-    public String fallbackTo = "";
+class MarkdownOutputModel(plainTextContent: String?, markupContent: String?) : CommonTemplateMarkupOutputModel<MarkdownOutputModel>(plainTextContent, markupContent) {
+    override fun getOutputFormat(): CommonMarkupOutputFormat<MarkdownOutputModel> {
+        return MarkdownOutputFormat.INSTANCE;
+    }
 }
