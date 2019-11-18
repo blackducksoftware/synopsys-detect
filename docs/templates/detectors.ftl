@@ -20,6 +20,9 @@ Inspectors are used by detectors when the package manager requires an integratio
 Finally, detectors perform their "extraction" to find your dependencies. This may require but is not limited to: running executables, performing builds, parsing files and talking to web services.
 
 ## Build detectors
+
+Build detectors run package manager commands (for example: *mvn dependency:tree*) or inspectors (for example, the [Gradle inspector](/components/inspectors/#gradle-inspector)) to derive dependency information.
+
 |Detector type|Detectors|
 |---|---|
 <#list build as group>
@@ -27,6 +30,9 @@ Finally, detectors perform their "extraction" to find your dependencies. This ma
 </#list>
 
 ## Buildless detectors
+
+Buildless detectors parse package manager files (for example: *pom.xml*) to derive dependency information.
+
 |Detector type|Detectors|
 |---|---|
 <#list buildless as group>
