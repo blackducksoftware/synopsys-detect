@@ -64,24 +64,39 @@ open class GenerateDocsTask : DefaultTask() {
         helpContentTerms.termMap.put("program_version", project.version.toString())
         project.file("docs/templates/content").walkTopDown().forEach {
             if (it.canonicalPath.endsWith((".ftl"))) {
-                val projectDirPath = project.getProjectDir().canonicalPath
-                val curDirPathLength = projectDirPath.length + "docs/templates/".length
-                val helpContentTemplateFileRelativePath = it.canonicalPath.substring(curDirPathLength + 1)
-                val outputFileRelativePath = helpContentTemplateFileRelativePath.substring("content/".length, helpContentTemplateFileRelativePath.length - ".ftl".length) + ".md"
-                val outputFile = File(outputDir, outputFileRelativePath)
-                println("Generating markdown from template file: ${helpContentTemplateFileRelativePath} --> ${outputFile.canonicalPath}")
-                createFromFreemarker(templateProvider, helpContentTemplateFileRelativePath, outputFile, helpContentTerms.termMap)
+                createContentMarkdownFromTemplate(it, outputDir, templateProvider, helpContentTerms)
             }
         }
+    }
+
+    private fun createContentMarkdownFromTemplate(templateFile: File, baseOutputDir: File, templateProvider: TemplateProvider, helpContentTerms: Terms) {
+        val helpContentTemplateRelativePath = deriveTemplateRelativePath(templateFile)
+        val outputFile = deriveOutputFileForContentTemplate(helpContentTemplateRelativePath, baseOutputDir)
+        println("Generating markdown from template file: ${helpContentTemplateRelativePath} --> ${outputFile.canonicalPath}")
+        createFromFreemarker(templateProvider, helpContentTemplateRelativePath, outputFile, helpContentTerms.termMap)
+    }
+
+    private fun deriveOutputFileForContentTemplate(helpContentTemplateFileRelativePath: String, baseOutputDir: File): File {
+        // Content templates are under content/; output markdown files are not
+        val outputFileRelativePath = helpContentTemplateFileRelativePath.substring("content/".length, helpContentTemplateFileRelativePath.length - ".ftl".length) + ".md"
+        val outputFile = File(baseOutputDir, outputFileRelativePath)
+        return outputFile
+    }
+
+    private fun deriveTemplateRelativePath(templateFile: File): String {
+        val projectDirPath = project.getProjectDir().canonicalPath
+        val curDirPathLength = projectDirPath.length + "docs/templates/".length
+        val helpContentTemplateFileRelativePath = templateFile.canonicalPath.substring(curDirPathLength + 1)
+        return helpContentTemplateFileRelativePath
     }
 
     private fun createFromFreemarker(templateProvider: TemplateProvider, outputDir: File, templateName: String, data: Any) {
         createFromFreemarker(templateProvider, "$templateName.ftl", File(outputDir, "$templateName.md"), data);
     }
 
-    private fun createFromFreemarker(templateProvider: TemplateProvider, templatePath: String, to: File, data: Any) {
+    private fun createFromFreemarker(templateProvider: TemplateProvider, templateRelativePath: String, to: File, data: Any) {
         to.parentFile.mkdirs()
-        val template = templateProvider.getTemplate(templatePath)
+        val template = templateProvider.getTemplate(templateRelativePath)
         FileOutputStream(to, true).buffered().writer().use { writer ->
             template.process(data, writer)
         }
