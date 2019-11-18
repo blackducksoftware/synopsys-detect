@@ -47,7 +47,7 @@ open class GenerateDocsTask : DefaultTask() {
         outputDir.deleteRecursively()
         outputDir.mkdirs()
 
-        val templateProvider = TemplateProvider(project.file("docs/templates"))
+        val templateProvider = TemplateProvider(project.file("docs/templates"), project.version.toString())
 
         createFromFreemarker(templateProvider, outputDir, "exit-codes", ExitCodePage(helpJson.exitCodes))
 
@@ -59,20 +59,18 @@ open class GenerateDocsTask : DefaultTask() {
     private fun handleContent(outputDir: File, templateProvider: TemplateProvider) {
         val templatesDir = File(project.projectDir, "docs/templates")
         val contentDir = File(templatesDir, "content")
-        val helpContentTerms = Terms()
-        helpContentTerms.termMap.put("program_version", project.version.toString())
         project.file("docs/templates/content").walkTopDown().forEach {
             if (it.canonicalPath.endsWith((".ftl"))) {
-                createContentMarkdownFromTemplate(templatesDir, contentDir, it, outputDir, templateProvider, helpContentTerms)
+                createContentMarkdownFromTemplate(templatesDir, contentDir, it, outputDir, templateProvider)
             }
         }
     }
 
-    private fun createContentMarkdownFromTemplate(templatesDir: File, contentDir: File, templateFile: File, baseOutputDir: File, templateProvider: TemplateProvider, helpContentTerms: Terms) {
+    private fun createContentMarkdownFromTemplate(templatesDir: File, contentDir: File, templateFile: File, baseOutputDir: File, templateProvider: TemplateProvider) {
         val helpContentTemplateRelativePath = templateFile.toRelativeString(templatesDir)
         val outputFile = deriveOutputFileForContentTemplate(contentDir, templateFile, baseOutputDir)
         println("Generating markdown from template file: ${helpContentTemplateRelativePath} --> ${outputFile.canonicalPath}")
-        createFromFreemarker(templateProvider, helpContentTemplateRelativePath, outputFile, helpContentTerms.termMap)
+        createFromFreemarker(templateProvider, helpContentTemplateRelativePath, outputFile, HashMap<String, String>())
     }
 
     private fun deriveOutputFileForContentTemplate(contentDir: File, helpContentTemplateFile: File, baseOutputDir: File): File {
@@ -162,18 +160,21 @@ open class GenerateDocsTask : DefaultTask() {
     }
 }
 
-class TemplateProvider(templateDirectory: File) {
+class TemplateProvider(templateDirectory: File, projectVersion: String) {
     private val configuration: Configuration = Configuration(Configuration.VERSION_2_3_26);
+    private val terms = Terms()
 
     init {
         configuration.setDirectoryForTemplateLoading(templateDirectory)
         configuration.defaultEncoding = "UTF-8"
         configuration.registeredCustomOutputFormats = listOf(MarkdownOutputFormat.INSTANCE);
+
+        terms.termMap.put("program_version", projectVersion)
+        configuration.setSharedVaribles(terms.termMap)
     }
 
     fun getTemplate(templateName: String): Template {
         val template =  configuration.getTemplate(templateName)
-
         return template;
     }
 }
