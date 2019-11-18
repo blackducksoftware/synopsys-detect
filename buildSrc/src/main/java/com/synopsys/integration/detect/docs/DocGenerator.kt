@@ -50,8 +50,6 @@ open class GenerateDocsTask : DefaultTask() {
 
         val templateProvider = TemplateProvider(project.file("docs/templates"))
 
-        FileUtils.copyDirectory(project.file("docs/static"), outputDir)
-
         createFromFreemarker(templateProvider, outputDir, "exit-codes", ExitCodePage(helpJson.exitCodes))
 
         handleDetectors(templateProvider, outputDir, helpJson)
