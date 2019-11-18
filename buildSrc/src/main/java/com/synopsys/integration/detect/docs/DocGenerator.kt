@@ -69,7 +69,7 @@ open class GenerateDocsTask : DefaultTask() {
     }
 
     private fun createContentMarkdownFromTemplate(templatesDir: File, contentDir: File, templateFile: File, baseOutputDir: File, templateProvider: TemplateProvider, helpContentTerms: Terms) {
-        val helpContentTemplateRelativePath = deriveTemplateRelativePath(templatesDir, templateFile)
+        val helpContentTemplateRelativePath = templateFile.toRelativeString(templatesDir)
         val outputFile = deriveOutputFileForContentTemplate(contentDir, templateFile, baseOutputDir)
         println("Generating markdown from template file: ${helpContentTemplateRelativePath} --> ${outputFile.canonicalPath}")
         createFromFreemarker(templateProvider, helpContentTemplateRelativePath, outputFile, helpContentTerms.termMap)
@@ -80,10 +80,6 @@ open class GenerateDocsTask : DefaultTask() {
         val outputDir = File(baseOutputDir, templateSubDir)
         val outputFile = File(outputDir, "${helpContentTemplateFile.nameWithoutExtension}.md")
         return outputFile
-    }
-
-    private fun deriveTemplateRelativePath(templatesDir: File, templateFile: File): String {
-        return templateFile.toRelativeString(templatesDir)
     }
 
     private fun createFromFreemarker(templateProvider: TemplateProvider, outputDir: File, templateName: String, data: Any) {
