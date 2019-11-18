@@ -162,13 +162,13 @@ open class GenerateDocsTask : DefaultTask() {
 
 class TemplateProvider(templateDirectory: File, projectVersion: String) {
     private val configuration: Configuration = Configuration(Configuration.VERSION_2_3_26);
-    private val terms = Terms()
 
     init {
         configuration.setDirectoryForTemplateLoading(templateDirectory)
         configuration.defaultEncoding = "UTF-8"
         configuration.registeredCustomOutputFormats = listOf(MarkdownOutputFormat.INSTANCE);
 
+        val terms = Terms()
         terms.termMap.put("program_version", projectVersion)
         configuration.setSharedVaribles(terms.termMap)
     }
