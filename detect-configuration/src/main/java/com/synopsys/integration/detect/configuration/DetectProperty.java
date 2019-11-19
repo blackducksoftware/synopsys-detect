@@ -546,7 +546,7 @@ public enum DetectProperty {
     DETECT_NUGET_INSPECTOR_AIR_GAP_PATH("detect.nuget.inspector.air.gap.path", "Nuget Inspector AirGap Path", "3.0.0", PropertyType.STRING, PropertyAuthority.AIR_GAP_MANAGER),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription(category = ADVANCED, value = "Version of the Nuget Inspector. By default Detect will communicate with Artifactory.")
+    @HelpDescription(category = ADVANCED, value = "Version of the Nuget Inspector. By default Detect will run the latest version that is compatible with the Detect version.")
     DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version", "Nuget Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE, ""),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
