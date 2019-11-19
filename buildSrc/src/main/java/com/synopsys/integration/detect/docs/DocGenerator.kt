@@ -44,13 +44,13 @@ open class GenerateDocsTask : DefaultTask() {
         val helpJson: HelpJsonData = Gson().fromJson(file.reader(), HelpJsonData::class.java)
 
         val outputDir = project.file("docs/generated");
-        val advancedDir = File(outputDir, "advanced")
+        val troubleshootingDir = File(outputDir, "advanced/troubleshooting")
         outputDir.deleteRecursively()
-        advancedDir.mkdirs()
+        troubleshootingDir.mkdirs()
 
         val templateProvider = TemplateProvider(project.file("docs/templates"), project.version.toString())
 
-        createFromFreemarker(templateProvider, advancedDir, "exit-codes", ExitCodePage(helpJson.exitCodes))
+        createFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", ExitCodePage(helpJson.exitCodes))
 
         handleDetectors(templateProvider, outputDir, helpJson)
         handleProperties(templateProvider, outputDir, helpJson)
