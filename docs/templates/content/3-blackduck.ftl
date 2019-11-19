@@ -16,6 +16,7 @@ ${solution_name} can be configured to perform additional tasks, including the fo
 * Run the ${blackduck_product_name} [binary scanner](/properties/Configuration/signature%20scanner) on a given binary files.
 * Run the ${dockerinspector_name} on a given [Docker image](/advanced/language-and-package-managers/docker-images).
 * Generate a [report](http://localhost:8000/properties/Configuration/report/).
+* Fail on [policy violation](/properties/Configuration/project/#fail-on-policy-violation-severities).
 
 See [${blackduck_product_name} Server properties](/properties/Configuration/blackduck%20server)
 and [Signature Scanner properties](/properties/Configuration/signature%20scanner/) for details.
