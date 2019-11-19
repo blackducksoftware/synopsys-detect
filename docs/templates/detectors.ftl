@@ -1,3 +1,4 @@
+<#ftl output_format="Markdown">
 # Detectors
 
 Detect uses "Detectors" to find and extract dependencies from all supported package managers.
@@ -7,17 +8,17 @@ Each package manager ecosystem is given a Detector Type. Each Detector Type may 
 All supported Detector Types are listed here.
 
 ## Build Detectors
-|Detector Type|Detectors|
-|---|---|
-<#list build as group>
-|${group.groupName}|${group.detectors?join(", ")}|
+|Type|Name|Language|Forge|Requirements
+|---|---|---|---|---|
+<#list build as detector>
+|${detector.detectorType} | ${detector.detectorName} |${detector.detectableLanguage!""}|${detector.detectableForge!""} | <#if detector.detectableRequirementsMarkdown?has_content ><#noautoesc>${detector.detectableRequirementsMarkdown!""}</#noautoesc></#if>|
 </#list>
 
 ## Buildless Detectors
-|Detector Type|Detectors|
-|---|---|
-<#list buildless as group>
-|${group.groupName}|${group.detectors?join(", ")}|
+|Type|Name|Language|Forge|Requirements
+|---|---|---|---|---|
+<#list buildless as detector>
+|${detector.detectorType} | ${detector.detectorName} |${detector.detectableLanguage!""}|${detector.detectableForge!""} | <#if detector.detectableRequirementsMarkdown?has_content ><#noautoesc>${detector.detectableRequirementsMarkdown!""}</#noautoesc></#if>|
 </#list>
 
 ## Detector Search

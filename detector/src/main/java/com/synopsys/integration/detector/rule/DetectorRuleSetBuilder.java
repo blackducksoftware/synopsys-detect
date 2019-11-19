@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detector.base.DetectableCreatable;
 import com.synopsys.integration.detector.base.DetectorType;
 
@@ -38,8 +39,8 @@ public class DetectorRuleSetBuilder {
     private final List<DetectorRuleYieldBuilder> yieldBuilders = new ArrayList<>();
     private final List<DetectorRuleFallbackBuilder> fallbackBuilders = new ArrayList<>();
 
-    public DetectorRuleBuilder addDetector(final DetectorType type, final String name, final DetectableCreatable detectableCreatable) {
-        final DetectorRuleBuilder ruleBuilder = new DetectorRuleBuilder(name, type, detectableCreatable);
+    public <T extends Detectable> DetectorRuleBuilder addDetector(final DetectorType type, final String name, Class<T> detectableClass, final DetectableCreatable detectableCreatable) {
+        final DetectorRuleBuilder ruleBuilder = new DetectorRuleBuilder(name, type, detectableClass, detectableCreatable);
         ruleBuilder.setDetectorRuleSetBuilder(this);
         return ruleBuilder;
     }

@@ -32,13 +32,14 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 public abstract class Detectable {
     protected DetectableEnvironment environment;
     protected List<File> relevantFiles = new ArrayList<>();
-    private final String name;
-    private final String group;
 
-    public Detectable(final DetectableEnvironment environment, final String name, final String group) {
+    //TODO: Once all detectables are migrated. Delete this.
+    public Detectable(final DetectableEnvironment environment, String name, String version) {
+        this(environment);
+    }
+
+    public Detectable(final DetectableEnvironment environment) {
         this.environment = environment;
-        this.name = name;
-        this.group = group;
     }
 
     /*
@@ -67,18 +68,6 @@ public abstract class Detectable {
      * Perform the extraction and try not to throw an exception. Instead return an extraction built with an exception.
      */
     public abstract Extraction extract(ExtractionEnvironment extractionEnvironment);
-
-    public String getName() {
-        return name;
-    }
-
-    public String getGroupName() {
-        return group;
-    }
-
-    public String getDescriptiveName() {
-        return String.format("%s - %s", getGroupName(), getName());
-    }
 
     public List<File> getFoundRelevantFiles() {
         return relevantFiles;

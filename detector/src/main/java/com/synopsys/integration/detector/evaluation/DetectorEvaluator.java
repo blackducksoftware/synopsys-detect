@@ -38,10 +38,10 @@ import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FallbackNotNeededDetectableResult;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.result.DetectorResult;
+import com.synopsys.integration.detector.result.FallbackNotNeededDetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class DetectorEvaluator {
@@ -136,7 +136,7 @@ public class DetectorEvaluator {
                         detectorEvaluation.setFallbackFrom(fallbackEvaluation);
 
                         if (fallbackEvaluation.isExtractable()) {
-                            detectableExtractableResult = new FallbackNotNeededDetectableResult(fallbackEvaluation.getDetectable());
+                            detectableExtractableResult = new FallbackNotNeededDetectorResult(fallbackEvaluation.getDetectorRule());
                         }
                     }
                 }

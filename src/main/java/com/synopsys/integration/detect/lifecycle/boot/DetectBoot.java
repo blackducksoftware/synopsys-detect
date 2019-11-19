@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -97,6 +98,8 @@ import com.synopsys.integration.detect.workflow.report.DetectConfigurationReport
 import com.synopsys.integration.detect.workflow.report.writer.DebugLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.ErrorLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
+import com.synopsys.integration.detectable.Detectable;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
@@ -273,10 +276,21 @@ public class DetectBoot {
 
         //Attempt to create the detectable.
         //Not currently possible. Need a full DetectableConfiguration to be able to make Detectables.
-        //Detectable detectable = rule.createDetectable(null);
-        //helpData.detectableGroup = detectable.getGroupName();
-        //helpData.detectableName = detectable.getName();
-        //helpData.detectableDescriptiveName = detectable.getName();
+        Class<Detectable> detectableClass = rule.getDetectableClass();
+        Optional<DetectableInfo> infoSearch = Arrays.stream(detectableClass.getAnnotations())
+                                        .filter(annotation -> annotation instanceof DetectableInfo)
+                                        .map(annotation -> (DetectableInfo) annotation)
+                                        .findFirst();
+
+        if (infoSearch.isPresent()){
+            DetectableInfo info = infoSearch.get();
+            helpData.setDetectableGroup(info.group());
+            helpData.setDetectableName(info.name());
+            helpData.setDetectableLanguage(info.language());
+            helpData.setDetectableRequirementsMarkdown(info.requirementsMarkdown());
+            helpData.setDetectableForge(info.forge());
+        }
+
         return helpData;
     }
 

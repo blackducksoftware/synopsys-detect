@@ -22,11 +22,13 @@
  */
 package com.synopsys.integration.detector.rule;
 
+import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detector.base.DetectableCreatable;
 import com.synopsys.integration.detector.base.DetectorType;
 
-public class DetectorRuleBuilder {
+public class DetectorRuleBuilder<T extends Detectable> {
     private final DetectableCreatable detectableCreatable;
+    private final Class<T> detectableClass;
     private int maxDepth;
     private boolean nestable;
     private boolean selfNestable = false;
@@ -37,10 +39,11 @@ public class DetectorRuleBuilder {
 
     private DetectorRuleSetBuilder detectorRuleSetBuilder;
 
-    public DetectorRuleBuilder(final String name, final DetectorType detectorType, final DetectableCreatable detectableCreatable) {
+    public DetectorRuleBuilder(final String name, final DetectorType detectorType, final Class<T> detectableClass, final DetectableCreatable detectableCreatable) {
         this.name = name;
         this.detectorType = detectorType;
         this.detectableCreatable = detectableCreatable;
+        this.detectableClass = detectableClass;
     }
 
     public DetectorRuleBuilder defaults() {
@@ -100,7 +103,7 @@ public class DetectorRuleBuilder {
     }
 
     public DetectorRule build() {
-        final DetectorRule rule = new DetectorRule(detectableCreatable, maxDepth, nestable, selfNestable, detectorType, name, nestInvisible);
+        final DetectorRule rule = new DetectorRule(detectableCreatable, detectableClass, maxDepth, nestable, selfNestable, detectorType, name, nestInvisible);
         if (detectorRuleSetBuilder != null) {
             detectorRuleSetBuilder.add(rule);
         }
@@ -109,5 +112,9 @@ public class DetectorRuleBuilder {
 
     public void setDetectorRuleSetBuilder(final DetectorRuleSetBuilder detectorRuleSetBuilder) {
         this.detectorRuleSetBuilder = detectorRuleSetBuilder;
+    }
+
+    public Class<T> getDetectableClass() {
+        return detectableClass;
     }
 }
