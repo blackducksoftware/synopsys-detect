@@ -17,7 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.BdioTransformer;
+import com.synopsys.integration.bdio.bdio1.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.executable.Executable;
@@ -150,10 +150,9 @@ public class DockerExtractorTest {
         assertTrue(command.get(4).endsWith("testDockerTarfile.tar"));
     }
 
-
     private Extraction extract(final String image, final String tar,
-            File returnedContainerFileSystemFile,
-            File returnedSquashedImageFile,
+        final File returnedContainerFileSystemFile,
+        final File returnedSquashedImageFile,
         final ExecutableRunner executableRunner) {
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
         final DockerProperties dockerProperties = Mockito.mock(DockerProperties.class);
@@ -176,6 +175,5 @@ public class DockerExtractorTest {
 
         return dockerExtractor.extract(directory, outputDirectory, bashExe, javaExe, image, tar, dockerInspectorInfo);
     }
-
 
 }

@@ -28,17 +28,17 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.bdio1.SimpleBdioFactory;
+import com.synopsys.integration.bdio.bdio1.model.SimpleBdioDocument;
+import com.synopsys.integration.bdio.bdio1.model.SpdxCreator;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.bdio.SimpleBdioFactory;
-import com.synopsys.integration.bdio.model.SimpleBdioDocument;
-import com.synopsys.integration.bdio.model.SpdxCreator;
 
 public class DetectBdioWriter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private SimpleBdioFactory simpleBdioFactory;
-    private DetectInfo detectInfo;
+    private final SimpleBdioFactory simpleBdioFactory;
+    private final DetectInfo detectInfo;
 
     public DetectBdioWriter(final SimpleBdioFactory simpleBdioFactory, final DetectInfo detectInfo) {
         this.simpleBdioFactory = simpleBdioFactory;
@@ -54,7 +54,7 @@ public class DetectBdioWriter {
         try {
             final String detectVersion = detectInfo.getDetectVersion();
             final SpdxCreator detectCreator = SpdxCreator.createToolSpdxCreator("Detect", detectVersion);
-            simpleBdioDocument.billOfMaterials.creationInfo.setPrimarySpdxCreator(detectCreator);
+            simpleBdioDocument.getBillOfMaterials().creationInfo.setPrimarySpdxCreator(detectCreator);
             simpleBdioFactory.writeSimpleBdioDocumentToFile(outputFile, simpleBdioDocument);
             logger.debug(String.format("BDIO Generated: %s", outputFile.getAbsolutePath()));
         } catch (final IOException e) {

@@ -37,7 +37,7 @@ import org.springframework.context.annotation.Scope;
 import org.xml.sax.SAXException;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.BdioTransformer;
+import com.synopsys.integration.bdio.bdio1.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
@@ -509,10 +509,12 @@ public class DetectableBeanConfiguration {
     public PipenvGraphParser pipenvGraphParser() {
         return new PipenvGraphParser();
     }
+
     @Bean
     public PipenvFreezeParser pipenvFreezeParser() {
         return new PipenvFreezeParser();
     }
+
     @Bean
     public PipenvTransformer pipenvTransformer() {
         return new PipenvTransformer(externalIdFactory);

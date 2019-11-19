@@ -81,10 +81,10 @@ class PackageJsonExtractorTest {
         packageJson.dependencies = new HashMap<>();
         packageJson.devDependencies = new HashMap<>();
 
-        packageJson.dependencies.put(testDep1.name, testDep1.version);
-        packageJson.dependencies.put(testDep2.name, testDep2.version);
-        packageJson.devDependencies.put(testDevDep1.name, testDevDep1.version);
-        packageJson.devDependencies.put(testDevDep2.name, testDevDep2.version);
+        packageJson.dependencies.put(testDep1.getName(), testDep1.getVersion());
+        packageJson.dependencies.put(testDep2.getName(), testDep2.getVersion());
+        packageJson.devDependencies.put(testDevDep1.getName(), testDevDep1.getVersion());
+        packageJson.devDependencies.put(testDevDep2.getName(), testDevDep2.getVersion());
 
         return packageJson;
     }

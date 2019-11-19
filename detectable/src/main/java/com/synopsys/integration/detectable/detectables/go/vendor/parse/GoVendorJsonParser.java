@@ -39,7 +39,7 @@ import com.synopsys.integration.detectable.detectables.go.vendor.model.VendorJso
 
 public class GoVendorJsonParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private ExternalIdFactory externalIdFactory;
+    private final ExternalIdFactory externalIdFactory;
 
     public GoVendorJsonParser(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
@@ -47,13 +47,13 @@ public class GoVendorJsonParser {
 
     public DependencyGraph parseVendorJson(final Gson gson, final String vendorJsonContents) {
         final MutableDependencyGraph graph = new MutableMapDependencyGraph();
-        VendorJson vendorJsonData = gson.fromJson(vendorJsonContents, VendorJson.class);
+        final VendorJson vendorJsonData = gson.fromJson(vendorJsonContents, VendorJson.class);
         logger.trace(String.format("vendorJsonData: %s", vendorJsonData));
-        for (PackageData pkg : vendorJsonData.getPackages()) {
+        for (final PackageData pkg : vendorJsonData.getPackages()) {
             if (StringUtils.isNotBlank(pkg.getPath()) && StringUtils.isNotBlank(pkg.getRevision())) {
                 final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, pkg.getPath(), pkg.getRevision());
                 final Dependency dependency = new Dependency(pkg.getPath(), pkg.getRevision(), dependencyExternalId);
-                logger.trace(String.format("dependency: %s", dependency.externalId.toString()));
+                logger.trace(String.format("dependency: %s", dependency.getExternalId().toString()));
                 graph.addChildToRoot(dependency);
             } else {
                 logger.debug(String.format("Omitting package path:'%s', revision:'%s' (one or both of path, revision is/are missing)", pkg.getPath(), pkg.getRevision()));

@@ -33,10 +33,10 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.pip.model.PipFreeze;
 import com.synopsys.integration.detectable.detectables.pip.model.PipFreezeEntry;
-import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
 import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraph;
 import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraphDependency;
 import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraphEntry;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
 
 public class PipenvTransformer {
     private final ExternalIdFactory externalIdFactory;
@@ -45,12 +45,12 @@ public class PipenvTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public PipenvResult transform(final String projectName, final String projectVersionName, final PipFreeze pipFreeze, final PipenvGraph pipenvGraph, boolean includeOnlyProjectTree) {
+    public PipenvResult transform(final String projectName, final String projectVersionName, final PipFreeze pipFreeze, final PipenvGraph pipenvGraph, final boolean includeOnlyProjectTree) {
         final MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
-        for (PipenvGraphEntry entry : pipenvGraph.getEntries()){
-            Dependency entryDependency = nameVersionToDependency(entry.getName(), entry.getVersion(), pipFreeze);
-            List<Dependency> children = addDependenciesToGraph(entry.getChildren(), dependencyGraph, pipFreeze);
+        for (final PipenvGraphEntry entry : pipenvGraph.getEntries()) {
+            final Dependency entryDependency = nameVersionToDependency(entry.getName(), entry.getVersion(), pipFreeze);
+            final List<Dependency> children = addDependenciesToGraph(entry.getChildren(), dependencyGraph, pipFreeze);
             if (matchesProject(entryDependency, projectName, projectVersionName)) { //the project appears as an entry, we don't want the project to be a dependency of itself
                 dependencyGraph.addChildrenToRoot(children);
             } else if (!includeOnlyProjectTree) { //only add non-project matches if we are not project tree only
@@ -64,11 +64,11 @@ public class PipenvTransformer {
         return new PipenvResult(projectName, projectVersionName, codeLocation);
     }
 
-    private List<Dependency> addDependenciesToGraph(List<PipenvGraphDependency> graphDependencies, MutableMapDependencyGraph graph, PipFreeze pipFreeze) {
-        List<Dependency> dependencies = new ArrayList<>();
-        for (PipenvGraphDependency graphDependency : graphDependencies) {
-            Dependency dependency = nameVersionToDependency(graphDependency.getName(), graphDependency.getInstalledVersion(), pipFreeze);
-            List<Dependency> children = addDependenciesToGraph(graphDependency.getChildren(), graph, pipFreeze);
+    private List<Dependency> addDependenciesToGraph(final List<PipenvGraphDependency> graphDependencies, final MutableMapDependencyGraph graph, final PipFreeze pipFreeze) {
+        final List<Dependency> dependencies = new ArrayList<>();
+        for (final PipenvGraphDependency graphDependency : graphDependencies) {
+            final Dependency dependency = nameVersionToDependency(graphDependency.getName(), graphDependency.getInstalledVersion(), pipFreeze);
+            final List<Dependency> children = addDependenciesToGraph(graphDependency.getChildren(), graph, pipFreeze);
             graph.addParentWithChildren(dependency, children);
             dependencies.add(dependency);
         }
@@ -76,10 +76,10 @@ public class PipenvTransformer {
     }
 
     private boolean matchesProject(final Dependency dependency, final String projectName, final String projectVersion) {
-        return dependency.name != null && dependency.version != null && dependency.name.equals(projectName) && dependency.version.equals(projectVersion);
+        return dependency.getName() != null && dependency.getVersion() != null && dependency.getName().equals(projectName) && dependency.getVersion().equals(projectVersion);
     }
 
-    private String findFrozenName(String name, PipFreeze pipFreeze) {
+    private String findFrozenName(final String name, final PipFreeze pipFreeze) {
         return pipFreeze.getEntries().stream()
                    .filter(it -> it.getName().toLowerCase().equals(name.toLowerCase()))
                    .map(PipFreezeEntry::getName)
@@ -87,7 +87,7 @@ public class PipenvTransformer {
                    .orElse(name);
     }
 
-    private String findFrozenVersion(String name, String unfrozenVersion, PipFreeze pipFreeze) {
+    private String findFrozenVersion(final String name, final String unfrozenVersion, final PipFreeze pipFreeze) {
         return pipFreeze.getEntries().stream()
                    .filter(it -> it.getName().toLowerCase().equals(name.toLowerCase()))
                    .map(PipFreezeEntry::getVersion)
@@ -95,9 +95,9 @@ public class PipenvTransformer {
                    .orElse(unfrozenVersion);
     }
 
-    private Dependency nameVersionToDependency(String givenName, String givenVersion, PipFreeze pipFreeze){
-        String version = findFrozenVersion(givenName, givenVersion, pipFreeze);
-        String name = findFrozenName(givenName, pipFreeze);
+    private Dependency nameVersionToDependency(final String givenName, final String givenVersion, final PipFreeze pipFreeze) {
+        final String version = findFrozenVersion(givenName, givenVersion, pipFreeze);
+        final String name = findFrozenName(givenName, pipFreeze);
         return new Dependency(name, version, externalIdFactory.createNameVersionExternalId(Forge.PYPI, name, version));
     }
 }

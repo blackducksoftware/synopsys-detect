@@ -32,11 +32,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.SimpleBdioFactory;
+import com.synopsys.integration.bdio.bdio1.SimpleBdioFactory;
+import com.synopsys.integration.bdio.bdio1.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -102,8 +102,8 @@ public class AggregateBdioCreator {
         String name = null;
         String version = null;
         try {
-            name = codeLocation.getExternalId().name;
-            version = codeLocation.getExternalId().version;
+            name = codeLocation.getExternalId().getName();
+            version = codeLocation.getExternalId().getVersion();
         } catch (final Exception e) {
             logger.warn("Failed to get name or version to use in the wrapper for a code location.", e);
         }
@@ -126,6 +126,6 @@ public class AggregateBdioCreator {
         }
         externalIdPieces.add(bomToolType);
         final String[] pieces = externalIdPieces.toArray(new String[externalIdPieces.size()]);
-        return new Dependency(name, version, new ExternalIdFactory().createModuleNamesExternalId(original.forge, pieces));
+        return new Dependency(name, version, new ExternalIdFactory().createModuleNamesExternalId(original.getForge(), pieces));
     }
 }

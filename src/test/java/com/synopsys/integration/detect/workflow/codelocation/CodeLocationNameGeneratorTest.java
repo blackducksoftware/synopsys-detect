@@ -24,9 +24,6 @@ import org.mockito.Mockito;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 
 public class CodeLocationNameGeneratorTest {
     @Test
@@ -45,8 +42,8 @@ public class CodeLocationNameGeneratorTest {
         assertEquals(expected, actual);
     }
 
-    private File mockCanonical(String mock) throws IOException {
-        File mockFile =  Mockito.mock(File.class);
+    private File mockCanonical(final String mock) throws IOException {
+        final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.getCanonicalPath()).thenReturn(mock);
         return mockFile;
     }
@@ -101,7 +98,8 @@ public class CodeLocationNameGeneratorTest {
         Mockito.when(detectCodeLocation.getCreatorName()).thenReturn(Optional.of("NPM"));
 
         final File sourcePath = new File("/Users/ekerwin/Documents/source/functional/common-rest");
-        final File codeLocationPath = new File("/Users/ekerwin/Documents/source/functional/common-rest/common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest");
+        final File codeLocationPath = new File(
+            "/Users/ekerwin/Documents/source/functional/common-rest/common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest-common-rest");
         final String prefix = "";
         final String suffix = "";
         final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, "projectName", "projectVersion", detectCodeLocation, prefix, suffix);
@@ -112,17 +110,17 @@ public class CodeLocationNameGeneratorTest {
     @Test
     public void testExternalId() {
         final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
-        DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
+        final DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
 
         final ExternalId externalId = new ExternalId(Forge.MAVEN);
-        externalId.name = "externalIdName";
-        externalId.version = "externalIdVersion";
-        externalId.group = "externalIdGroup";
-        externalId.architecture = "externalIdArch";
-        externalId.path = "externalIdPath";
+        externalId.setName("externalIdName");
+        externalId.setVersion("externalIdVersion");
+        externalId.setGroup("externalIdGroup");
+        externalId.setArchitecture("externalIdArch");
+        externalId.setPath("externalIdPath");
         Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
 
-        String actual = codeLocationNameGenerator.createBomCodeLocationName(new File("/tmp/aaa"), new File("/tmp/aaa/bbb"), "projectName", "projectVersion", detectCodeLocation, "testPrefix", "testSuffix");
+        final String actual = codeLocationNameGenerator.createBomCodeLocationName(new File("/tmp/aaa"), new File("/tmp/aaa/bbb"), "projectName", "projectVersion", detectCodeLocation, "testPrefix", "testSuffix");
         assertEquals("testPrefix/projectName/projectVersion/bbb/externalIdPath/testSuffix detect/bom", actual);
     }
 
@@ -132,7 +130,7 @@ public class CodeLocationNameGeneratorTest {
 
         assertTrue(codeLocationNameGenerator.useCodeLocationOverride());
 
-        DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
+        final DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
         Mockito.when(detectCodeLocation.getCreatorName()).thenReturn(Optional.of("testCreator"));
         assertEquals("testCreator", codeLocationNameGenerator.deriveCreator(detectCodeLocation));
 

@@ -37,12 +37,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.BdioReader;
-import com.synopsys.integration.bdio.BdioTransformer;
+import com.synopsys.integration.bdio.bdio1.BdioReader;
+import com.synopsys.integration.bdio.bdio1.BdioTransformer;
+import com.synopsys.integration.bdio.bdio1.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.BdioId;
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
@@ -174,14 +174,14 @@ public class DockerExtractor {
             }
 
             if (simpleBdioDocument != null) {
-                final DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.project, simpleBdioDocument.components);
+                final DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.getProject(), simpleBdioDocument.getComponents());
 
-                final String projectName = simpleBdioDocument.project.name;
-                final String projectVersionName = simpleBdioDocument.project.version;
+                final String projectName = simpleBdioDocument.getProject().name;
+                final String projectVersionName = simpleBdioDocument.getProject().version;
 
                 // TODO ejk - update this when project external id is not req'd anymore
-                final Forge dockerForge = new Forge(BdioId.BDIO_ID_SEPARATOR, simpleBdioDocument.project.bdioExternalIdentifier.forge);
-                final String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId;
+                final Forge dockerForge = new Forge(BdioId.BDIO_ID_SEPARATOR, simpleBdioDocument.getProject().bdioExternalIdentifier.forge);
+                final String externalIdPath = simpleBdioDocument.getProject().bdioExternalIdentifier.externalId;
                 final ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath);
 
                 final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, projectExternalId);

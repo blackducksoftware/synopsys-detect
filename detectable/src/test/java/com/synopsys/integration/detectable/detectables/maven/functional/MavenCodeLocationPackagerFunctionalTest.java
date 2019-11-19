@@ -93,7 +93,7 @@ public class MavenCodeLocationPackagerFunctionalTest {
                 if (rootDependency instanceof ScopedDependency) {
                     walkGraphExcludingScope(dependencyGraph, (ScopedDependency) rootDependency, "test");
                 } else {
-                    System.out.println(String.format("Dependency is not a scoped dependency. Validation cannot occur. %s", rootDependency.externalId.createExternalId()));
+                    System.out.println(String.format("Dependency is not a scoped dependency. Validation cannot occur. %s", rootDependency.getExternalId().createExternalId()));
                 }
             }
         }

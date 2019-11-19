@@ -35,7 +35,7 @@ public class ScopedDependency extends Dependency {
     public ScopedDependency(final String name, final String version, final ExternalId externalId, final String scope) {
         super(name, version, externalId);
         if (scope == null) {
-            logger.warn(String.format("The scope for component %s:%s:%s is missing, which might produce inaccurate results", externalId.group, externalId.name, externalId.version));
+            logger.warn(String.format("The scope for component %s:%s:%s is missing, which might produce inaccurate results", externalId.getGroup(), externalId.getName(), externalId.getVersion()));
             this.scope = "";
         } else {
             this.scope = scope;
