@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -37,6 +38,7 @@ import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetecta
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 
+@DetectableInfo(group = "Bitbake", name = "Bitbake", language = "varies", forge = "YOCTO", requirementsMarkdown = "Properties: Package names <br /><br /> Files: Requires build env script <br /><br /> Executables: bash")
 public class BitbakeDetectable extends Detectable {
     private final BitbakeDetectableOptions bitbakeDetectableOptions;
     private final FileFinder fileFinder;
@@ -48,7 +50,7 @@ public class BitbakeDetectable extends Detectable {
 
     public BitbakeDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder, final BitbakeDetectableOptions bitbakeDetectableOptions, final BitbakeExtractor bitbakeExtractor,
         final BashResolver bashResolver) {
-        super(detectableEnvironment, "Bitbake", "Bitbake");
+        super(detectableEnvironment);
         this.fileFinder = fileFinder;
         this.bitbakeDetectableOptions = bitbakeDetectableOptions;
         this.bitbakeExtractor = bitbakeExtractor;
