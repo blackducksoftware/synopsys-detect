@@ -1,4 +1,4 @@
-# Running
+# Downloading and running
 
 ## Positioning ${solution_name} in the build process
 
