@@ -3,8 +3,8 @@
 ${solution_name} Documentation: ${program_version}
 
 ## Quick Links
-* [All Properties](/properties/all-properties)
-* [Exit Codes](/advanced/troubleshooting/exit-codes)
+* [All Properties](properties/all-properties)
+* [Exit Codes](advanced/troubleshooting/exit-codes)
 
 ## ${solution_name} Modes
 
