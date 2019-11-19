@@ -27,10 +27,10 @@ import com.google.gson.Gson
 import com.synopsys.integration.detect.docs.copied.HelpJsonData
 import com.synopsys.integration.detect.docs.copied.HelpJsonExitCode
 import com.synopsys.integration.detect.docs.copied.HelpJsonOption
+import com.synopsys.integration.detect.docs.content.Terms
 import com.synopsys.integration.detect.docs.markdown.MarkdownOutputFormat
 import freemarker.template.Configuration
 import freemarker.template.Template
-import org.apache.commons.io.FileUtils
 import org.apache.commons.lang3.StringUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -44,33 +44,57 @@ open class GenerateDocsTask : DefaultTask() {
         val helpJson: HelpJsonData = Gson().fromJson(file.reader(), HelpJsonData::class.java)
 
         val outputDir = project.file("docs/generated");
+        val troubleshootingDir = File(outputDir, "advanced/troubleshooting")
         outputDir.deleteRecursively()
-        outputDir.mkdirs()
+        troubleshootingDir.mkdirs()
 
-        val templateProvider = TemplateProvider(project.file("docs/templates"))
+        val templateProvider = TemplateProvider(project.file("docs/templates"), project.version.toString())
 
-        FileUtils.copyDirectory(project.file("docs/static"), outputDir)
-
-        createFromFreemarker(templateProvider, outputDir, "exit-codes", ExitCodePage(helpJson.exitCodes))
-        createFromFreemarker(templateProvider, outputDir, "index", IndexPage(project.version.toString()))
+        createFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", ExitCodePage(helpJson.exitCodes))
 
         handleDetectors(templateProvider, outputDir, helpJson)
         handleProperties(templateProvider, outputDir, helpJson)
+        handleContent(outputDir, templateProvider)
+    }
+
+    private fun handleContent(outputDir: File, templateProvider: TemplateProvider) {
+        val templatesDir = File(project.projectDir, "docs/templates")
+        val contentDir = File(templatesDir, "content")
+        project.file("docs/templates/content").walkTopDown().forEach {
+            if (it.canonicalPath.endsWith((".ftl"))) {
+                createContentMarkdownFromTemplate(templatesDir, contentDir, it, outputDir, templateProvider)
+            }
+        }
+    }
+
+    private fun createContentMarkdownFromTemplate(templatesDir: File, contentDir: File, templateFile: File, baseOutputDir: File, templateProvider: TemplateProvider) {
+        val helpContentTemplateRelativePath = templateFile.toRelativeString(templatesDir)
+        val outputFile = deriveOutputFileForContentTemplate(contentDir, templateFile, baseOutputDir)
+        println("Generating markdown from template file: ${helpContentTemplateRelativePath} --> ${outputFile.canonicalPath}")
+        createFromFreemarker(templateProvider, helpContentTemplateRelativePath, outputFile, HashMap<String, String>())
+    }
+
+    private fun deriveOutputFileForContentTemplate(contentDir: File, helpContentTemplateFile: File, baseOutputDir: File): File {
+        val templateSubDir = helpContentTemplateFile.parentFile.toRelativeString(contentDir)
+        val outputDir = File(baseOutputDir, templateSubDir)
+        val outputFile = File(outputDir, "${helpContentTemplateFile.nameWithoutExtension}.md")
+        return outputFile
     }
 
     private fun createFromFreemarker(templateProvider: TemplateProvider, outputDir: File, templateName: String, data: Any) {
         createFromFreemarker(templateProvider, "$templateName.ftl", File(outputDir, "$templateName.md"), data);
     }
 
-    private fun createFromFreemarker(templateProvider: TemplateProvider, templatePath: String, to: File, data: Any) {
+    private fun createFromFreemarker(templateProvider: TemplateProvider, templateRelativePath: String, to: File, data: Any) {
         to.parentFile.mkdirs()
-        val template = templateProvider.getTemplate(templatePath)
+        val template = templateProvider.getTemplate(templateRelativePath)
         FileOutputStream(to, true).buffered().writer().use { writer ->
             template.process(data, writer)
         }
     }
 
-    private fun handleDetectors(templateProvider: TemplateProvider, outputDir: File, helpJson: HelpJsonData) {
+    private fun handleDetectors(templateProvider: TemplateProvider, baseOutputDir: File, helpJson: HelpJsonData) {
+        val outputDir = File(baseOutputDir, "components")
         val build = helpJson.buildDetectors
                 .map { detector -> Detector(detector.detectorType, detector.detectorName, detector.detectableLanguage, detector.detectableForge, detector.detectableRequirementsMarkdown) }
                 .sortedWith(compareBy<Detector>{it.detectorType}.thenBy{it.detectorName})
@@ -139,18 +163,21 @@ open class GenerateDocsTask : DefaultTask() {
     }
 }
 
-class TemplateProvider(templateDirectory: File) {
+class TemplateProvider(templateDirectory: File, projectVersion: String) {
     private val configuration: Configuration = Configuration(Configuration.VERSION_2_3_26);
 
     init {
         configuration.setDirectoryForTemplateLoading(templateDirectory)
         configuration.defaultEncoding = "UTF-8"
         configuration.registeredCustomOutputFormats = listOf(MarkdownOutputFormat.INSTANCE);
+
+        val terms = Terms()
+        terms.termMap.put("program_version", projectVersion)
+        configuration.setSharedVaribles(terms.termMap)
     }
 
     fun getTemplate(templateName: String): Template {
         val template =  configuration.getTemplate(templateName)
-
         return template;
     }
 }
