@@ -23,25 +23,43 @@
 package com.synopsys.integration.detect.workflow.bdio;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.blackducksoftware.bdio2.BdioMetadata;
+import com.blackducksoftware.bdio2.model.Project;
+import com.blackducksoftware.common.value.Product;
+import com.blackducksoftware.common.value.ProductList;
 import com.synopsys.integration.bdio.bdio1.SimpleBdioFactory;
 import com.synopsys.integration.bdio.bdio1.model.SimpleBdioDocument;
+import com.synopsys.integration.bdio.bdio1.model.SpdxCreator;
+import com.synopsys.integration.bdio.bdio2.Bdio2Document;
+import com.synopsys.integration.bdio.bdio2.Bdio2Factory;
+import com.synopsys.integration.bdio.bdio2.Bdio2Writer;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
+import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocation;
 import com.synopsys.integration.util.NameVersion;
 
 public class CodeLocationBdioCreator {
     private final DetectBdioWriter detectBdioWriter;
     private final SimpleBdioFactory simpleBdioFactory;
+    private final Bdio2Factory bdio2Factory;
+    private final DetectInfo detectInfo;
 
-    public CodeLocationBdioCreator(final DetectBdioWriter detectBdioWriter, final SimpleBdioFactory simpleBdioFactory) {
+    public CodeLocationBdioCreator(final DetectBdioWriter detectBdioWriter, final SimpleBdioFactory simpleBdioFactory, final Bdio2Factory bdio2Factory, final DetectInfo detectInfo) {
         this.detectBdioWriter = detectBdioWriter;
         this.simpleBdioFactory = simpleBdioFactory;
+        this.bdio2Factory = bdio2Factory;
+        this.detectInfo = detectInfo;
     }
 
     public List<UploadTarget> createBdioFiles(final File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
@@ -51,11 +69,32 @@ public class CodeLocationBdioCreator {
             final ExternalId externalId = bdioCodeLocation.getDetectCodeLocation().getExternalId();
             final DependencyGraph dependencyGraph = bdioCodeLocation.getDetectCodeLocation().getDependencyGraph();
 
+            // Bdio 1
             final SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectNameVersion.getName(), projectNameVersion.getVersion(), externalId, dependencyGraph);
 
-            final File outputFile = new File(bdioOutput, bdioCodeLocation.getBdioName());
-            detectBdioWriter.writeBdioFile(outputFile, simpleBdioDocument);
-            uploadTargets.add(UploadTarget.createDefault(codeLocationName, outputFile));
+            final File bdio1OutputFile = new File(bdioOutput, bdioCodeLocation.getBdioName() + ".jsonld");
+            detectBdioWriter.writeBdioFile(bdio1OutputFile, simpleBdioDocument);
+            uploadTargets.add(UploadTarget.createDefault(codeLocationName, bdio1OutputFile));
+
+            // Bdio 2
+            final ProductList.Builder productListBuilder = new ProductList.Builder();
+            final String detectVersion = detectInfo.getDetectVersion();
+            final SpdxCreator detectCreator = SpdxCreator.createToolSpdxCreator("Detect", detectVersion);
+            final Product product = new Product.Builder().name(detectCreator.getIdentifier()).build();
+            productListBuilder.addProduct(product);
+
+            final BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(codeLocationName, ZonedDateTime.now(), productListBuilder);
+            final Project bdio2Project = bdio2Factory.createProject(externalId, projectNameVersion.getName(), projectNameVersion.getVersion());
+            final Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, bdio2Project, dependencyGraph);
+
+            final Bdio2Writer bdio2Writer = new Bdio2Writer();
+            final File bdio2OutputFile = new File(bdioOutput, bdioCodeLocation.getBdioName() + ".bdio");
+            try {
+                final OutputStream outputStream = new FileOutputStream(bdio2OutputFile);
+                bdio2Writer.writeBdioDocument(outputStream, bdio2Document);
+            } catch (final IOException e) {
+                throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+            }
         }
 
         return uploadTargets;

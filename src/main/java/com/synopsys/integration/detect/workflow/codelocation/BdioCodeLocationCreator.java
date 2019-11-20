@@ -23,7 +23,6 @@
 package com.synopsys.integration.detect.workflow.codelocation;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,7 +39,6 @@ import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -158,7 +156,6 @@ public class BdioCodeLocationCreator {
 
     private String createBdioName(final String codeLocationName, final IntegrationEscapeUtil integrationEscapeUtil) {
         final String filenameRaw = StringUtils.replaceEach(codeLocationName, new String[] { "/", "\\", " " }, new String[] { "_", "_", "_" });
-        final String filename = integrationEscapeUtil.escapeForUri(filenameRaw);
-        return filename + ".jsonld";
+        return integrationEscapeUtil.escapeForUri(filenameRaw);
     }
 }

@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.bdio1.SimpleBdioFactory;
+import com.synopsys.integration.bdio.bdio2.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -49,16 +50,18 @@ public class BdioManager {
 
     private final DetectInfo detectInfo;
     private final SimpleBdioFactory simpleBdioFactory;
+    private final Bdio2Factory bdio2Factory;
     private final BdioCodeLocationCreator bdioCodeLocationCreator;
     private final DirectoryManager directoryManager;
     private final IntegrationEscapeUtil integrationEscapeUtil;
     private final CodeLocationNameManager codeLocationNameManager;
     private final EventSystem eventSystem;
 
-    public BdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil, final CodeLocationNameManager codeLocationNameManager,
+    public BdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final Bdio2Factory bdio2Factory, final IntegrationEscapeUtil integrationEscapeUtil, final CodeLocationNameManager codeLocationNameManager,
         final BdioCodeLocationCreator codeLocationManager, final DirectoryManager directoryManager, final EventSystem eventSystem) {
         this.detectInfo = detectInfo;
         this.simpleBdioFactory = simpleBdioFactory;
+        this.bdio2Factory = bdio2Factory;
         this.integrationEscapeUtil = integrationEscapeUtil;
         this.codeLocationNameManager = codeLocationNameManager;
         this.bdioCodeLocationCreator = codeLocationManager;
@@ -81,7 +84,7 @@ public class BdioManager {
             codeLocationResult.getFailedBomToolGroupTypes().forEach(it -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(it, StatusType.FAILURE)));
 
             logger.debug("Creating BDIO files from code locations.");
-            final CodeLocationBdioCreator codeLocationBdioCreator = new CodeLocationBdioCreator(detectBdioWriter, simpleBdioFactory);
+            final CodeLocationBdioCreator codeLocationBdioCreator = new CodeLocationBdioCreator(detectBdioWriter, simpleBdioFactory, bdio2Factory, detectInfo);
             final List<UploadTarget> uploadTargets = codeLocationBdioCreator.createBdioFiles(directoryManager.getBdioOutputDirectory(), codeLocationResult.getBdioCodeLocations(), projectNameVersion);
 
             return new BdioResult(uploadTargets);
