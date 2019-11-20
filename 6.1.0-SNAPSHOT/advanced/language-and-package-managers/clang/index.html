@@ -1192,11 +1192,11 @@ when run with the following option:</p>
 </code></pre>
 <p>The CLang detector will run when it finds a compile_commands.json file
 in the project directory. If the compile_commands.json file resides in a sub-directory,
-adjust the <a href="/properties/Configuration/paths/#detector-search-depth">detector search depth</a>
+adjust the <a href="../../../properties/Configuration/paths/#detector-search-depth">detector search depth</a>
 to enable Synopsys Detect to find it. If the compile_commands.json file
 resides and a normally excluded subdirectory (for example: ./build),
-you can turn off the <a href="/properties/Configuration/paths/#detector-exclude-default-directories">default detector search exclusions</a>,
-or fine tune the <a href="/properties/Configuration/paths/#-detector-directory-patterns-exclusions">detector search directory exclusion patterns</a>.</p>
+you can turn off the <a href="../../../properties/Configuration/paths/#detector-exclude-default-directories">default detector search exclusions</a>,
+or fine tune the <a href="../../../properties/Configuration/paths/#-detector-directory-patterns-exclusions">detector search directory exclusion patterns</a>.</p>
 <p>For each compile command in the compile_commands.json file, the CLang detector
 runs a version of the command that has been modified to (a) ensure that it does
 not overwrite build artifacts, and (b) generate a list of include files used

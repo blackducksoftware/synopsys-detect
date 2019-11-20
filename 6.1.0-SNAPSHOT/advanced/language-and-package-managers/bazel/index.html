@@ -1244,7 +1244,7 @@ As of Synopsys Detect version 6.0.0, Synopsys Detect also supports dependencies 
 <p>The Bazel tool also requires a bazel executable on $PATH.</p>
 <p>Synopsys Detect attempts to determine the workspace dependency rule (<em>maven_jar</em> or <em>maven_install</em>) from the WORKSPACE file.
 In case it can’t, you can specify which rule you use with the Bazel dependency type property.
-See <a href="/properties/Detectors/bazel">Properties</a> for details.</p>
+See <a href="../../../properties/Detectors/bazel/">Properties</a> for details.</p>
 <h2 id="processing-for-the-maven_install-workspace-rule">Processing for the <em>maven_install</em> workspace rule</h2>
 <p>The Bazel tool runs a bazel cquery on the given target to produce output from which it can parse artifact details (group, artifact, version) for dependencies.</p>
 <p>Here’s an example (using commands similar to those that Synopsys Detect runs, but from the command line) of how Synopsys Detect’s bazel detector currently identifies components:</p>

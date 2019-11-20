@@ -1339,11 +1339,11 @@ to build the Bill Of Materials (BOM) for the project/version.</li>
 <p>During the initialization phase, Synopsys Detect performs verification checks on the user-provided configration, checks to see if it
 can connect to any external systems needed for the run, and creates any directories that it needs.</p>
 <h3 id="run-phase">Run phase</h3>
-<p>During the run phase, Synopsys Detect processes and ordered list of <a href="/components/tools">tools</a>, invoking any/all that apply.
+<p>During the run phase, Synopsys Detect processes and ordered list of <a href="../components/tools/">tools</a>, invoking any/all that apply.
 Tool applicability depends on how Synopsys Detect is configured (what property values you set).
 The detector tool runs by default. The signature scan tool runs by default when Black Duck connection
 details are provided.</p>
-<p>The detector tool will invoke any/all <a href="/components/detectors">detectors</a> that apply.
+<p>The detector tool will invoke any/all <a href="../components/detectors/">detectors</a> that apply.
 Detector applicability depends on what Synopsys Detect finds in your project. For example, if Synopsys Detect
 finds a pom.xml file, it will run the Maven detector. If it finds Gradle files, it will run the Gradle detector.</p>
 <p>In the typical run described above, two tools applied: The detector tool (which ran the Maven detector),
@@ -1357,7 +1357,7 @@ the Maven detector and the Black Duck signature scanner</p>
 <p>During the cleanup phase, Synopsys Detect removes temporary files and directories before exiting.</p>
 <h2 id="controlling-synopsys-detect-processing">Controlling Synopsys Detect processing</h2>
 <p>For information on controlling which tools and detectors Synopsys Detect executes, see
-<a href="/running/#including-and-excluding-tools-and-detectors">Including/excluding tools/detectors</a>.</p>
+<a href="../2-running/#including-and-excluding-tools-and-detectors">Including/excluding tools/detectors</a>.</p>
                 
                   
                 

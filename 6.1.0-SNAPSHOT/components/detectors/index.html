@@ -1256,115 +1256,232 @@
 or properties you have set.</p>
 <p>By default, detectors only search the project directory itself. In some cases (such as when your project contains sub-projects,
 or when package manager files reside in sub-directories), you may need to tell Synopsys Detect to search sub-directories
-by increasing the detector search depth. See <a href="/properties/Configuration/paths/#detector-search-depth">detector search depth</a> for details.</p>
+by increasing the detector search depth. See <a href="../../properties/Configuration/paths/#detector-search-depth">detector search depth</a> for details.</p>
 <p>Detectors then check that your environment is "extractable", meaning you have all the relevant executables (such as npm or a gradle wrapper) and all the relevant downloads are present or available (such as the docker or nuget inspector).</p>
 <p>Inspectors are used by detectors when the package manager requires an integration or embedded plugin to work. For example, Gradle uses an inspector as a plugin that executes a custom task. Most detectors do not require an inspector.</p>
 <p>Finally, detectors perform their "extraction" to find your dependencies. This may require but is not limited to: running executables, performing builds, parsing files and talking to web services.</p>
 <h2 id="build-detectors">Build detectors</h2>
-<p>Build detectors run package manager commands (for example: <em>mvn dependency:tree</em>) or inspectors (for example, the <a href="/components/inspectors/#gradle-inspector">Gradle inspector</a>) to derive dependency information.</p>
+<p>Build detectors run package manager commands (for example: <em>mvn dependency:tree</em>) or inspectors (for example, the <a href="../inspectors/#gradle-inspector">Gradle inspector</a>) to derive dependency information.</p>
 <table>
 <thead>
 <tr>
-<th>Detector type</th>
-<th>Detectors</th>
+<th>Type</th>
+<th>Name</th>
+<th>Language</th>
+<th>Forge</th>
+<th>Requirements</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>BITBAKE</td>
 <td>Bitbake</td>
-</tr>
-<tr>
-<td>COCOAPODS</td>
-<td>Pod Lock</td>
-</tr>
-<tr>
-<td>CONDA</td>
-<td>Conda Cli</td>
-</tr>
-<tr>
-<td>CPAN</td>
-<td>Cpan Cli</td>
-</tr>
-<tr>
-<td>CRAN</td>
-<td>Packrat Lock</td>
-</tr>
-<tr>
-<td>GO_MOD</td>
-<td>Go Mod Cli</td>
-</tr>
-<tr>
-<td>GO_GRADLE</td>
-<td>Go Gradle</td>
-</tr>
-<tr>
-<td>GO_DEP</td>
-<td>Go Lock</td>
-</tr>
-<tr>
-<td>GO_VNDR</td>
-<td>Go Vndr</td>
-</tr>
-<tr>
-<td>GO_VENDOR</td>
-<td>Go Vendor</td>
-</tr>
-<tr>
-<td>GRADLE</td>
-<td>Gradle Inspector</td>
-</tr>
-<tr>
-<td>HEX</td>
-<td>Rebar</td>
-</tr>
-<tr>
-<td>MAVEN</td>
-<td>Maven Pom, Maven Wrapper</td>
-</tr>
-<tr>
-<td>YARN</td>
-<td>Yarn Lock</td>
-</tr>
-<tr>
-<td>NUGET</td>
-<td>Solution, Project</td>
-</tr>
-<tr>
-<td>PACKAGIST</td>
-<td>Composer</td>
-</tr>
-<tr>
-<td>PIP</td>
-<td>Pip Env, Pip Inspector</td>
-</tr>
-<tr>
-<td>RUBYGEMS</td>
-<td>Gemlock</td>
-</tr>
-<tr>
-<td>SBT</td>
-<td>Sbt Resolution Cache</td>
-</tr>
-<tr>
-<td>PEAR</td>
-<td>Pear</td>
+<td>varies</td>
+<td>YOCTO</td>
+<td>Properties: Package names <br /><br /> Files: Requires build env script <br /><br /> Executables: bash</td>
 </tr>
 <tr>
 <td>CLANG</td>
 <td>Clang</td>
+<td>C or C++</td>
+<td>Derived from distribution.</td>
+<td>Files: compile_commands.json. <br /><br /> Executables: Linux package manager on PATH.</td>
+</tr>
+<tr>
+<td>COCOAPODS</td>
+<td>Pod Lock</td>
+<td>Objective C</td>
+<td>COCOAPODS and NPMJS</td>
+<td>Files: Podfile.lock</td>
+</tr>
+<tr>
+<td>CONDA</td>
+<td>Conda Cli</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CPAN</td>
+<td>Cpan Cli</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>CRAN</td>
+<td>Packrat Lock</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GIT</td>
+<td>Git Cli</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GIT</td>
+<td>Git Parse</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GO_DEP</td>
+<td>Go Lock</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GO_GRADLE</td>
+<td>Go Gradle</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GO_MOD</td>
+<td>Go Mod Cli</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GO_VENDOR</td>
+<td>Go Vendor</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GO_VNDR</td>
+<td>Go Vndr</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GRADLE</td>
+<td>Gradle Inspector</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>HEX</td>
+<td>Rebar</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>MAVEN</td>
+<td>Maven Pom</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>MAVEN</td>
+<td>Maven Wrapper</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>NPM</td>
+<td>Npm Cli</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>NPM</td>
+<td>Package Lock</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>NPM</td>
+<td>Shrinkwrap</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>NUGET</td>
+<td>Project</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>NUGET</td>
+<td>Solution</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>PACKAGIST</td>
+<td>Composer</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>PEAR</td>
+<td>Pear</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>PIP</td>
+<td>Pip Env</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>PIP</td>
+<td>Pip Inspector</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>RUBYGEMS</td>
+<td>Gemlock</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>SBT</td>
+<td>Sbt Resolution Cache</td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>SWIFT</td>
 <td>Swift</td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
-<td>GIT</td>
-<td>Git Cli, Git Parse</td>
-</tr>
-<tr>
-<td>NPM</td>
-<td>Package Lock, Shrinkwrap, Npm Cli</td>
+<td>YARN</td>
+<td>Yarn Lock</td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -1373,66 +1490,139 @@ by increasing the detector search depth. See <a href="/properties/Configuration/
 <table>
 <thead>
 <tr>
-<th>Detector type</th>
-<th>Detectors</th>
+<th>Type</th>
+<th>Name</th>
+<th>Language</th>
+<th>Forge</th>
+<th>Requirements</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>COCOAPODS</td>
 <td>Pod Lock</td>
-</tr>
-<tr>
-<td>PACKAGIST</td>
-<td>Packrat Lock, Composer</td>
-</tr>
-<tr>
-<td>GO_DEP</td>
-<td>Go Lock</td>
-</tr>
-<tr>
-<td>GO_VNDR</td>
-<td>Go Vndr</td>
-</tr>
-<tr>
-<td>GO_VENDOR</td>
-<td>Go Vendor</td>
-</tr>
-<tr>
-<td>GRADLE</td>
-<td>Gradle Parse</td>
-</tr>
-<tr>
-<td>GO_GRADLE</td>
-<td>Go Gradle</td>
-</tr>
-<tr>
-<td>MAVEN</td>
-<td>Maven Pom Parse</td>
-</tr>
-<tr>
-<td>YARN</td>
-<td>Yarn Lock</td>
-</tr>
-<tr>
-<td>PIP</td>
-<td>Pip Env</td>
-</tr>
-<tr>
-<td>RUBYGEMS</td>
-<td>Gemlock, Gemspec</td>
-</tr>
-<tr>
-<td>SBT</td>
-<td>Sbt Resolution Cache</td>
+<td>Objective C</td>
+<td>COCOAPODS and NPMJS</td>
+<td>Files: Podfile.lock</td>
 </tr>
 <tr>
 <td>GIT</td>
 <td>Git Parse</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GO_DEP</td>
+<td>Go Lock</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GO_GRADLE</td>
+<td>Go Gradle</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GO_VENDOR</td>
+<td>Go Vendor</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GO_VNDR</td>
+<td>Go Vndr</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>GRADLE</td>
+<td>Gradle Parse</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>MAVEN</td>
+<td>Maven Pom Parse</td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 <tr>
 <td>NPM</td>
-<td>Package Lock, Shrinkwrap, Package Json Parse</td>
+<td>Package Json Parse</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>NPM</td>
+<td>Package Lock</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>NPM</td>
+<td>Shrinkwrap</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>PACKAGIST</td>
+<td>Composer</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>PACKAGIST</td>
+<td>Packrat Lock</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>PIP</td>
+<td>Pip Env</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>RUBYGEMS</td>
+<td>Gemlock</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>RUBYGEMS</td>
+<td>Gemspec</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>SBT</td>
+<td>Sbt Resolution Cache</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>YARN</td>
+<td>Yarn Lock</td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
