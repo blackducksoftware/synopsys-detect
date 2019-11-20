@@ -11,7 +11,7 @@ or properties you have set.
 
 By default, detectors only search the project directory itself. In some cases (such as when your project contains sub-projects,
 or when package manager files reside in sub-directories), you may need to tell ${solution_name} to search sub-directories
-by increasing the detector search depth. See [detector search depth](../../properties/Configuration/paths.md#detector-search-depth) for details.
+by increasing the detector search depth. See [detector search depth](../properties/Configuration/paths.md#detector-search-depth) for details.
 
 Detectors then check that your environment is "extractable", meaning you have all the relevant executables (such as npm or a gradle wrapper) and all the relevant downloads are present or available (such as the docker or nuget inspector).
 
