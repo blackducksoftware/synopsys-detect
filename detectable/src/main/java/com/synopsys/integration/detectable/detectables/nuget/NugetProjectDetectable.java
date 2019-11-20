@@ -31,6 +31,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspector;
@@ -41,6 +42,7 @@ import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetect
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "NUGET", name = "NuGet inspector", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class NugetProjectDetectable extends Detectable {
     static final List<String> SUPPORTED_PROJECT_PATTERNS = Arrays.asList(
         // C#
@@ -99,7 +101,7 @@ public class NugetProjectDetectable extends Detectable {
 
     public NugetProjectDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder, final NugetInspectorOptions nugetInspectorOptions, final NugetInspectorResolver nugetInspectorResolver,
         final NugetInspectorExtractor nugetInspectorExtractor) {
-        super(detectableEnvironment, "nuget", "nuget");
+        super(detectableEnvironment);
         this.fileFinder = fileFinder;
         this.nugetInspectorOptions = nugetInspectorOptions;
         this.nugetInspectorResolver = nugetInspectorResolver;

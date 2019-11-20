@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -36,6 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "CONDA", name = "Conda CLI", language = "Python", forge = "Anaconda", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class CondaCliDetectable extends Detectable {
     public static final String ENVIRONEMNT_YML = "environment.yml";
 
@@ -46,7 +48,7 @@ public class CondaCliDetectable extends Detectable {
     private File condaExe;
 
     public CondaCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final CondaResolver condaResolver, final CondaCliExtractor condaExtractor) {
-        super(environment, "Conda Cli", "CONDA");
+        super(environment);
         this.fileFinder = fileFinder;
         this.condaResolver = condaResolver;
         this.condaExtractor = condaExtractor;

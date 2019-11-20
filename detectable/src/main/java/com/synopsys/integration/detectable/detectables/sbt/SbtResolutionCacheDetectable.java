@@ -28,11 +28,13 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "SBT", name = "Build SBT", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class SbtResolutionCacheDetectable extends Detectable {
     public static final String BUILD_SBT_FILENAME = "build.sbt";
 
@@ -40,7 +42,7 @@ public class SbtResolutionCacheDetectable extends Detectable {
     private final SbtResolutionCacheExtractor sbtResolutionCacheExtractor;
 
     public SbtResolutionCacheDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SbtResolutionCacheExtractor sbtResolutionCacheExtractor) {
-        super(environment, "Build SBT", "SBT");
+        super(environment);
         this.fileFinder = fileFinder;
         this.sbtResolutionCacheExtractor = sbtResolutionCacheExtractor;
     }

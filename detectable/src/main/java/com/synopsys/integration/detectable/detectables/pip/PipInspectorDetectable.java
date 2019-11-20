@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
@@ -39,6 +40,7 @@ import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetecta
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "PIP", name = "Pip inspector", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class PipInspectorDetectable extends Detectable {
     private static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
 
@@ -55,7 +57,7 @@ public class PipInspectorDetectable extends Detectable {
 
     public PipInspectorDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PythonResolver pythonResolver, final PipResolver pipResolver,
         final PipInspectorResolver pipInspectorResolver, final PipInspectorExtractor pipInspectorExtractor, final PipInspectorDetectableOptions pipInspectorDetectableOptions) {
-        super(environment, "Pip Inspector", "PIP");
+        super(environment);
         this.fileFinder = fileFinder;
         this.pythonResolver = pythonResolver;
         this.pipResolver = pipResolver;

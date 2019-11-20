@@ -28,11 +28,13 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "PACKAGIST", name = "Packagist composer lock", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class ComposerLockDetectable extends Detectable {
     private static final String COMPOSER_LOCK = "composer.lock";
     private static final String COMPOSER_JSON = "composer.json";
@@ -44,7 +46,7 @@ public class ComposerLockDetectable extends Detectable {
     private File composerJson;
 
     public ComposerLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final ComposerLockExtractor composerLockExtractor) {
-        super(environment, "Composer Lock", "PACKAGIST");
+        super(environment);
         this.fileFinder = fileFinder;
         this.composerLockExtractor = composerLockExtractor;
     }

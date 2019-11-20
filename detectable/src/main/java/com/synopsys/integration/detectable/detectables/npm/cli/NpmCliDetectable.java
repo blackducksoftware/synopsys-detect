@@ -29,6 +29,7 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Discovery;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -39,6 +40,7 @@ import com.synopsys.integration.detectable.detectable.result.NpmRunInstallDetect
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonDiscoverer;
 
+@DetectableInfo(group = "NPM", name = "NPM CLI", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class NpmCliDetectable extends Detectable {
     public static final String NODE_MODULES = "node_modules";
     public static final String PACKAGE_JSON = "package.json";
@@ -52,7 +54,7 @@ public class NpmCliDetectable extends Detectable {
     private File npmExe;
 
     public NpmCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NpmResolver npmResolver, final NpmCliExtractor npmCliExtractor, final NpmPackageJsonDiscoverer npmPackageJsonDiscoverer) {
-        super(environment, "Npm Cli", "NPM");
+        super(environment);
         this.fileFinder = fileFinder;
         this.npmResolver = npmResolver;
         this.npmCliExtractor = npmCliExtractor;

@@ -38,7 +38,7 @@ import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetecta
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 
-@DetectableInfo(group = "Bitbake", name = "Bitbake", language = "varies", forge = "YOCTO", requirementsMarkdown = "Properties: Package names <br /><br /> Files: Requires build env script <br /><br /> Executables: bash")
+@DetectableInfo(group = "Bitbake", name = "Bitbake", language = "various", forge = "YOCTO", requirementsMarkdown = "Properties: Package names <br /><br /> Files: Requires build env script <br /><br /> Executables: bash")
 public class BitbakeDetectable extends Detectable {
     private final BitbakeDetectableOptions bitbakeDetectableOptions;
     private final FileFinder fileFinder;

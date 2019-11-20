@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
@@ -37,6 +38,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "PIP", name = "Pipenv", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class PipenvDetectable extends Detectable {
     public static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
     public static final String PIPFILE_FILE_NAME = "Pipfile";
@@ -54,7 +56,7 @@ public class PipenvDetectable extends Detectable {
 
     public PipenvDetectable(final DetectableEnvironment environment, final PipenvDetectableOptions pipenvDetectableOptions, final FileFinder fileFinder, final PythonResolver pythonResolver, final PipenvResolver pipenvResolver,
         final PipenvExtractor pipenvExtractor) {
-        super(environment, "Pipenv Graph", "PIP");
+        super(environment);
         this.pipenvDetectableOptions = pipenvDetectableOptions;
         this.fileFinder = fileFinder;
         this.pipenvResolver = pipenvResolver;

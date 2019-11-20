@@ -28,11 +28,13 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "Go_Dep", name = "Go Vndr", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class GoVndrDetectable extends Detectable {
     public static final String VNDR_CONF_FILENAME = "vendor.conf";
 
@@ -42,7 +44,7 @@ public class GoVndrDetectable extends Detectable {
     private File vndrConfig;
 
     public GoVndrDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GoVndrExtractor goVndrExtractor) {
-        super(environment, "Vendor Config", "Vendr");
+        super(environment);
         this.fileFinder = fileFinder;
         this.goVndrExtractor = goVndrExtractor;
     }

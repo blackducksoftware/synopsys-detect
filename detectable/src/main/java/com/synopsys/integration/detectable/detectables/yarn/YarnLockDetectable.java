@@ -28,11 +28,13 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "YARN", name = "Yarn lock", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class YarnLockDetectable extends Detectable {
     private static final String YARN_LOCK_FILENAME = "yarn.lock";
     private static final String YARN_PACKAGE_JSON = "package.json";
@@ -44,7 +46,7 @@ public class YarnLockDetectable extends Detectable {
     private File packageJson;
 
     public YarnLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final YarnLockExtractor yarnLockExtractor) {
-        super(environment, "Yarn Lock", "YARN");
+        super(environment);
         this.fileFinder = fileFinder;
         this.yarnLockExtractor = yarnLockExtractor;
     }

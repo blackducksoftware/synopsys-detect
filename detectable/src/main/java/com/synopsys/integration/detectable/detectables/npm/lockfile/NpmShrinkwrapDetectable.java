@@ -31,11 +31,13 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "NPM", name = "NPM shrinkwrap", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class NpmShrinkwrapDetectable extends Detectable {
     public static final String SHRINKWRAP_JSON = "npm-shrinkwrap.json";
     public static final String PACKAGE_JSON = "package.json";
@@ -50,7 +52,7 @@ public class NpmShrinkwrapDetectable extends Detectable {
     private File packageJson;
 
     public NpmShrinkwrapDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NpmLockfileExtractor npmLockfileExtractor, final NpmLockfileOptions npmLockfileOptions) {
-        super(environment, "Shrinkwrap", "NPM");
+        super(environment);
         this.fileFinder = fileFinder;
         this.npmLockfileExtractor = npmLockfileExtractor;
         this.includeDevDependencies = npmLockfileOptions.shouldIncludeDeveloperDependencies();

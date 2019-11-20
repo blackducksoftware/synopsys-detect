@@ -28,11 +28,13 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "RUBYGEMS", name = "Gemspec parse", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class GemspecParseDetectable extends Detectable {
     private static final String GEMSPEC_FILENAME = "*.gemspec";
 
@@ -44,7 +46,7 @@ public class GemspecParseDetectable extends Detectable {
 
     public GemspecParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GemspecParseExtractor gemspecParseExtractor,
         final GemspecParseDetectableOptions gemspecParseDetectableOptions) {
-        super(environment, "Gemspec", "RUBYGEMS");
+        super(environment);
         this.fileFinder = fileFinder;
         this.gemspecParseExtractor = gemspecParseExtractor;
         this.gemspecParseDetectableOptions = gemspecParseDetectableOptions;

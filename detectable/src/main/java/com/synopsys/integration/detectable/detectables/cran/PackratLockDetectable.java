@@ -28,11 +28,13 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "CRAN", name = "Packrat lock", language = "R", forge = "CRAN", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class PackratLockDetectable extends Detectable {
     public static final String PACKRATLOCK_FILE_NAME = "packrat.lock";
 
@@ -42,7 +44,7 @@ public class PackratLockDetectable extends Detectable {
     private File packratLockFile;
 
     public PackratLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PackratLockExtractor packratLockExtractor) {
-        super(environment, "Packrat Lock", "CRAN");
+        super(environment);
         this.fileFinder = fileFinder;
         this.packratLockExtractor = packratLockExtractor;
     }

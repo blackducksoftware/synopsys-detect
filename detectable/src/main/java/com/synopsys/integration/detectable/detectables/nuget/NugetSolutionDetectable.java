@@ -31,6 +31,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspector;
@@ -41,6 +42,7 @@ import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetect
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "NUGET", name = "NuGet solution", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class NugetSolutionDetectable extends Detectable {
     private static final List<String> SUPPORTED_SOLUTION_PATTERNS = Collections.singletonList("*.sln");
 
@@ -54,7 +56,7 @@ public class NugetSolutionDetectable extends Detectable {
 
     public NugetSolutionDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NugetInspectorResolver nugetInspectorManager, final NugetInspectorExtractor nugetInspectorExtractor,
         final NugetInspectorOptions nugetInspectorOptions) {
-        super(environment, "Solution", "Nuget");
+        super(environment);
         this.fileFinder = fileFinder;
         this.nugetInspectorExtractor = nugetInspectorExtractor;
         this.nugetInspectorResolver = nugetInspectorManager;

@@ -31,12 +31,14 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.GoDepRunInitEnsureDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "Go Dep", name = "Go lock", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class GoDepLockDetectable extends Detectable {
     public static final String GOPKG_LOCK_FILENAME = "Gopkg.lock";
     public static final String GOFILE_FILENAME_PATTERN = "Gopkg.toml";
@@ -48,7 +50,7 @@ public class GoDepLockDetectable extends Detectable {
     private File goToml;
 
     public GoDepLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GoDepExtractor goDepExtractor) {
-        super(environment, "Go Lock", "Go Dep");
+        super(environment);
         this.fileFinder = fileFinder;
         this.goDepExtractor = goDepExtractor;
     }

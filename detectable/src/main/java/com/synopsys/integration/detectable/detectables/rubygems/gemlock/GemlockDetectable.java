@@ -28,11 +28,13 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "RUBYGEMS", name = "Gemlock", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class GemlockDetectable extends Detectable {
     private static final String GEMFILE_LOCK_FILENAME = "Gemfile.lock";
 
@@ -42,7 +44,7 @@ public class GemlockDetectable extends Detectable {
     private File gemlock;
 
     public GemlockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GemlockExtractor gemlockExtractor) {
-        super(environment, "Gemlock", "RUBYGEMS");
+        super(environment);
         this.fileFinder = fileFinder;
         this.gemlockExtractor = gemlockExtractor;
     }

@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -36,6 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "HEX", name = "Rebar config", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class RebarDetectable extends Detectable {
     public static final String REBAR_CONFIG = "rebar.config";
 
@@ -46,7 +48,7 @@ public class RebarDetectable extends Detectable {
     private File rebarExe;
 
     public RebarDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final Rebar3Resolver rebar3Resolver, final RebarExtractor rebarExtractor) {
-        super(environment, "Rebar Config", "HEX");
+        super(environment);
         this.fileFinder = fileFinder;
         this.rebarExtractor = rebarExtractor;
         this.rebar3Resolver = rebar3Resolver;

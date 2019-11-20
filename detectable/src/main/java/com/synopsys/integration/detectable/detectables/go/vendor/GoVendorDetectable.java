@@ -31,11 +31,13 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "Go_Dep", name = "Go Vendor", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class GoVendorDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String VENDOR_JSON_DIRNAME = "vendor";
@@ -47,7 +49,7 @@ public class GoVendorDetectable extends Detectable {
     private File vendorJson;
 
     public GoVendorDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GoVendorExtractor goVendorExtractor) {
-        super(environment, "Go Vendor", "Vendr");
+        super(environment);
         this.fileFinder = fileFinder;
         this.goVendorExtractor = goVendorExtractor;
     }

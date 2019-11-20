@@ -31,11 +31,13 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "NPM", name = "NPM package lock", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class NpmPackageLockDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String PACKAGE_LOCK_JSON = "package-lock.json";
@@ -49,7 +51,7 @@ public class NpmPackageLockDetectable extends Detectable {
     private File packageJson;
 
     public NpmPackageLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NpmLockfileExtractor npmLockfileExtractor, final NpmLockfileOptions npmLockfileOptions) {
-        super(environment, "Package Lock", "NPM");
+        super(environment);
         this.fileFinder = fileFinder;
         this.npmLockfileExtractor = npmLockfileExtractor;
         this.includeDevDependencies = npmLockfileOptions.shouldIncludeDeveloperDependencies();

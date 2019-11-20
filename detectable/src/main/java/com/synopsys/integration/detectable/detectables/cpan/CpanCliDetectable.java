@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
@@ -37,6 +38,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "CPAN", name = "Cpan CLI", language = "Perl", forge = "CPAN", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class CpanCliDetectable extends Detectable {
     private static final String MAKEFILE = "Makefile.PL";
 
@@ -49,7 +51,7 @@ public class CpanCliDetectable extends Detectable {
     private File cpanmExe;
 
     public CpanCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final CpanResolver cpanResolver, final CpanmResolver cpanmResolver, final CpanCliExtractor cpanCliExtractor) {
-        super(environment, "Cpan Cli", "CPAN");
+        super(environment);
         this.fileFinder = fileFinder;
         this.cpanResolver = cpanResolver;
         this.cpanmResolver = cpanmResolver;

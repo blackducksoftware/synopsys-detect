@@ -30,6 +30,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -39,6 +40,7 @@ import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetect
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 
+@DetectableInfo(group = "BAZEL", name = "Bazel", language = "various", forge = "Maven Central", requirementsMarkdown = "Files: WORKSPACE. <br /><br /> Executables: bazel on PATH.")
 public class BazelDetectable extends Detectable {
     public static final String WORKSPACE_FILENAME = "WORKSPACE";
     private final FileFinder fileFinder;
@@ -50,7 +52,7 @@ public class BazelDetectable extends Detectable {
 
     public BazelDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final BazelExtractor bazelExtractor,
         final BazelResolver bazelResolver, final BazelDetectableOptions bazelDetectableOptions) {
-        super(environment, "Bazel", "BAZEL");
+        super(environment);
         this.fileFinder = fileFinder;
         this.bazelExtractor = bazelExtractor;
         this.bazelResolver = bazelResolver;

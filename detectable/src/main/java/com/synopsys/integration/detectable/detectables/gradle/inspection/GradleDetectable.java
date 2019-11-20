@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -38,6 +39,7 @@ import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetect
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "Gradle", name = "Gradle inspector", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class GradleDetectable extends Detectable {
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
     public static final String KOTLIN_BUILD_GRADLE_FILENAME = "build.gradle.kts";
@@ -53,7 +55,7 @@ public class GradleDetectable extends Detectable {
 
     public GradleDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GradleResolver gradleResolver, final GradleInspectorResolver gradleInspectorResolver,
         final GradleInspectorExtractor gradleInspectorExtractor, final GradleInspectorOptions gradleInspectorOptions) {
-        super(environment, "Gradle", "Gradle");
+        super(environment);
         this.fileFinder = fileFinder;
         this.gradleResolver = gradleResolver;
         this.gradleInspectorResolver = gradleInspectorResolver;

@@ -28,11 +28,13 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "MAVEN", name = "Maven parse", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class MavenParseDetectable extends Detectable {
     private static final String POM_XML_FILENAME = "pom.xml";
 
@@ -42,7 +44,7 @@ public class MavenParseDetectable extends Detectable {
     private File pomXmlFile;
 
     public MavenParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final MavenParseExtractor mavenParseExtractor) {
-        super(environment, POM_XML_FILENAME, "MAVEN");
+        super(environment);
         this.fileFinder = fileFinder;
         this.mavenParseExtractor = mavenParseExtractor;
     }

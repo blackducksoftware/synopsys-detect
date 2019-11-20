@@ -30,11 +30,13 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "NPM", name = "NPM package JSON parse", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class NpmPackageJsonParseDetectable extends Detectable {
     public static final String PACKAGE_JSON = "package.json";
 
@@ -46,7 +48,7 @@ public class NpmPackageJsonParseDetectable extends Detectable {
 
     public NpmPackageJsonParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PackageJsonExtractor packageJsonExtractor,
         final NpmPackageJsonParseDetectableOptions npmPackageJsonParseDetectableOptions) {
-        super(environment, PACKAGE_JSON, "NPM");
+        super(environment);
         this.fileFinder = fileFinder;
         this.packageJsonExtractor = packageJsonExtractor;
         this.includeDevDependencies = npmPackageJsonParseDetectableOptions.shouldIncludeDevDependencies();

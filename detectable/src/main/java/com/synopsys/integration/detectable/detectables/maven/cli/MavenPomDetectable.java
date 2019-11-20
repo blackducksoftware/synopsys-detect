@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -36,6 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "MAVEN", name = "Maven CLI", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class MavenPomDetectable extends Detectable {
     public static final String POM_FILENAME = "pom.xml";
 
@@ -46,7 +48,7 @@ public class MavenPomDetectable extends Detectable {
     private File mavenExe;
 
     public MavenPomDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final MavenResolver mavenResolver, final MavenCliExtractor mavenCliExtractor) {
-        super(environment, "Pom file", "MAVEN");
+        super(environment);
         this.fileFinder = fileFinder;
         this.mavenResolver = mavenResolver;
         this.mavenCliExtractor = mavenCliExtractor;

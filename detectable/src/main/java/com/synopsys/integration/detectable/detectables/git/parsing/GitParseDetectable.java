@@ -28,11 +28,13 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "GIT", name = "Git parse", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class GitParseDetectable extends Detectable {
     private static final String GIT_DIRECTORY_NAME = ".git";
     private static final String GIT_CONFIG_FILENAME = "config";
@@ -45,7 +47,7 @@ public class GitParseDetectable extends Detectable {
     private File gitHeadFile;
 
     public GitParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GitParseExtractor gitParseExtractor) {
-        super(environment, "Git Parse", "GIT");
+        super(environment);
         this.fileFinder = fileFinder;
         this.gitParseExtractor = gitParseExtractor;
     }

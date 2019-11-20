@@ -43,7 +43,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManager;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerRunner;
 
-@DetectableInfo(group = "Clang", name = "Clang", language = "C or C++", forge = "Derived from distribution.", requirementsMarkdown = "Files: compile_commands.json. <br /><br /> Executables: Linux package manager on PATH.")
+@DetectableInfo(group = "Clang", name = "Clang", language = "C or C++", forge = "Derived from the Linux distribution.", requirementsMarkdown = "Files: compile_commands.json. <br /><br /> Executables: Linux package manager on PATH.")
 public class ClangDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 

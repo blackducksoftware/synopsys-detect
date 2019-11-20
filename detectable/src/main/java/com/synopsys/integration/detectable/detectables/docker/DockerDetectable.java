@@ -31,6 +31,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
@@ -43,6 +44,7 @@ import com.synopsys.integration.detectable.detectable.result.PropertyInsufficien
 import com.synopsys.integration.detectable.detectable.result.WrongOperatingSystemResult;
 import com.synopsys.integration.util.OperatingSystemType;
 
+@DetectableInfo(group = "DOCKER", name = "Docker", language = "N/A", forge = "Derived from the Linux distribution", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class DockerDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DockerInspectorResolver dockerInspectorResolver;
@@ -58,7 +60,7 @@ public class DockerDetectable extends Detectable {
 
     public DockerDetectable(final DetectableEnvironment environment, final DockerInspectorResolver dockerInspectorResolver, final JavaResolver javaResolver, final BashResolver bashResolver, final DockerResolver dockerResolver,
         final DockerExtractor dockerExtractor, final DockerDetectableOptions dockerDetectableOptions) {
-        super(environment, "Docker", "DOCKER");
+        super(environment);
         this.javaResolver = javaResolver;
         this.bashResolver = bashResolver;
         this.dockerResolver = dockerResolver;

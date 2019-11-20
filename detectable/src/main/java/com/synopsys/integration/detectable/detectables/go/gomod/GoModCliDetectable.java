@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
@@ -36,6 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "Go Mod", name = "Go Mod CLI", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class GoModCliDetectable extends Detectable {
     public static final String GOMOD_FILENAME_PATTERN = "go.mod";
 
@@ -46,7 +48,7 @@ public class GoModCliDetectable extends Detectable {
     private File goExe;
 
     public GoModCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GoResolver goResolver, final GoModCliExtractor goModCliExtractor) {
-        super(environment, "Go Mod Cli", "Go Mod");
+        super(environment);
         this.fileFinder = fileFinder;
         this.goResolver = goResolver;
         this.goModCliExtractor = goModCliExtractor;

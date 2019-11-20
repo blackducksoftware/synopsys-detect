@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -36,6 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "SWIFT", name = "Swift CLI", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class SwiftCliDetectable extends Detectable {
     private static final String PACKAGE_SWIFT_FILENAME = "Package.swift";
 
@@ -46,7 +48,7 @@ public class SwiftCliDetectable extends Detectable {
     private File swiftExecutable;
 
     public SwiftCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SwiftExtractor swiftExtractor, final SwiftResolver swiftResolver) {
-        super(environment, "Swift Package Manager CLI", "SWIFT");
+        super(environment);
         this.fileFinder = fileFinder;
         this.swiftExtractor = swiftExtractor;
         this.swiftResolver = swiftResolver;

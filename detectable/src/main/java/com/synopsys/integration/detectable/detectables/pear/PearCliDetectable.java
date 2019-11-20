@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -36,6 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(group = "PEAR", name = "Pear CLI", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class PearCliDetectable extends Detectable {
     public static final String PACKAGE_XML_FILENAME = "package.xml";
 
@@ -48,7 +50,7 @@ public class PearCliDetectable extends Detectable {
     private File packageDotXml;
 
     public PearCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PearResolver pearResolver, final PearCliExtractor pearCliExtractor, final PearCliDetectableOptions pearCliDetectableOptions) {
-        super(environment, "Pear Cli", "PEAR");
+        super(environment);
         this.fileFinder = fileFinder;
         this.pearResolver = pearResolver;
         this.pearCliExtractor = pearCliExtractor;
