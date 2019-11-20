@@ -20,8 +20,8 @@ in the project directory. If the compile_commands.json file resides in a sub-dir
 adjust the [detector search depth](../../properties/Configuration/paths.md#detector-search-depth)
 to enable ${solution_name} to find it. If the compile_commands.json file
 resides and a normally excluded subdirectory (for example: ./build),
-you can turn off the [default detector search exclusions](../../properties/Configuration/paths.md#detector-exclude-default-directories),
-or fine tune the [detector search directory exclusion patterns](../../properties/Configuration/paths.md#-detector-directory-patterns-exclusions).
+you can turn off the [default detector search exclusions](../../properties/Configuration/paths.md#detector-exclude-default-directories-advanced),
+or fine tune the [detector search directory exclusion patterns](../../properties/Configuration/paths.md#detector-directory-patterns-exclusions-advanced).
 
 For each compile command in the compile_commands.json file, the CLang detector
 runs a version of the command that has been modified to (a) ensure that it does

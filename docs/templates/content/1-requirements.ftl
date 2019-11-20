@@ -31,7 +31,7 @@ In general, the detectors require:
 * All dependencies must be resolvable. This generally means that each dependency has been installed using the package manager's cache, virtual environment, etc.
 * The package manager / build tool must be installed and in the path.
 
-See [Language and package manager support details](advanced/language-and-package-managers/overview.md) for information on specific detectors.
+See *Language and package managers* for information on specific detectors.
 
 ## Risk report requirements
 

@@ -14,7 +14,7 @@ ${solution_name} can be configured to perform additional tasks, including the fo
 
 * Enable any of the supported snippet matching modes in the [signature scanner](properties/Configuration/signature scanner.md).
 * Run the ${blackduck_product_name} [binary scanner](properties/Configuration/signature scanner.md) on a given binary files.
-* Run the ${dockerinspector_name} on a given [Docker image](advanced/language-and-package-managers/docker-images.md).
+* Run the ${dockerinspector_name} on a given [Docker image](advanced/language-and-package-managers/docker-images).
 * Generate a [report](properties/Configuration/report.md).
 * Fail on [policy violation](properties/Configuration/project.md#fail-on-policy-violation-severities.md).
 
@@ -25,4 +25,4 @@ and [Signature Scanner properties](properties/Configuration/signature scanner.md
 
 If you have no ${blackduck_product_name} instance, or if your network is down, you can still run ${solution_name} in offline mode.
 In offline mode, ${solution_name} creates the BDIO content and the dry run signature scan output files without attempting to upload them to ${blackduck_product_name}.
-You can run ${solution_name} in offline mode using the [offline mode property](properties/Configuration/blackduck server.md#offline-mode.md).
+You can run ${solution_name} in offline mode using the [offline mode property](properties/Configuration/blackduck server.md#offline-mode).
