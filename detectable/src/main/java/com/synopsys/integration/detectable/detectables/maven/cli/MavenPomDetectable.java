@@ -37,7 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "MAVEN", name = "Maven CLI", language = "various", forge = "Maven Central", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "MAVEN", name = "Maven CLI", language = "various", forge = "Maven Central", requirementsMarkdown = "File: pom.xml.<br/><br/>Executable: mvnw or mvn.")
 public class MavenPomDetectable extends Detectable {
     public static final String POM_FILENAME = "pom.xml";
 

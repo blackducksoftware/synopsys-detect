@@ -37,7 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "HEX", name = "Rebar config", language = "Erlang", forge = "Hex", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "HEX", name = "Rebar config", language = "Erlang", forge = "Hex", requirementsMarkdown = "File: rebar.config.<br/><br/>Executable: rebar3.")
 public class RebarDetectable extends Detectable {
     public static final String REBAR_CONFIG = "rebar.config";
 

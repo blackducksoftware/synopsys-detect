@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "Go_Dep", name = "Go Vndr", language = "Golang", forge = "GitHub", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "Go_Dep", name = "Go Vndr", language = "Golang", forge = "GitHub", requirementsMarkdown = "File: vendor.conf.")
 public class GoVndrDetectable extends Detectable {
     public static final String VNDR_CONF_FILENAME = "vendor.conf";
 

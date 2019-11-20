@@ -38,7 +38,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "CPAN", name = "Cpan CLI", language = "Perl", forge = "CPAN", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "CPAN", name = "Cpan CLI", language = "Perl", forge = "CPAN", requirementsMarkdown = "File: Makefile.PL. <br /><br /> Executable: cpan.")
 public class CpanCliDetectable extends Detectable {
     private static final String MAKEFILE = "Makefile.PL";
 

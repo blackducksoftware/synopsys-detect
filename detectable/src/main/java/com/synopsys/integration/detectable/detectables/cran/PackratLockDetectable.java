@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "CRAN", name = "Packrat lock", language = "R", forge = "CRAN", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "CRAN", name = "Packrat lock", language = "R", forge = "CRAN", requirementsMarkdown = "File: packrat.lock.")
 public class PackratLockDetectable extends Detectable {
     public static final String PACKRATLOCK_FILE_NAME = "packrat.lock";
 

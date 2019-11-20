@@ -37,7 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "Go_Dep", name = "Go Vendor", language = "Golang", forge = "GitHub", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "Go_Dep", name = "Go Vendor", language = "Golang", forge = "GitHub", requirementsMarkdown = "File: vendor/vendor.json.")
 public class GoVendorDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final String VENDOR_JSON_DIRNAME = "vendor";

@@ -40,7 +40,7 @@ import com.synopsys.integration.detectable.detectable.result.NpmRunInstallDetect
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonDiscoverer;
 
-@DetectableInfo(group = "NPM", name = "NPM CLI", language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "NPM", name = "NPM CLI", language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: node_modules, package.json. <br /><br /> Executable: npm.")
 public class NpmCliDetectable extends Detectable {
     public static final String NODE_MODULES = "node_modules";
     public static final String PACKAGE_JSON = "package.json";

@@ -37,7 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "Go Mod", name = "Go Mod CLI", language = "Golang", forge = "Go Modules", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "Go Mod", name = "Go Mod CLI", language = "Golang", forge = "Go Modules", requirementsMarkdown = "File: go.mod.<br/><br/>Executable: go.")
 public class GoModCliDetectable extends Detectable {
     public static final String GOMOD_FILENAME_PATTERN = "go.mod";
 
