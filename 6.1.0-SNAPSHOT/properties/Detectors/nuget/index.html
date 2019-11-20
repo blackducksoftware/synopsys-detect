@@ -321,18 +321,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../advanced/naming/" title="Naming" class="md-nav__link">
-      Naming
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -347,6 +335,18 @@
   <li class="md-nav__item">
     <a href="../../../advanced/proxies/" title="Running behind a proxy" class="md-nav__link">
       Running behind a proxy
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/scan-naming/" title="Code location (scan) naming" class="md-nav__link">
+      Code location (scan) naming
     </a>
   </li>
 
@@ -498,18 +498,6 @@
   <li class="md-nav__item">
     <a href="../../../advanced/language-and-package-managers/nuget/" title="NuGet support" class="md-nav__link">
       NuGet support
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../../advanced/language-and-package-managers/overview/" title="Language and package manager support details" class="md-nav__link">
-      Language and package manager support details
     </a>
   </li>
 
@@ -1088,8 +1076,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-modules-included-advanced" class="md-nav__link">
-    Nuget Modules Included (Advanced)
+  <a href="#nuget-projects-excluded-advanced" class="md-nav__link">
+    Nuget Projects Excluded (Advanced)
   </a>
   
 </li>
@@ -1102,13 +1090,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
-    Nuget Inspector AirGap Path (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#ignore-nuget-failures-advanced" class="md-nav__link">
     Ignore Nuget Failures (Advanced)
   </a>
@@ -1116,15 +1097,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-projects-excluded-advanced" class="md-nav__link">
-    Nuget Projects Excluded (Advanced)
+  <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
+    Nuget Inspector AirGap Path (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-nuget-inspector-name-deprecated" class="md-nav__link">
-    Detect Nuget Inspector Name (Deprecated)
+  <a href="#nuget-modules-included-advanced" class="md-nav__link">
+    Nuget Modules Included (Advanced)
   </a>
   
 </li>
@@ -1132,6 +1113,13 @@
         <li class="md-nav__item">
   <a href="#detect-nuget-path-deprecated" class="md-nav__link">
     Detect Nuget Path (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-nuget-inspector-name-deprecated" class="md-nav__link">
+    Detect Nuget Inspector Name (Deprecated)
   </a>
   
 </li>
@@ -1283,8 +1271,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-modules-included-advanced" class="md-nav__link">
-    Nuget Modules Included (Advanced)
+  <a href="#nuget-projects-excluded-advanced" class="md-nav__link">
+    Nuget Projects Excluded (Advanced)
   </a>
   
 </li>
@@ -1297,13 +1285,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
-    Nuget Inspector AirGap Path (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#ignore-nuget-failures-advanced" class="md-nav__link">
     Ignore Nuget Failures (Advanced)
   </a>
@@ -1311,15 +1292,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-projects-excluded-advanced" class="md-nav__link">
-    Nuget Projects Excluded (Advanced)
+  <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
+    Nuget Inspector AirGap Path (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-nuget-inspector-name-deprecated" class="md-nav__link">
-    Detect Nuget Inspector Name (Deprecated)
+  <a href="#nuget-modules-included-advanced" class="md-nav__link">
+    Nuget Modules Included (Advanced)
   </a>
   
 </li>
@@ -1327,6 +1308,13 @@
         <li class="md-nav__item">
   <a href="#detect-nuget-path-deprecated" class="md-nav__link">
     Detect Nuget Path (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-nuget-inspector-name-deprecated" class="md-nav__link">
+    Detect Nuget Inspector Name (Deprecated)
   </a>
   
 </li>
@@ -1479,11 +1467,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="nuget-modules-included-advanced">Nuget Modules Included (Advanced)</h2>
-<pre><code>--detect.nuget.included.modules
+<h2 id="nuget-projects-excluded-advanced">Nuget Projects Excluded (Advanced)</h2>
+<pre><code>--detect.nuget.excluded.modules
 </code></pre>
 
-<p>The names of the projects in a solution to include (overrides exclude).</p>
+<p>The names of the projects in a solution to exclude.</p>
 <table>
 <thead>
 <tr>
@@ -1565,49 +1553,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="nuget-inspector-airgap-path-advanced">Nuget Inspector AirGap Path (Advanced)</h2>
-<pre><code>--detect.nuget.inspector.air.gap.path
-</code></pre>
-
-<p>The path to the directory containing the nuget inspector nupkg.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="ignore-nuget-failures-advanced">Ignore Nuget Failures (Advanced)</h2>
 <pre><code>--detect.nuget.ignore.failure=false
 </code></pre>
@@ -1651,11 +1596,98 @@
 </tr>
 </tbody>
 </table>
-<h2 id="nuget-projects-excluded-advanced">Nuget Projects Excluded (Advanced)</h2>
-<pre><code>--detect.nuget.excluded.modules
+<h2 id="nuget-inspector-airgap-path-advanced">Nuget Inspector AirGap Path (Advanced)</h2>
+<pre><code>--detect.nuget.inspector.air.gap.path
 </code></pre>
 
-<p>The names of the projects in a solution to exclude.</p>
+<p>The path to the directory containing the nuget inspector nupkg.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="nuget-modules-included-advanced">Nuget Modules Included (Advanced)</h2>
+<pre><code>--detect.nuget.included.modules
+</code></pre>
+
+<p>The names of the projects in a solution to include (overrides exclude).</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-nuget-path-deprecated">Detect Nuget Path (Deprecated)</h2>
+<pre><code>--detect.nuget.path
+</code></pre>
+
+<p>The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package.</p>
+<p><strong>DEPRECATED: In the future, Detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -1720,50 +1752,6 @@
 <tr>
 <td>Default Value</td>
 <td>IntegrationNugetInspector</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="detect-nuget-path-deprecated">Detect Nuget Path (Deprecated)</h2>
-<pre><code>--detect.nuget.path
-</code></pre>
-
-<p>The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package.</p>
-<p><strong>DEPRECATED: In the future, Detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

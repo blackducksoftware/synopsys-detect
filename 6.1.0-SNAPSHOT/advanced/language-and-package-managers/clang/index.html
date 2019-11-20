@@ -323,18 +323,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../naming/" title="Naming" class="md-nav__link">
-      Naming
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -349,6 +337,18 @@
   <li class="md-nav__item">
     <a href="../../proxies/" title="Running behind a proxy" class="md-nav__link">
       Running behind a proxy
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../scan-naming/" title="Code location (scan) naming" class="md-nav__link">
+      Code location (scan) naming
     </a>
   </li>
 
@@ -511,18 +511,6 @@
   <li class="md-nav__item">
     <a href="../nuget/" title="NuGet support" class="md-nav__link">
       NuGet support
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../overview/" title="Language and package manager support details" class="md-nav__link">
-      Language and package manager support details
     </a>
   </li>
 
@@ -1195,8 +1183,8 @@ in the project directory. If the compile_commands.json file resides in a sub-dir
 adjust the <a href="../../../properties/Configuration/paths/#detector-search-depth">detector search depth</a>
 to enable Synopsys Detect to find it. If the compile_commands.json file
 resides and a normally excluded subdirectory (for example: ./build),
-you can turn off the <a href="../../../properties/Configuration/paths/#detector-exclude-default-directories">default detector search exclusions</a>,
-or fine tune the <a href="../../../properties/Configuration/paths/#-detector-directory-patterns-exclusions">detector search directory exclusion patterns</a>.</p>
+you can turn off the <a href="../../../properties/Configuration/paths/#detector-exclude-default-directories-advanced">default detector search exclusions</a>,
+or fine tune the <a href="../../../properties/Configuration/paths/#detector-directory-patterns-exclusions-advanced">detector search directory exclusion patterns</a>.</p>
 <p>For each compile command in the compile_commands.json file, the CLang detector
 runs a version of the command that has been modified to (a) ensure that it does
 not overwrite build artifacts, and (b) generate a list of include files used

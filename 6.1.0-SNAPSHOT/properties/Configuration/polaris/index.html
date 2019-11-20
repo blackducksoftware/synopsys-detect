@@ -321,18 +321,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../advanced/naming/" title="Naming" class="md-nav__link">
-      Naming
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -347,6 +335,18 @@
   <li class="md-nav__item">
     <a href="../../../advanced/proxies/" title="Running behind a proxy" class="md-nav__link">
       Running behind a proxy
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/scan-naming/" title="Code location (scan) naming" class="md-nav__link">
+      Code location (scan) naming
     </a>
   </li>
 
@@ -498,18 +498,6 @@
   <li class="md-nav__item">
     <a href="../../../advanced/language-and-package-managers/nuget/" title="NuGet support" class="md-nav__link">
       NuGet support
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../../advanced/language-and-package-managers/overview/" title="Language and package manager support details" class="md-nav__link">
-      Language and package manager support details
     </a>
   </li>
 
@@ -851,15 +839,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#polaris-access-token" class="md-nav__link">
-    Polaris Access Token
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#polaris-command" class="md-nav__link">
-    Polaris Command
+  <a href="#polaris-arguments" class="md-nav__link">
+    Polaris Arguments
   </a>
   
 </li>
@@ -872,8 +853,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#polaris-arguments" class="md-nav__link">
-    Polaris Arguments
+  <a href="#polaris-access-token" class="md-nav__link">
+    Polaris Access Token
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polaris-command" class="md-nav__link">
+    Polaris Command
   </a>
   
 </li>
@@ -1227,15 +1215,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#polaris-access-token" class="md-nav__link">
-    Polaris Access Token
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#polaris-command" class="md-nav__link">
-    Polaris Command
+  <a href="#polaris-arguments" class="md-nav__link">
+    Polaris Arguments
   </a>
   
 </li>
@@ -1248,8 +1229,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#polaris-arguments" class="md-nav__link">
-    Polaris Arguments
+  <a href="#polaris-access-token" class="md-nav__link">
+    Polaris Access Token
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polaris-command" class="md-nav__link">
+    Polaris Command
   </a>
   
 </li>
@@ -1279,11 +1267,11 @@
                 
                 
                 <h1 id="polaris">polaris</h1>
-<h2 id="polaris-access-token">Polaris Access Token</h2>
-<pre><code>--polaris.access.token
+<h2 id="polaris-arguments">Polaris Arguments</h2>
+<pre><code>--polaris.arguments
 </code></pre>
 
-<p>The access token for your polaris instance.</p>
+<p>Additional arguments to pass to polaris separated by space. The polaris.command takes precedence.</p>
 <table>
 <thead>
 <tr>
@@ -1295,49 +1283,6 @@
 <tr>
 <td>Added</td>
 <td>5.3.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="polaris-command">Polaris Command</h2>
-<pre><code>--polaris.command
-</code></pre>
-
-<p>A replacement command to pass to polaris separated by space. Include the analyze or setup command itself. If specified, polaris.arguments will be ignored and this will take precedence.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1408,11 +1353,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="polaris-arguments">Polaris Arguments</h2>
-<pre><code>--polaris.arguments
+<h2 id="polaris-access-token">Polaris Access Token</h2>
+<pre><code>--polaris.access.token
 </code></pre>
 
-<p>Additional arguments to pass to polaris separated by space. The polaris.command takes precedence.</p>
+<p>The access token for your polaris instance.</p>
 <table>
 <thead>
 <tr>
@@ -1424,6 +1369,49 @@
 <tr>
 <td>Added</td>
 <td>5.3.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="polaris-command">Polaris Command</h2>
+<pre><code>--polaris.command
+</code></pre>
+
+<p>A replacement command to pass to polaris separated by space. Include the analyze or setup command itself. If specified, polaris.arguments will be ignored and this will take precedence.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>

@@ -321,18 +321,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../advanced/naming/" title="Naming" class="md-nav__link">
-      Naming
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -347,6 +335,18 @@
   <li class="md-nav__item">
     <a href="../../../advanced/proxies/" title="Running behind a proxy" class="md-nav__link">
       Running behind a proxy
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/scan-naming/" title="Code location (scan) naming" class="md-nav__link">
+      Code location (scan) naming
     </a>
   </li>
 
@@ -498,18 +498,6 @@
   <li class="md-nav__item">
     <a href="../../../advanced/language-and-package-managers/nuget/" title="NuGet support" class="md-nav__link">
       NuGet support
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../../advanced/language-and-package-managers/overview/" title="Language and package manager support details" class="md-nav__link">
-      Language and package manager support details
     </a>
   </li>
 
@@ -829,6 +817,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#detect-parallel-processors-advanced" class="md-nav__link">
+    Detect Parallel Processors (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
     Detect Ignore Connection Failures (Advanced)
   </a>
@@ -838,13 +833,6 @@
         <li class="md-nav__item">
   <a href="#force-success-advanced" class="md-nav__link">
     Force Success (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#detect-parallel-processors-advanced" class="md-nav__link">
-    Detect Parallel Processors (Advanced)
   </a>
   
 </li>
@@ -1241,6 +1229,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#detect-parallel-processors-advanced" class="md-nav__link">
+    Detect Parallel Processors (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
     Detect Ignore Connection Failures (Advanced)
   </a>
@@ -1250,13 +1245,6 @@
         <li class="md-nav__item">
   <a href="#force-success-advanced" class="md-nav__link">
     Force Success (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#detect-parallel-processors-advanced" class="md-nav__link">
-    Detect Parallel Processors (Advanced)
   </a>
   
 </li>
@@ -1365,6 +1353,49 @@
 </tr>
 </tbody>
 </table>
+<h2 id="detect-parallel-processors-advanced">Detect Parallel Processors (Advanced)</h2>
+<pre><code>--detect.parallel.processors=1
+</code></pre>
+
+<p>The number of threads to run processes in parallel, defaults to 1, but if you specify less than or equal to 0, the number of processors on the machine will be used.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="detect-ignore-connection-failures-advanced">Detect Ignore Connection Failures (Advanced)</h2>
 <pre><code>--detect.ignore.connection.failures=false
 </code></pre>
@@ -1433,49 +1464,6 @@
 <tr>
 <td>Default Value</td>
 <td>false</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="detect-parallel-processors-advanced">Detect Parallel Processors (Advanced)</h2>
-<pre><code>--detect.parallel.processors=1
-</code></pre>
-
-<p>The number of threads to run processes in parallel, defaults to 1, but if you specify less than or equal to 0, the number of processors on the machine will be used.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Integer</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>1</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

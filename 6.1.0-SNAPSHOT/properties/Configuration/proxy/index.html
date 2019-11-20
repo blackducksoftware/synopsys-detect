@@ -321,18 +321,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../advanced/naming/" title="Naming" class="md-nav__link">
-      Naming
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -347,6 +335,18 @@
   <li class="md-nav__item">
     <a href="../../../advanced/proxies/" title="Running behind a proxy" class="md-nav__link">
       Running behind a proxy
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/scan-naming/" title="Code location (scan) naming" class="md-nav__link">
+      Code location (scan) naming
     </a>
   </li>
 
@@ -498,18 +498,6 @@
   <li class="md-nav__item">
     <a href="../../../advanced/language-and-package-managers/nuget/" title="NuGet support" class="md-nav__link">
       NuGet support
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../../advanced/language-and-package-managers/overview/" title="Language and package manager support details" class="md-nav__link">
-      Language and package manager support details
     </a>
   </li>
 
@@ -887,8 +875,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#proxy-port-advanced" class="md-nav__link">
-    Proxy Port (Advanced)
+  <a href="#bypass-proxy-hosts-advanced" class="md-nav__link">
+    Bypass Proxy Hosts (Advanced)
   </a>
   
 </li>
@@ -908,8 +896,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#proxy-password-advanced" class="md-nav__link">
-    Proxy Password (Advanced)
+  <a href="#proxy-username-advanced" class="md-nav__link">
+    Proxy Username (Advanced)
   </a>
   
 </li>
@@ -922,15 +910,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bypass-proxy-hosts-advanced" class="md-nav__link">
-    Bypass Proxy Hosts (Advanced)
+  <a href="#proxy-password-advanced" class="md-nav__link">
+    Proxy Password (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#proxy-username-advanced" class="md-nav__link">
-    Proxy Username (Advanced)
+  <a href="#proxy-port-advanced" class="md-nav__link">
+    Proxy Port (Advanced)
   </a>
   
 </li>
@@ -1241,8 +1229,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#proxy-port-advanced" class="md-nav__link">
-    Proxy Port (Advanced)
+  <a href="#bypass-proxy-hosts-advanced" class="md-nav__link">
+    Bypass Proxy Hosts (Advanced)
   </a>
   
 </li>
@@ -1262,8 +1250,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#proxy-password-advanced" class="md-nav__link">
-    Proxy Password (Advanced)
+  <a href="#proxy-username-advanced" class="md-nav__link">
+    Proxy Username (Advanced)
   </a>
   
 </li>
@@ -1276,15 +1264,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bypass-proxy-hosts-advanced" class="md-nav__link">
-    Bypass Proxy Hosts (Advanced)
+  <a href="#proxy-password-advanced" class="md-nav__link">
+    Proxy Password (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#proxy-username-advanced" class="md-nav__link">
-    Proxy Username (Advanced)
+  <a href="#proxy-port-advanced" class="md-nav__link">
+    Proxy Port (Advanced)
   </a>
   
 </li>
@@ -1307,11 +1295,12 @@
                 
                 
                 <h1 id="proxy">proxy</h1>
-<h2 id="proxy-port-advanced">Proxy Port (Advanced)</h2>
-<pre><code>--blackduck.proxy.port
+<h2 id="bypass-proxy-hosts-advanced">Bypass Proxy Hosts (Advanced)</h2>
+<pre><code>--blackduck.proxy.ignored.hosts
 </code></pre>
 
-<p>Proxy port.</p>
+<p>A comma separated list of regular expression host patterns that should not use the proxy.</p>
+<p>These patterns must adhere to Java regular expressions: https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html</p>
 <table>
 <thead>
 <tr>
@@ -1436,11 +1425,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="proxy-password-advanced">Proxy Password (Advanced)</h2>
-<pre><code>--blackduck.proxy.password
+<h2 id="proxy-username-advanced">Proxy Username (Advanced)</h2>
+<pre><code>--blackduck.proxy.username
 </code></pre>
 
-<p>Proxy password.</p>
+<p>Proxy username.</p>
 <table>
 <thead>
 <tr>
@@ -1522,12 +1511,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bypass-proxy-hosts-advanced">Bypass Proxy Hosts (Advanced)</h2>
-<pre><code>--blackduck.proxy.ignored.hosts
+<h2 id="proxy-password-advanced">Proxy Password (Advanced)</h2>
+<pre><code>--blackduck.proxy.password
 </code></pre>
 
-<p>A comma separated list of regular expression host patterns that should not use the proxy.</p>
-<p>These patterns must adhere to Java regular expressions: https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html</p>
+<p>Proxy password.</p>
 <table>
 <thead>
 <tr>
@@ -1566,11 +1554,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="proxy-username-advanced">Proxy Username (Advanced)</h2>
-<pre><code>--blackduck.proxy.username
+<h2 id="proxy-port-advanced">Proxy Port (Advanced)</h2>
+<pre><code>--blackduck.proxy.port
 </code></pre>
 
-<p>Proxy username.</p>
+<p>Proxy port.</p>
 <table>
 <thead>
 <tr>

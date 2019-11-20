@@ -321,18 +321,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../advanced/naming/" title="Naming" class="md-nav__link">
-      Naming
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -347,6 +335,18 @@
   <li class="md-nav__item">
     <a href="../../../advanced/proxies/" title="Running behind a proxy" class="md-nav__link">
       Running behind a proxy
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/scan-naming/" title="Code location (scan) naming" class="md-nav__link">
+      Code location (scan) naming
     </a>
   </li>
 
@@ -498,18 +498,6 @@
   <li class="md-nav__item">
     <a href="../../../advanced/language-and-package-managers/nuget/" title="NuGet support" class="md-nav__link">
       NuGet support
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../../advanced/language-and-package-managers/overview/" title="Language and package manager support details" class="md-nav__link">
-      Language and package manager support details
     </a>
   </li>
 
@@ -1103,22 +1091,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#pip-requirements-path" class="md-nav__link">
-    PIP Requirements Path
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pip-project-name" class="md-nav__link">
-    PIP Project Name
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#pipenv-executable" class="md-nav__link">
     Pipenv Executable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pip-project-version-name" class="md-nav__link">
+    PIP Project Version Name
   </a>
   
 </li>
@@ -1131,8 +1112,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pip-project-version-name" class="md-nav__link">
-    PIP Project Version Name
+  <a href="#pip-project-name" class="md-nav__link">
+    PIP Project Name
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pip-requirements-path" class="md-nav__link">
+    PIP Requirements Path
   </a>
   
 </li>
@@ -1227,22 +1215,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#pip-requirements-path" class="md-nav__link">
-    PIP Requirements Path
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pip-project-name" class="md-nav__link">
-    PIP Project Name
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#pipenv-executable" class="md-nav__link">
     Pipenv Executable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pip-project-version-name" class="md-nav__link">
+    PIP Project Version Name
   </a>
   
 </li>
@@ -1255,8 +1236,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pip-project-version-name" class="md-nav__link">
-    PIP Project Version Name
+  <a href="#pip-project-name" class="md-nav__link">
+    PIP Project Name
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pip-requirements-path" class="md-nav__link">
+    PIP Requirements Path
   </a>
   
 </li>
@@ -1279,11 +1267,11 @@
                 
                 
                 <h1 id="pip">pip</h1>
-<h2 id="pip-requirements-path">PIP Requirements Path</h2>
-<pre><code>--detect.pip.requirements.path
+<h2 id="pipenv-executable">Pipenv Executable</h2>
+<pre><code>--detect.pipenv.path
 </code></pre>
 
-<p>A comma-separated list of paths to requirements.txt files.</p>
+<p>The path to the Pipenv executable.</p>
 <table>
 <thead>
 <tr>
@@ -1294,50 +1282,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String[]</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="pip-project-name">PIP Project Name</h2>
-<pre><code>--detect.pip.project.name
-</code></pre>
-
-<p>The name of your PIP project, to be used if your project's name cannot be correctly inferred from its setup.py file.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
+<td>4.1.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1365,11 +1310,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="pipenv-executable">Pipenv Executable</h2>
-<pre><code>--detect.pipenv.path
+<h2 id="pip-project-version-name">PIP Project Version Name</h2>
+<pre><code>--detect.pip.project.version.name
 </code></pre>
 
-<p>The path to the Pipenv executable.</p>
+<p>The version of your PIP project, to be used if your project's version name cannot be correctly inferred from its setup.py file.</p>
 <table>
 <thead>
 <tr>
@@ -1451,11 +1396,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="pip-project-version-name">PIP Project Version Name</h2>
-<pre><code>--detect.pip.project.version.name
+<h2 id="pip-project-name">PIP Project Name</h2>
+<pre><code>--detect.pip.project.name
 </code></pre>
 
-<p>The version of your PIP project, to be used if your project's version name cannot be correctly inferred from its setup.py file.</p>
+<p>The name of your PIP project, to be used if your project's name cannot be correctly inferred from its setup.py file.</p>
 <table>
 <thead>
 <tr>
@@ -1466,11 +1411,54 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>4.1.0</td>
+<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
 <td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="pip-requirements-path">PIP Requirements Path</h2>
+<pre><code>--detect.pip.requirements.path
+</code></pre>
+
+<p>A comma-separated list of paths to requirements.txt files.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String[]</td>
 </tr>
 <tr>
 <td>Default Value</td>

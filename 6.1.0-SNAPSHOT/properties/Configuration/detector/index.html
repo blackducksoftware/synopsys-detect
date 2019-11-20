@@ -321,18 +321,6 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../advanced/naming/" title="Naming" class="md-nav__link">
-      Naming
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
     <a href="../../../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -347,6 +335,18 @@
   <li class="md-nav__item">
     <a href="../../../advanced/proxies/" title="Running behind a proxy" class="md-nav__link">
       Running behind a proxy
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/scan-naming/" title="Code location (scan) naming" class="md-nav__link">
+      Code location (scan) naming
     </a>
   </li>
 
@@ -498,18 +498,6 @@
   <li class="md-nav__item">
     <a href="../../../advanced/language-and-package-managers/nuget/" title="NuGet support" class="md-nav__link">
       NuGet support
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../../../advanced/language-and-package-managers/overview/" title="Language and package manager support details" class="md-nav__link">
-      Language and package manager support details
     </a>
   </li>
 
@@ -810,13 +798,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detector-types-excluded-advanced" class="md-nav__link">
-    Detector Types Excluded (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#detector-types-included-advanced" class="md-nav__link">
     Detector Types Included (Advanced)
   </a>
@@ -824,8 +805,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-required-bom-tool-types-deprecated" class="md-nav__link">
-    Detect Required Bom Tool Types (Deprecated)
+  <a href="#detector-types-excluded-advanced" class="md-nav__link">
+    Detector Types Excluded (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-excluded-bom-tool-types-deprecated" class="md-nav__link">
+    Detect Excluded Bom Tool Types (Deprecated)
   </a>
   
 </li>
@@ -838,8 +826,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-excluded-bom-tool-types-deprecated" class="md-nav__link">
-    Detect Excluded Bom Tool Types (Deprecated)
+  <a href="#detect-required-bom-tool-types-deprecated" class="md-nav__link">
+    Detect Required Bom Tool Types (Deprecated)
   </a>
   
 </li>
@@ -1241,13 +1229,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detector-types-excluded-advanced" class="md-nav__link">
-    Detector Types Excluded (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#detector-types-included-advanced" class="md-nav__link">
     Detector Types Included (Advanced)
   </a>
@@ -1255,8 +1236,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-required-bom-tool-types-deprecated" class="md-nav__link">
-    Detect Required Bom Tool Types (Deprecated)
+  <a href="#detector-types-excluded-advanced" class="md-nav__link">
+    Detector Types Excluded (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-excluded-bom-tool-types-deprecated" class="md-nav__link">
+    Detect Excluded Bom Tool Types (Deprecated)
   </a>
   
 </li>
@@ -1269,8 +1257,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-excluded-bom-tool-types-deprecated" class="md-nav__link">
-    Detect Excluded Bom Tool Types (Deprecated)
+  <a href="#detect-required-bom-tool-types-deprecated" class="md-nav__link">
+    Detect Required Bom Tool Types (Deprecated)
   </a>
   
 </li>
@@ -1310,50 +1298,6 @@
 <tr>
 <td>Added</td>
 <td>4.3.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="detector-types-excluded-advanced">Detector Types Excluded (Advanced)</h2>
-<pre><code>--detect.excluded.detector.types
-</code></pre>
-
-<p>By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify "ALL". Exclusion rules always win.</p>
-<p>If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1425,12 +1369,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-required-bom-tool-types-deprecated">Detect Required Bom Tool Types (Deprecated)</h2>
-<pre><code>--detect.required.bom.tool.types
+<h2 id="detector-types-excluded-advanced">Detector Types Excluded (Advanced)</h2>
+<pre><code>--detect.excluded.detector.types
 </code></pre>
 
-<p>If set, Detect will fail if it does not find the bom tool types supplied here.</p>
-<p><strong>DEPRECATED: This property is changing. Please use --detect.required.detector.types in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<p>By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify "ALL". Exclusion rules always win.</p>
+<p>If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them.</p>
 <table>
 <thead>
 <tr>
@@ -1441,7 +1385,51 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>4.3.0</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-excluded-bom-tool-types-deprecated">Detect Excluded Bom Tool Types (Deprecated)</h2>
+<pre><code>--detect.excluded.bom.tool.types
+</code></pre>
+
+<p>By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify "ALL". Exclusion rules always win.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.excluded.detector.types in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1513,12 +1501,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-excluded-bom-tool-types-deprecated">Detect Excluded Bom Tool Types (Deprecated)</h2>
-<pre><code>--detect.excluded.bom.tool.types
+<h2 id="detect-required-bom-tool-types-deprecated">Detect Required Bom Tool Types (Deprecated)</h2>
+<pre><code>--detect.required.bom.tool.types
 </code></pre>
 
-<p>By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify "ALL". Exclusion rules always win.</p>
-<p><strong>DEPRECATED: This property is changing. Please use --detect.excluded.detector.types in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<p>If set, Detect will fail if it does not find the bom tool types supplied here.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.required.detector.types in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -1529,7 +1517,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>4.3.0</td>
 </tr>
 <tr>
 <td>Type</td>
