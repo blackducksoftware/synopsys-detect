@@ -10,31 +10,49 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.detect.boot.ProductDeciderTest;
+import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
+import com.synopsys.integration.detect.lifecycle.boot.DetectBoot;
+import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
+import com.synopsys.integration.detect.tool.polaris.PolarisTool;
 
 public class DeprecatedPropertyReferenceTest {
 
-    private final List<String> filesAllowedToReferenceDeprecatedComponents = Arrays.asList(
-        "Application.java",
-        "DetectBoot.java",
-        "ProductDecider.java",
-        "DetectConfigurationFactory.java",
-        "DetectableOptionFactory.java",
-        "PolarisTool.java",
-        "ProductDeciderTest.java",
-        String.format("%s.java", this.getClass().getSimpleName())
+    private final List<String> fileTypesToCheck = Arrays.asList(
+        ".java",
+        ".kt"
     );
+
+    private final List<Class> classesAllowedToReferenceDeprecatedComponents = Arrays.asList(
+        Application.class,
+        DetectBoot.class,
+        ProductDecider.class,
+        DetectConfigurationFactory.class,
+        DetectableOptionFactory.class,
+        PolarisTool.class,
+        ProductDeciderTest.class,
+        this.getClass()
+    );
+
+    private final List<String> filesAllowedToReferenceDeprecatedComponents = fileTypesToCheck.stream()
+                                                                                 .map(fileType -> classesAllowedToReferenceDeprecatedComponents.stream()
+                                                                                                      .map(clazz -> clazz.getSimpleName() + fileType)
+                                                                                                      .collect(Collectors.toList()))
+                                                                                 .flatMap(List::stream)
+                                                                                 .collect(Collectors.toList());
 
     @Test
     public void testCodeReferencesToDeprecatedProperties() throws IOException {
         final Set<String> classesInViolation = new HashSet<>();
-        final String thisJavaFilename = String.format("%s.java", this.getClass().getSimpleName());
         final List<DetectProperty> deprecatedProperties = getDeprecatedProperties();
         final String[] targetSuffixes = { "java", "groovy" };
         final File rootDir = new File("src");
@@ -67,7 +85,7 @@ public class DeprecatedPropertyReferenceTest {
         return deprecatedProperties;
     }
 
-    private boolean isFileAllowedToReferenceDeprecatedProperties(final String filename) {
-        return filesAllowedToReferenceDeprecatedComponents.contains(filename);
+    private boolean isFileAllowedToReferenceDeprecatedProperties(final String fileName) {
+        return filesAllowedToReferenceDeprecatedComponents.contains(fileName);
     }
 }
