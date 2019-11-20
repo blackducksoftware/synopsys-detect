@@ -2,7 +2,7 @@
 
 ${solution_name} can invoke Docker Inspector to inspect Docker Images. For simple use cases, just add either ```--detect.docker.image=<repo>:<tag>``` or ```--detect.docker.tar=<path to a Docker saved tarfile>``` to the ${solution_name} command line.
 
-The documentation for Docker Inspector is available [here](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/622613/Black+Duck+Docker+Inspector).
+The documentation for Docker Inspector is available [here](https://blackducksoftware.github.io/blackduck-docker-inspector/latest/overview/).
 
 When passed a value for either detect.docker.image or detect.docker.tar, ${solution_name} will run Docker Inspector on the given image (the "target image"), creating one code location. ${solution_name} then (by default) runs the signature scanner on the image (actually the file system a container created from the image would have at startup time; see [${solution_name}'s scan target](#scantarget) for more details). This creates a second code location.
 

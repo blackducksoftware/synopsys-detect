@@ -47,12 +47,12 @@ can connect to any external systems needed for the run, and creates any director
 
 ### Run phase
 
-During the run phase, ${solution_name} processes and ordered list of [tools](/components/tools), invoking any/all that apply.
+During the run phase, ${solution_name} processes and ordered list of [tools](components/tools.md), invoking any/all that apply.
 Tool applicability depends on how ${solution_name} is configured (what property values you set).
 The detector tool runs by default. The signature scan tool runs by default when ${blackduck_product_name} connection
 details are provided.
 
-The detector tool will invoke any/all [detectors](/components/detectors) that apply.
+The detector tool will invoke any/all [detectors](components/detectors.md) that apply.
 Detector applicability depends on what ${solution_name} finds in your project. For example, if ${solution_name}
 finds a pom.xml file, it will run the Maven detector. If it finds Gradle files, it will run the Gradle detector.
 
@@ -73,4 +73,4 @@ During the cleanup phase, ${solution_name} removes temporary files and directori
 ## Controlling ${solution_name} processing
 
 For information on controlling which tools and detectors ${solution_name} executes, see
-[Including/excluding tools/detectors](/running/#including-and-excluding-tools-and-detectors).
+[Including/excluding tools/detectors](2-running.md#including-and-excluding-tools-and-detectors).

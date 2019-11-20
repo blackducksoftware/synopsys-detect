@@ -106,8 +106,8 @@ You can use the ${solution_name} Bash script (${bash_script_name}) to download t
 
 ## Including and excluding tools and detectors
 
-[Properties](/properties/all-properties) provide a variety of options for configuring ${solution_name} behavior. One of the
-most fundamental ways to modify ${solution_name} is by including and excluding [tools](/components/tools) and [detectors](/components/detectors).
+[Properties](properties/all-properties.md) provide a variety of options for configuring ${solution_name} behavior. One of the
+most fundamental ways to modify ${solution_name} is by including and excluding [tools](components/tools.md) and [detectors](components/detectors.md).
 
 ### Tools
 
@@ -123,9 +123,9 @@ To exclude specific tools, use:
 
 Exclusions take precedence over inclusions.
 
-See [Tools](/components/tools) for the list of tool names.
+See [Tools](components/tools.md) for the list of tool names.
 
-See [Properties](/properties/all-properties) for details.
+See [Properties](properties/all-properties.md) for details.
 
 ### Detectors
 
@@ -141,7 +141,7 @@ To exclude specific detectors, use:
 
 Exclusions take precedence over inclusions.
 
-See [Detectors](/components/detectors) for the list of detector names.
+See [Detectors](components/detectors.md) for the list of detector names.
 
-See [Properties](/properties/all-properties) for details.
+See [Properties](properties/all-properties.md) for details.
 
