@@ -13,7 +13,7 @@ The BitBake detector also requires a bash executable, which it looks for on $PAT
 
 The BitBake detector does the following for each provided recipe name: The detector sources the build environment setup script and executes
 `bitbake -g {package-name}` to generate a dependency file _recipe-depends.dot_ that it parses for dependency information.
-It also `bitbake -c listtasks {package-name}` to get the system architecture.
+It also `bitbake-layers show-recipes` to get layer information.
 
 ## Troubleshooting Tips
 
