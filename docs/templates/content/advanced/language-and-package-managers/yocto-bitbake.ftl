@@ -1,6 +1,6 @@
 # Yocto (Bitbake)
 
-The BitBake detector can discover dependencies of custom Linux distribution projects built using Yocto version 2.3 and higher.
+The BitBake detector can discover dependencies of custom Linux distribution projects built using Yocto version 2.0 and higher.
 
 The BitBake detector will attempt to run on your project if all of the following are true:
 
@@ -21,4 +21,4 @@ It also `bitbake -c listtasks {package-name}` to get the system architecture.
 
 Symptom: Error in log like: 'ERROR: Nothing PROVIDES {package}'
 
-Problem: ${solution_name} does not support the Yocto version. ${solution_name} requires Yocto versions 2.3 and higher.
+Problem: ${solution_name} does not support the Yocto version. ${solution_name} requires Yocto versions 2.0 and higher.
