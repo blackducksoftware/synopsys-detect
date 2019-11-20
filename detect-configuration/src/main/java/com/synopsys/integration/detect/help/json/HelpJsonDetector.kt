@@ -26,7 +26,9 @@ import java.util.ArrayList
 
 class HelpJsonDetector {
     var detectableName = ""
-    var detectableDescriptiveName = ""
+    var detectableLanguage = ""
+    var detectableRequirementsMarkdown = ""
+    var detectableForge = ""
     var detectableGroup = ""
     var detectorType = ""
     var detectorName = ""

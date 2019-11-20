@@ -23,19 +23,18 @@ Finally, detectors perform their "extraction" to find your dependencies. This ma
 
 Build detectors run package manager commands (for example: *mvn dependency:tree*) or inspectors (for example, the [Gradle inspector](inspectors.md#gradle-inspector)) to derive dependency information.
 
-|Detector type|Detectors|
-|---|---|
-<#list build as group>
-|${group.groupName}|${group.detectors?join(", ")}|
+|Type|Name|Language|Forge|Requirements
+|---|---|---|---|---|
+<#list build as detector>
+|${detector.detectorType} | ${detector.detectorName} |${detector.detectableLanguage!""}|${detector.detectableForge!""} | <#if detector.detectableRequirementsMarkdown?has_content ><#noautoesc>${detector.detectableRequirementsMarkdown!""}</#noautoesc></#if>|
 </#list>
 
 ## Buildless detectors
 
 Buildless detectors parse package manager files (for example: *pom.xml*) to derive dependency information.
 
-|Detector type|Detectors|
-|---|---|
-<#list buildless as group>
-|${group.groupName}|${group.detectors?join(", ")}|
+|Type|Name|Language|Forge|Requirements
+|---|---|---|---|---|
+<#list buildless as detector>
+|${detector.detectorType} | ${detector.detectorName} |${detector.detectableLanguage!""}|${detector.detectableForge!""} | <#if detector.detectableRequirementsMarkdown?has_content ><#noautoesc>${detector.detectableRequirementsMarkdown!""}</#noautoesc></#if>|
 </#list>
-

@@ -27,8 +27,10 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detector.base.DetectableCreatable;
 import com.synopsys.integration.detector.base.DetectorType;
 
-public class DetectorRule {
+public class DetectorRule<T extends  Detectable> {
     private final DetectableCreatable detectableCreatable;
+    private final Class<T> detectableClass;
+
     private final int maxDepth;
     private final boolean nestable;
     private final boolean selfNestable;
@@ -36,8 +38,10 @@ public class DetectorRule {
     private final String name;
     private final boolean nestInvisible;
 
-    public DetectorRule(final DetectableCreatable detectableCreatable, final int maxDepth, final boolean nestable, boolean selfNestable, final DetectorType detectorType, final String name, final boolean nestInvisible) {
+    public DetectorRule(final DetectableCreatable detectableCreatable, final Class<T> detectableClass, final int maxDepth, final boolean nestable, boolean selfNestable, final DetectorType detectorType, final String name,
+        final boolean nestInvisible) {
         this.detectableCreatable = detectableCreatable;
+        this.detectableClass = detectableClass;
         this.maxDepth = maxDepth;
         this.nestable = nestable;
         this.selfNestable = selfNestable;
@@ -80,5 +84,9 @@ public class DetectorRule {
 
     public boolean isSelfNestable() {
         return selfNestable;
+    }
+
+    public Class<T> getDetectableClass() {
+        return detectableClass;
     }
 }

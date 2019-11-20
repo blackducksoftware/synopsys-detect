@@ -79,7 +79,7 @@ public class DetectableTool {
         final DetectableEnvironment detectableEnvironment = new DetectableEnvironment(sourcePath);
         final Detectable detectable = detectableCreatable.createDetectable(detectableEnvironment);
 
-        logger.info(String.format("Initializing %s.", detectable.getDescriptiveName()));
+        //TODO: Replicate? logger.info(String.format("Initializing %s.", detectable.getDescriptiveName()));
 
         final DetectableResult applicable = detectable.applicable();
 
