@@ -39,7 +39,7 @@ import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetect
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "Gradle", name = "Gradle inspector", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "Gradle", name = "Gradle inspector", language = "various", forge = "Maven Central", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class GradleDetectable extends Detectable {
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
     public static final String KOTLIN_BUILD_GRADLE_FILENAME = "build.gradle.kts";

@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "GIT", name = "Git parse", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "GIT", name = "Git parse", language = "various", forge = "N/A", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class GitParseDetectable extends Detectable {
     private static final String GIT_DIRECTORY_NAME = ".git";
     private static final String GIT_CONFIG_FILENAME = "config";

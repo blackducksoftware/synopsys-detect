@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "MAVEN", name = "Maven parse", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "MAVEN", name = "Maven parse", language = "various", forge = "Maven Central", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class MavenParseDetectable extends Detectable {
     private static final String POM_XML_FILENAME = "pom.xml";
 

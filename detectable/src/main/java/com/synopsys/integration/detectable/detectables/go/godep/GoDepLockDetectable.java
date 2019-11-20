@@ -38,7 +38,7 @@ import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetect
 import com.synopsys.integration.detectable.detectable.result.GoDepRunInitEnsureDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "Go Dep", name = "Go lock", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "Go Dep", name = "Go lock", language = "Golang", forge = "GitHub", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class GoDepLockDetectable extends Detectable {
     public static final String GOPKG_LOCK_FILENAME = "Gopkg.lock";
     public static final String GOFILE_FILENAME_PATTERN = "Gopkg.toml";

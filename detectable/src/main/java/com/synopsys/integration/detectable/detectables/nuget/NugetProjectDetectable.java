@@ -42,7 +42,7 @@ import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetect
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "NUGET", name = "NuGet inspector", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "NUGET", name = "NuGet inspector", language = "C#", forge = "NuGet.org", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class NugetProjectDetectable extends Detectable {
     static final List<String> SUPPORTED_PROJECT_PATTERNS = Arrays.asList(
         // C#

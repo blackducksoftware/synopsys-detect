@@ -37,7 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "PEAR", name = "Pear CLI", language = "TBD", forge = "TBD", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "PEAR", name = "Pear CLI", language = "PHP", forge = "Pear", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
 public class PearCliDetectable extends Detectable {
     public static final String PACKAGE_XML_FILENAME = "package.xml";
 
