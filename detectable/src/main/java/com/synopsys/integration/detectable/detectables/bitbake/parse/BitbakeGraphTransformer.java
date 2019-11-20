@@ -105,6 +105,11 @@ public class BitbakeGraphTransformer {
                 logger.debug(String.format("'%s==%s' is not an actual component. Excluding from graph.", dependencyName, dependencyVersion));
             }
         }
+
+        if (externalId != null && externalId.version.contains("AUTOINC")) {
+            externalId.version = externalId.version.replaceFirst("AUTOINC\\+[\\w|\\d]*", "X");
+        }
+
         return Optional.ofNullable(externalId);
     }
 }
