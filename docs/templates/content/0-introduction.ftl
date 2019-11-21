@@ -26,7 +26,7 @@ In a typical run, ${solution_name}:
 1. Uses the project's package manager to derive the hierarchy of dependencies known to that package manager.
 For example, on a Maven project, ${solution_name} executes an "mvn dependency:tree" command,
 and derives dependency information from the output.
-2. Runs the ${blackduck_product_name} signature scanner (scan CLI) on the project. This may identify additional dependencies
+2. Runs the ${blackduck_signature_scanner_name} on the project. This may identify additional dependencies
 not known to the package manager (for example, a .jar file copied into the project directory).
 3. Uploads both sets of results (dependency details) to ${blackduck_product_name} creating the project/version
 if it does not already exist. ${blackduck_product_name} uses the uploaded dependency information
@@ -49,7 +49,7 @@ can connect to any external systems needed for the run, and creates any director
 
 During the run phase, ${solution_name} processes and ordered list of [tools](components/tools.md), invoking any/all that apply.
 Tool applicability depends on how ${solution_name} is configured (what property values you set).
-The detector tool runs by default. The signature scan tool runs by default when ${blackduck_product_name} connection
+The detector tool runs by default. The ${blackduck_signature_scanner_name} tool runs by default when ${blackduck_product_name} connection
 details are provided.
 
 The detector tool will invoke any/all [detectors](components/detectors.md) that apply.
@@ -57,14 +57,14 @@ Detector applicability depends on what ${solution_name} finds in your project. F
 finds a pom.xml file, it will run the Maven detector. If it finds Gradle files, it will run the Gradle detector.
 
 In the typical run described above, two tools applied: The detector tool (which ran the Maven detector),
-and the signature scan tool (which ran the ${blackduck_product_name} signature scanner).
+and the ${blackduck_signature_scanner_name} tool (which ran the ${blackduck_signature_scanner_name}).
 
 At the end of the run phase, ${solution_name} will upload results to the appropriate external
 system(s) (${blackduck_product_name} and/or ${polaris_product_name}), and optionally perform post actions, such as generating
 a risk report or checking for policy violations.
 
 In the typical run described above, ${solution_name} uploaded to ${blackduck_product_name} results from
-the Maven detector and the ${blackduck_product_name} signature scanner
+the Maven detector and the ${blackduck_signature_scanner_name}.
 
 ### Cleanup phase
 

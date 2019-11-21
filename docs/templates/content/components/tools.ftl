@@ -8,7 +8,7 @@ The available ${solution_name} tools (in order of execution, with the correspond
 * [Docker Inspector](../advanced/language-and-package-managers/docker-images.md) (--detect.tools=DOCKER)
 * [Bazel](../advanced/language-and-package-managers/bazel.md) (--detect.tools=BAZEL)
 * [Detector](detectors.md) (--detect.tools=DETECTOR)
-* [${blackduck_product_name} signature scanner](../3-blackduck.md) (--detect.tools=SIGNATURE_SCAN)
-* [${blackduck_product_name} binary scanner](../3-blackduck.md) (--detect.tools=BINARY_SCAN)
+* [${blackduck_signature_scanner_name}](../3-blackduck.md) (--detect.tools=SIGNATURE_SCAN)
+* [${blackduck_binary_scanner_name}](../3-blackduck.md) (--detect.tools=BINARY_SCAN)
 
 The detector tool runs any applicable [detectors](detectors.md)
