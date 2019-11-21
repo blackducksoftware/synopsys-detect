@@ -36,7 +36,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "NPM", name = "NPM package JSON parse", language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "NPM", name = "NPM package JSON parse", language = "Node JS", forge = "npmjs", requirementsMarkdown = "File: package.json.")
 public class NpmPackageJsonParseDetectable extends Detectable {
     public static final String PACKAGE_JSON = "package.json";
 

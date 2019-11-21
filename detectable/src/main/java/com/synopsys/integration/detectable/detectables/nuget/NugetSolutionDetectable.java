@@ -42,7 +42,7 @@ import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetect
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "NUGET", name = "NuGet solution", language = "C#", forge = "NuGet.org", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "NUGET", name = "NuGet solution", language = "C#", forge = "NuGet.org", requirementsMarkdown = "File: a solution file with a .sln extension.")
 public class NugetSolutionDetectable extends Detectable {
     private static final List<String> SUPPORTED_SOLUTION_PATTERNS = Collections.singletonList("*.sln");
 
