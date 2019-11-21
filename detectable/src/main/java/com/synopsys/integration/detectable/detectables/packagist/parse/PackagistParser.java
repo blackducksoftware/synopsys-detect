@@ -34,6 +34,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -55,7 +56,7 @@ public class PackagistParser {
         this.composerLockDetectableOptions = composerLockDetectableOptions;
     }
 
-    public PackagistParseResult getDependencyGraphFromProject(final String composerJsonText, final String composerLockText) {
+    public PackagistParseResult getDependencyGraphFromProject(final String composerJsonText, final String composerLockText) throws MissingExternalIdException {
         final LazyExternalIdDependencyGraphBuilder builder = new LazyExternalIdDependencyGraphBuilder();
 
         final JsonObject composerJsonObject = new JsonParser().parse(composerJsonText).getAsJsonObject();

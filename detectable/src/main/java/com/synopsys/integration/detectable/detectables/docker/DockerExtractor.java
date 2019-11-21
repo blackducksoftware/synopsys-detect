@@ -37,12 +37,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.bdio1.BdioReader;
-import com.synopsys.integration.bdio.bdio1.BdioTransformer;
-import com.synopsys.integration.bdio.bdio1.model.SimpleBdioDocument;
+import com.synopsys.integration.bdio.BdioReader;
+import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.BdioId;
 import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;

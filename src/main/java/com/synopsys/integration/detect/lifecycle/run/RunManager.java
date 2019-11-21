@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.bdio1.SimpleBdioFactory;
+import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.bdio2.Bdio2Factory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;

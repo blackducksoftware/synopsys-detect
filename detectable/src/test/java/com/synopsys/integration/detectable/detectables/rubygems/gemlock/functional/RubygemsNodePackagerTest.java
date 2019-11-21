@@ -17,6 +17,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -31,7 +32,7 @@ public class RubygemsNodePackagerTest {
     private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
     @Test
-    void packagerTest() {
+    void packagerTest() throws MissingExternalIdException {
         final List<String> actualText = FunctionalTestFiles.asListOfStrings("/rubygems/Gemfile.lock");
         final GemlockParser rubygemsNodePackager = new GemlockParser(new ExternalIdFactory());
         final DependencyGraph projects = rubygemsNodePackager.parseProjectDependencies(actualText);
@@ -41,7 +42,7 @@ public class RubygemsNodePackagerTest {
     }
 
     @Test
-    void findsAllVersions() {
+    void findsAllVersions() throws MissingExternalIdException {
         //Finds all versions of the package not just the first matching architecture.
         final List<String> actualText = FunctionalTestFiles.asListOfStrings("/rubygems/Gemfile-rails.lock");
         final GemlockParser rubygemsNodePackager = new GemlockParser(new ExternalIdFactory());

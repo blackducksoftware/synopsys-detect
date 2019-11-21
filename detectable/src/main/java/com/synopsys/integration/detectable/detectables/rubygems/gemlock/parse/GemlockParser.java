@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
 import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
@@ -74,7 +75,7 @@ public class GemlockParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph parseProjectDependencies(final List<String> gemfileLockLines) {
+    public DependencyGraph parseProjectDependencies(final List<String> gemfileLockLines) throws MissingExternalIdException {
         encounteredDependencies = new ArrayList<>();
         resolvedDependencies = new ArrayList<>();
         lazyBuilder = new LazyExternalIdDependencyGraphBuilder();

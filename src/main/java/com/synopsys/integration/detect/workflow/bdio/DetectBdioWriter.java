@@ -28,9 +28,9 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.bdio1.SimpleBdioFactory;
-import com.synopsys.integration.bdio.bdio1.model.SimpleBdioDocument;
-import com.synopsys.integration.bdio.bdio1.model.SpdxCreator;
+import com.synopsys.integration.bdio.SimpleBdioFactory;
+import com.synopsys.integration.bdio.model.SimpleBdioDocument;
+import com.synopsys.integration.bdio.model.SpdxCreator;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
