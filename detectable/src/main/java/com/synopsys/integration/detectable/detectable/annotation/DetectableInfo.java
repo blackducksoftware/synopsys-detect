@@ -20,19 +20,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.result;
+package com.synopsys.integration.detectable.detectable.annotation;
 
-import com.synopsys.integration.detectable.Detectable;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class FallbackNotNeededDetectableResult extends FailedDetectableResult {
-    private final Detectable passingDetectable;
-
-    public FallbackNotNeededDetectableResult(final Detectable passingDetectable) {
-        this.passingDetectable = passingDetectable;
-    }
-
-    @Override
-    public String toDescription() {
-        return "No fallback needed, detector passed: " + passingDetectable.getDescriptiveName();
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface DetectableInfo {
+    String group();
+    String name();
+    String forge();
+    String language();
+    String requirementsMarkdown();
 }

@@ -94,8 +94,11 @@ import com.synopsys.integration.detect.workflow.status.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectResult;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
+import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
+import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
@@ -176,8 +179,8 @@ public class RunManager {
 
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
-            logger.info("Will include the docker tool.");
-            final DetectableTool detectableTool = new DetectableTool(detectableFactory::createDockerDetectable, extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER, eventSystem);
+            logger.info("Will include the Docker tool.");
+            final DetectableTool detectableTool = new DetectableTool(environment -> detectableFactory.createDetectable(DockerDetectable.class, environment), extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER, eventSystem);
             final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
             runResult.addDetectableToolResult(detectableToolResult);
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
@@ -189,7 +192,7 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the Bazel tool.");
-            final DetectableTool detectableTool = new DetectableTool(detectableFactory::createBazelDetectable, extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL, eventSystem);
+            final DetectableTool detectableTool = new DetectableTool(environment -> detectableFactory.createDetectable(BazelDetectable.class, environment), extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL, eventSystem);
             final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
             runResult.addDetectableToolResult(detectableToolResult);
             anythingFailed = anythingFailed || detectableToolResult.isFailure();

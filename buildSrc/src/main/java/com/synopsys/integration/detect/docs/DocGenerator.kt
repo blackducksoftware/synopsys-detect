@@ -44,12 +44,13 @@ open class GenerateDocsTask : DefaultTask() {
         val helpJson: HelpJsonData = Gson().fromJson(file.reader(), HelpJsonData::class.java)
 
         val outputDir = project.file("docs/generated");
+        val troubleshootingDir = File(outputDir, "advanced/troubleshooting")
         outputDir.deleteRecursively()
-        outputDir.mkdirs()
+        troubleshootingDir.mkdirs()
 
         val templateProvider = TemplateProvider(project.file("docs/templates"), project.version.toString())
 
-        createFromFreemarker(templateProvider, outputDir, "exit-codes", ExitCodePage(helpJson.exitCodes))
+        createFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", ExitCodePage(helpJson.exitCodes))
 
         handleDetectors(templateProvider, outputDir, helpJson)
         handleProperties(templateProvider, outputDir, helpJson)
@@ -94,11 +95,13 @@ open class GenerateDocsTask : DefaultTask() {
 
     private fun handleDetectors(templateProvider: TemplateProvider, baseOutputDir: File, helpJson: HelpJsonData) {
         val outputDir = File(baseOutputDir, "components")
-        val build = helpJson.buildDetectors.groupBy { it.detectorType }
-                .map { group -> DetectorGroup(group.key, group.value.map { detector -> detector.detectorName }) }
+        val build = helpJson.buildDetectors
+                .map { detector -> Detector(detector.detectorType, detector.detectorName, detector.detectableLanguage, detector.detectableForge, detector.detectableRequirementsMarkdown) }
+                .sortedWith(compareBy<Detector>{it.detectorType}.thenBy{it.detectorName})
 
-        val buildless = helpJson.buildlessDetectors.groupBy { it.detectorType }
-                .map { group -> DetectorGroup(group.key, group.value.map { detector -> detector.detectorName }) }
+        val buildless = helpJson.buildlessDetectors
+                .map { detector -> Detector(detector.detectorType, detector.detectorName, detector.detectableLanguage, detector.detectableForge, detector.detectableRequirementsMarkdown) }
+                .sortedWith(compareBy<Detector>{it.detectorType}.thenBy{it.detectorName})
 
         createFromFreemarker(templateProvider, outputDir, "detectors", DetectorsPage(buildless, build))
     }
@@ -181,8 +184,8 @@ class TemplateProvider(templateDirectory: File, projectVersion: String) {
 
 data class IndexPage(val version: String) {}
 data class ExitCodePage(val exitCodes: List<HelpJsonExitCode>) {}
-data class DetectorsPage(val buildless: List<DetectorGroup>, val build: List<DetectorGroup>) {}
-data class DetectorGroup(val groupName: String, val detectors: List<String>) {}
+data class DetectorsPage(val buildless: List<Detector>, val build: List<Detector>) {}
+data class Detector(val detectorType: String, val detectorName:String, val detectableLanguage:String, val detectableForge:String, val detectableRequirementsMarkdown:String) {}
 
 data class SimplePropertyTablePage(val groups: List<SimplePropertyTableGroup>) {}
 data class SimplePropertyTableGroup(val groupName: String, val location: String, val options: List<HelpJsonOption>) {}

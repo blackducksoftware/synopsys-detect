@@ -22,6 +22,10 @@
  */
 package com.synopsys.integration.detector.result
 
+import com.synopsys.integration.detectable.Detectable
+import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult
+import com.synopsys.integration.detector.rule.DetectorRule
+
 open class DetectorResult(val passed: Boolean, val description: String)
 
 open class FailedDetectorResult(description: String) : DetectorResult(false, description)
@@ -39,3 +43,9 @@ class NotNestableDetectorResult : FailedDetectorResult("Not nestable and a detec
 class NotSelfNestableDetectorResult : FailedDetectorResult("Nestable but this detector already applied in a parent directory.")
 
 class YieldedDetectorResult(yieldedTo: Set<String>) : FailedDetectorResult("Yielded to detectors: ${yieldedTo.joinToString(",")}")
+
+class FallbackNotNeededDetectorResult(private val passingDetector: DetectorRule<Detectable>) : FailedDetectableResult() {
+    override fun toDescription(): String {
+        return "No fallback needed, detector passed: " + passingDetector.getDescriptiveName()
+    }
+}

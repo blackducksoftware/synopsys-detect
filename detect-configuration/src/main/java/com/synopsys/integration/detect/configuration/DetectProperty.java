@@ -383,10 +383,10 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription(category = ADVANCED, value = "To exclude components from platform layers from the results, assign to this property the ID of the top layer of the platform image. " +
-         "Get the platform top layer ID from the output of 'docker inspect platformimage:tag'. The platform top layer ID is the last item in RootFS.Layers. " +
-         "For more information, see 'Isolating application components' in the Docker Inspector documentation.")
+                                                      "Get the platform top layer ID from the output of 'docker inspect platformimage:tag'. The platform top layer ID is the last item in RootFS.Layers. " +
+                                                      "For more information, see 'Isolating application components' in the Docker Inspector documentation.")
     @HelpDetailed("If you are interested in components from the application layers of your image, but not interested in components from the underlying platform layers, you can exclude components from platform layers from the results " +
-        "by using this property to specify the boundary between platform layers and application layers. ")
+                      "by using this property to specify the boundary between platform layers and application layers. ")
     DETECT_DOCKER_PLATFORM_TOP_LAYER_ID("detect.docker.platform.top.layer.id", "Platform Top Layer ID", "6.1.0", PropertyType.STRING, PropertyAuthority.NONE, ""),
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
@@ -546,7 +546,7 @@ public enum DetectProperty {
     DETECT_NUGET_INSPECTOR_AIR_GAP_PATH("detect.nuget.inspector.air.gap.path", "Nuget Inspector AirGap Path", "3.0.0", PropertyType.STRING, PropertyAuthority.AIR_GAP_MANAGER),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription(category = ADVANCED, value = "Version of the Nuget Inspector. By default Detect will communicate with Artifactory.")
+    @HelpDescription(category = ADVANCED, value = "Version of the Nuget Inspector. By default Detect will run the latest version that is compatible with the Detect version.")
     DETECT_NUGET_INSPECTOR_VERSION("detect.nuget.inspector.version", "Nuget Inspector Version", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE, ""),
 
     @HelpGroup(primary = GROUP_NUGET, additional = { SEARCH_GROUP_GLOBAL })
@@ -599,22 +599,6 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("Path of the swift executable.")
     DETECT_SWIFT_PATH("detect.swift.path", "Swift Executable", "6.0.0", PropertyType.STRING, PropertyAuthority.NONE),
-
-    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The url of your polaris instance.")
-    POLARIS_URL("polaris.url", "Polaris Url", "4.1.0", PropertyType.STRING, PropertyAuthority.NONE),
-
-    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The access token for your polaris instance.")
-    POLARIS_ACCESS_TOKEN("polaris.access.token", "Polaris Access Token", "5.3.0", PropertyType.STRING, PropertyAuthority.NONE),
-
-    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, GROUP_SOURCE_SCAN })
-    @HelpDescription("Additional arguments to pass to polaris separated by space. The polaris.command takes precedence.")
-    POLARIS_ARGUMENTS("polaris.arguments", "Polaris Arguments", "5.3.0", PropertyType.STRING, PropertyAuthority.NONE),
-
-    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, GROUP_SOURCE_SCAN })
-    @HelpDescription("A replacement command to pass to polaris separated by space. Include the analyze or setup command itself. If specified, polaris.arguments will be ignored and this will take precedence.")
-    POLARIS_COMMAND("polaris.command", "Polaris Command", "6.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_GLOBAL, SEARCH_GROUP_PROJECT_SETTING, SEARCH_GROUP_POLICY })
     @HelpDescription("A comma-separated list of policy violation severities that will fail Detect. If this is not set, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except UNSPECIFIED.")
@@ -1115,7 +1099,31 @@ public enum DetectProperty {
     @DetectDeprecation(description = "This property is now deprecated. Please use --detect.blackduck.signature.scanner.snippet.matching in the future. NOTE the new property is one of a particular set of values. You will need to consult the documentation for the Signature Scanner in Black Duck for details.", failInVersion = DetectMajorVersion.SIX, removeInVersion = DetectMajorVersion.SEVEN)
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode.")
-    DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE("detect.blackduck.signature.scanner.snippet.mode", "Snippet Scanning", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false");
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE("detect.blackduck.signature.scanner.snippet.mode", "Snippet Scanning", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is being removed. Detect will no longer invoke the Polaris CLI.", failInVersion = DetectMajorVersion.SEVEN, removeInVersion = DetectMajorVersion.EIGHT)
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, SEARCH_GROUP_GLOBAL })
+    @HelpDescription("The url of your polaris instance.")
+    POLARIS_URL("polaris.url", "Polaris Url", "4.1.0", PropertyType.STRING, PropertyAuthority.NONE),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is being removed. Detect will no longer invoke the Polaris CLI.", failInVersion = DetectMajorVersion.SEVEN, removeInVersion = DetectMajorVersion.EIGHT)
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, SEARCH_GROUP_GLOBAL })
+    @HelpDescription("The access token for your polaris instance.")
+    POLARIS_ACCESS_TOKEN("polaris.access.token", "Polaris Access Token", "5.3.0", PropertyType.STRING, PropertyAuthority.NONE),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is being removed. Detect will no longer invoke the Polaris CLI.", failInVersion = DetectMajorVersion.SEVEN, removeInVersion = DetectMajorVersion.EIGHT)
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, GROUP_SOURCE_SCAN })
+    @HelpDescription("Additional arguments to pass to polaris separated by space. The polaris.command takes precedence.")
+    POLARIS_ARGUMENTS("polaris.arguments", "Polaris Arguments", "5.3.0", PropertyType.STRING, PropertyAuthority.NONE),
+
+    @Deprecated
+    @DetectDeprecation(description = "This property is being removed. Detect will no longer invoke the Polaris CLI.", failInVersion = DetectMajorVersion.SEVEN, removeInVersion = DetectMajorVersion.EIGHT)
+    @HelpGroup(primary = GROUP_POLARIS, additional = { DEFAULT_HELP, GROUP_SOURCE_SCAN })
+    @HelpDescription("A replacement command to pass to polaris separated by space. Include the analyze or setup command itself. If specified, polaris.arguments will be ignored and this will take precedence.")
+    POLARIS_COMMAND("polaris.command", "Polaris Command", "6.0.0", PropertyType.STRING, PropertyAuthority.NONE);
 
     /**********************************************************************************************
      * DEPRECATED END

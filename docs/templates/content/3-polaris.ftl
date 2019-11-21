@@ -10,4 +10,4 @@ for Maven projects, the Gradle detector for Gradle projects, etc.).
 * The ${polaris_product_name} signature scan tool, which runs the signature scanner on the
 project directory.
 
-See [Properties](/properties/Configuration/polaris) for details.
+See [Properties](properties/Configuration/polaris.md) for details.

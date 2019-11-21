@@ -4,7 +4,7 @@
 
 Requirements for ${solution_name} are:
 
-* Normally, access to the internet is required to download and run ${solution_name} and components from GitHub and other locations. For running without internet access, see [Air gap and offline modes](/advanced/air-gap).
+* Normally, access to the internet is required to download and run ${solution_name} and components from GitHub and other locations. For running without internet access, see [Air gap and offline modes](advanced/air-gap.md).
 * Minimum 8GB RAM.
 * OpenJDK 8 or OpenJDK 11.
 * curl version 7.34.0 or later.
@@ -31,7 +31,7 @@ In general, the detectors require:
 * All dependencies must be resolvable. This generally means that each dependency has been installed using the package manager's cache, virtual environment, etc.
 * The package manager / build tool must be installed and in the path.
 
-See [Language and package manager support details](advanced/language-and-package-managers/overview.md) for information on specific detectors.
+See *Language and package managers* for information on specific detectors.
 
 ## Risk report requirements
 

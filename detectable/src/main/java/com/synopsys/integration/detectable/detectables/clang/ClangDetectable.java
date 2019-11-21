@@ -32,6 +32,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -42,6 +43,7 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManager;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerRunner;
 
+@DetectableInfo(group = "Clang", name = "Clang", language = "C or C++", forge = "Derived from distribution.", requirementsMarkdown = "Files: compile_commands.json. <br /><br /> Executables: Linux package manager on PATH.")
 public class ClangDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -58,7 +60,7 @@ public class ClangDetectable extends Detectable {
 
     public ClangDetectable(final DetectableEnvironment environment, final ExecutableRunner executableRunner, final FileFinder fileFinder, final List<ClangPackageManager> availablePackageManagers, final ClangExtractor clangExtractor,
         final ClangDetectableOptions options, final ClangPackageManagerRunner packageManagerRunner) {
-        super(environment, "Clang", "Clang");
+        super(environment);
         this.fileFinder = fileFinder;
         this.availablePackageManagers = availablePackageManagers;
         this.executableRunner = executableRunner;
