@@ -41,6 +41,8 @@ class Terms {
             "script_repo_url_base" to "https://detect.synopsys.com",
             "spring_boot_config_doc_url" to "https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html",
             "blackduck_product_name" to "Black Duck",
+            "blackduck_signature_scanner_name" to "Black Duck signature scanner",
+            "blackduck_binary_scanner_name" to "Black Duck binary scanner",
             "polaris_product_name" to "Polaris",
             "dockerinspector_name" to "Black Duck Docker Inspector"
     )

@@ -10,7 +10,7 @@ Requirements for ${solution_name} are:
 * curl version 7.34.0 or later.
 * Bash.
 * If using ${powershell_script_name}: PowerShell version 4.0 or higher.
-* The source code for your project must be buildable.
+* The tools required to build your project source code.
 
 ## ${blackduck_product_name} requirements
 
