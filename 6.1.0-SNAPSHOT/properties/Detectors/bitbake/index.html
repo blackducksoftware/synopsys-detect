@@ -966,8 +966,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-init-script-name" class="md-nav__link">
-    BitBake Init Script Name
+  <a href="#bitbake-source-arguments" class="md-nav__link">
+    BitBake Source Arguments
   </a>
   
 </li>
@@ -980,8 +980,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-source-arguments" class="md-nav__link">
-    BitBake Source Arguments
+  <a href="#bitbake-init-script-name" class="md-nav__link">
+    BitBake Init Script Name
   </a>
   
 </li>
@@ -1234,8 +1234,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-init-script-name" class="md-nav__link">
-    BitBake Init Script Name
+  <a href="#bitbake-source-arguments" class="md-nav__link">
+    BitBake Source Arguments
   </a>
   
 </li>
@@ -1248,8 +1248,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-source-arguments" class="md-nav__link">
-    BitBake Source Arguments
+  <a href="#bitbake-init-script-name" class="md-nav__link">
+    BitBake Init Script Name
   </a>
   
 </li>
@@ -1322,11 +1322,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bitbake-init-script-name">BitBake Init Script Name</h2>
-<pre><code>--detect.bitbake.build.env.name=oe-init-build-env
+<h2 id="bitbake-source-arguments">BitBake Source Arguments</h2>
+<pre><code>--detect.bitbake.source.arguments
 </code></pre>
 
-<p>The name of the build environment init script.</p>
+<p>A comma-separated list of arguments to supply when sourcing the build environment init script.</p>
 <table>
 <thead>
 <tr>
@@ -1337,15 +1337,15 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>4.4.0</td>
+<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>String[]</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>oe-init-build-env</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1408,11 +1408,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bitbake-source-arguments">BitBake Source Arguments</h2>
-<pre><code>--detect.bitbake.source.arguments
+<h2 id="bitbake-init-script-name">BitBake Init Script Name</h2>
+<pre><code>--detect.bitbake.build.env.name=oe-init-build-env
 </code></pre>
 
-<p>A comma-separated list of arguments to supply when sourcing the build environment init script.</p>
+<p>The name of the build environment init script.</p>
 <table>
 <thead>
 <tr>
@@ -1423,15 +1423,15 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.0.0</td>
+<td>4.4.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>String[]</td>
+<td>String</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>oe-init-build-env</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

@@ -1071,6 +1071,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#maven-modules-included-advanced" class="md-nav__link">
+    Maven Modules Included (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#maven-include-plugins-advanced" class="md-nav__link">
     Maven Include Plugins (Advanced)
   </a>
@@ -1080,13 +1087,6 @@
         <li class="md-nav__item">
   <a href="#maven-modules-excluded-advanced" class="md-nav__link">
     Maven Modules Excluded (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#maven-modules-included-advanced" class="md-nav__link">
-    Maven Modules Included (Advanced)
   </a>
   
 </li>
@@ -1276,6 +1276,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#maven-modules-included-advanced" class="md-nav__link">
+    Maven Modules Included (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#maven-include-plugins-advanced" class="md-nav__link">
     Maven Include Plugins (Advanced)
   </a>
@@ -1285,13 +1292,6 @@
         <li class="md-nav__item">
   <a href="#maven-modules-excluded-advanced" class="md-nav__link">
     Maven Modules Excluded (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#maven-modules-included-advanced" class="md-nav__link">
-    Maven Modules Included (Advanced)
   </a>
   
 </li>
@@ -1497,6 +1497,50 @@
 </tr>
 </tbody>
 </table>
+<h2 id="maven-modules-included-advanced">Maven Modules Included (Advanced)</h2>
+<pre><code>--detect.maven.included.modules
+</code></pre>
+
+<p>A comma-separated list of Maven modules (sub-projects) to include.</p>
+<p>As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="maven-include-plugins-advanced">Maven Include Plugins (Advanced)</h2>
 <pre><code>--detect.maven.include.plugins
 </code></pre>
@@ -1546,50 +1590,6 @@
 
 <p>A comma-separated list of Maven modules (sub-projects) to exclude.</p>
 <p>As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="maven-modules-included-advanced">Maven Modules Included (Advanced)</h2>
-<pre><code>--detect.maven.included.modules
-</code></pre>
-
-<p>A comma-separated list of Maven modules (sub-projects) to include.</p>
-<p>As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
 <table>
 <thead>
 <tr>
