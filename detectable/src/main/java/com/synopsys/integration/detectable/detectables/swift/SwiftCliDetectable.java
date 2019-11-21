@@ -37,7 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "SWIFT", name = "Swift CLI", language = "Swift", forge = "Swift.org", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "SWIFT", name = "Swift CLI", language = "Swift", forge = "Swift.org", requirementsMarkdown = "File: Package.swift.<br/><br/> Executables: swift.")
 public class SwiftCliDetectable extends Detectable {
     private static final String PACKAGE_SWIFT_FILENAME = "Package.swift";
 

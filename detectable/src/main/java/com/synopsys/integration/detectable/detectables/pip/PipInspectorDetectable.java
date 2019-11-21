@@ -40,7 +40,7 @@ import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetecta
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "PIP", name = "Pip inspector", language = "Python", forge = "Pypi", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "PIP", name = "Pip inspector", language = "Python", forge = "Pypi", requirementsMarkdown = "A setup.py file, or one or more requirements.txt files.<br/><br/> Executables: python and pip, or python3 and pip3.")
 public class PipInspectorDetectable extends Detectable {
     private static final String SETUPTOOLS_DEFAULT_FILE_NAME = "setup.py";
 

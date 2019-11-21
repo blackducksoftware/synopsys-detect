@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "RUBYGEMS", name = "Gemspec parse", language = "Ruby", forge = "RubyGems", requirementsMarkdown = "Files: TBD. <br /><br /> Executables: TBD on PATH.")
+@DetectableInfo(group = "RUBYGEMS", name = "Gemspec parse", language = "Ruby", forge = "RubyGems", requirementsMarkdown = "File: A gemspec file (with .gemspec extension).")
 public class GemspecParseDetectable extends Detectable {
     private static final String GEMSPEC_FILENAME = "*.gemspec";
 
