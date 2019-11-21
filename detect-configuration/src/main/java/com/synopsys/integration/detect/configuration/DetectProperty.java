@@ -253,7 +253,7 @@ public enum DetectProperty {
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS("detect.blackduck.signature.scanner.paths", "Signature Scanner Target Paths", "4.2.0", PropertyType.STRING_ARRAY, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
-    @HelpDescription("Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the Black Duck Signature Scanner documentation.")
+    @HelpDescription("Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help.")
     @AcceptableValues(value = { "SNIPPET_MATCHING", "SNIPPET_MATCHING_ONLY", "FULL_SNIPPET_MATCHING", "FULL_SNIPPET_MATCHING_ONLY", "NONE" }, strict = true)
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING("detect.blackduck.signature.scanner.snippet.matching", "Snippet Matching", "5.5.0", PropertyType.STRING, PropertyAuthority.NONE, "NONE"),
 
