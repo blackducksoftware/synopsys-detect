@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "COCOAPODS", name = "Podlock", language = "Objective C", forge = "COCOAPODS and NPMJS", requirementsMarkdown = "Files: Podfile.lock")
+@DetectableInfo(language = "Objective C", forge = "COCOAPODS and NPMJS", requirementsMarkdown = "Files: Podfile.lock")
 public class PodlockDetectable extends Detectable {
     private static final String PODFILE_LOCK_FILENAME = "Podfile.lock";
 

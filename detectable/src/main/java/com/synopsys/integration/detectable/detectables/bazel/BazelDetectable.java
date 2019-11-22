@@ -40,7 +40,7 @@ import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetect
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 
-@DetectableInfo(group = "BAZEL", name = "Bazel", language = "various", forge = "Maven Central", requirementsMarkdown = "File: WORKSPACE. <br /><br /> Executable: bazel.")
+@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: WORKSPACE. <br /><br /> Executable: bazel.")
 public class BazelDetectable extends Detectable {
     public static final String WORKSPACE_FILENAME = "WORKSPACE";
     private final FileFinder fileFinder;

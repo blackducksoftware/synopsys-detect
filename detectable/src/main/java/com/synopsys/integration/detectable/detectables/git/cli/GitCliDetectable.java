@@ -37,7 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "GIT", name = "Git CLI", language = "various", forge = "N/A", requirementsMarkdown = "Directory: .git. <br /><br /> Executable: git.")
+@DetectableInfo(language = "various", forge = "N/A", requirementsMarkdown = "Directory: .git. <br /><br /> Executable: git.")
 public class GitCliDetectable extends Detectable {
     private static final String GIT_DIRECTORY_NAME = ".git";
 

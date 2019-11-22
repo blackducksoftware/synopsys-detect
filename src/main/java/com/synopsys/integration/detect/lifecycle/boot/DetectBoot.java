@@ -284,8 +284,6 @@ public class DetectBoot {
 
         if (infoSearch.isPresent()){
             DetectableInfo info = infoSearch.get();
-            helpData.setDetectableGroup(info.group());
-            helpData.setDetectableName(info.name());
             helpData.setDetectableLanguage(info.language());
             helpData.setDetectableRequirementsMarkdown(info.requirementsMarkdown());
             helpData.setDetectableForge(info.forge());

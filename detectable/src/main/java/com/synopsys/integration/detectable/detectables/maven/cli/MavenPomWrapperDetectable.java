@@ -37,7 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "MAVEN", name = "Maven wrapper", language = "various", forge = "Maven Central", requirementsMarkdown = "File: pom.groovy.<br/><br/>Executable: mvnw or mvn.")
+@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: pom.groovy.<br/><br/>Executable: mvnw or mvn.")
 public class MavenPomWrapperDetectable extends Detectable {
     public static final String POM_WRAPPER_FILENAME = "pom.groovy";
 
@@ -48,7 +48,7 @@ public class MavenPomWrapperDetectable extends Detectable {
     private File mavenExe;
 
     public MavenPomWrapperDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final MavenResolver mavenResolver, final MavenCliExtractor mavenCliExtractor) {
-        super(environment, "Pom wrapper file", "MAVEN");
+        super(environment);
         this.fileFinder = fileFinder;
         this.mavenResolver = mavenResolver;
         this.mavenCliExtractor = mavenCliExtractor;

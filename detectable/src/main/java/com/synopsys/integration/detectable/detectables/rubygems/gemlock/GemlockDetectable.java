@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "RUBYGEMS", name = "Gemlock", language = "Ruby", forge = "RubyGems", requirementsMarkdown = "File: Gemfile.lock.")
+@DetectableInfo(language = "Ruby", forge = "RubyGems", requirementsMarkdown = "File: Gemfile.lock.")
 public class GemlockDetectable extends Detectable {
     private static final String GEMFILE_LOCK_FILENAME = "Gemfile.lock";
 
