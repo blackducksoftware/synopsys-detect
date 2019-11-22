@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "GRADLE", name = "Gradle parse", language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle.")
+@DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle.")
 public class GradleParseDetectable extends Detectable {
     public static final String BUILD_GRADLE_FILENAME = "build.gradle";
 

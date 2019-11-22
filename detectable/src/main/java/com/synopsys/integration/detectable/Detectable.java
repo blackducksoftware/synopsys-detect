@@ -33,11 +33,6 @@ public abstract class Detectable {
     protected DetectableEnvironment environment;
     protected List<File> relevantFiles = new ArrayList<>();
 
-    //TODO: Once all detectables are migrated. Delete this.
-    public Detectable(final DetectableEnvironment environment, String name, String version) {
-        this(environment);
-    }
-
     public Detectable(final DetectableEnvironment environment) {
         this.environment = environment;
     }

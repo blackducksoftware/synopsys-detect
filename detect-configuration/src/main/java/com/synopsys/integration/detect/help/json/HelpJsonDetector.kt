@@ -25,11 +25,9 @@ package com.synopsys.integration.detect.help.json
 import java.util.ArrayList
 
 class HelpJsonDetector {
-    var detectableName = ""
     var detectableLanguage = ""
     var detectableRequirementsMarkdown = ""
     var detectableForge = ""
-    var detectableGroup = ""
     var detectorType = ""
     var detectorName = ""
     var detectorDescriptiveName = ""

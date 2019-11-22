@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "YARN", name = "Yarn lock", language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: yarn.lock and package.json.")
+@DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: yarn.lock and package.json.")
 public class YarnLockDetectable extends Detectable {
     private static final String YARN_LOCK_FILENAME = "yarn.lock";
     private static final String YARN_PACKAGE_JSON = "package.json";

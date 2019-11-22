@@ -30,8 +30,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface DetectableInfo {
-    String group();
-    String name();
     String forge();
     String language();
     String requirementsMarkdown();

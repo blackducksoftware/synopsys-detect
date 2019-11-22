@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(group = "PACKAGIST", name = "Packagist composer lock", language = "PHP", forge = "Packagist.org", requirementsMarkdown = "Files: composer.lock, composer.json.")
+@DetectableInfo(language = "PHP", forge = "Packagist.org", requirementsMarkdown = "Files: composer.lock, composer.json.")
 public class ComposerLockDetectable extends Detectable {
     private static final String COMPOSER_LOCK = "composer.lock";
     private static final String COMPOSER_JSON = "composer.json";

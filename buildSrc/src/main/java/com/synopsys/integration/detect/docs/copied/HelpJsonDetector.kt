@@ -26,11 +26,9 @@ import java.util.ArrayList
 
 //Copied from detect-configuration
 class HelpJsonDetector {
-    var detectableName = ""
     var detectableLanguage = ""
     var detectableRequirementsMarkdown = ""
     var detectableForge = ""
-    var detectableGroup = ""
     var detectorType = ""
     var detectorName = ""
     var detectorDescriptiveName = ""
