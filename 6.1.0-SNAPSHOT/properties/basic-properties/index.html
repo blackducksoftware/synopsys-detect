@@ -1167,20 +1167,20 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../Detectors/bazel#bazel-target">detect.bazel.target</a></td>
-<td>Bazel Target: The Bazel target (for example, //foo:foolib) for which dependencies are collected. For Detect to run Bazel, this property must be set. <br /><br /></td>
+<td><a href="../Detectors/bazel#bazel-executable">detect.bazel.path</a></td>
+<td>Bazel Executable: The path to the Bazel executable. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../Detectors/bazel#bazel-workspace-external-dependency-rule">detect.bazel.dependency.type</a></td>
-<td>default: UNSPECIFIED <br /><br />  Acceptable Values: maven_jar, maven_install, UNSPECIFIED <br /><br />Bazel workspace external dependency rule: The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file. <br /><br /></td>
+<td><a href="../Detectors/bazel#bazel-target">detect.bazel.target</a></td>
+<td>Bazel Target: The Bazel target (for example, //foo:foolib) for which dependencies are collected. For Detect to run Bazel, this property must be set. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Detectors/bazel#bazel-cquery-additional-options">detect.bazel.cquery.options</a></td>
 <td>Bazel cquery additional options: A comma-separated list of additional options to pass to the bazel cquery command. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../Detectors/bazel#bazel-executable">detect.bazel.path</a></td>
-<td>Bazel Executable: The path to the Bazel executable. <br /><br /></td>
+<td><a href="../Detectors/bazel#bazel-workspace-external-dependency-rule">detect.bazel.dependency.type</a></td>
+<td>default: UNSPECIFIED <br /><br />  Acceptable Values: maven_jar, maven_install, UNSPECIFIED <br /><br />Bazel workspace external dependency rule: The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file. <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -1194,6 +1194,10 @@
 </thead>
 <tbody>
 <tr>
+<td><a href="../Detectors/bitbake#bitbake-init-script-name">detect.bitbake.build.env.name</a></td>
+<td>default: oe-init-build-env <br /><br /> BitBake Init Script Name: The name of the build environment init script. <br /><br /></td>
+</tr>
+<tr>
 <td><a href="../Detectors/bitbake#bitbake-package-names">detect.bitbake.package.names</a></td>
 <td>BitBake Package Names: A comma-separated list of package names from which dependencies are extracted. <br /><br /></td>
 </tr>
@@ -1204,10 +1208,6 @@
 <tr>
 <td><a href="../Detectors/bitbake#bitbake-search-depth">detect.bitbake.search.depth</a></td>
 <td>default: 1 <br /><br /> BitBake Search Depth: The depth at which Detect will search for the recipe-depends.dot or package-depends.dot files. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../Detectors/bitbake#bitbake-init-script-name">detect.bitbake.build.env.name</a></td>
-<td>default: oe-init-build-env <br /><br /> BitBake Init Script Name: The name of the build environment init script. <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -1225,20 +1225,20 @@
 <td>default: false <br /><br /> Test Connection to Black Duck: Test the connection to Black Duck with the current configuration. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../Configuration/blackduck server#black-duck-username">blackduck.username</a></td>
-<td>Black Duck Username: Black Duck username. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../Configuration/blackduck server#report-generation-timeout">detect.report.timeout</a></td>
-<td>default: 300 <br /><br /> Report Generation Timeout: The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../Configuration/blackduck server#black-duck-api-token">blackduck.api.token</a></td>
 <td>Black Duck API Token: The API token used to authenticate with the Black Duck Server. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/blackduck server#black-duck-password">blackduck.password</a></td>
 <td>Black Duck Password: Black Duck password. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Configuration/blackduck server#black-duck-username">blackduck.username</a></td>
+<td>Black Duck Username: Black Duck username. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Configuration/blackduck server#report-generation-timeout">detect.report.timeout</a></td>
+<td>default: 300 <br /><br /> Report Generation Timeout: The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/blackduck server#black-duck-url">blackduck.url</a></td>
@@ -1385,12 +1385,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../Detectors/gradle#gradle-build-command">detect.gradle.build.command</a></td>
-<td>Gradle Build Command: Gradle command line arguments to add to the mvn/mvnw command line. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../Detectors/gradle#gradle-executable">detect.gradle.path</a></td>
 <td>Gradle Executable: The path to the Gradle executable (gradle or gradlew). <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Detectors/gradle#gradle-build-command">detect.gradle.build.command</a></td>
+<td>Gradle Build Command: Gradle command line arguments to add to the mvn/mvnw command line. <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -1419,12 +1419,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../Configuration/logging#logging-level-shorthand">logging.level.detect</a></td>
-<td>default: INFO <br /><br />  Acceptable Values: TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF <br /><br />Logging Level Shorthand: Shorthand for the logging level of detect. Equivalent to setting logging.level.com.synopsys.integration. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../Configuration/logging#logging-level">logging.level.com.synopsys.integration</a></td>
 <td>default: INFO <br /><br />  Acceptable Values: TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF <br /><br />Logging Level: The logging level of Detect. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Configuration/logging#logging-level-shorthand">logging.level.detect</a></td>
+<td>default: INFO <br /><br />  Acceptable Values: TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF <br /><br />Logging Level Shorthand: Shorthand for the logging level of detect. Equivalent to setting logging.level.com.synopsys.integration. <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -1438,16 +1438,16 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../Detectors/maven#maven-build-command">detect.maven.build.command</a></td>
-<td>Maven Build Command: Maven command line arguments to add to the mvn/mvnw command line. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../Detectors/maven#maven-executable">detect.maven.path</a></td>
 <td>Maven Executable: The path to the Maven executable (mvn or mvnw). <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Detectors/maven#dependency-scope-excluded">detect.maven.excluded.scopes</a></td>
 <td>Dependency Scope Excluded: A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include). <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Detectors/maven#maven-build-command">detect.maven.build.command</a></td>
+<td>Maven Build Command: Maven command line arguments to add to the mvn/mvnw command line. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Detectors/maven#dependency-scope-included">detect.maven.included.scopes</a></td>
@@ -1469,12 +1469,12 @@
 <td>default: true <br /><br /> Include NPM Development Dependencies: Set this value to false if you would like to exclude your dev dependencies when ran. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../Detectors/npm#additional-npm-command-arguments">detect.npm.arguments</a></td>
-<td>Additional NPM Command Arguments: A space-separated list of additional arguments to add to the npm command line when running Detect against an NPM project. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../Detectors/npm#npm-executable">detect.npm.path</a></td>
 <td>NPM Executable: The path to the Npm executable. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Detectors/npm#additional-npm-command-arguments">detect.npm.arguments</a></td>
+<td>Additional NPM Command Arguments: A space-separated list of additional arguments to add to the npm command line when running Detect against an NPM project. <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -1492,12 +1492,12 @@
 <td>Nuget Config File: The path to the Nuget.Config file to supply to the nuget exe. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../Detectors/nuget#nuget-packages-repository-url">detect.nuget.packages.repo.url</a></td>
-<td>default: https://api.nuget.org/v3/index.json <br /><br /> Nuget Packages Repository URL: The source for nuget packages <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../Detectors/nuget#dotnet-executable">detect.dotnet.path</a></td>
 <td>dotnet Executable: The path to the dotnet executable. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Detectors/nuget#nuget-packages-repository-url">detect.nuget.packages.repo.url</a></td>
+<td>default: https://api.nuget.org/v3/index.json <br /><br /> Nuget Packages Repository URL: The source for nuget packages <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -1526,28 +1526,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../Configuration/paths#bdio-output-directory">detect.bdio.output.path</a></td>
-<td>BDIO Output Directory: The path to the output directory for all BDIO files. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../Configuration/paths#git-executable">detect.git.path</a></td>
-<td>Git Executable: Path of the git executable <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../Configuration/paths#java-executable">detect.java.path</a></td>
-<td>Java Executable: Path to the java executable. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../Configuration/paths#detect-tools-excluded">detect.tools.excluded</a></td>
-<td>Acceptable Values: BAZEL, DETECTOR, DOCKER, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, NONE, ALL <br /><br />Detect Tools Excluded: The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win. <br /><br /></td>
+<td><a href="../Configuration/paths#detect-output-path">detect.output.path</a></td>
+<td>Detect Output Path: The path to the output directory. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/paths#source-path">detect.source.path</a></td>
 <td>Source Path: The path to the project directory to inspect. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../Configuration/paths#detect-output-path">detect.output.path</a></td>
-<td>Detect Output Path: The path to the output directory. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/paths#detect-tools-included">detect.tools</a></td>
@@ -1558,20 +1542,36 @@
 <td>Bash Executable: Path to the Bash executable. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../Configuration/paths#resolve-tilde-in-paths">detect.resolve.tilde.in.paths</a></td>
-<td>default: true <br /><br /> Resolve Tilde in Paths: If set to false Detect will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory. <br /><br /></td>
+<td><a href="../Configuration/paths#bdio-output-directory">detect.bdio.output.path</a></td>
+<td>BDIO Output Directory: The path to the output directory for all BDIO files. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/paths#swift-executable">detect.swift.path</a></td>
 <td>Swift Executable: Path of the swift executable. <br /><br /></td>
 </tr>
 <tr>
+<td><a href="../Configuration/paths#detect-tools-excluded">detect.tools.excluded</a></td>
+<td>Acceptable Values: BAZEL, DETECTOR, DOCKER, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, NONE, ALL <br /><br />Detect Tools Excluded: The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win. <br /><br /></td>
+</tr>
+<tr>
 <td><a href="../Configuration/paths#scan-output-path">detect.scan.output.path</a></td>
 <td>Scan Output Path: The output directory for all signature scanner output files. If not set, the signature scanner output files will be in a 'scan' subdirectory of the output directory. <br /><br /></td>
 </tr>
 <tr>
+<td><a href="../Configuration/paths#git-executable">detect.git.path</a></td>
+<td>Git Executable: Path of the git executable <br /><br /></td>
+</tr>
+<tr>
 <td><a href="../Configuration/paths#detector-search-depth">detect.detector.search.depth</a></td>
 <td>default: 0 <br /><br /> Detector Search Depth: Depth of subdirectories within the source directory to which Detect will search for files that indicate whether a detector applies. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Configuration/paths#java-executable">detect.java.path</a></td>
+<td>Java Executable: Path to the java executable. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Configuration/paths#resolve-tilde-in-paths">detect.resolve.tilde.in.paths</a></td>
+<td>default: true <br /><br /> Resolve Tilde in Paths: If set to false Detect will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory. <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -1585,12 +1585,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../Detectors/pear#pear-executable">detect.pear.path</a></td>
-<td>Pear Executable: The path to the pear executable. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../Detectors/pear#include-only-required-pear-dependencies">detect.pear.only.required.deps</a></td>
 <td>default: false <br /><br /> Include Only Required Pear Dependencies: Set to true if you would like to include only required packages. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Detectors/pear#pear-executable">detect.pear.path</a></td>
+<td>Pear Executable: The path to the pear executable. <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -1604,6 +1604,14 @@
 </thead>
 <tbody>
 <tr>
+<td><a href="../Detectors/pip#pip-include-only-project-tree">detect.pip.only.project.tree</a></td>
+<td>default: false <br /><br /> PIP Include Only Project Tree: By default, pipenv includes all dependencies found in the graph. Set to true to only include dependencies found underneath the dependency that matches the provided pip project and version name. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Detectors/pip#pip-requirements-path">detect.pip.requirements.path</a></td>
+<td>PIP Requirements Path: A comma-separated list of paths to requirements.txt files. <br /><br /></td>
+</tr>
+<tr>
 <td><a href="../Detectors/pip#pipenv-executable">detect.pipenv.path</a></td>
 <td>Pipenv Executable: The path to the Pipenv executable. <br /><br /></td>
 </tr>
@@ -1612,16 +1620,8 @@
 <td>PIP Project Name: The name of your PIP project, to be used if your project's name cannot be correctly inferred from its setup.py file. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../Detectors/pip#pip-requirements-path">detect.pip.requirements.path</a></td>
-<td>PIP Requirements Path: A comma-separated list of paths to requirements.txt files. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../Detectors/pip#pip-project-version-name">detect.pip.project.version.name</a></td>
 <td>PIP Project Version Name: The version of your PIP project, to be used if your project's version name cannot be correctly inferred from its setup.py file. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../Detectors/pip#pip-include-only-project-tree">detect.pip.only.project.tree</a></td>
-<td>default: false <br /><br /> PIP Include Only Project Tree: By default, pipenv includes all dependencies found in the graph. Set to true to only include dependencies found underneath the dependency that matches the provided pip project and version name. <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -1635,36 +1635,36 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../Configuration/project#version-name">detect.project.version.name</a></td>
-<td>Version Name: An override for the version to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../Configuration/project#project-tier">detect.project.tier</a></td>
-<td>Acceptable Values: 1, 2, 3, 4, 5 <br /><br />Project Tier: If a Black Duck project tier is specified, your project will be created with this tier. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../Configuration/project#version-phase">detect.project.version.phase</a></td>
-<td>default: Development <br /><br />  Acceptable Values: ARCHIVED, DEPRECATED, DEVELOPMENT, PLANNING, PRERELEASE, RELEASED <br /><br />Version Phase: An override for the Project Version phase. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../Configuration/project#project-name">detect.project.name</a></td>
-<td>Project Name: An override for the name to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../Configuration/project#version-notes">detect.project.version.notes</a></td>
-<td>Version Notes: If project version notes are specified, your project version will be created with these notes. <br /><br /></td>
+<td><a href="../Configuration/project#fail-on-policy-violation-severities">detect.policy.check.fail.on.severities</a></td>
+<td>Acceptable Values: ALL, BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL, UNSPECIFIED <br /><br />Fail on Policy Violation Severities: A comma-separated list of policy violation severities that will fail Detect. If this is not set, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except UNSPECIFIED. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/project#version-nickname">detect.project.version.nickname</a></td>
 <td>Version Nickname: If a project version nickname is specified, your project version will be created with this nickname. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../Configuration/project#fail-on-policy-violation-severities">detect.policy.check.fail.on.severities</a></td>
-<td>Acceptable Values: ALL, BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL, UNSPECIFIED <br /><br />Fail on Policy Violation Severities: A comma-separated list of policy violation severities that will fail Detect. If this is not set, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except UNSPECIFIED. <br /><br /></td>
+<td><a href="../Configuration/project#version-phase">detect.project.version.phase</a></td>
+<td>default: Development <br /><br />  Acceptable Values: ARCHIVED, DEPRECATED, DEVELOPMENT, PLANNING, PRERELEASE, RELEASED <br /><br />Version Phase: An override for the Project Version phase. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Configuration/project#version-notes">detect.project.version.notes</a></td>
+<td>Version Notes: If project version notes are specified, your project version will be created with these notes. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/project#project-description">detect.project.description</a></td>
 <td>Project Description: If project description is specified, your project version will be created with this description. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Configuration/project#project-name">detect.project.name</a></td>
+<td>Project Name: An override for the name to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Configuration/project#project-tier">detect.project.tier</a></td>
+<td>Acceptable Values: 1, 2, 3, 4, 5 <br /><br />Project Tier: If a Black Duck project tier is specified, your project will be created with this tier. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Configuration/project#version-name">detect.project.version.name</a></td>
+<td>Version Name: An override for the version to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/project#update-project-version">detect.project.version.update</a></td>
@@ -1701,20 +1701,20 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../Configuration/report#risk-report-output-path">detect.risk.report.pdf.path</a></td>
-<td>default: . <br /><br /> Risk Report Output Path: The output directory for risk report in PDF. Default is the source directory. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../Configuration/report#generate-risk-report-(pdf)">detect.risk.report.pdf</a></td>
 <td>default: false <br /><br /> Generate Risk Report (PDF): When set to true, a Black Duck risk report in PDF form will be created. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../Configuration/report#notices-report-path">detect.notices.report.path</a></td>
-<td>default: . <br /><br /> Notices Report Path: The output directory for notices report. Default is the source directory. <br /><br /></td>
+<td><a href="../Configuration/report#risk-report-output-path">detect.risk.report.pdf.path</a></td>
+<td>default: . <br /><br /> Risk Report Output Path: The output directory for risk report in PDF. Default is the source directory. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/report#generate-notices-report">detect.notices.report</a></td>
 <td>default: false <br /><br /> Generate Notices Report: When set to true, a Black Duck notices report in text form will be created in your source directory. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Configuration/report#notices-report-path">detect.notices.report.path</a></td>
+<td>default: . <br /><br /> Notices Report Path: The output directory for notices report. Default is the source directory. <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -1728,12 +1728,12 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../Detectors/ruby#ruby-runtime-dependencies">detect.ruby.include.runtime.dependencies</a></td>
-<td>default: true <br /><br /> Ruby Runtime Dependencies: If set to false, runtime dependencies will not be included when parsing *.gemspec files. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../Detectors/ruby#ruby-development-dependencies">detect.ruby.include.dev.dependencies</a></td>
 <td>default: false <br /><br /> Ruby Development Dependencies: If set to true, development dependencies will be included when parsing *.gemspec files. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Detectors/ruby#ruby-runtime-dependencies">detect.ruby.include.runtime.dependencies</a></td>
+<td>default: true <br /><br /> Ruby Runtime Dependencies: If set to false, runtime dependencies will not be included when parsing *.gemspec files. <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -1762,8 +1762,20 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../Configuration/signature scanner#signature-scanner-target-paths">detect.blackduck.signature.scanner.paths</a></td>
-<td>Signature Scanner Target Paths: These paths and only these paths will be scanned. <br /><br /></td>
+<td><a href="../Configuration/signature scanner#directory-name-exclusion-patterns">detect.blackduck.signature.scanner.exclusion.name.patterns</a></td>
+<td>default: node_modules <br /><br /> Directory Name Exclusion Patterns: A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Configuration/signature scanner#binary-scan-target">detect.binary.scan.file.path</a></td>
+<td>Binary Scan Target: If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Configuration/signature scanner#exclusion-patterns">detect.blackduck.signature.scanner.exclusion.patterns</a></td>
+<td>Exclusion Patterns: A comma-separated list of values to be used with the Signature Scanner --exclude flag. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../Configuration/signature scanner#signature-scanner-dry-run">detect.blackduck.signature.scanner.dry.run</a></td>
+<td>default: false <br /><br /> Signature Scanner Dry Run: If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/signature scanner#exclusion-patterns-search-depth">detect.blackduck.signature.scanner.exclusion.pattern.search.depth</a></td>
@@ -1774,36 +1786,24 @@
 <td>default: NONE <br /><br />  Acceptable Values: SNIPPET_MATCHING, SNIPPET_MATCHING_ONLY, FULL_SNIPPET_MATCHING, FULL_SNIPPET_MATCHING_ONLY, NONE <br /><br />Snippet Matching: Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../Configuration/signature scanner#signature-scanner-arguments">detect.blackduck.signature.scanner.arguments</a></td>
-<td>Signature Scanner Arguments: Additional arguments to use when running the Black Duck signature scanner. <br /><br /></td>
+<td><a href="../Configuration/signature scanner#signature-scanner-local-path">detect.blackduck.signature.scanner.local.path</a></td>
+<td>Signature Scanner Local Path: To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/signature scanner#binary-scan-filename-patterns">detect.binary.scan.file.name.patterns</a></td>
 <td>Binary Scan Filename Patterns: If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../Configuration/signature scanner#signature-scanner-dry-run">detect.blackduck.signature.scanner.dry.run</a></td>
-<td>default: false <br /><br /> Signature Scanner Dry Run: If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../Configuration/signature scanner#signature-scanner-local-path">detect.blackduck.signature.scanner.local.path</a></td>
-<td>Signature Scanner Local Path: To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../Configuration/signature scanner#directory-name-exclusion-patterns">detect.blackduck.signature.scanner.exclusion.name.patterns</a></td>
-<td>default: node_modules <br /><br /> Directory Name Exclusion Patterns: A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../Configuration/signature scanner#upload-source-mode">detect.blackduck.signature.scanner.upload.source.mode</a></td>
 <td>default: false <br /><br /> Upload source mode: If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../Configuration/signature scanner#exclusion-patterns">detect.blackduck.signature.scanner.exclusion.patterns</a></td>
-<td>Exclusion Patterns: A comma-separated list of values to be used with the Signature Scanner --exclude flag. <br /><br /></td>
+<td><a href="../Configuration/signature scanner#signature-scanner-arguments">detect.blackduck.signature.scanner.arguments</a></td>
+<td>Signature Scanner Arguments: Additional arguments to use when running the Black Duck signature scanner. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../Configuration/signature scanner#binary-scan-target">detect.binary.scan.file.path</a></td>
-<td>Binary Scan Target: If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns. <br /><br /></td>
+<td><a href="../Configuration/signature scanner#signature-scanner-target-paths">detect.blackduck.signature.scanner.paths</a></td>
+<td>Signature Scanner Target Paths: These paths and only these paths will be scanned. <br /><br /></td>
 </tr>
 </tbody>
 </table>
