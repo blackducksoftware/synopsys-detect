@@ -170,19 +170,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../.." title="Overview" class="md-nav__link">
-      Overview
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../../../0-introduction/" title="Introduction" class="md-nav__link">
+    <a href="../../.." title="Introduction" class="md-nav__link">
       Introduction
     </a>
   </li>
@@ -194,7 +182,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../1-requirements/" title="Requirements" class="md-nav__link">
+    <a href="../../../10-requirements/" title="Requirements" class="md-nav__link">
       Requirements
     </a>
   </li>
@@ -206,7 +194,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../2-quickstart/" title="Quickstart guide" class="md-nav__link">
+    <a href="../../../20-quickstart/" title="Quickstart guide" class="md-nav__link">
       Quickstart guide
     </a>
   </li>
@@ -218,7 +206,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../2-running/" title="Downloading and running" class="md-nav__link">
+    <a href="../../../30-running/" title="Downloading and running" class="md-nav__link">
       Downloading and running
     </a>
   </li>
@@ -230,31 +218,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../3-blackduck/" title="Software Composition Analysis (SCA) with Black Duck" class="md-nav__link">
-      Software Composition Analysis (SCA) with Black Duck
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../../../3-polaris/" title="Static application security testing (SAST) with Polaris" class="md-nav__link">
-      Static application security testing (SAST) with Polaris
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../../../configuring/" title="Configuring" class="md-nav__link">
+    <a href="../../../40-configuring/" title="Configuring" class="md-nav__link">
       Configuring
     </a>
   </li>
@@ -266,7 +230,43 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../z-releasenotes/" title="Release Notes" class="md-nav__link">
+    <a href="../../../50-blackduck/" title="Software Composition Analysis (SCA) with Black Duck" class="md-nav__link">
+      Software Composition Analysis (SCA) with Black Duck
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../60-polaris/" title="Static application security testing (SAST) with Polaris" class="md-nav__link">
+      Static application security testing (SAST) with Polaris
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../70-quickreference/" title="Quick reference" class="md-nav__link">
+      Quick reference
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../90-releasenotes/" title="Release Notes" class="md-nav__link">
       Release Notes
     </a>
   </li>
@@ -954,15 +954,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-target" class="md-nav__link">
-    Bazel Target
+  <a href="#bazel-cquery-additional-options" class="md-nav__link">
+    Bazel cquery additional options
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-cquery-additional-options" class="md-nav__link">
-    Bazel cquery additional options
+  <a href="#bazel-target" class="md-nav__link">
+    Bazel Target
   </a>
   
 </li>
@@ -1227,15 +1227,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-target" class="md-nav__link">
-    Bazel Target
+  <a href="#bazel-cquery-additional-options" class="md-nav__link">
+    Bazel cquery additional options
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-cquery-additional-options" class="md-nav__link">
-    Bazel cquery additional options
+  <a href="#bazel-target" class="md-nav__link">
+    Bazel Target
   </a>
   
 </li>
@@ -1308,11 +1308,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bazel-target">Bazel Target</h2>
-<pre><code>--detect.bazel.target
+<h2 id="bazel-cquery-additional-options">Bazel cquery additional options</h2>
+<pre><code>--detect.bazel.cquery.options
 </code></pre>
 
-<p>The Bazel target (for example, //foo:foolib) for which dependencies are collected. For Detect to run Bazel, this property must be set.</p>
+<p>A comma-separated list of additional options to pass to the bazel cquery command.</p>
 <table>
 <thead>
 <tr>
@@ -1323,7 +1323,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>5.2.0</td>
+<td>6.1.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1351,11 +1351,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bazel-cquery-additional-options">Bazel cquery additional options</h2>
-<pre><code>--detect.bazel.cquery.options
+<h2 id="bazel-target">Bazel Target</h2>
+<pre><code>--detect.bazel.target
 </code></pre>
 
-<p>A comma-separated list of additional options to pass to the bazel cquery command.</p>
+<p>The Bazel target (for example, //foo:foolib) for which dependencies are collected. For Detect to run Bazel, this property must be set.</p>
 <table>
 <thead>
 <tr>
@@ -1366,7 +1366,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.1.0</td>
+<td>5.2.0</td>
 </tr>
 <tr>
 <td>Type</td>

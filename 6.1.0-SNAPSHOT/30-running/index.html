@@ -36,7 +36,7 @@
     
     
       
-        <title>Configuring - Synopsys Detect</title>
+        <title>Downloading and running - Synopsys Detect</title>
       
     
     
@@ -75,7 +75,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#configuring" tabindex="1" class="md-skip">
+      <a href="#downloading-and-running" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -101,7 +101,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Configuring
+                Downloading and running
               
             </span>
           
@@ -170,19 +170,7 @@
 
 
   <li class="md-nav__item">
-    <a href=".." title="Overview" class="md-nav__link">
-      Overview
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../0-introduction/" title="Introduction" class="md-nav__link">
+    <a href=".." title="Introduction" class="md-nav__link">
       Introduction
     </a>
   </li>
@@ -194,7 +182,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../1-requirements/" title="Requirements" class="md-nav__link">
+    <a href="../10-requirements/" title="Requirements" class="md-nav__link">
       Requirements
     </a>
   </li>
@@ -206,44 +194,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../2-quickstart/" title="Quickstart guide" class="md-nav__link">
+    <a href="../20-quickstart/" title="Quickstart guide" class="md-nav__link">
       Quickstart guide
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../2-running/" title="Downloading and running" class="md-nav__link">
-      Downloading and running
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../3-blackduck/" title="Software Composition Analysis (SCA) with Black Duck" class="md-nav__link">
-      Software Composition Analysis (SCA) with Black Duck
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../3-polaris/" title="Static application security testing (SAST) with Polaris" class="md-nav__link">
-      Static application security testing (SAST) with Polaris
     </a>
   </li>
 
@@ -263,11 +215,11 @@
     
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
-        Configuring
+        Downloading and running
       </label>
     
-    <a href="./" title="Configuring" class="md-nav__link md-nav__link--active">
-      Configuring
+    <a href="./" title="Downloading and running" class="md-nav__link md-nav__link--active">
+      Downloading and running
     </a>
     
       
@@ -281,9 +233,131 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#providing-sensitive-values-such-as-credentials" class="md-nav__link">
-    Providing sensitive values such as credentials
+  <a href="#positioning-synopsys-detect-in-the-build-process" class="md-nav__link">
+    Positioning Synopsys Detect in the build process
   </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#build-mode" class="md-nav__link">
+    Build mode
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buildless-mode" class="md-nav__link">
+    Buildless mode
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-the-working-directory" class="md-nav__link">
+    Choosing the working directory
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-a-run-method-script-or-jar" class="md-nav__link">
+    Choosing a run method (script or .jar)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-synopsys-detect-script" class="md-nav__link">
+    Running the Synopsys Detect script
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linux-or-mac-bash" class="md-nav__link">
+    Linux or Mac (Bash)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows-powershell" class="md-nav__link">
+    Windows (PowerShell)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-a-specific-version-of-synopsys-detect" class="md-nav__link">
+    Running a specific version of Synopsys Detect
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linux-or-mac-bash_1" class="md-nav__link">
+    Linux or Mac (Bash)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows-powershell_1" class="md-nav__link">
+    Windows (PowerShell)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-synopsys-detect-jar" class="md-nav__link">
+    Running the Synopsys Detect .jar
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#including-and-excluding-tools-and-detectors" class="md-nav__link">
+    Including and excluding tools and detectors
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tools" class="md-nav__link">
+    Tools
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#detectors" class="md-nav__link">
+    Detectors
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -304,7 +378,55 @@
 
 
   <li class="md-nav__item">
-    <a href="../z-releasenotes/" title="Release Notes" class="md-nav__link">
+    <a href="../40-configuring/" title="Configuring" class="md-nav__link">
+      Configuring
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../50-blackduck/" title="Software Composition Analysis (SCA) with Black Duck" class="md-nav__link">
+      Software Composition Analysis (SCA) with Black Duck
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../60-polaris/" title="Static application security testing (SAST) with Polaris" class="md-nav__link">
+      Static application security testing (SAST) with Polaris
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../70-quickreference/" title="Quick reference" class="md-nav__link">
+      Quick reference
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../90-releasenotes/" title="Release Notes" class="md-nav__link">
       Release Notes
     </a>
   </li>
@@ -1195,9 +1317,131 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#providing-sensitive-values-such-as-credentials" class="md-nav__link">
-    Providing sensitive values such as credentials
+  <a href="#positioning-synopsys-detect-in-the-build-process" class="md-nav__link">
+    Positioning Synopsys Detect in the build process
   </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#build-mode" class="md-nav__link">
+    Build mode
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#buildless-mode" class="md-nav__link">
+    Buildless mode
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-the-working-directory" class="md-nav__link">
+    Choosing the working directory
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-a-run-method-script-or-jar" class="md-nav__link">
+    Choosing a run method (script or .jar)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-synopsys-detect-script" class="md-nav__link">
+    Running the Synopsys Detect script
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linux-or-mac-bash" class="md-nav__link">
+    Linux or Mac (Bash)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows-powershell" class="md-nav__link">
+    Windows (PowerShell)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-a-specific-version-of-synopsys-detect" class="md-nav__link">
+    Running a specific version of Synopsys Detect
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#linux-or-mac-bash_1" class="md-nav__link">
+    Linux or Mac (Bash)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#windows-powershell_1" class="md-nav__link">
+    Windows (PowerShell)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-synopsys-detect-jar" class="md-nav__link">
+    Running the Synopsys Detect .jar
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#including-and-excluding-tools-and-detectors" class="md-nav__link">
+    Including and excluding tools and detectors
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tools" class="md-nav__link">
+    Tools
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#detectors" class="md-nav__link">
+    Detectors
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1218,70 +1462,118 @@
               
                 
                 
-                <h1 id="configuring">Configuring</h1>
-<p>The primary means for configuring Synopsys Detect is by setting <a href="../properties/all-properties/">Synopsys Detect property values</a>.</p>
-<p>Synopsys Detect reads property values using
-<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config">Spring Boot's externalized configuration mechanism</a>.</p>
-<p>The most common methods used to pass a property value to Synopsys Detect are listed below. A method with lower number in Spring Boot's order of precedence will
-override a method with a higher number.</p>
+                <h1 id="downloading-and-running">Downloading and running</h1>
+<h2 id="positioning-synopsys-detect-in-the-build-process">Positioning Synopsys Detect in the build process</h2>
+<h3 id="build-mode">Build mode</h3>
+<p>In <a href="../components/detectors/#build-detectors-vs-buildless-detectors">build mode</a> (the default),
+Synopsys Detect should be executed as a post-build step in the build environment of the project.
+Building your project prior to running Synopsys Detect is often required for the detector to run successfully,
+and helps ensure that the build artifacts are available for signature scanning.</p>
+<h3 id="buildless-mode">Buildless mode</h3>
+<p>In <a href="../components/detectors/#build-detectors-vs-buildless-detectors">buildless mode</a>,
+Synopsys Detect will make its best effort to discover dependencies without the benefit of
+build artifacts or build tools. In buildless mode, there is no requirement that Synopsys Detect run as a post-build step.
+Results from buildless mode may be less accurate than results from build mode.</p>
+<h2 id="choosing-the-working-directory">Choosing the working directory</h2>
+<p>You can run Synopsys Detect from any directory. If you are not running Synopsys Detect from the project directory,
+provide the project directory via the <a href="../properties/Configuration/paths/#source-path">source path property</a>. When that property is not set,
+Synopsys Detect assumes the current working directory is the project directory.</p>
+<h2 id="choosing-a-run-method-script-or-jar">Choosing a run method (script or .jar)</h2>
+<p>There are two ways to run Synopsys Detect:</p>
+<ol>
+<li>Download and run a Synopsys Detect script</li>
+<li>Download and run a Synopsys Detect .jar file</li>
+</ol>
+<p>The primary reason to run a Synopsys Detect script is that the scripts (by default) always
+run the latest version of the Synopsys Detect .jar file (downloading it for you if necessary).
+Run this way, Synopsys Detect automatically updates itself; as soon as a new version becomes
+available, you will run the new version (unless you override this default behavior).</p>
+<p>The primary reason to run the Synopsys Detect .jar directly is that this method provides
+direct control over the Synopsys Detect version;
+Synopsys Detect will not automatically update in this scenario.</p>
+<h2 id="running-the-synopsys-detect-script">Running the Synopsys Detect script</h2>
+<p>The primary function of the Synopsys Detect scripts is to download and execute the Synopsys Detect .jar file.
+Several aspects of script functionality can be configured, including:</p>
 <ul>
-<li>Using a command line argument (#4 in Spring Boot's order of precedence)</li>
+<li>The Synopsys Detect version to download/run (by default: the latest version)</li>
+<li>The download location</li>
+<li>Where to find Java</li>
+<li>Etc.</li>
 </ul>
-<pre><code>    --blackduck.url=https://blackduck.yourdomain.com
+<p>Information on how to configure the scripts can be found in <a href="../advanced/script-configuration/">Shell script configuration</a>.</p>
+<h4 id="linux-or-mac-bash">Linux or Mac (Bash)</h4>
+<p>To download and run the latest version of Synopsys Detect in a single command:</p>
+<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
 </code></pre>
-
-<ul>
-<li>Using one environment variable per property (#10 in Spring Boot's order of precedence)</li>
-</ul>
-<pre><code>    export BLACKDUCK_URL=https://blackduck.yourdomain.com
+<p>Append any command line arguments to the end, separated by spaces. For example:</p>
+<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
 </code></pre>
-
-<ul>
-<li>Using property assignments in a .properties configuration file (#14 in Spring Boot's order of precedence)</li>
-</ul>
-<pre><code>    blackduck.url=https://blackduck.yourdomain.com
-    blackduck.api.token=yourtokenvalue
+<h4 id="windows-powershell">Windows (PowerShell)</h4>
+<p>To download and run the latest version of Synopsys Detect in a single command:</p>
+<pre><code>powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 </code></pre>
-
-<ul>
-<li>Using property assignments in a .yml configuration file (also #14 in Spring Boot's order of precedence, but .properties takes precedence over .yml)</li>
-</ul>
-<pre><code>    blackduck.url: https://blackduck.yourdomain.com
-    blackduck.api.token: yourtokenvalue
+<p>Append any command line arguments to the end, separated by spaces. For example:</p>
+<pre><code>powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect" --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
 </code></pre>
-
-<ul>
-<li>Using the SPRING_APPLICATION_JSON environment variable with a set of properties set using JSON format (#5 in Spring Boot's order of precedence)</li>
-</ul>
-<pre><code>    export SPRING_APPLICATION_JSON='{&quot;blackduck.url&quot;:&quot;https://blackduck.yourdomain.com&quot;,&quot;blackduck.api.token&quot;:&quot;yourgeneratedtoken&quot;}'
+<h3 id="running-a-specific-version-of-synopsys-detect">Running a specific version of Synopsys Detect</h3>
+<h4 id="linux-or-mac-bash_1">Linux or Mac (Bash)</h4>
+<p>To run a specific version of Synopsys Detect:</p>
+<pre><code>export DETECT_LATEST_RELEASE_VERSION={Synopsys Detect version}
+bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
 </code></pre>
-
-<p>When setting a property value on the command line, prefix the property name with two hyphens ("--"). When setting a property
-value in a .properties file, do not prefix the property name with hyphens (and adhere to Java .properties
-file syntax: propertyName=propertyValue, one per line).</p>
-<p>On Linux, when setting a property value using an environment variable, the environment variable name
-is the property name converted to uppercase, with period characters (".") converted to underscore
-characters ("_").</p>
-<p>On Windows, the environment variable name can either be the original property
-name, or the property name converted to uppercase, with period characters (".") converted to underscore
-characters ("_").</p>
-<p>The most common location for a configuration (.properties or .yml) file is in a file named application.properties or application.yml
-in the current working directory, or a ./config subdirectory.</p>
-<p>Refer to the <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config">Spring Boot documentation</a>
-for more details and more sophisticated ways to set properties.</p>
-<h2 id="providing-sensitive-values-such-as-credentials">Providing sensitive values such as credentials</h2>
-<p>You can provide sensitive values such as credentials to Synopsys Detect using a variety of
-mechanisms provided by <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config">Spring Boot</a>,
-including:</p>
-<ul>
-<li>On the command line (for example: --blackduck.password={your password})</li>
-<li>As an environment variable value (for example: export BLACKDUCK_PASSWORD={your password})</li>
-<li>In a configration (.properties) file (for example: ./application.properties)</li>
-</ul>
-<p>Values provided on the command line may be visible to other users that can view process details.
-Setting sensitive value using environment variables is usually considered more secure.
-Connecting to another system (e.g. Black Duck or Polaris) using an access token (also called an API token)
-is usually considered more secure than connecting using username and password. </p>
+<p>For example, to run Synopsys Detect 5.5.0:</p>
+<pre><code>export DETECT_LATEST_RELEASE_VERSION=5.5.0
+bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
+</code></pre>
+<h4 id="windows-powershell_1">Windows (PowerShell)</h4>
+<p>To run a specific version of Synopsys Detect:</p>
+<pre><code>$Env:DETECT_LATEST_RELEASE_VERSION = {Synopsys Detect version}
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+</code></pre>
+<p>For example, to run Synopsys Detect 5.5.0:</p>
+<pre><code>$Env:DETECT_LATEST_RELEASE_VERSION = 5.5.0
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+</code></pre>
+<h2 id="running-the-synopsys-detect-jar">Running the Synopsys Detect .jar</h2>
+<p>Recent versions of the Synopsys Detect .jar file can be downloaded from https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect.</p>
+<p>To run Synopsys Detect by invoking the .jar file:</p>
+<pre><code>java -jar {path to .jar file}
+</code></pre>
+<p>For example:</p>
+<pre><code>curl -O https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect/5.6.2/synopsys-detect-5.6.2.jar
+java -jar synopsys-detect-5.6.2.jar
+</code></pre>
+<p>You can use the Synopsys Detect Bash script (detect.sh) to download the Synopsys Detect .jar file:</p>
+<pre><code>export DETECT_DOWNLOAD_ONLY=1
+./detect.sh
+</code></pre>
+<h2 id="including-and-excluding-tools-and-detectors">Including and excluding tools and detectors</h2>
+<p><a href="../properties/all-properties/">Properties</a> provide a variety of options for configuring Synopsys Detect behavior. One of the
+most fundamental ways to modify Synopsys Detect is by including and excluding <a href="../components/tools/">tools</a> and <a href="../components/detectors/">detectors</a>.</p>
+<h3 id="tools">Tools</h3>
+<p>By default, all tools are eligible to run (the set of tools that actually run
+depends on which properties you set).
+To limit the eligible tools to a given list, use:</p>
+<pre><code>--detect.tools={comma-separated list of tool names, all uppercase}
+</code></pre>
+<p>To exclude specific tools, use:</p>
+<pre><code>--detect.tools.excluded={comma-separated list of tool names, all uppercase}
+</code></pre>
+<p>Exclusions take precedence over inclusions.</p>
+<p>See <a href="../components/tools/">Tools</a> for the list of tool names.</p>
+<p>See <a href="../properties/all-properties/">Properties</a> for details.</p>
+<h3 id="detectors">Detectors</h3>
+<p>By default, all detectors are eligible to run (the set of detectors that actually
+run depends on what files exist in your project directory).
+To limit the eligible detectors to a given list, use:</p>
+<pre><code>--detect.included.detector.types={comma-separated list of detector names}
+</code></pre>
+<p>To exclude specific detectors, use:</p>
+<pre><code>--detect.excluded.detector.types={comma-separated list of detector names}
+</code></pre>
+<p>Exclusions take precedence over inclusions.</p>
+<p>See <a href="../components/detectors/">Detectors</a> for the list of detector names.</p>
+<p>See <a href="../properties/all-properties/">Properties</a> for details.</p>
                 
                   
                 
@@ -1302,7 +1594,7 @@ is usually considered more secure than connecting using username and password. <
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../3-polaris/" title="Static application security testing (SAST) with Polaris" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../20-quickstart/" title="Quickstart guide" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -1311,19 +1603,19 @@ is usually considered more secure than connecting using username and password. <
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Static application security testing (SAST) with Polaris
+                Quickstart guide
               </span>
             </div>
           </a>
         
         
-          <a href="../z-releasenotes/" title="Release Notes" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../40-configuring/" title="Configuring" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Release Notes
+                Configuring
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

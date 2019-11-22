@@ -170,19 +170,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../.." title="Overview" class="md-nav__link">
-      Overview
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../../../0-introduction/" title="Introduction" class="md-nav__link">
+    <a href="../../.." title="Introduction" class="md-nav__link">
       Introduction
     </a>
   </li>
@@ -194,7 +182,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../1-requirements/" title="Requirements" class="md-nav__link">
+    <a href="../../../10-requirements/" title="Requirements" class="md-nav__link">
       Requirements
     </a>
   </li>
@@ -206,7 +194,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../2-quickstart/" title="Quickstart guide" class="md-nav__link">
+    <a href="../../../20-quickstart/" title="Quickstart guide" class="md-nav__link">
       Quickstart guide
     </a>
   </li>
@@ -218,7 +206,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../2-running/" title="Downloading and running" class="md-nav__link">
+    <a href="../../../30-running/" title="Downloading and running" class="md-nav__link">
       Downloading and running
     </a>
   </li>
@@ -230,31 +218,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../3-blackduck/" title="Software Composition Analysis (SCA) with Black Duck" class="md-nav__link">
-      Software Composition Analysis (SCA) with Black Duck
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../../../3-polaris/" title="Static application security testing (SAST) with Polaris" class="md-nav__link">
-      Static application security testing (SAST) with Polaris
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../../../configuring/" title="Configuring" class="md-nav__link">
+    <a href="../../../40-configuring/" title="Configuring" class="md-nav__link">
       Configuring
     </a>
   </li>
@@ -266,7 +230,43 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../z-releasenotes/" title="Release Notes" class="md-nav__link">
+    <a href="../../../50-blackduck/" title="Software Composition Analysis (SCA) with Black Duck" class="md-nav__link">
+      Software Composition Analysis (SCA) with Black Duck
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../60-polaris/" title="Static application security testing (SAST) with Polaris" class="md-nav__link">
+      Static application security testing (SAST) with Polaris
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../70-quickreference/" title="Quick reference" class="md-nav__link">
+      Quick reference
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../90-releasenotes/" title="Release Notes" class="md-nav__link">
       Release Notes
     </a>
   </li>
@@ -1110,8 +1110,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pip-requirements-path" class="md-nav__link">
-    PIP Requirements Path
+  <a href="#pip-project-name" class="md-nav__link">
+    PIP Project Name
   </a>
   
 </li>
@@ -1124,8 +1124,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pip-project-name" class="md-nav__link">
-    PIP Project Name
+  <a href="#pip-requirements-path" class="md-nav__link">
+    PIP Requirements Path
   </a>
   
 </li>
@@ -1234,8 +1234,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pip-requirements-path" class="md-nav__link">
-    PIP Requirements Path
+  <a href="#pip-project-name" class="md-nav__link">
+    PIP Project Name
   </a>
   
 </li>
@@ -1248,8 +1248,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#pip-project-name" class="md-nav__link">
-    PIP Project Name
+  <a href="#pip-requirements-path" class="md-nav__link">
+    PIP Requirements Path
   </a>
   
 </li>
@@ -1322,11 +1322,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="pip-requirements-path">PIP Requirements Path</h2>
-<pre><code>--detect.pip.requirements.path
+<h2 id="pip-project-name">PIP Project Name</h2>
+<pre><code>--detect.pip.project.name
 </code></pre>
 
-<p>A comma-separated list of paths to requirements.txt files.</p>
+<p>The name of your PIP project, to be used if your project's name cannot be correctly inferred from its setup.py file.</p>
 <table>
 <thead>
 <tr>
@@ -1341,7 +1341,7 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>String[]</td>
+<td>String</td>
 </tr>
 <tr>
 <td>Default Value</td>
@@ -1408,11 +1408,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="pip-project-name">PIP Project Name</h2>
-<pre><code>--detect.pip.project.name
+<h2 id="pip-requirements-path">PIP Requirements Path</h2>
+<pre><code>--detect.pip.requirements.path
 </code></pre>
 
-<p>The name of your PIP project, to be used if your project's name cannot be correctly inferred from its setup.py file.</p>
+<p>A comma-separated list of paths to requirements.txt files.</p>
 <table>
 <thead>
 <tr>
@@ -1427,7 +1427,7 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>String[]</td>
 </tr>
 <tr>
 <td>Default Value</td>

@@ -170,19 +170,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../.." title="Overview" class="md-nav__link">
-      Overview
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../../../0-introduction/" title="Introduction" class="md-nav__link">
+    <a href="../../.." title="Introduction" class="md-nav__link">
       Introduction
     </a>
   </li>
@@ -194,7 +182,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../1-requirements/" title="Requirements" class="md-nav__link">
+    <a href="../../../10-requirements/" title="Requirements" class="md-nav__link">
       Requirements
     </a>
   </li>
@@ -206,7 +194,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../2-quickstart/" title="Quickstart guide" class="md-nav__link">
+    <a href="../../../20-quickstart/" title="Quickstart guide" class="md-nav__link">
       Quickstart guide
     </a>
   </li>
@@ -218,7 +206,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../2-running/" title="Downloading and running" class="md-nav__link">
+    <a href="../../../30-running/" title="Downloading and running" class="md-nav__link">
       Downloading and running
     </a>
   </li>
@@ -230,31 +218,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../3-blackduck/" title="Software Composition Analysis (SCA) with Black Duck" class="md-nav__link">
-      Software Composition Analysis (SCA) with Black Duck
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../../../3-polaris/" title="Static application security testing (SAST) with Polaris" class="md-nav__link">
-      Static application security testing (SAST) with Polaris
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../../../configuring/" title="Configuring" class="md-nav__link">
+    <a href="../../../40-configuring/" title="Configuring" class="md-nav__link">
       Configuring
     </a>
   </li>
@@ -266,7 +230,43 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../z-releasenotes/" title="Release Notes" class="md-nav__link">
+    <a href="../../../50-blackduck/" title="Software Composition Analysis (SCA) with Black Duck" class="md-nav__link">
+      Software Composition Analysis (SCA) with Black Duck
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../60-polaris/" title="Static application security testing (SAST) with Polaris" class="md-nav__link">
+      Static application security testing (SAST) with Polaris
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../70-quickreference/" title="Quick reference" class="md-nav__link">
+      Quick reference
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../90-releasenotes/" title="Release Notes" class="md-nav__link">
       Release Notes
     </a>
   </li>
@@ -959,20 +959,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bitbake-init-script-name" class="md-nav__link">
-    BitBake Init Script Name
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#bitbake-package-names" class="md-nav__link">
-    BitBake Package Names
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#bitbake-source-arguments" class="md-nav__link">
     BitBake Source Arguments
   </a>
@@ -980,8 +966,22 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bitbake-init-script-name" class="md-nav__link">
+    BitBake Init Script Name
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#bitbake-search-depth" class="md-nav__link">
     BitBake Search Depth
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bitbake-package-names" class="md-nav__link">
+    BitBake Package Names
   </a>
   
 </li>
@@ -1227,20 +1227,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bitbake-init-script-name" class="md-nav__link">
-    BitBake Init Script Name
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#bitbake-package-names" class="md-nav__link">
-    BitBake Package Names
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#bitbake-source-arguments" class="md-nav__link">
     BitBake Source Arguments
   </a>
@@ -1248,8 +1234,22 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#bitbake-init-script-name" class="md-nav__link">
+    BitBake Init Script Name
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#bitbake-search-depth" class="md-nav__link">
     BitBake Search Depth
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bitbake-package-names" class="md-nav__link">
+    BitBake Package Names
   </a>
   
 </li>
@@ -1279,92 +1279,6 @@
                 
                 
                 <h1 id="bitbake">bitbake</h1>
-<h2 id="bitbake-init-script-name">BitBake Init Script Name</h2>
-<pre><code>--detect.bitbake.build.env.name=oe-init-build-env
-</code></pre>
-
-<p>The name of the build environment init script.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.4.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>oe-init-build-env</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="bitbake-package-names">BitBake Package Names</h2>
-<pre><code>--detect.bitbake.package.names
-</code></pre>
-
-<p>A comma-separated list of package names from which dependencies are extracted.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.4.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String[]</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="bitbake-source-arguments">BitBake Source Arguments</h2>
 <pre><code>--detect.bitbake.source.arguments
 </code></pre>
@@ -1408,6 +1322,49 @@
 </tr>
 </tbody>
 </table>
+<h2 id="bitbake-init-script-name">BitBake Init Script Name</h2>
+<pre><code>--detect.bitbake.build.env.name=oe-init-build-env
+</code></pre>
+
+<p>The name of the build environment init script.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.4.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>oe-init-build-env</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="bitbake-search-depth">BitBake Search Depth</h2>
 <pre><code>--detect.bitbake.search.depth=1
 </code></pre>
@@ -1432,6 +1389,49 @@
 <tr>
 <td>Default Value</td>
 <td>1</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bitbake-package-names">BitBake Package Names</h2>
+<pre><code>--detect.bitbake.package.names
+</code></pre>
+
+<p>A comma-separated list of package names from which dependencies are extracted.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.4.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String[]</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

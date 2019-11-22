@@ -36,7 +36,7 @@
     
     
       
-        <title>Static application security testing (SAST) with Polaris - Synopsys Detect</title>
+        <title>Quick reference - Synopsys Detect</title>
       
     
     
@@ -75,7 +75,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#static-application-security-testing-sast-with-polaris" tabindex="1" class="md-skip">
+      <a href="#quick-reference" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -101,7 +101,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Static application security testing (SAST) with Polaris
+                Quick reference
               
             </span>
           
@@ -170,19 +170,7 @@
 
 
   <li class="md-nav__item">
-    <a href=".." title="Overview" class="md-nav__link">
-      Overview
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../0-introduction/" title="Introduction" class="md-nav__link">
+    <a href=".." title="Introduction" class="md-nav__link">
       Introduction
     </a>
   </li>
@@ -194,7 +182,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../1-requirements/" title="Requirements" class="md-nav__link">
+    <a href="../10-requirements/" title="Requirements" class="md-nav__link">
       Requirements
     </a>
   </li>
@@ -206,7 +194,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../2-quickstart/" title="Quickstart guide" class="md-nav__link">
+    <a href="../20-quickstart/" title="Quickstart guide" class="md-nav__link">
       Quickstart guide
     </a>
   </li>
@@ -218,7 +206,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../2-running/" title="Downloading and running" class="md-nav__link">
+    <a href="../30-running/" title="Downloading and running" class="md-nav__link">
       Downloading and running
     </a>
   </li>
@@ -230,8 +218,32 @@
 
 
   <li class="md-nav__item">
-    <a href="../3-blackduck/" title="Software Composition Analysis (SCA) with Black Duck" class="md-nav__link">
+    <a href="../40-configuring/" title="Configuring" class="md-nav__link">
+      Configuring
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../50-blackduck/" title="Software Composition Analysis (SCA) with Black Duck" class="md-nav__link">
       Software Composition Analysis (SCA) with Black Duck
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../60-polaris/" title="Static application security testing (SAST) with Polaris" class="md-nav__link">
+      Static application security testing (SAST) with Polaris
     </a>
   </li>
 
@@ -251,11 +263,11 @@
     
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
-        Static application security testing (SAST) with Polaris
+        Quick reference
       </label>
     
-    <a href="./" title="Static application security testing (SAST) with Polaris" class="md-nav__link md-nav__link--active">
-      Static application security testing (SAST) with Polaris
+    <a href="./" title="Quick reference" class="md-nav__link md-nav__link--active">
+      Quick reference
     </a>
     
       
@@ -269,8 +281,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    Overview
+  <a href="#quick-links" class="md-nav__link">
+    Quick Links
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#synopsys-detect-modes" class="md-nav__link">
+    Synopsys Detect Modes
   </a>
   
 </li>
@@ -292,19 +311,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../configuring/" title="Configuring" class="md-nav__link">
-      Configuring
-    </a>
-  </li>
-
-    
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="../z-releasenotes/" title="Release Notes" class="md-nav__link">
+    <a href="../90-releasenotes/" title="Release Notes" class="md-nav__link">
       Release Notes
     </a>
   </li>
@@ -1195,8 +1202,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    Overview
+  <a href="#quick-links" class="md-nav__link">
+    Quick Links
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#synopsys-detect-modes" class="md-nav__link">
+    Synopsys Detect Modes
   </a>
   
 </li>
@@ -1218,17 +1232,50 @@
               
                 
                 
-                <h1 id="static-application-security-testing-sast-with-polaris">Static application security testing (SAST) with Polaris</h1>
-<h2 id="overview">Overview</h2>
-<p>When Polaris connection details are provided, Synopsys Detect will execute
-the following by default:</p>
+                <h1 id="quick-reference">Quick reference</h1>
+<h2 id="quick-links">Quick Links</h2>
 <ul>
-<li>The detector tool, which runs the appropriate package manager-specific detector (the Maven detector
-for Maven projects, the Gradle detector for Gradle projects, etc.).</li>
-<li>The Polaris tool, which runs the Polaris CLI on the
-project directory.</li>
+<li><a href="../properties/all-properties/">All Properties</a></li>
+<li><a href="../advanced/troubleshooting/exit-codes/">Exit Codes</a></li>
 </ul>
-<p>See <a href="../properties/Configuration/polaris/">Properties</a> for details.</p>
+<h2 id="synopsys-detect-modes">Synopsys Detect Modes</h2>
+<p>Synopsys Detect provides the following modes to assist with learning, troubleshooting, and setup.</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Command line option</th>
+<th>Alt. option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Help</td>
+<td>--help</td>
+<td>-h</td>
+<td>Provides basic help information (including how to get more detailed help).</td>
+</tr>
+<tr>
+<td>Interactive</td>
+<td>--interactive</td>
+<td>-i</td>
+<td>Guides you through configuring Synopsys Detect.</td>
+</tr>
+<tr>
+<td>Diagnostic</td>
+<td>--diagnostic</td>
+<td>-d</td>
+<td>Creates a zip file of diagnostic information for support.</td>
+</tr>
+<tr>
+<td>Air Gap Creation</td>
+<td>--zip</td>
+<td>-z</td>
+<td>Creates an air gap zip for running Synopsys Detect offline.</td>
+</tr>
+</tbody>
+</table>
                 
                   
                 
@@ -1249,7 +1296,7 @@ project directory.</li>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../3-blackduck/" title="Software Composition Analysis (SCA) with Black Duck" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../60-polaris/" title="Static application security testing (SAST) with Polaris" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -1258,19 +1305,19 @@ project directory.</li>
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Software Composition Analysis (SCA) with Black Duck
+                Static application security testing (SAST) with Polaris
               </span>
             </div>
           </a>
         
         
-          <a href="../configuring/" title="Configuring" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../90-releasenotes/" title="Release Notes" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Configuring
+                Release Notes
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
