@@ -14,7 +14,7 @@ Before running ${solution_name} in air gap mode, unzip the air gap archive to cr
 
 To run ${solution_name} in air gap mode, invoke the ${solution_name} .jar file at the top level of
 the air gap directory. Refer to
-[Running the ${solution_name} .jar](../2-running.md#running-the-synopsys-detect-jar) for more information.
+[Running the ${solution_name} .jar](../30-running.md#running-the-synopsys-detect-jar) for more information.
 
 To run ${solution_name} using the Gradle inspector, set the
 [Gradle Inspector Air Gap Path](../properties/Detectors/gradle.md#gradle-inspector-airgap-path-advanced)
