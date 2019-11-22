@@ -11,7 +11,7 @@ git clone https://github.com/junit-team/junit4.git
 cd junit4
 ```
 
-To understan what ${solution_name} does, it can be helpful to think about what you would do if you wanted to discover this
+To understand what ${solution_name} does, it can be helpful to think about what you would do if you wanted to discover this
 project's dependencies without using ${solution_name}. You might do the following:
 
 1. Look in the project directory (junit4) for hints about how dependencies are managed. In this case, the *mvnw* and *pom.xml* files are hints that dependencies are managed using Maven.
@@ -47,7 +47,7 @@ the specified run directory.
 
 ## Step 3: Run ${solution_name} connected to ${blackduck_product_name}
 
-If you have access to a ${blackduck_product_name}, you can re-run ${solution_name},
+If you have access to a ${blackduck_product_name} server, you can re-run ${solution_name},
 this time connecting (and uploading results) to ${blackduck_product_name}.
 
 To connect ${solution_name} to ${blackduck_product_name}, replace the `--blackduck.offline.mode=true` command line argument

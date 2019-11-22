@@ -2,7 +2,8 @@
 
 Each ${solution_name} run consists of running any applicable ${solution_name} tools.
 
-The available ${solution_name} tools (in order of execution, with the corresponding --detect.tools value specified in parentheses) are:
+The available ${solution_name} tools (in order of execution, with the corresponding [detect tools property](../properties/Configuration/paths.md#detect-tools-included)
+value specified in parentheses) are:
 
 * [${polaris_product_name}](../60-polaris.md) (--detect.tools=POLARIS)
 * [Docker Inspector](../advanced/language-and-package-managers/docker-images.md) (--detect.tools=DOCKER)

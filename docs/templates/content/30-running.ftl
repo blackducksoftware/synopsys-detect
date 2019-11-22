@@ -2,14 +2,24 @@
 
 ## Positioning ${solution_name} in the build process
 
-In most cases, ${solution_name} must be executed as a post-build step in the build environment of the project.
+### Build mode
+
+In [build mode](components/detectors.md#build-detectors-vs-buildless-detectors) (the default),
+${solution_name} should be executed as a post-build step in the build environment of the project.
 Building your project prior to running ${solution_name} is often required for the detector to run successfully,
 and helps ensure that the build artifacts are available for signature scanning.
+
+### Buildless mode
+
+In [buildless mode](components/detectors.md#build-detectors-vs-buildless-detectors),
+${solution_name} will make its best effort to discover dependencies without the benefit of
+build artifacts or build tools. In buildless mode, there is no requirement that ${solution_name} run as a post-build step.
+Results from buildless mode may be less accurate than results from build mode.
 
 ## Choosing the working directory
 
 You can run ${solution_name} from any directory. If you are not running ${solution_name} from the project directory,
-provide the project directory via the detect.source.path property. When that property is not set,
+provide the project directory via the [source path property](properties/Configuration/paths.md#source-path). When that property is not set,
 ${solution_name} assumes the current working directory is the project directory.
 
 ## Choosing a run method (script or .jar)
