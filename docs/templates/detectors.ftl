@@ -19,6 +19,17 @@ Inspectors are used by detectors when the package manager requires an integratio
 
 Finally, detectors perform their "extraction" to find your dependencies. This may require but is not limited to: running executables, performing builds, parsing files and talking to web services.
 
+## Build detectors vs. buildless detectors
+
+The recommended way to run ${solution_name} is as a post-build step, so that it has access to both build artifacts and the build tools (package manager, etc.) used to build the project.
+${solution_name}'s "build detectors" work in this environment and produce the most accurate results. By default, ${solution_name} runs build detectors.
+
+If you can't build your project, you may still be able to use ${solution_name}'s buildless detectors. The results from buildless detectors may not be as accurate as the results from
+build detectors would be, but buildless detectors can run without accessing the tools required to build the project. You can choose to run
+buildless detectors using the [buildless mode property](../properties/Configuration/general.md#buildless-mode).
+
+The tables below show which detectors run in the default (build) mode, and which detectors run in buildless mode. There is some overlap across the two lists.
+
 ## Build detectors
 
 Build detectors run package manager commands (for example: *mvn dependency:tree*) and/or inspectors (for example, the [Gradle inspector](inspectors.md#gradle-inspector)) to derive dependency information. Inspectors
