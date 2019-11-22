@@ -21,7 +21,9 @@ Finally, detectors perform their "extraction" to find your dependencies. This ma
 
 ## Build detectors
 
-Build detectors run package manager commands (for example: *mvn dependency:tree*) or inspectors (for example, the [Gradle inspector](inspectors.md#gradle-inspector)) to derive dependency information.
+Build detectors run package manager commands (for example: *mvn dependency:tree*) and/or inspectors (for example, the [Gradle inspector](inspectors.md#gradle-inspector)) to derive dependency information. Inspectors
+act as extensions to ${solution_name} and will be downloaded automatically if needed. The required commands (indicated in the table below) must be present (and findable) on your system. ${solution_name} uses
+the system PATH to find commands. In some cases, as an alternative to the system PATH, the location of a command can be provided via a property.
 
 |Type|Name|Language|Forge|Requirements
 |---|---|---|---|---|
