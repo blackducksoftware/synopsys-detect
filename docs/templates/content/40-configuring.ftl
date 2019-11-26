@@ -49,10 +49,33 @@ file syntax: `propertyName=propertyValue`, one per line.
 When setting a property value in a .yml file, do not prefix the property name with hyphens,
 and adhere to YAML syntax for dictionaries: `propertyName: propertyValue`, one per line.
 
+## Switching between multiple profiles
+
+A profile is, in effect, a set of pre-defined properties. You select the profile (property settings)
+you want when you run ${solution_name}.
+
+### Creating a profile
+
+To define a set of properties for a profile, create a configuration file named *application-{profilename}.properties*
+or *application-{profilename}.yml* (in the current working directory, or in a subdirectory named *config*).
+Populate it with property assignments as described above.
+
+### Selecting a profile on the command line
+
+To select one or more profiles on the ${solution_name} command line, assign the the comma-separated list of profiles
+to the Spring Boot property *spring.profiles.active*:
+```
+    bash <(curl -s -L https://detect.synopsys.com/detect.sh) --spring.profiles.active={profilename}
+```
+
+This capability is provided by Spring Boot. For more information, refer to
+[Spring Boot's profile mechanism](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-profiles).
+
 ## Additional configration methods and details
 
 ${solution_name} reads property values using
-[Spring Boot's externalized configuration mechanism](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config).
+[Spring Boot's externalized configuration mechanism](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config),
+which provides capabilities beyond those described on this page.
 
 The most common methods used to pass a property value to ${solution_name} are listed below. A method with lower number in Spring Boot's order of precedence will
 override a method with a higher number.
