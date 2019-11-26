@@ -245,6 +245,54 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#on-the-command-line" class="md-nav__link">
+    On the command line
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-environment-variables" class="md-nav__link">
+    Using environment variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-a-configuration-file" class="md-nav__link">
+    Using a configuration file
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#properties-file" class="md-nav__link">
+    Properties file
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yaml-file" class="md-nav__link">
+    YAML file
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-configration-methods-and-details" class="md-nav__link">
+    Additional configration methods and details
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#providing-sensitive-values-such-as-credentials" class="md-nav__link">
     Providing sensitive values such as credentials
   </a>
@@ -1195,6 +1243,54 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#on-the-command-line" class="md-nav__link">
+    On the command line
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-environment-variables" class="md-nav__link">
+    Using environment variables
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-a-configuration-file" class="md-nav__link">
+    Using a configuration file
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#properties-file" class="md-nav__link">
+    Properties file
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#yaml-file" class="md-nav__link">
+    YAML file
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-configration-methods-and-details" class="md-nav__link">
+    Additional configration methods and details
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#providing-sensitive-values-such-as-credentials" class="md-nav__link">
     Providing sensitive values such as credentials
   </a>
@@ -1219,7 +1315,42 @@
                 
                 
                 <h1 id="configuring">Configuring</h1>
-<p>The primary means for configuring Synopsys Detect is by setting <a href="../properties/all-properties/">Synopsys Detect property values</a>.</p>
+<p>Synopsys Detect is configured by assigning values to properties.</p>
+<h2 id="on-the-command-line">On the command line</h2>
+<p>One method for configuring Synopsys Detect is by setting <a href="../properties/all-properties/">Synopsys Detect property values</a> on the command line.
+When setting a property value on the command line, prefix the property name with two hyphens ("--"). For example,
+to set property <em>detect.project.value</em>:</p>
+<pre><code>    bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --detect.project.name=MyProject
+</code></pre>
+
+<h2 id="using-environment-variables">Using environment variables</h2>
+<p>Synopsys Detect properties can also be set using environment variables.</p>
+<p>On Linux, when setting a property value using an environment variable, the environment variable name
+is the property name converted to uppercase, with period characters (".") converted to underscore
+characters ("_"). For example:</p>
+<pre><code>    export DETECT_PROJECT_NAME=MyProject
+    bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
+</code></pre>
+
+<p>On Windows, the environment variable name can either be the original property
+name, or the property name converted to uppercase, with period characters (".") converted to underscore
+characters ("_"). For example:</p>
+<pre><code>    $Env:DETECT_PROJECT_NAME = MyProject
+    powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot;
+</code></pre>
+
+<h2 id="using-a-configuration-file">Using a configuration file</h2>
+<p>Another commonly-used method of configuring Synopsys Detect is to provide a configuration file. The configuration file
+can be a Java Properties (.properties) file, or a YAML (.yml) file.</p>
+<p>The most common location for a configuration file is in a file named application.properties or application.yml
+in the current working directory, or a ./config subdirectory.</p>
+<h3 id="properties-file">Properties file</h3>
+<p>When setting a property value in a .properties file, do not prefix the property name with hyphens, and adhere to Java .properties
+file syntax: <code>propertyName=propertyValue</code>, one per line.</p>
+<h3 id="yaml-file">YAML file</h3>
+<p>When setting a property value in a .yml file, do not prefix the property name with hyphens,
+and adhere to YAML syntax for dictionaries: <code>propertyName: propertyValue</code>, one per line.</p>
+<h2 id="additional-configration-methods-and-details">Additional configration methods and details</h2>
 <p>Synopsys Detect reads property values using
 <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config">Spring Boot's externalized configuration mechanism</a>.</p>
 <p>The most common methods used to pass a property value to Synopsys Detect are listed below. A method with lower number in Spring Boot's order of precedence will
@@ -1256,17 +1387,6 @@ override a method with a higher number.</p>
 <pre><code>    export SPRING_APPLICATION_JSON='{&quot;blackduck.url&quot;:&quot;https://blackduck.yourdomain.com&quot;,&quot;blackduck.api.token&quot;:&quot;yourgeneratedtoken&quot;}'
 </code></pre>
 
-<p>When setting a property value on the command line, prefix the property name with two hyphens ("--"). When setting a property
-value in a .properties file, do not prefix the property name with hyphens (and adhere to Java .properties
-file syntax: propertyName=propertyValue, one per line).</p>
-<p>On Linux, when setting a property value using an environment variable, the environment variable name
-is the property name converted to uppercase, with period characters (".") converted to underscore
-characters ("_").</p>
-<p>On Windows, the environment variable name can either be the original property
-name, or the property name converted to uppercase, with period characters (".") converted to underscore
-characters ("_").</p>
-<p>The most common location for a configuration (.properties or .yml) file is in a file named application.properties or application.yml
-in the current working directory, or a ./config subdirectory.</p>
 <p>Refer to the <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config">Spring Boot documentation</a>
 for more details and more sophisticated ways to set properties.</p>
 <h2 id="providing-sensitive-values-such-as-credentials">Providing sensitive values such as credentials</h2>
