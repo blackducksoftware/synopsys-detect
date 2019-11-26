@@ -1,6 +1,55 @@
 # Configuring
 
-The primary means for configuring ${solution_name} is by setting [${solution_name} property values](properties/all-properties.md).
+${solution_name} is configured by assigning values to properties.
+
+## On the command line
+
+One method for configuring ${solution_name} is by setting [${solution_name} property values](properties/all-properties.md) on the command line.
+When setting a property value on the command line, prefix the property name with two hyphens ("--"). For example,
+to set property *detect.project.value*:
+```
+    bash <(curl -s -L https://detect.synopsys.com/detect.sh) --detect.project.name=MyProject
+```
+
+## Using environment variables
+
+${solution_name} properties can also be set using environment variables.
+
+On Linux, when setting a property value using an environment variable, the environment variable name
+is the property name converted to uppercase, with period characters (".") converted to underscore
+characters ("_"). For example:
+```
+    export DETECT_PROJECT_NAME=MyProject
+    bash <(curl -s -L https://detect.synopsys.com/detect.sh)
+```
+
+On Windows, the environment variable name can either be the original property
+name, or the property name converted to uppercase, with period characters (".") converted to underscore
+characters ("_"). For example:
+```
+    $Env:DETECT_PROJECT_NAME = MyProject
+    powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+```
+
+## Using a configuration file
+
+Another commonly-used method of configuring ${solution_name} is to provide a configuration file. The configuration file
+can be a Java Properties (.properties) file, or a YAML (.yml) file.
+
+The most common location for a configuration file is in a file named application.properties or application.yml
+in the current working directory, or a ./config subdirectory.
+
+### Properties file
+
+When setting a property value in a .properties file, do not prefix the property name with hyphens, and adhere to Java .properties
+file syntax: `propertyName=propertyValue`, one per line.
+
+### YAML file
+
+When setting a property value in a .yml file, do not prefix the property name with hyphens,
+and adhere to YAML syntax for dictionaries: `propertyName: propertyValue`, one per line.
+
+## Additional configration methods and details
 
 ${solution_name} reads property values using
 [Spring Boot's externalized configuration mechanism](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config).
@@ -30,20 +79,6 @@ override a method with a higher number.
 ````
     export SPRING_APPLICATION_JSON='{"blackduck.url":"https://blackduck.yourdomain.com","blackduck.api.token":"yourgeneratedtoken"}'
 ````
-When setting a property value on the command line, prefix the property name with two hyphens ("--"). When setting a property
-value in a .properties file, do not prefix the property name with hyphens (and adhere to Java .properties
-file syntax: propertyName=propertyValue, one per line).
-
-On Linux, when setting a property value using an environment variable, the environment variable name
-is the property name converted to uppercase, with period characters (".") converted to underscore
-characters ("_").
-
-On Windows, the environment variable name can either be the original property
-name, or the property name converted to uppercase, with period characters (".") converted to underscore
-characters ("_").
-
-The most common location for a configuration (.properties or .yml) file is in a file named application.properties or application.yml
-in the current working directory, or a ./config subdirectory.
 
 Refer to the [Spring Boot documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config)
 for more details and more sophisticated ways to set properties.
