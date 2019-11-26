@@ -4,7 +4,7 @@
 
 ${solution_name} analyzes your software project to identify open source component dependencies.
 
-${solution_name} consolidates the functionality of ${blackduck_product_name}(tm) and Coverity(tm) on Polaris(tm) to support
+${solution_name} consolidates the functionality of ${blackduck_product_name}™ and ${coverity_product_name}™ on ${polaris_product_name}™ to support
 Software Composition Analysis (SCA: open source software detection) and Static Application Security Testing (SAST: static code analysis).
 ${solution_name} makes it easier to set up and scan code bases for a variety of languages and package managers.
 ${solution_name} leverages multi-factor discovery techniques to scan software projects and directories.
