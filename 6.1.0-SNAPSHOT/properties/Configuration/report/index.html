@@ -899,20 +899,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#risk-report-output-path" class="md-nav__link">
-    Risk Report Output Path
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generate-notices-report" class="md-nav__link">
-    Generate Notices Report
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#generate-risk-report-40pdf41" class="md-nav__link">
     Generate Risk Report (PDF)
   </a>
@@ -920,8 +906,22 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#risk-report-output-path" class="md-nav__link">
+    Risk Report Output Path
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#notices-report-path" class="md-nav__link">
     Notices Report Path
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generate-notices-report" class="md-nav__link">
+    Generate Notices Report
   </a>
   
 </li>
@@ -1227,20 +1227,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#risk-report-output-path" class="md-nav__link">
-    Risk Report Output Path
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#generate-notices-report" class="md-nav__link">
-    Generate Notices Report
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#generate-risk-report-40pdf41" class="md-nav__link">
     Generate Risk Report (PDF)
   </a>
@@ -1248,8 +1234,22 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#risk-report-output-path" class="md-nav__link">
+    Risk Report Output Path
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#notices-report-path" class="md-nav__link">
     Notices Report Path
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#generate-notices-report" class="md-nav__link">
+    Generate Notices Report
   </a>
   
 </li>
@@ -1279,11 +1279,97 @@
                 
                 
                 <h1 id="report">report</h1>
+<h2 id="generate-risk-report-40pdf41">Generate Risk Report (PDF)</h2>
+<pre><code>--detect.risk.report.pdf=false
+</code></pre>
+
+<p>When set to true, a Black Duck risk report in PDF form will be created.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="risk-report-output-path">Risk Report Output Path</h2>
 <pre><code>--detect.risk.report.pdf.path=.
 </code></pre>
 
 <p>The output directory for risk report in PDF. Default is the source directory.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>.</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="notices-report-path">Notices Report Path</h2>
+<pre><code>--detect.notices.report.path=.
+</code></pre>
+
+<p>The output directory for notices report. Default is the source directory.</p>
 <table>
 <thead>
 <tr>
@@ -1346,92 +1432,6 @@
 <tr>
 <td>Default Value</td>
 <td>false</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="generate-risk-report-40pdf41">Generate Risk Report (PDF)</h2>
-<pre><code>--detect.risk.report.pdf=false
-</code></pre>
-
-<p>When set to true, a Black Duck risk report in PDF form will be created.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="notices-report-path">Notices Report Path</h2>
-<pre><code>--detect.notices.report.path=.
-</code></pre>
-
-<p>The output directory for notices report. Default is the source directory.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>.</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

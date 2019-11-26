@@ -286,6 +286,33 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#switching-between-multiple-profiles" class="md-nav__link">
+    Switching between multiple profiles
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-profile" class="md-nav__link">
+    Creating a profile
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#selecting-a-profile-on-the-command-line" class="md-nav__link">
+    Selecting a profile on the command line
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#additional-configration-methods-and-details" class="md-nav__link">
     Additional configration methods and details
   </a>
@@ -1284,6 +1311,33 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#switching-between-multiple-profiles" class="md-nav__link">
+    Switching between multiple profiles
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-profile" class="md-nav__link">
+    Creating a profile
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#selecting-a-profile-on-the-command-line" class="md-nav__link">
+    Selecting a profile on the command line
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#additional-configration-methods-and-details" class="md-nav__link">
     Additional configration methods and details
   </a>
@@ -1350,9 +1404,25 @@ file syntax: <code>propertyName=propertyValue</code>, one per line.</p>
 <h3 id="yaml-file">YAML file</h3>
 <p>When setting a property value in a .yml file, do not prefix the property name with hyphens,
 and adhere to YAML syntax for dictionaries: <code>propertyName: propertyValue</code>, one per line.</p>
+<h2 id="switching-between-multiple-profiles">Switching between multiple profiles</h2>
+<p>A profile is, in effect, a set of pre-defined properties. You select the profile (property settings)
+you want when you run Synopsys Detect.</p>
+<h3 id="creating-a-profile">Creating a profile</h3>
+<p>To define a set of properties for a profile, create a configuration file named <em>application-{profilename}.properties</em>
+or <em>application-{profilename}.yml</em> (in the current working directory, or in a subdirectory named <em>config</em>).
+Populate it with property assignments as described above.</p>
+<h3 id="selecting-a-profile-on-the-command-line">Selecting a profile on the command line</h3>
+<p>To select one or more profiles on the Synopsys Detect command line, assign the the comma-separated list of profiles
+to the Spring Boot property <em>spring.profiles.active</em>:</p>
+<pre><code>    bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --spring.profiles.active={profilename}
+</code></pre>
+
+<p>This capability is provided by Spring Boot. For more information, refer to
+<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-profiles">Spring Boot's profile mechanism</a>.</p>
 <h2 id="additional-configration-methods-and-details">Additional configration methods and details</h2>
 <p>Synopsys Detect reads property values using
-<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config">Spring Boot's externalized configuration mechanism</a>.</p>
+<a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config">Spring Boot's externalized configuration mechanism</a>,
+which provides capabilities beyond those described on this page.</p>
 <p>The most common methods used to pass a property value to Synopsys Detect are listed below. A method with lower number in Spring Boot's order of precedence will
 override a method with a higher number.</p>
 <ul>
