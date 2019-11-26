@@ -33,6 +33,7 @@ import com.synopsys.integration.bdio.bdio2.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -69,15 +70,16 @@ public class BdioManager {
         this.eventSystem = eventSystem;
     }
 
-    public BdioResult createBdioFiles(final AggregateOptions aggregateOptions, final NameVersion projectNameVersion, final List<DetectCodeLocation> codeLocations) throws DetectUserFriendlyException {
+    public BdioResult createBdioFiles(final AggregateOptions aggregateOptions, final NameVersion projectNameVersion, final List<DetectCodeLocation> codeLocations, final boolean useBdio2) throws DetectUserFriendlyException {
         final DetectBdioWriter detectBdioWriter = new DetectBdioWriter(simpleBdioFactory, detectInfo);
+        final Optional<String> aggregateName = aggregateOptions.getAggregateName();
 
-        if (aggregateOptions.shouldAggregate() && aggregateOptions.getAggregateName().isPresent()) {
+        if (aggregateOptions.shouldAggregate() && aggregateName.isPresent()) {
             logger.debug("Creating aggregate BDIO file.");
-            final AggregateBdioCreator aggregateBdioCreator = new AggregateBdioCreator(simpleBdioFactory, integrationEscapeUtil, codeLocationNameManager, detectBdioWriter);
-            final Optional<UploadTarget> uploadTarget = aggregateBdioCreator.createAggregateBdioFile(aggregateOptions.getAggregateName().get(), aggregateOptions.shouldUploadEmptyAggregate(), directoryManager.getSourceDirectory(),
-                directoryManager.getBdioOutputDirectory(), codeLocations, projectNameVersion);
-            return new BdioResult(uploadTarget);
+            final AggregateBdioCreator aggregateBdioCreator = new AggregateBdioCreator(bdio2Factory, simpleBdioFactory, integrationEscapeUtil, codeLocationNameManager, detectBdioWriter);
+            final Optional<UploadTarget> uploadTarget = createAggregatedBdioUploadTarget(aggregateBdioCreator, codeLocations, projectNameVersion, useBdio2, aggregateName.get(), aggregateOptions.shouldUploadEmptyAggregate());
+
+            return new BdioResult(uploadTarget, useBdio2);
         } else {
             logger.debug("Creating BDIO code locations.");
             final BdioCodeLocationResult codeLocationResult = bdioCodeLocationCreator.createFromDetectCodeLocations(codeLocations, projectNameVersion);
@@ -85,10 +87,30 @@ public class BdioManager {
 
             logger.debug("Creating BDIO files from code locations.");
             final CodeLocationBdioCreator codeLocationBdioCreator = new CodeLocationBdioCreator(detectBdioWriter, simpleBdioFactory, bdio2Factory, detectInfo);
-            final List<UploadTarget> uploadTargets = codeLocationBdioCreator.createBdioFiles(directoryManager.getBdioOutputDirectory(), codeLocationResult.getBdioCodeLocations(), projectNameVersion);
+            final List<UploadTarget> uploadTargets = createBdioUploadTargets(codeLocationBdioCreator, codeLocationResult.getBdioCodeLocations(), projectNameVersion, useBdio2);
 
-            return new BdioResult(uploadTargets);
+            return new BdioResult(uploadTargets, useBdio2);
         }
     }
 
+    private List<UploadTarget> createBdioUploadTargets(final CodeLocationBdioCreator codeLocationBdioCreator, final List<BdioCodeLocation> bdioCodeLocations, final NameVersion projectNameVersion, final boolean useBdio2)
+        throws DetectUserFriendlyException {
+
+        if (useBdio2) {
+            return codeLocationBdioCreator.createBdio2Files(directoryManager.getBdioOutputDirectory(), bdioCodeLocations, projectNameVersion);
+        }
+
+        return codeLocationBdioCreator.createBdio1Files(directoryManager.getBdioOutputDirectory(), bdioCodeLocations, projectNameVersion);
+    }
+
+    private Optional<UploadTarget> createAggregatedBdioUploadTarget(final AggregateBdioCreator aggregateBdioCreator, final List<DetectCodeLocation> detectCodeLocations, final NameVersion projectNameVersion, final boolean useBdio2,
+        final String aggregateName, final boolean shouldUploadEmptyAggregate)
+        throws DetectUserFriendlyException {
+
+        if (useBdio2) {
+            return aggregateBdioCreator.createAggregateBdio2File(aggregateName, shouldUploadEmptyAggregate, directoryManager.getSourceDirectory(), directoryManager.getBdioOutputDirectory(), detectCodeLocations, projectNameVersion);
+        }
+
+        return aggregateBdioCreator.createAggregateBdio1File(aggregateName, shouldUploadEmptyAggregate, directoryManager.getSourceDirectory(), directoryManager.getBdioOutputDirectory(), detectCodeLocations, projectNameVersion);
+    }
 }

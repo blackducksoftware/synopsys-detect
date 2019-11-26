@@ -62,19 +62,29 @@ public class CodeLocationBdioCreator {
         this.detectInfo = detectInfo;
     }
 
-    public List<UploadTarget> createBdioFiles(final File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public List<UploadTarget> createBdio1Files(final File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
         final List<UploadTarget> uploadTargets = new ArrayList<>();
         for (final BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
             final String codeLocationName = bdioCodeLocation.getCodeLocationName();
             final ExternalId externalId = bdioCodeLocation.getDetectCodeLocation().getExternalId();
             final DependencyGraph dependencyGraph = bdioCodeLocation.getDetectCodeLocation().getDependencyGraph();
 
-            // Bdio 1
+            final File bdioOutputFile = new File(bdioOutput, bdioCodeLocation.getBdioName() + ".jsonld");
             final SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectNameVersion.getName(), projectNameVersion.getVersion(), externalId, dependencyGraph);
 
-            final File bdio1OutputFile = new File(bdioOutput, bdioCodeLocation.getBdioName() + ".jsonld");
-            detectBdioWriter.writeBdioFile(bdio1OutputFile, simpleBdioDocument);
-            uploadTargets.add(UploadTarget.createDefault(codeLocationName, bdio1OutputFile));
+            detectBdioWriter.writeBdioFile(bdioOutputFile, simpleBdioDocument);
+            uploadTargets.add(UploadTarget.createDefault(codeLocationName, bdioOutputFile));
+        }
+
+        return uploadTargets;
+    }
+
+    public List<UploadTarget> createBdio2Files(final File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
+        final List<UploadTarget> uploadTargets = new ArrayList<>();
+        for (final BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
+            final String codeLocationName = bdioCodeLocation.getCodeLocationName();
+            final ExternalId externalId = bdioCodeLocation.getDetectCodeLocation().getExternalId();
+            final DependencyGraph dependencyGraph = bdioCodeLocation.getDetectCodeLocation().getDependencyGraph();
 
             // Bdio 2
             final ProductList.Builder productListBuilder = new ProductList.Builder();
@@ -89,9 +99,12 @@ public class CodeLocationBdioCreator {
 
             final Bdio2Writer bdio2Writer = new Bdio2Writer();
             final File bdio2OutputFile = new File(bdioOutput, bdioCodeLocation.getBdioName() + ".bdio");
+
             try {
                 final OutputStream outputStream = new FileOutputStream(bdio2OutputFile);
                 bdio2Writer.writeBdioDocument(outputStream, bdio2Document);
+
+                uploadTargets.add(UploadTarget.createDefault(codeLocationName, bdio2OutputFile));
             } catch (final IOException e) {
                 throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_GENERAL_ERROR);
             }

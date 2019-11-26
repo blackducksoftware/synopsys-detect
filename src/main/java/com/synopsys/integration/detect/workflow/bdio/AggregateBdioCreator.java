@@ -23,6 +23,10 @@
 package com.synopsys.integration.detect.workflow.bdio;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +36,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.blackducksoftware.bdio2.BdioMetadata;
+import com.blackducksoftware.bdio2.model.Project;
+import com.blackducksoftware.common.value.ProductList;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
+import com.synopsys.integration.bdio.bdio2.Bdio2Document;
+import com.synopsys.integration.bdio.bdio2.Bdio2Factory;
+import com.synopsys.integration.bdio.bdio2.Bdio2Writer;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
@@ -42,6 +52,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
@@ -51,25 +62,28 @@ import com.synopsys.integration.util.NameVersion;
 public class AggregateBdioCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private final Bdio2Factory bdio2Factory;
     private final SimpleBdioFactory simpleBdioFactory;
     private final IntegrationEscapeUtil integrationEscapeUtil;
     private final CodeLocationNameManager codeLocationNameManager;
     private final DetectBdioWriter detectBdioWriter;
 
-    public AggregateBdioCreator(final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil, final CodeLocationNameManager codeLocationNameManager, final DetectBdioWriter detectBdioWriter) {
+    public AggregateBdioCreator(final Bdio2Factory bdio2Factory, final SimpleBdioFactory simpleBdioFactory, final IntegrationEscapeUtil integrationEscapeUtil,
+        final CodeLocationNameManager codeLocationNameManager, final DetectBdioWriter detectBdioWriter) {
+        this.bdio2Factory = bdio2Factory;
         this.simpleBdioFactory = simpleBdioFactory;
         this.integrationEscapeUtil = integrationEscapeUtil;
         this.codeLocationNameManager = codeLocationNameManager;
         this.detectBdioWriter = detectBdioWriter;
     }
 
-    public Optional<UploadTarget> createAggregateBdioFile(final String aggregateName, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
-        final NameVersion projectNameVersion)
-        throws DetectUserFriendlyException {
-        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations);
+    public Optional<UploadTarget> createAggregateBdio1File(final String aggregateName, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
+        final NameVersion projectNameVersion) throws DetectUserFriendlyException {
 
+        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations);
         final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
         final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
+
         final SimpleBdioDocument aggregateBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectNameVersion.getName(), projectNameVersion.getVersion(), projectExternalId, aggregateDependencyGraph);
 
         final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(aggregateName));
@@ -77,7 +91,36 @@ public class AggregateBdioCreator {
 
         detectBdioWriter.writeBdioFile(aggregateBdioFile, aggregateBdioDocument);
 
-        final boolean aggregateHasDependencies = aggregateDependencyGraph.getRootDependencies().size() > 0;
+        return createUploadTarget(codeLocationName, aggregateBdioFile, aggregateDependencyGraph, uploadEmptyAggregate);
+    }
+
+    public Optional<UploadTarget> createAggregateBdio2File(final String aggregateName, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
+        final NameVersion projectNameVersion) throws DetectUserFriendlyException {
+
+        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations);
+        final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
+        final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
+
+        final BdioMetadata bdioMetadata = bdio2Factory.createBdioMetadata(codeLocationName, ZonedDateTime.now(), new ProductList.Builder());
+        final Project project = bdio2Factory.createProject(projectExternalId, projectNameVersion.getName(), projectNameVersion.getVersion());
+        final Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, project, aggregateDependencyGraph);
+
+        final String bdio2Filename = String.format("%s.bdio", integrationEscapeUtil.escapeForUri(aggregateName));
+        final File aggregateBdioFile = new File(bdioDirectory, bdio2Filename);
+
+        final Bdio2Writer bdio2Writer = new Bdio2Writer();
+        try {
+            final OutputStream outputStream = new FileOutputStream(aggregateBdioFile);
+            bdio2Writer.writeBdioDocument(outputStream, bdio2Document);
+        } catch (final IOException e) {
+            throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+        }
+
+        return createUploadTarget(codeLocationName, aggregateBdioFile, aggregateDependencyGraph, uploadEmptyAggregate);
+    }
+
+    private Optional<UploadTarget> createUploadTarget(final String codeLocationName, final File aggregateBdioFile, final DependencyGraph dependencyGraph, final boolean uploadEmptyAggregate) {
+        final boolean aggregateHasDependencies = !dependencyGraph.getRootDependencies().isEmpty();
         if (aggregateHasDependencies || uploadEmptyAggregate) {
             return Optional.of(UploadTarget.createDefault(codeLocationName, aggregateBdioFile));
         } else {
