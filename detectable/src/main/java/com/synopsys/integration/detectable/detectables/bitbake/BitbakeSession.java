@@ -24,11 +24,9 @@ package com.synopsys.integration.detectable.detectables.bitbake;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.antlr.v4.runtime.misc.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,22 +73,26 @@ public class BitbakeSession {
             return Optional.empty();
         }
 
-        return Arrays.stream(BitbakeFileType.values())
-                   .map(bitbakeFileType -> getBitbakeResult(sourceDirectory, workingDirectory, bitbakeFileType, searchDepth))
-                   .findFirst();
+        for (final BitbakeFileType bitbakeFileType : BitbakeFileType.values()) {
+            final Optional<BitbakeResult> bitbakeResult = getBitbakeResult(sourceDirectory, workingDirectory, bitbakeFileType, searchDepth);
+            if (bitbakeResult.isPresent()) {
+                return bitbakeResult;
+            }
+        }
+
+        return Optional.empty();
     }
 
-    @Nullable
-    private BitbakeResult getBitbakeResult(final File sourceDirectory, final File outputDirectory, final BitbakeFileType bitbakeFileType, final Integer searchDepth) {
+    private Optional<BitbakeResult> getBitbakeResult(final File sourceDirectory, final File outputDirectory, final BitbakeFileType bitbakeFileType, final Integer searchDepth) {
         File file = fileFinder.findFile(outputDirectory, bitbakeFileType.getFileName(), searchDepth);
         if (file == null) {
             file = fileFinder.findFile(sourceDirectory, bitbakeFileType.getFileName(), searchDepth);
             if (file == null) {
-                return null;
+                return Optional.empty();
             }
         }
 
-        return new BitbakeResult(bitbakeFileType, file);
+        return Optional.of(new BitbakeResult(bitbakeFileType, file));
 
     }
 
