@@ -91,8 +91,8 @@ public class Rebar3TreeParser {
             final CodeLocation codeLocation = new CodeLocation(graph);
             return new RebarParseResult(codeLocation);
         } else {
-            final CodeLocation codeLocation = new CodeLocation(graph, project.externalId);
-            return new RebarParseResult(new NameVersion(project.name, project.version), codeLocation);
+            final CodeLocation codeLocation = new CodeLocation(graph, project.getExternalId());
+            return new RebarParseResult(new NameVersion(project.getName(), project.getVersion()), codeLocation);
         }
     }
 

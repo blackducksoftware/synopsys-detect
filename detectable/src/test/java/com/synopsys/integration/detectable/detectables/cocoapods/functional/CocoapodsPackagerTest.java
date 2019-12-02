@@ -16,6 +16,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockParser;
@@ -27,14 +28,14 @@ public class CocoapodsPackagerTest {
     private final PodlockParser podlockParser = new PodlockParser(new ExternalIdFactory());
 
     @Test
-    public void simpleTest() throws IOException {
+    public void simpleTest() throws IOException, MissingExternalIdException {
         final String podlockText = FunctionalTestFiles.asString("/cocoapods/simplePodfile.lock");
         final DependencyGraph projectDependencies = podlockParser.extractDependencyGraph(podlockText);
         GraphCompare.assertEqualsResource("/cocoapods/simpleExpected_graph.json", projectDependencies);
     }
 
     @Test
-    public void complexTest() throws IOException {
+    public void complexTest() throws IOException, MissingExternalIdException {
         final String podlockText = FunctionalTestFiles.asString("/cocoapods/complexPodfile.lock");
         final DependencyGraph projectDependencies = podlockParser.extractDependencyGraph(podlockText);
         GraphCompare.assertEqualsResource("/cocoapods/complexExpected_graph.json", projectDependencies);

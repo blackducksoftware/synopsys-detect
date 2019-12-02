@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockParser;
@@ -59,7 +60,7 @@ public class PodlockExtractor {
             logger.trace("Attempting to create the dependency graph from the pod lock file.");
             dependencyGraph = podlockParser.extractDependencyGraph(podLockText);
             logger.trace("Finished creating the dependency graph from the pod lock file.");
-        } catch (final IOException e) {
+        } catch (final IOException | MissingExternalIdException e) {
             return new Extraction.Builder().exception(e).build();
         }
 

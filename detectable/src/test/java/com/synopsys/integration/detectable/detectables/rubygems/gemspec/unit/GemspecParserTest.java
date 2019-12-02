@@ -73,9 +73,9 @@ class GemspecParserTest {
 
     private InputStream createGemspecInputStream() {
         final String gemspec = "Some garbage line" + System.lineSeparator()
-                                   + "s.add_dependency \"" + externalId1.name + "\", \"" + externalId1.version + "\"" + System.lineSeparator()
-                                   + "s.add_runtime_dependency \"" + externalId2.name + "\", \"" + externalId2.version + "\"" + System.lineSeparator()
-                                   + "s.add_development_dependency \"" + externalId3.name + "\", \"" + externalId3.version + "\"" + System.lineSeparator();
+                                   + "s.add_dependency \"" + externalId1.getName() + "\", \"" + externalId1.getVersion() + "\"" + System.lineSeparator()
+                                   + "s.add_runtime_dependency \"" + externalId2.getName() + "\", \"" + externalId2.getVersion() + "\"" + System.lineSeparator()
+                                   + "s.add_development_dependency \"" + externalId3.getName() + "\", \"" + externalId3.getVersion() + "\"" + System.lineSeparator();
 
         return IOUtils.toInputStream(gemspec, StandardCharsets.UTF_8);
     }

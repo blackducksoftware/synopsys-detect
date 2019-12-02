@@ -64,11 +64,11 @@ public class DependencyGraphSummarizer {
             final Dependency nextDependency = unprocessed.remove();
             processed.add(nextDependency);
 
-            final BdioId nextId = nextDependency.externalId.createBdioId();
+            final BdioId nextId = nextDependency.getExternalId().createBdioId();
             if (!graphSummary.dependencySummaries.containsKey(nextId)) {
                 final NameVersion nameVersion = new NameVersion();
-                nameVersion.setName(nextDependency.name);
-                nameVersion.setVersion(nextDependency.version);
+                nameVersion.setName(nextDependency.getName());
+                nameVersion.setVersion(nextDependency.getVersion());
                 graphSummary.dependencySummaries.put(nextId, nameVersion);
             }
 
@@ -76,7 +76,7 @@ public class DependencyGraphSummarizer {
                 if (!graphSummary.externalDataIdRelationships.containsKey(nextId)) {
                     graphSummary.externalDataIdRelationships.put(nextId, new HashSet<>());
                 }
-                graphSummary.externalDataIdRelationships.get(nextId).add(dep.externalId.createBdioId());
+                graphSummary.externalDataIdRelationships.get(nextId).add(dep.getExternalId().createBdioId());
                 if (!processed.contains(dep)) {
                     unprocessed.add(dep);
                 }

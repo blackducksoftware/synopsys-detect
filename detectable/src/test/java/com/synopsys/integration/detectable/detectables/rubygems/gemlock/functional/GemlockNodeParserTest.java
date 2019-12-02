@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -19,7 +20,7 @@ import com.synopsys.integration.detectable.util.GraphCompare;
 @FunctionalTest
 public class GemlockNodeParserTest {
     @Test
-    public void testParsingSmallGemfileLock() {
+    public void testParsingSmallGemfileLock() throws MissingExternalIdException {
         final String text = FunctionalTestFiles.asString("/rubygems/small_gemfile_lock");
         final List<String> gemfileLockContents = Arrays.asList(text.split("\n"));
         final GemlockParser gemlockNodeParser = new GemlockParser(new ExternalIdFactory());
@@ -29,7 +30,7 @@ public class GemlockNodeParserTest {
     }
 
     @Test
-    public void testParsingGemfileLock() {
+    public void testParsingGemfileLock() throws MissingExternalIdException {
         final String text = FunctionalTestFiles.asString("/rubygems/Gemfile.lock");
         final List<String> gemfileLockContents = Arrays.asList(text.split("\n"));
         final GemlockParser gemlockNodeParser = new GemlockParser(new ExternalIdFactory());
@@ -39,7 +40,7 @@ public class GemlockNodeParserTest {
     }
 
     @Test
-    public void testParsingEqualsGemfileLock() {
+    public void testParsingEqualsGemfileLock() throws MissingExternalIdException {
         final String text = FunctionalTestFiles.asString("/rubygems/Gemfile_equals_version.lock");
         final List<String> gemfileLockContents = Arrays.asList(text.split("\n"));
         final GemlockParser gemlockNodeParser = new GemlockParser(new ExternalIdFactory());
@@ -50,7 +51,7 @@ public class GemlockNodeParserTest {
     }
 
     @Test
-    public void testMissingVersionsGemfileLock() {
+    public void testMissingVersionsGemfileLock() throws MissingExternalIdException {
         final String text = FunctionalTestFiles.asString("/rubygems/Gemfile_missing_versions.lock");
         final List<String> gemfileLockContents = Arrays.asList(text.split("\n"));
         final GemlockParser gemlockNodeParser = new GemlockParser(new ExternalIdFactory());

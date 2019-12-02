@@ -54,22 +54,22 @@ public class DependencyFileDetailGeneratorTest {
         final Set<Dependency> dependencies = codeLocation.getDependencyGraph().getRootDependencies();
         assertEquals(6, dependencies.size());
         for (final Dependency dependency : dependencies) {
-            System.out.printf("Checking dependency: %s:%s / %s\n", dependency.name, dependency.version, dependency.externalId.forge.getName());
-            final char indexChar = dependency.name.charAt(15);
+            System.out.printf("Checking dependency: %s:%s / %s\n", dependency.getName(), dependency.getVersion(), dependency.getExternalId().getForge().getName());
+            final char indexChar = dependency.getName().charAt(15);
             assertTrue(indexChar == '1' || indexChar == '2' || indexChar == '3');
 
-            final String forge = dependency.externalId.forge.getName();
+            final String forge = dependency.getExternalId().getForge().getName();
             assertTrue("centos".equals(forge) || "fedora".equals(forge) || "redhat".equals(forge));
 
-            assertEquals(String.format("testPackageName%c", indexChar), dependency.name);
-            assertEquals(String.format("testPackageVersion%c", indexChar), dependency.version);
-            assertEquals(String.format("testPackageArch%c", indexChar), dependency.externalId.architecture);
+            assertEquals(String.format("testPackageName%c", indexChar), dependency.getName());
+            assertEquals(String.format("testPackageVersion%c", indexChar), dependency.getVersion());
+            assertEquals(String.format("testPackageArch%c", indexChar), dependency.getExternalId().getArchitecture());
 
-            assertEquals(forge, dependency.externalId.forge.getName());
-            assertEquals(null, dependency.externalId.group);
-            assertEquals(String.format("testPackageName%c", indexChar), dependency.externalId.name);
-            assertEquals(null, dependency.externalId.path);
-            assertEquals(String.format("testPackageVersion%c", indexChar), dependency.externalId.version);
+            assertEquals(forge, dependency.getExternalId().getForge().getName());
+            assertEquals(null, dependency.getExternalId().getGroup());
+            assertEquals(String.format("testPackageName%c", indexChar), dependency.getExternalId().getName());
+            assertEquals(null, dependency.getExternalId().getPath());
+            assertEquals(String.format("testPackageVersion%c", indexChar), dependency.getExternalId().getVersion());
         }
     }
 

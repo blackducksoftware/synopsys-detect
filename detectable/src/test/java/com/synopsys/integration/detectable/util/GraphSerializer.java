@@ -16,28 +16,28 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 public class GraphSerializer {
     private static final Logger logger = LoggerFactory.getLogger(GraphSerializer.class);
 
-    public static String serialize(DependencyGraph graph) {
+    public static String serialize(final DependencyGraph graph) {
 
-        StringBuilder rootText = new StringBuilder();
-        for (Dependency dependency : graph.getRootDependencies()) {
+        final StringBuilder rootText = new StringBuilder();
+        for (final Dependency dependency : graph.getRootDependencies()) {
             rootText.append("\t" + dependencyToString(dependency) + "\n");
         }
 
-        StringBuilder relationshipText = new StringBuilder();
-        Set<Dependency> processed = new HashSet<>();
-        Stack<Dependency> unprocessed = new Stack<>();
+        final StringBuilder relationshipText = new StringBuilder();
+        final Set<Dependency> processed = new HashSet<>();
+        final Stack<Dependency> unprocessed = new Stack<>();
         unprocessed.addAll(graph.getRootDependencies());
 
         while (unprocessed.size() > 0) {
-            Dependency dependency = unprocessed.pop();
+            final Dependency dependency = unprocessed.pop();
             if (processed.contains(dependency)) {
                 continue;
             } else {
                 processed.add(dependency);
             }
-            StringBuilder childText = new StringBuilder();
+            final StringBuilder childText = new StringBuilder();
             int cnt = 0;
-            for (Dependency childDependency : graph.getChildrenForParent(dependency)) {
+            for (final Dependency childDependency : graph.getChildrenForParent(dependency)) {
                 cnt++;
                 unprocessed.add(childDependency);
                 childText.append("\t\t" + dependencyToString(childDependency) + "\n");
@@ -48,7 +48,7 @@ public class GraphSerializer {
             }
         }
 
-        StringBuilder graphText = new StringBuilder();
+        final StringBuilder graphText = new StringBuilder();
         graphText.append("Detect Graph v0.0.0" + "\n");
         graphText.append("\tRoot Dependencies (" + graph.getRootDependencies().size() + ")" + "\n");
         graphText.append("\tTotal Dependencies (" + graph.getRootDependencies().size() + ")" + "\n");
@@ -62,17 +62,17 @@ public class GraphSerializer {
         return graphText.toString();
     }
 
-    private static String dependencyToString(Dependency dependency) {
-        return dependency.name + "," + dependency.version + "," + externalIdToString(dependency.externalId);
+    private static String dependencyToString(final Dependency dependency) {
+        return dependency.getName() + "," + dependency.getVersion() + "," + externalIdToString(dependency.getExternalId());
     }
 
-    private static String escape(String target) {
+    private static String escape(final String target) {
         return target.replaceAll(",", "%comma%");
     }
 
-    private static String externalIdToString(ExternalId externalId) {
-        String forge = externalId.forge.getName().toString();
-        String pieces = Arrays.stream(externalId.getExternalIdPieces()).map(it -> escape(it)).collect(Collectors.joining(","));
+    private static String externalIdToString(final ExternalId externalId) {
+        final String forge = externalId.getForge().getName().toString();
+        final String pieces = Arrays.stream(externalId.getExternalIdPieces()).map(it -> escape(it)).collect(Collectors.joining(","));
         return forge + "," + pieces;
     }
 }

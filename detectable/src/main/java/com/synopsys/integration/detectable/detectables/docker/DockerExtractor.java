@@ -174,14 +174,14 @@ public class DockerExtractor {
             }
 
             if (simpleBdioDocument != null) {
-                final DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.project, simpleBdioDocument.components);
+                final DependencyGraph dependencyGraph = bdioTransformer.transformToDependencyGraph(simpleBdioDocument.getProject(), simpleBdioDocument.getComponents());
 
-                final String projectName = simpleBdioDocument.project.name;
-                final String projectVersionName = simpleBdioDocument.project.version;
+                final String projectName = simpleBdioDocument.getProject().name;
+                final String projectVersionName = simpleBdioDocument.getProject().version;
 
                 // TODO ejk - update this when project external id is not req'd anymore
-                final Forge dockerForge = new Forge(BdioId.BDIO_ID_SEPARATOR, simpleBdioDocument.project.bdioExternalIdentifier.forge);
-                final String externalIdPath = simpleBdioDocument.project.bdioExternalIdentifier.externalId;
+                final Forge dockerForge = new Forge(BdioId.BDIO_ID_SEPARATOR, simpleBdioDocument.getProject().bdioExternalIdentifier.forge);
+                final String externalIdPath = simpleBdioDocument.getProject().bdioExternalIdentifier.externalId;
                 final ExternalId projectExternalId = externalIdFactory.createPathExternalId(dockerForge, externalIdPath);
 
                 final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, projectExternalId);
