@@ -11,12 +11,11 @@ import com.synopsys.integration.log.PrintStreamIntLogger
 buildscript {
     ext {
         springBootVersion = '2.1.5.RELEASE'
-        blackDuckCommonVersion = '44.5.0-SNAPSHOT'
+        blackDuckCommonVersion = '44.5.0'
         polarisCommonVersion = '0.13.2'
         junitPlatformDefaultTestTags = "integration, performance, battery"
     }
     repositories {
-        mavenLocal() // TODO: Remove me after releasing integration-bdio and blackduck-common
         mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
     }
