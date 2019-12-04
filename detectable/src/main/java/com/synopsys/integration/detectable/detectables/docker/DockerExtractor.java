@@ -26,12 +26,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,9 +58,11 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 public class DockerExtractor {
     public static final ExtractionMetadata<File> DOCKER_TAR_META_DATA = new ExtractionMetadata<>("dockerTar", File.class);
     public static final ExtractionMetadata<String> DOCKER_IMAGE_NAME_META_DATA = new ExtractionMetadata<>("dockerImage", String.class);
+    public static final ExtractionMetadata<String> DOCKER_IMAGE_ID_META_DATA = new ExtractionMetadata<>("dockerImageId", String.class);
 
     public static final String CONTAINER_FILESYSTEM_FILENAME_PATTERN = "*_containerfilesystem.tar.gz";
     public static final String SQUASHED_IMAGE_FILENAME_PATTERN = "*_squashedimage.tar.gz";
+    public static final String RESULTS_FILENAME_PATTERN = "results.json";
     public static final String DEPENDENCIES_PATTERN = "*bdio.jsonld";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -79,7 +83,7 @@ public class DockerExtractor {
         this.gson = gson;
     }
 
-    public Extraction extract(final File directory, final File outputDirectory, final File bashExe, final File javaExe, final String image, final String tar, final DockerInspectorInfo dockerInspectorInfo) {
+    public Extraction extract(final File directory, final File outputDirectory, final File bashExe, final File javaExe, final String image, final String imageId, final String tar, final DockerInspectorInfo dockerInspectorInfo) {
         try {
             String imageArgument = null;
             String imagePiece = null;
@@ -90,6 +94,10 @@ public class DockerExtractor {
             } else if (StringUtils.isNotBlank(image)) {
                 imagePiece = image;
                 imageArgument = String.format("--docker.image=%s", image);
+            } else if (StringUtils.isNotBlank(imageId)) {
+                //imagePiece = getImagePieceFromOutputDirectory(outputDirectory);
+                imagePiece = imageId;
+                imageArgument = String.format("--docker.image.id=%s", imageId);
             }
 
             if (StringUtils.isBlank(imageArgument) || StringUtils.isBlank(imagePiece)) {
@@ -119,7 +127,7 @@ public class DockerExtractor {
         }
     }
 
-    private Extraction executeDocker(final File outputDirectory, final String imageArgument, final String imagePiece, final String dockerTarFilePath, final File directory, final File javaExe, final File bashExe,
+    private Extraction executeDocker(final File outputDirectory, final String imageArgument, String imagePiece, final String dockerTarFilePath, final File directory, final File javaExe, final File bashExe,
         final DockerInspectorInfo dockerInspectorInfo)
         throws IOException, ExecutableRunnerException {
 
@@ -158,6 +166,7 @@ public class DockerExtractor {
         }
 
         final Extraction.Builder extractionBuilder = findCodeLocations(outputDirectory, directory);
+        imagePiece = getImagePieceFromOutputDirectoryIfImageIdPresent(outputDirectory, imageArgument, imagePiece);
         extractionBuilder.metaData(DOCKER_TAR_META_DATA, scanFile).metaData(DOCKER_IMAGE_NAME_META_DATA, imagePiece);
         return extractionBuilder.build();
     }
@@ -191,6 +200,23 @@ public class DockerExtractor {
         }
 
         return new Extraction.Builder().failure("No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString());
+    }
+
+    private String getImagePieceFromOutputDirectoryIfImageIdPresent(File outputDirectory, String imageArgument, String imagePiece) {
+        if (imageArgument.contains("image.id")) {
+            final File producedResultFile = fileFinder.findFile(outputDirectory, RESULTS_FILENAME_PATTERN);
+            String jsonText = null;
+            try {
+                jsonText = FileUtils.readFileToString(producedResultFile, StandardCharsets.UTF_8);
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+            DockerImageInfo dockerImageInfo = gson.fromJson(jsonText, DockerImageInfo.class);
+
+            return dockerImageInfo.getImageRepo() + ":" + dockerImageInfo.getImageTag();
+        } else {
+            return imagePiece;
+        }
     }
 
 }

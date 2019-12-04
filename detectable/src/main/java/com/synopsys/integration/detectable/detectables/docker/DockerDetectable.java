@@ -114,7 +114,8 @@ public class DockerDetectable extends Detectable {
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         final String image = dockerDetectableOptions.getSuppliedDockerImage();
+        final String imageId = dockerDetectableOptions.getSuppliedDockerImageId();
         final String tar = dockerDetectableOptions.getSuppliedDockerTar();
-        return dockerExtractor.extract(environment.getDirectory(), extractionEnvironment.getOutputDirectory(), bashExe, javaExe, image, tar, dockerInspectorInfo);
+        return dockerExtractor.extract(environment.getDirectory(), extractionEnvironment.getOutputDirectory(), bashExe, javaExe, image, imageId, tar, dockerInspectorInfo);
     }
 }

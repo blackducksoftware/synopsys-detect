@@ -107,7 +107,7 @@ public class BlackDuckSignatureScanner {
         boolean anyExitCodeIs64 = false;
         for (final SignatureScanPath target : signatureScanPaths) {
             final Optional<ScanCommandOutput> targetOutput = scanCommandOutputList.stream()
-                                                                 .filter(output -> output.getScanTarget().equals(target.getTargetPath()))
+                                                                 .filter(output -> output.getScanTarget().equals(target.getTargetPath().getAbsolutePath()))
                                                                  .findFirst();
 
             final StatusType scanStatus;
