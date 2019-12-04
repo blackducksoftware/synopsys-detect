@@ -785,6 +785,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#pkix-error-connecting-to-black-duck" class="md-nav__link">
+    PKIX error connecting to Black Duck
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#symptom_5" class="md-nav__link">
+    Symptom
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#possible-cause_5" class="md-nav__link">
+    Possible cause
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solution_4" class="md-nav__link">
+    Solution
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -1505,6 +1539,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#pkix-error-connecting-to-black-duck" class="md-nav__link">
+    PKIX error connecting to Black Duck
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#symptom_5" class="md-nav__link">
+    Symptom
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#possible-cause_5" class="md-nav__link">
+    Possible cause
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solution_4" class="md-nav__link">
+    Solution
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -1582,6 +1650,20 @@ or application.xml that are written for any application other than Synopsys Dete
 <p>To prevent Synopsys Detect from reading those files, run Synopsys Detect from a different directory. Use the following property to point to your source directory.</p>
 <pre><code>--detect.source.path={project directory path}
 </code></pre>
+
+<h2 id="pkix-error-connecting-to-black-duck">PKIX error connecting to Black Duck</h2>
+<h3 id="symptom_5">Symptom</h3>
+<p>Exception: Could not communicate with Black Duck: Could not perform the authorization request: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target</p>
+<h3 id="possible-cause_5">Possible cause</h3>
+<p>The Black Duck server certificate is not in Java's keystore.</p>
+<h3 id="solution_4">Solution</h3>
+<ol>
+<li>Acquire the certificate file for your Black Duck server.</li>
+<li>Determine which <em>java</em> executable is being used to run Synopsys Detect. If you run detect.sh or detect.sh, that is either $JAVA_HOME/bin/java (the default) or the first <em>java</em> found on your $PATH.</li>
+<li>Determine the Java home directory for that <em>java</em> executable.</li>
+<li>Run <a href="https://docs.oracle.com/en/java/javase/11/tools/keytool.html">keytool</a> to install the Black Duck server certificate into the keystore in that Java home directory.</li>
+</ol>
+<p>Although not recommended, it is possible to disable the certificate check with the <a href="../../../properties/Configuration/blackduck server/#trust-all-ssl-certificates-advanced">trust cert property</a>.</p>
                 
                   
                 
