@@ -230,7 +230,7 @@ public class MavenCodeLocationPackagerTest {
         line = mavenCodeLocationPackager.trimLogLevel(line);
         final String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
         final Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
-        assertEquals("org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:3.8.0.v20160509-0411", dependency.externalId.createExternalId());
+        assertEquals("org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:3.8.0.v20160509-0411", dependency.getExternalId().createExternalId());
     }
 
     @Test
@@ -241,7 +241,7 @@ public class MavenCodeLocationPackagerTest {
         line = mavenCodeLocationPackager.trimLogLevel(line);
         final String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
         final ScopedDependency scopedDependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
-        assertEquals("org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:3.8.0.v20160509-0411", scopedDependency.externalId.createExternalId());
+        assertEquals("org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:3.8.0.v20160509-0411", scopedDependency.getExternalId().createExternalId());
     }
 
     @Test
@@ -252,6 +252,6 @@ public class MavenCodeLocationPackagerTest {
         line = mavenCodeLocationPackager.trimLogLevel(line);
         final String cleanedLine = mavenCodeLocationPackager.calculateCurrentLevelAndCleanLine(line);
         final Dependency dependency = mavenCodeLocationPackager.textToDependency(cleanedLine);
-        assertEquals("org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:pants (version selected from", dependency.externalId.createExternalId());
+        assertEquals("org.eclipse.scout.sdk.deps:org.eclipse.core.jobs:pants (version selected from", dependency.getExternalId().createExternalId());
     }
 }

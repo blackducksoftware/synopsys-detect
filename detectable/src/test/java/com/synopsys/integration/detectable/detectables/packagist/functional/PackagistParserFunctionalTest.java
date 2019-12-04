@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.packagist.functional;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectableOptions;
 import com.synopsys.integration.detectable.detectables.packagist.model.PackagistParseResult;
@@ -13,7 +14,7 @@ import com.synopsys.integration.detectable.util.GraphCompare;
 public class PackagistParserFunctionalTest {
 
     @Test
-    public void packagistParserTest() {
+    public void packagistParserTest() throws MissingExternalIdException {
         final ComposerLockDetectableOptions composerLockDetectableOptions = new ComposerLockDetectableOptions(true);
         final PackagistParser packagistParser = new PackagistParser(new ExternalIdFactory(), composerLockDetectableOptions);
 

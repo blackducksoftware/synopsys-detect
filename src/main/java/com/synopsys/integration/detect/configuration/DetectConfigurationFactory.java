@@ -78,7 +78,9 @@ public class DetectConfigurationFactory {
         final boolean unmapCodeLocations = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP, PropertyAuthority.NONE);
         final String aggregateName = detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME, PropertyAuthority.NONE);
         final String preferredTools = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_TOOL, PropertyAuthority.NONE);
-        return new RunOptions(unmapCodeLocations, aggregateName, preferredTools, detectToolFilter);
+        final boolean useBdio2 = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BDIO2_ENABLED, PropertyAuthority.NONE);
+
+        return new RunOptions(unmapCodeLocations, aggregateName, preferredTools, detectToolFilter, useBdio2);
     }
 
     public DirectoryOptions createDirectoryOptions() {

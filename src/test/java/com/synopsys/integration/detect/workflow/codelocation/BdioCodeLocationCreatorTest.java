@@ -2,7 +2,6 @@ package com.synopsys.integration.detect.workflow.codelocation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,9 +44,9 @@ public class BdioCodeLocationCreatorTest {
         Mockito.when(dependencyGraph.getRootDependencies()).thenReturn(dependencies);
 
         final ExternalId externalId = new ExternalId(Forge.MAVEN);
-        externalId.name = "testExternalIdName";
-        externalId.version = "testExternalIdVersion";
-        externalId.architecture = "testExternalIdArch";
+        externalId.setName("testExternalIdName");
+        externalId.setVersion("testExternalIdVersion");
+        externalId.setArchitecture("testExternalIdArch");
         final DetectCodeLocation detectCodeLocation = DetectCodeLocation.forCreator(dependencyGraph, sourceDir, externalId, "testCreator");
         final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
         detectCodeLocations.add(detectCodeLocation);

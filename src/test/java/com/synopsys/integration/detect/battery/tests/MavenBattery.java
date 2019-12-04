@@ -24,7 +24,6 @@ public class MavenBattery {
         test.run();
     }
 
-    @Test
     BatteryTest sharedCliTest(final String name) {
         final BatteryTest test = new BatteryTest(name, "maven-cli");
         test.sourceDirectoryNamed("linux-maven");

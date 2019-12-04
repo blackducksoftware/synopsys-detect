@@ -166,6 +166,11 @@ public enum DetectProperty {
     @HelpDetailed("If not set, the BDIO files are placed in a 'BDIO' subdirectory of the output directory.")
     DETECT_BDIO_OUTPUT_PATH("detect.bdio.output.path", "BDIO Output Directory", "3.0.0", PropertyType.STRING, PropertyAuthority.DIRECTORY_MANAGER),
 
+    @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
+    @HelpDescription("The version of BDIO files to generate.")
+    @HelpDetailed("If set to false, BDIO version 1 will be generated. If set to true, BDIO version 2 will be generated.")
+    DETECT_BDIO2_ENABLED("detect.bdio2.enabled", "BDIO 2 Enabled", "6.1.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
+
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns.")
     DETECT_BINARY_SCAN_FILE("detect.binary.scan.file.path", "Binary Scan Target", "4.2.0", PropertyType.STRING, PropertyAuthority.NONE),

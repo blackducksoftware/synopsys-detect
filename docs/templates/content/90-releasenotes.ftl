@@ -1,4 +1,4 @@
-# Release Notes
+# Release notes
 
 ## Version 6.0.0
 ### New features

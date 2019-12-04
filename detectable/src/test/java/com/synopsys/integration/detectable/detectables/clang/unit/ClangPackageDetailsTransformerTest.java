@@ -49,9 +49,9 @@ public class ClangPackageDetailsTransformerTest {
         packages.add(pkg);
 
         final ExternalId externalId = new ExternalId(forge);
-        externalId.name = packageName;
-        externalId.version = packageVersion;
-        externalId.architecture = packageArch;
+        externalId.setName(packageName);
+        externalId.setVersion(packageVersion);
+        externalId.setArchitecture(packageArch);
 
         // The real test is: Does this get called: (if not, test will fail)
         Mockito.when(externalIdFactory.createArchitectureExternalId(forge, packageName, packageVersion, packageArch)).thenReturn(externalId);
@@ -59,11 +59,11 @@ public class ClangPackageDetailsTransformerTest {
 
         assertEquals(1, codeLocation.getDependencyGraph().getRootDependencies().size());
         final Dependency generatedDependency = codeLocation.getDependencyGraph().getRootDependencies().iterator().next();
-        assertEquals(packageName, generatedDependency.name);
-        assertEquals(packageVersion, generatedDependency.version);
-        assertEquals(forge, generatedDependency.externalId.forge);
+        assertEquals(packageName, generatedDependency.getName());
+        assertEquals(packageVersion, generatedDependency.getVersion());
+        assertEquals(forge, generatedDependency.getExternalId().getForge());
         final String expectedExternalId = String.format("%s/%s/%s", packageName, packageVersion, packageArch);
-        assertEquals(expectedExternalId, generatedDependency.externalId.createExternalId());
+        assertEquals(expectedExternalId, generatedDependency.getExternalId().createExternalId());
     }
 
 }

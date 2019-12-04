@@ -154,7 +154,6 @@ public class DockerExtractorTest {
         assertTrue(command.get(4).endsWith("testDockerTarfile.tar"));
     }
 
-
     private Extraction extract(final String image, final String imageId, final String tar,
             File returnedContainerFileSystemFile,
             File returnedSquashedImageFile,
@@ -180,6 +179,5 @@ public class DockerExtractorTest {
 
         return dockerExtractor.extract(directory, outputDirectory, bashExe, javaExe, image, imageId, tar, dockerInspectorInfo);
     }
-
 
 }

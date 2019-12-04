@@ -107,25 +107,25 @@ public class BlackDuckSignatureScanner {
         boolean anyExitCodeIs64 = false;
         for (final SignatureScanPath target : signatureScanPaths) {
             final Optional<ScanCommandOutput> targetOutput = scanCommandOutputList.stream()
-                                                                 .filter(output -> output.getScanTarget().equals(target.getTargetPath().getAbsolutePath()))
+                                                                 .filter(output -> output.getScanTarget().equals(target.getTargetCanonicalPath()))
                                                                  .findFirst();
 
             final StatusType scanStatus;
             if (!targetOutput.isPresent()) {
                 scanStatus = StatusType.FAILURE;
-                logger.info(String.format("Scanning target %s was never scanned by the BlackDuck CLI.", target.getTargetPath()));
+                logger.info(String.format("Scanning target %s was never scanned by the BlackDuck CLI.", target.getTargetCanonicalPath()));
             } else {
                 final ScanCommandOutput output = targetOutput.get();
                 if (output.getResult() == Result.FAILURE) {
                     scanStatus = StatusType.FAILURE;
 
                     if (output.getException().isPresent() && output.getErrorMessage().isPresent()) {
-                        logger.error(String.format("Scanning target %s failed: %s", target.getTargetPath(), output.getErrorMessage().get()));
+                        logger.error(String.format("Scanning target %s failed: %s", target.getTargetCanonicalPath(), output.getErrorMessage().get()));
                         logger.debug(output.getErrorMessage().get(), output.getException().get());
                     } else if (output.getErrorMessage().isPresent()) {
-                        logger.error(String.format("Scanning target %s failed: %s", target.getTargetPath(), output.getErrorMessage().get()));
+                        logger.error(String.format("Scanning target %s failed: %s", target.getTargetCanonicalPath(), output.getErrorMessage().get()));
                     } else {
-                        logger.error(String.format("Scanning target %s failed for an unknown reason.", target.getTargetPath()));
+                        logger.error(String.format("Scanning target %s failed for an unknown reason.", target.getTargetCanonicalPath()));
                     }
 
                     if (output.getScanExitCode().isPresent()) {
@@ -134,12 +134,12 @@ public class BlackDuckSignatureScanner {
 
                 } else {
                     scanStatus = StatusType.SUCCESS;
-                    logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", target.getTargetPath()));
+                    logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", target.getTargetCanonicalPath()));
                 }
             }
 
             anyFailed = anyFailed || scanStatus == StatusType.FAILURE;
-            eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(target.getTargetPath().toString(), scanStatus));
+            eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(target.getTargetCanonicalPath(), scanStatus));
         }
 
         if (anyFailed) {
@@ -227,10 +227,9 @@ public class BlackDuckSignatureScanner {
 
         for (final SignatureScanPath scanPath : signatureScanPaths) {
             final String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, scanPath.getTargetPath(), dockerTarFile, projectName, projectVersionName, prefix, suffix);
-            scanJobBuilder.addTarget(ScanTarget.createBasicTarget(DetectFileUtils.tryGetCanonicalPath(scanPath.getTargetPath()), scanPath.getExclusions(), codeLocationName));
+            scanJobBuilder.addTarget(ScanTarget.createBasicTarget(scanPath.getTargetCanonicalPath(), scanPath.getExclusions(), codeLocationName));
         }
 
         return scanJobBuilder;
     }
-
 }

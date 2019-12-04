@@ -23,3 +23,14 @@ task docs() {
         }
     }
 }
+
+task servedocs() {
+    dependsOn docs
+
+    doLast {
+        exec {
+            commandLine 'mkdocs', 'serve'
+            workingDir "docs"
+        }
+    }
+}

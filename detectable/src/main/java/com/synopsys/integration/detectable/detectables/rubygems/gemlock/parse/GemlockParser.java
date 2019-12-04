@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
 import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
@@ -74,7 +75,7 @@ public class GemlockParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph parseProjectDependencies(final List<String> gemfileLockLines) {
+    public DependencyGraph parseProjectDependencies(final List<String> gemfileLockLines) throws MissingExternalIdException {
         encounteredDependencies = new ArrayList<>();
         resolvedDependencies = new ArrayList<>();
         lazyBuilder = new LazyExternalIdDependencyGraphBuilder();
@@ -112,15 +113,15 @@ public class GemlockParser {
     }
 
     private void discoveredDependencyInfo(final NameVersionDependencyId id) {
-        final NameDependencyId nameOnlyId = new NameDependencyId(id.name);
+        final NameDependencyId nameOnlyId = new NameDependencyId(id.getName());
 
         //regardless we found the external id for this specific dependency.
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, id.name, id.version);
-        lazyBuilder.setDependencyInfo(id, id.name, id.version, externalId);
+        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, id.getName(), id.getVersion());
+        lazyBuilder.setDependencyInfo(id, id.getName(), id.getVersion(), externalId);
 
-        if (!resolvedDependencies.contains(id.name)) { //if this is our first time encountering a dependency of this name, we become the 'version-less'
-            resolvedDependencies.add(id.name);
-            lazyBuilder.setDependencyInfo(nameOnlyId, id.name, id.version, externalId);
+        if (!resolvedDependencies.contains(id.getName())) { //if this is our first time encountering a dependency of this name, we become the 'version-less'
+            resolvedDependencies.add(id.getName());
+            lazyBuilder.setDependencyInfo(nameOnlyId, id.getName(), id.getVersion(), externalId);
         } else {//otherwise, add us as a child to the version-less
             lazyBuilder.addChildWithParent(id, nameOnlyId);
         }
