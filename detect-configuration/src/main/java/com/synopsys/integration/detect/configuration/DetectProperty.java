@@ -169,7 +169,7 @@ public enum DetectProperty {
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The version of BDIO files to generate.")
-    @HelpDetailed("If set to false, BDIO version 1 will be generated an uploaded. If set to true, BDIO version 2 will be generated but NOT uploaded. The flag can only be set to true if Detect is in offline mode.")
+    @HelpDetailed("If set to false, BDIO version 1 will be generated. If set to true, BDIO version 2 will be generated.")
     DETECT_BDIO2_ENABLED("detect.bdio2.enabled", "BDIO 2 Enabled", "6.1.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { GROUP_SOURCE_PATH })

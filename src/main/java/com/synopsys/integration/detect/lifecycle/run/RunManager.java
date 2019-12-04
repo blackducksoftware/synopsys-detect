@@ -35,6 +35,8 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
+import com.synopsys.integration.blackduck.codelocation.bdio2upload.Bdio2UploadService;
+import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatch;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectMappingService;
@@ -143,10 +145,6 @@ public class RunManager {
         final UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, runResult, runOptions, detectToolFilter);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
-            if (runOptions.shouldUseBdio2() && productRunData.getBlackDuckRunData().isOnline()) {
-                throw new DetectUserFriendlyException("Detect cannot be run in online mode when generating BDIO 2. Please set Detect to run offline or disable BDIO 2 generation.", ExitCodeType.FAILURE_CONFIGURATION);
-            }
-
             final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName(), universalToolsResult);
             runBlackDuckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
                 universalToolsResult.getNameVersion(), aggregateOptions);
@@ -311,14 +309,18 @@ public class RunManager {
         if (bdioResult.getUploadTargets().size() > 0) {
             logger.info("Created " + bdioResult.getUploadTargets().size() + " BDIO files.");
             if (null != blackDuckServicesFactory) {
+                logger.debug("Uploading BDIO files.");
+                final CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData;
                 if (bdioResult.isBdio2()) {
-                    logger.warn("Not uploading BDIO files because the upload of BDIO 2 documents is currently not supported.");
+                    final Bdio2UploadService bdio2UploadService = blackDuckServicesFactory.createBdio2UploadService();
+                    final UploadBatch uploadBatch = new UploadBatch();
+                    bdioResult.getUploadTargets().forEach(uploadBatch::addUploadTarget);
+                    uploadBatchOutputCodeLocationCreationData = bdio2UploadService.uploadBdio(uploadBatch);
                 } else {
-                    logger.debug("Uploading BDIO files.");
                     final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, blackDuckServicesFactory.createBdioUploadService());
-                    final CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
-                    codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
+                    uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
                 }
+                codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
             }
         } else {
             logger.debug("Did not create any BDIO files.");
