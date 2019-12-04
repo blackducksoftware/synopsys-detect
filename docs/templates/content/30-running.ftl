@@ -155,3 +155,47 @@ See [Detectors](components/detectors.md) for the list of detector names.
 
 See [Properties](properties/all-properties.md) for details.
 
+## Running with ${blackduck_product_name}
+
+${solution_name} can be used with ${blackduck_product_name} to perform Software Composition Analysis (SCA).
+
+### Overview
+
+When ${blackduck_product_name} connection details are provided, ${solution_name} will execute
+the following by default:
+
+* The [detector tool](components/detectors.md), which runs the appropriate package manager-specific detector (the Maven detector
+for Maven projects, the Gradle detector for Gradle projects, etc.).
+* The [${blackduck_signature_scanner_name}](properties/Configuration/signature scanner.md), which does a ${blackduck_signature_scan_act} on the
+project directory.
+
+${solution_name} can be configured to perform additional tasks, including the following:
+
+* Enable any of the supported snippet matching modes in the [${blackduck_signature_scanner_name}](properties/Configuration/signature scanner.md).
+* Run the [${blackduck_binary_scanner_name}](properties/Configuration/signature scanner.md#binary-scan-target) on a given binary files.
+* Run the ${dockerinspector_name} on a given [Docker image](advanced/language-and-package-managers/docker-images.md).
+* Generate a [report](properties/Configuration/report.md).
+* Fail on [policy violation](properties/Configuration/project.md#fail-on-policy-violation-severities).
+
+See [${blackduck_product_name} Server properties](properties/Configuration/blackduck server.md)
+and [${blackduck_signature_scanner_name} properties](properties/Configuration/signature scanner.md) for details.
+
+### Offline mode
+
+If you have no ${blackduck_product_name} instance, or if your network is down, you can still run ${solution_name} in offline mode.
+In offline mode, ${solution_name} creates the BDIO content and the dry run ${blackduck_signature_scan_act} output files without attempting to upload them to ${blackduck_product_name}.
+You can run ${solution_name} in offline mode using the [offline mode property](properties/Configuration/blackduck server.md#offline-mode).
+
+## Running with ${polaris_product_name}
+
+${solution_name} can be used with ${polaris_product_name} to perform Static Application Security Testing (SAST).
+
+When ${polaris_product_name} connection details are provided, ${solution_name} will execute
+the following by default:
+
+* The detector tool, which runs the appropriate package manager-specific detector (the Maven detector
+for Maven projects, the Gradle detector for Gradle projects, etc.).
+* The ${polaris_product_name} tool, which runs the ${polaris_product_name} CLI on the
+project directory.
+
+See [Properties](properties/Configuration/polaris.md) for details.

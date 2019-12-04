@@ -29,13 +29,14 @@ public class RunOptions {
     private final String aggregateName;
     private final String preferredTools;
     private final DetectToolFilter detectToolFilter;
+    private final boolean useBdio2;
 
-    public RunOptions(final boolean unmapCodeLocations, final String aggregateName,
-        final String preferredTools, final DetectToolFilter detectToolFilter) {
+    public RunOptions(final boolean unmapCodeLocations, final String aggregateName, final String preferredTools, final DetectToolFilter detectToolFilter, final boolean useBdio2) {
         this.unmapCodeLocations = unmapCodeLocations;
         this.aggregateName = aggregateName;
         this.preferredTools = preferredTools;
         this.detectToolFilter = detectToolFilter;
+        this.useBdio2 = useBdio2;
     }
 
     public boolean shouldUnmapCodeLocations() {
@@ -52,5 +53,9 @@ public class RunOptions {
 
     public DetectToolFilter getDetectToolFilter() {
         return detectToolFilter;
+    }
+
+    public boolean shouldUseBdio2() {
+        return useBdio2;
     }
 }

@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
 import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
@@ -49,7 +50,7 @@ public class PackratLockFileParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph parseProjectDependencies(final List<String> packratLockContents) {
+    public DependencyGraph parseProjectDependencies(final List<String> packratLockContents) throws MissingExternalIdException {
         final LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
         DependencyId currentParent = null;

@@ -32,8 +32,11 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.bdio2.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
+import com.synopsys.integration.blackduck.codelocation.bdio2upload.Bdio2UploadService;
+import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatch;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectMappingService;
@@ -93,9 +96,7 @@ import com.synopsys.integration.detect.workflow.status.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectResult;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
-import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
@@ -180,7 +181,8 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the Docker tool.");
-            final DetectableTool detectableTool = new DetectableTool(environment -> detectableFactory.createDetectable(DockerDetectable.class, environment), extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER, eventSystem);
+            final DetectableTool detectableTool = new DetectableTool(environment -> detectableFactory.createDetectable(DockerDetectable.class, environment), extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
+                eventSystem);
             final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
             runResult.addDetectableToolResult(detectableToolResult);
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
@@ -192,7 +194,8 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the Bazel tool.");
-            final DetectableTool detectableTool = new DetectableTool(environment -> detectableFactory.createDetectable(BazelDetectable.class, environment), extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL, eventSystem);
+            final DetectableTool detectableTool = new DetectableTool(environment -> detectableFactory.createDetectable(BazelDetectable.class, environment), extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL,
+                eventSystem);
             final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
             runResult.addDetectableToolResult(detectableToolResult);
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
@@ -265,8 +268,7 @@ public class RunManager {
     }
 
     private void runBlackDuckProduct(final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager,
-        final EventSystem eventSystem,
-        final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions,
+        final EventSystem eventSystem, final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions,
         final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion, final AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException {
         logger.debug("Black Duck tools will run.");
 
@@ -300,16 +302,24 @@ public class RunManager {
         logger.debug("Completed project and version actions.");
 
         logger.debug("Processing Detect Code Locations.");
-        final BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new IntegrationEscapeUtil(), codeLocationNameManager, bdioCodeLocationCreator, directoryManager, eventSystem);
-        final BdioResult bdioResult = bdioManager.createBdioFiles(aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations());
+        final BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new Bdio2Factory(), new IntegrationEscapeUtil(), codeLocationNameManager, bdioCodeLocationCreator, directoryManager, eventSystem);
+        final BdioResult bdioResult = bdioManager.createBdioFiles(aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations(), runOptions.shouldUseBdio2());
 
         final CodeLocationWaitData codeLocationWaitData = new CodeLocationWaitData();
         if (bdioResult.getUploadTargets().size() > 0) {
             logger.info("Created " + bdioResult.getUploadTargets().size() + " BDIO files.");
             if (null != blackDuckServicesFactory) {
                 logger.debug("Uploading BDIO files.");
-                final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, blackDuckServicesFactory.createBdioUploadService());
-                final CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
+                final CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData;
+                if (bdioResult.isBdio2()) {
+                    final Bdio2UploadService bdio2UploadService = blackDuckServicesFactory.createBdio2UploadService();
+                    final UploadBatch uploadBatch = new UploadBatch();
+                    bdioResult.getUploadTargets().forEach(uploadBatch::addUploadTarget);
+                    uploadBatchOutputCodeLocationCreationData = bdio2UploadService.uploadBdio(uploadBatch);
+                } else {
+                    final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, blackDuckServicesFactory.createBdioUploadService());
+                    uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
+                }
                 codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
             }
         } else {

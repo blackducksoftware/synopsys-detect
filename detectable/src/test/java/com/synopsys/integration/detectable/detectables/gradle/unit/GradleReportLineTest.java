@@ -93,8 +93,8 @@ public class GradleReportLineTest {
         final ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getArtifact(), gav.getVersion());
         final Dependency dependency = new Dependency(gav.getArtifact(), gav.getVersion(), externalId);
 
-        Assert.assertEquals(expectedResults[0], dependency.name);
-        Assert.assertEquals(expectedResults[1], dependency.version);
-        Assert.assertEquals(expectedResults[2], dependency.externalId.createExternalId());
+        Assert.assertEquals(expectedResults[0], dependency.getName());
+        Assert.assertEquals(expectedResults[1], dependency.getVersion());
+        Assert.assertEquals(expectedResults[2], dependency.getExternalId().createExternalId());
     }
 }

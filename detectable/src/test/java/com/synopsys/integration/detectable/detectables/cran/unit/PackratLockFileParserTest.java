@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -49,7 +50,7 @@ class PackratLockFileParserTest {
     }
 
     @Test
-    void parseProjectDependencies() {
+    void parseProjectDependencies() throws MissingExternalIdException {
         final DependencyGraph dependencyGraph = packratLockFileParser.parseProjectDependencies(packratFileLines);
         final GraphAssert graphAssert = new GraphAssert(Forge.CRAN, dependencyGraph);
 
