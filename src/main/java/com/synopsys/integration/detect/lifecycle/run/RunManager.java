@@ -30,9 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.SimpleBdioFactory;
-import com.synopsys.integration.bdio.bdio2.Bdio2Factory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.bdio2.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdio2upload.Bdio2UploadService;

@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.SimpleBdioFactory;
-import com.synopsys.integration.bdio.bdio2.Bdio2Factory;
+import com.synopsys.integration.blackduck.bdio2.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
