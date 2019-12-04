@@ -1,26 +1,28 @@
 package com.synopsys.integration.detectable.detectables.maven.functional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.xml.parsers.SAXParserFactory;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseExtractor;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MavenParseExtractorTest {
-    private Set<String> expectedDependencies = new HashSet<>();
-    private Set<String> pluginDependencies = new HashSet<>();
+    private final Set<String> expectedDependencies = new HashSet<>();
+    private final Set<String> pluginDependencies = new HashSet<>();
 
     @BeforeEach
     public void setup() {
@@ -46,9 +48,9 @@ public class MavenParseExtractorTest {
         final File pomInputStream = FunctionalTestFiles.asFile("/maven/hub-teamcity-pom.xml");
         final MavenParseExtractor pomXmlParser = new MavenParseExtractor(new ExternalIdFactory(), SAXParserFactory.newInstance().newSAXParser(), new MavenParseOptions(false));
         final Extraction extraction = pomXmlParser.extract(pomInputStream);
-        DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
+        final DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
 
-        Set<String> externalIds = dependencyGraph.getRootDependencies().stream().map(dependency -> dependency.externalId.createExternalId()).collect(Collectors.toSet());
+        final Set<String> externalIds = dependencyGraph.getRootDependencies().stream().map(dependency -> dependency.getExternalId().createExternalId()).collect(Collectors.toSet());
         assertEquals(expectedDependencies, externalIds);
     }
 
@@ -57,9 +59,9 @@ public class MavenParseExtractorTest {
         final File pomInputStream = FunctionalTestFiles.asFile("/maven/hub-teamcity-pom.xml");
         final MavenParseExtractor pomXmlParser = new MavenParseExtractor(new ExternalIdFactory(), SAXParserFactory.newInstance().newSAXParser(), new MavenParseOptions(true));
         final Extraction extraction = pomXmlParser.extract(pomInputStream);
-        DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
+        final DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
 
-        Set<String> externalIds = dependencyGraph.getRootDependencies().stream().map(dependency -> dependency.externalId.createExternalId()).collect(Collectors.toSet());
+        final Set<String> externalIds = dependencyGraph.getRootDependencies().stream().map(dependency -> dependency.getExternalId().createExternalId()).collect(Collectors.toSet());
         assertTrue(externalIds.containsAll(expectedDependencies));
         assertTrue(externalIds.containsAll(pluginDependencies));
         assertEquals(expectedDependencies.size() + pluginDependencies.size(), externalIds.size());

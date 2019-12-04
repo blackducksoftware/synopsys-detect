@@ -41,8 +41,8 @@ public class CondaListParserTest {
         element.buildString = "py36_0";
         final Dependency dependency = condaListParser.condaListElementToDependency(platform, element);
 
-        assertEquals("sampleName", dependency.name);
-        assertEquals("sampleVersion-py36_0-linux", dependency.version);
-        assertEquals("sampleName/sampleVersion-py36_0-linux", dependency.externalId.createExternalId());
+        assertEquals("sampleName", dependency.getName());
+        assertEquals("sampleVersion-py36_0-linux", dependency.getVersion());
+        assertEquals("sampleName/sampleVersion-py36_0-linux", dependency.getExternalId().createExternalId());
     }
 }

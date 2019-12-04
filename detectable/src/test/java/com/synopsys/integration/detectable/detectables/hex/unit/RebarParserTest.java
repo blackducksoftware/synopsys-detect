@@ -33,10 +33,10 @@ public class RebarParserTest {
 
         final Dependency actualDependency = rebar3TreeParser.createDependencyFromLine("   \u2502  \u2502  \u2514\u2500 cf\u25000.2.2 (hex package)");
 
-        assertEquals(expectedName, actualDependency.name);
-        assertEquals(expectedVersion, actualDependency.version);
-        assertEquals(expectedExternalId.name, actualDependency.externalId.name);
-        assertEquals(expectedExternalId.version, actualDependency.externalId.version);
+        assertEquals(expectedName, actualDependency.getName());
+        assertEquals(expectedVersion, actualDependency.getVersion());
+        assertEquals(expectedExternalId.getName(), actualDependency.getExternalId().getName());
+        assertEquals(expectedExternalId.getVersion(), actualDependency.getExternalId().getVersion());
     }
 
     @Test

@@ -64,12 +64,12 @@ public class DependencyGraphAssertions {
         if (current == null) {
             for (final Dependency dep : dependencyGraph.getRootDependencies()) {
                 assertDoesNotHave(dep, target);
-                assertDoesNotHave(dependencyGraph, target, dep.externalId);
+                assertDoesNotHave(dependencyGraph, target, dep.getExternalId());
             }
         } else {
             for (final Dependency dep : dependencyGraph.getChildrenForParent(current)) {
                 assertDoesNotHave(dep, target);
-                assertDoesNotHave(dependencyGraph, target, dep.externalId);
+                assertDoesNotHave(dependencyGraph, target, dep.getExternalId());
             }
         }
     }
@@ -77,7 +77,7 @@ public class DependencyGraphAssertions {
     public static void assertDoesNotHave(final Dependency dep, final String target) {
         assertDoesNotHaveName(dep, target);
         assertDoesNotHaveVersion(dep, target);
-        assertDoesNotHave(dep.externalId, target);
+        assertDoesNotHave(dep.getExternalId(), target);
     }
 
     public static void assertDoesNotHave(final ExternalId externalId, final String target) {
@@ -87,32 +87,32 @@ public class DependencyGraphAssertions {
     }
 
     public static void assertDoesNotHaveName(final Dependency dep, final String name) {
-        if (dep.name != null) {
-            assertFalse("Dependency name contains '" + name + "'", dep.name.contains(name));
+        if (dep.getName() != null) {
+            assertFalse("Dependency name contains '" + name + "'", dep.getName().contains(name));
         }
     }
 
     public static void assertDoesNotHaveVersion(final Dependency dep, final String name) {
-        if (dep.version != null) {
-            assertFalse("Dependency version contains '" + name + "'", dep.version.contains(name));
+        if (dep.getVersion() != null) {
+            assertFalse("Dependency version contains '" + name + "'", dep.getVersion().contains(name));
         }
     }
 
     public static void assertDoesNotHaveVersion(final ExternalId externalId, final String name) {
-        if (externalId.version != null) {
-            assertFalse("External id version contains '" + name + "'", externalId.version.contains(name));
+        if (externalId.getVersion() != null) {
+            assertFalse("External id version contains '" + name + "'", externalId.getVersion().contains(name));
         }
     }
 
     public static void assertDoesNotHaveGroup(final ExternalId externalId, final String name) {
-        if (externalId.group != null) {
-            assertFalse("External id group contains '" + name + "'", externalId.group.contains(name));
+        if (externalId.getGroup() != null) {
+            assertFalse("External id group contains '" + name + "'", externalId.getGroup().contains(name));
         }
     }
 
     public static void assertDoesNotHaveName(final ExternalId externalId, final String name) {
-        if (externalId.name != null) {
-            assertFalse("External id name contains '" + name + "'", externalId.name.contains(name));
+        if (externalId.getName() != null) {
+            assertFalse("External id name contains '" + name + "'", externalId.getName().contains(name));
         }
     }
 

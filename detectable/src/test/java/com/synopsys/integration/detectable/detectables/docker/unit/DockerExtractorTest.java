@@ -150,10 +150,9 @@ public class DockerExtractorTest {
         assertTrue(command.get(4).endsWith("testDockerTarfile.tar"));
     }
 
-
     private Extraction extract(final String image, final String tar,
-            File returnedContainerFileSystemFile,
-            File returnedSquashedImageFile,
+        final File returnedContainerFileSystemFile,
+        final File returnedSquashedImageFile,
         final ExecutableRunner executableRunner) {
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
         final DockerProperties dockerProperties = Mockito.mock(DockerProperties.class);
@@ -176,6 +175,5 @@ public class DockerExtractorTest {
 
         return dockerExtractor.extract(directory, outputDirectory, bashExe, javaExe, image, tar, dockerInspectorInfo);
     }
-
 
 }

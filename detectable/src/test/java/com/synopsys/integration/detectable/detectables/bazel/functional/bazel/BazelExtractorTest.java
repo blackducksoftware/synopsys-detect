@@ -22,8 +22,8 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.BazelProjectNameGenerator;
 import com.synopsys.integration.detectable.detectables.bazel.BazelWorkspace;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
@@ -103,18 +103,17 @@ public class BazelExtractorTest {
         boolean foundCommonsIo = false;
         boolean foundGuava = false;
         for (final Dependency dep : dependencies) {
-            System.out.printf("externalId: %s\n", dep.externalId);
-            if ("commons-io".equals(dep.externalId.name)) {
+            System.out.printf("externalId: %s\n", dep.getExternalId());
+            if ("commons-io".equals(dep.getExternalId().getName())) {
                 foundCommonsIo = true;
             }
-            if ("guava".equals(dep.externalId.name)) {
+            if ("guava".equals(dep.getExternalId().getName())) {
                 foundGuava = true;
             }
         }
         assertTrue(foundCommonsIo);
         assertTrue(foundGuava);
     }
-
 
     @Test
     public void testMavenInstall() throws ExecutableRunnerException, IntegrationException {
@@ -155,11 +154,11 @@ public class BazelExtractorTest {
         boolean foundFailureAccess = false;
         boolean foundErrorProneAnnotations = false;
         for (final Dependency dep : dependencies) {
-            System.out.printf("externalId: %s\n", dep.externalId);
-            if ("failureaccess".equals(dep.externalId.name)) {
+            System.out.printf("externalId: %s\n", dep.getExternalId());
+            if ("failureaccess".equals(dep.getExternalId().getName())) {
                 foundFailureAccess = true;
             }
-            if ("error_prone_annotations".equals(dep.externalId.name)) {
+            if ("error_prone_annotations".equals(dep.getExternalId().getName())) {
                 foundErrorProneAnnotations = true;
             }
         }

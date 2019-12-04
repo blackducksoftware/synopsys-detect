@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.SimpleBdioFactory;
+import com.synopsys.integration.bdio.bdio2.Bdio2Factory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
@@ -93,9 +94,7 @@ import com.synopsys.integration.detect.workflow.status.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectResult;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
-import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
@@ -144,6 +143,10 @@ public class RunManager {
         final UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, runResult, runOptions, detectToolFilter);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
+            if (runOptions.shouldUseBdio2() && productRunData.getBlackDuckRunData().isOnline()) {
+                throw new DetectUserFriendlyException("Detect cannot be run in online mode when generating BDIO 2. Please set Detect to run offline or disable BDIO 2 generation.", ExitCodeType.FAILURE_CONFIGURATION);
+            }
+
             final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName(), universalToolsResult);
             runBlackDuckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
                 universalToolsResult.getNameVersion(), aggregateOptions);
@@ -180,7 +183,8 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the Docker tool.");
-            final DetectableTool detectableTool = new DetectableTool(environment -> detectableFactory.createDetectable(DockerDetectable.class, environment), extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER, eventSystem);
+            final DetectableTool detectableTool = new DetectableTool(environment -> detectableFactory.createDetectable(DockerDetectable.class, environment), extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
+                eventSystem);
             final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
             runResult.addDetectableToolResult(detectableToolResult);
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
@@ -192,7 +196,8 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the Bazel tool.");
-            final DetectableTool detectableTool = new DetectableTool(environment -> detectableFactory.createDetectable(BazelDetectable.class, environment), extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL, eventSystem);
+            final DetectableTool detectableTool = new DetectableTool(environment -> detectableFactory.createDetectable(BazelDetectable.class, environment), extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL,
+                eventSystem);
             final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
             runResult.addDetectableToolResult(detectableToolResult);
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
@@ -265,8 +270,7 @@ public class RunManager {
     }
 
     private void runBlackDuckProduct(final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager,
-        final EventSystem eventSystem,
-        final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions,
+        final EventSystem eventSystem, final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions,
         final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion, final AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException {
         logger.debug("Black Duck tools will run.");
 
@@ -300,17 +304,21 @@ public class RunManager {
         logger.debug("Completed project and version actions.");
 
         logger.debug("Processing Detect Code Locations.");
-        final BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new IntegrationEscapeUtil(), codeLocationNameManager, bdioCodeLocationCreator, directoryManager, eventSystem);
-        final BdioResult bdioResult = bdioManager.createBdioFiles(aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations());
+        final BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new Bdio2Factory(), new IntegrationEscapeUtil(), codeLocationNameManager, bdioCodeLocationCreator, directoryManager, eventSystem);
+        final BdioResult bdioResult = bdioManager.createBdioFiles(aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations(), runOptions.shouldUseBdio2());
 
         final CodeLocationWaitData codeLocationWaitData = new CodeLocationWaitData();
         if (bdioResult.getUploadTargets().size() > 0) {
             logger.info("Created " + bdioResult.getUploadTargets().size() + " BDIO files.");
             if (null != blackDuckServicesFactory) {
-                logger.debug("Uploading BDIO files.");
-                final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, blackDuckServicesFactory.createBdioUploadService());
-                final CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
-                codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
+                if (bdioResult.isBdio2()) {
+                    logger.warn("Not uploading BDIO files because the upload of BDIO 2 documents is currently not supported.");
+                } else {
+                    logger.debug("Uploading BDIO files.");
+                    final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, blackDuckServicesFactory.createBdioUploadService());
+                    final CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
+                    codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
+                }
             }
         } else {
             logger.debug("Did not create any BDIO files.");

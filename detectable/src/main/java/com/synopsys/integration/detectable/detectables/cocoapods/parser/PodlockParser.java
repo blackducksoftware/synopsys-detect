@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
 import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
@@ -57,7 +58,7 @@ public class PodlockParser {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph extractDependencyGraph(final String podLockText) throws IOException {
+    public DependencyGraph extractDependencyGraph(final String podLockText) throws IOException, MissingExternalIdException {
         final LazyExternalIdDependencyGraphBuilder lazyBuilder = new LazyExternalIdDependencyGraphBuilder();
         final YAMLMapper mapper = new YAMLMapper();
         final PodfileLock podfileLock = mapper.readValue(podLockText, PodfileLock.class);

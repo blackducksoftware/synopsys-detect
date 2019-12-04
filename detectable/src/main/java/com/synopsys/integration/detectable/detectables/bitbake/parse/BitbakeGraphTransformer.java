@@ -106,8 +106,8 @@ public class BitbakeGraphTransformer {
             }
         }
 
-        if (externalId != null && externalId.version.contains("AUTOINC")) {
-            externalId.version = externalId.version.replaceFirst("AUTOINC\\+[\\w|\\d]*", "X");
+        if (externalId != null && externalId.getVersion().contains("AUTOINC")) {
+            externalId.setVersion(externalId.getVersion().replaceFirst("AUTOINC\\+[\\w|\\d]*", "X"));
         }
 
         return Optional.ofNullable(externalId);

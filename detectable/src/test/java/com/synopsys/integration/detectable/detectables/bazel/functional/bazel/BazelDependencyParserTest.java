@@ -19,13 +19,13 @@ public class BazelDependencyParserTest {
         final BazelDependencyParser bazelDependencyParser = new BazelDependencyParser(externalIdFactory);
         // externalIdFactory.createMavenExternalId(group, artifact, version);
         final ExternalId testExternalId = new ExternalId(Forge.MAVEN);
-        testExternalId.group = "testgroup";
-        testExternalId.name = "testartifact";
-        testExternalId.version = "testversion";
+        testExternalId.setGroup("testgroup");
+        testExternalId.setName("testartifact");
+        testExternalId.setVersion("testversion");
         Mockito.when(externalIdFactory.createMavenExternalId("testgroup", "testartifact", "testversion")).thenReturn(testExternalId);
 
         final Dependency dependency = bazelDependencyParser.gavStringToDependency("testgroup:testartifact:testversion", ":");
 
-        assertEquals("testartifact", dependency.externalId.name);
+        assertEquals("testartifact", dependency.getExternalId().getName());
     }
 }

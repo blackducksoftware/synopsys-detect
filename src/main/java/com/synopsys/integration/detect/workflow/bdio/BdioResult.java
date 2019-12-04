@@ -30,18 +30,24 @@ import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 
 public class BdioResult {
     private final List<UploadTarget> uploadTargets;
+    private final boolean isBdio2;
 
-    public BdioResult(final Optional<UploadTarget> uploadTarget) {
+    public BdioResult(final Optional<UploadTarget> uploadTarget, final boolean isBdio2) {
+        this.isBdio2 = isBdio2;
         this.uploadTargets = new ArrayList<>();
         uploadTarget.ifPresent(uploadTargets::add);
     }
 
-    public BdioResult(final List<UploadTarget> uploadTargets) {
+    public BdioResult(final List<UploadTarget> uploadTargets, final boolean isBdio2) {
         this.uploadTargets = uploadTargets;
+        this.isBdio2 = isBdio2;
     }
 
     public List<UploadTarget> getUploadTargets() {
         return uploadTargets;
     }
 
+    public boolean isBdio2() {
+        return isBdio2;
+    }
 }

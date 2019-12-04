@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -43,7 +44,7 @@ public class YarnTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(final PackageJson packageJson, final YarnLock yarnLock, final YarnLockOptions yarnLockOptions) {
+    public DependencyGraph transform(final PackageJson packageJson, final YarnLock yarnLock, final YarnLockOptions yarnLockOptions) throws MissingExternalIdException {
         final LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
         for (final Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
@@ -65,7 +66,7 @@ public class YarnTransformer {
                     if ((yarnLockOptions.useProductionOnly() && !dependency.isOptional()) || (!yarnLockOptions.useProductionOnly())) {
                         graphBuilder.addChildWithParent(stringDependencyId, id);
                     } else {
-                        logger.debug(String.format("Eluding optional dependency: %s", stringDependencyId.value));
+                        logger.debug(String.format("Eluding optional dependency: %s", stringDependencyId.getValue()));
                     }
                 }
             }

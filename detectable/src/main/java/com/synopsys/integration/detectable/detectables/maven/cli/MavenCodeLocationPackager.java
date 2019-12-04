@@ -137,11 +137,14 @@ public class MavenCodeLocationPackager {
                 if (level == 1) {
                     // a direct dependency, clear the stack and add this as a potential parent for the next line
                     if (scopeFilter.shouldInclude(dependency.scope)) {
-                        logger.trace(String.format("Level 1 component %s:%s:%s:%s is in scope; adding it to hierarchy root", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
+                        logger.trace(String
+                                         .format("Level 1 component %s:%s:%s:%s is in scope; adding it to hierarchy root", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(), dependency.getExternalId().getVersion(),
+                                             dependency.scope));
                         currentGraph.addChildToRoot(dependency);
                         inOutOfScopeTree = false;
                     } else {
-                        logger.trace(String.format("Level 1 component %s:%s:%s:%s is a top-level out-of-scope component; entering non-scoped tree", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version,
+                        logger.trace(String.format("Level 1 component %s:%s:%s:%s is a top-level out-of-scope component; entering non-scoped tree", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(),
+                            dependency.getExternalId().getVersion(),
                             dependency.scope));
                         inOutOfScopeTree = true;
                     }
@@ -178,10 +181,10 @@ public class MavenCodeLocationPackager {
         logger.trace(String.format("# orphans: %d", orphans.size()));
         if (orphans.size() > 0) {
             final Dependency orphanListParent = createOrphanListParentDependency();
-            logger.trace(String.format("adding orphan list parent dependency: %s", orphanListParent.externalId.toString()));
+            logger.trace(String.format("adding orphan list parent dependency: %s", orphanListParent.getExternalId().toString()));
             graph.addChildToRoot(orphanListParent);
             for (final Dependency dependency : orphans) {
-                logger.trace(String.format("adding orphan: %s", dependency.externalId.toString()));
+                logger.trace(String.format("adding orphan: %s", dependency.getExternalId().toString()));
                 graph.addParentWithChild(orphanListParent, dependency);
             }
         }
@@ -192,10 +195,12 @@ public class MavenCodeLocationPackager {
         if (scopeFilter.shouldInclude(dependency.scope)) {
             if (inOutOfScopeTree) {
                 logger.trace(
-                    String.format("component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to orphans", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
+                    String.format("component %s:%s:%s:%s is in scope but in a nonScope tree; adding it to orphans", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(), dependency.getExternalId().getVersion(),
+                        dependency.scope));
                 orphans.add(dependency);
             } else {
-                logger.trace(String.format("component %s:%s:%s:%s is in scope and in an in-scope tree; adding it to hierarchy", dependency.externalId.group, dependency.externalId.name, dependency.externalId.version, dependency.scope));
+                logger.trace(String.format("component %s:%s:%s:%s is in scope and in an in-scope tree; adding it to hierarchy", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(),
+                    dependency.getExternalId().getVersion(), dependency.scope));
                 currentGraph.addParentWithChild(parent, dependency);
             }
         }
@@ -205,11 +210,11 @@ public class MavenCodeLocationPackager {
         final Dependency dependency = textToProject(line);
         if (null != dependency) {
             String codeLocationSourcePath = sourcePath;
-            if (!sourcePath.endsWith(dependency.name)) {
-                codeLocationSourcePath += "/" + dependency.name;
+            if (!sourcePath.endsWith(dependency.getName())) {
+                codeLocationSourcePath += "/" + dependency.getName();
             }
-            final CodeLocation codeLocation = new CodeLocation(graph, dependency.externalId, new File(codeLocationSourcePath));
-            return new MavenParseResult(dependency.name, dependency.version, codeLocation);
+            final CodeLocation codeLocation = new CodeLocation(graph, dependency.getExternalId(), new File(codeLocationSourcePath));
+            return new MavenParseResult(dependency.getName(), dependency.getVersion(), codeLocation);
         }
         return null;
     }
