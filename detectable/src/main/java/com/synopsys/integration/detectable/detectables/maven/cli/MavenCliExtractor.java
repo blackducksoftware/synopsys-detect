@@ -53,6 +53,7 @@ public class MavenCliExtractor {
             String mavenCommand = mavenCliExtractorOptions.getMavenBuildCommand();
             if (StringUtils.isNotBlank(mavenCommand)) {
                 mavenCommand = mavenCommand.replace("dependency:tree", "");
+
                 if (StringUtils.isNotBlank(mavenCommand)) {
                     mavenCommand = mavenCommand.trim();
                 }
@@ -63,6 +64,7 @@ public class MavenCliExtractor {
                 arguments.addAll(Arrays.asList(mavenCommand.split(" ")));
             }
             arguments.add("dependency:tree");
+            arguments.add("-T1"); // Force maven to use a single thread to ensure the tree output is in the correct order.
 
             final ExecutableOutput mvnOutput = executableRunner.execute(directory, mavenExe, arguments);
 
