@@ -1,0 +1,2261 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "ubuntu_latest_DPKG",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: IntegrationBdio-17.1.2"
+      ],
+      "spdx:created": "2019-12-04T20:50:59.241Z"
+    },
+    "@id": "uuid:d1655649-b877-4401-b809-3666813b578f",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "ubuntu",
+    "revision": "latest",
+    "@id": "http:ubuntu/ubuntu/latest",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "ubuntu",
+      "externalId": "ubuntu/latest",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": false
+        },
+        "name": "ubuntu",
+        "version": "latest"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:ubuntu/libsemanage1/2_7_2build2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/ncurses_base/6_1_1ubuntu1_18_04/all",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/ubuntu_keyring/2018_09_18_1_18_04_0/all",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/base_files/10_1ubuntu2_7/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libstdc__6/8_3_0_6ubuntu1_18_04_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libgpg_error0/1_27_6/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libbz2_1_0/1_0_6_8_1ubuntu0_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libaudit_common/1_2_8_2_1ubuntu1/all",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/procps/2_3_3_12_3ubuntu1_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libsemanage_common/2_7_2build2/all",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libss2/1_44_1_1ubuntu1_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libgmp10/2_6_1_2_dfsg_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libpam_modules_bin/1_1_8_3_6ubuntu2_18_04_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libsystemd0/237_3ubuntu10_31/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libseccomp2/2_4_1_0ubuntu0_18_04_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libacl1/2_2_52_3build1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/dash/0_5_8_2_10/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libcom_err2/1_44_1_1ubuntu1_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libpcre3/2_8_39_9/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/bash/4_4_18_2ubuntu1_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libgcrypt20/1_8_1_4ubuntu1_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/findutils/4_6_0_git_20170828_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libc6/2_27_3ubuntu1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/gcc_8_base/8_3_0_6ubuntu1_18_04_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libunistring2/0_9_9_0ubuntu2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/sysvinit_utils/2_88dsf_59_10ubuntu1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libncurses5/6_1_1ubuntu1_18_04/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/fdisk/2_31_1_0_4ubuntu3_4/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/perl_base/5_26_1_6ubuntu0_3/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libtinfo5/6_1_1ubuntu1_18_04/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/apt/1_6_12/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/mawk/1_3_3_17ubuntu3/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libattr1/1_2_4_47_2build1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/debconf/1_5_66ubuntu1/all",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/zlib1g/1_1_2_11_dfsg_0ubuntu2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/passwd/1_4_5_1ubuntu2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/coreutils/8_28_1ubuntu1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libgcc1/1_8_3_0_6ubuntu1_18_04_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libpam0g/1_1_8_3_6ubuntu2_18_04_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libffi6/3_2_1_8/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libext2fs2/1_44_1_1ubuntu1_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/base_passwd/3_5_44/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/debianutils/4_8_4/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libaudit1/1_2_8_2_1ubuntu1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/tar/1_29b_2ubuntu0_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libapt_pkg5_0/1_6_12/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libgnutls30/3_5_18_1ubuntu1_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/mount/2_31_1_0_4ubuntu3_4/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libidn2_0/2_0_4_1_1ubuntu0_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/bzip2/1_0_6_8_1ubuntu0_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/util_linux/2_31_1_0_4ubuntu3_4/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libselinux1/2_7_2build2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/liblzma5/5_2_2_1_3/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libtasn1_6/4_13_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/liblz4_1/0_0_r131_2ubuntu3/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/gpgv/2_2_4_1ubuntu1_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libcap_ng0/0_7_7_3_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libuuid1/2_31_1_0_4ubuntu3_4/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/grep/3_1_2build1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/sed/4_4_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/hostname/3_20/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libp11_kit0/0_23_9_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/ncurses_bin/6_1_1ubuntu1_18_04/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libhogweed4/3_4_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libsepol1/2_7_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/dpkg/1_19_0_5ubuntu2_3/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/lsb_base/9_20170808ubuntu1/all",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libpam_runtime/1_1_8_3_6ubuntu2_18_04_1/all",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/adduser/3_116ubuntu1/all",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libblkid1/2_31_1_0_4ubuntu3_4/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libsmartcols1/2_31_1_0_4ubuntu3_4/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libmount1/2_31_1_0_4ubuntu3_4/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libnettle6/3_4_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libpam_modules/1_1_8_3_6ubuntu2_18_04_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libncursesw5/6_1_1ubuntu1_18_04/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/gzip/1_6_5ubuntu1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libudev1/237_3ubuntu10_31/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/sensible_utils/0_0_12/all",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libfdisk1/2_31_1_0_4ubuntu3_4/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/login/1_4_5_1ubuntu2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libdb5_3/5_3_28_13_1ubuntu1_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libzstd1/1_3_3_dfsg_2ubuntu1_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libprocps6/2_3_3_12_3ubuntu1_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/init_system_helpers/1_51/all",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/e2fsprogs/1_44_1_1ubuntu1_2/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libdebconfclient0/0_213ubuntu1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/libc_bin/2_27_3ubuntu1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/bsdutils/1_2_31_1_0_4ubuntu3_4/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:ubuntu/diffutils/1_3_6_1/amd64",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "libsemanage1",
+    "revision": "2.7-2build2",
+    "@id": "http:ubuntu/libsemanage1/2_7_2build2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libsemanage1/2.7-2build2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libsemanage1",
+        "version": "2.7-2build2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "ncurses-base",
+    "revision": "6.1-1ubuntu1.18.04",
+    "@id": "http:ubuntu/ncurses_base/6_1_1ubuntu1_18_04/all",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "ncurses-base/6.1-1ubuntu1.18.04/all",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "ncurses-base",
+        "version": "6.1-1ubuntu1.18.04",
+        "architecture": "all"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "ubuntu-keyring",
+    "revision": "2018.09.18.1~18.04.0",
+    "@id": "http:ubuntu/ubuntu_keyring/2018_09_18_1_18_04_0/all",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "ubuntu-keyring/2018.09.18.1~18.04.0/all",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "ubuntu-keyring",
+        "version": "2018.09.18.1~18.04.0",
+        "architecture": "all"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "base-files",
+    "revision": "10.1ubuntu2.7",
+    "@id": "http:ubuntu/base_files/10_1ubuntu2_7/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "base-files/10.1ubuntu2.7/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "base-files",
+        "version": "10.1ubuntu2.7",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libstdc++6",
+    "revision": "8.3.0-6ubuntu1~18.04.1",
+    "@id": "http:ubuntu/libstdc__6/8_3_0_6ubuntu1_18_04_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libstdc++6/8.3.0-6ubuntu1~18.04.1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libstdc++6",
+        "version": "8.3.0-6ubuntu1~18.04.1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libgpg-error0",
+    "revision": "1.27-6",
+    "@id": "http:ubuntu/libgpg_error0/1_27_6/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libgpg-error0/1.27-6/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libgpg-error0",
+        "version": "1.27-6",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libbz2-1.0",
+    "revision": "1.0.6-8.1ubuntu0.2",
+    "@id": "http:ubuntu/libbz2_1_0/1_0_6_8_1ubuntu0_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libbz2-1.0/1.0.6-8.1ubuntu0.2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libbz2-1.0",
+        "version": "1.0.6-8.1ubuntu0.2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libaudit-common",
+    "revision": "1:2.8.2-1ubuntu1",
+    "@id": "http:ubuntu/libaudit_common/1_2_8_2_1ubuntu1/all",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libaudit-common/1:2.8.2-1ubuntu1/all",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libaudit-common",
+        "version": "1:2.8.2-1ubuntu1",
+        "architecture": "all"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "procps",
+    "revision": "2:3.3.12-3ubuntu1.2",
+    "@id": "http:ubuntu/procps/2_3_3_12_3ubuntu1_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "procps/2:3.3.12-3ubuntu1.2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "procps",
+        "version": "2:3.3.12-3ubuntu1.2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libsemanage-common",
+    "revision": "2.7-2build2",
+    "@id": "http:ubuntu/libsemanage_common/2_7_2build2/all",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libsemanage-common/2.7-2build2/all",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libsemanage-common",
+        "version": "2.7-2build2",
+        "architecture": "all"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libss2",
+    "revision": "1.44.1-1ubuntu1.2",
+    "@id": "http:ubuntu/libss2/1_44_1_1ubuntu1_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libss2/1.44.1-1ubuntu1.2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libss2",
+        "version": "1.44.1-1ubuntu1.2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libgmp10",
+    "revision": "2:6.1.2+dfsg-2",
+    "@id": "http:ubuntu/libgmp10/2_6_1_2_dfsg_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libgmp10/2:6.1.2+dfsg-2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libgmp10",
+        "version": "2:6.1.2+dfsg-2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libpam-modules-bin",
+    "revision": "1.1.8-3.6ubuntu2.18.04.1",
+    "@id": "http:ubuntu/libpam_modules_bin/1_1_8_3_6ubuntu2_18_04_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libpam-modules-bin/1.1.8-3.6ubuntu2.18.04.1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libpam-modules-bin",
+        "version": "1.1.8-3.6ubuntu2.18.04.1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libsystemd0",
+    "revision": "237-3ubuntu10.31",
+    "@id": "http:ubuntu/libsystemd0/237_3ubuntu10_31/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libsystemd0/237-3ubuntu10.31/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libsystemd0",
+        "version": "237-3ubuntu10.31",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libseccomp2",
+    "revision": "2.4.1-0ubuntu0.18.04.2",
+    "@id": "http:ubuntu/libseccomp2/2_4_1_0ubuntu0_18_04_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libseccomp2/2.4.1-0ubuntu0.18.04.2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libseccomp2",
+        "version": "2.4.1-0ubuntu0.18.04.2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libacl1",
+    "revision": "2.2.52-3build1",
+    "@id": "http:ubuntu/libacl1/2_2_52_3build1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libacl1/2.2.52-3build1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libacl1",
+        "version": "2.2.52-3build1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "dash",
+    "revision": "0.5.8-2.10",
+    "@id": "http:ubuntu/dash/0_5_8_2_10/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "dash/0.5.8-2.10/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "dash",
+        "version": "0.5.8-2.10",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libcom-err2",
+    "revision": "1.44.1-1ubuntu1.2",
+    "@id": "http:ubuntu/libcom_err2/1_44_1_1ubuntu1_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libcom-err2/1.44.1-1ubuntu1.2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libcom-err2",
+        "version": "1.44.1-1ubuntu1.2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libpcre3",
+    "revision": "2:8.39-9",
+    "@id": "http:ubuntu/libpcre3/2_8_39_9/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libpcre3/2:8.39-9/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libpcre3",
+        "version": "2:8.39-9",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "bash",
+    "revision": "4.4.18-2ubuntu1.2",
+    "@id": "http:ubuntu/bash/4_4_18_2ubuntu1_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "bash/4.4.18-2ubuntu1.2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "bash",
+        "version": "4.4.18-2ubuntu1.2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libgcrypt20",
+    "revision": "1.8.1-4ubuntu1.1",
+    "@id": "http:ubuntu/libgcrypt20/1_8_1_4ubuntu1_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libgcrypt20/1.8.1-4ubuntu1.1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libgcrypt20",
+        "version": "1.8.1-4ubuntu1.1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "findutils",
+    "revision": "4.6.0+git+20170828-2",
+    "@id": "http:ubuntu/findutils/4_6_0_git_20170828_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "findutils/4.6.0+git+20170828-2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "findutils",
+        "version": "4.6.0+git+20170828-2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libc6",
+    "revision": "2.27-3ubuntu1",
+    "@id": "http:ubuntu/libc6/2_27_3ubuntu1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libc6/2.27-3ubuntu1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libc6",
+        "version": "2.27-3ubuntu1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "gcc-8-base",
+    "revision": "8.3.0-6ubuntu1~18.04.1",
+    "@id": "http:ubuntu/gcc_8_base/8_3_0_6ubuntu1_18_04_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "gcc-8-base/8.3.0-6ubuntu1~18.04.1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "gcc-8-base",
+        "version": "8.3.0-6ubuntu1~18.04.1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libunistring2",
+    "revision": "0.9.9-0ubuntu2",
+    "@id": "http:ubuntu/libunistring2/0_9_9_0ubuntu2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libunistring2/0.9.9-0ubuntu2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libunistring2",
+        "version": "0.9.9-0ubuntu2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "sysvinit-utils",
+    "revision": "2.88dsf-59.10ubuntu1",
+    "@id": "http:ubuntu/sysvinit_utils/2_88dsf_59_10ubuntu1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "sysvinit-utils/2.88dsf-59.10ubuntu1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "sysvinit-utils",
+        "version": "2.88dsf-59.10ubuntu1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libncurses5",
+    "revision": "6.1-1ubuntu1.18.04",
+    "@id": "http:ubuntu/libncurses5/6_1_1ubuntu1_18_04/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libncurses5/6.1-1ubuntu1.18.04/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libncurses5",
+        "version": "6.1-1ubuntu1.18.04",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "fdisk",
+    "revision": "2.31.1-0.4ubuntu3.4",
+    "@id": "http:ubuntu/fdisk/2_31_1_0_4ubuntu3_4/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "fdisk/2.31.1-0.4ubuntu3.4/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "fdisk",
+        "version": "2.31.1-0.4ubuntu3.4",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "perl-base",
+    "revision": "5.26.1-6ubuntu0.3",
+    "@id": "http:ubuntu/perl_base/5_26_1_6ubuntu0_3/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "perl-base/5.26.1-6ubuntu0.3/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "perl-base",
+        "version": "5.26.1-6ubuntu0.3",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libtinfo5",
+    "revision": "6.1-1ubuntu1.18.04",
+    "@id": "http:ubuntu/libtinfo5/6_1_1ubuntu1_18_04/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libtinfo5/6.1-1ubuntu1.18.04/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libtinfo5",
+        "version": "6.1-1ubuntu1.18.04",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "apt",
+    "revision": "1.6.12",
+    "@id": "http:ubuntu/apt/1_6_12/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "apt/1.6.12/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "apt",
+        "version": "1.6.12",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "mawk",
+    "revision": "1.3.3-17ubuntu3",
+    "@id": "http:ubuntu/mawk/1_3_3_17ubuntu3/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "mawk/1.3.3-17ubuntu3/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "mawk",
+        "version": "1.3.3-17ubuntu3",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libattr1",
+    "revision": "1:2.4.47-2build1",
+    "@id": "http:ubuntu/libattr1/1_2_4_47_2build1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libattr1/1:2.4.47-2build1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libattr1",
+        "version": "1:2.4.47-2build1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "debconf",
+    "revision": "1.5.66ubuntu1",
+    "@id": "http:ubuntu/debconf/1_5_66ubuntu1/all",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "debconf/1.5.66ubuntu1/all",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "debconf",
+        "version": "1.5.66ubuntu1",
+        "architecture": "all"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "zlib1g",
+    "revision": "1:1.2.11.dfsg-0ubuntu2",
+    "@id": "http:ubuntu/zlib1g/1_1_2_11_dfsg_0ubuntu2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "zlib1g/1:1.2.11.dfsg-0ubuntu2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "zlib1g",
+        "version": "1:1.2.11.dfsg-0ubuntu2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "passwd",
+    "revision": "1:4.5-1ubuntu2",
+    "@id": "http:ubuntu/passwd/1_4_5_1ubuntu2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "passwd/1:4.5-1ubuntu2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "passwd",
+        "version": "1:4.5-1ubuntu2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "coreutils",
+    "revision": "8.28-1ubuntu1",
+    "@id": "http:ubuntu/coreutils/8_28_1ubuntu1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "coreutils/8.28-1ubuntu1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "coreutils",
+        "version": "8.28-1ubuntu1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libgcc1",
+    "revision": "1:8.3.0-6ubuntu1~18.04.1",
+    "@id": "http:ubuntu/libgcc1/1_8_3_0_6ubuntu1_18_04_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libgcc1/1:8.3.0-6ubuntu1~18.04.1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libgcc1",
+        "version": "1:8.3.0-6ubuntu1~18.04.1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libpam0g",
+    "revision": "1.1.8-3.6ubuntu2.18.04.1",
+    "@id": "http:ubuntu/libpam0g/1_1_8_3_6ubuntu2_18_04_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libpam0g/1.1.8-3.6ubuntu2.18.04.1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libpam0g",
+        "version": "1.1.8-3.6ubuntu2.18.04.1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libffi6",
+    "revision": "3.2.1-8",
+    "@id": "http:ubuntu/libffi6/3_2_1_8/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libffi6/3.2.1-8/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libffi6",
+        "version": "3.2.1-8",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libext2fs2",
+    "revision": "1.44.1-1ubuntu1.2",
+    "@id": "http:ubuntu/libext2fs2/1_44_1_1ubuntu1_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libext2fs2/1.44.1-1ubuntu1.2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libext2fs2",
+        "version": "1.44.1-1ubuntu1.2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "base-passwd",
+    "revision": "3.5.44",
+    "@id": "http:ubuntu/base_passwd/3_5_44/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "base-passwd/3.5.44/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "base-passwd",
+        "version": "3.5.44",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "debianutils",
+    "revision": "4.8.4",
+    "@id": "http:ubuntu/debianutils/4_8_4/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "debianutils/4.8.4/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "debianutils",
+        "version": "4.8.4",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libaudit1",
+    "revision": "1:2.8.2-1ubuntu1",
+    "@id": "http:ubuntu/libaudit1/1_2_8_2_1ubuntu1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libaudit1/1:2.8.2-1ubuntu1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libaudit1",
+        "version": "1:2.8.2-1ubuntu1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "tar",
+    "revision": "1.29b-2ubuntu0.1",
+    "@id": "http:ubuntu/tar/1_29b_2ubuntu0_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "tar/1.29b-2ubuntu0.1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "tar",
+        "version": "1.29b-2ubuntu0.1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libapt-pkg5.0",
+    "revision": "1.6.12",
+    "@id": "http:ubuntu/libapt_pkg5_0/1_6_12/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libapt-pkg5.0/1.6.12/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libapt-pkg5.0",
+        "version": "1.6.12",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libgnutls30",
+    "revision": "3.5.18-1ubuntu1.1",
+    "@id": "http:ubuntu/libgnutls30/3_5_18_1ubuntu1_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libgnutls30/3.5.18-1ubuntu1.1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libgnutls30",
+        "version": "3.5.18-1ubuntu1.1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "mount",
+    "revision": "2.31.1-0.4ubuntu3.4",
+    "@id": "http:ubuntu/mount/2_31_1_0_4ubuntu3_4/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "mount/2.31.1-0.4ubuntu3.4/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "mount",
+        "version": "2.31.1-0.4ubuntu3.4",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libidn2-0",
+    "revision": "2.0.4-1.1ubuntu0.2",
+    "@id": "http:ubuntu/libidn2_0/2_0_4_1_1ubuntu0_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libidn2-0/2.0.4-1.1ubuntu0.2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libidn2-0",
+        "version": "2.0.4-1.1ubuntu0.2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "bzip2",
+    "revision": "1.0.6-8.1ubuntu0.2",
+    "@id": "http:ubuntu/bzip2/1_0_6_8_1ubuntu0_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "bzip2/1.0.6-8.1ubuntu0.2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "bzip2",
+        "version": "1.0.6-8.1ubuntu0.2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "util-linux",
+    "revision": "2.31.1-0.4ubuntu3.4",
+    "@id": "http:ubuntu/util_linux/2_31_1_0_4ubuntu3_4/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "util-linux/2.31.1-0.4ubuntu3.4/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "util-linux",
+        "version": "2.31.1-0.4ubuntu3.4",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libselinux1",
+    "revision": "2.7-2build2",
+    "@id": "http:ubuntu/libselinux1/2_7_2build2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libselinux1/2.7-2build2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libselinux1",
+        "version": "2.7-2build2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "liblzma5",
+    "revision": "5.2.2-1.3",
+    "@id": "http:ubuntu/liblzma5/5_2_2_1_3/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "liblzma5/5.2.2-1.3/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "liblzma5",
+        "version": "5.2.2-1.3",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libtasn1-6",
+    "revision": "4.13-2",
+    "@id": "http:ubuntu/libtasn1_6/4_13_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libtasn1-6/4.13-2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libtasn1-6",
+        "version": "4.13-2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "liblz4-1",
+    "revision": "0.0~r131-2ubuntu3",
+    "@id": "http:ubuntu/liblz4_1/0_0_r131_2ubuntu3/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "liblz4-1/0.0~r131-2ubuntu3/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "liblz4-1",
+        "version": "0.0~r131-2ubuntu3",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "gpgv",
+    "revision": "2.2.4-1ubuntu1.2",
+    "@id": "http:ubuntu/gpgv/2_2_4_1ubuntu1_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "gpgv/2.2.4-1ubuntu1.2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "gpgv",
+        "version": "2.2.4-1ubuntu1.2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libcap-ng0",
+    "revision": "0.7.7-3.1",
+    "@id": "http:ubuntu/libcap_ng0/0_7_7_3_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libcap-ng0/0.7.7-3.1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libcap-ng0",
+        "version": "0.7.7-3.1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libuuid1",
+    "revision": "2.31.1-0.4ubuntu3.4",
+    "@id": "http:ubuntu/libuuid1/2_31_1_0_4ubuntu3_4/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libuuid1/2.31.1-0.4ubuntu3.4/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libuuid1",
+        "version": "2.31.1-0.4ubuntu3.4",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "grep",
+    "revision": "3.1-2build1",
+    "@id": "http:ubuntu/grep/3_1_2build1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "grep/3.1-2build1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "grep",
+        "version": "3.1-2build1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "sed",
+    "revision": "4.4-2",
+    "@id": "http:ubuntu/sed/4_4_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "sed/4.4-2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "sed",
+        "version": "4.4-2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "hostname",
+    "revision": "3.20",
+    "@id": "http:ubuntu/hostname/3_20/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "hostname/3.20/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "hostname",
+        "version": "3.20",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libp11-kit0",
+    "revision": "0.23.9-2",
+    "@id": "http:ubuntu/libp11_kit0/0_23_9_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libp11-kit0/0.23.9-2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libp11-kit0",
+        "version": "0.23.9-2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "ncurses-bin",
+    "revision": "6.1-1ubuntu1.18.04",
+    "@id": "http:ubuntu/ncurses_bin/6_1_1ubuntu1_18_04/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "ncurses-bin/6.1-1ubuntu1.18.04/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "ncurses-bin",
+        "version": "6.1-1ubuntu1.18.04",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libhogweed4",
+    "revision": "3.4-1",
+    "@id": "http:ubuntu/libhogweed4/3_4_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libhogweed4/3.4-1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libhogweed4",
+        "version": "3.4-1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libsepol1",
+    "revision": "2.7-1",
+    "@id": "http:ubuntu/libsepol1/2_7_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libsepol1/2.7-1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libsepol1",
+        "version": "2.7-1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "dpkg",
+    "revision": "1.19.0.5ubuntu2.3",
+    "@id": "http:ubuntu/dpkg/1_19_0_5ubuntu2_3/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "dpkg/1.19.0.5ubuntu2.3/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "dpkg",
+        "version": "1.19.0.5ubuntu2.3",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "lsb-base",
+    "revision": "9.20170808ubuntu1",
+    "@id": "http:ubuntu/lsb_base/9_20170808ubuntu1/all",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "lsb-base/9.20170808ubuntu1/all",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "lsb-base",
+        "version": "9.20170808ubuntu1",
+        "architecture": "all"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libpam-runtime",
+    "revision": "1.1.8-3.6ubuntu2.18.04.1",
+    "@id": "http:ubuntu/libpam_runtime/1_1_8_3_6ubuntu2_18_04_1/all",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libpam-runtime/1.1.8-3.6ubuntu2.18.04.1/all",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libpam-runtime",
+        "version": "1.1.8-3.6ubuntu2.18.04.1",
+        "architecture": "all"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "adduser",
+    "revision": "3.116ubuntu1",
+    "@id": "http:ubuntu/adduser/3_116ubuntu1/all",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "adduser/3.116ubuntu1/all",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "adduser",
+        "version": "3.116ubuntu1",
+        "architecture": "all"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libblkid1",
+    "revision": "2.31.1-0.4ubuntu3.4",
+    "@id": "http:ubuntu/libblkid1/2_31_1_0_4ubuntu3_4/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libblkid1/2.31.1-0.4ubuntu3.4/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libblkid1",
+        "version": "2.31.1-0.4ubuntu3.4",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libsmartcols1",
+    "revision": "2.31.1-0.4ubuntu3.4",
+    "@id": "http:ubuntu/libsmartcols1/2_31_1_0_4ubuntu3_4/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libsmartcols1/2.31.1-0.4ubuntu3.4/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libsmartcols1",
+        "version": "2.31.1-0.4ubuntu3.4",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libmount1",
+    "revision": "2.31.1-0.4ubuntu3.4",
+    "@id": "http:ubuntu/libmount1/2_31_1_0_4ubuntu3_4/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libmount1/2.31.1-0.4ubuntu3.4/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libmount1",
+        "version": "2.31.1-0.4ubuntu3.4",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libnettle6",
+    "revision": "3.4-1",
+    "@id": "http:ubuntu/libnettle6/3_4_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libnettle6/3.4-1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libnettle6",
+        "version": "3.4-1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libpam-modules",
+    "revision": "1.1.8-3.6ubuntu2.18.04.1",
+    "@id": "http:ubuntu/libpam_modules/1_1_8_3_6ubuntu2_18_04_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libpam-modules/1.1.8-3.6ubuntu2.18.04.1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libpam-modules",
+        "version": "1.1.8-3.6ubuntu2.18.04.1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libncursesw5",
+    "revision": "6.1-1ubuntu1.18.04",
+    "@id": "http:ubuntu/libncursesw5/6_1_1ubuntu1_18_04/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libncursesw5/6.1-1ubuntu1.18.04/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libncursesw5",
+        "version": "6.1-1ubuntu1.18.04",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "gzip",
+    "revision": "1.6-5ubuntu1",
+    "@id": "http:ubuntu/gzip/1_6_5ubuntu1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "gzip/1.6-5ubuntu1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "gzip",
+        "version": "1.6-5ubuntu1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libudev1",
+    "revision": "237-3ubuntu10.31",
+    "@id": "http:ubuntu/libudev1/237_3ubuntu10_31/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libudev1/237-3ubuntu10.31/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libudev1",
+        "version": "237-3ubuntu10.31",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "sensible-utils",
+    "revision": "0.0.12",
+    "@id": "http:ubuntu/sensible_utils/0_0_12/all",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "sensible-utils/0.0.12/all",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "sensible-utils",
+        "version": "0.0.12",
+        "architecture": "all"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libfdisk1",
+    "revision": "2.31.1-0.4ubuntu3.4",
+    "@id": "http:ubuntu/libfdisk1/2_31_1_0_4ubuntu3_4/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libfdisk1/2.31.1-0.4ubuntu3.4/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libfdisk1",
+        "version": "2.31.1-0.4ubuntu3.4",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "login",
+    "revision": "1:4.5-1ubuntu2",
+    "@id": "http:ubuntu/login/1_4_5_1ubuntu2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "login/1:4.5-1ubuntu2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "login",
+        "version": "1:4.5-1ubuntu2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libdb5.3",
+    "revision": "5.3.28-13.1ubuntu1.1",
+    "@id": "http:ubuntu/libdb5_3/5_3_28_13_1ubuntu1_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libdb5.3/5.3.28-13.1ubuntu1.1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libdb5.3",
+        "version": "5.3.28-13.1ubuntu1.1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libzstd1",
+    "revision": "1.3.3+dfsg-2ubuntu1.1",
+    "@id": "http:ubuntu/libzstd1/1_3_3_dfsg_2ubuntu1_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libzstd1/1.3.3+dfsg-2ubuntu1.1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libzstd1",
+        "version": "1.3.3+dfsg-2ubuntu1.1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libprocps6",
+    "revision": "2:3.3.12-3ubuntu1.2",
+    "@id": "http:ubuntu/libprocps6/2_3_3_12_3ubuntu1_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libprocps6/2:3.3.12-3ubuntu1.2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libprocps6",
+        "version": "2:3.3.12-3ubuntu1.2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "init-system-helpers",
+    "revision": "1.51",
+    "@id": "http:ubuntu/init_system_helpers/1_51/all",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "init-system-helpers/1.51/all",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "init-system-helpers",
+        "version": "1.51",
+        "architecture": "all"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "e2fsprogs",
+    "revision": "1.44.1-1ubuntu1.2",
+    "@id": "http:ubuntu/e2fsprogs/1_44_1_1ubuntu1_2/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "e2fsprogs/1.44.1-1ubuntu1.2/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "e2fsprogs",
+        "version": "1.44.1-1ubuntu1.2",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libdebconfclient0",
+    "revision": "0.213ubuntu1",
+    "@id": "http:ubuntu/libdebconfclient0/0_213ubuntu1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libdebconfclient0/0.213ubuntu1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libdebconfclient0",
+        "version": "0.213ubuntu1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "libc-bin",
+    "revision": "2.27-3ubuntu1",
+    "@id": "http:ubuntu/libc_bin/2_27_3ubuntu1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "libc-bin/2.27-3ubuntu1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "libc-bin",
+        "version": "2.27-3ubuntu1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "bsdutils",
+    "revision": "1:2.31.1-0.4ubuntu3.4",
+    "@id": "http:ubuntu/bsdutils/1_2_31_1_0_4ubuntu3_4/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "bsdutils/1:2.31.1-0.4ubuntu3.4/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "bsdutils",
+        "version": "1:2.31.1-0.4ubuntu3.4",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "diffutils",
+    "revision": "1:3.6-1",
+    "@id": "http:ubuntu/diffutils/1_3_6_1/amd64",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "@ubuntu",
+      "externalId": "diffutils/1:3.6-1/amd64",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "ubuntu",
+          "separator": "/",
+          "usePreferredNamespaceAlias": true
+        },
+        "name": "diffutils",
+        "version": "1:3.6-1",
+        "architecture": "amd64"
+      }
+    },
+    "relationship": []
+  }
+]
