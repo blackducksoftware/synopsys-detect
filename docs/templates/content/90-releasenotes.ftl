@@ -1,5 +1,27 @@
 # Release notes
 
+## Version 6.1.0
+### New features
+* Added the property [detect.bdio2.enabled](properties/Configuration/paths.md#bdio-2-enabled).
+* Added the property [detect.pip.only.project.tree](properties/Detectors/pip.md#pip-include-only-project-tree).
+* Added the property [detect.bitbake.search.depth](properties/Detectors/bitbake.md#bitbake-search-depth).
+* Added the property [detect.bazel.cquery.options](properties/Detectors/bazel.md#bazel-cquery-additional-options).
+
+### Changed features
+* Deprecated all ${polaris_product_name}-related properties.
+* Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command.
+* Improved match accuracy for Bitbake projects.
+* Improved the reliability of the Bitbake detector by generating recipe-depends.dot and package-depends.dot files the source directory, instead of a temporary directory.
+* Changed the logging level of ${polaris_product_name} CLI output from DEBUG to INFO.
+
+### Resolved issues
+* Resolved an issue that can cause a Null Pointer Exception on Maven projects configured for multi-threaded builds.
+* Resolved an issue that prevents Japanese project names from displaying correctly in the risk report.
+* Resolved an issue that can cause Detect to fail due to an expired Black Duck bearer token.
+* Resolved an issue that causes Detect to fail when a parent project and version are specified, and the project is already a child of the specified parent.
+* Resolved an issue that causes Detect to log the git username and password when a git command executed by Detect fails.
+* Resolved an issue that can cause Detect to generate a new code location (scan) when the character case of the value of the detect.source.path property differs from a previous run on the same project.
+
 ## Version 6.0.0
 ### New features
 * Added the property detect.binary.scan.file.name.patterns.
