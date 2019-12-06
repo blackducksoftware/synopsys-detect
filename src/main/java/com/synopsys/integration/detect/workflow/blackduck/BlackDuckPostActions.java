@@ -42,7 +42,7 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class BlackDuckPostActions {
-    private final Logger logger = LoggerFactory.getLogger(BlackDuckPostActions.class);
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final EventSystem eventSystem;
 
@@ -91,7 +91,8 @@ public class BlackDuckPostActions {
                         logger.warn(String.format("Failed to create risk report pdf directory: %s", blackDuckPostOptions.getRiskReportPdfPath()));
                     }
 
-                    final File createdPdf = reportService.createReportPdfFile(reportDirectory, projectView, projectVersionView);
+                    DetectFontLoader detectFontLoader = new DetectFontLoader();
+                    final File createdPdf = reportService.createReportPdfFile(reportDirectory, projectView, projectVersionView, detectFontLoader::loadFont, detectFontLoader::loadBoldFont);
                     logger.info(String.format("Created risk report pdf: %s", createdPdf.getCanonicalPath()));
                 }
 
