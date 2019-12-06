@@ -76,6 +76,8 @@ public class DockerExtractor {
     private final ExternalIdFactory externalIdFactory;
     private final Gson gson;
 
+    private ImageIdentifierType imageIdentifierType;
+
     public DockerExtractor(final FileFinder fileFinder, final DockerProperties dockerProperties, final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson) {
         this.fileFinder = fileFinder;
         this.dockerProperties = dockerProperties;
@@ -93,12 +95,15 @@ public class DockerExtractor {
                 final File dockerTarFile = new File(tar);
                 imageArgument = String.format("--docker.tar=%s", dockerTarFile.getCanonicalPath());
                 imagePiece = dockerTarFile.getName();
+                imageIdentifierType = ImageIdentifierType.TAR;
             } else if (StringUtils.isNotBlank(image)) {
                 imagePiece = image;
                 imageArgument = String.format("--docker.image=%s", image);
+                imageIdentifierType = ImageIdentifierType.IMAGE_NAME;
             } else if (StringUtils.isNotBlank(imageId)) {
                 imagePiece = imageId;
                 imageArgument = String.format("--docker.image.id=%s", imageId);
+                imageIdentifierType = ImageIdentifierType.IMAGE_ID;
             }
 
             if (StringUtils.isBlank(imageArgument) || StringUtils.isBlank(imagePiece)) {
@@ -167,7 +172,7 @@ public class DockerExtractor {
         }
 
         final Extraction.Builder extractionBuilder = findCodeLocations(outputDirectory, directory);
-        final String imageIdentifier = getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectory, imageArgument, suppliedImagePiece);
+        final String imageIdentifier = getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectory, suppliedImagePiece);
         extractionBuilder.metaData(DOCKER_TAR_META_DATA, scanFile).metaData(DOCKER_IMAGE_NAME_META_DATA, imageIdentifier);
         return extractionBuilder.build();
     }
@@ -203,9 +208,9 @@ public class DockerExtractor {
         return new Extraction.Builder().failure("No files found matching pattern [" + DEPENDENCIES_PATTERN + "]. Expected docker-inspector to produce file in " + directory.toString());
     }
 
-    public String getImageIdentifierFromOutputDirectoryIfImageIdPresent(File outputDirectory, String imageArgument, String suppliedImagePiece) {
+    public String getImageIdentifierFromOutputDirectoryIfImageIdPresent(File outputDirectory, String suppliedImagePiece) {
         final File producedResultFile = fileFinder.findFile(outputDirectory, RESULTS_FILENAME_PATTERN);
-        if (imageArgument.contains("image.id") && producedResultFile != null) {
+        if (imageIdentifierType.equals(ImageIdentifierType.IMAGE_ID) && producedResultFile != null) {
             String jsonText;
             try {
                 jsonText = FileUtils.readFileToString(producedResultFile, StandardCharsets.UTF_8);
