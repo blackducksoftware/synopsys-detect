@@ -1,0 +1,8 @@
+{
+  "succeeded": true,
+  "message": "Docker Inspector succeeded.",
+  "dockerTarfilename": "ubuntu_latest.tar",
+  "bdioFilename": "ubuntu_latest_DPKG_bdio.jsonld",
+  "containerFilesystemFilename": "_containerfilesystem.tar.gz",
+  "squashedImageFilename": "_squashedimage.tar.gz"
+}

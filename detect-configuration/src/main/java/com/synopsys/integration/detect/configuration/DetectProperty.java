@@ -161,7 +161,6 @@ public enum DetectProperty {
     @HelpDescription("The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.")
     @AcceptableValues(value = { "maven_jar", "maven_install", "UNSPECIFIED" }, caseSensitive = true, strict = true)
     DETECT_BAZEL_DEPENDENCY_RULE("detect.bazel.dependency.type", "Bazel workspace external dependency rule", "6.0.0", PropertyType.STRING, PropertyAuthority.NONE, "UNSPECIFIED"),
-
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path to the output directory for all BDIO files.")
     @HelpDetailed("If not set, the BDIO files are placed in a 'BDIO' subdirectory of the output directory.")
@@ -365,6 +364,11 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("The Docker image name to inspect. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.")
     DETECT_DOCKER_IMAGE("detect.docker.image", "Docker Image Name", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
+
+    @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
+    @HelpDescription("The Docker image ID to inspect.")
+    DETECT_DOCKER_IMAGE_ID("detect.docker.image.id", "Docker Image ID", "6.1.0", PropertyType.STRING, PropertyAuthority.NONE),
+
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription(category = ADVANCED, value = "The path to the directory containing the Docker Inspector jar and images.")
@@ -739,10 +743,6 @@ public enum DetectProperty {
     @HelpDescription("The output directory for risk report in PDF. Default is the source directory.")
     DETECT_RISK_REPORT_PDF_PATH("detect.risk.report.pdf.path", "Risk Report Output Path", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE, "."),
 
-    @HelpGroup(primary = GROUP_REPORT, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription(category = ADVANCED, value = "The names of the sbt configurations to exclude.")
-    DETECT_SBT_EXCLUDED_CONFIGURATIONS("detect.sbt.excluded.configurations", "SBT Configurations Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
-
     @HelpGroup(primary = GROUP_RUBY, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("If set to false, runtime dependencies will not be included when parsing *.gemspec files.")
     DETECT_RUBY_INCLUDE_RUNTIME_DEPENDENCIES("detect.ruby.include.runtime.dependencies", "Ruby Runtime Dependencies", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "true"),
@@ -750,6 +750,10 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_RUBY, additional = { SEARCH_GROUP_GLOBAL, GROUP_SOURCE_SCAN })
     @HelpDescription("If set to true, development dependencies will be included when parsing *.gemspec files.")
     DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES("detect.ruby.include.dev.dependencies", "Ruby Development Dependencies", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
+
+    @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
+    @HelpDescription(category = ADVANCED, value = "The names of the sbt configurations to exclude.")
+    DETECT_SBT_EXCLUDED_CONFIGURATIONS("detect.sbt.excluded.configurations", "SBT Configurations Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
     @HelpDescription(category = ADVANCED, value = "The names of the sbt configurations to include.")

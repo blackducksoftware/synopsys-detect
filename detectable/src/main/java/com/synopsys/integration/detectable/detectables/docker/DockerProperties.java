@@ -29,9 +29,12 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DockerProperties {
     private final DockerDetectableOptions dockerDetectableOptions;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public DockerProperties(final DockerDetectableOptions dockerDetectableOptions) {
         this.dockerDetectableOptions = dockerDetectableOptions;
@@ -57,6 +60,7 @@ public class DockerProperties {
         final Map<String, String> additionalDockerProperties = dockerDetectableOptions.getAdditionalDockerProperties();
         dockerProperties.putAll(additionalDockerProperties);
 
+        logger.debug("Contents of application.properties passed to Docker Inspector: " + dockerProperties.toString());
         dockerProperties.store(new FileOutputStream(dockerPropertiesFile), "");
     }
 }
