@@ -221,7 +221,7 @@ public class DockerExtractor {
                     return imageRepo + ":" + imageTag;
                 }
             } catch (final IOException | JsonSyntaxException e) {
-                logger.debug("Could not get name of image from Docker Inspector", e);
+                logger.debug("Failed to parse results file from run of Docker Inspector, thus could not get name of image.  The code location name for this scan will be derived from the passed image ID");
             }
         }
         return suppliedImagePiece;
