@@ -30,6 +30,7 @@ public class DockerDetectableOptions {
 
     private final boolean dockerPathRequired;
     private final String suppliedDockerImage;
+    private final String suppliedDockerImageId;
     private final String suppliedDockerTar;
     private final String dockerInspectorLoggingLevel;
     private final String dockerInspectorVersion;
@@ -37,10 +38,11 @@ public class DockerDetectableOptions {
     private final String dockerInspectorPath;
     private final String dockerPlatformTopLayerId;
 
-    public DockerDetectableOptions(final boolean dockerPathRequired, final String suppliedDockerImage, final String suppliedDockerTar, final String dockerInspectorLoggingLevel, final String dockerInspectorVersion,
+    public DockerDetectableOptions(final boolean dockerPathRequired, final String suppliedDockerImage, final String suppliedDockerImageId, final String suppliedDockerTar, final String dockerInspectorLoggingLevel, final String dockerInspectorVersion,
         final Map<String, String> additionalDockerProperties, final String dockerInspectorPath, final String dockerPlatformTopLayerId) {
         this.dockerPathRequired = dockerPathRequired;
         this.suppliedDockerImage = suppliedDockerImage;
+        this.suppliedDockerImageId = suppliedDockerImageId;
         this.suppliedDockerTar = suppliedDockerTar;
         this.dockerInspectorLoggingLevel = dockerInspectorLoggingLevel;
         this.dockerInspectorVersion = dockerInspectorVersion;
@@ -57,12 +59,16 @@ public class DockerDetectableOptions {
         return suppliedDockerImage;
     }
 
+    public String getSuppliedDockerImageId() {
+        return suppliedDockerImageId;
+    }
+
     public String getSuppliedDockerTar() {
         return suppliedDockerTar;
     }
 
     public boolean hasDockerImageOrTar() {
-        return StringUtils.isNotBlank(getSuppliedDockerImage()) || StringUtils.isNotBlank(getSuppliedDockerTar());
+        return StringUtils.isNotBlank(getSuppliedDockerImage()) || StringUtils.isNotBlank(getSuppliedDockerTar()) || StringUtils.isNotBlank(getSuppliedDockerImageId());
     }
 
     public String getDockerInspectorLoggingLevel() {
