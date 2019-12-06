@@ -6,6 +6,8 @@
 * Added the property [detect.pip.only.project.tree](properties/Detectors/pip.md#pip-include-only-project-tree).
 * Added the property [detect.bitbake.search.depth](properties/Detectors/bitbake.md#bitbake-search-depth).
 * Added the property [detect.bazel.cquery.options](properties/Detectors/bazel.md#bazel-cquery-additional-options).
+* Added the property [detect.docker.image.id](properties/Detectors/docker.md#docker-image-id).
+* Added the property [detect.docker.platform.top.layer.id](properties/Detectors/docker.md#platform-top-layer-id-advanced).
 
 ### Changed features
 * Deprecated all ${polaris_product_name}-related properties.
