@@ -29,6 +29,7 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorInfo;
 import com.synopsys.integration.detectable.detectables.docker.DockerProperties;
+import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierType;
 
 public class DockerExtractorTest {
     private static File fakeContainerFileSystemFile;
@@ -172,9 +173,9 @@ public class DockerExtractorTest {
 
         DockerExtractor dockerExtractor = getMockDockerExtractor(executableRunner, fileFinder);
 
-        assertEquals(imageName, dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithPopulatedResultsFile, imageIdArgument, testString));
-        assertEquals(testString, dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithPopulatedResultsFile, "", testString));
-        assertEquals(testString, dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithNonPopulatedResultsFile, imageIdArgument, testString));
+        assertEquals(imageName, dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithPopulatedResultsFile, testString, ImageIdentifierType.IMAGE_ID));
+        assertEquals(testString, dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithPopulatedResultsFile, testString, ImageIdentifierType.IMAGE_NAME));
+        assertEquals(testString, dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithNonPopulatedResultsFile, testString, ImageIdentifierType.IMAGE_ID));
     }
 
     private DockerExtractor getMockDockerExtractor(ExecutableRunner executableRunner, FileFinder fileFinder) {
