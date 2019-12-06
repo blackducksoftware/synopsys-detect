@@ -113,6 +113,7 @@ public class DetectableOptionFactory {
     public DockerDetectableOptions createDockerDetectableOptions() {
         final boolean dockerPathRequired = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_DOCKER_PATH_REQUIRED, PropertyAuthority.NONE);
         final String suppliedDockerImage = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE, PropertyAuthority.NONE);
+        final String dockerImageId = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_IMAGE_ID, PropertyAuthority.NONE);
         final String suppliedDockerTar = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_TAR, PropertyAuthority.NONE);
         final String dockerInspectorLoggingLevel = detectConfiguration.getProperty(DetectProperty.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, PropertyAuthority.NONE);
         final String dockerInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_VERSION, PropertyAuthority.NONE);
@@ -120,7 +121,7 @@ public class DetectableOptionFactory {
         diagnosticSystemOptional.ifPresent(diagnosticSystem -> additionalDockerProperties.putAll(diagnosticSystem.getAdditionalDockerProperties()));
         final String dockerInspectorPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH, PropertyAuthority.NONE);
         final String dockerPlatformTopLayerId = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_PLATFORM_TOP_LAYER_ID, PropertyAuthority.NONE);
-        return new DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath, dockerPlatformTopLayerId);
+        return new DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, dockerImageId, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath, dockerPlatformTopLayerId);
     }
 
     public GradleInspectorOptions createGradleInspectorOptions() {
