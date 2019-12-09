@@ -134,8 +134,7 @@ if ("true" == project.findProperty('refresh.cache')) {
     project.dependencies {
         implementation 'com.blackducksoftware.integration:integration-gradle-inspector:0.6.0'
     }
-
-    project.repositories.clear()
+    
     project.repositories {
         maven {
             url "${project.ext.deployArtifactoryUrl}/bds-integration-public-cache"
