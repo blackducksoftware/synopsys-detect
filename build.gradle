@@ -130,23 +130,6 @@ compileTestKotlin {
 
 springBoot { mainClassName = 'com.synopsys.integration.detect.Application' }
 
-if ("true" == project.findProperty('refresh.cache')) {
-    project.dependencies {
-        implementation 'com.blackducksoftware.integration:integration-gradle-inspector:0.6.0'
-    }
-
-    project.repositories.clear()
-    project.repositories {
-        maven {
-            url "${project.ext.deployArtifactoryUrl}/bds-integration-public-cache"
-            credentials {
-                username = project.ext.artifactoryDeployerUsername
-                password = project.ext.artifactoryDeployerPassword
-            }
-        }
-    }
-}
-
 tasks['testBattery'].doFirst {
     def batteryPath = new File(createBatteryPath())
     batteryPath.mkdirs()
