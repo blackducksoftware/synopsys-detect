@@ -78,10 +78,10 @@ public class AggregateBdioCreator {
         this.detectBdioWriter = detectBdioWriter;
     }
 
-    public Optional<UploadTarget> createAggregateBdio1File(final String aggregateName, final boolean aggregateDirect, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
+    public Optional<UploadTarget> createAggregateBdio1File(final String aggregateName, final AggregateMode aggregateMode, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
         final NameVersion projectNameVersion) throws DetectUserFriendlyException {
 
-        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations, aggregateDirect);
+        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations, aggregateMode);
         final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
         final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
 
@@ -95,10 +95,10 @@ public class AggregateBdioCreator {
         return createUploadTarget(codeLocationName, aggregateBdioFile, aggregateDependencyGraph, uploadEmptyAggregate);
     }
 
-    public Optional<UploadTarget> createAggregateBdio2File(final String aggregateName, final boolean aggregateDirect, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
+    public Optional<UploadTarget> createAggregateBdio2File(final String aggregateName, final AggregateMode aggregateMode, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
         final NameVersion projectNameVersion) throws DetectUserFriendlyException {
 
-        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations, aggregateDirect);
+        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations, aggregateMode);
         final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
         final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
 
@@ -130,11 +130,11 @@ public class AggregateBdioCreator {
         }
     }
 
-    private DependencyGraph createAggregateDependencyGraph(final File sourcePath, final List<DetectCodeLocation> codeLocations, final boolean aggregateDirect) {
+    private DependencyGraph createAggregateDependencyGraph(final File sourcePath, final List<DetectCodeLocation> codeLocations, final AggregateMode aggregateMode) {
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
-            if (aggregateDirect) {
+            if (aggregateMode.equals(AggregateMode.DIRECT)) {
                 aggregateDependencyGraph.addGraphAsChildrenToRoot(detectCodeLocation.getDependencyGraph());
             } else {
                 final Dependency codeLocationDependency = createAggregateDependency(sourcePath, detectCodeLocation);

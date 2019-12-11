@@ -24,35 +24,39 @@ package com.synopsys.integration.detect.workflow.bdio;
 
 import java.util.Optional;
 
+import javax.swing.text.html.Option;
+
 public class AggregateOptions {
 
     private Optional<String> aggregateName;
-    private boolean aggregateDirect;
+    private AggregateMode aggregateMode;
     private boolean uploadEmptyAggregate;
 
-    public AggregateOptions(final Optional<String> aggregateName, final boolean aggregateDirect, final boolean uploadEmptyAggregate) {
+    public AggregateOptions(final Optional<String> aggregateName, final AggregateMode aggregateMode, final boolean uploadEmptyAggregate) {
         this.aggregateName = aggregateName;
-        this.aggregateDirect = aggregateDirect;
+        this.aggregateMode = aggregateMode;
         this.uploadEmptyAggregate = uploadEmptyAggregate;
     }
 
-    public static AggregateOptions doNotAggregate(boolean aggregateDirect) {
-        return new AggregateOptions(Optional.empty(), aggregateDirect, false);
+    public static AggregateOptions doNotAggregate() {
+        return new AggregateOptions(Optional.empty(), AggregateMode.TRANSITIVE, false);
     }
 
-    public static AggregateOptions aggregateAndAlwaysUpload(String aggregateName, boolean aggregateDirect) {
-        return new AggregateOptions(Optional.of(aggregateName), aggregateDirect, true);
+    public static AggregateOptions aggregateAndAlwaysUpload(String aggregateName, AggregateMode aggregateMode) {
+        return new AggregateOptions(Optional.of(aggregateName), aggregateMode, true);
     }
 
-    public static AggregateOptions aggregateButSkipEmpty(String aggregateName, boolean aggregateDirect) {
-        return new AggregateOptions(Optional.of(aggregateName), aggregateDirect,false);
+    public static AggregateOptions aggregateButSkipEmpty(String aggregateName, AggregateMode aggregateMode) {
+        return new AggregateOptions(Optional.of(aggregateName), aggregateMode,false);
     }
 
     public Optional<String> getAggregateName() {
         return aggregateName;
     }
 
-    public boolean shouldAggregateDirect() { return aggregateDirect; }
+    public AggregateMode getAggregateMode() {
+        return aggregateMode;
+    }
 
     public boolean shouldUploadEmptyAggregate() {
         return uploadEmptyAggregate;

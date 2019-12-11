@@ -72,6 +72,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureS
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
+import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
@@ -145,7 +146,7 @@ public class RunManager {
         final UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, runResult, runOptions, detectToolFilter);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
-            final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName(), runOptions.shouldAggregateDirect(), universalToolsResult);
+            final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName(), runOptions.getAggregateMode(), universalToolsResult);
             runBlackDuckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
                 universalToolsResult.getNameVersion(), aggregateOptions);
         } else {
@@ -158,15 +159,15 @@ public class RunManager {
         return runResult;
     }
 
-    private AggregateOptions determineAggregationStrategy(final String aggregateName, final boolean aggregateDirect, final UniversalToolsResult universalToolsResult) {
+    private AggregateOptions determineAggregationStrategy(final String aggregateName, final AggregateMode aggregateMode, final UniversalToolsResult universalToolsResult) {
         if (StringUtils.isNotBlank(aggregateName)) {
             if (universalToolsResult.anyFailed()) {
-                return AggregateOptions.aggregateButSkipEmpty(aggregateName, aggregateDirect);
+                return AggregateOptions.aggregateButSkipEmpty(aggregateName, aggregateMode);
             } else {
-                return AggregateOptions.aggregateAndAlwaysUpload(aggregateName, aggregateDirect);
+                return AggregateOptions.aggregateAndAlwaysUpload(aggregateName, aggregateMode);
             }
         } else {
-            return AggregateOptions.doNotAggregate(aggregateDirect);
+            return AggregateOptions.doNotAggregate();
         }
     }
 
