@@ -198,8 +198,9 @@ task verifyBlackDuckDetect() {
 }
 
 String parseAirGapZipPath(ByteArrayOutputStream standardOutput) {
-    String line = standardOutput.toString().split('\n').find { it.contains("Detect Air Gap Zip: ") }
-    String path = line.substring(line.lastIndexOf("Detect Air Gap Zip: ") + "Detect Air Gap Zip: ".length()).trim()
+    String marker = "Detect Air Gap Zip: "
+    String line = standardOutput.toString().split('\n').find { it.contains(marker) }
+    String path = line.substring(line.lastIndexOf(marker) + marker.length()).trim()
     println "Found Air Gap Zip: " + path
     return path
 }
