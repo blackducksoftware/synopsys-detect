@@ -145,7 +145,7 @@ public class RunManager {
         final UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, runResult, runOptions, detectToolFilter);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
-            final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName(), universalToolsResult);
+            final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName(), runOptions.shouldAggregateDirect(), universalToolsResult);
             runBlackDuckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
                 universalToolsResult.getNameVersion(), aggregateOptions);
         } else {
@@ -158,15 +158,15 @@ public class RunManager {
         return runResult;
     }
 
-    private AggregateOptions determineAggregationStrategy(final String aggregateName, final UniversalToolsResult universalToolsResult) {
+    private AggregateOptions determineAggregationStrategy(final String aggregateName, final boolean aggregateDirect, final UniversalToolsResult universalToolsResult) {
         if (StringUtils.isNotBlank(aggregateName)) {
             if (universalToolsResult.anyFailed()) {
-                return AggregateOptions.aggregateButSkipEmpty(aggregateName);
+                return AggregateOptions.aggregateButSkipEmpty(aggregateName, aggregateDirect);
             } else {
-                return AggregateOptions.aggregateAndAlwaysUpload(aggregateName);
+                return AggregateOptions.aggregateAndAlwaysUpload(aggregateName, aggregateDirect);
             }
         } else {
-            return AggregateOptions.doNotAggregate();
+            return AggregateOptions.doNotAggregate(aggregateDirect);
         }
     }
 

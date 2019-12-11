@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -77,10 +78,10 @@ public class AggregateBdioCreator {
         this.detectBdioWriter = detectBdioWriter;
     }
 
-    public Optional<UploadTarget> createAggregateBdio1File(final String aggregateName, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
+    public Optional<UploadTarget> createAggregateBdio1File(final String aggregateName, final boolean aggregateDirect, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
         final NameVersion projectNameVersion) throws DetectUserFriendlyException {
 
-        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations);
+        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations, aggregateDirect);
         final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
         final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
 
@@ -94,10 +95,10 @@ public class AggregateBdioCreator {
         return createUploadTarget(codeLocationName, aggregateBdioFile, aggregateDependencyGraph, uploadEmptyAggregate);
     }
 
-    public Optional<UploadTarget> createAggregateBdio2File(final String aggregateName, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
+    public Optional<UploadTarget> createAggregateBdio2File(final String aggregateName, final boolean aggregateDirect, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
         final NameVersion projectNameVersion) throws DetectUserFriendlyException {
 
-        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations);
+        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations, aggregateDirect);
         final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
         final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
 
@@ -129,13 +130,17 @@ public class AggregateBdioCreator {
         }
     }
 
-    private DependencyGraph createAggregateDependencyGraph(final File sourcePath, final List<DetectCodeLocation> codeLocations) {
+    private DependencyGraph createAggregateDependencyGraph(final File sourcePath, final List<DetectCodeLocation> codeLocations, final boolean aggregateDirect) {
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
-            final Dependency codeLocationDependency = createAggregateDependency(sourcePath, detectCodeLocation);
-            aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
-            aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
+            if (aggregateDirect) {
+                aggregateDependencyGraph.addGraphAsChildrenToRoot(detectCodeLocation.getDependencyGraph());
+            } else {
+                final Dependency codeLocationDependency = createAggregateDependency(sourcePath, detectCodeLocation);
+                aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
+                aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
+            }
         }
 
         return aggregateDependencyGraph;

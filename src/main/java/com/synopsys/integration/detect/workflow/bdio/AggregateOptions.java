@@ -27,28 +27,32 @@ import java.util.Optional;
 public class AggregateOptions {
 
     private Optional<String> aggregateName;
+    private boolean aggregateDirect;
     private boolean uploadEmptyAggregate;
 
-    public AggregateOptions(final Optional<String> aggregateName, final boolean uploadEmptyAggregate) {
+    public AggregateOptions(final Optional<String> aggregateName, final boolean aggregateDirect, final boolean uploadEmptyAggregate) {
         this.aggregateName = aggregateName;
+        this.aggregateDirect = aggregateDirect;
         this.uploadEmptyAggregate = uploadEmptyAggregate;
     }
 
-    public static AggregateOptions doNotAggregate() {
-        return new AggregateOptions(Optional.empty(), false);
+    public static AggregateOptions doNotAggregate(boolean aggregateDirect) {
+        return new AggregateOptions(Optional.empty(), aggregateDirect, false);
     }
 
-    public static AggregateOptions aggregateAndAlwaysUpload(String aggregateName) {
-        return new AggregateOptions(Optional.of(aggregateName), true);
+    public static AggregateOptions aggregateAndAlwaysUpload(String aggregateName, boolean aggregateDirect) {
+        return new AggregateOptions(Optional.of(aggregateName), aggregateDirect, true);
     }
 
-    public static AggregateOptions aggregateButSkipEmpty(String aggregateName) {
-        return new AggregateOptions(Optional.of(aggregateName), false);
+    public static AggregateOptions aggregateButSkipEmpty(String aggregateName, boolean aggregateDirect) {
+        return new AggregateOptions(Optional.of(aggregateName), aggregateDirect,false);
     }
 
     public Optional<String> getAggregateName() {
         return aggregateName;
     }
+
+    public boolean shouldAggregateDirect() { return aggregateDirect; }
 
     public boolean shouldUploadEmptyAggregate() {
         return uploadEmptyAggregate;

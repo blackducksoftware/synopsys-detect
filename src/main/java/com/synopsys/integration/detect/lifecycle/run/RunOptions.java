@@ -27,13 +27,15 @@ import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 public class RunOptions {
     private final boolean unmapCodeLocations;
     private final String aggregateName;
+    private final boolean aggregateDirect;
     private final String preferredTools;
     private final DetectToolFilter detectToolFilter;
     private final boolean useBdio2;
 
-    public RunOptions(final boolean unmapCodeLocations, final String aggregateName, final String preferredTools, final DetectToolFilter detectToolFilter, final boolean useBdio2) {
+    public RunOptions(final boolean unmapCodeLocations, final String aggregateName, final boolean aggregateDirect, final String preferredTools, final DetectToolFilter detectToolFilter, final boolean useBdio2) {
         this.unmapCodeLocations = unmapCodeLocations;
         this.aggregateName = aggregateName;
+        this.aggregateDirect = aggregateDirect;
         this.preferredTools = preferredTools;
         this.detectToolFilter = detectToolFilter;
         this.useBdio2 = useBdio2;
@@ -45,6 +47,10 @@ public class RunOptions {
 
     public String getAggregateName() {
         return aggregateName;
+    }
+
+    public boolean shouldAggregateDirect() {
+        return aggregateDirect;
     }
 
     public String getPreferredTools() {

@@ -77,7 +77,7 @@ public class BdioManager {
         if (aggregateOptions.shouldAggregate() && aggregateName.isPresent()) {
             logger.debug("Creating aggregate BDIO file.");
             final AggregateBdioCreator aggregateBdioCreator = new AggregateBdioCreator(bdio2Factory, simpleBdioFactory, integrationEscapeUtil, codeLocationNameManager, detectBdioWriter);
-            final Optional<UploadTarget> uploadTarget = createAggregatedBdioUploadTarget(aggregateBdioCreator, codeLocations, projectNameVersion, useBdio2, aggregateName.get(), aggregateOptions.shouldUploadEmptyAggregate());
+            final Optional<UploadTarget> uploadTarget = createAggregatedBdioUploadTarget(aggregateBdioCreator, codeLocations, projectNameVersion, useBdio2, aggregateName.get(), aggregateOptions.shouldAggregateDirect(), aggregateOptions.shouldUploadEmptyAggregate());
 
             return new BdioResult(uploadTarget, useBdio2);
         } else {
@@ -104,13 +104,13 @@ public class BdioManager {
     }
 
     private Optional<UploadTarget> createAggregatedBdioUploadTarget(final AggregateBdioCreator aggregateBdioCreator, final List<DetectCodeLocation> detectCodeLocations, final NameVersion projectNameVersion, final boolean useBdio2,
-        final String aggregateName, final boolean shouldUploadEmptyAggregate)
+        final String aggregateName, final boolean aggregateDirect, final boolean shouldUploadEmptyAggregate)
         throws DetectUserFriendlyException {
 
         if (useBdio2) {
-            return aggregateBdioCreator.createAggregateBdio2File(aggregateName, shouldUploadEmptyAggregate, directoryManager.getSourceDirectory(), directoryManager.getBdioOutputDirectory(), detectCodeLocations, projectNameVersion);
+            return aggregateBdioCreator.createAggregateBdio2File(aggregateName, aggregateDirect,  shouldUploadEmptyAggregate, directoryManager.getSourceDirectory(), directoryManager.getBdioOutputDirectory(), detectCodeLocations, projectNameVersion);
         }
 
-        return aggregateBdioCreator.createAggregateBdio1File(aggregateName, shouldUploadEmptyAggregate, directoryManager.getSourceDirectory(), directoryManager.getBdioOutputDirectory(), detectCodeLocations, projectNameVersion);
+        return aggregateBdioCreator.createAggregateBdio1File(aggregateName, aggregateDirect, shouldUploadEmptyAggregate, directoryManager.getSourceDirectory(), directoryManager.getBdioOutputDirectory(), detectCodeLocations, projectNameVersion);
     }
 }

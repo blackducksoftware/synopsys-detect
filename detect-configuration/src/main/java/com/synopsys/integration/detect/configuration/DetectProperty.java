@@ -269,6 +269,10 @@ public enum DetectProperty {
     @HelpDescription(category = ADVANCED, value = "If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.")
     DETECT_BOM_AGGREGATE_NAME("detect.bom.aggregate.name", "Aggregate BDIO File Name", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
+    @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
+    @HelpDescription(category = ADVANCED, value = "If set to true, aggregate BDIO file will exclude code locations from top layer of dependency tree to preserve correct identification of direct dependencies.")
+    DETECT_BOM_AGGREGATE_DIRECT("detect.bom.aggregate.direct", "BDIO Aggregate Direct", "6.1.0", PropertyType.BOOLEAN, PropertyAuthority.NONE),
+
     @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If set to true, only Detector's capable of running without a build will be run.")
     DETECT_BUILDLESS("detect.detector.buildless", "Buildless Mode", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
