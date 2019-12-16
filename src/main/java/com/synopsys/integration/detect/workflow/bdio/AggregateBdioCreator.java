@@ -130,16 +130,18 @@ public class AggregateBdioCreator {
         }
     }
 
-    private DependencyGraph createAggregateDependencyGraph(final File sourcePath, final List<DetectCodeLocation> codeLocations, final AggregateMode aggregateMode) {
+    private DependencyGraph createAggregateDependencyGraph(final File sourcePath, final List<DetectCodeLocation> codeLocations, final AggregateMode aggregateMode) throws DetectUserFriendlyException {
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
             if (aggregateMode.equals(AggregateMode.DIRECT)) {
                 aggregateDependencyGraph.addGraphAsChildrenToRoot(detectCodeLocation.getDependencyGraph());
-            } else {
+            } else if (aggregateMode.equals(AggregateMode.TRANSITIVE)) {
                 final Dependency codeLocationDependency = createAggregateDependency(sourcePath, detectCodeLocation);
                 aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
                 aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
+            } else {
+                throw new DetectUserFriendlyException("Did not specify aggregation mode via detect.bom.aggregate.mode, will not aggregate at this time.", ExitCodeType.FAILURE_GENERAL_ERROR);
             }
         }
 
