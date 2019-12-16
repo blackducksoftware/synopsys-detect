@@ -11,7 +11,7 @@ import com.synopsys.integration.log.PrintStreamIntLogger
 buildscript {
     ext {
         springBootVersion = '2.1.5.RELEASE'
-        blackDuckCommonVersion = '44.5.2'
+        blackDuckCommonVersion = '45.0.1'
         polarisCommonVersion = '0.13.2'
         junitPlatformDefaultTestTags = "integration, performance, battery"
     }
@@ -130,23 +130,6 @@ compileTestKotlin {
 
 springBoot { mainClassName = 'com.synopsys.integration.detect.Application' }
 
-if ("true" == project.findProperty('refresh.cache')) {
-    project.dependencies {
-        implementation 'com.blackducksoftware.integration:integration-gradle-inspector:0.6.0'
-    }
-
-    project.repositories.clear()
-    project.repositories {
-        maven {
-            url "${project.ext.deployArtifactoryUrl}/bds-integration-public-cache"
-            credentials {
-                username = project.ext.artifactoryDeployerUsername
-                password = project.ext.artifactoryDeployerPassword
-            }
-        }
-    }
-}
-
 tasks['testBattery'].doFirst {
     def batteryPath = new File(createBatteryPath())
     batteryPath.mkdirs()
@@ -198,8 +181,9 @@ task verifyBlackDuckDetect() {
 }
 
 String parseAirGapZipPath(ByteArrayOutputStream standardOutput) {
-    String line = standardOutput.toString().split('\n').find { it.contains("Detect Air Gap Zip: ") }
-    String path = line.substring(line.lastIndexOf("Detect Air Gap Zip: ") + "Detect Air Gap Zip: ".length()).trim()
+    String marker = "Detect Air Gap Zip: "
+    String line = standardOutput.toString().split('\n').find { it.contains(marker) }
+    String path = line.substring(line.lastIndexOf(marker) + marker.length()).trim()
     println "Found Air Gap Zip: " + path
     return path
 }
