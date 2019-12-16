@@ -38,6 +38,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureS
 import com.synopsys.integration.detect.util.DetectEnumUtil;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
+import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.CustomFieldDocument;
@@ -77,10 +78,12 @@ public class DetectConfigurationFactory {
 
         final boolean unmapCodeLocations = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP, PropertyAuthority.NONE);
         final String aggregateName = detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME, PropertyAuthority.NONE);
+        final String aggregateMode = detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_MODE, PropertyAuthority.NONE);
         final String preferredTools = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_TOOL, PropertyAuthority.NONE);
         final boolean useBdio2 = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BDIO2_ENABLED, PropertyAuthority.NONE);
 
-        return new RunOptions(unmapCodeLocations, aggregateName, preferredTools, detectToolFilter, useBdio2);
+        AggregateMode aggregateModeEnum = Enum.valueOf(AggregateMode.class, aggregateMode);
+        return new RunOptions(unmapCodeLocations, aggregateName, aggregateModeEnum, preferredTools, detectToolFilter, useBdio2);
     }
 
     public DirectoryOptions createDirectoryOptions() {
