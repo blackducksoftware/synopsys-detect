@@ -270,9 +270,9 @@ public enum DetectProperty {
     DETECT_BOM_AGGREGATE_NAME("detect.bom.aggregate.name", "Aggregate BDIO File Name", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
-    @HelpDescription(category = ADVANCED, value = "If set to DIRECT, aggregate BDIO file will exclude code locations from top layer of dependency tree to preserve correct identification of direct dependencies. Default is TRANSITIVE.")
+    @HelpDescription(category = ADVANCED, value = "If set to DIRECT, aggregate BDIO file will exclude code locations from top layer of dependency tree to preserve correct identification of direct dependencies.")
     @AcceptableValues(value = {"DIRECT", "TRANSITIVE"}, caseSensitive = true, strict = true, isCommaSeparatedList = false)
-    DETECT_BOM_AGGREGATE_MODE("detect.bom.aggregate.mode", "BDIO Aggregate Direct", "6.1.0", PropertyType.STRING, PropertyAuthority.NONE),
+    DETECT_BOM_AGGREGATE_MODE("detect.bom.aggregate.mode", "BDIO Aggregate Direct", "6.1.0", PropertyType.STRING, PropertyAuthority.NONE, "TRANSITIVE"),
 
     @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If set to true, only Detector's capable of running without a build will be run.")
