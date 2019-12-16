@@ -52,6 +52,7 @@ import com.synopsys.integration.blackduck.bdio2.Bdio2Document;
 import com.synopsys.integration.blackduck.bdio2.Bdio2Factory;
 import com.synopsys.integration.blackduck.bdio2.Bdio2Writer;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
+import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -141,7 +142,7 @@ public class AggregateBdioCreator {
                 aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
                 aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
             } else {
-                throw new DetectUserFriendlyException("Did not specify aggregation mode via detect.bom.aggregate.mode, will not aggregate at this time.", ExitCodeType.FAILURE_GENERAL_ERROR);
+                throw new DetectUserFriendlyException(String.format("The %s property was set to an unsupported aggregation mode, will not aggregate at this time.", DetectProperty.DETECT_BOM_AGGREGATE_MODE.getPropertyKey()), ExitCodeType.FAILURE_GENERAL_ERROR);
             }
         }
 
