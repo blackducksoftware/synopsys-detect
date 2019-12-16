@@ -22,3 +22,10 @@ It also `bitbake-layers show-recipes` to get layer information.
 Symptom: Error in log like: 'ERROR: Nothing PROVIDES {package}'
 
 Problem: ${solution_name} does not support the Yocto version. ${solution_name} requires Yocto versions 2.0 and higher.
+
+### Missing components for projects using the Yocto Package Revision Service
+
+Symptom: Components are missing from the ${blackduck_product_name} BOM
+
+Problem: The Yocto Package Revision Service can increment a package revision to a value not present in the ${blackduck_product_name} Knowledge Base, causing
+a package to fail to match.

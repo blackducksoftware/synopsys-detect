@@ -35,8 +35,6 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.bdio2.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
-import com.synopsys.integration.blackduck.codelocation.bdio2upload.Bdio2UploadService;
-import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatch;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectMappingService;
@@ -310,17 +308,19 @@ public class RunManager {
         if (bdioResult.getUploadTargets().size() > 0) {
             logger.info("Created " + bdioResult.getUploadTargets().size() + " BDIO files.");
             if (null != blackDuckServicesFactory) {
+                final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration);
+
                 logger.debug("Uploading BDIO files.");
                 final CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData;
+
+                final DetectBdioUploadService.BdioUploader bdioUploader;
                 if (bdioResult.isBdio2()) {
-                    final Bdio2UploadService bdio2UploadService = blackDuckServicesFactory.createBdio2UploadService();
-                    final UploadBatch uploadBatch = new UploadBatch();
-                    bdioResult.getUploadTargets().forEach(uploadBatch::addUploadTarget);
-                    uploadBatchOutputCodeLocationCreationData = bdio2UploadService.uploadBdio(uploadBatch);
+                    bdioUploader = blackDuckServicesFactory.createBdio2UploadService()::uploadBdio;
                 } else {
-                    final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration, blackDuckServicesFactory.createBdioUploadService());
-                    uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets());
+                    bdioUploader = blackDuckServicesFactory.createBdioUploadService()::uploadBdio;
                 }
+
+                uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets(), bdioUploader);
                 codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
             }
         } else {

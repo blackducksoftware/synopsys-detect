@@ -31,7 +31,7 @@ class Terms {
             "project_name" to "synopsys-detect",
             "source_repo_organization" to "blackducksoftware",
             "image_repo_organization" to "blackducksoftware",
-            "blackduck_release_page" to "https://github.com/blackducksoftware/hub/releases",
+            "blackduck_release_page" to "https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/177799187/Black+Duck+Release+Compatibility",
             "bash_script_name" to "detect.sh",
             "powershell_script_name" to "detect.ps1",
             "binary_repo_url_base" to "https://sig-repo.synopsys.com",
