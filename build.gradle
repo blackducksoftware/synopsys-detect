@@ -11,7 +11,7 @@ import com.synopsys.integration.log.PrintStreamIntLogger
 buildscript {
     ext {
         springBootVersion = '2.1.5.RELEASE'
-        blackDuckCommonVersion = '45.0.2'
+        blackDuckCommonVersion = '45.0.3'
         polarisCommonVersion = '0.13.2'
         junitPlatformDefaultTestTags = "integration, performance, battery"
     }
