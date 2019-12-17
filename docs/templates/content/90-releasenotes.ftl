@@ -8,6 +8,7 @@
 * Added the property [detect.bazel.cquery.options](properties/Detectors/bazel.md#bazel-cquery-additional-options).
 * Added the property [detect.docker.image.id](properties/Detectors/docker.md#docker-image-id).
 * Added the property [detect.docker.platform.top.layer.id](properties/Detectors/docker.md#platform-top-layer-id-advanced).
+* Added the property [detect.bom.aggregate.mode](properties/Configuration/project.md#bdio-aggregate-mode-advanced)
 
 ### Changed features
 * Deprecated all ${polaris_product_name}-related properties.
