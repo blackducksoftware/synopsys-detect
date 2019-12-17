@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -142,7 +141,7 @@ public class AggregateBdioCreator {
                 aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
                 aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
             } else {
-                throw new DetectUserFriendlyException(String.format("The %s property was set to an unsupported aggregation mode, will not aggregate at this time.", DetectProperty.DETECT_BOM_AGGREGATE_MODE.getPropertyKey()), ExitCodeType.FAILURE_GENERAL_ERROR);
+                throw new DetectUserFriendlyException(String.format("The %s property was set to an unsupported aggregation mode, will not aggregate at this time.", DetectProperty.DETECT_BOM_AGGREGATE_REMEDIATION_MODE.getPropertyKey()), ExitCodeType.FAILURE_GENERAL_ERROR);
             }
         }
 
