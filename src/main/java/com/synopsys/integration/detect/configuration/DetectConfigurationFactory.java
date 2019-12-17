@@ -78,7 +78,7 @@ public class DetectConfigurationFactory {
 
         final boolean unmapCodeLocations = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_UNMAP, PropertyAuthority.NONE);
         final String aggregateName = detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_NAME, PropertyAuthority.NONE);
-        final String aggregateMode = detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_MODE, PropertyAuthority.NONE);
+        final String aggregateMode = detectConfiguration.getProperty(DetectProperty.DETECT_BOM_AGGREGATE_REMEDIATION_MODE, PropertyAuthority.NONE);
         final String preferredTools = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_TOOL, PropertyAuthority.NONE);
         final boolean useBdio2 = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BDIO2_ENABLED, PropertyAuthority.NONE);
 

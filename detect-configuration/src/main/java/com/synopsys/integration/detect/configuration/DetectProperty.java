@@ -275,7 +275,7 @@ public enum DetectProperty {
                                                     "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes " +
                                                     "at the top of the dependency tree, but all components will appear as TRANSITIVE in the BOM.")
     @AcceptableValues(value = {"DIRECT", "TRANSITIVE"}, caseSensitive = true, strict = true, isCommaSeparatedList = false)
-    DETECT_BOM_AGGREGATE_MODE("detect.bom.aggregate.mode", "BDIO Aggregate Mode", "6.1.0", PropertyType.STRING, PropertyAuthority.NONE, "TRANSITIVE"),
+    DETECT_BOM_AGGREGATE_REMEDIATION_MODE("detect.bom.aggregate.remediation.mode", "BDIO Aggregate Remediation Mode", "6.1.0", PropertyType.STRING, PropertyAuthority.NONE, "TRANSITIVE"),
 
     @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If set to true, only Detector's capable of running without a build will be run.")
