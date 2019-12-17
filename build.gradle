@@ -11,7 +11,7 @@ import com.synopsys.integration.log.PrintStreamIntLogger
 buildscript {
     ext {
         springBootVersion = '2.1.5.RELEASE'
-        blackDuckCommonVersion = '45.0.1'
+        blackDuckCommonVersion = '45.0.2'
         polarisCommonVersion = '0.13.2'
         junitPlatformDefaultTestTags = "integration, performance, battery"
     }
@@ -181,8 +181,9 @@ task verifyBlackDuckDetect() {
 }
 
 String parseAirGapZipPath(ByteArrayOutputStream standardOutput) {
-    String line = standardOutput.toString().split('\n').find { it.contains("Detect Air Gap Zip: ") }
-    String path = line.substring(line.lastIndexOf("Detect Air Gap Zip: ") + "Detect Air Gap Zip: ".length()).trim()
+    String marker = "Detect Air Gap Zip: "
+    String line = standardOutput.toString().split('\n').find { it.contains(marker) }
+    String path = line.substring(line.lastIndexOf(marker) + marker.length()).trim()
     println "Found Air Gap Zip: " + path
     return path
 }

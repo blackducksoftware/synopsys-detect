@@ -186,6 +186,16 @@ If you have no ${blackduck_product_name} instance, or if your network is down, y
 In offline mode, ${solution_name} creates the BDIO content and the dry run ${blackduck_signature_scan_act} output files without attempting to upload them to ${blackduck_product_name}.
 You can run ${solution_name} in offline mode using the [offline mode property](properties/Configuration/blackduck server.md#offline-mode).
 
+### BDIO format
+
+${solution_name} produces dependency information for Black Duck in Black Duck Input Output (BDIO) format files.
+${solution_name} can produce BDIO files in either of two formats: BDIO version 1, or BDIO version 2.
+Versions of Black Duck prior to 2018.12.4 accept only BDIO 1. Black Duck version 2018.12.4 and later
+accept either BDIO 1 or BDIO 2.
+By default, ${solution_name} produces BDIO 1 files.
+
+Use the [BDIO2 enabled property](properties/Configuration/paths.md#bdio-2-enabled) to select BDIO 2 format.
+
 ## Running with ${polaris_product_name}
 
 ${solution_name} can be used with ${polaris_product_name} to perform Static Application Security Testing (SAST).
