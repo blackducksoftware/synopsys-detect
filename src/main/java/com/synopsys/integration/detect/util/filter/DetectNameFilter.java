@@ -22,9 +22,9 @@
  */
 package com.synopsys.integration.detect.util.filter;
 
-import com.synopsys.integration.util.ExcludedIncludedFilter;
+import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
-public class DetectNameFilter extends ExcludedIncludedFilter implements DetectFilter {
+public class DetectNameFilter extends ExcludedIncludedWildcardFilter implements DetectFilter {
 
     /**
      * Provide a comma-separated list of names to exclude and/or a comma-separated list of names to include. Exclusion rules always win.

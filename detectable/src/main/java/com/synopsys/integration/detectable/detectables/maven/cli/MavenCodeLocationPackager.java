@@ -40,7 +40,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.util.ExcludedIncludedFilter;
+import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
 // TODO: Re-write. Some fields could be local variables. Includes many code smells. A component none:Additional_Components:none appears in the graph.
 public class MavenCodeLocationPackager {
@@ -71,8 +71,8 @@ public class MavenCodeLocationPackager {
 
     // mavenTextOutput should be the full output of mvn dependency:tree (no scope applied); scope filtering is now done by this method
     public List<MavenParseResult> extractCodeLocations(final String sourcePath, final String mavenOutputText, final String excludedScopes, final String includedScopes, final String excludedModules, final String includedModules) {
-        final ExcludedIncludedFilter modulesFilter = new ExcludedIncludedFilter(excludedModules, includedModules);
-        final ExcludedIncludedFilter scopeFilter = new ExcludedIncludedFilter(excludedScopes, includedScopes);
+        final ExcludedIncludedWildcardFilter modulesFilter = new ExcludedIncludedWildcardFilter(excludedModules, includedModules);
+        final ExcludedIncludedWildcardFilter scopeFilter = new ExcludedIncludedWildcardFilter(excludedScopes, includedScopes);
         codeLocations = new ArrayList<>();
         currentMavenProject = null;
         dependencyParentStack = new Stack<>();
@@ -190,7 +190,7 @@ public class MavenCodeLocationPackager {
         }
     }
 
-    private void addDependencyIfInScope(final MutableDependencyGraph currentGraph, final List<Dependency> orphans, final ExcludedIncludedFilter scopeFilter, final boolean inOutOfScopeTree, final Dependency parent,
+    private void addDependencyIfInScope(final MutableDependencyGraph currentGraph, final List<Dependency> orphans, final ExcludedIncludedWildcardFilter scopeFilter, final boolean inOutOfScopeTree, final Dependency parent,
         final ScopedDependency dependency) {
         if (scopeFilter.shouldInclude(dependency.scope)) {
             if (inOutOfScopeTree) {
