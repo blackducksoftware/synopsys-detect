@@ -20,18 +20,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.util.filter;
+package com.synopsys.integration.detect.workflow.bdio;
 
-import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
-
-public class DetectNameFilter extends ExcludedIncludedWildcardFilter implements DetectFilter {
-
-    /**
-     * Provide a comma-separated list of names to exclude and/or a comma-separated list of names to include. Exclusion rules always win.
-     * @param toExclude
-     * @param toInclude
-     */
-    public DetectNameFilter(final String toExclude, final String toInclude) {
-        super(toExclude, toInclude);
-    }
+public enum AggregateMode {
+    DIRECT,
+    TRANSITIVE
 }

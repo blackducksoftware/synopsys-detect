@@ -269,6 +269,14 @@ public enum DetectProperty {
     @HelpDescription(category = ADVANCED, value = "If set, this will aggregate all the BOMs to create a single BDIO file with the name provided.")
     DETECT_BOM_AGGREGATE_NAME("detect.bom.aggregate.name", "Aggregate BDIO File Name", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
+    @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
+    @HelpDescription(category = ADVANCED, value = "If an aggregate BDIO file is being generated and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes from the top layer of the " +
+                                                      "dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. " +
+                                                    "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes " +
+                                                    "at the top of the dependency tree, but all components will appear as TRANSITIVE in the BOM.")
+    @AcceptableValues(value = {"DIRECT", "TRANSITIVE"}, caseSensitive = true, strict = true, isCommaSeparatedList = false)
+    DETECT_BOM_AGGREGATE_REMEDIATION_MODE("detect.bom.aggregate.remediation.mode", "BDIO Aggregate Remediation Mode", "6.1.0", PropertyType.STRING, PropertyAuthority.NONE, "TRANSITIVE"),
+
     @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If set to true, only Detector's capable of running without a build will be run.")
     DETECT_BUILDLESS("detect.detector.buildless", "Buildless Mode", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),

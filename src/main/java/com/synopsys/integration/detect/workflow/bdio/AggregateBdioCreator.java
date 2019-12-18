@@ -51,6 +51,7 @@ import com.synopsys.integration.blackduck.bdio2.Bdio2Document;
 import com.synopsys.integration.blackduck.bdio2.Bdio2Factory;
 import com.synopsys.integration.blackduck.bdio2.Bdio2Writer;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
+import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -77,10 +78,10 @@ public class AggregateBdioCreator {
         this.detectBdioWriter = detectBdioWriter;
     }
 
-    public Optional<UploadTarget> createAggregateBdio1File(final String aggregateName, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
+    public Optional<UploadTarget> createAggregateBdio1File(final String aggregateName, final AggregateMode aggregateMode, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
         final NameVersion projectNameVersion) throws DetectUserFriendlyException {
 
-        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations);
+        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations, aggregateMode);
         final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
         final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
 
@@ -94,10 +95,10 @@ public class AggregateBdioCreator {
         return createUploadTarget(codeLocationName, aggregateBdioFile, aggregateDependencyGraph, uploadEmptyAggregate);
     }
 
-    public Optional<UploadTarget> createAggregateBdio2File(final String aggregateName, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
+    public Optional<UploadTarget> createAggregateBdio2File(final String aggregateName, final AggregateMode aggregateMode, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory, final List<DetectCodeLocation> codeLocations,
         final NameVersion projectNameVersion) throws DetectUserFriendlyException {
 
-        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations);
+        final DependencyGraph aggregateDependencyGraph = createAggregateDependencyGraph(sourcePath, codeLocations, aggregateMode);
         final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
         final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
 
@@ -130,13 +131,19 @@ public class AggregateBdioCreator {
         }
     }
 
-    private DependencyGraph createAggregateDependencyGraph(final File sourcePath, final List<DetectCodeLocation> codeLocations) {
+    private DependencyGraph createAggregateDependencyGraph(final File sourcePath, final List<DetectCodeLocation> codeLocations, final AggregateMode aggregateMode) throws DetectUserFriendlyException {
         final MutableDependencyGraph aggregateDependencyGraph = simpleBdioFactory.createMutableDependencyGraph();
 
         for (final DetectCodeLocation detectCodeLocation : codeLocations) {
-            final Dependency codeLocationDependency = createAggregateDependency(sourcePath, detectCodeLocation);
-            aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
-            aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
+            if (aggregateMode.equals(AggregateMode.DIRECT)) {
+                aggregateDependencyGraph.addGraphAsChildrenToRoot(detectCodeLocation.getDependencyGraph());
+            } else if (aggregateMode.equals(AggregateMode.TRANSITIVE)) {
+                final Dependency codeLocationDependency = createAggregateDependency(sourcePath, detectCodeLocation);
+                aggregateDependencyGraph.addChildrenToRoot(codeLocationDependency);
+                aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
+            } else {
+                throw new DetectUserFriendlyException(String.format("The %s property was set to an unsupported aggregation mode, will not aggregate at this time.", DetectProperty.DETECT_BOM_AGGREGATE_REMEDIATION_MODE.getPropertyKey()), ExitCodeType.FAILURE_GENERAL_ERROR);
+            }
         }
 
         return aggregateDependencyGraph;

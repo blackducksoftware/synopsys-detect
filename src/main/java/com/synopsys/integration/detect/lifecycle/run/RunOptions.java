@@ -23,17 +23,20 @@
 package com.synopsys.integration.detect.lifecycle.run;
 
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
+import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 
 public class RunOptions {
     private final boolean unmapCodeLocations;
     private final String aggregateName;
+    private final AggregateMode aggregateMode;
     private final String preferredTools;
     private final DetectToolFilter detectToolFilter;
     private final boolean useBdio2;
 
-    public RunOptions(final boolean unmapCodeLocations, final String aggregateName, final String preferredTools, final DetectToolFilter detectToolFilter, final boolean useBdio2) {
+    public RunOptions(final boolean unmapCodeLocations, final String aggregateName, final AggregateMode aggregateMode, final String preferredTools, final DetectToolFilter detectToolFilter, final boolean useBdio2) {
         this.unmapCodeLocations = unmapCodeLocations;
         this.aggregateName = aggregateName;
+        this.aggregateMode = aggregateMode;
         this.preferredTools = preferredTools;
         this.detectToolFilter = detectToolFilter;
         this.useBdio2 = useBdio2;
@@ -45,6 +48,10 @@ public class RunOptions {
 
     public String getAggregateName() {
         return aggregateName;
+    }
+
+    public AggregateMode getAggregateMode() {
+        return aggregateMode;
     }
 
     public String getPreferredTools() {
