@@ -112,6 +112,7 @@ public class AggregateBdioCreator {
         try {
             final OutputStream outputStream = new FileOutputStream(aggregateBdioFile);
             bdio2Writer.writeBdioDocument(outputStream, bdio2Document);
+            logger.debug(String.format("BDIO Generated: %s", aggregateBdioFile.getAbsolutePath()));
         } catch (final IOException e) {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }

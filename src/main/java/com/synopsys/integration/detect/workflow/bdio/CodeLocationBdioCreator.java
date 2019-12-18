@@ -30,6 +30,9 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.blackducksoftware.bdio2.BdioMetadata;
 import com.blackducksoftware.bdio2.model.Project;
 import com.blackducksoftware.common.value.Product;
@@ -50,6 +53,8 @@ import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocation;
 import com.synopsys.integration.util.NameVersion;
 
 public class CodeLocationBdioCreator {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final DetectBdioWriter detectBdioWriter;
     private final SimpleBdioFactory simpleBdioFactory;
     private final Bdio2Factory bdio2Factory;
@@ -103,6 +108,7 @@ public class CodeLocationBdioCreator {
             try {
                 final OutputStream outputStream = new FileOutputStream(bdio2OutputFile);
                 bdio2Writer.writeBdioDocument(outputStream, bdio2Document);
+                logger.debug(String.format("BDIO Generated: %s", bdio2OutputFile.getAbsolutePath()));
 
                 uploadTargets.add(UploadTarget.createDefault(codeLocationName, bdio2OutputFile));
             } catch (final IOException e) {
