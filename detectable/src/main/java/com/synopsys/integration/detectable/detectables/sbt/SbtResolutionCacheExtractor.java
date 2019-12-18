@@ -47,7 +47,7 @@ import com.synopsys.integration.detectable.detectables.sbt.model.SbtDependencyMo
 import com.synopsys.integration.detectable.detectables.sbt.model.SbtProject;
 import com.synopsys.integration.detectable.detectables.sbt.model.SbtReport;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtReportParser;
-import com.synopsys.integration.util.ExcludedIncludedFilter;
+import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
 public class SbtResolutionCacheExtractor {
     private final Logger logger = LoggerFactory.getLogger(SbtResolutionCacheExtractor.class);
@@ -247,7 +247,7 @@ public class SbtResolutionCacheExtractor {
 
         final SbtReportParser parser = new SbtReportParser();
         final SbtDependencyResolver resolver = new SbtDependencyResolver(externalIdFactory);
-        final ExcludedIncludedFilter filter = new ExcludedIncludedFilter(exclude, include);
+        final ExcludedIncludedWildcardFilter filter = new ExcludedIncludedWildcardFilter(exclude, include);
         final SbtModuleAggregator aggregator = new SbtModuleAggregator();
 
         final List<SbtDependencyModule> modules = new ArrayList<>();
