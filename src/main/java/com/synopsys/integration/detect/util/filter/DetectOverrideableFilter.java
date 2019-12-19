@@ -10,7 +10,7 @@ public class DetectOverrideableFilter extends ExcludedIncludedWildcardFilter imp
     }
 
     @Override
-    public boolean willExclude(String itemName) {
+    public boolean willExclude(final String itemName) {
         if (excludedSet.contains("ALL")) {
             return true;
         } else if (!excludedSet.contains("NONE") && excludedSet.contains(itemName)) {
@@ -21,8 +21,8 @@ public class DetectOverrideableFilter extends ExcludedIncludedWildcardFilter imp
     }
 
     @Override
-    public boolean willInclude(String itemName) {
-        if (includedSet.isEmpty()) {
+    public boolean willInclude(final String itemName) {
+        if (!includedSet.isEmpty()) {
             if (includedSet.contains("ALL")) {
                 return true;
             } else if (includedSet.contains("NONE")) {
