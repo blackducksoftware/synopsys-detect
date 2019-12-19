@@ -1,5 +1,7 @@
 package com.synopsys.integration.detect.util.filter;
 
+import java.util.Set;
+
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
 public class DetectOverrideableFilter extends ExcludedIncludedWildcardFilter implements DetectFilter {
@@ -31,5 +33,10 @@ public class DetectOverrideableFilter extends ExcludedIncludedWildcardFilter imp
         }
 
         return super.willInclude(itemName);
+    }
+
+    // TODO - edit ExcludedIncludedFilter to have getters for includedSet, excludedSet
+    public Set<String> getIncludedSet() {
+        return includedSet;
     }
 }
