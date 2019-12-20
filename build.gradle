@@ -194,7 +194,7 @@ task createAirGapZip(type: JavaExec) {
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
-    args = ["--detect.output.path=${buildDir}/libs/", '-z']
+    args = ["--detect.output.path=${buildDir}/libs/", "--detect.gradle.inspector.version=0.7.1", '-z'] // TODO: Remove gradle inspector version prior to release
     standardOutput = new ByteArrayOutputStream()
     doLast {
         createAirGapZip.ext.airGapPath = parseAirGapZipPath(standardOutput)
