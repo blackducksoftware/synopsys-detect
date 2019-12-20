@@ -60,7 +60,7 @@ public class AirGapCreator {
         this.dockerAirGapCreator = dockerAirGapCreator;
     }
 
-    public File createAirGapZip(final DetectFilter inspectorFilter, final File outputPath, final String airGapSuffix) throws DetectUserFriendlyException {
+    public File createAirGapZip(final DetectFilter inspectorFilter, final File outputPath, final String airGapSuffix, final String gradleInspectorVersion) throws DetectUserFriendlyException {
         try {
             logger.info("");
             logger.info(ReportConstants.RUN_SEPARATOR);
@@ -92,7 +92,7 @@ public class AirGapCreator {
             logger.info("Will build the zip in the following folder: " + installFolder.getCanonicalPath());
 
             logger.info("Installing dependencies.");
-            installAllAirGapDependencies(installFolder, inspectorFilter);
+            installAllAirGapDependencies(installFolder, inspectorFilter, gradleInspectorVersion);
 
             logger.info("Copying detect jar.");
             FileUtils.copyFile(detectJar, new File(installFolder, detectJar.getName()));
@@ -115,7 +115,7 @@ public class AirGapCreator {
         }
     }
 
-    public void installAllAirGapDependencies(final File zipFolder, final DetectFilter inspectorFilter) throws DetectUserFriendlyException {
+    public void installAllAirGapDependencies(final File zipFolder, final DetectFilter inspectorFilter, final String gradleInspectorVersion) throws DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
 
         if (inspectorFilter.shouldInclude(AirGapInspectors.GRADLE.name())) {
@@ -123,7 +123,7 @@ public class AirGapCreator {
             logger.info("Installing gradle dependencies.");
             final File gradleTemp = airGapPathFinder.createRelativePackagedInspectorsFile(zipFolder, AirGapPathFinder.GRADLE + "-temp");
             final File gradleTarget = airGapPathFinder.createRelativePackagedInspectorsFile(zipFolder, AirGapPathFinder.GRADLE);
-            gradleAirGapCreator.installGradleDependencies(gradleTemp, gradleTarget);
+            gradleAirGapCreator.installGradleDependencies(gradleTemp, gradleTarget, gradleInspectorVersion);
         } else {
             logger.info("Will NOT include GRADLE inspector.");
         }

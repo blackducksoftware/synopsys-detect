@@ -65,7 +65,7 @@ public class GradleAirGapCreator {
         this.configuration = configuration;
     }
 
-    public void installGradleDependencies(final File gradleTemp, final File gradleTarget) throws DetectUserFriendlyException {
+    public void installGradleDependencies(final File gradleTemp, final File gradleTarget, final String inspectorVersion) throws DetectUserFriendlyException {
         logger.info("Checking for gradle on the path.");
         final File gradle;
         try {
@@ -78,7 +78,7 @@ public class GradleAirGapCreator {
         }
 
         logger.info("Determining inspector version.");
-        final String gradleVersion = gradleInspectorInstaller.findVersion("").get();
+        final String gradleVersion = gradleInspectorInstaller.findVersion(inspectorVersion).get();
         logger.info("Determined inspector version: " + gradleVersion);
 
         final File gradleOutput = new File(gradleTemp, "dependencies");

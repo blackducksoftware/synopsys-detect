@@ -276,14 +276,14 @@ public class DetectBoot {
 
         //Attempt to create the detectable.
         //Not currently possible. Need a full DetectableConfiguration to be able to make Detectables.
-        Class<Detectable> detectableClass = rule.getDetectableClass();
-        Optional<DetectableInfo> infoSearch = Arrays.stream(detectableClass.getAnnotations())
+        final Class<Detectable> detectableClass = rule.getDetectableClass();
+        final Optional<DetectableInfo> infoSearch = Arrays.stream(detectableClass.getAnnotations())
                                         .filter(annotation -> annotation instanceof DetectableInfo)
                                         .map(annotation -> (DetectableInfo) annotation)
                                         .findFirst();
 
         if (infoSearch.isPresent()){
-            DetectableInfo info = infoSearch.get();
+            final DetectableInfo info = infoSearch.get();
             helpData.setDetectableLanguage(info.language());
             helpData.setDetectableRequirementsMarkdown(info.requirementsMarkdown());
             helpData.setDetectableForge(info.forge());
@@ -383,6 +383,7 @@ public class DetectBoot {
         final DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
 
         final AirGapCreator airGapCreator = new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
-        return airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix);
+        final String gradleInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION,PropertyAuthority.NONE);
+        return airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix, gradleInspectorVersion);
     }
 }
