@@ -1,52 +1,28 @@
-/**
- * synopsys-detect
- *
- * Copyright (c) 2019 Synopsys, Inc.
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 package com.synopsys.integration.detect.util.filter;
 
-import java.util.HashSet;
 import java.util.Set;
-import java.util.StringTokenizer;
 
-import org.apache.commons.lang3.StringUtils;
+import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
-public class DetectOverrideableFilter implements DetectFilter {
-    private final Set<String> excludedSet;
-    private final Set<String> includedSet;
-
+public class DetectOverrideableFilter extends ExcludedIncludedWildcardFilter implements DetectFilter {
     public DetectOverrideableFilter(final String toExclude, final String toInclude) {
-        excludedSet = createSetFromString(toExclude);
-        includedSet = createSetFromString(toInclude);
+        super(toExclude, toInclude);
     }
 
     @Override
-    public boolean shouldInclude(final String itemName) {
-        if (excludedSet.contains("ALL"))
-            return false;
-
-        if (!excludedSet.contains("NONE") && excludedSet.contains(itemName)) {
-            return false;
+    public boolean willExclude(final String itemName) {
+        if (excludedSet.contains("ALL")) {
+            return true;
+        } else if (!excludedSet.contains("NONE") && excludedSet.contains(itemName)) {
+            return true;
+        } else {
+            return super.willExclude(itemName);
         }
+    }
 
-        if (includedSet.size() > 0) {
+    @Override
+    public boolean willInclude(final String itemName) {
+        if (!includedSet.isEmpty()) {
             if (includedSet.contains("ALL")) {
                 return true;
             } else if (includedSet.contains("NONE")) {
@@ -56,19 +32,11 @@ public class DetectOverrideableFilter implements DetectFilter {
             }
         }
 
-        return true;
+        return super.willInclude(itemName);
     }
 
+    // TODO - edit ExcludedIncludedFilter to have getters for includedSet, excludedSet
     public Set<String> getIncludedSet() {
         return includedSet;
-    }
-
-    private Set<String> createSetFromString(final String s) {
-        final Set<String> set = new HashSet<>();
-        final StringTokenizer stringTokenizer = new StringTokenizer(StringUtils.trimToEmpty(s), ",");
-        while (stringTokenizer.hasMoreTokens()) {
-            set.add(StringUtils.trimToEmpty(stringTokenizer.nextToken()));
-        }
-        return set;
     }
 }
