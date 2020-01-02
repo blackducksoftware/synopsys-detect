@@ -846,8 +846,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-polaris-enabled-deprecated" class="md-nav__link">
-    Detect Polaris Enabled (Deprecated)
+  <a href="#polaris-arguments-deprecated" class="md-nav__link">
+    Polaris Arguments (Deprecated)
   </a>
   
 </li>
@@ -867,8 +867,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#polaris-arguments-deprecated" class="md-nav__link">
-    Polaris Arguments (Deprecated)
+  <a href="#detect-polaris-enabled-deprecated" class="md-nav__link">
+    Detect Polaris Enabled (Deprecated)
   </a>
   
 </li>
@@ -1222,8 +1222,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-polaris-enabled-deprecated" class="md-nav__link">
-    Detect Polaris Enabled (Deprecated)
+  <a href="#polaris-arguments-deprecated" class="md-nav__link">
+    Polaris Arguments (Deprecated)
   </a>
   
 </li>
@@ -1243,8 +1243,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#polaris-arguments-deprecated" class="md-nav__link">
-    Polaris Arguments (Deprecated)
+  <a href="#detect-polaris-enabled-deprecated" class="md-nav__link">
+    Detect Polaris Enabled (Deprecated)
   </a>
   
 </li>
@@ -1311,12 +1311,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-polaris-enabled-deprecated">Detect Polaris Enabled (Deprecated)</h2>
-<pre><code>--detect.polaris.enabled=false
+<h2 id="polaris-arguments-deprecated">Polaris Arguments (Deprecated)</h2>
+<pre><code>--polaris.arguments
 </code></pre>
 
-<p>Set to false to disable the Synopsys Polaris Tool.</p>
-<p><strong>DEPRECATED: This property is changing. Please use --detect.tools and POLARIS in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<p>Additional arguments to pass to polaris separated by space. The polaris.command takes precedence.</p>
+<p><strong>DEPRECATED: This property is being removed. Detect will no longer invoke the Polaris CLI. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -1327,15 +1327,15 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>4.4.0</td>
+<td>5.3.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>Boolean</td>
+<td>String</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>false</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1443,12 +1443,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="polaris-arguments-deprecated">Polaris Arguments (Deprecated)</h2>
-<pre><code>--polaris.arguments
+<h2 id="detect-polaris-enabled-deprecated">Detect Polaris Enabled (Deprecated)</h2>
+<pre><code>--detect.polaris.enabled=false
 </code></pre>
 
-<p>Additional arguments to pass to polaris separated by space. The polaris.command takes precedence.</p>
-<p><strong>DEPRECATED: This property is being removed. Detect will no longer invoke the Polaris CLI. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<p>Set to false to disable the Synopsys Polaris Tool.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.tools and POLARIS in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -1459,15 +1459,15 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>5.3.0</td>
+<td>4.4.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>Boolean</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

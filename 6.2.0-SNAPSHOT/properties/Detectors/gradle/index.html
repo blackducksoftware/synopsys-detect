@@ -1021,15 +1021,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-inspector-version-advanced" class="md-nav__link">
-    Gradle Inspector Version (Advanced)
+  <a href="#gradle-exclude-configurations-advanced" class="md-nav__link">
+    Gradle Exclude Configurations (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-exclude-configurations-advanced" class="md-nav__link">
-    Gradle Exclude Configurations (Advanced)
+  <a href="#gradle-inspector-airgap-path-advanced" class="md-nav__link">
+    Gradle Inspector AirGap Path (Advanced)
   </a>
   
 </li>
@@ -1042,8 +1042,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-inspector-airgap-path-advanced" class="md-nav__link">
-    Gradle Inspector AirGap Path (Advanced)
+  <a href="#gradle-inspector-version-advanced" class="md-nav__link">
+    Gradle Inspector Version (Advanced)
   </a>
   
 </li>
@@ -1257,15 +1257,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-inspector-version-advanced" class="md-nav__link">
-    Gradle Inspector Version (Advanced)
+  <a href="#gradle-exclude-configurations-advanced" class="md-nav__link">
+    Gradle Exclude Configurations (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-exclude-configurations-advanced" class="md-nav__link">
-    Gradle Exclude Configurations (Advanced)
+  <a href="#gradle-inspector-airgap-path-advanced" class="md-nav__link">
+    Gradle Inspector AirGap Path (Advanced)
   </a>
   
 </li>
@@ -1278,8 +1278,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-inspector-airgap-path-advanced" class="md-nav__link">
-    Gradle Inspector AirGap Path (Advanced)
+  <a href="#gradle-inspector-version-advanced" class="md-nav__link">
+    Gradle Inspector Version (Advanced)
   </a>
   
 </li>
@@ -1411,12 +1411,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-inspector-version-advanced">Gradle Inspector Version (Advanced)</h2>
-<pre><code>--detect.gradle.inspector.version
+<h2 id="gradle-exclude-configurations-advanced">Gradle Exclude Configurations (Advanced)</h2>
+<pre><code>--detect.gradle.excluded.configurations
 </code></pre>
 
-<p>The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.</p>
-<p>The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector.</p>
+<p>A comma-separated list of Gradle configurations to exclude.</p>
+<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property.</p>
 <table>
 <thead>
 <tr>
@@ -1455,12 +1455,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-exclude-configurations-advanced">Gradle Exclude Configurations (Advanced)</h2>
-<pre><code>--detect.gradle.excluded.configurations
+<h2 id="gradle-inspector-airgap-path-advanced">Gradle Inspector AirGap Path (Advanced)</h2>
+<pre><code>--detect.gradle.inspector.air.gap.path
 </code></pre>
 
-<p>A comma-separated list of Gradle configurations to exclude.</p>
-<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property.</p>
+<p>The path to the directory containing the air gap dependencies for the gradle inspector.</p>
+<p>Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory.</p>
 <table>
 <thead>
 <tr>
@@ -1543,12 +1543,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-inspector-airgap-path-advanced">Gradle Inspector AirGap Path (Advanced)</h2>
-<pre><code>--detect.gradle.inspector.air.gap.path
+<h2 id="gradle-inspector-version-advanced">Gradle Inspector Version (Advanced)</h2>
+<pre><code>--detect.gradle.inspector.version
 </code></pre>
 
-<p>The path to the directory containing the air gap dependencies for the gradle inspector.</p>
-<p>Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory.</p>
+<p>The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.</p>
+<p>The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector.</p>
 <table>
 <thead>
 <tr>
