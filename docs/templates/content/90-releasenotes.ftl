@@ -25,6 +25,7 @@
 * Resolved an issue that causes Detect to fail when a parent project and version are specified, and the project is already a child of the specified parent.
 * Resolved an issue that causes Detect to log the git username and password when a git command executed by Detect fails.
 * Resolved an issue that can cause Detect to generate a new code location (scan) when the character case of the value of the detect.source.path property differs from a previous run on the same project.
+* Resolved the following vulnerabilities: commons-beanutils:commons-beanutils 1.9.3 / BDSA-2014-0129 (CVE-2019-10086), org.apache.commons:commons-compress 1.18 / BDSA-2019-2725 (CVE-2019-12402)
 
 ## Version 6.0.0
 ### New features
