@@ -817,15 +817,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#force-success-advanced" class="md-nav__link">
-    Force Success (Advanced)
+  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
+    Detect Ignore Connection Failures (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
-    Detect Ignore Connection Failures (Advanced)
+  <a href="#force-success-advanced" class="md-nav__link">
+    Force Success (Advanced)
   </a>
   
 </li>
@@ -1229,15 +1229,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#force-success-advanced" class="md-nav__link">
-    Force Success (Advanced)
+  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
+    Detect Ignore Connection Failures (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
-    Detect Ignore Connection Failures (Advanced)
+  <a href="#force-success-advanced" class="md-nav__link">
+    Force Success (Advanced)
   </a>
   
 </li>
@@ -1353,11 +1353,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="force-success-advanced">Force Success (Advanced)</h2>
-<pre><code>--detect.force.success=false
+<h2 id="detect-ignore-connection-failures-advanced">Detect Ignore Connection Failures (Advanced)</h2>
+<pre><code>--detect.ignore.connection.failures=false
 </code></pre>
 
-<p>If true, Detect will always exit with code 0.</p>
+<p>If true, Detect will ignore any products that it cannot connect to.</p>
+<p>If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.</p>
 <table>
 <thead>
 <tr>
@@ -1368,7 +1369,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>5.3.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1396,12 +1397,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-ignore-connection-failures-advanced">Detect Ignore Connection Failures (Advanced)</h2>
-<pre><code>--detect.ignore.connection.failures=false
+<h2 id="force-success-advanced">Force Success (Advanced)</h2>
+<pre><code>--detect.force.success=false
 </code></pre>
 
-<p>If true, Detect will ignore any products that it cannot connect to.</p>
-<p>If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.</p>
+<p>If true, Detect will always exit with code 0.</p>
 <table>
 <thead>
 <tr>
@@ -1412,7 +1412,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>5.3.0</td>
+<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
