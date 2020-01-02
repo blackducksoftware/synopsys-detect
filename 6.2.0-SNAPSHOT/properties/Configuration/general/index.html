@@ -803,15 +803,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#buildless-mode" class="md-nav__link">
-    Buildless Mode
+  <a href="#wait-for-results" class="md-nav__link">
+    Wait For Results
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#wait-for-results" class="md-nav__link">
-    Wait For Results
+  <a href="#buildless-mode" class="md-nav__link">
+    Buildless Mode
   </a>
   
 </li>
@@ -1215,15 +1215,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#buildless-mode" class="md-nav__link">
-    Buildless Mode
+  <a href="#wait-for-results" class="md-nav__link">
+    Wait For Results
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#wait-for-results" class="md-nav__link">
-    Wait For Results
+  <a href="#buildless-mode" class="md-nav__link">
+    Buildless Mode
   </a>
   
 </li>
@@ -1267,11 +1267,11 @@
                 
                 
                 <h1 id="general">general</h1>
-<h2 id="buildless-mode">Buildless Mode</h2>
-<pre><code>--detect.detector.buildless=false
+<h2 id="wait-for-results">Wait For Results</h2>
+<pre><code>--detect.wait.for.results=false
 </code></pre>
 
-<p>If set to true, only Detector's capable of running without a build will be run.</p>
+<p>If set to true, Detect will wait for Synopsys products until results are available or the blackduck.timeout is exceeded.</p>
 <table>
 <thead>
 <tr>
@@ -1282,7 +1282,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>5.4.0</td>
+<td>5.5.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1310,11 +1310,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="wait-for-results">Wait For Results</h2>
-<pre><code>--detect.wait.for.results=false
+<h2 id="buildless-mode">Buildless Mode</h2>
+<pre><code>--detect.detector.buildless=false
 </code></pre>
 
-<p>If set to true, Detect will wait for Synopsys products until results are available or the blackduck.timeout is exceeded.</p>
+<p>If set to true, only Detector's capable of running without a build will be run.</p>
 <table>
 <thead>
 <tr>
@@ -1325,7 +1325,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>5.5.0</td>
+<td>5.4.0</td>
 </tr>
 <tr>
 <td>Type</td>

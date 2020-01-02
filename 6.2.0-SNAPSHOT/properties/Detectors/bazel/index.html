@@ -935,15 +935,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bazel-target" class="md-nav__link">
-    Bazel Target
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#bazel-cquery-additional-options" class="md-nav__link">
-    Bazel cquery additional options
+  <a href="#bazel-executable" class="md-nav__link">
+    Bazel Executable
   </a>
   
 </li>
@@ -956,8 +949,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-executable" class="md-nav__link">
-    Bazel Executable
+  <a href="#bazel-cquery-additional-options" class="md-nav__link">
+    Bazel cquery additional options
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bazel-target" class="md-nav__link">
+    Bazel Target
   </a>
   
 </li>
@@ -1208,15 +1208,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bazel-target" class="md-nav__link">
-    Bazel Target
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#bazel-cquery-additional-options" class="md-nav__link">
-    Bazel cquery additional options
+  <a href="#bazel-executable" class="md-nav__link">
+    Bazel Executable
   </a>
   
 </li>
@@ -1229,8 +1222,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-executable" class="md-nav__link">
-    Bazel Executable
+  <a href="#bazel-cquery-additional-options" class="md-nav__link">
+    Bazel cquery additional options
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bazel-target" class="md-nav__link">
+    Bazel Target
   </a>
   
 </li>
@@ -1253,11 +1253,11 @@
                 
                 
                 <h1 id="bazel">bazel</h1>
-<h2 id="bazel-target">Bazel Target</h2>
-<pre><code>--detect.bazel.target
+<h2 id="bazel-executable">Bazel Executable</h2>
+<pre><code>--detect.bazel.path
 </code></pre>
 
-<p>The Bazel target (for example, //foo:foolib) for which dependencies are collected. For Detect to run Bazel, this property must be set.</p>
+<p>The path to the Bazel executable.</p>
 <table>
 <thead>
 <tr>
@@ -1269,49 +1269,6 @@
 <tr>
 <td>Added</td>
 <td>5.2.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="bazel-cquery-additional-options">Bazel cquery additional options</h2>
-<pre><code>--detect.bazel.cquery.options
-</code></pre>
-
-<p>A comma-separated list of additional options to pass to the bazel cquery command.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.1.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1382,11 +1339,54 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bazel-executable">Bazel Executable</h2>
-<pre><code>--detect.bazel.path
+<h2 id="bazel-cquery-additional-options">Bazel cquery additional options</h2>
+<pre><code>--detect.bazel.cquery.options
 </code></pre>
 
-<p>The path to the Bazel executable.</p>
+<p>A comma-separated list of additional options to pass to the bazel cquery command.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.1.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bazel-target">Bazel Target</h2>
+<pre><code>--detect.bazel.target
+</code></pre>
+
+<p>The Bazel target (for example, //foo:foolib) for which dependencies are collected. For Detect to run Bazel, this property must be set.</p>
 <table>
 <thead>
 <tr>
