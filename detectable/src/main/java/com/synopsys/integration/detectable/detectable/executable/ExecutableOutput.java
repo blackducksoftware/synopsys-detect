@@ -25,11 +25,16 @@ package com.synopsys.integration.detectable.detectable.executable;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ExecutableOutput {
     private int returnCode = 0;
     private final String standardOutput;
     private final String errorOutput;
     private final String commandDescription;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public ExecutableOutput(final String commandDescription, final int returnCode, final String standardOutput, final String errorOutput) {
         this.commandDescription = commandDescription;
@@ -56,6 +61,16 @@ public class ExecutableOutput {
 
     public int getReturnCode() {
         return returnCode;
+    }
+
+    public void logExecutionInfo() {
+        if (StringUtils.isNotBlank(standardOutput)) {
+            logger.info(standardOutput);
+        }
+
+        if (StringUtils.isNotBlank(errorOutput)) {
+            logger.info(errorOutput);
+        }
     }
 
     public String getCommandDescription() {

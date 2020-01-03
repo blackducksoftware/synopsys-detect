@@ -90,6 +90,7 @@ public class MavenCliExtractor {
                 }
                 return builder.build();
             } else {
+                mvnOutput.logExecutionInfo();
                 final Extraction.Builder builder = new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", arguments), mvnOutput.getReturnCode()));
                 return builder.build();
             }

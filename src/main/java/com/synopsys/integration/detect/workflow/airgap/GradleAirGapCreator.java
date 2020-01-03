@@ -110,6 +110,7 @@ public class GradleAirGapCreator {
         try {
             final ExecutableOutput executableOutput = executableRunner.execute(gradleTemp, gradle, "installDependencies");
             if (executableOutput.getReturnCode() != 0) {
+                executableOutput.logExecutionInfo();
                 throw new DetectUserFriendlyException("Gradle returned a non-zero exit code while installing Air Gap dependencies.", ExitCodeType.FAILURE_CONFIGURATION);
             }
         } catch (final ExecutableRunnerException e) {

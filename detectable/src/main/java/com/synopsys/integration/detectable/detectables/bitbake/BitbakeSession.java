@@ -70,6 +70,7 @@ public class BitbakeSession {
 
         if (returnCode != 0) {
             logger.error(String.format("Executing command '%s' returned a non-zero exit code %s", bitbakeCommand, returnCode));
+            executableOutput.logExecutionInfo();
             return Optional.empty();
         }
 

@@ -109,6 +109,7 @@ public class PolarisTool {
                 } else {
                     logger.error("Polaris returned a non-zero exit code.");
                     eventSystem.publishEvent(Event.StatusSummary, new Status(POLARIS_DESCRIPTION_KEY, StatusType.FAILURE));
+                    output.logExecutionInfo();
                 }
 
             } catch (final ExecutableRunnerException e) {
