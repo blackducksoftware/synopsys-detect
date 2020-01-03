@@ -947,15 +947,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bitbake-package-names" class="md-nav__link">
-    BitBake Package Names
+  <a href="#bitbake-source-arguments" class="md-nav__link">
+    BitBake Source Arguments
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-search-depth" class="md-nav__link">
-    BitBake Search Depth
+  <a href="#bitbake-package-names" class="md-nav__link">
+    BitBake Package Names
   </a>
   
 </li>
@@ -968,8 +968,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-source-arguments" class="md-nav__link">
-    BitBake Source Arguments
+  <a href="#bitbake-search-depth" class="md-nav__link">
+    BitBake Search Depth
   </a>
   
 </li>
@@ -1215,15 +1215,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bitbake-package-names" class="md-nav__link">
-    BitBake Package Names
+  <a href="#bitbake-source-arguments" class="md-nav__link">
+    BitBake Source Arguments
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-search-depth" class="md-nav__link">
-    BitBake Search Depth
+  <a href="#bitbake-package-names" class="md-nav__link">
+    BitBake Package Names
   </a>
   
 </li>
@@ -1236,8 +1236,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-source-arguments" class="md-nav__link">
-    BitBake Source Arguments
+  <a href="#bitbake-search-depth" class="md-nav__link">
+    BitBake Search Depth
   </a>
   
 </li>
@@ -1267,11 +1267,11 @@
                 
                 
                 <h1 id="bitbake">bitbake</h1>
-<h2 id="bitbake-package-names">BitBake Package Names</h2>
-<pre><code>--detect.bitbake.package.names
+<h2 id="bitbake-source-arguments">BitBake Source Arguments</h2>
+<pre><code>--detect.bitbake.source.arguments
 </code></pre>
 
-<p>A comma-separated list of package names from which dependencies are extracted.</p>
+<p>A comma-separated list of arguments to supply when sourcing the build environment init script.</p>
 <table>
 <thead>
 <tr>
@@ -1282,7 +1282,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>4.4.0</td>
+<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1310,11 +1310,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bitbake-search-depth">BitBake Search Depth</h2>
-<pre><code>--detect.bitbake.search.depth=1
+<h2 id="bitbake-package-names">BitBake Package Names</h2>
+<pre><code>--detect.bitbake.package.names
 </code></pre>
 
-<p>The depth at which Detect will search for the recipe-depends.dot or package-depends.dot files.</p>
+<p>A comma-separated list of package names from which dependencies are extracted.</p>
 <table>
 <thead>
 <tr>
@@ -1325,15 +1325,15 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.1.0</td>
+<td>4.4.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>Integer</td>
+<td>String[]</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>1</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1396,11 +1396,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bitbake-source-arguments">BitBake Source Arguments</h2>
-<pre><code>--detect.bitbake.source.arguments
+<h2 id="bitbake-search-depth">BitBake Search Depth</h2>
+<pre><code>--detect.bitbake.search.depth=1
 </code></pre>
 
-<p>A comma-separated list of arguments to supply when sourcing the build environment init script.</p>
+<p>The depth at which Detect will search for the recipe-depends.dot or package-depends.dot files.</p>
 <table>
 <thead>
 <tr>
@@ -1411,15 +1411,15 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.0.0</td>
+<td>6.1.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>String[]</td>
+<td>Integer</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>1</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
