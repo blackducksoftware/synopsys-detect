@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.tool.detector;
 
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +37,7 @@ import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExec
 
 public class DetectExecutableRunner extends SimpleExecutableRunner {
     private final EventSystem eventSystem;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public DetectExecutableRunner(final Consumer<String> outputConsumer, final Consumer<String> traceConsumer, EventSystem eventSystem) {
         super(outputConsumer, traceConsumer);
@@ -56,6 +58,15 @@ public class DetectExecutableRunner extends SimpleExecutableRunner {
     public ExecutableOutput execute(final Executable executable) throws ExecutableRunnerException {
         final ExecutableOutput output = super.execute(executable);
         eventSystem.publishEvent(Event.Executable, output);
+        if (output.getReturnCode() != 0) {
+            if (StringUtils.isNotBlank(output.getStandardOutput())) {
+                logger.info(output.getStandardOutput());
+            }
+
+            if (StringUtils.isNotBlank(output.getErrorOutput())) {
+                logger.info(output.getErrorOutput());
+            }
+        }
         return output;
     }
 }

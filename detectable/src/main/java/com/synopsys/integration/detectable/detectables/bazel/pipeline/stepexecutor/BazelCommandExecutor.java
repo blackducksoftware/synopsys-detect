@@ -75,7 +75,6 @@ public class BazelCommandExecutor {
                 targetDependenciesQueryReturnCode,
                 targetDependenciesQueryResults.getErrorOutput());
             logger.debug(msg);
-            targetDependenciesQueryResults.logExecutionInfo();
             throw new IntegrationException(msg);
         }
         logger.debug(String.format("bazel command return code: %d", targetDependenciesQueryReturnCode));

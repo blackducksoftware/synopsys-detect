@@ -112,7 +112,6 @@ public class NugetInspectorExtractor {
         final ExecutableOutput executableOutput = inspector.execute(outputDirectory, targetFile, outputDirectory, nugetInspectorOptions);
 
         if (executableOutput.getReturnCode() != 0) {
-            executableOutput.logExecutionInfo();
             throw new DetectableException(String.format("Executing the nuget inspector failed: %s", executableOutput.getReturnCode()));
         }
 

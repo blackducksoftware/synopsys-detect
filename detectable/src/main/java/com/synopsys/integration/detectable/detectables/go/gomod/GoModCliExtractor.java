@@ -58,7 +58,6 @@ public class GoModCliExtractor {
         if (output.getReturnCode() == 0) {
             return output.getStandardOutputAsList();
         } else {
-            output.logExecutionInfo();
             throw new DetectableException(failureMessage + output.getReturnCode());
         }
     }

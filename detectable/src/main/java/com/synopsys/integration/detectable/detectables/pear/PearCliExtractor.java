@@ -95,10 +95,8 @@ public class PearCliExtractor {
 
     private void assertValidExecutableOutput(final ExecutableOutput pearListing, final ExecutableOutput pearDependencies) throws IntegrationException {
         if (pearDependencies.getReturnCode() != 0 || StringUtils.isNotBlank(pearDependencies.getErrorOutput())) {
-            pearDependencies.logExecutionInfo();
             throw new IntegrationException("Pear dependencies exit code must be 0 and have no error output.");
         } else if (pearListing.getReturnCode() != 0 || StringUtils.isNotBlank(pearListing.getErrorOutput())) {
-            pearListing.logExecutionInfo();
             throw new IntegrationException("Pear listing exit code must be 0 and have no error output.");
         }
 

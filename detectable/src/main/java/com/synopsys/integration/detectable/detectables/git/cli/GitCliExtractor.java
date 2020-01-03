@@ -97,7 +97,6 @@ public class GitCliExtractor {
         final ExecutableOutput gitOutput = executableRunner.execute(directory, gitExecutable, commands);
 
         if (gitOutput.getReturnCode() != 0) {
-            gitOutput.logExecutionInfo();
             throw new IntegrationException("git returned a non-zero status code.");
         }
 

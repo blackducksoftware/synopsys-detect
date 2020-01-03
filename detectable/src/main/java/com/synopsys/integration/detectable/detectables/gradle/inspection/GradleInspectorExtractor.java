@@ -102,7 +102,6 @@ public class GradleInspectorExtractor {
                 }
                 return new Extraction.Builder().success(codeLocations).projectName(projectName).projectVersion(projectVersion).build();
             } else {
-                output.logExecutionInfo();
                 return new Extraction.Builder().failure("The gradle inspector returned a non-zero exit code: " + output.getReturnCode()).build();
             }
         } catch (final Exception e) {
