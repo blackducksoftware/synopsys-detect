@@ -1038,6 +1038,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#dependency-scope-included" class="md-nav__link">
+    Dependency Scope Included
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#maven-executable" class="md-nav__link">
     Maven Executable
   </a>
@@ -1047,13 +1054,6 @@
         <li class="md-nav__item">
   <a href="#maven-build-command" class="md-nav__link">
     Maven Build Command
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dependency-scope-included" class="md-nav__link">
-    Dependency Scope Included
   </a>
   
 </li>
@@ -1243,6 +1243,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#dependency-scope-included" class="md-nav__link">
+    Dependency Scope Included
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#maven-executable" class="md-nav__link">
     Maven Executable
   </a>
@@ -1252,13 +1259,6 @@
         <li class="md-nav__item">
   <a href="#maven-build-command" class="md-nav__link">
     Maven Build Command
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dependency-scope-included" class="md-nav__link">
-    Dependency Scope Included
   </a>
   
 </li>
@@ -1315,6 +1315,50 @@
 
 <p>A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).</p>
 <p>If set, Detect will include only dependencies outside of the given Maven scope.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dependency-scope-included">Dependency Scope Included</h2>
+<pre><code>--detect.maven.included.scopes
+</code></pre>
+
+<p>A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).</p>
+<p>If set, Detect will include only dependencies of the given Maven scope.</p>
 <table>
 <thead>
 <tr>
@@ -1414,50 +1458,6 @@
 <tr>
 <td>Added</td>
 <td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="dependency-scope-included">Dependency Scope Included</h2>
-<pre><code>--detect.maven.included.scopes
-</code></pre>
-
-<p>A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).</p>
-<p>If set, Detect will include only dependencies of the given Maven scope.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
