@@ -12,6 +12,7 @@
 
 ### Changed features
 * Deprecated all ${polaris_product_name}-related properties.
+* Added [wildcard support](advanced/includeexcludewildcards.md) for several include/exclude list properties.
 * Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command.
 * Improved match accuracy for Bitbake projects by improving external ID generation for dependencies referenced using Git protocols, and dependencies referenced with an epoch and/or revision.
 * Improved the reliability of the Bitbake detector by generating recipe-depends.dot and package-depends.dot files the source directory, instead of a temporary directory.
@@ -24,6 +25,7 @@
 * Resolved an issue that causes Detect to fail when a parent project and version are specified, and the project is already a child of the specified parent.
 * Resolved an issue that causes Detect to log the git username and password when a git command executed by Detect fails.
 * Resolved an issue that can cause Detect to generate a new code location (scan) when the character case of the value of the detect.source.path property differs from a previous run on the same project.
+* Resolved the following vulnerabilities: commons-beanutils:commons-beanutils 1.9.3 / BDSA-2014-0129 (CVE-2019-10086), org.apache.commons:commons-compress 1.18 / BDSA-2019-2725 (CVE-2019-12402)
 
 ## Version 6.0.0
 ### New features
