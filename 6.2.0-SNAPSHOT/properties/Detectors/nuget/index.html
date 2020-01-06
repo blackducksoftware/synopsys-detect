@@ -1055,6 +1055,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#dotnet-executable" class="md-nav__link">
+    dotnet Executable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#nuget-packages-repository-url" class="md-nav__link">
     Nuget Packages Repository URL
   </a>
@@ -1064,27 +1071,6 @@
         <li class="md-nav__item">
   <a href="#nuget-config-file" class="md-nav__link">
     Nuget Config File
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dotnet-executable" class="md-nav__link">
-    dotnet Executable
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ignore-nuget-failures-advanced" class="md-nav__link">
-    Ignore Nuget Failures (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nuget-modules-included-advanced" class="md-nav__link">
-    Nuget Modules Included (Advanced)
   </a>
   
 </li>
@@ -1106,6 +1092,20 @@
         <li class="md-nav__item">
   <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
     Nuget Inspector AirGap Path (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nuget-modules-included-advanced" class="md-nav__link">
+    Nuget Modules Included (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ignore-nuget-failures-advanced" class="md-nav__link">
+    Ignore Nuget Failures (Advanced)
   </a>
   
 </li>
@@ -1250,6 +1250,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#dotnet-executable" class="md-nav__link">
+    dotnet Executable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#nuget-packages-repository-url" class="md-nav__link">
     Nuget Packages Repository URL
   </a>
@@ -1259,27 +1266,6 @@
         <li class="md-nav__item">
   <a href="#nuget-config-file" class="md-nav__link">
     Nuget Config File
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dotnet-executable" class="md-nav__link">
-    dotnet Executable
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ignore-nuget-failures-advanced" class="md-nav__link">
-    Ignore Nuget Failures (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nuget-modules-included-advanced" class="md-nav__link">
-    Nuget Modules Included (Advanced)
   </a>
   
 </li>
@@ -1301,6 +1287,20 @@
         <li class="md-nav__item">
   <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
     Nuget Inspector AirGap Path (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nuget-modules-included-advanced" class="md-nav__link">
+    Nuget Modules Included (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ignore-nuget-failures-advanced" class="md-nav__link">
+    Ignore Nuget Failures (Advanced)
   </a>
   
 </li>
@@ -1337,6 +1337,49 @@
                 
                 
                 <h1 id="nuget">nuget</h1>
+<h2 id="dotnet-executable">dotnet Executable</h2>
+<pre><code>--detect.dotnet.path
+</code></pre>
+
+<p>The path to the dotnet executable.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.4.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="nuget-packages-repository-url">Nuget Packages Repository URL</h2>
 <pre><code>--detect.nuget.packages.repo.url=https://api.nuget.org/v3/index.json
 </code></pre>
@@ -1397,135 +1440,6 @@
 <tr>
 <td>Added</td>
 <td>4.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="dotnet-executable">dotnet Executable</h2>
-<pre><code>--detect.dotnet.path
-</code></pre>
-
-<p>The path to the dotnet executable.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.4.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="ignore-nuget-failures-advanced">Ignore Nuget Failures (Advanced)</h2>
-<pre><code>--detect.nuget.ignore.failure=false
-</code></pre>
-
-<p>If true errors will be logged and then ignored.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="nuget-modules-included-advanced">Nuget Modules Included (Advanced)</h2>
-<pre><code>--detect.nuget.included.modules
-</code></pre>
-
-<p>The names of the projects in a solution to include (overrides exclude).</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1663,6 +1577,92 @@
 <tr>
 <td>Default Value</td>
 <td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="nuget-modules-included-advanced">Nuget Modules Included (Advanced)</h2>
+<pre><code>--detect.nuget.included.modules
+</code></pre>
+
+<p>The names of the projects in a solution to include (overrides exclude).</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ignore-nuget-failures-advanced">Ignore Nuget Failures (Advanced)</h2>
+<pre><code>--detect.nuget.ignore.failure=false
+</code></pre>
+
+<p>If true errors will be logged and then ignored.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
