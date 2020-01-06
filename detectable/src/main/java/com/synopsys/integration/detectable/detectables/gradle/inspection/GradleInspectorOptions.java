@@ -22,15 +22,18 @@
  */
 package com.synopsys.integration.detectable.detectables.gradle.inspection;
 
+import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorProxyInfo;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 
 public class GradleInspectorOptions {
     private final String gradleBuildCommand;
     private final GradleInspectorScriptOptions gradleInspectorScriptOptions;
+    private final GradleInspectorProxyInfo gradleInspectorProxyInfo;
 
-    public GradleInspectorOptions(final String gradleBuildCommand, final GradleInspectorScriptOptions gradleInspectorScriptOptions) {
+    public GradleInspectorOptions(final String gradleBuildCommand, final GradleInspectorScriptOptions gradleInspectorScriptOptions, final GradleInspectorProxyInfo gradleInspectorProxyInfo) {
         this.gradleBuildCommand = gradleBuildCommand;
         this.gradleInspectorScriptOptions = gradleInspectorScriptOptions;
+        this.gradleInspectorProxyInfo = gradleInspectorProxyInfo;
     }
 
     public String getGradleBuildCommand() {
@@ -39,5 +42,9 @@ public class GradleInspectorOptions {
 
     public GradleInspectorScriptOptions getGradleInspectorScriptOptions() {
         return gradleInspectorScriptOptions;
+    }
+
+    public GradleInspectorProxyInfo getGradleInspectorProxyInfo() {
+        return gradleInspectorProxyInfo;
     }
 }

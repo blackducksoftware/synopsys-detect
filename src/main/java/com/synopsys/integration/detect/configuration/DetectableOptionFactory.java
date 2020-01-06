@@ -35,6 +35,7 @@ import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocat
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
+import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
@@ -42,6 +43,7 @@ import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOpti
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorProxyInfo;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
@@ -139,7 +141,13 @@ public class DetectableOptionFactory {
         final String onlineInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION, PropertyAuthority.NONE);
         final GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion);
         final String gradleBuildCommand = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND, PropertyAuthority.NONE);
-        return new GradleInspectorOptions(gradleBuildCommand, scriptOptions);
+
+        final String proxyHost = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_HOST, PropertyAuthority.NONE);
+        final String proxyPort = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PORT, PropertyAuthority.NONE);
+        final String nonProxyHosts = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS, PropertyAuthority.NONE);
+        final GradleInspectorProxyInfo gradleInspectorProxyInfo = new GradleInspectorProxyInfo(proxyHost, proxyPort, nonProxyHosts);
+
+        return new GradleInspectorOptions(gradleBuildCommand, scriptOptions, gradleInspectorProxyInfo);
     }
 
     public MavenCliExtractorOptions createMavenCliOptions() {
