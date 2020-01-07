@@ -53,8 +53,8 @@ public class NugetInspectorArguments {
         if (StringUtils.isNotBlank(nugetIncludedModules)) {
             options.add("--included_modules=" + nugetIncludedModules);
         }
-        final String[] nugetPackagesRepo = nugetInspectorOptions.getPackagesRepoUrl();
-        if (nugetPackagesRepo.length > 0) {
+        final List<String> nugetPackagesRepo = nugetInspectorOptions.getPackagesRepoUrl();
+        if (nugetPackagesRepo != null && nugetPackagesRepo.size() > 0) {
             final String packagesRepos = String.join(",", nugetPackagesRepo);
             options.add("--packages_repo_url=" + packagesRepos);
         }

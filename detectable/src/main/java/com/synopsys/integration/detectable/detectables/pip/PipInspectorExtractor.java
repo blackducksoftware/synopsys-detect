@@ -46,17 +46,19 @@ public class PipInspectorExtractor {
         this.pipInspectorTreeParser = pipInspectorTreeParser;
     }
 
-    public Extraction extract(final File directory, final File pythonExe, final File pipInspector, final File setupFile, final String[] requirementFilePaths, final String providedProjectName) {
+    public Extraction extract(final File directory, final File pythonExe, final File pipInspector, final File setupFile, final List<String> requirementFilePaths, final String providedProjectName) {
         Extraction extractionResult;
         try {
             final String projectName = getProjectName(directory, pythonExe, setupFile, providedProjectName);
             final List<CodeLocation> codeLocations = new ArrayList<>();
             String projectVersion = null;
 
-            final List<String> requirementsPaths = new ArrayList<>(Arrays.asList(requirementFilePaths));
+            final List<String> requirementsPaths = new ArrayList<>();
 
-            if (requirementsPaths.isEmpty()) {
+            if (requirementFilePaths.isEmpty()) {
                 requirementsPaths.add(null);
+            } else {
+                requirementsPaths.addAll(requirementFilePaths);
             }
 
             for (final String requirementFilePath : requirementsPaths) {

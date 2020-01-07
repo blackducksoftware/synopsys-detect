@@ -22,14 +22,16 @@
  */
 package com.synopsys.integration.detectable.detectable.inspector.nuget;
 
+import java.util.List;
+
 public class NugetInspectorOptions {
     private final boolean ignoreFailures;
     private final String excludedModules;
     private final String includedModules;
-    private final String[] packagesRepoUrl;
+    private final List<String> packagesRepoUrl;
     private final String nugetConfigPath;
 
-    public NugetInspectorOptions(final boolean ignoreFailures, final String excludedModules, final String includedModules, final String[] packagesRepoUrl, final String nugetConfigPath) {
+    public NugetInspectorOptions(final boolean ignoreFailures, final String excludedModules, final String includedModules, final List<String> packagesRepoUrl, final String nugetConfigPath) {
         this.ignoreFailures = ignoreFailures;
         this.excludedModules = excludedModules;
         this.includedModules = includedModules;
@@ -49,7 +51,7 @@ public class NugetInspectorOptions {
         return includedModules;
     }
 
-    public String[] getPackagesRepoUrl() {
+    public List<String> getPackagesRepoUrl() {
         return packagesRepoUrl;
     }
 

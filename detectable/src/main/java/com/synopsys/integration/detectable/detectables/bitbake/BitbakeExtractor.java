@@ -73,7 +73,7 @@ public class BitbakeExtractor {
         this.bitbakeRecipesToLayerMap = bitbakeRecipesToLayerMap;
     }
 
-    public Extraction extract(final File sourceDirectory, final File buildEnvScript, final String[] sourceArguments, final String[] packageNames, final Integer searchDepth, final File bash) {
+    public Extraction extract(final File sourceDirectory, final File buildEnvScript, final List<String> sourceArguments, final List<String> packageNames, final Integer searchDepth, final File bash) {
         final List<CodeLocation> codeLocations = new ArrayList<>();
         final BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash);
         for (final String packageName : packageNames) {

@@ -38,14 +38,4 @@ public enum WorkspaceRule {
     public String getName() {
         return name;
     }
-
-    public static WorkspaceRule lookup(final String targetName) throws IntegrationException {
-        final String trimmedTargetName = targetName.trim();
-        for (final WorkspaceRule candidate : WorkspaceRule.values()) {
-            if ((candidate != WorkspaceRule.UNKNOWN) && candidate.getName().equals(trimmedTargetName)) {
-                return candidate;
-            }
-        }
-        throw new IntegrationException(String.format("Unsupported bazel workspace rule: %s", targetName));
-    }
 }

@@ -26,9 +26,9 @@ import java.util.List;
 
 public class BazelDetectableOptions {
     private final String targetName;
-    private final String bazelDependencyRule;
+    private final WorkspaceRule bazelDependencyRule;
     private final List<String> bazelCqueryAdditionalOptions;
-    public BazelDetectableOptions(final String targetName, final String bazelDependencyRule,
+    public BazelDetectableOptions(final String targetName, final WorkspaceRule bazelDependencyRule,
         final List<String> bazelCqueryAdditionalOptions) {
         this.targetName = targetName;
         this.bazelDependencyRule = bazelDependencyRule;
@@ -39,7 +39,7 @@ public class BazelDetectableOptions {
         return targetName;
     }
 
-    public String getBazelDependencyRule() {
+    public WorkspaceRule getBazelDependencyRule() {
         return bazelDependencyRule;
     }
 

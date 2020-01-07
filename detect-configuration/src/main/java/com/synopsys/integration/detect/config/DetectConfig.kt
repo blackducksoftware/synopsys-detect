@@ -24,6 +24,10 @@ class DetectConfig (val orderedPropertySources: List<DetectPropertySource>) {
         }
     }
 
+    fun getDockerProperties(): Map<String, String> {
+        return emptyMap();
+    }
+
     fun <T> resolve(property: TypedProperty<T>) : PropertyValue {
         if (!resolved.containsKey(property.key)) {
             val propertySourceValue = resolveFromPropertySource(property)

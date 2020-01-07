@@ -70,7 +70,7 @@ public class PipInspectorDetectable extends Detectable {
     public DetectableResult applicable() {
         setupFile = fileFinder.findFile(environment.getDirectory(), SETUPTOOLS_DEFAULT_FILE_NAME);
         final boolean hasSetups = setupFile != null;
-        final boolean hasRequirements = pipInspectorDetectableOptions.getRequirementsFilePaths() != null && pipInspectorDetectableOptions.getRequirementsFilePaths().length > 0;
+        final boolean hasRequirements = pipInspectorDetectableOptions.getRequirementsFilePaths() != null && pipInspectorDetectableOptions.getRequirementsFilePaths().size() > 0;
         if (hasSetups || hasRequirements) {
             return new PassedDetectableResult();
         } else {

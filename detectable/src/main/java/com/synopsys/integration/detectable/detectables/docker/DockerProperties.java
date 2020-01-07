@@ -43,7 +43,7 @@ public class DockerProperties {
     public void populatePropertiesFile(final File dockerPropertiesFile, final File outputDirectory) throws IOException {
         final Properties dockerProperties = new Properties();
 
-        dockerProperties.setProperty("logging.level.com.synopsys", dockerDetectableOptions.getDockerInspectorLoggingLevel());
+        dockerProperties.setProperty("logging.level.com.synopsys", dockerDetectableOptions.getDockerInspectorLoggingLevel().toString()); //TODO: Verify this .toString works.
         dockerProperties.setProperty("upload.bdio", "false");
         dockerProperties.setProperty("output.path", outputDirectory.getAbsolutePath());
         dockerProperties.setProperty("phone.home", "false");

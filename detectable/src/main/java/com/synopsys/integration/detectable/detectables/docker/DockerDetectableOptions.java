@@ -26,19 +26,21 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.synopsys.integration.log.LogLevel;
+
 public class DockerDetectableOptions {
 
     private final boolean dockerPathRequired;
     private final String suppliedDockerImage;
     private final String suppliedDockerImageId;
     private final String suppliedDockerTar;
-    private final String dockerInspectorLoggingLevel;
+    private final LogLevel dockerInspectorLoggingLevel;
     private final String dockerInspectorVersion;
     private final Map<String, String> additionalDockerProperties;
     private final String dockerInspectorPath;
     private final String dockerPlatformTopLayerId;
 
-    public DockerDetectableOptions(final boolean dockerPathRequired, final String suppliedDockerImage, final String suppliedDockerImageId, final String suppliedDockerTar, final String dockerInspectorLoggingLevel, final String dockerInspectorVersion,
+    public DockerDetectableOptions(final boolean dockerPathRequired, final String suppliedDockerImage, final String suppliedDockerImageId, final String suppliedDockerTar, final LogLevel dockerInspectorLoggingLevel, final String dockerInspectorVersion,
         final Map<String, String> additionalDockerProperties, final String dockerInspectorPath, final String dockerPlatformTopLayerId) {
         this.dockerPathRequired = dockerPathRequired;
         this.suppliedDockerImage = suppliedDockerImage;
@@ -71,7 +73,7 @@ public class DockerDetectableOptions {
         return StringUtils.isNotBlank(getSuppliedDockerImage()) || StringUtils.isNotBlank(getSuppliedDockerTar()) || StringUtils.isNotBlank(getSuppliedDockerImageId());
     }
 
-    public String getDockerInspectorLoggingLevel() {
+    public LogLevel getDockerInspectorLoggingLevel() {
         return dockerInspectorLoggingLevel;
     }
 

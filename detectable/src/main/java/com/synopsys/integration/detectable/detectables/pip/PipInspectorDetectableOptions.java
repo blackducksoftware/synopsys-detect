@@ -22,11 +22,13 @@
  */
 package com.synopsys.integration.detectable.detectables.pip;
 
+import java.util.List;
+
 public class PipInspectorDetectableOptions {
     private final String pipProjectName;
-    private final String[] requirementsFilePaths;
+    private final List<String> requirementsFilePaths;
 
-    public PipInspectorDetectableOptions(final String pipProjectName, final String[] requirementsFilePaths) {
+    public PipInspectorDetectableOptions(final String pipProjectName, final List<String> requirementsFilePaths) {
         this.pipProjectName = pipProjectName;
         this.requirementsFilePaths = requirementsFilePaths;
     }
@@ -35,7 +37,7 @@ public class PipInspectorDetectableOptions {
         return pipProjectName;
     }
 
-    public String[] getRequirementsFilePaths() {
+    public List<String> getRequirementsFilePaths() {
         return requirementsFilePaths;
     }
 }

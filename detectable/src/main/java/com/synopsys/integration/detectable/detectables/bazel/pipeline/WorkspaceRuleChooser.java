@@ -29,18 +29,14 @@ import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class WorkspaceRuleChooser {
-
     @NotNull
-    public WorkspaceRule choose(final WorkspaceRule ruleFromWorkspaceFile, final String providedBazelDependencyType) throws IntegrationException {
-        final WorkspaceRule finalBazelDependencyType1;
-        if (StringUtils.isNotBlank(providedBazelDependencyType) && !"UNSPECIFIED".equalsIgnoreCase(providedBazelDependencyType)) {
-            finalBazelDependencyType1 = WorkspaceRule.lookup(providedBazelDependencyType);
+    public WorkspaceRule choose(final WorkspaceRule ruleFromWorkspaceFile, final WorkspaceRule providedBazelDependencyType) throws IntegrationException {
+        if (providedBazelDependencyType != null && providedBazelDependencyType != WorkspaceRule.UNKNOWN) {
+            return providedBazelDependencyType;
         } else if (ruleFromWorkspaceFile != WorkspaceRule.UNKNOWN) {
-            finalBazelDependencyType1 = ruleFromWorkspaceFile;
+            return ruleFromWorkspaceFile;
         } else {
             throw new IntegrationException("Unable to determine BazelWorkspace dependency rule; try setting it via the property");
         }
-        final WorkspaceRule finalBazelDependencyType = finalBazelDependencyType1;
-        return finalBazelDependencyType;
     }
 }
