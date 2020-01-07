@@ -25,10 +25,6 @@ package com.synopsys.integration.detectable.detectable.executable;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class ExecutableOutput {
     private int returnCode = 0;
     private final String standardOutput;
