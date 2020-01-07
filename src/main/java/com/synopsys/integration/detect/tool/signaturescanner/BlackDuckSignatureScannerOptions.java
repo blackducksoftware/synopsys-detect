@@ -22,14 +22,16 @@
  */
 package com.synopsys.integration.detect.tool.signaturescanner;
 
+import java.util.List;
+
 import org.antlr.v4.runtime.misc.Nullable;
 
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 
 public class BlackDuckSignatureScannerOptions {
-    private final String[] signatureScannerPaths;
-    private final String[] exclusionPatterns;
-    private final String[] exclusionNamePatterns;
+    private final List<String> signatureScannerPaths;
+    private final List<String> exclusionPatterns;
+    private final List<String> exclusionNamePatterns;
 
     private final String offlineLocalScannerInstallPath;
     private final String onlineLocalScannerInstallPath;
@@ -48,7 +50,7 @@ public class BlackDuckSignatureScannerOptions {
     private final String additionalArguments;
     private final Integer maxDepth;
 
-    public BlackDuckSignatureScannerOptions(final String[] signatureScannerPaths, final String[] exclusionPatterns, final String[] exclusionNamePatterns, final String offlineLocalScannerInstallPath,
+    public BlackDuckSignatureScannerOptions(final List<String> signatureScannerPaths, final List<String> exclusionPatterns, final List<String> exclusionNamePatterns, final String offlineLocalScannerInstallPath,
         final String onlineLocalScannerInstallPath, final String userProvidedScannerInstallUrl, final Integer scanMemory,
         final Integer parallelProcessors,
         final Boolean dryRun, final SnippetMatching snippetMatching, final Boolean uploadSource, final String codeLocationPrefix, final String codeLocationSuffix,
@@ -70,15 +72,15 @@ public class BlackDuckSignatureScannerOptions {
         this.maxDepth = maxDepth;
     }
 
-    public String[] getSignatureScannerPaths() {
+    public List<String> getSignatureScannerPaths() {
         return signatureScannerPaths;
     }
 
-    public String[] getExclusionPatterns() {
+    public List<String> getExclusionPatterns() {
         return exclusionPatterns;
     }
 
-    public String[] getExclusionNamePatterns() {
+    public List<String> getExclusionNamePatterns() {
         return exclusionNamePatterns;
     }
 

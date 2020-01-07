@@ -31,9 +31,9 @@ import com.synopsys.integration.exception.IntegrationException;
 public class WorkspaceRuleChooser {
     @NotNull
     public WorkspaceRule choose(final WorkspaceRule ruleFromWorkspaceFile, final WorkspaceRule providedBazelDependencyType) throws IntegrationException {
-        if (providedBazelDependencyType != null && providedBazelDependencyType != WorkspaceRule.UNKNOWN) {
+        if (providedBazelDependencyType != null && providedBazelDependencyType != WorkspaceRule.UNSPECIFIED) {
             return providedBazelDependencyType;
-        } else if (ruleFromWorkspaceFile != WorkspaceRule.UNKNOWN) {
+        } else if (ruleFromWorkspaceFile != WorkspaceRule.UNSPECIFIED) {
             return ruleFromWorkspaceFile;
         } else {
             throw new IntegrationException("Unable to determine BazelWorkspace dependency rule; try setting it via the property");

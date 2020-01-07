@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.pip.unit;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -50,9 +51,7 @@ public class PipInspectorDetectableTest {
 
         final File dir = new File(".");
         Mockito.when(environment.getDirectory()).thenReturn(dir);
-        final String[] requirementsFilePaths = new String[1];
-        requirementsFilePaths[0] = "testReqtsPath";
-        Mockito.when(pipInspectorDetectableOptions.getRequirementsFilePaths()).thenReturn(requirementsFilePaths);
+        Mockito.when(pipInspectorDetectableOptions.getRequirementsFilePaths()).thenReturn(Collections.singletonList("testReqtsPath"));
 
         final PipInspectorDetectable detectable = new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor, pipInspectorDetectableOptions);
 

@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detect;
 
+import java.util.ArrayList;
+
 import javax.xml.parsers.DocumentBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,7 @@ import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.detect.config.DetectConfig;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
@@ -120,7 +123,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public DetectConfigurationFactory detectConfigurationFactory() {
-        return new DetectConfigurationFactory(detectConfiguration);
+        return new DetectConfigurationFactory(new DetectConfig(new ArrayList<>())); //TODO Fix
     }
 
     @Bean

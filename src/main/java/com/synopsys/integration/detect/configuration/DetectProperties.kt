@@ -1,11 +1,16 @@
 package com.synopsys.integration.detect.configuration
 
+import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
 import com.synopsys.integration.detect.config.*
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionPhaseType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
 import com.synopsys.integration.detect.DetectTool
+import com.synopsys.integration.detect.workflow.bdio.AggregateMode
 import com.synopsys.integration.detectable.detectables.bazel.BazelWorkspace
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule
+import com.synopsys.integration.detector.base.DetectorType
 import com.synopsys.integration.log.LogLevel
 import java.awt.SystemColor.text
 import kotlin.reflect.full.companionObject
@@ -13,33 +18,17 @@ import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.memberProperties
 
-//TODO: Ensure when new states are added to 'workspace rule' the new values are present here. This might take a refactoring of this style of enum.
-//TODO: Essentially make a 'WRAPPER' enum or some way to verify all cases are handled? Exaustive 'WHEN' or some build time check.
-enum class DetectBazelWorkSpaceRule(val rule: WorkspaceRule) {
-    UNSPECIFIED(WorkspaceRule.UNKNOWN),
-    maven_jar(WorkspaceRule.MAVEN_JAR),
-    maven_install(WorkspaceRule.MAVEN_INSTALL);
-}
-
-enum class DetectSnippetMode {
-    NONE(),
-    FULL_SNIPPET_MATCHING(SnippetMatching.FULL_SNIPPET_MATCHING),
-    FULL_SNIPPET_MATCHING_ONLY(SnippetMatching.FULL_SNIPPET_MATCHING_ONLY),
-    SNIPPET_MATCHING(SnippetMatching.SNIPPET_MATCHING),
-    SNIPPET_MATCHING_ONLY(SnippetMatching.SNIPPET_MATCHING_ONLY);
-
-    constructor(mode: SnippetMatching)
-    constructor()
-}
-
 enum class DefaultVersionNameScheme {
     TIMESTAMP,
     DEFAULT
 }
 
-enum class AggregateMode {
-    DIRECT,
-    TRANSITIVE
+enum class ExtendedPolicySeverityType {
+    NONE
+}
+
+enum class ExtendedSnippetMode {
+    NONE
 }
 
 class DetectProperties {
@@ -63,7 +52,7 @@ class DetectProperties {
         val DETECT_BAZEL_PATH = OptionalStringProperty("detect.bazel.path")
         val DETECT_BAZEL_TARGET = OptionalStringProperty("detect.bazel.target")
         val DETECT_BAZEL_CQUERY_OPTIONS = RequiredStringArrayProperty("detect.bazel.cquery.options", emptyList())
-        val DETECT_BAZEL_DEPENDENCY_RULE = RequiredEnumProperty("detect.bazel.dependency.type", DetectBazelWorkSpaceRule.UNSPECIFIED, DetectBazelWorkSpaceRule::valueOf, DetectBazelWorkSpaceRule.values().toList())
+        val DETECT_BAZEL_DEPENDENCY_RULE = RequiredEnumProperty("detect.bazel.dependency.type", WorkspaceRule.UNSPECIFIED, WorkspaceRule::valueOf, WorkspaceRule.values().toList())
         val DETECT_BDIO_OUTPUT_PATH = OptionalStringProperty("detect.bdio.output.path")
         val DETECT_BDIO2_ENABLED = RequiredBooleanProperty("detect.bdio2.enabled", false)
         val DETECT_BINARY_SCAN_FILE = OptionalStringProperty("detect.binary.scan.file.path")
@@ -82,7 +71,7 @@ class DetectProperties {
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY = RequiredIntegerProperty("detect.blackduck.signature.scanner.memory", 4096)
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH = OptionalStringProperty("detect.blackduck.signature.scanner.offline.local.path")
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS = OptionalStringArrayProperty("detect.blackduck.signature.scanner.paths")
-        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING = RequiredEnumProperty("detect.blackduck.signature.scanner.snippet.matching", DetectSnippetMode.NONE, DetectSnippetMode::valueOf, DetectSnippetMode.values().toList())
+        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING = RequiredExtendedEnumProperty("detect.blackduck.signature.scanner.snippet.matching", ExtendedValue(ExtendedSnippetMode.NONE), ExtendedSnippetMode::valueOf, SnippetMatching::valueOf, ExtendedSnippetMode.values().toList(), SnippetMatching.values().toList())
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE = RequiredBooleanProperty("detect.blackduck.signature.scanner.upload.source.mode", false)
         val DETECT_BOM_AGGREGATE_NAME = OptionalStringProperty("detect.bom.aggregate.name")
         val DETECT_BOM_AGGREGATE_REMEDIATION_MODE = RequiredEnumProperty("detect.bom.aggregate.remediation.mode", AggregateMode.TRANSITIVE, AggregateMode::valueOf, AggregateMode.values().toList())
@@ -116,7 +105,7 @@ class DetectProperties {
         val DETECT_DOCKER_PLATFORM_TOP_LAYER_ID = OptionalStringProperty("detect.docker.platform.top.layer.id")
         val DETECT_DOCKER_TAR = OptionalStringProperty("detect.docker.tar")
         val DETECT_DOTNET_PATH = OptionalStringProperty("detect.dotnet.path")
-        val DETECT_EXCLUDED_DETECTOR_TYPES = OptionalStringProperty("detect.excluded.detector.types")
+        val DETECT_EXCLUDED_DETECTOR_TYPES = RequiredFilterableEnumListProperty("detect.excluded.detector.types", emptyList(), DetectorType::valueOf, DetectorType.values().toList())
         val DETECT_FORCE_SUCCESS = RequiredBooleanProperty("detect.force.success", false)
         val DETECT_GIT_PATH = OptionalStringProperty("detect.git.path")
         val DETECT_GO_PATH = OptionalStringProperty("detect.go.path")
@@ -129,7 +118,7 @@ class DetectProperties {
         val DETECT_GRADLE_INSPECTOR_VERSION = OptionalStringProperty("detect.gradle.inspector.version")
         val DETECT_GRADLE_PATH = OptionalStringProperty("detect.gradle.path")
         val DETECT_HEX_REBAR3_PATH = OptionalStringProperty("detect.hex.rebar3.path")
-        val DETECT_INCLUDED_DETECTOR_TYPES = OptionalStringProperty("detect.included.detector.types")
+        val DETECT_INCLUDED_DETECTOR_TYPES = RequiredFilterableEnumListProperty("detect.included.detector.types", emptyList(), DetectorType::valueOf, DetectorType.values().toList())
         val DETECT_JAVA_PATH = OptionalStringProperty("detect.java.path")
         val DETECT_MAVEN_BUILD_COMMAND = OptionalStringProperty("detect.maven.build.command")
         val DETECT_MAVEN_EXCLUDED_MODULES = OptionalStringProperty("detect.maven.excluded.modules")
@@ -161,7 +150,7 @@ class DetectProperties {
         val DETECT_PIP_ONLY_PROJECT_TREE = RequiredBooleanProperty("detect.pip.only.project.tree", false)
         val DETECT_PIPENV_PATH = OptionalStringProperty("detect.pipenv.path")
         val DETECT_SWIFT_PATH = OptionalStringProperty("detect.swift.path")
-        val DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES = OptionalStringProperty("detect.policy.check.fail.on.severities")
+        val DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES = RequiredFilterableEnumListProperty("detect.policy.check.fail.on.severities", emptyList(), PolicySeverityType::valueOf, PolicySeverityType.values().toList())
         val DETECT_PROJECT_APPLICATION_ID = OptionalStringProperty("detect.project.application.id")
         val DETECT_CUSTOM_FIELDS_PROJECT = OptionalStringProperty("detect.custom.fields.project")
         val DETECT_CUSTOM_FIELDS_VERSION = OptionalStringProperty("detect.custom.fields.version")
@@ -179,11 +168,11 @@ class DetectProperties {
         val DETECT_PARENT_PROJECT_VERSION_NAME = OptionalStringProperty("detect.parent.project.version.name")
         val DETECT_PROJECT_TIER = OptionalIntegerProperty("detect.project.tier")
         val DETECT_PROJECT_TOOL = RequiredEnumListProperty("detect.project.tool", listOf(DetectTool.DOCKER, DetectTool.DETECTOR, DetectTool.BAZEL), DetectTool::valueOf, DetectTool.values().toList())
-        val DETECT_PROJECT_VERSION_DISTRIBUTION = RequiredStringProperty("detect.project.version.distribution", "External")
+        val DETECT_PROJECT_VERSION_DISTRIBUTION = RequiredEnumProperty("detect.project.version.distribution", ProjectVersionDistributionType.EXTERNAL, ProjectVersionDistributionType::valueOf, ProjectVersionDistributionType.values().toList())
         val DETECT_PROJECT_VERSION_NAME = OptionalStringProperty("detect.project.version.name")
         val DETECT_PROJECT_VERSION_NICKNAME = OptionalStringProperty("detect.project.version.nickname")
         val DETECT_PROJECT_VERSION_NOTES = OptionalStringProperty("detect.project.version.notes")
-        val DETECT_PROJECT_VERSION_PHASE = RequiredStringProperty("detect.project.version.phase", "Development")
+        val DETECT_PROJECT_VERSION_PHASE = RequiredEnumProperty("detect.project.version.phase", ProjectVersionPhaseType.DEVELOPMENT, ProjectVersionPhaseType::valueOf, ProjectVersionPhaseType.values().toList())
         val DETECT_PROJECT_VERSION_UPDATE = RequiredBooleanProperty("detect.project.version.update", false)
         val DETECT_PYTHON_PATH = OptionalStringProperty("detect.python.path")
         val DETECT_PYTHON_PYTHON3 = RequiredBooleanProperty("detect.python.python3", false)

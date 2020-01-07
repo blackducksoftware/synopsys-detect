@@ -63,7 +63,7 @@ class DetectableOptionFactory(private val detectConfiguration: DetectConfig, pri
         val targetName = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_TARGET)
         val bazelCqueryAdditionalOptions = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_CQUERY_OPTIONS)
 
-        val bazelDependencyRule = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE).rule
+        val bazelDependencyRule = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE)
         return BazelDetectableOptions(targetName, bazelDependencyRule, bazelCqueryAdditionalOptions)
     }
 

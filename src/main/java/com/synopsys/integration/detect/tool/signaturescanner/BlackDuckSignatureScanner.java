@@ -157,10 +157,10 @@ public class BlackDuckSignatureScanner {
     }
 
     private List<SignatureScanPath> determinePathsAndExclusions(final NameVersion projectNameVersion, final Integer maxDepth, final File dockerTarFile) throws IntegrationException, IOException {
-        final String[] providedSignatureScanPaths = signatureScannerOptions.getSignatureScannerPaths();
-        final boolean userProvidedScanTargets = null != providedSignatureScanPaths && providedSignatureScanPaths.length > 0;
-        final String[] providedExclusionPatterns = signatureScannerOptions.getExclusionPatterns();
-        final String[] signatureScannerExclusionNamePatterns = signatureScannerOptions.getExclusionNamePatterns();
+        final List<String> providedSignatureScanPaths = signatureScannerOptions.getSignatureScannerPaths();
+        final boolean userProvidedScanTargets = null != providedSignatureScanPaths && providedSignatureScanPaths.size() > 0;
+        final List<String> providedExclusionPatterns = signatureScannerOptions.getExclusionPatterns();
+        final List<String> signatureScannerExclusionNamePatterns = signatureScannerOptions.getExclusionNamePatterns();
 
         final List<SignatureScanPath> signatureScanPaths = new ArrayList<>();
         if (null != projectNameVersion.getName() && null != projectNameVersion.getVersion() && userProvidedScanTargets) {
@@ -185,13 +185,13 @@ public class BlackDuckSignatureScanner {
         return signatureScanPaths;
     }
 
-    private SignatureScanPath createScanPath(final String path, final Integer maxDepth, final String[] signatureScannerExclusionNamePatterns, final String[] providedExclusionPatterns) {
+    private SignatureScanPath createScanPath(final String path, final Integer maxDepth, final List<String> signatureScannerExclusionNamePatterns, final List<String> providedExclusionPatterns) {
         final File target = new File(path);
         final ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(fileFinder, target);
 
-        final Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepth, signatureScannerExclusionNamePatterns);
+        final Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepth, signatureScannerExclusionNamePatterns.toArray(new String[]{}));
         if (null != providedExclusionPatterns) {
-            scanExclusionPatterns.addAll(Arrays.asList(providedExclusionPatterns));
+            scanExclusionPatterns.addAll(providedExclusionPatterns);
         }
         final SignatureScanPath signatureScanPath = new SignatureScanPath();
         signatureScanPath.setTargetPath(target);

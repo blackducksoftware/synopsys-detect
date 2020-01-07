@@ -49,7 +49,7 @@ public class ProjectNameVersionDecider {
         this.projectVersionOptions = projectVersionOptions;
     }
 
-    public NameVersion decideProjectNameVersion(final String preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
+    public NameVersion decideProjectNameVersion(final List<DetectTool> preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
         Optional<String> decidedProjectName = Optional.empty();
         Optional<String> decidedProjectVersion = Optional.empty();
 
@@ -103,19 +103,9 @@ public class ProjectNameVersionDecider {
                    .findFirst();
     }
 
-    private Optional<DetectToolProjectInfo> decideToolProjectInfo(final String preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
+    private Optional<DetectToolProjectInfo> decideToolProjectInfo(final List<DetectTool> preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
         Optional<DetectToolProjectInfo> chosenTool = Optional.empty();
-
-        List<DetectTool> toolOrder = null;
-        if (StringUtils.isNotBlank(preferredDetectTools)) {
-            final String[] tools = preferredDetectTools.split(",");
-            toolOrder = Arrays.stream(tools).map(DetectTool::valueOf).collect(Collectors.toList());
-        }
-        if (toolOrder == null) {
-            throw new DetectUserFriendlyException("Could not determine project tool order. Please specify a tool order using " + DetectProperty.DETECT_PROJECT_TOOL.getPropertyName(), ExitCodeType.FAILURE_CONFIGURATION);
-        }
-
-        for (final DetectTool tool : toolOrder) {
+        for (final DetectTool tool : preferredDetectTools) {
             chosenTool = findProjectInfoForTool(tool, detectToolProjectInfo);
 
             if (chosenTool.isPresent()) {

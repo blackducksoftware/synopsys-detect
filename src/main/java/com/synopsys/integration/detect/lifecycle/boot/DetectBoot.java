@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +41,7 @@ import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectableBeanConfiguration;
 import com.synopsys.integration.detect.RunBeanConfiguration;
+import com.synopsys.integration.detect.config.DetectConfig;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
@@ -173,11 +175,11 @@ public class DetectBoot {
 
         logger.debug("Initializing Detect.");
 
-        final DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
+        final DetectConfigurationFactory factory = new DetectConfigurationFactory(new DetectConfig(new ArrayList<>())); //TODO: Fix
         final DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
         final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectOptionManager.getDetectOptions(), detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
-        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem);
+        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(new DetectConfig(new ArrayList<>()), diagnosticSystem); //TODO: Fix
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
