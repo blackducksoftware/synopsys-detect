@@ -62,10 +62,12 @@ public class DetectExecutableRunner extends SimpleExecutableRunner {
         eventSystem.publishEvent(Event.Executable, output);
         if (output.getReturnCode() != 0 && shouldLogOutput) {
             if (StringUtils.isNotBlank(output.getStandardOutput())) {
+                logger.info("Standard Output: ");
                 logger.info(output.getStandardOutput());
             }
 
             if (StringUtils.isNotBlank(output.getErrorOutput())) {
+                logger.info("Error Output: ");
                 logger.info(output.getErrorOutput());
             }
         }
