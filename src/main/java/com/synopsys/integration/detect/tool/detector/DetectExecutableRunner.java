@@ -60,7 +60,7 @@ public class DetectExecutableRunner extends SimpleExecutableRunner {
     public ExecutableOutput execute(final Executable executable) throws ExecutableRunnerException {
         final ExecutableOutput output = super.execute(executable);
         eventSystem.publishEvent(Event.Executable, output);
-        if (output.getReturnCode() != 0 && shouldLogOutput) {
+        if (output.getReturnCode() != 0 && shouldLogOutput && !logger.isDebugEnabled() && !logger.isTraceEnabled()) {
             if (StringUtils.isNotBlank(output.getStandardOutput())) {
                 logger.info("Standard Output: ");
                 logger.info(output.getStandardOutput());
