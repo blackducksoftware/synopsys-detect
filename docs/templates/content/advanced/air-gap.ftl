@@ -4,7 +4,7 @@ To run ${solution_name} on an air-gapped computer or network, you must first dow
 files that ${solution_name} normally downloads as it runs. These include inspectors
 for Docker, Gradle, and NuGet.
 
-Air gap archives are downloaded from the
+Air gap archives are available for download from the
 [${division_name} ${binary_repo_type} server](${binary_repo_ui_url_base}/${binary_repo_repo}/${binary_repo_pkg_path}/${project_name}).
 
 As an alternative, you can create an air gap archive by running ${solution_name} with the -z or --zip command line option.
