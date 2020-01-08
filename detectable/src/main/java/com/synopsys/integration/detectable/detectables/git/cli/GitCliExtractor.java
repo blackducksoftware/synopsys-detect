@@ -38,6 +38,8 @@ import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
 public class GitCliExtractor {
+    private static final String TAG_TOKEN = "tag: ";
+
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
     private final ExecutableRunner executableRunner;
@@ -86,11 +88,11 @@ public class GitCliExtractor {
         output = StringUtils.removeEnd(output, ")");
         final String[] pieces = output.split(", ");
 
-        if (pieces.length != 2 || pieces[1].startsWith("tag: ")) {
+        if (pieces.length != 2 || !pieces[1].startsWith(TAG_TOKEN)) {
             throw new IntegrationException("Failed to extract branch on second attempt.");
         }
 
-        return pieces[1];
+        return pieces[1].replace(TAG_TOKEN, "").trim();
     }
 
     private String runGitSingleLinesResponse(final File gitExecutable, final File directory, final String... commands) throws ExecutableRunnerException, IntegrationException {
