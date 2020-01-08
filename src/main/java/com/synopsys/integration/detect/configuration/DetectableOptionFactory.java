@@ -31,11 +31,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
-import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
@@ -43,7 +43,6 @@ import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOpti
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorProxyInfo;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions;
@@ -57,6 +56,7 @@ import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptio
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions;
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectableOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
+import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 public class DetectableOptionFactory {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -123,10 +123,11 @@ public class DetectableOptionFactory {
         diagnosticSystemOptional.ifPresent(diagnosticSystem -> additionalDockerProperties.putAll(diagnosticSystem.getAdditionalDockerProperties()));
         final String dockerInspectorPath = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_INSPECTOR_PATH, PropertyAuthority.NONE);
         final String dockerPlatformTopLayerId = detectConfiguration.getProperty(DetectProperty.DETECT_DOCKER_PLATFORM_TOP_LAYER_ID, PropertyAuthority.NONE);
-        return new DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, dockerImageId, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath, dockerPlatformTopLayerId);
+        return new DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, dockerImageId, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath,
+            dockerPlatformTopLayerId);
     }
 
-    public GradleInspectorOptions createGradleInspectorOptions() {
+    public GradleInspectorOptions createGradleInspectorOptions() throws DetectUserFriendlyException {
         final String excludedProjectNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_PROJECTS, PropertyAuthority.NONE);
         final String includedProjectNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INCLUDED_PROJECTS, PropertyAuthority.NONE);
         final String excludedConfigurationNames = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS, PropertyAuthority.NONE);
@@ -142,12 +143,10 @@ public class DetectableOptionFactory {
         final GradleInspectorScriptOptions scriptOptions = new GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion);
         final String gradleBuildCommand = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_BUILD_COMMAND, PropertyAuthority.NONE);
 
-        final String proxyHost = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_HOST, PropertyAuthority.NONE);
-        final String proxyPort = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_PORT, PropertyAuthority.NONE);
-        final String nonProxyHosts = detectConfiguration.getProperty(DetectProperty.BLACKDUCK_PROXY_IGNORED_HOSTS, PropertyAuthority.NONE);
-        final GradleInspectorProxyInfo gradleInspectorProxyInfo = new GradleInspectorProxyInfo(proxyHost, proxyPort, nonProxyHosts);
+        final ConnectionManager connectionManager = new ConnectionManager(detectConfiguration);
+        final ProxyInfo proxyInfo = connectionManager.getBlackDuckProxyInfo();
 
-        return new GradleInspectorOptions(gradleBuildCommand, scriptOptions, gradleInspectorProxyInfo);
+        return new GradleInspectorOptions(gradleBuildCommand, scriptOptions, proxyInfo);
     }
 
     public MavenCliExtractorOptions createMavenCliOptions() {
