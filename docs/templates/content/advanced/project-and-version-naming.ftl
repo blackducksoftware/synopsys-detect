@@ -1,6 +1,6 @@
 # Project and version naming
 
-The project and version names of the project to which ${solution_name} writes results are, by default, derived from the project on which ${solution_name} is run.  The mechanism ${solution_name} used to determine the project and version names depends on project type. If ${solution_name} cannot determine the project and version names, then ${solution_name} uses the project directory name as the project name, and the value "Default Detect Version" as the version name.
+The project and version names of the project to which ${solution_name} writes results are, by default, derived from the project on which ${solution_name} is run.  The mechanism ${solution_name} uses to determine the project and version names depends on project type. If ${solution_name} cannot determine the project and version names, then ${solution_name} uses the project directory name as the project name, and the value "Default Detect Version" as the version name.
 
 You can use the following properties to override the project and version names:
 ```

@@ -46,7 +46,6 @@ Several aspects of script functionality can be configured, including:
 * The ${solution_name} version to download/run; by default, the latest version.
 * The download location.
 * Where to find Java.
-* And others.
 
 Information on how to configure the scripts is in [Shell script configuration](advanced/script-configuration.md).
 
@@ -98,7 +97,7 @@ For example, to run ${solution_name} version 5.5.0:
 
 ## Running the ${solution_name} .jar
 
-Recent versions of the ${solution_name} .jar file are downloaded from ${binary_repo_url_base}/${binary_repo_repo}/com/synopsys/integration/${project_name}.
+Recent versions of the ${solution_name} .jar file are available for download from ${binary_repo_url_base}/${binary_repo_repo}/com/synopsys/integration/${project_name}.
 
 To run ${solution_name} by invoking the .jar file:
 
