@@ -64,7 +64,7 @@ In this way, ${solution_name} performs the same steps it did in the offline run,
 the following:
 
 * Uploads the discovered dependencies to ${blackduck_product_name}.
-* Provides in the log a "lack Duck Project BOM URL that you can use to view the results in ${blackduck_product_name}.
+* Provides in the log a "Black Duck Project BOM URL that you can use to view the results in ${blackduck_product_name}.
 
 Point your browser to the Black Duck Project BOM URL to see the Bill Of Materials for junit4.
 

@@ -84,7 +84,7 @@ The Nuget project detector derives packages (dependencies) from project (.csproj
 
 The NuGet solution detector runs if one or more solution (.sln) files are found.
 
-The NuGet Project detector runs if no solution files are found, and one or more roject files are found.  Refer to the preceding list of project file types.
+The NuGet Project detector runs if no solution files are found, and one or more project files are found.  Refer to the preceding list of project file types.
 
 The NuGet detectors run the appropriate inspector (dotnet: BlackduckNugetInspector, or classic: IntegrationNugetInspector), which it normally downloads automatically.
 

@@ -14,7 +14,7 @@ escape the character by preceding the character with a backslash character and q
 
 ## PowerShell script (${powershell_script_name})
 
-When passing an argument that must be quoted; for example, it contains a space, to ${powershell_script_name}, you musdt 
+When passing an argument that must be quoted; for example, it contains a space, to ${powershell_script_name}, you must 
 quote the argument using escaped quote characters, by preceding each quote with a back quote character. For example:
 
     powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect" --detect.project.name=`"Project Test`"

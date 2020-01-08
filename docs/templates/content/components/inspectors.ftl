@@ -8,24 +8,25 @@ If ${solution_name} decides that your package manager needs an external inspecto
 
 ## Gradle inspector
 
-The Gradle inspector is added as a dependency to a temporary Gradle script file. 
+The Gradle inspector is added as a dependency to a temporary Gradle script file that is executed by the ${solution_name} Gradle detector. 
 
 If you are online, then Synopsys Artifactory is added as a Maven repository and the inspector is downloaded by Gradle.
 If you are offline, the air gap inspector jar files are added as classpath file dependencies.
 
-In both cases, a custom Gradle script run swhich invokes the Gradle inspector's task.  
+In both cases, the ${solution_name} Gradle detector executes the custom Gradle script mentioned above, which invokes the Gradle inspector's task.  
 
 The source code for the Gradle inspector is located at [GitHub](https://github.com/blackducksoftware/integration-gradle-inspector).
 
 ## Docker Inspector
 
-The Docker Inspector is available as an Java jar or shell script for Linux or Mac. 
+The Docker Inspector is available as a Java jar or shell script for Linux or Mac. 
 
 If you are online, then Synopsys Artifactory is used to download the Docker Inspector jar file. 
-If you are offline, the Docker Inspector jar file, including all required Docker image tar files, are located at the provided path.
-Additionally, if offline, the inspector jar is provided and automatically imports all of the found image tars.  
 
-In both cases, the located inspector jar is run which communicates with the Docker installed on your system.
+If you are offline, the Docker Inspector jar file and required Docker image tar files are sourced from the provided path to the Docker Inspetor air gap files.
+${solution_name} loads the Docker images (container-based services that Docker Inspector depends on) from the provided image tar files so they are available to the Docker Inspector.
+
+In both cases, the Docker Inspector jar is run which (by default) uses your Docker engine to start and stop the container-based services.
 
 The source code for Docker Inspector is located at [GitHub](https://github.com/blackducksoftware/blackduck-docker-inspector).
 
