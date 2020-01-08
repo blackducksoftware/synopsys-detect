@@ -1,5 +1,7 @@
 package com.synopsys.integration.detect.config
 
+import java.lang.Exception
+
 open abstract class Property(val key: String) {
     //this is the most basic property
     //it has no type information and a value cannot be retrieved for it (without a subclass)
@@ -51,5 +53,8 @@ open abstract class RequiredProperty<T>(key: String, parser: ValueParser<T>, val
 }
 
 abstract class ValueParser<T> {
-    abstract fun parse(value: String?) : T?;
+    @Throws(ValueParseException::class)
+    abstract fun parse(value: String) : T
 }
+
+class ValueParseException (val rawValue: String, val typeName: String, val additionalMessage:String = "", val innerException: Exception? = null) : Exception("Unable to parse raw value '${rawValue}' and coerce it into type '${typeName}'. $additionalMessage", innerException) {}

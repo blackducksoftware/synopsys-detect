@@ -71,64 +71,54 @@ class ExtendedValue<E, B>(val value: E): ExtendedEnumValue<E, B>();
 class BaseValue<E, B>(val value: B): ExtendedEnumValue<E, B>();
 
 class FilterableEnumListValueOfParser<T>(val valueOf: (String) -> T?) : ValueParser<List<FilterableEnumValue<T>>> () {
-    override fun parse(value: String?) : List<FilterableEnumValue<T>>? = when {
-        value != null && value.isNotBlank() -> value.split(",").map {it ->
+    private val parser = ValueOfParser(valueOf)
+    override fun parse(value: String) : List<FilterableEnumValue<T>> {
+        return value.split(",").map {
             when {
                 it.toLowerCase() == "none" -> None<T>()
                 it.toLowerCase() == "all" -> All<T>()
-                else -> Value<T>(valueOf(it)!!)
+                else -> Value(parser.parse(value))
             }
-        }.toList()
-        else -> null
+        }
     }
 }
 
 class SoftEnumValueOfParser<T>(val valueOf: (String) -> T?) : ValueParser<SoftEnumValue<T>> () {
-    override fun parse(value: String?) : SoftEnumValue<T>? = when {
-        value != null && value.isNotBlank() -> parseEnum(value)
-        else -> null
-    }
-
-    fun parseEnum(value: String): SoftEnumValue<T> {
-        val parsed = valueOf(value);
-        return when (parsed){
+    var parser = ValueOfOrNullParser(valueOf)
+    override fun parse(value: String) : SoftEnumValue<T> {
+        return when (val enumValue = parser.parse(value)){ //TODO: Catch exception here? What happens when valueOf throws?
             null -> StringValue<T>(value)
-            else -> ActualValue<T>(parsed)
+            else -> ActualValue<T>(enumValue)
         }
     }
 }
 
 class SoftEnumListValueOfParser<T>(val valueOf: (String) -> T?) : ValueParser<List<SoftEnumValue<T>>> () {
-    override fun parse(value: String?) : List<SoftEnumValue<T>>? = when {
-        value != null && value.isNotBlank() -> value.split(",").map {it -> parseEnum(it) }.toList()
-        else -> null
-    }
-
-    fun parseEnum(value: String): SoftEnumValue<T> {
-        val parsed = valueOf(value);
-        return when (parsed){
-            null -> StringValue<T>(value)
-            else -> ActualValue<T>(parsed)
+    var parser = ValueOfOrNullParser(valueOf)
+    override fun parse(value: String) : List<SoftEnumValue<T>> {
+        return value.split(",").map {
+            when (val enumValue = parser.parse(value)){ //TODO: Catch exception here? What happens when valueOf throws?
+                null -> StringValue<T>(value)
+                else -> ActualValue<T>(enumValue)
+            }
         }
     }
 }
 
-class ExtendedEnumValueOfParser<E, B>(val valueOfE: (String) -> E?, val valueOfB: (String) -> B?) : ValueParser<ExtendedEnumValue<E, B>> () {
-    override fun parse(value: String?) : ExtendedEnumValue<E, B>? = when {
-        value != null && value.isNotBlank() -> parseEnum(value)
-        else -> null
-    }
+class ExtendedEnumValueOfParser<E, B>(private val valueOfE: (String) -> E?, private val valueOfB: (String) -> B?) : ValueParser<ExtendedEnumValue<E, B>> () {
+    var extendedParser = ValueOfOrNullParser(valueOfE)
+    var baseParser = ValueOfOrNullParser(valueOfB)
 
-    fun parseEnum(value: String): ExtendedEnumValue<E, B>? {
-        val eValue = valueOfE(value);
+    override fun parse(value: String) : ExtendedEnumValue<E, B> {
+        val eValue = extendedParser.parse(value);
         if (eValue != null) {
             return ExtendedValue(eValue)
         }
-        val bValue = valueOfB(value);
+        val bValue = baseParser.parse(value);
         if (bValue != null) {
             return BaseValue(bValue)
         }
-        return null
+        throw ValueParseException(value, "either enum", additionalMessage = "Value was not a member of either enum set.")//TODO: Mention enum types?
     }
 }
 
@@ -172,7 +162,6 @@ class RequiredSoftEnumListProperty<T>(key: String, default: List<SoftEnumValue<T
     override fun isOnlyExampleValues(): Boolean = false
     override fun describeDefault(): String? = default.joinToString { "," }
 }
-
 class RequiredExtendedEnumProperty<E, B>(key: String, default: ExtendedEnumValue<E, B>, valueOfE: (String) -> E?, valueOfB: (String) -> B?, val valuesExtended: List<E>, val valuesBase: List<B>) : RequiredProperty<ExtendedEnumValue<E, B>>(key, ExtendedEnumValueOfParser(valueOfE, valueOfB), default) {
     override fun isCaseSensitive(): Boolean = false
     override fun listExampleValues(): List<String>? = valuesExtended.map { it.toString() } + "," + valuesBase.map { it.toString() }

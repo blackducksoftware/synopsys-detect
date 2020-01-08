@@ -43,67 +43,79 @@ class RequiredEnumListProperty<T>(key: String, default: List<T>, valueOf: (Strin
 }
 
 class StringValueParser : ValueParser<String> () {
-    override fun parse(value: String?) : String? = when {
-        value != null && value.isNotBlank() -> value
-        else -> null
-    }
+    override fun parse(value: String) : String = value
 }
 
 class BooleanValueParser : ValueParser<Boolean> () {
-    override fun parse(value: String?) : Boolean? = when {
-        value != null && value.isNotBlank() -> toBoolean(value)
-        else -> null
-    }
-
-    fun toBoolean(value: String): Boolean {
-        return value.toLowerCase().startsWith("t");
+    override fun parse(value: String) : Boolean {
+        return when (value.toLowerCase().trim()) {
+            "" -> true //support spring notion of just adding a property to true (--bool)
+            "t" -> true
+            "true" -> true
+            "f" -> false
+            "false" -> false
+            else -> throw ValueParseException(value, "boolean", "Supported formats are double quotes, 't', 'f', 'true' and 'false' and is not case sensitive.")
+        }
     }
 }
 
 class IntegerValueParser : ValueParser<Int> () {
-    override fun parse(value: String?) : Int? = when {
-        value != null && value.isNotBlank() -> toInteger(value)
-        else -> null
-    }
-
-    fun toInteger(value: String): Int {
-        return Integer.parseInt(value)
+    override fun parse(value: String) : Int {
+        return try {
+            value.toInt()
+        } catch (e: NumberFormatException) {
+            throw ValueParseException(value, "integer", innerException = e)
+        }
     }
 }
 
 class LongValueParser : ValueParser<Long> () {
-    override fun parse(value: String?) : Long? = when {
-        value != null && value.isNotBlank() -> toLong(value)
-        else -> null
-    }
-
-    fun toLong(value: String): Long {
-        return value.toLong()
+    override fun parse(value: String) : Long {
+        return try {
+            value.toLong()
+        } catch (e: NumberFormatException) {
+            throw ValueParseException(value, "integer", innerException = e)
+        }
     }
 }
 
 class StringListValueParser : ValueParser<List<String>> () {
-    override fun parse(value: String?) : List<String>? = when {
-        value != null && value.isNotBlank() -> toStringList(value)
-        else -> null
-    }
-
-    fun toStringList(value: String): List<String> {
+    override fun parse(value: String) : List<String> {
         return value.split(",").toList()
     }
 }
 
 class EnumValueOfParser<T>(val valueOf: (String) -> T?) : ValueParser<T> () {
-    override fun parse(value: String?) : T? = when {
-        value != null && value.isNotBlank() -> valueOf(value)
-        else -> null
+    private val parser = ValueOfParser(valueOf);
+    override fun parse(value: String) : T {
+        return parser.parse(value)
     }
 }
 
 class EnumListValueOfParser<T>(val valueOf: (String) -> T?) : ValueParser<List<T>> () {
-    override fun parse(value: String?) : List<T>? = when {
-        value != null && value.isNotBlank() -> value.split(",").map {it -> valueOf(it)!! }.toList()
-        else -> null
+    private val parser = ValueOfParser(valueOf);
+    override fun parse(value: String) : List<T> {
+        return value.split(",").map { parser.parse(it) }
     }
 }
 
+class ValueOfParser<T>(val valueOf: (String) -> T?) {
+    @Throws(ValueParseException::class)
+    fun parse(value: String) : T {
+        try {
+            return valueOf(value) ?: throw ValueParseException(value, "enum", additionalMessage = "Enum value was null.")
+        } catch (e:Exception){
+            throw ValueParseException(value, "enum", innerException = e)
+        }
+    }
+}
+
+class ValueOfOrNullParser<T>(val valueOf: (String) -> T?) {
+    fun parse(value: String) : T? {
+        return try {
+            valueOf(value)
+        } catch (e:Exception){
+            null
+        }
+    }
+}
