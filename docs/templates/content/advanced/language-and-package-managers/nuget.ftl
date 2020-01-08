@@ -4,7 +4,7 @@ The NuGet detectors can discover dependencies of NuGet projects.
 
 ## Overview
 
-There are two Nuget detectors (Nuget Solution detector, and NuGet Project detector). Each detector runs one of two available inspectors: the newer "dotnet" inspector, and the older "classic" (or "exe") inspector.
+There are two Nuget detectors: the NuGet solution detector, and the NuGet project detector. Each detector runs one of two available inspectors: the newer dotnet inspector, and the older classic, or exe, inspector.
 
 On non-Windows systems: Only the dotnet inspector is supported. A dotnet executable is required.
 
@@ -30,11 +30,11 @@ Binary: https://repo.blackducksoftware.com:443/artifactory/bds-integrations-nuge
 
 ## Operation
 
-Each inspector (dotnet and classic) supports two detectors: Nuget Solution detector, and NuGet Project detector.
+Each inspector (dotnet and classic) supports two detectors: NuGet solution detector, and NuGet project detector.
 
-The Nuget Solution detector derives packages (dependencies) from Solution (.sln) files.
+The NuGet solution detector derives packages (dependencies) from solution (.sln) files.
 
-The Nuget Project detector derives packages (dependencies) from Project (.csproj, .fsproj, etc.) files. The full list of supported project files is:
+The Nuget project detector derives packages (dependencies) from project (.csproj, .fsproj, etc.) files. The supported project files are:
 ````
 // C#
 "*.csproj",
@@ -82,17 +82,17 @@ The Nuget Project detector derives packages (dependencies) from Project (.csproj
 "*.rproj"
 ````
 
-The NuGet Solution detector will run if one or more Solution (.sln) files are found.
+The NuGet solution detector runs if one or more solution (.sln) files are found.
 
-The NuGet Project detector will run if no Solutions files are found, and one or more Project files (see list of Project filetypes above) are found.
+The NuGet Project detector runs if no solution files are found, and one or more roject files are found.  Refer to the preceding list of project file types.
 
 The NuGet detectors run the appropriate inspector (dotnet: BlackduckNugetInspector, or classic: IntegrationNugetInspector), which it normally downloads automatically.
 
-The NuGet Inspectors derive dependency information from the first type of file in this order:
+The NuGet inspectors derive dependency information from the first type of file in this order:
 1. packages.config
 2. project.lock.json
 3. project.assets.json
 4. project.json
 5. XML of the project file
 
-After discovering dependencies both the dotnet inspector (BlackduckNugetInspector) and the classic inspector (IntegrationNugetInspector) use NuGet client libraries to collect further information about the dependencies and write it to a JSON file (`<projectname>_inspection.json`). ${solution_name} then parses that file for the dependency information.
+After discovering dependencies, both the dotnet inspector (BlackduckNugetInspector) and the classic inspector (IntegrationNugetInspector) use NuGet client libraries to collect further information about the dependencies and write it to a JSON file (`<projectname>_inspection.json`). ${solution_name} then parses that file for the dependency information.

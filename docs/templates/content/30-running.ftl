@@ -4,7 +4,7 @@
 
 ### Build mode
 
-In [build mode](components/detectors.md#build-detectors-vs-buildless-detectors) (the default),
+In [build mode](components/detectors.md#build-detectors-vs-buildless-detectors), which is the default,
 ${solution_name} should be executed as a post-build step in the build environment of the project.
 Building your project prior to running ${solution_name} is often required for the detector to run successfully,
 and helps ensure that the build artifacts are available for signature scanning.
@@ -12,43 +12,43 @@ and helps ensure that the build artifacts are available for signature scanning.
 ### Buildless mode
 
 In [buildless mode](components/detectors.md#build-detectors-vs-buildless-detectors),
-${solution_name} will make its best effort to discover dependencies without the benefit of
-build artifacts or build tools. In buildless mode, there is no requirement that ${solution_name} run as a post-build step.
+${solution_name} makes its best effort to discover dependencies without the benefit of
+build artifacts or build tools. In buildless mode, there is no requirement that ${solution_name} must run as a post-build step.
 Results from buildless mode may be less accurate than results from build mode.
 
 ## Choosing the working directory
 
 You can run ${solution_name} from any directory. If you are not running ${solution_name} from the project directory,
-provide the project directory via the [source path property](properties/Configuration/paths.md#source-path). When that property is not set,
+provide the project directory using the [source path property](properties/Configuration/paths.md#source-path). When that property is not set,
 ${solution_name} assumes the current working directory is the project directory.
 
 ## Choosing a run method (script or .jar)
 
 There are two ways to run ${solution_name}:
 
-1. Download and run a ${solution_name} script
-1. Download and run a ${solution_name} .jar file
+1. Download and run a ${solution_name} script.
+1. Download and run a ${solution_name} .jar file.
 
-The primary reason to run a ${solution_name} script is that the scripts (by default) always
-run the latest version of the ${solution_name} .jar file (downloading it for you if necessary).
-Run this way, ${solution_name} automatically updates itself; as soon as a new version becomes
-available, you will run the new version (unless you override this default behavior).
+The primary reason to run a ${solution_name} script is that the scripts by default always
+run the latest version of the ${solution_name} .jar file; downloading it for you if necessary.
+When run this way, ${solution_name} automatically updates itself; as soon as a new version becomes
+available, the new version automatically runs, unless you override this default behavior.
 
 The primary reason to run the ${solution_name} .jar directly is that this method provides
 direct control over the ${solution_name} version;
-${solution_name} will not automatically update in this scenario.
+${solution_name} does not automatically update in this scenario.
 
 ## Running the ${solution_name} script
 
 The primary function of the ${solution_name} scripts is to download and execute the ${solution_name} .jar file.
 Several aspects of script functionality can be configured, including:
 
-* The ${solution_name} version to download/run (by default: the latest version)
-* The download location
-* Where to find Java
-* Etc.
+* The ${solution_name} version to download/run; by default, the latest version.
+* The download location.
+* Where to find Java.
+* And others.
 
-Information on how to configure the scripts can be found in [Shell script configuration](advanced/script-configuration.md).
+Information on how to configure the scripts is in [Shell script configuration](advanced/script-configuration.md).
 
 #### Linux or Mac (Bash)
 
@@ -79,7 +79,7 @@ To run a specific version of ${solution_name}:
     export DETECT_LATEST_RELEASE_VERSION={${solution_name} version}
     bash <(curl -s -L https://detect.synopsys.com/detect.sh)
 
-For example, to run ${solution_name} 5.5.0:
+For example, to run ${solution_name} version 5.5.0:
 
     export DETECT_LATEST_RELEASE_VERSION=5.5.0
     bash <(curl -s -L https://detect.synopsys.com/detect.sh)
@@ -91,14 +91,14 @@ To run a specific version of ${solution_name}:
     $Env:DETECT_LATEST_RELEASE_VERSION = {${solution_name} version}
     powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 
-For example, to run ${solution_name} 5.5.0:
+For example, to run ${solution_name} version 5.5.0:
 
     $Env:DETECT_LATEST_RELEASE_VERSION = 5.5.0
     powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 
 ## Running the ${solution_name} .jar
 
-Recent versions of the ${solution_name} .jar file can be downloaded from ${binary_repo_url_base}/${binary_repo_repo}/com/synopsys/integration/${project_name}.
+Recent versions of the ${solution_name} .jar file are downloaded from ${binary_repo_url_base}/${binary_repo_repo}/com/synopsys/integration/${project_name}.
 
 To run ${solution_name} by invoking the .jar file:
 
@@ -121,8 +121,8 @@ most fundamental ways to modify ${solution_name} is by including and excluding [
 
 ### Tools
 
-By default, all tools are eligible to run (the set of tools that actually run
-depends on which properties you set).
+By default, all tools are eligible to run; the set of tools that actually run
+depends on the properties you set.
 To limit the eligible tools to a given list, use:
 
     --detect.tools={comma-separated list of tool names, all uppercase}
@@ -133,14 +133,14 @@ To exclude specific tools, use:
 
 Exclusions take precedence over inclusions.
 
-See [Tools](components/tools.md) for the list of tool names.
+Refer to [Tools](components/tools.md) for the list of tool names.
 
-See [Properties](properties/all-properties.md) for details.
+Refer to [Properties](properties/all-properties.md) for details.
 
 ### Detectors
 
-By default, all detectors are eligible to run (the set of detectors that actually
-run depends on what files exist in your project directory).
+By default, all detectors are eligible to run.  The set of detectors that actually
+run depends on the files existing in your project directory.
 To limit the eligible detectors to a given list, use:
 
     --detect.included.detector.types={comma-separated list of detector names}
@@ -151,9 +151,9 @@ To exclude specific detectors, use:
 
 Exclusions take precedence over inclusions.
 
-See [Detectors](components/detectors.md) for the list of detector names.
+Refer to [Detectors](components/detectors.md) for the list of detector names.
 
-See [Properties](properties/all-properties.md) for details.
+Refer to [Properties](properties/all-properties.md) for details.
 
 ## Running with ${blackduck_product_name}
 
@@ -161,12 +161,12 @@ ${solution_name} can be used with ${blackduck_product_name} to perform Software 
 
 ### Overview
 
-When ${blackduck_product_name} connection details are provided, ${solution_name} will execute
+When ${blackduck_product_name} connection details are provided, ${solution_name} executes
 the following by default:
 
-* The [detector tool](components/detectors.md), which runs the appropriate package manager-specific detector (the Maven detector
-for Maven projects, the Gradle detector for Gradle projects, etc.).
-* The [${blackduck_signature_scanner_name}](properties/Configuration/signature scanner.md), which does a ${blackduck_signature_scan_act} on the
+* The [detector tool](components/detectors.md), which runs the appropriate package manager-specific detector; the Maven detector
+for Maven projects, the Gradle detector for Gradle projects, and so forth.
+* The [${blackduck_signature_scanner_name}](properties/Configuration/signature scanner.md), which performs a ${blackduck_signature_scan_act} on the
 project directory.
 
 ${solution_name} can be configured to perform additional tasks, including the following:
@@ -177,20 +177,20 @@ ${solution_name} can be configured to perform additional tasks, including the fo
 * Generate a [report](properties/Configuration/report.md).
 * Fail on [policy violation](properties/Configuration/project.md#fail-on-policy-violation-severities).
 
-See [${blackduck_product_name} Server properties](properties/Configuration/blackduck server.md)
+Refer to [${blackduck_product_name} Server properties](properties/Configuration/blackduck server.md)
 and [${blackduck_signature_scanner_name} properties](properties/Configuration/signature scanner.md) for details.
 
 ### Offline mode
 
-If you have no ${blackduck_product_name} instance, or if your network is down, you can still run ${solution_name} in offline mode.
+If you do not have a ${blackduck_product_name} instance, or if your network is down, you can still run ${solution_name} in offline mode.
 In offline mode, ${solution_name} creates the BDIO content and the dry run ${blackduck_signature_scan_act} output files without attempting to upload them to ${blackduck_product_name}.
 You can run ${solution_name} in offline mode using the [offline mode property](properties/Configuration/blackduck server.md#offline-mode).
 
 ### BDIO format
 
 ${solution_name} produces dependency information for Black Duck in Black Duck Input Output (BDIO) format files.
-${solution_name} can produce BDIO files in either of two formats: BDIO version 1, or BDIO version 2.
-Versions of Black Duck prior to 2018.12.4 accept only BDIO 1. Black Duck version 2018.12.4 and later
+${solution_name} can produce BDIO files in two formats: BDIO version 1, or BDIO version 2.
+Versions of Black Duck prior to 2018.12.4 accept only BDIO 1. Black Duck versions 2018.12.4 and higher
 accept either BDIO 1 or BDIO 2.
 By default, ${solution_name} produces BDIO 1 files.
 
@@ -200,12 +200,12 @@ Use the [BDIO2 enabled property](properties/Configuration/paths.md#bdio-2-enable
 
 ${solution_name} can be used with ${polaris_product_name} to perform Static Application Security Testing (SAST).
 
-When ${polaris_product_name} connection details are provided, ${solution_name} will execute
+When ${polaris_product_name} connection details are provided, ${solution_name} executes
 the following by default:
 
-* The detector tool, which runs the appropriate package manager-specific detector (the Maven detector
-for Maven projects, the Gradle detector for Gradle projects, etc.).
+* The detector tool, which runs the appropriate package manager-specific detector; the Maven detector
+for Maven projects, the Gradle detector for Gradle projects, and so forth.
 * The ${polaris_product_name} tool, which runs the ${polaris_product_name} CLI on the
 project directory.
 
-See [Properties](properties/Configuration/polaris.md) for details.
+Refer to [Properties](properties/Configuration/polaris.md) for details.

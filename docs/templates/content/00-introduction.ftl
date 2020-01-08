@@ -1,3 +1,4 @@
+<#-- kk edited 1.8.20 -->
 # Introduction
 
 ${solution_name} analyzes your software project to identify open source component dependencies.
@@ -16,10 +17,10 @@ For applications containing multiple sub-projects, it may be advantageous to sca
 
 ## A typical ${solution_name} run
 
-While there are many variations on this, a typical ${solution_name} run performs the steps described
-below. In this example, the user has provided (via property settings) ${blackduck_product_name} connection details
+While there are many variations on a ${solution_name} run, a typical ${solution_name} run performs the steps described
+as follows. In this example, the user has provided ${blackduck_product_name} connection details through property settings
 to ${solution_name}, signalling that results (project dependency details)
-should be uploaded to ${blackduck_product_name}.
+are to be uploaded to ${blackduck_product_name}.
 
 In a typical run, ${solution_name}:
 
@@ -43,27 +44,27 @@ ${solution_name} processing is divided into three phases:
 ### Initialization phase
 
 During the initialization phase, ${solution_name} performs verification checks on the user-provided configration, checks to see if it
-can connect to any external systems needed for the run, and creates any directories that it needs.
+can connect to any external systems needed for the run, and creates any required directories.
 
 ### Run phase
 
-During the run phase, ${solution_name} processes and ordered list of [tools](components/tools.md), invoking any/all that apply.
-Tool applicability depends on how ${solution_name} is configured (what property values you set).
+During the run phase, ${solution_name} processes an ordered list of [tools](components/tools.md), invoking all that apply.
+Tool applicability depends on how ${solution_name} is configured; in other words, the property values you set.
 The detector tool runs by default. The ${blackduck_signature_scanner_name} tool runs by default when ${blackduck_product_name} connection
 details are provided.
 
-The detector tool will invoke any/all [detectors](components/detectors.md) that apply.
+The detector tool invokes all applicable [detectors](components/detectors.md).
 Detector applicability depends on what ${solution_name} finds in your project. For example, if ${solution_name}
-finds a pom.xml file, it will run the Maven detector. If it finds Gradle files, it will run the Gradle detector.
+finds a pom.xml file, it runs the Maven detector. If it finds Gradle files, it runs the Gradle detector.
 
-In the typical run described above, two tools applied: The detector tool (which ran the Maven detector),
-and the ${blackduck_signature_scanner_name} tool (which ran the ${blackduck_signature_scanner_name}).
+In the typical run previously described, two tools are applied: the detector tool which ran the Maven detector,
+and the ${blackduck_signature_scanner_name} tool which ran the ${blackduck_signature_scanner_name}.
 
-At the end of the run phase, ${solution_name} will upload results to the appropriate external
+At the end of the run phase, ${solution_name} uploads results to the appropriate external
 system(s) (${blackduck_product_name} and/or ${polaris_product_name}), and optionally perform post actions, such as generating
 a risk report or checking for policy violations.
 
-In the typical run described above, ${solution_name} uploaded to ${blackduck_product_name} results from
+In the typical run previously described, ${solution_name} uploads ${blackduck_product_name} results from
 the Maven detector and the ${blackduck_signature_scanner_name}.
 
 ### Cleanup phase
@@ -72,5 +73,5 @@ During the cleanup phase, ${solution_name} removes temporary files and directori
 
 ## Controlling ${solution_name} processing
 
-For information on controlling which tools and detectors ${solution_name} executes, see
+For more information on controlling the tools and detectors executed by ${solution_name}, refer to
 [Including/excluding tools/detectors](30-running.md#including-and-excluding-tools-and-detectors).
