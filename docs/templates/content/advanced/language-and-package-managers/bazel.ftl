@@ -5,19 +5,19 @@ As of ${solution_name} versions 5.2.0 and higher, ${solution_name} provides limi
 As of ${solution_name} version 5.2.0, ${solution_name} supports dependencies specified in *maven_jar* workspace rules.
 As of ${solution_name} version 6.0.0, ${solution_name} also supports dependencies specified in *maven_install* workspace rules.
 
-The Bazel tool will attempt to run on your project if you provide a Bazel build target via the Bazel target property.
+The Bazel tool attempts to run on your project if you provide a Bazel build target using the Bazel target property.
 
 The Bazel tool also requires a bazel executable on $PATH.
 
 ${solution_name} attempts to determine the workspace dependency rule (*maven_jar* or *maven_install*) from the WORKSPACE file.
-In case it can’t, you can specify which rule you use with the Bazel dependency type property.
-See [Properties](../../properties/Detectors/bazel.md) for details.
+In case it cannot, you can specify which rule you use with the Bazel dependency type property.
+Refer to [Properties](../../properties/Detectors/bazel.md) for details.
 
 ## Processing for the *maven_install* workspace rule
 
-The Bazel tool runs a bazel cquery on the given target to produce output from which it can parse artifact details (group, artifact, version) for dependencies.
+The Bazel tool runs a bazel cquery on the given target to produce output from which it can parse artifact details such as group, artifact, and version for dependencies.
 
-Here’s an example (using commands similar to those that ${solution_name} runs, but from the command line) of how ${solution_name}’s bazel detector currently identifies components:
+The following is an example using commands similar to those that ${solution_name} runs, but from the command line of how ${solution_name}’s Bazel detector currently identifies components.
 ```
 $ bazel cquery --noimplicit_deps 'kind(j.*import, deps(//tests/integration:ArtifactExclusionsTest))' --output build 2>&1 | grep maven_coordinates
 tags = ["maven_coordinates=com.google.guava:guava:27.0-jre"],
@@ -34,9 +34,9 @@ Then, it parses the group/artifact/version details from the values of the maven_
 
 ## Processing for the *maven_jar* workspace rule
 
-The Bazel tool runs a bazel query on the given target to get a list of jar dependencies. On each jar dependency, the Bazel tool runs another bazel query to get its artifact details (group, artifact, version).
+The Bazel tool runs a bazel query on the given target to get a list of jar dependencies. On each jar dependency, the Bazel tool runs another bazel query to get its artifact details: group, artifact, and version.
 
-Here’s an example (using the equivalent commands that ${solution_name} runs, but from the command line) of how ${solution_name}’s bazel detector currently identifies components:
+The following is an example using the equivalent commands that ${solution_name} runs, but from the command line of how ${solution_name}’s Bazel detector currently identifies components.
 First, it gets a list of dependencies:
 ```
 $ bazel query 'filter("@.*:jar", deps(//:ProjectRunner))'
@@ -45,7 +45,7 @@ INFO: Invocation ID: dfe8718d-b4db-4bd9-b9b9-57842cca3fb4
 @com_google_guava_guava//jar:jar
 Loading: 0 packages loaded
 ```
-Then, it gets details for each dependency (it prepends //external: to the dependency name for this command):
+Then, it gets details for each dependency. It prepends //external: to the dependency name for this command.
 ```
 $ bazel query 'kind(maven_jar, //external:org_apache_commons_commons_io)' --output xml
 INFO: Invocation ID: 0a320967-b2a8-4b36-ab47-e183bc4d4781
@@ -58,4 +58,4 @@ INFO: Invocation ID: 0a320967-b2a8-4b36-ab47-e183bc4d4781
 </query>
 Loading: 0 packages loaded
 ```
-Finally, it parses the group/artifact/version details from the value of the string element with name "artifact".
+Finally, it parses the group/artifact/version details from the value of the string element using the name of artifact.
