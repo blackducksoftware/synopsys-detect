@@ -35,7 +35,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -50,23 +49,18 @@ public class BdioCodeLocationCreator {
     private final Logger logger = LoggerFactory.getLogger(BdioCodeLocationCreator.class);
 
     private final CodeLocationNameManager codeLocationNameManager;
-    private final DetectConfiguration detectConfiguration;
     private final DirectoryManager directoryManager;
     private final EventSystem eventSystem;
 
-    public BdioCodeLocationCreator(final CodeLocationNameManager codeLocationNameManager, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager,
+    public BdioCodeLocationCreator(final CodeLocationNameManager codeLocationNameManager, final DirectoryManager directoryManager,
         final EventSystem eventSystem) {
         this.codeLocationNameManager = codeLocationNameManager;
-        this.detectConfiguration = detectConfiguration;
         this.directoryManager = directoryManager;
         this.eventSystem = eventSystem;
     }
 
-    public BdioCodeLocationResult createFromDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public BdioCodeLocationResult createFromDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations, String prefix, String suffix, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
         final Set<DetectorType> failedBomToolGroups = new HashSet<>();
-
-        final String prefix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_PREFIX, PropertyAuthority.NONE);
-        final String suffix = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_CODELOCATION_SUFFIX, PropertyAuthority.NONE);
 
         final List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
         final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, directoryManager.getSourceDirectory(), projectNameVersion, prefix, suffix);

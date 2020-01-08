@@ -43,9 +43,9 @@ import com.synopsys.integration.detect.DetectableBeanConfiguration;
 import com.synopsys.integration.detect.RunBeanConfiguration;
 import com.synopsys.integration.detect.config.DetectConfig;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationManager;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.DetectPropertyMap;
 import com.synopsys.integration.detect.configuration.DetectPropertySource;
@@ -134,8 +134,8 @@ public class DetectBoot {
         final SpringPropertySource springPropertySource = new SpringPropertySource(environment);
         final DetectPropertySource propertySource = new DetectPropertySource(springPropertySource);
         final DetectPropertyMap propertyMap = new DetectPropertyMap();
-        final DetectConfiguration detectConfiguration = new DetectConfiguration(propertySource, propertyMap);
-        final DetectOptionManager detectOptionManager = new DetectOptionManager(detectConfiguration, detectInfo);
+        final DetectConfig detectConfiguration = null;//'//' = new DetectConfiguration(propertySource, propertyMap); TODO: Fix
+        final DetectOptionManager detectOptionManager = null;// = new DetectOptionManager(detectConfiguration, detectInfo); TODO: Fix
 
         final List<DetectOption> options = detectOptionManager.getDetectOptions();
 
@@ -163,11 +163,11 @@ public class DetectBoot {
             return DetectBootResult.exception(e, detectConfiguration);
         }
 
-        detectOptionManager.postConfigurationProcessedInit();
+        //detectOptionManager.postConfigurationProcessedInit(); //TODO: Fix
 
         logger.debug("Configuration processed completely.");
 
-        final Optional<DetectBootResult> configurationResult = printConfiguration(detectConfiguration.getBooleanProperty(DetectProperty.DETECT_SUPPRESS_CONFIGURATION_OUTPUT, PropertyAuthority.NONE), detectOptionManager, detectConfiguration,
+        final Optional<DetectBootResult> configurationResult = printConfiguration(detectConfiguration.getValue(DetectProperties.Companion.getDETECT_SUPPRESS_CONFIGURATION_OUTPUT()), detectOptionManager, detectConfiguration,
             eventSystem, options);
         if (configurationResult.isPresent()) {
             return configurationResult.get();
@@ -224,7 +224,7 @@ public class DetectBoot {
 
         //lock the configuration, boot has completed.
         logger.debug("Configuration is now complete. No changes should occur to configuration.");
-        detectConfiguration.lock();
+        //..detectConfiguration.lock();
 
         //Finished, populate the detect context
         detectContext.registerBean(detectRun);
@@ -299,7 +299,7 @@ public class DetectBoot {
         detectInfoPrinter.printInfo(System.out, detectInfo);
     }
 
-    private Optional<DetectBootResult> printConfiguration(final boolean fullConfiguration, final DetectOptionManager detectOptionManager, final DetectConfiguration detectConfiguration, final EventSystem eventSystem,
+    private Optional<DetectBootResult> printConfiguration(final boolean fullConfiguration, final DetectOptionManager detectOptionManager, final DetectConfig detectConfiguration, final EventSystem eventSystem,
         final List<DetectOption> detectOptions) {
 
         //First print the entire configuration.
@@ -335,7 +335,7 @@ public class DetectBoot {
         return Optional.empty();
     }
 
-    private void startInteractiveMode(final DetectOptionManager detectOptionManager, final DetectConfiguration detectConfiguration, final Gson gson, final ObjectMapper objectMapper) {
+    private void startInteractiveMode(final DetectOptionManager detectOptionManager, final DetectConfig detectConfiguration, final Gson gson, final ObjectMapper objectMapper) {
         final InteractiveManager interactiveManager = new InteractiveManager(detectOptionManager);
         final DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(detectOptionManager);
         interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
@@ -347,10 +347,11 @@ public class DetectBoot {
         return detectArgumentState;
     }
 
-    private void processDetectConfiguration(final DetectInfo detectInfo, final DetectRun detectRun, final DetectConfiguration detectConfiguration, final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
-        final TildeInPathResolver tildeInPathResolver = new TildeInPathResolver(DetectConfigurationManager.USER_HOME, detectInfo.getCurrentOs());
-        final DetectConfigurationManager detectConfigurationManager = new DetectConfigurationManager(tildeInPathResolver, detectConfiguration);
-        detectConfigurationManager.process(detectOptions);
+    private void processDetectConfiguration(final DetectInfo detectInfo, final DetectRun detectRun, final DetectConfig detectConfiguration, final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
+        //TODO: Replicate TILDE PATH
+        //final TildeInPathResolver tildeInPathResolver = new TildeInPathResolver(DetectConfigurationManager.USER_HOME, detectInfo.getCurrentOs());
+        //final DetectConfigurationManager detectConfigurationManager = new DetectConfigurationManager(tildeInPathResolver, detectConfiguration);
+        //detectConfigurationManager.process(detectOptions);
     }
 
     private Optional<DiagnosticSystem> createDiagnostics(
@@ -364,7 +365,7 @@ public class DetectBoot {
         }
     }
 
-    private File createAirGapZip(final DetectFilter inspectorFilter, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final Gson gson, final EventSystem eventSystem, final Configuration configuration,
+    private File createAirGapZip(final DetectFilter inspectorFilter, final DetectConfig detectConfiguration, final DirectoryManager directoryManager, final Gson gson, final EventSystem eventSystem, final Configuration configuration,
         final String airGapSuffix)
         throws DetectUserFriendlyException {
         final ConnectionManager connectionManager = new ConnectionManager(detectConfiguration);
@@ -385,7 +386,7 @@ public class DetectBoot {
         final DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
 
         final AirGapCreator airGapCreator = new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
-        final String gradleInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION,PropertyAuthority.NONE);
+        final String gradleInspectorVersion = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_GRADLE_INSPECTOR_VERSION());
         return airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix, gradleInspectorVersion);
     }
 }

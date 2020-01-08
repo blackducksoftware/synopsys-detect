@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -37,8 +38,8 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.detect.config.DetectConfig;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
@@ -77,7 +78,7 @@ public class RunBeanConfiguration {
     @Autowired
     public DetectInfo detectInfo;
     @Autowired
-    public DetectConfiguration detectConfiguration;
+    public DetectConfig detectConfiguration;
     @Autowired
     public DirectoryManager directoryManager;
     @Autowired
@@ -103,7 +104,9 @@ public class RunBeanConfiguration {
 
     @Bean
     public FileFinder fileFinder() {
-        return new DetectFileFinder(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES, PropertyAuthority.NONE));
+        //TODO FIX (jake)
+        List<String> excluded = (List<String>) detectConfiguration.getValue(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_FILES());
+        return new DetectFileFinder(excluded);
     }
 
     @Bean
@@ -128,7 +131,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public CodeLocationNameGenerator codeLocationNameService() {
-        final String codeLocationNameOverride = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.NONE);
+        final String codeLocationNameOverride = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_CODE_LOCATION_NAME());
         return new CodeLocationNameGenerator(codeLocationNameOverride);
     }
 
@@ -139,7 +142,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public BdioCodeLocationCreator detectCodeLocationManager() {
-        return new BdioCodeLocationCreator(codeLocationNameManager(), detectConfiguration, directoryManager, eventSystem);
+        return new BdioCodeLocationCreator(codeLocationNameManager(), directoryManager, eventSystem);
     }
 
     @Bean

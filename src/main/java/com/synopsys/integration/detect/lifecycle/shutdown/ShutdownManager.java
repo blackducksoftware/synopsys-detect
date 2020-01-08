@@ -32,7 +32,8 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
+import com.synopsys.integration.detect.config.DetectConfig;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -43,7 +44,7 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 public class ShutdownManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public void shutdown(final Optional<ProductRunData> productRunData, final Optional<File> airgapZip, final Optional<DetectConfiguration> detectConfigurationOptional, final Optional<DirectoryManager> directoryManagerOptional,
+    public void shutdown(final Optional<ProductRunData> productRunData, final Optional<File> airgapZip, final Optional<DetectConfig> detectConfigurationOptional, final Optional<DirectoryManager> directoryManagerOptional,
         final Optional<DiagnosticSystem> diagnosticSystem) {
 
         if (productRunData.isPresent() && productRunData.get().shouldUseBlackDuckProduct()) {
@@ -53,7 +54,7 @@ public class ShutdownManager {
         diagnosticSystem.ifPresent(DiagnosticSystem::finish);
 
         if (detectConfigurationOptional.isPresent() && directoryManagerOptional.isPresent()) {
-            final DetectConfiguration detectConfiguration = detectConfigurationOptional.get();
+            final DetectConfig detectConfiguration = detectConfigurationOptional.get();
             final DirectoryManager directoryManager = directoryManagerOptional.get();
             cleanupRun(productRunData, airgapZip, directoryManager, detectConfiguration);
         }
@@ -71,11 +72,11 @@ public class ShutdownManager {
         }
     }
 
-    private void cleanupRun(final Optional<ProductRunData> productRunData, final Optional<File> airgapZip, final DirectoryManager directoryManager, final DetectConfiguration detectConfiguration) {
+    private void cleanupRun(final Optional<ProductRunData> productRunData, final Optional<File> airgapZip, final DirectoryManager directoryManager, final DetectConfig detectConfiguration) {
         try {
-            if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_CLEANUP, PropertyAuthority.NONE)) {
+            if (detectConfiguration.getValue(DetectProperties.Companion.getDETECT_CLEANUP())) {
                 logger.debug("Detect will cleanup.");
-                final boolean dryRun = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, PropertyAuthority.NONE);
+                final boolean dryRun = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN());
 
                 boolean offline = false;
                 if (productRunData.isPresent() && productRunData.get().shouldUseBlackDuckProduct()) {

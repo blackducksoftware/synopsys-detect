@@ -136,9 +136,9 @@ class DetectConfigurationFactory(private val detectConfiguration: DetectConfig) 
     }
 
     fun createBdioOptions(): BdioOptions {
-        val aggregateName = detectConfiguration.getValue(DetectProperties.DETECT_BOM_AGGREGATE_NAME)
-        return BdioOptions(aggregateName)
-
+        val prefix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX)
+        val suffix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX)
+        return BdioOptions(prefix, suffix)
     }
 
     fun createProjectNameVersionOptions(sourceDirectoryName: String): ProjectNameVersionOptions {

@@ -92,7 +92,7 @@ class DetectProperties {
         val DETECT_DETECTOR_SEARCH_EXCLUSION = OptionalStringArrayProperty("detect.detector.search.exclusion")
         val DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS = OptionalStringArrayProperty("detect.detector.search.exclusion.patterns")
         val DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS = OptionalStringArrayProperty("detect.detector.search.exclusion.paths")
-        val DETECT_DETECTOR_SEARCH_EXCLUSION_FILES = OptionalStringArrayProperty("detect.detector.search.exclusion.files")
+        val DETECT_DETECTOR_SEARCH_EXCLUSION_FILES = RequiredStringArrayProperty("detect.detector.search.exclusion.files", emptyList())
         val DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS = RequiredBooleanProperty("detect.detector.search.exclusion.defaults", true)
         val DETECT_IGNORE_CONNECTION_FAILURES = RequiredBooleanProperty("detect.ignore.connection.failures", false)
         val DETECT_DOCKER_IMAGE = OptionalStringProperty("detect.docker.image")

@@ -32,7 +32,8 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
+import com.synopsys.integration.detect.config.DetectConfig;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -55,10 +56,10 @@ public class PolarisTool {
     private final DirectoryManager directoryManager;
     private final ExecutableRunner executableRunner;
     private final EventSystem eventSystem;
-    private final DetectConfiguration detectConfiguration;
+    private final DetectConfig detectConfiguration;
     private final PolarisServerConfig polarisServerConfig;
 
-    public PolarisTool(final EventSystem eventSystem, final DirectoryManager directoryManager, final ExecutableRunner executableRunner, final DetectConfiguration detectConfiguration, final PolarisServerConfig polarisServerConfig) {
+    public PolarisTool(final EventSystem eventSystem, final DirectoryManager directoryManager, final ExecutableRunner executableRunner, final DetectConfig detectConfiguration, final PolarisServerConfig polarisServerConfig) {
         this.directoryManager = directoryManager;
         this.executableRunner = executableRunner;
         this.eventSystem = eventSystem;
@@ -68,7 +69,7 @@ public class PolarisTool {
 
     public void runPolaris(final IntLogger logger, final File projectDirectory) {
         logger.info("Polaris determined it should attempt to run.");
-        final String polarisUrl = detectConfiguration.getProperty(DetectProperty.POLARIS_URL, PropertyAuthority.NONE);
+        final String polarisUrl = detectConfiguration.getValue(DetectProperties.Companion.getPOLARIS_URL());
         logger.info("Will use the following polaris url: " + polarisUrl);
 
         final AccessTokenPolarisHttpClient polarisHttpClient = polarisServerConfig.createPolarisHttpClient(logger);
@@ -86,8 +87,8 @@ public class PolarisTool {
 
             logger.info("Found polaris cli: " + polarisCliPath.get());
 
-            final String additionalArgs = detectConfiguration.getProperty(DetectProperty.POLARIS_ARGUMENTS, PropertyAuthority.NONE);
-            final String commandOverride = detectConfiguration.getProperty(DetectProperty.POLARIS_COMMAND, PropertyAuthority.NONE);
+            final String additionalArgs = detectConfiguration.getValue(DetectProperties.Companion.getPOLARIS_ARGUMENTS());
+            final String commandOverride = detectConfiguration.getValue(DetectProperties.Companion.getPOLARIS_COMMAND());
             final List<String> arguments = new ArrayList<>();
             if (StringUtils.isNotBlank(commandOverride)) {
                 if (StringUtils.isNotBlank(additionalArgs)) {

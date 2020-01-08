@@ -33,7 +33,6 @@ import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatch;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadOutput;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -43,16 +42,10 @@ import com.synopsys.integration.exception.IntegrationException;
 public class DetectBdioUploadService {
     private final Logger logger = LoggerFactory.getLogger(DetectBdioUploadService.class);
 
-    private final DetectConfiguration detectConfiguration;
-
-    public DetectBdioUploadService(final DetectConfiguration detectConfiguration) {
-        this.detectConfiguration = detectConfiguration;
-    }
-
-    public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(final List<UploadTarget> uploadTargets, final BdioUploader bdioUploader) throws DetectUserFriendlyException, IntegrationException {
+    public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(String blackduckUrl, final List<UploadTarget> uploadTargets, final BdioUploader bdioUploader) throws DetectUserFriendlyException, IntegrationException {
         final UploadBatch uploadBatch = new UploadBatch();
         for (final UploadTarget uploadTarget : uploadTargets) {
-            logger.debug(String.format("Uploading %s to %s", uploadTarget.getUploadFile().getName(), detectConfiguration.getProperty(DetectProperty.BLACKDUCK_URL, PropertyAuthority.NONE)));
+            logger.debug(String.format("Uploading %s to %s", uploadTarget.getUploadFile().getName(), blackduckUrl));
             uploadBatch.addUploadTarget(uploadTarget);
         }
 

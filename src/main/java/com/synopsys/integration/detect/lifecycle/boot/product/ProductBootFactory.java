@@ -30,7 +30,7 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
+import com.synopsys.integration.detect.config.DetectConfig;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.help.DetectOptionManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -38,12 +38,12 @@ import com.synopsys.integration.detect.workflow.phonehome.OnlinePhoneHomeManager
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 
 public class ProductBootFactory {
-    private final DetectConfiguration detectConfiguration;
+    private final DetectConfig detectConfiguration;
     private final DetectInfo detectInfo;
     private final EventSystem eventSystem;
     private final DetectOptionManager detectOptionManager;
 
-    public ProductBootFactory(final DetectConfiguration detectConfiguration, final DetectInfo detectInfo, final EventSystem eventSystem, final DetectOptionManager detectOptionManager) {
+    public ProductBootFactory(final DetectConfig detectConfiguration, final DetectInfo detectInfo, final EventSystem eventSystem, final DetectOptionManager detectOptionManager) {
         this.detectConfiguration = detectConfiguration;
         this.detectInfo = detectInfo;
         this.eventSystem = eventSystem;

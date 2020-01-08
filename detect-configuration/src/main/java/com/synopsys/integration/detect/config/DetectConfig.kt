@@ -30,7 +30,17 @@ class DetectConfig (val orderedPropertySources: List<DetectPropertySource>) {
     }
 
     //TODO: Re-implement
+    fun getPhoneHomeProperties(): Map<String, String> {
+        return emptyMap();
+    }
+
+    //TODO: Re-implement
     fun getRaw(): Map<String, String> {
+        return emptyMap();
+    }
+
+    //TODO: Re-implement
+    fun getRaw(keys: Set<String>): Map<String, String> {
         return emptyMap();
     }
 

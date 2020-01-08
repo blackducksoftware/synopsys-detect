@@ -26,6 +26,7 @@ import java.util.Optional;
 
 import javax.swing.text.html.Option;
 
+//TODO: Move inside Bdio options?
 public class AggregateOptions {
 
     private Optional<String> aggregateName;
