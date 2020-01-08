@@ -1021,15 +1021,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-include-configurations-advanced" class="md-nav__link">
-    Gradle Include Configurations (Advanced)
+  <a href="#gradle-inspector-airgap-path-advanced" class="md-nav__link">
+    Gradle Inspector AirGap Path (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
-    Gradle Exclude Projects (Advanced)
+  <a href="#gradle-include-projects-advanced" class="md-nav__link">
+    Gradle Include Projects (Advanced)
   </a>
   
 </li>
@@ -1042,15 +1042,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-inspector-airgap-path-advanced" class="md-nav__link">
-    Gradle Inspector AirGap Path (Advanced)
+  <a href="#gradle-include-configurations-advanced" class="md-nav__link">
+    Gradle Include Configurations (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-include-projects-advanced" class="md-nav__link">
-    Gradle Include Projects (Advanced)
+  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
+    Gradle Exclude Projects (Advanced)
   </a>
   
 </li>
@@ -1257,15 +1257,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-include-configurations-advanced" class="md-nav__link">
-    Gradle Include Configurations (Advanced)
+  <a href="#gradle-inspector-airgap-path-advanced" class="md-nav__link">
+    Gradle Inspector AirGap Path (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
-    Gradle Exclude Projects (Advanced)
+  <a href="#gradle-include-projects-advanced" class="md-nav__link">
+    Gradle Include Projects (Advanced)
   </a>
   
 </li>
@@ -1278,15 +1278,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-inspector-airgap-path-advanced" class="md-nav__link">
-    Gradle Inspector AirGap Path (Advanced)
+  <a href="#gradle-include-configurations-advanced" class="md-nav__link">
+    Gradle Include Configurations (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-include-projects-advanced" class="md-nav__link">
-    Gradle Include Projects (Advanced)
+  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
+    Gradle Exclude Projects (Advanced)
   </a>
   
 </li>
@@ -1411,12 +1411,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-include-configurations-advanced">Gradle Include Configurations (Advanced)</h2>
-<pre><code>--detect.gradle.included.configurations
+<h2 id="gradle-inspector-airgap-path-advanced">Gradle Inspector AirGap Path (Advanced)</h2>
+<pre><code>--detect.gradle.inspector.air.gap.path
 </code></pre>
 
-<p>A comma-separated list of Gradle configurations to include.</p>
-<p>As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
+<p>The path to the directory containing the air gap dependencies for the gradle inspector.</p>
+<p>Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory.</p>
 <table>
 <thead>
 <tr>
@@ -1455,12 +1455,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-exclude-projects-advanced">Gradle Exclude Projects (Advanced)</h2>
-<pre><code>--detect.gradle.excluded.projects
+<h2 id="gradle-include-projects-advanced">Gradle Include Projects (Advanced)</h2>
+<pre><code>--detect.gradle.included.projects
 </code></pre>
 
-<p>A comma-separated list of Gradle sub-projects to exclude.</p>
-<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.</p>
+<p>A comma-separated list of Gradle sub-projects to include.</p>
+<p>As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
 <table>
 <thead>
 <tr>
@@ -1543,12 +1543,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-inspector-airgap-path-advanced">Gradle Inspector AirGap Path (Advanced)</h2>
-<pre><code>--detect.gradle.inspector.air.gap.path
+<h2 id="gradle-include-configurations-advanced">Gradle Include Configurations (Advanced)</h2>
+<pre><code>--detect.gradle.included.configurations
 </code></pre>
 
-<p>The path to the directory containing the air gap dependencies for the gradle inspector.</p>
-<p>Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory.</p>
+<p>A comma-separated list of Gradle configurations to include.</p>
+<p>As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
 <table>
 <thead>
 <tr>
@@ -1587,12 +1587,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-include-projects-advanced">Gradle Include Projects (Advanced)</h2>
-<pre><code>--detect.gradle.included.projects
+<h2 id="gradle-exclude-projects-advanced">Gradle Exclude Projects (Advanced)</h2>
+<pre><code>--detect.gradle.excluded.projects
 </code></pre>
 
-<p>A comma-separated list of Gradle sub-projects to include.</p>
-<p>As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
+<p>A comma-separated list of Gradle sub-projects to exclude.</p>
+<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.</p>
 <table>
 <thead>
 <tr>
