@@ -1203,7 +1203,7 @@ class DetectProperties {
         }
 
         private fun values(): List<Property> {
-            val clazz = Property::class
+            val clazz = DetectProperties::class
             val companionClass = clazz.companionObject!!
             val companion = clazz.companionObjectInstance!!
             val members = mutableListOf<Property>()
