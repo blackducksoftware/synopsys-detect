@@ -1,12 +1,12 @@
 # Shell script configuration
 
-The ${solution_name} Bash and PowerShell scripts can (optionally) be configured by setting the environment variables.
+The ${solution_name} Bash and PowerShell scripts are configured by setting the environment variables.
 
-In Bash, an environment variable can be set as follows:
+In Bash, an environment variable is set as follows:
 
     export ENV_VAR_NAME=value
 
-In PowerShell, an environment variable can be set as follows:
+In PowerShell, an environment variable is set as follows:
 
     $Env:ENV_VAR_NAME = value
 
