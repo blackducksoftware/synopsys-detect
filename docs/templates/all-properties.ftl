@@ -1,5 +1,5 @@
 <#ftl output_format="Markdown">
-This page lists all ${solution_name} properties including deprecated and advanced, for most use cases see [basic properties](../basic-properties).
+This page lists all ${solution_name} properties including deprecated and advanced.  For most use cases, refer to [basic properties](../basic-properties).
 
 <#list groups as group>
 
