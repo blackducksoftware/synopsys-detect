@@ -2,54 +2,85 @@ package com.synopsys.integration.detect.configuration.config
 
 import com.synopsys.integration.detect.config.*
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
-import org.springframework.util.Assert
+import org.junit.jupiter.api.TestFactory
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
-class PropertyTests {
-
-    fun emptyConfig(): DetectConfig {
-        return DetectConfig(emptyList())
+class BooleanValueParserTests() {
+    @ParameterizedTest()
+    @ValueSource(strings = ["unknown", "we ird tef ", "243354323"])
+    fun parseUnknownThrows() {
+        Assertions.assertThrows(ValueParseException::class.java) {
+            BooleanValueParser().parse("unknown")
+        }
     }
 
-    fun mapConfig(propertyValues: Map<String, String>): DetectConfig {
-        return DetectConfig(listOf(MapPropertySource("test", propertyValues)));
+    @ParameterizedTest()
+    @ValueSource(strings = ["tRuE", "true ", " true", "    ", "", "t"])
+    fun booleanParsesTrue(value:String) {
+        Assertions.assertTrue(BooleanValueParser().parse(value))
+    }
+
+    @ParameterizedTest()
+    @ValueSource(strings = ["false", "f"])
+    fun booleanParsesFalse(value:String) {
+        Assertions.assertFalse(BooleanValueParser().parse(value))
+    }
+}
+
+class BooleanPropertyTest : PropertyTest() {
+    private val exampleKey = "example.key"
+    private val requiredBooleanPropertyDefaultTrue = RequiredBooleanProperty(exampleKey, true)
+    private val requiredBooleanPropertyDefaultFalse = RequiredBooleanProperty(exampleKey, false)
+    private val optionalBooleanProperty = OptionalBooleanProperty(exampleKey)
+
+    @Test
+    fun emptyDefaultsToTrue() {
+        Assertions.assertTrue(emptyConfig().getValue(requiredBooleanPropertyDefaultTrue))
     }
 
     @Test
-    fun requiredBooleanGivesDefaultTrue() {
-        val requiredBooleanProperty = RequiredBooleanProperty("example.key", true);
-        val value = emptyConfig().getValue(requiredBooleanProperty)
-        Assertions.assertTrue(value)
+    fun emptyDefaultsToFalse() {
+        Assertions.assertFalse(emptyConfig().getValue(requiredBooleanPropertyDefaultFalse))
     }
 
     @Test
-    fun requiredBooleanGivesDefaultFalse() {
-        val requiredBooleanProperty = RequiredBooleanProperty("example.key", true);
-        val value = emptyConfig().getValue(requiredBooleanProperty)
-        Assertions.assertTrue(value)
+    fun emptyDefaultsToNull() {
+        Assertions.assertNull(emptyConfig().getValue(optionalBooleanProperty))
     }
 
     @Test
-    fun requiredBooleanGivesProvidedFalse() {
-        val requiredBooleanProperty = RequiredBooleanProperty("example.key", true);
-        val config = mapConfig(mapOf("example.key" to "false"));
-        val value = config.getValue(requiredBooleanProperty)
-        Assertions.assertFalse(value)
+    fun providedFalseOverridesTrueDefault() {
+        val config = configOf(exampleKey to "false")
+        Assertions.assertFalse(config.getValue(requiredBooleanPropertyDefaultTrue))
+    }
+
+    @Test
+    fun providesValue() {
+        val config = configOf(exampleKey to "false")
+        val value = config.getValue(optionalBooleanProperty)
+        Assertions.assertTrue(value != null && value == false)
     }
 
     @Test()
-    fun requiredBooleanThrowsWhenUnknown() {
-        val requiredBooleanProperty = RequiredBooleanProperty("example.key", true);
-        val config = mapConfig(mapOf("example.key" to "unknown"));
+    fun unknownValueThrowsRequired() {
         Assertions.assertThrows(InvalidPropertyException::class.java) {
-            config.getValue(requiredBooleanProperty)
+            configOf("example.key" to "unknown").getValue(requiredBooleanPropertyDefaultTrue)
         }
     }
 
     @Test()
-    fun requiredBooleanGivesDefaultWhenUnknown() {
-        val requiredBooleanProperty = RequiredBooleanProperty("example.key", true);
-        val config = mapConfig(mapOf("example.key" to "unknown"));
-        Assertions.assertTrue(config.getValueOrDefault(requiredBooleanProperty))
+    fun unknownValueThrowsOptional() {
+        Assertions.assertThrows(InvalidPropertyException::class.java) {
+            configOf("example.key" to "unknown").getValue(optionalBooleanProperty)
+        }
+    }
+
+    @Test()
+    fun unknownValueGivesDefault() {
+        Assertions.assertTrue(configOf("example.key" to "unknown").getValueOrDefault(requiredBooleanPropertyDefaultTrue))
     }
 }

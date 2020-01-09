@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -68,7 +68,7 @@ public class ProductBoot {
                     final PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
                     blackDuckRunData = BlackDuckRunData.online(blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
                 } else {
-                    if (detectConfiguration.getValue(DetectProperties.Companion.getDETECT_IGNORE_CONNECTION_FAILURES())) {
+                    if (detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_IGNORE_CONNECTION_FAILURES())) {
                         logger.info("Failed to connect to Black Duck: " + blackDuckConnectivityResult.getFailureReason());
                         logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.", DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES.getPropertyName()));
                     } else {
@@ -92,7 +92,7 @@ public class ProductBoot {
             }
         }
 
-        if (detectConfiguration.getValue(DetectProperties.Companion.getDETECT_TEST_CONNECTION())) {
+        if (detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_TEST_CONNECTION())) {
             logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
             return null;
         }

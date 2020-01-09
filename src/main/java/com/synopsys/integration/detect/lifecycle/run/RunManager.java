@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -208,9 +208,9 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
             logger.info("Will include the detector tool.");
-            final String projectBomTool = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PROJECT_DETECTOR());
-            final String requiredDetectors = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_REQUIRED_DETECTOR_TYPES());
-            final boolean buildless = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BUILDLESS());
+            final String projectBomTool = detectConfiguration.getValueOrNull(DetectProperties.Companion.getDETECT_PROJECT_DETECTOR());
+            final String requiredDetectors = detectConfiguration.getValueOrNull(DetectProperties.Companion.getDETECT_REQUIRED_DETECTOR_TYPES());
+            final boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_BUILDLESS());
 
             final DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
             final DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectableFactory, buildless);
@@ -323,8 +323,8 @@ public class RunManager {
                     bdioUploader = blackDuckServicesFactory.createBdioUploadService()::uploadBdio;
                 }
 
-                //TODO: There is no way this is the proper way to do this.
-                String blackduckUrl = detectConfiguration.getValue(DetectProperties.Companion.getBLACKDUCK_URL());
+                // TODO: There is no way this is the proper way to do this.
+                String blackduckUrl = detectConfiguration.getValueOrNull(DetectProperties.Companion.getBLACKDUCK_URL());
                 uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(blackduckUrl, bdioResult.getUploadTargets(), bdioUploader);
                 codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
             }

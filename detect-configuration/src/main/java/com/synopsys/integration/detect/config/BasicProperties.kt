@@ -25,7 +25,8 @@ class RequiredLongProperty(key: String, default: Long) : RequiredProperty<Long>(
 }
 
 class OptionalStringArrayProperty(key: String) : OptionalProperty<List<String>>(key, StringListValueParser()) {}
-class RequiredStringArrayProperty(key: String, default: List<String>) : RequiredProperty<List<String>>(key, StringListValueParser(), default) {
+// Using @JvmSuppressWildcards to prevent the Kotlin compiler from generating wildcard types: https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics
+class RequiredStringArrayProperty(key: String, default: List<String>) : RequiredProperty<@JvmSuppressWildcards List<String>>(key, StringListValueParser(), default) {
     override fun describeDefault(): String? = default.joinToString { "," }
 }
 

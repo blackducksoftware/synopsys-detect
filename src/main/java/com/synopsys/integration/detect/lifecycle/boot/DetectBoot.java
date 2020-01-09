@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -167,7 +167,7 @@ public class DetectBoot {
 
         logger.debug("Configuration processed completely.");
 
-        final Optional<DetectBootResult> configurationResult = printConfiguration(detectConfiguration.getValue(DetectProperties.Companion.getDETECT_SUPPRESS_CONFIGURATION_OUTPUT()), detectOptionManager, detectConfiguration,
+        final Optional<DetectBootResult> configurationResult = printConfiguration(detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_SUPPRESS_CONFIGURATION_OUTPUT()), detectOptionManager, detectConfiguration,
             eventSystem, options);
         if (configurationResult.isPresent()) {
             return configurationResult.get();
@@ -386,7 +386,7 @@ public class DetectBoot {
         final DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
 
         final AirGapCreator airGapCreator = new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
-        final String gradleInspectorVersion = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_GRADLE_INSPECTOR_VERSION());
+        final String gradleInspectorVersion = detectConfiguration.getValueOrNull(DetectProperties.Companion.getDETECT_GRADLE_INSPECTOR_VERSION());
         return airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix, gradleInspectorVersion);
     }
 }

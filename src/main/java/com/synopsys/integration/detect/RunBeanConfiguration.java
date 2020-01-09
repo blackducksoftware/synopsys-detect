@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -104,8 +104,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public FileFinder fileFinder() {
-        //TODO FIX (jake)
-        List<String> excluded = (List<String>) detectConfiguration.getValue(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_FILES());
+        List<String> excluded = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_FILES());
         return new DetectFileFinder(excluded);
     }
 
@@ -131,7 +130,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public CodeLocationNameGenerator codeLocationNameService() {
-        final String codeLocationNameOverride = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_CODE_LOCATION_NAME());
+        final String codeLocationNameOverride = detectConfiguration.getValueOrNull(DetectProperties.Companion.getDETECT_CODE_LOCATION_NAME());
         return new CodeLocationNameGenerator(codeLocationNameOverride);
     }
 

@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -36,8 +36,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.synopsys.integration.detect.config.DetectConfig;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBoot;
@@ -135,8 +133,8 @@ public class Application implements ApplicationRunner {
 
             if (detectBootResult.getDetectConfiguration().isPresent()) {
                 final DetectConfig detectConfiguration = detectBootResult.getDetectConfiguration().get();
-                printOutput = !detectConfiguration.getValue(DetectProperties.Companion.getDETECT_SUPPRESS_RESULTS_OUTPUT());
-                shouldForceSuccess = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_FORCE_SUCCESS());
+                printOutput = !detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_SUPPRESS_RESULTS_OUTPUT());
+                shouldForceSuccess = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_FORCE_SUCCESS());
             }
         }
 

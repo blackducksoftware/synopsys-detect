@@ -1,7 +1,7 @@
 /**
  * detect-configuration
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -154,7 +154,7 @@ public enum DetectProperty {
     DETECT_BAZEL_TARGET("detect.bazel.target", "Bazel Target", "5.2.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = GROUP_SOURCE_SCAN)
-    @HelpDescription("A comma-separated list of additional options to pass to the bazel cquery command.")
+    @HelpDescription("A comma-separated list of additional options to pass to the 'bazel cquery' command when it is invoked by Detect. (This property has no effect on Detect's processing for maven_jar rules, which uses 'bazel query' instead of 'bazel cquery')")
     DETECT_BAZEL_CQUERY_OPTIONS("detect.bazel.cquery.options", "Bazel cquery additional options", "6.1.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_BAZEL, additional = GROUP_SOURCE_SCAN)
