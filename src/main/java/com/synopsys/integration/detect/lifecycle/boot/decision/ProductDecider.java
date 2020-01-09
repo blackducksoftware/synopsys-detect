@@ -51,7 +51,7 @@ public class ProductDecider {
         polarisServerConfigBuilder.setLogger(new SilentIntLogger());
         polarisServerConfigBuilder.setProperties(polarisProperties.entrySet());
         polarisServerConfigBuilder.setUserHome(userHome.getAbsolutePath());
-        polarisServerConfigBuilder.setTimeoutInSeconds(detectConfiguration.getValue(DetectProperties.Companion.getBLACKDUCK_HUB_TIMEOUT()));
+        polarisServerConfigBuilder.setTimeoutInSeconds(detectConfiguration.getValueOrDefault(DetectProperties.Companion.getBLACKDUCK_HUB_TIMEOUT()));
         return polarisServerConfigBuilder;
     }
 
@@ -65,7 +65,7 @@ public class ProductDecider {
         final boolean polarisCanRun = builderStatus.isValid();
 
         if (!polarisCanRun) {
-            final String polarisUrl = detectConfiguration.getValue(DetectProperties.Companion.getPOLARIS_URL());
+            final String polarisUrl = detectConfiguration.getValueOrNull(DetectProperties.Companion.getPOLARIS_URL());
             if (StringUtils.isBlank(polarisUrl)) {
                 logger.debug("Polaris will NOT run: The Polaris url must be provided.");
             } else {
@@ -79,8 +79,8 @@ public class ProductDecider {
     }
 
     private BlackDuckDecision determineBlackDuck(final DetectConfig detectConfiguration) {
-        final boolean offline = detectConfiguration.getValue(DetectProperties.Companion.getBLACKDUCK_OFFLINE_MODE());
-        final String blackDuckUrl = detectConfiguration.getValue(DetectProperties.Companion.getBLACKDUCK_URL());
+        final boolean offline = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getBLACKDUCK_OFFLINE_MODE());
+        final String blackDuckUrl = detectConfiguration.getValueOrNull(DetectProperties.Companion.getBLACKDUCK_URL());
         if (offline) {
             logger.debug("Black Duck will run: Black Duck offline mode was set to true.");
             return BlackDuckDecision.runOffline();
