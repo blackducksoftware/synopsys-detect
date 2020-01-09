@@ -1,7 +1,7 @@
 /**
  * buildSrc
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -20,7 +20,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package com.synopsys.integration.detect.docs
 
 import com.google.gson.Gson

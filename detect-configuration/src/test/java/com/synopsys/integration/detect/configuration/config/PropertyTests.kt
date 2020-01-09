@@ -3,7 +3,6 @@ package com.synopsys.integration.detect.configuration.config
 import com.synopsys.integration.detect.config.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import org.springframework.util.Assert
 
 class PropertyTests {
 
