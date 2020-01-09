@@ -4,8 +4,8 @@ import com.synopsys.integration.detect.DetectTool
 import java.lang.Exception
 import java.lang.RuntimeException
 
-class DetectConfig (val orderedPropertySources: List<DetectPropertySource>) {
-    val resolvedCache : MutableMap<String, PropertyValue> = mutableMapOf();
+class DetectConfig (private val orderedPropertySources: List<DetectPropertySource>) {
+    private val resolvedCache : MutableMap<String, PropertyValue> = mutableMapOf();
 
     fun <T> getValueOrNull(property: OptionalProperty<T>): T? {
         return try {
@@ -43,27 +43,27 @@ class DetectConfig (val orderedPropertySources: List<DetectPropertySource>) {
         }
     }
 
-    //TODO: Re-implement
+    // TODO: Re-implement
     fun getDockerProperties(): Map<String, String> {
         return emptyMap();
     }
 
-    //TODO: Re-implement
+    // TODO: Re-implement
     fun getPhoneHomeProperties(): Map<String, String> {
         return emptyMap();
     }
 
-    //TODO: Re-implement
+    // TODO: Re-implement
     fun getRaw(): Map<String, String> {
         return emptyMap();
     }
 
-    //TODO: Re-implement
+    // TODO: Re-implement
     fun getRaw(keys: Set<String>): Map<String, String> {
         return emptyMap();
     }
 
-    //TODO: Re-implement
+    // TODO: Re-implement
     fun <T> wasPropertyProvided(property: TypedProperty<T>): Boolean {
         return when (resolveFromCache(property)) {
             is ProvidedValue -> true
@@ -77,28 +77,30 @@ class DetectConfig (val orderedPropertySources: List<DetectPropertySource>) {
             resolvedCache[property.key] = resolveFromPropertySource(property)
         }
 
-        return resolvedCache[property.key] ?: throw RuntimeException("Could not resolve a value, something has gone wrong with properties!")    }
+        return resolvedCache[property.key] ?: throw RuntimeException("Could not resolve a value, something has gone wrong with properties!")
+    }
 
     private fun <T> resolveFromPropertySource(property: TypedProperty<T>) : PropertyValue {
         for (source in orderedPropertySources){
             if (source.hasKey(property.key)) {
                 val rawValue = source.getKey(property.key);
-                if (rawValue != null) {//if this property source is the first with a value, it is the canonical source of this property key.
-                    val propertySourcName = source.getName()
-                    try {
+                if (rawValue != null) { // If this property source is the first with a value, it is the canonical source of this property key.
+                    val propertySourceName = source.getName()
+                    return try {
                         val value = property.parser.parse(rawValue)
-                        return ProvidedValue(value as Any, propertySourcName); //TODO: Not sure why this requires me to cast it to 'Any'
+                        ProvidedValue(value, propertySourceName)
                     } catch (e: ValueParseException) {
-                        return ExceptionValue(e, rawValue, propertySourcName)
+                        ExceptionValue(e, rawValue, propertySourceName)
                     }
                 }
             }
         }
-        return NoValue //No property source could provide the value of this property.
+
+        return NoValue // No property source could provide the value of this property.
     }
 }
 
-class InvalidPropertyException (val propertyKey:String, val propertySourceName:String, val innerException: ValueParseException) : Exception("The key '${propertyKey}' in property source '${propertySourceName}' contained a value that could not be reasonably converted to the properties type. The exception was: ${innerException.localizedMessage ?: "Unknown"}", innerException) {}
+class InvalidPropertyException (propertyKey:String, propertySourceName:String, innerException: ValueParseException) : Exception("The key '${propertyKey}' in property source '${propertySourceName}' contained a value that could not be reasonably converted to the properties type. The exception was: ${innerException.localizedMessage ?: "Unknown"}", innerException) {}
 
 sealed class PropertyValue {}
 data class ProvidedValue(val value: Any, val source: String) : PropertyValue()//A property source contained a value and the value could be parsed to the proper type.

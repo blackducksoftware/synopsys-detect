@@ -22,44 +22,40 @@
  */
 package com.synopsys.integration.detect.configuration
 
-import java.nio.file.Path
-import java.util.Arrays
-import java.util.Optional
-
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
 import com.synopsys.integration.detect.DetectTool
-import com.synopsys.integration.detect.config.*
+import com.synopsys.integration.detect.config.BaseValue
+import com.synopsys.integration.detect.config.DetectConfig
+import com.synopsys.integration.detect.config.ExtendedValue
+import com.synopsys.integration.detect.config.populatedValues
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException
 import com.synopsys.integration.detect.lifecycle.run.RunOptions
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFileFilter
-import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFilter
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions
-import com.synopsys.integration.detect.util.DetectEnumUtil
 import com.synopsys.integration.detect.util.filter.DetectToolFilter
 import com.synopsys.integration.detect.workflow.airgap.AirGapOptions
-import com.synopsys.integration.detect.workflow.bdio.AggregateMode
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions
-import com.synopsys.integration.detect.workflow.blackduck.CustomFieldDocument
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions
 import com.synopsys.integration.detector.finder.DetectorFinderOptions
-import com.synopsys.integration.util.EnumUtils
+import java.nio.file.Path
+import java.util.*
 
 // TODO: Create private method for accessing properties that assumes a PropertyAuthority of NONE.
 class DetectConfigurationFactory(private val detectConfiguration: DetectConfig) {
 
     val timeoutInSeconds: Long
         get() {
-            if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_API_TIMEOUT)) {
+            return if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_API_TIMEOUT)) {
                 val timeout = detectConfiguration.getValue(DetectProperties.DETECT_API_TIMEOUT)
-                return timeout / 1000
+                timeout / 1000
             } else {
-                return detectConfiguration.getValue(DetectProperties.DETECT_REPORT_TIMEOUT)
+                detectConfiguration.getValue(DetectProperties.DETECT_REPORT_TIMEOUT)
             }
 
         }
