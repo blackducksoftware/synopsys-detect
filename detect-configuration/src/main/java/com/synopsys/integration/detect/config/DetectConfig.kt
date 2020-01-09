@@ -1,6 +1,5 @@
 package com.synopsys.integration.detect.config
 
-import com.synopsys.integration.detect.DetectTool
 import java.lang.Exception
 import java.lang.RuntimeException
 
@@ -27,7 +26,7 @@ class DetectConfig (private val orderedPropertySources: List<DetectPropertySourc
     @Suppress("UNCHECKED_CAST")
     fun <T> getValue(property: OptionalProperty<T>): T? {
         return when (val value = resolveFromCache(property)) {
-            is ProvidedValue -> value.value as T
+            is ProvidedValue<*> -> value.value as T
             is ExceptionValue -> throw InvalidPropertyException(property.key, value.source, value.exception)
             is NoValue -> null
         }
@@ -37,7 +36,7 @@ class DetectConfig (private val orderedPropertySources: List<DetectPropertySourc
     @Suppress("UNCHECKED_CAST")
     fun <T> getValue(property: RequiredProperty<T>): T {
         return when (val value = resolveFromCache(property)) {
-            is ProvidedValue -> value.value as T
+            is ProvidedValue<*> -> value.value as T
             is ExceptionValue -> throw InvalidPropertyException(property.key, value.source, value.exception)
             is NoValue -> property.default
         }
@@ -66,7 +65,7 @@ class DetectConfig (private val orderedPropertySources: List<DetectPropertySourc
     // TODO: Re-implement
     fun <T> wasPropertyProvided(property: TypedProperty<T>): Boolean {
         return when (resolveFromCache(property)) {
-            is ProvidedValue -> true
+            is ProvidedValue<*> -> true
             is ExceptionValue -> true
             is NoValue -> false
         }
@@ -103,6 +102,6 @@ class DetectConfig (private val orderedPropertySources: List<DetectPropertySourc
 class InvalidPropertyException (propertyKey:String, propertySourceName:String, innerException: ValueParseException) : Exception("The key '${propertyKey}' in property source '${propertySourceName}' contained a value that could not be reasonably converted to the properties type. The exception was: ${innerException.localizedMessage ?: "Unknown"}", innerException) {}
 
 sealed class PropertyValue {}
-data class ProvidedValue(val value: Any, val source: String) : PropertyValue()//A property source contained a value and the value could be parsed to the proper type.
-data class ExceptionValue(val exception: ValueParseException, val rawValue: String, val source: String): PropertyValue()//A property source contained a value but the value could NOT be parsed to the proper type.
-object NoValue : PropertyValue()//No property source contained a value.
+data class ProvidedValue<T>(val value: T, val source: String) : PropertyValue() // A property source contained a value and the value could be parsed to the proper type.
+data class ExceptionValue(val exception: ValueParseException, val rawValue: String, val source: String): PropertyValue() // A property source contained a value but the value could NOT be parsed to the proper type.
+object NoValue : PropertyValue() // No property source contained a value.

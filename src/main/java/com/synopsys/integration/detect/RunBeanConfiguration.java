@@ -104,8 +104,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public FileFinder fileFinder() {
-        //TODO FIX (jake)
-        List<String> excluded = (List<String>) detectConfiguration.getValue(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_FILES());
+        List<String> excluded = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_FILES());
         return new DetectFileFinder(excluded);
     }
 
