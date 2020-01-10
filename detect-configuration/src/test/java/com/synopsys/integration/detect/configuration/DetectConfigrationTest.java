@@ -13,13 +13,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.synopsys.integration.configuration.config.DetectConfig;
 import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.config.DetectConfig;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.help.DetectOption;
 import com.synopsys.integration.detect.help.DetectOptionManager;
 import com.synopsys.integration.detect.type.OperatingSystemType;
-import com.synopsys.integration.detect.util.TildeInPathResolver;
 
 public class DetectConfigrationTest {
 
@@ -62,10 +61,10 @@ public class DetectConfigrationTest {
 
         //TODO - fix
         final DetectOptionManager detectOptionManager = new DetectOptionManager();
-//        final TildeInPathResolver tildeInPathResolver = new TildeInPathResolver(DetectConfigurationManager.USER_HOME, info.getCurrentOs());
-//        final DetectConfigurationManager detectConfigurationManager = new DetectConfigurationManager(tildeInPathResolver, config);
-//        detectConfigurationManager.process(detectOptionManager.getDetectOptions());
-//        detectOptionManager.postConfigurationProcessedInit();
+        //        final TildeInPathResolver tildeInPathResolver = new TildeInPathResolver(DetectConfigurationManager.USER_HOME, info.getCurrentOs());
+        //        final DetectConfigurationManager detectConfigurationManager = new DetectConfigurationManager(tildeInPathResolver, config);
+        //        detectConfigurationManager.process(detectOptionManager.getDetectOptions());
+        //        detectOptionManager.postConfigurationProcessedInit();
 
         final List<DetectOption> options = detectOptionManager.getDetectOptions();
         options.forEach(option -> {

@@ -22,38 +22,17 @@
  */
 package com.synopsys.integration.detect.tool.detector.impl
 
-import java.io.File
-import java.util.HashMap
-import java.util.function.Function
-import java.util.function.Supplier
-
-import org.apache.commons.lang3.StringUtils
-
-import com.synopsys.integration.detect.config.DetectConfig
+import com.synopsys.integration.configuration.config.DetectConfig
 import com.synopsys.integration.detect.configuration.DetectProperties
-import com.synopsys.integration.detect.configuration.PropertyAuthority
 import com.synopsys.integration.detectable.DetectableEnvironment
 import com.synopsys.integration.detectable.detectable.exception.DetectableException
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.DotNetResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.PipResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver
-import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver
+import com.synopsys.integration.detectable.detectable.executable.resolver.*
 import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver
+import org.apache.commons.lang3.StringUtils
+import java.io.File
+import java.util.function.Function
+import java.util.function.Supplier
 
 class DetectExecutableResolver(private val simpleExecutableResolver: SimpleExecutableResolver, private val detectConfiguration: DetectConfig) : JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, DockerResolver, DotNetResolver, GitResolver, SwiftResolver, GoResolver {
     private val cachedExecutables: MutableMap<String, File> = mutableMapOf()

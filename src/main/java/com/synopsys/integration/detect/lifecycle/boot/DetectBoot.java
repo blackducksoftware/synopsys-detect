@@ -37,20 +37,17 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.synopsys.integration.configuration.config.DetectConfig;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectableBeanConfiguration;
 import com.synopsys.integration.detect.RunBeanConfiguration;
-import com.synopsys.integration.detect.config.DetectConfig;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
-import com.synopsys.integration.detect.configuration.DetectConfigurationManager;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.DetectPropertyMap;
 import com.synopsys.integration.detect.configuration.DetectPropertySource;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.help.DetectArgumentState;
@@ -80,7 +77,6 @@ import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolv
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
-import com.synopsys.integration.detect.util.TildeInPathResolver;
 import com.synopsys.integration.detect.util.filter.DetectFilter;
 import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
@@ -280,11 +276,11 @@ public class DetectBoot {
         //Not currently possible. Need a full DetectableConfiguration to be able to make Detectables.
         final Class<Detectable> detectableClass = rule.getDetectableClass();
         final Optional<DetectableInfo> infoSearch = Arrays.stream(detectableClass.getAnnotations())
-                                        .filter(annotation -> annotation instanceof DetectableInfo)
-                                        .map(annotation -> (DetectableInfo) annotation)
-                                        .findFirst();
+                                                        .filter(annotation -> annotation instanceof DetectableInfo)
+                                                        .map(annotation -> (DetectableInfo) annotation)
+                                                        .findFirst();
 
-        if (infoSearch.isPresent()){
+        if (infoSearch.isPresent()) {
             final DetectableInfo info = infoSearch.get();
             helpData.setDetectableLanguage(info.language());
             helpData.setDetectableRequirementsMarkdown(info.requirementsMarkdown());

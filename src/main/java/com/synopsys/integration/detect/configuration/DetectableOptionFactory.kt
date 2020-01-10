@@ -22,21 +22,13 @@
  */
 package com.synopsys.integration.detect.configuration
 
-import com.synopsys.integration.detect.config.DetectConfig
-import java.util.Arrays
-import java.util.Optional
-
-import org.apache.commons.lang3.StringUtils
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-
+import com.synopsys.integration.configuration.config.DetectConfig
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem
 import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions
-import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions
@@ -55,6 +47,9 @@ import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptio
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectableOptions
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions
+import org.apache.commons.lang3.StringUtils
+import org.slf4j.LoggerFactory
+import java.util.*
 
 class DetectableOptionFactory(private val detectConfiguration: DetectConfig, private val diagnosticSystemOptional: Optional<DiagnosticSystem>) {
     private val logger = LoggerFactory.getLogger(this.javaClass)

@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.lifecycle.boot;
 import java.io.File;
 import java.util.Optional;
 
-import com.synopsys.integration.detect.config.DetectConfig;
+import com.synopsys.integration.configuration.config.DetectConfig;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
