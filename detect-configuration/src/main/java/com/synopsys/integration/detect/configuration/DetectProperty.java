@@ -419,7 +419,7 @@ public enum DetectProperty {
     DETECT_DOTNET_PATH("detect.dotnet.path", "dotnet Executable", "4.4.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription(category = ADVANCED, value = "By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win.")
+    @HelpDescription(category = ADVANCED, value = "By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win. Wildcards are supported (for details, refer to \"Property wildcard support\" under \"Advanced\").")
     @HelpDetailed("If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them.")
     DETECT_EXCLUDED_DETECTOR_TYPES("detect.excluded.detector.types", "Detector Types Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
@@ -441,22 +441,22 @@ public enum DetectProperty {
     DETECT_GRADLE_BUILD_COMMAND("detect.gradle.build.command", "Gradle Build Command", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Gradle configurations to exclude.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Gradle configurations to exclude. Wildcards are supported (for details, refer to \"Property wildcard support\" under \"Advanced\").")
     @HelpDetailed("As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property.")
     DETECT_GRADLE_EXCLUDED_CONFIGURATIONS("detect.gradle.excluded.configurations", "Gradle Exclude Configurations", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Gradle sub-projects to exclude.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Gradle sub-projects to exclude. Wildcards are supported (for details, refer to \"Property wildcard support\" under \"Advanced\").")
     @HelpDetailed("As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.")
     DETECT_GRADLE_EXCLUDED_PROJECTS("detect.gradle.excluded.projects", "Gradle Exclude Projects", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Gradle configurations to include.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Gradle configurations to include. Wildcards are supported (for details, refer to \"Property wildcard support\" under \"Advanced\").")
     @HelpDetailed("As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.")
     DETECT_GRADLE_INCLUDED_CONFIGURATIONS("detect.gradle.included.configurations", "Gradle Include Configurations", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_GRADLE, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Gradle sub-projects to include.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Gradle sub-projects to include. Wildcards are supported (for details, refer to \"Property wildcard support\" under \"Advanced\").")
     @HelpDetailed("As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.")
     DETECT_GRADLE_INCLUDED_PROJECTS("detect.gradle.included.projects", "Gradle Include Projects", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
@@ -480,7 +480,7 @@ public enum DetectProperty {
     DETECT_HEX_REBAR3_PATH("detect.hex.rebar3.path", "Rebar3 Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_DETECTOR, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription(category = ADVANCED, value = "By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
+    @HelpDescription(category = ADVANCED, value = "By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win. Wildcards are supported (for details, refer to \"Property wildcard support\" under \"Advanced\").")
     @HelpDetailed("If you want to limit Detect to a subset of its detectors, use this property to specify that subset.")
     DETECT_INCLUDED_DETECTOR_TYPES("detect.included.detector.types", "Detector Types Included", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
@@ -498,12 +498,12 @@ public enum DetectProperty {
     DETECT_MAVEN_BUILD_COMMAND("detect.maven.build.command", "Maven Build Command", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Maven modules (sub-projects) to exclude.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Maven modules (sub-projects) to exclude. Wildcards are supported (for details, refer to \"Property wildcard support\" under \"Advanced\").")
     @HelpDetailed("As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property.")
     DETECT_MAVEN_EXCLUDED_MODULES("detect.maven.excluded.modules", "Maven Modules Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Maven modules (sub-projects) to include.")
+    @HelpDescription(category = ADVANCED, value = "A comma-separated list of Maven modules (sub-projects) to include. Wildcards are supported (for details, refer to \"Property wildcard support\" under \"Advanced\").")
     @HelpDetailed("As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.")
     DETECT_MAVEN_INCLUDED_MODULES("detect.maven.included.modules", "Maven Modules Included", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
@@ -513,12 +513,12 @@ public enum DetectProperty {
     DETECT_MAVEN_PATH("detect.maven.path", "Maven Executable", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).")
+    @HelpDescription("A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude). Wildcards are supported (for details, refer to \"Property wildcard support\" under \"Advanced\").")
     @HelpDetailed("If set, Detect will include only dependencies of the given Maven scope.")
     DETECT_MAVEN_INCLUDED_SCOPES("detect.maven.included.scopes", "Dependency Scope Included", "6.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_MAVEN, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription("A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).")
+    @HelpDescription("A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include). Wildcards are supported (for details, refer to \"Property wildcard support\" under \"Advanced\").")
     @HelpDetailed("If set, Detect will include only dependencies outside of the given Maven scope.")
     DETECT_MAVEN_EXCLUDED_SCOPES("detect.maven.excluded.scopes", "Dependency Scope Excluded", "6.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
@@ -764,11 +764,11 @@ public enum DetectProperty {
     DETECT_RUBY_INCLUDE_DEV_DEPENDENCIES("detect.ruby.include.dev.dependencies", "Ruby Development Dependencies", "5.4.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
 
     @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription(category = ADVANCED, value = "The names of the sbt configurations to exclude.")
+    @HelpDescription(category = ADVANCED, value = "The names of the sbt configurations to exclude. Wildcards are supported (for details, refer to \"Property wildcard support\" under \"Advanced\").")
     DETECT_SBT_EXCLUDED_CONFIGURATIONS("detect.sbt.excluded.configurations", "SBT Configurations Excluded", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
-    @HelpDescription(category = ADVANCED, value = "The names of the sbt configurations to include.")
+    @HelpDescription(category = ADVANCED, value = "The names of the sbt configurations to include. Wildcards are supported (for details, refer to \"Property wildcard support\" under \"Advanced\").")
     DETECT_SBT_INCLUDED_CONFIGURATIONS("detect.sbt.included.configurations", "SBT Configurations Included", "3.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_SBT, additional = { GROUP_SOURCE_SCAN })
@@ -789,13 +789,13 @@ public enum DetectProperty {
     DETECT_TEST_CONNECTION("detect.test.connection", "Test Connection to Black Duck", "3.0.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.")
+    @HelpDescription("The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win. Wildcards are supported (for details, refer to \"Property wildcard support\" under \"Advanced\").")
     @HelpDetailed("This property and detect.tools.excluded provide control over which tools Detect runs.")
     @AcceptableValues(value = { "BAZEL", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
     DETECT_TOOLS("detect.tools", "Detect Tools Included", "5.0.0", PropertyType.STRING, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
-    @HelpDescription("The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.")
+    @HelpDescription("The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win. Wildcards are supported (for details, refer to \"Property wildcard support\" under \"Advanced\").")
     @HelpDetailed("This property and detect.tools provide control over which tools Detect runs.")
     @AcceptableValues(value = { "BAZEL", "DETECTOR", "DOCKER", "SIGNATURE_SCAN", "BINARY_SCAN", "POLARIS", "NONE", "ALL" }, caseSensitive = true, strict = false, isCommaSeparatedList = true)
     DETECT_TOOLS_EXCLUDED("detect.tools.excluded", "Detect Tools Excluded", "5.0.0", PropertyType.STRING, PropertyAuthority.NONE),

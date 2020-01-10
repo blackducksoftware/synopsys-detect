@@ -191,6 +191,19 @@ public final class BatteryTest {
         Application.SHOULD_EXIT = previous;
     }
 
+    private ExecutableOutput downloadDetectBash(File target) throws ExecutableRunnerException {
+        List<String> shellArguments = new ArrayList<>();
+        shellArguments.add("-s");
+        shellArguments.add("-L");
+        shellArguments.add("https://detect.synopsys.com/detect.sh");
+        shellArguments.add("-o");
+        shellArguments.add(target.toString());
+
+        final Executable executable = new Executable(outputDirectory, new HashMap<>(), "curl", shellArguments);
+        final SimpleExecutableRunner executableRunner = new SimpleExecutableRunner();
+        return executableRunner.execute(executable);
+    }
+
     private boolean executeDetectScript(final List<String> detectArguments) throws ExecutableRunnerException {
         if (!useDetectScript) {
             return false;
@@ -202,8 +215,14 @@ public final class BatteryTest {
             target = "powershell";
             shellArguments.add("\"[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect\"");
         } else {
-            target = "bash";
-            shellArguments.add("<(curl -s -L https://detect.synopsys.com/detect.sh)");
+            File scriptTarget = new File(batteryDirectory, "detect.sh");
+            if (scriptTarget.exists()) {
+                Assertions.assertTrue(scriptTarget.delete(), "Failed to cleanup an existing detect shell script. This file is cleaned up to ensure latest script is always used.");
+            }
+            ExecutableOutput downloadOutput = downloadDetectBash(scriptTarget);
+            Assertions.assertTrue(downloadOutput.getReturnCode() == 0 && scriptTarget.exists(),  "Something went wrong downloading the detect script.");
+            Assertions.assertTrue(scriptTarget.setExecutable(true), "Failed to change script permissions to execute. The downloaded detect script must be executable.");
+            target = scriptTarget.toString();
         }
         shellArguments.addAll(detectArguments);
 
@@ -225,6 +244,7 @@ public final class BatteryTest {
 
         return true;
     }
+
     private boolean executeDetectJar(final List<String> detectArguments) throws ExecutableRunnerException {
         final String java = System.getenv("BATTERY_TESTS_JAVA_PATH");
         final String detectJar = System.getenv("BATTERY_TESTS_DETECT_JAR_PATH");
