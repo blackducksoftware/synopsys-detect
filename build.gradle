@@ -241,12 +241,21 @@ task publishAirGapZipWithoutDocker() {
     }
 }
 
+task tempList() {
+    doLast {
+        exec {
+            commandLine 'keytool', '-storepass', "${System.env.JARSIGNER_STOREPASS}", '-keystore', "${System.env.HOME}/code-signing-cert.p12", '-list', '-v'
+        }
+    }
+}
+
 task signJar() {
-    dependsOn build
+    dependsOn build, tempList
     doLast {
         exec {
             // jarsigner -tsa http://timestamp.globalsign.com/scripts/timestamp.dll -storetype pkcs12 -storepass <secret> -keystore code-signing-cert.p12 synopsys-detect-5.4.0.jar "black duck software, inc.’s digicert inc id"
             //Enter keystore password:
+            commandLine 'testing'
             commandLine 'jarsigner', '-tsa', 'http://timestamp.globalsign.com/scripts/timestamp.dll', '-storetype', 'pkcs12', '-storepass', "${System.env.JARSIGNER_STOREPASS}", '-keystore', "${System.env.HOME}/code-signing-cert.p12", "${createArtifactName()}", "black duck software, inc.\u2019s digicert inc id"
         }
     }
