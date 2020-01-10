@@ -83,10 +83,6 @@ public enum DetectProperty {
     @HelpDescription("The API token used to authenticate with the Black Duck Server.")
     BLACKDUCK_API_TOKEN("blackduck.api.token", "Black Duck API Token", "4.2.0", PropertyType.STRING, PropertyAuthority.NONE),
 
-    @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
-    @HelpDescription("When set to true, user will be able to scan and discover license names in Black Duck")
-    BLACKDUCK_LICENSE_SEARCH("blackduck.license.search", "Black Duck License Search", "6.2.0", PropertyType.BOOLEAN, PropertyAuthority.NONE),
-
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, SEARCH_GROUP_OFFLINE, DEFAULT_HELP })
     @HelpDescription("This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
     BLACKDUCK_OFFLINE_MODE("blackduck.offline.mode", "Offline Mode", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
@@ -244,6 +240,10 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription(category = ADVANCED, value = "If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Black Duck's urls for different operating systems.")
     DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL("detect.blackduck.signature.scanner.host.url", "Signature Scanner Host URL", "4.2.0", PropertyType.STRING, PropertyAuthority.NONE),
+
+    @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
+    @HelpDescription("When set to true, user will be able to scan and discover license names in Black Duck")
+    DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH("detect.blackduck.signature.scanner.license.search", "Signature Scanner License Search", "6.2.0", PropertyType.BOOLEAN, PropertyAuthority.NONE),
 
     @HelpGroup(primary = GROUP_SIGNATURE_SCANNER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
