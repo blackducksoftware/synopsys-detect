@@ -1,7 +1,4 @@
-package com.synopsys.integration.detect.configuration.config
-
-import com.synopsys.integration.detect.config.DetectConfig
-import com.synopsys.integration.detect.config.MapPropertySource
+package com.synopsys.integration.configuration.config
 
 open class PropertyTest {
     fun emptyConfig(): DetectConfig {

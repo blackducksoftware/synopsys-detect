@@ -31,11 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.builder.BuilderStatus;
+import com.synopsys.integration.configuration.config.DetectConfig;
 import com.synopsys.integration.detect.DetectTool;
-import com.synopsys.integration.detect.config.DetectConfig;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;

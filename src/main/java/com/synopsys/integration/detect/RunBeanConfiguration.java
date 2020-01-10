@@ -36,13 +36,11 @@ import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.detect.config.DetectConfig;
+import com.synopsys.integration.configuration.config.DetectConfig;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.tool.detector.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.DetectFileFinder;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
@@ -104,7 +102,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public FileFinder fileFinder() {
-        List<String> excluded = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_FILES());
+        final List<String> excluded = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_FILES());
         return new DetectFileFinder(excluded);
     }
 

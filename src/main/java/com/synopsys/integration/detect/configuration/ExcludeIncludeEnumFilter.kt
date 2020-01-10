@@ -1,28 +1,36 @@
 package com.synopsys.integration.detect.configuration
 
-import com.synopsys.integration.detect.config.All
-import com.synopsys.integration.detect.config.FilterableEnumValue
-import com.synopsys.integration.detect.config.None
-import com.synopsys.integration.detect.config.Value
+import com.synopsys.integration.configuration.config.All
+import com.synopsys.integration.configuration.config.FilterableEnumValue
+import com.synopsys.integration.configuration.config.None
+import com.synopsys.integration.configuration.config.Value
 
 class ExcludeIncludeEnumFilter<T>(val excluded: List<FilterableEnumValue<T>>, val included: List<FilterableEnumValue<T>>) {
     fun containsAll(list: List<FilterableEnumValue<T>>): Boolean {
-        return list.any { when (it) {
-            is All -> true
-            else -> false
-        } }
+        return list.any {
+            when (it) {
+                is All -> true
+                else -> false
+            }
+        }
     }
+
     fun containsNone(list: List<FilterableEnumValue<T>>): Boolean {
-        return list.any { when (it) {
-            is None -> true
-            else -> false
-        } }
+        return list.any {
+            when (it) {
+                is None -> true
+                else -> false
+            }
+        }
     }
+
     fun containsElement(list: List<FilterableEnumValue<T>>, value: T): Boolean {
-        return list.any { when (it) {
-            is Value -> it.value == value
-            else -> false
-        } }
+        return list.any {
+            when (it) {
+                is Value -> it.value == value
+                else -> false
+            }
+        }
     }
 
     fun willExclude(value: T): Boolean {
@@ -42,7 +50,7 @@ class ExcludeIncludeEnumFilter<T>(val excluded: List<FilterableEnumValue<T>>, va
             return true;
         } else if (containsNone(included)) {
             return false;
-        } else  {
+        } else {
             return containsElement(included, value);
         }
     }

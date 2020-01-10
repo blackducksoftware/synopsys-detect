@@ -1,10 +1,7 @@
-package com.synopsys.integration.detect.config
+package com.synopsys.integration.configuration.config
 
-import java.lang.Exception
-import java.lang.RuntimeException
-
-class DetectConfig (private val orderedPropertySources: List<DetectPropertySource>) {
-    private val resolvedCache : MutableMap<String, PropertyValue> = mutableMapOf();
+class DetectConfig(private val orderedPropertySources: List<DetectPropertySource>) {
+    private val resolvedCache: MutableMap<String, PropertyValue> = mutableMapOf();
 
     fun <T> getValueOrNull(property: OptionalProperty<T>): T? {
         return try {
@@ -30,7 +27,7 @@ class DetectConfig (private val orderedPropertySources: List<DetectPropertySourc
             is ExceptionValue -> throw InvalidPropertyException(property.key, value.source, value.exception)
             is NoValue -> null
         }
-   }
+    }
 
     @Throws(InvalidPropertyException::class)
     @Suppress("UNCHECKED_CAST")
@@ -71,7 +68,7 @@ class DetectConfig (private val orderedPropertySources: List<DetectPropertySourc
         }
     }
 
-    private fun <T> resolveFromCache(property: TypedProperty<T>) : PropertyValue {
+    private fun <T> resolveFromCache(property: TypedProperty<T>): PropertyValue {
         if (!resolvedCache.containsKey(property.key)) {
             resolvedCache[property.key] = resolveFromPropertySource(property)
         }
@@ -79,8 +76,8 @@ class DetectConfig (private val orderedPropertySources: List<DetectPropertySourc
         return resolvedCache[property.key] ?: throw RuntimeException("Could not resolve a value, something has gone wrong with properties!")
     }
 
-    private fun <T> resolveFromPropertySource(property: TypedProperty<T>) : PropertyValue {
-        for (source in orderedPropertySources){
+    private fun <T> resolveFromPropertySource(property: TypedProperty<T>): PropertyValue {
+        for (source in orderedPropertySources) {
             if (source.hasKey(property.key)) {
                 val rawValue = source.getKey(property.key);
                 if (rawValue != null) { // If this property source is the first with a value, it is the canonical source of this property key.
@@ -99,9 +96,10 @@ class DetectConfig (private val orderedPropertySources: List<DetectPropertySourc
     }
 }
 
-class InvalidPropertyException (propertyKey:String, propertySourceName:String, innerException: ValueParseException) : Exception("The key '${propertyKey}' in property source '${propertySourceName}' contained a value that could not be reasonably converted to the properties type. The exception was: ${innerException.localizedMessage ?: "Unknown"}", innerException) {}
+class InvalidPropertyException(propertyKey: String, propertySourceName: String, innerException: ValueParseException) : Exception("The key '${propertyKey}' in property source '${propertySourceName}' contained a value that could not be reasonably converted to the properties type. The exception was: ${innerException.localizedMessage
+        ?: "Unknown"}", innerException) {}
 
 sealed class PropertyValue {}
 data class ProvidedValue<T>(val value: T, val source: String) : PropertyValue() // A property source contained a value and the value could be parsed to the proper type.
-data class ExceptionValue(val exception: ValueParseException, val rawValue: String, val source: String): PropertyValue() // A property source contained a value but the value could NOT be parsed to the proper type.
+data class ExceptionValue(val exception: ValueParseException, val rawValue: String, val source: String) : PropertyValue() // A property source contained a value but the value could NOT be parsed to the proper type.
 object NoValue : PropertyValue() // No property source contained a value.

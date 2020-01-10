@@ -24,11 +24,11 @@ package com.synopsys.integration.detect.configuration
 
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
+import com.synopsys.integration.configuration.config.BaseValue
+import com.synopsys.integration.configuration.config.DetectConfig
+import com.synopsys.integration.configuration.config.ExtendedValue
+import com.synopsys.integration.configuration.config.populatedValues
 import com.synopsys.integration.detect.DetectTool
-import com.synopsys.integration.detect.config.BaseValue
-import com.synopsys.integration.detect.config.DetectConfig
-import com.synopsys.integration.detect.config.ExtendedValue
-import com.synopsys.integration.detect.config.populatedValues
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException
 import com.synopsys.integration.detect.lifecycle.run.RunOptions
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions
@@ -128,7 +128,7 @@ class DetectConfigurationFactory(private val detectConfiguration: DetectConfig) 
         val included = detectConfiguration.getValue(DetectProperties.DETECT_INCLUDED_DETECTOR_TYPES)
         val detectorFilter = ExcludeIncludeEnumFilter(excluded, included)
 
-        return DetectorEvaluationOptions(forceNestedSearch) { rule -> detectorFilter.shouldInclude(rule.detectorType)}
+        return DetectorEvaluationOptions(forceNestedSearch) { rule -> detectorFilter.shouldInclude(rule.detectorType) }
     }
 
     fun createBdioOptions(): BdioOptions {
@@ -192,15 +192,16 @@ class DetectConfigurationFactory(private val detectConfiguration: DetectConfig) 
         val userProvidedScannerInstallUrl = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL)
 
         val snippetMatching = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING)
-        fun fromSnippetExtended (value: ExtendedSnippetMode): SnippetMatching? {
+        fun fromSnippetExtended(value: ExtendedSnippetMode): SnippetMatching? {
             return if (detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE)) {
                 SnippetMatching.SNIPPET_MATCHING
             } else {
                 null
             }
         }
+
         var snippetMatchingEnum: SnippetMatching? = when (snippetMatching) {
-            is ExtendedValue ->  fromSnippetExtended(snippetMatching.value)
+            is ExtendedValue -> fromSnippetExtended(snippetMatching.value)
             is BaseValue -> snippetMatching.value
         }
         return BlackDuckSignatureScannerOptions(signatureScannerPaths, exclusionPatterns, exclusionNamePatterns, offlineLocalScannerInstallPath, onlineLocalScannerInstallPath, userProvidedScannerInstallUrl, scanMemory,

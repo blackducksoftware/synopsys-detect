@@ -1,11 +1,7 @@
-package com.synopsys.integration.detect.configuration.config
+package com.synopsys.integration.configuration.config
 
-import com.synopsys.integration.detect.config.*
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.DynamicTest
-import org.junit.jupiter.api.DynamicTest.dynamicTest
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestFactory
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
@@ -20,13 +16,13 @@ class BooleanValueParserTests() {
 
     @ParameterizedTest()
     @ValueSource(strings = ["tRuE", "true ", " true", "    ", "", "t"])
-    fun booleanParsesTrue(value:String) {
+    fun booleanParsesTrue(value: String) {
         Assertions.assertTrue(BooleanValueParser().parse(value))
     }
 
     @ParameterizedTest()
     @ValueSource(strings = ["false", "f"])
-    fun booleanParsesFalse(value:String) {
+    fun booleanParsesFalse(value: String) {
         Assertions.assertFalse(BooleanValueParser().parse(value))
     }
 }

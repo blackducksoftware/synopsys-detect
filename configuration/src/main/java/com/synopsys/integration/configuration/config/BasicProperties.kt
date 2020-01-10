@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.config
+package com.synopsys.integration.configuration.config
 
 
 class OptionalStringProperty(key: String) : OptionalProperty<String>(key, StringValueParser()) {}
@@ -9,6 +9,7 @@ class RequiredStringProperty(key: String, default: String) : RequiredProperty<St
 class OptionalBooleanProperty(key: String) : OptionalProperty<Boolean>(key, BooleanValueParser()) {
     override fun listExampleValues(): List<String>? = listOf("true", "false")
 }
+
 class RequiredBooleanProperty(key: String, default: Boolean) : RequiredProperty<Boolean>(key, BooleanValueParser(), default) {
     override fun listExampleValues(): List<String>? = listOf("true", "false")
     override fun describeDefault(): String? = default.toString()
@@ -43,12 +44,12 @@ class RequiredEnumListProperty<T>(key: String, default: List<T>, valueOf: (Strin
     override fun isOnlyExampleValues(): Boolean = true
 }
 
-class StringValueParser : ValueParser<String> () {
-    override fun parse(value: String) : String = value
+class StringValueParser : ValueParser<String>() {
+    override fun parse(value: String): String = value
 }
 
-class BooleanValueParser : ValueParser<Boolean> () {
-    override fun parse(value: String) : Boolean {
+class BooleanValueParser : ValueParser<Boolean>() {
+    override fun parse(value: String): Boolean {
         return when (value.toLowerCase().trim()) {
             "" -> true //support spring notion of just adding a property to true (--bool)
             "t" -> true
@@ -60,8 +61,8 @@ class BooleanValueParser : ValueParser<Boolean> () {
     }
 }
 
-class IntegerValueParser : ValueParser<Int> () {
-    override fun parse(value: String) : Int {
+class IntegerValueParser : ValueParser<Int>() {
+    override fun parse(value: String): Int {
         return try {
             value.toInt()
         } catch (e: NumberFormatException) {
@@ -70,8 +71,8 @@ class IntegerValueParser : ValueParser<Int> () {
     }
 }
 
-class LongValueParser : ValueParser<Long> () {
-    override fun parse(value: String) : Long {
+class LongValueParser : ValueParser<Long>() {
+    override fun parse(value: String): Long {
         return try {
             value.toLong()
         } catch (e: NumberFormatException) {
@@ -80,42 +81,42 @@ class LongValueParser : ValueParser<Long> () {
     }
 }
 
-class StringListValueParser : ValueParser<List<String>> () {
-    override fun parse(value: String) : List<String> {
+class StringListValueParser : ValueParser<List<String>>() {
+    override fun parse(value: String): List<String> {
         return value.split(",").toList()
     }
 }
 
-class EnumValueOfParser<T>(val valueOf: (String) -> T?) : ValueParser<T> () {
+class EnumValueOfParser<T>(val valueOf: (String) -> T?) : ValueParser<T>() {
     private val parser = ValueOfParser(valueOf);
-    override fun parse(value: String) : T {
+    override fun parse(value: String): T {
         return parser.parse(value)
     }
 }
 
-class EnumListValueOfParser<T>(val valueOf: (String) -> T?) : ValueParser<List<T>> () {
+class EnumListValueOfParser<T>(val valueOf: (String) -> T?) : ValueParser<List<T>>() {
     private val parser = ValueOfParser(valueOf);
-    override fun parse(value: String) : List<T> {
+    override fun parse(value: String): List<T> {
         return value.split(",").map { parser.parse(it) }
     }
 }
 
 class ValueOfParser<T>(val valueOf: (String) -> T?) {
     @Throws(ValueParseException::class)
-    fun parse(value: String) : T {
+    fun parse(value: String): T {
         try {
             return valueOf(value) ?: throw ValueParseException(value, "enum", additionalMessage = "Enum value was null.")
-        } catch (e:Exception){
+        } catch (e: Exception) {
             throw ValueParseException(value, "enum", innerException = e)
         }
     }
 }
 
 class ValueOfOrNullParser<T>(val valueOf: (String) -> T?) {
-    fun parse(value: String) : T? {
+    fun parse(value: String): T? {
         return try {
             valueOf(value)
-        } catch (e:Exception){
+        } catch (e: Exception) {
             null
         }
     }

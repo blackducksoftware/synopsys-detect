@@ -39,14 +39,12 @@ import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOut
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.configuration.config.DetectConfig;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectTool;
-import com.synopsys.integration.detect.config.DetectConfig;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
@@ -324,7 +322,7 @@ public class RunManager {
                 }
 
                 // TODO: There is no way this is the proper way to do this.
-                String blackduckUrl = detectConfiguration.getValueOrNull(DetectProperties.Companion.getBLACKDUCK_URL());
+                final String blackduckUrl = detectConfiguration.getValueOrNull(DetectProperties.Companion.getBLACKDUCK_URL());
                 uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(blackduckUrl, bdioResult.getUploadTargets(), bdioUploader);
                 codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
             }

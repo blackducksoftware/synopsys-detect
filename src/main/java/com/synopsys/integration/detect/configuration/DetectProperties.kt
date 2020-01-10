@@ -27,8 +27,8 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectClone
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionPhaseType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
+import com.synopsys.integration.configuration.config.*
 import com.synopsys.integration.detect.DetectTool
-import com.synopsys.integration.detect.config.*
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule
 import com.synopsys.integration.detector.base.DetectorType

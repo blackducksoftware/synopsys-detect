@@ -22,13 +22,7 @@
  */
 package com.synopsys.integration.detect.configuration
 
-import com.synopsys.integration.detect.config.DetectConfig
-import java.net.MalformedURLException
-import java.net.URL
-
-import org.apache.commons.lang3.math.NumberUtils
-import org.slf4j.LoggerFactory
-
+import com.synopsys.integration.configuration.config.DetectConfig
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException
 import com.synopsys.integration.detect.exitcode.ExitCodeType
 import com.synopsys.integration.detect.util.ProxyUtil
@@ -38,6 +32,10 @@ import com.synopsys.integration.rest.credentials.Credentials
 import com.synopsys.integration.rest.credentials.CredentialsBuilder
 import com.synopsys.integration.rest.proxy.ProxyInfo
 import com.synopsys.integration.rest.proxy.ProxyInfoBuilder
+import org.apache.commons.lang3.math.NumberUtils
+import org.slf4j.LoggerFactory
+import java.net.MalformedURLException
+import java.net.URL
 
 class ConnectionManager(private val detectConfiguration: DetectConfig) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
