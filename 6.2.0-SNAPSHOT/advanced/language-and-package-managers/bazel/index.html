@@ -323,6 +323,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../includeexcludewildcards/" title="Property wildcard support" class="md-nav__link">
+      Property wildcard support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -398,13 +410,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-10" type="checkbox" id="nav-9-10" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11" checked>
     
-    <label class="md-nav__link" for="nav-9-10">
+    <label class="md-nav__link" for="nav-9-11">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-10">
+      <label class="md-nav__title" for="nav-9-11">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -581,8 +593,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -599,13 +611,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1228,14 +1240,14 @@
 <p>As of Synopsys Detect versions 5.2.0 and higher, Synopsys Detect provides limited support for Bazel projects.</p>
 <p>As of Synopsys Detect version 5.2.0, Synopsys Detect supports dependencies specified in <em>maven_jar</em> workspace rules.
 As of Synopsys Detect version 6.0.0, Synopsys Detect also supports dependencies specified in <em>maven_install</em> workspace rules.</p>
-<p>The Bazel tool will attempt to run on your project if you provide a Bazel build target via the Bazel target property.</p>
+<p>The Bazel tool attempts to run on your project if you provide a Bazel build target using the Bazel target property.</p>
 <p>The Bazel tool also requires a bazel executable on $PATH.</p>
 <p>Synopsys Detect attempts to determine the workspace dependency rule (<em>maven_jar</em> or <em>maven_install</em>) from the WORKSPACE file.
-In case it can’t, you can specify which rule you use with the Bazel dependency type property.
-See <a href="../../../properties/Detectors/bazel/">Properties</a> for details.</p>
+In case it cannot, you can specify which rule you use with the Bazel dependency type property.
+Refer to <a href="../../../properties/Detectors/bazel/">Properties</a> for details.</p>
 <h2 id="processing-for-the-maven_install-workspace-rule">Processing for the <em>maven_install</em> workspace rule</h2>
-<p>The Bazel tool runs a bazel cquery on the given target to produce output from which it can parse artifact details (group, artifact, version) for dependencies.</p>
-<p>Here’s an example (using commands similar to those that Synopsys Detect runs, but from the command line) of how Synopsys Detect’s bazel detector currently identifies components:</p>
+<p>The Bazel tool runs a bazel cquery on the given target to produce output from which it can parse artifact details such as group, artifact, and version for dependencies.</p>
+<p>The following is an example using commands similar to those that Synopsys Detect runs, but from the command line of how Synopsys Detect’s Bazel detector currently identifies components.</p>
 <pre><code>$ bazel cquery --noimplicit_deps 'kind(j.*import, deps(//tests/integration:ArtifactExclusionsTest))' --output build 2&gt;&amp;1 | grep maven_coordinates
 tags = [&quot;maven_coordinates=com.google.guava:guava:27.0-jre&quot;],
 tags = [&quot;maven_coordinates=org.hamcrest:hamcrest:2.1&quot;],
@@ -1249,8 +1261,8 @@ tags = [&quot;maven_coordinates=com.google.code.findbugs:jsr305:3.0.2&quot;],
 
 <p>Then, it parses the group/artifact/version details from the values of the maven_coordinates tags.</p>
 <h2 id="processing-for-the-maven_jar-workspace-rule">Processing for the <em>maven_jar</em> workspace rule</h2>
-<p>The Bazel tool runs a bazel query on the given target to get a list of jar dependencies. On each jar dependency, the Bazel tool runs another bazel query to get its artifact details (group, artifact, version).</p>
-<p>Here’s an example (using the equivalent commands that Synopsys Detect runs, but from the command line) of how Synopsys Detect’s bazel detector currently identifies components:
+<p>The Bazel tool runs a bazel query on the given target to get a list of jar dependencies. On each jar dependency, the Bazel tool runs another bazel query to get its artifact details: group, artifact, and version.</p>
+<p>The following is an example using the equivalent commands that Synopsys Detect runs, but from the command line of how Synopsys Detect’s Bazel detector currently identifies components.
 First, it gets a list of dependencies:</p>
 <pre><code>$ bazel query 'filter(&quot;@.*:jar&quot;, deps(//:ProjectRunner))'
 INFO: Invocation ID: dfe8718d-b4db-4bd9-b9b9-57842cca3fb4
@@ -1259,7 +1271,7 @@ INFO: Invocation ID: dfe8718d-b4db-4bd9-b9b9-57842cca3fb4
 Loading: 0 packages loaded
 </code></pre>
 
-<p>Then, it gets details for each dependency (it prepends //external: to the dependency name for this command):</p>
+<p>Then, it gets details for each dependency. It prepends //external: to the dependency name for this command.</p>
 <pre><code>$ bazel query 'kind(maven_jar, //external:org_apache_commons_commons_io)' --output xml
 INFO: Invocation ID: 0a320967-b2a8-4b36-ab47-e183bc4d4781
 &lt;?xml version=&quot;1.1&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;
@@ -1272,7 +1284,7 @@ INFO: Invocation ID: 0a320967-b2a8-4b36-ab47-e183bc4d4781
 Loading: 0 packages loaded
 </code></pre>
 
-<p>Finally, it parses the group/artifact/version details from the value of the string element with name "artifact".</p>
+<p>Finally, it parses the group/artifact/version details from the value of the string element using the name of artifact.</p>
                 
                   
                 

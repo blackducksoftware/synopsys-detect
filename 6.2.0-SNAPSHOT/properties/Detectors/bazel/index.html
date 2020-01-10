@@ -321,6 +321,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../../advanced/includeexcludewildcards/" title="Property wildcard support" class="md-nav__link">
+      Property wildcard support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -394,13 +406,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-10" type="checkbox" id="nav-9-10">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
     
-    <label class="md-nav__link" for="nav-9-10">
+    <label class="md-nav__link" for="nav-9-11">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-10">
+      <label class="md-nav__title" for="nav-9-11">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -532,8 +544,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../../../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -550,13 +562,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -935,20 +947,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bazel-executable" class="md-nav__link">
-    Bazel Executable
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#bazel-workspace-external-dependency-rule" class="md-nav__link">
-    Bazel workspace external dependency rule
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#bazel-target" class="md-nav__link">
     Bazel Target
   </a>
@@ -958,6 +956,20 @@
         <li class="md-nav__item">
   <a href="#bazel-cquery-additional-options" class="md-nav__link">
     Bazel cquery additional options
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bazel-executable" class="md-nav__link">
+    Bazel Executable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bazel-workspace-external-dependency-rule" class="md-nav__link">
+    Bazel workspace external dependency rule
   </a>
   
 </li>
@@ -1208,20 +1220,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bazel-executable" class="md-nav__link">
-    Bazel Executable
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#bazel-workspace-external-dependency-rule" class="md-nav__link">
-    Bazel workspace external dependency rule
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#bazel-target" class="md-nav__link">
     Bazel Target
   </a>
@@ -1231,6 +1229,20 @@
         <li class="md-nav__item">
   <a href="#bazel-cquery-additional-options" class="md-nav__link">
     Bazel cquery additional options
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bazel-executable" class="md-nav__link">
+    Bazel Executable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bazel-workspace-external-dependency-rule" class="md-nav__link">
+    Bazel workspace external dependency rule
   </a>
   
 </li>
@@ -1253,92 +1265,6 @@
                 
                 
                 <h1 id="bazel">bazel</h1>
-<h2 id="bazel-executable">Bazel Executable</h2>
-<pre><code>--detect.bazel.path
-</code></pre>
-
-<p>The path to the Bazel executable.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>5.2.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="bazel-workspace-external-dependency-rule">Bazel workspace external dependency rule</h2>
-<pre><code>--detect.bazel.dependency.type=maven_jar,maven_install,UNSPECIFIED 
-</code></pre>
-
-<p>The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>UNSPECIFIED</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>maven_jar, maven_install, UNSPECIFIED</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>Yes</td>
-</tr>
-</tbody>
-</table>
 <h2 id="bazel-target">Bazel Target</h2>
 <pre><code>--detect.bazel.target
 </code></pre>
@@ -1422,6 +1348,92 @@
 <tr>
 <td>Strict</td>
 <td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bazel-executable">Bazel Executable</h2>
+<pre><code>--detect.bazel.path
+</code></pre>
+
+<p>The path to the Bazel executable.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>5.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bazel-workspace-external-dependency-rule">Bazel workspace external dependency rule</h2>
+<pre><code>--detect.bazel.dependency.type=maven_jar,maven_install,UNSPECIFIED 
+</code></pre>
+
+<p>The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>UNSPECIFIED</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>maven_jar, maven_install, UNSPECIFIED</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>Yes</td>
 </tr>
 </tbody>
 </table>

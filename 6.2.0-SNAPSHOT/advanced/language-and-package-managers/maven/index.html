@@ -323,6 +323,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../includeexcludewildcards/" title="Property wildcard support" class="md-nav__link">
+      Property wildcard support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -398,13 +410,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-10" type="checkbox" id="nav-9-10" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11" checked>
     
-    <label class="md-nav__link" for="nav-9-10">
+    <label class="md-nav__link" for="nav-9-11">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-10">
+      <label class="md-nav__title" for="nav-9-11">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -581,8 +593,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -599,13 +611,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1231,14 +1243,14 @@
 <li>Maven Parse detector</li>
 </ul>
 <h2 id="maven-pom-detector">Maven Pom detector</h2>
-<p>The Maven Pom detector can discover dependencies of Maven projects.</p>
-<p>The Maven Pom detector will attempt to run on your project if it finds a pom.xml file in the source directory (top level).</p>
+<p>The Maven Pom detector discovers dependencies of Maven projects.</p>
+<p>The Maven Pom detector attempts to run on your project if it finds a pom.xml file in the source directory (top level).</p>
 <p>The Maven Pom detector also requires either mvnw or mvn:</p>
 <ol>
-<li>Synopsys Detect looks for mvnw in the source directory (top level). You can override this by setting the maven path property. If not overridden and not found:</li>
+<li>Synopsys Detect looks for mvnw in the source directory (top level). You can override this by setting the Maven path property. If not overridden and not found:</li>
 <li>Synopsys Detect looks for mvn on $PATH.</li>
 </ol>
-<p>The Maven Pom detector runs <code>mvn dependency:tree</code> to get a list of the project's dependencies, and then parses the output.</p>
+<p>The Maven Pom detector runs <code>mvn dependency:tree</code> to get a list of the project's dependencies and then parses the output.</p>
 <p>Scope inclusion/exclusion is performed during the parsing of the output of the <code>mvn dependency:tree</code> command.
 When a component of an included scope is found under a component of an excluded scope, it is added
 to the BOM under a top level placeholder component named <em>Additional_Components</em>.</p>

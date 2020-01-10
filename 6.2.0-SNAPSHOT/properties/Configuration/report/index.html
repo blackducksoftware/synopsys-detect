@@ -321,6 +321,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../../advanced/includeexcludewildcards/" title="Property wildcard support" class="md-nav__link">
+      Property wildcard support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -394,13 +406,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-10" type="checkbox" id="nav-9-10">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
     
-    <label class="md-nav__link" for="nav-9-10">
+    <label class="md-nav__link" for="nav-9-11">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-10">
+      <label class="md-nav__title" for="nav-9-11">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -532,8 +544,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../../../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -550,13 +562,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -894,13 +906,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notices-report-path" class="md-nav__link">
-    Notices Report Path
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#risk-report-output-path" class="md-nav__link">
     Risk Report Output Path
   </a>
@@ -910,6 +915,13 @@
         <li class="md-nav__item">
   <a href="#generate-notices-report" class="md-nav__link">
     Generate Notices Report
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notices-report-path" class="md-nav__link">
+    Notices Report Path
   </a>
   
 </li>
@@ -1215,13 +1227,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notices-report-path" class="md-nav__link">
-    Notices Report Path
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#risk-report-output-path" class="md-nav__link">
     Risk Report Output Path
   </a>
@@ -1231,6 +1236,13 @@
         <li class="md-nav__item">
   <a href="#generate-notices-report" class="md-nav__link">
     Generate Notices Report
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notices-report-path" class="md-nav__link">
+    Notices Report Path
   </a>
   
 </li>
@@ -1277,49 +1289,6 @@
 <tr>
 <td>Default Value</td>
 <td>false</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="notices-report-path">Notices Report Path</h2>
-<pre><code>--detect.notices.report.path=.
-</code></pre>
-
-<p>The output directory for notices report. Default is the source directory.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>.</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1406,6 +1375,49 @@
 <tr>
 <td>Default Value</td>
 <td>false</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="notices-report-path">Notices Report Path</h2>
+<pre><code>--detect.notices.report.path=.
+</code></pre>
+
+<p>The output directory for notices report. Default is the source directory.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>.</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

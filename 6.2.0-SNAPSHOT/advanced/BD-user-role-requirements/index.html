@@ -332,6 +332,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../includeexcludewildcards/" title="Property wildcard support" class="md-nav__link">
+      Property wildcard support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -405,13 +417,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-10" type="checkbox" id="nav-9-10">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
     
-    <label class="md-nav__link" for="nav-9-10">
+    <label class="md-nav__link" for="nav-9-11">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-10">
+      <label class="md-nav__title" for="nav-9-11">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -543,8 +555,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../language-and-package-managers/yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../language-and-package-managers/yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -561,13 +573,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1166,14 +1178,14 @@
                 <h1 id="black-duck-user-role-requirements">Black Duck user role requirements</h1>
 <p>Overview:</p>
 <ul>
-<li>Project Creator role is required to create Black Duck projects.</li>
-<li>Global code scanner (or project code scanner for the project) is required to populate the project BOM.</li>
-<li>BOM Manager is required to generate reports.</li>
+<li>The Project Creator role is required to create Black Duck projects.</li>
+<li>The Global Code Scanner role or Project Code Scanner for the project is required to populate the project BOM.</li>
+<li>The BOM Manager role is required to generate reports.</li>
 </ul>
 <p>Additional details:</p>
 <ul>
-<li>The Project Code Scanner role is insufficient to run any Synopsys Detect post build actions (policy check, notices report, risk report)</li>
-<li>A user with the Global Code Scanner role can (as of Black Duck 2019.6) run generate a report, but cannot delete the report when it’s done with it. BOM Manager role is required for the delete.</li>
+<li>The Project Code Scanner role is insufficient to run any Synopsys Detect post build actions; for example, policy check, notices report, risk report.</li>
+<li>A user with the Global Code Scanner role can (as of Black Duck 2019.6) generate a report, but cannot delete the report when it’s complete. The BOM Manager role is required for the delete.</li>
 </ul>
                 
                   

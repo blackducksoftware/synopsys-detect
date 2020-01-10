@@ -434,6 +434,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../advanced/includeexcludewildcards/" title="Property wildcard support" class="md-nav__link">
+      Property wildcard support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -507,13 +519,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-10" type="checkbox" id="nav-9-10">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
     
-    <label class="md-nav__link" for="nav-9-10">
+    <label class="md-nav__link" for="nav-9-11">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-10">
+      <label class="md-nav__title" for="nav-9-11">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -645,8 +657,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -663,13 +675,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1375,7 +1387,7 @@ characters ("_"). For example:</p>
 </code></pre>
 
 <p>On Windows, the environment variable name can either be the original property
-name, or the property name converted to uppercase, with period characters (".") converted to underscore
+name, or the property name converted to uppercase with period characters (".") converted to underscore
 characters ("_"). For example:</p>
 <pre><code>    $Env:DETECT_PROJECT_NAME = MyProject
     powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot;
@@ -1383,7 +1395,7 @@ characters ("_"). For example:</p>
 
 <h2 id="using-a-configuration-file">Using a configuration file</h2>
 <p>Another commonly-used method of configuring Synopsys Detect is to provide a configuration file. The configuration file
-can be a Java Properties (.properties) file, or a YAML (.yml) file.</p>
+can be a Java properties (.properties) file, or a YAML (.yml) file.</p>
 <p>The most common location for a configuration file is in a file named application.properties or application.yml
 in the current working directory, or a ./config subdirectory.</p>
 <h3 id="properties-file">Properties file</h3>
@@ -1397,8 +1409,8 @@ and adhere to YAML syntax for dictionaries: <code>propertyName: propertyValue</c
 you want when you run Synopsys Detect.</p>
 <h3 id="creating-a-profile">Creating a profile</h3>
 <p>To define a set of properties for a profile, create a configuration file named <em>application-{profilename}.properties</em>
-or <em>application-{profilename}.yml</em> (in the current working directory, or in a subdirectory named <em>config</em>).
-Populate it with property assignments as described above.</p>
+or <em>application-{profilename}.yml</em> in the current working directory, or in a subdirectory named <em>config</em>.
+Populate it with property assignments as previously described.</p>
 <h3 id="selecting-a-profile-on-the-command-line">Selecting a profile on the command line</h3>
 <p>To select one or more profiles on the Synopsys Detect command line, assign the the comma-separated list of profiles
 to the Spring Boot property <em>spring.profiles.active</em>:</p>
@@ -1411,36 +1423,35 @@ to the Spring Boot property <em>spring.profiles.active</em>:</p>
 <p>Synopsys Detect reads property values using
 <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config">Spring Boot's externalized configuration mechanism</a>,
 which provides capabilities beyond those described on this page.</p>
-<p>The most common methods used to pass a property value to Synopsys Detect are listed below. A method with lower number in Spring Boot's order of precedence will
-override a method with a higher number.</p>
+<p>The most common methods used to pass a property value to Synopsys Detect are listed as follows. A method with lower number in Spring Boot's order of precedence overrides a method with a higher number.</p>
 <ul>
-<li>Using a command line argument (#4 in Spring Boot's order of precedence)</li>
+<li>Using a command line argument (#4 in Spring Boot's order of precedence):</li>
 </ul>
 <pre><code>    --blackduck.url=https://blackduck.yourdomain.com
 </code></pre>
 
 <ul>
-<li>Using one environment variable per property (#10 in Spring Boot's order of precedence)</li>
+<li>Using one environment variable per property (#10 in Spring Boot's order of precedence):</li>
 </ul>
 <pre><code>    export BLACKDUCK_URL=https://blackduck.yourdomain.com
 </code></pre>
 
 <ul>
-<li>Using property assignments in a .properties configuration file (#14 in Spring Boot's order of precedence)</li>
+<li>Using property assignments in a .properties configuration file (#14 in Spring Boot's order of precedence):</li>
 </ul>
 <pre><code>    blackduck.url=https://blackduck.yourdomain.com
     blackduck.api.token=yourtokenvalue
 </code></pre>
 
 <ul>
-<li>Using property assignments in a .yml configuration file (also #14 in Spring Boot's order of precedence, but .properties takes precedence over .yml)</li>
+<li>Using property assignments in a .yml configuration file (also #14 in Spring Boot's order of precedence, but .properties takes precedence over .yml):</li>
 </ul>
 <pre><code>    blackduck.url: https://blackduck.yourdomain.com
     blackduck.api.token: yourtokenvalue
 </code></pre>
 
 <ul>
-<li>Using the SPRING_APPLICATION_JSON environment variable with a set of properties set using JSON format (#5 in Spring Boot's order of precedence)</li>
+<li>Using the SPRING_APPLICATION_JSON environment variable with a set of properties set using JSON format (#5 in Spring Boot's order of precedence):</li>
 </ul>
 <pre><code>    export SPRING_APPLICATION_JSON='{&quot;blackduck.url&quot;:&quot;https://blackduck.yourdomain.com&quot;,&quot;blackduck.api.token&quot;:&quot;yourgeneratedtoken&quot;}'
 </code></pre>
@@ -1452,14 +1463,14 @@ for more details and more sophisticated ways to set properties.</p>
 mechanisms provided by <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config">Spring Boot</a>,
 including:</p>
 <ul>
-<li>On the command line (for example: --blackduck.password={your password})</li>
-<li>As an environment variable value (for example: export BLACKDUCK_PASSWORD={your password})</li>
-<li>In a configration (.properties) file (for example: ./application.properties)</li>
+<li>On the command line; for example, --blackduck.password={your password}.</li>
+<li>As an environment variable value; for example, export BLACKDUCK_PASSWORD={your password}.</li>
+<li>In a configration (.properties) file; for example, ./application.properties.</li>
 </ul>
 <p>Values provided on the command line may be visible to other users that can view process details.
-Setting sensitive value using environment variables is usually considered more secure.
-Connecting to another system (e.g. Black Duck or Polaris) using an access token (also called an API token)
-is usually considered more secure than connecting using username and password. </p>
+Setting sensitive values using environment variables is usually considered more secure.
+Connecting to another system; for example, Black Duck or Polaris) using an access token (also called an API token)
+is usually considered more secure than connecting using a username and password. </p>
                 
                   
                 

@@ -321,6 +321,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../../advanced/includeexcludewildcards/" title="Property wildcard support" class="md-nav__link">
+      Property wildcard support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -394,13 +406,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-10" type="checkbox" id="nav-9-10">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
     
-    <label class="md-nav__link" for="nav-9-10">
+    <label class="md-nav__link" for="nav-9-11">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-10">
+      <label class="md-nav__title" for="nav-9-11">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -532,8 +544,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../../../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -550,13 +562,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -803,15 +815,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#wait-for-results" class="md-nav__link">
-    Wait For Results
+  <a href="#buildless-mode" class="md-nav__link">
+    Buildless Mode
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#buildless-mode" class="md-nav__link">
-    Buildless Mode
+  <a href="#wait-for-results" class="md-nav__link">
+    Wait For Results
   </a>
   
 </li>
@@ -824,15 +836,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#force-success-advanced" class="md-nav__link">
-    Force Success (Advanced)
+  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
+    Detect Ignore Connection Failures (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
-    Detect Ignore Connection Failures (Advanced)
+  <a href="#force-success-advanced" class="md-nav__link">
+    Force Success (Advanced)
   </a>
   
 </li>
@@ -1215,15 +1227,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#wait-for-results" class="md-nav__link">
-    Wait For Results
+  <a href="#buildless-mode" class="md-nav__link">
+    Buildless Mode
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#buildless-mode" class="md-nav__link">
-    Buildless Mode
+  <a href="#wait-for-results" class="md-nav__link">
+    Wait For Results
   </a>
   
 </li>
@@ -1236,15 +1248,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#force-success-advanced" class="md-nav__link">
-    Force Success (Advanced)
+  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
+    Detect Ignore Connection Failures (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
-    Detect Ignore Connection Failures (Advanced)
+  <a href="#force-success-advanced" class="md-nav__link">
+    Force Success (Advanced)
   </a>
   
 </li>
@@ -1267,11 +1279,11 @@
                 
                 
                 <h1 id="general">general</h1>
-<h2 id="wait-for-results">Wait For Results</h2>
-<pre><code>--detect.wait.for.results=false
+<h2 id="buildless-mode">Buildless Mode</h2>
+<pre><code>--detect.detector.buildless=false
 </code></pre>
 
-<p>If set to true, Detect will wait for Synopsys products until results are available or the blackduck.timeout is exceeded.</p>
+<p>If set to true, only Detector's capable of running without a build will be run.</p>
 <table>
 <thead>
 <tr>
@@ -1282,7 +1294,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>5.5.0</td>
+<td>5.4.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1310,11 +1322,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="buildless-mode">Buildless Mode</h2>
-<pre><code>--detect.detector.buildless=false
+<h2 id="wait-for-results">Wait For Results</h2>
+<pre><code>--detect.wait.for.results=false
 </code></pre>
 
-<p>If set to true, only Detector's capable of running without a build will be run.</p>
+<p>If set to true, Detect will wait for Synopsys products until results are available or the blackduck.timeout is exceeded.</p>
 <table>
 <thead>
 <tr>
@@ -1325,7 +1337,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>5.4.0</td>
+<td>5.5.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1396,11 +1408,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="force-success-advanced">Force Success (Advanced)</h2>
-<pre><code>--detect.force.success=false
+<h2 id="detect-ignore-connection-failures-advanced">Detect Ignore Connection Failures (Advanced)</h2>
+<pre><code>--detect.ignore.connection.failures=false
 </code></pre>
 
-<p>If true, Detect will always exit with code 0.</p>
+<p>If true, Detect will ignore any products that it cannot connect to.</p>
+<p>If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.</p>
 <table>
 <thead>
 <tr>
@@ -1411,7 +1424,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>5.3.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1439,12 +1452,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-ignore-connection-failures-advanced">Detect Ignore Connection Failures (Advanced)</h2>
-<pre><code>--detect.ignore.connection.failures=false
+<h2 id="force-success-advanced">Force Success (Advanced)</h2>
+<pre><code>--detect.force.success=false
 </code></pre>
 
-<p>If true, Detect will ignore any products that it cannot connect to.</p>
-<p>If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.</p>
+<p>If true, Detect will always exit with code 0.</p>
 <table>
 <thead>
 <tr>
@@ -1455,7 +1467,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>5.3.0</td>
+<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>

@@ -522,6 +522,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../advanced/includeexcludewildcards/" title="Property wildcard support" class="md-nav__link">
+      Property wildcard support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -595,13 +607,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-10" type="checkbox" id="nav-9-10">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
     
-    <label class="md-nav__link" for="nav-9-10">
+    <label class="md-nav__link" for="nav-9-11">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-10">
+      <label class="md-nav__title" for="nav-9-11">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -733,8 +745,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -751,13 +763,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1535,42 +1547,41 @@
                 <h1 id="downloading-and-running">Downloading and running</h1>
 <h2 id="positioning-synopsys-detect-in-the-build-process">Positioning Synopsys Detect in the build process</h2>
 <h3 id="build-mode">Build mode</h3>
-<p>In <a href="../components/detectors/#build-detectors-vs-buildless-detectors">build mode</a> (the default),
+<p>In <a href="../components/detectors/#build-detectors-versus-buildless-detectors">build mode</a>, which is the default,
 Synopsys Detect should be executed as a post-build step in the build environment of the project.
 Building your project prior to running Synopsys Detect is often required for the detector to run successfully,
 and helps ensure that the build artifacts are available for signature scanning.</p>
 <h3 id="buildless-mode">Buildless mode</h3>
-<p>In <a href="../components/detectors/#build-detectors-vs-buildless-detectors">buildless mode</a>,
-Synopsys Detect will make its best effort to discover dependencies without the benefit of
-build artifacts or build tools. In buildless mode, there is no requirement that Synopsys Detect run as a post-build step.
+<p>In <a href="../components/detectors/#build-detectors-versus-buildless-detectors">buildless mode</a>,
+Synopsys Detect makes its best effort to discover dependencies without the benefit of
+build artifacts or build tools. In buildless mode, there is no requirement that Synopsys Detect must run as a post-build step.
 Results from buildless mode may be less accurate than results from build mode.</p>
 <h2 id="choosing-the-working-directory">Choosing the working directory</h2>
 <p>You can run Synopsys Detect from any directory. If you are not running Synopsys Detect from the project directory,
-provide the project directory via the <a href="../properties/Configuration/paths/#source-path">source path property</a>. When that property is not set,
+provide the project directory using the <a href="../properties/Configuration/paths/#source-path">source path property</a>. When that property is not set,
 Synopsys Detect assumes the current working directory is the project directory.</p>
 <h2 id="choosing-a-run-method-script-or-jar">Choosing a run method (script or .jar)</h2>
 <p>There are two ways to run Synopsys Detect:</p>
 <ol>
-<li>Download and run a Synopsys Detect script</li>
-<li>Download and run a Synopsys Detect .jar file</li>
+<li>Download and run a Synopsys Detect script.</li>
+<li>Download and run a Synopsys Detect .jar file.</li>
 </ol>
-<p>The primary reason to run a Synopsys Detect script is that the scripts (by default) always
-run the latest version of the Synopsys Detect .jar file (downloading it for you if necessary).
-Run this way, Synopsys Detect automatically updates itself; as soon as a new version becomes
-available, you will run the new version (unless you override this default behavior).</p>
+<p>The primary reason to run a Synopsys Detect script is that the scripts by default always
+run the latest version of the Synopsys Detect .jar file; downloading it for you if necessary.
+When run this way, Synopsys Detect automatically updates itself; as soon as a new version becomes
+available, the new version automatically runs, unless you override this default behavior.</p>
 <p>The primary reason to run the Synopsys Detect .jar directly is that this method provides
 direct control over the Synopsys Detect version;
-Synopsys Detect will not automatically update in this scenario.</p>
+Synopsys Detect does not automatically update in this scenario.</p>
 <h2 id="running-the-synopsys-detect-script">Running the Synopsys Detect script</h2>
 <p>The primary function of the Synopsys Detect scripts is to download and execute the Synopsys Detect .jar file.
 Several aspects of script functionality can be configured, including:</p>
 <ul>
-<li>The Synopsys Detect version to download/run (by default: the latest version)</li>
-<li>The download location</li>
-<li>Where to find Java</li>
-<li>Etc.</li>
+<li>The Synopsys Detect version to download/run; by default, the latest version.</li>
+<li>The download location.</li>
+<li>Where to find Java.</li>
 </ul>
-<p>Information on how to configure the scripts can be found in <a href="../advanced/script-configuration/">Shell script configuration</a>.</p>
+<p>Information on how to configure the scripts is in <a href="../advanced/script-configuration/">Shell script configuration</a>.</p>
 <h4 id="linux-or-mac-bash">Linux or Mac (Bash)</h4>
 <p>To download and run the latest version of Synopsys Detect in a single command:</p>
 <pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
@@ -1591,7 +1602,7 @@ Several aspects of script functionality can be configured, including:</p>
 <pre><code>export DETECT_LATEST_RELEASE_VERSION={Synopsys Detect version}
 bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
 </code></pre>
-<p>For example, to run Synopsys Detect 5.5.0:</p>
+<p>For example, to run Synopsys Detect version 5.5.0:</p>
 <pre><code>export DETECT_LATEST_RELEASE_VERSION=5.5.0
 bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
 </code></pre>
@@ -1600,12 +1611,12 @@ bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
 <pre><code>$Env:DETECT_LATEST_RELEASE_VERSION = {Synopsys Detect version}
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 </code></pre>
-<p>For example, to run Synopsys Detect 5.5.0:</p>
+<p>For example, to run Synopsys Detect version 5.5.0:</p>
 <pre><code>$Env:DETECT_LATEST_RELEASE_VERSION = 5.5.0
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 </code></pre>
 <h2 id="running-the-synopsys-detect-jar">Running the Synopsys Detect .jar</h2>
-<p>Recent versions of the Synopsys Detect .jar file can be downloaded from https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect.</p>
+<p>Recent versions of the Synopsys Detect .jar file are available for download from https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect.</p>
 <p>To run Synopsys Detect by invoking the .jar file:</p>
 <pre><code>java -jar {path to .jar file}
 </code></pre>
@@ -1621,8 +1632,8 @@ java -jar synopsys-detect-5.6.2.jar
 <p><a href="../properties/all-properties/">Properties</a> provide a variety of options for configuring Synopsys Detect behavior. One of the
 most fundamental ways to modify Synopsys Detect is by including and excluding <a href="../components/tools/">tools</a> and <a href="../components/detectors/">detectors</a>.</p>
 <h3 id="tools">Tools</h3>
-<p>By default, all tools are eligible to run (the set of tools that actually run
-depends on which properties you set).
+<p>By default, all tools are eligible to run; the set of tools that actually run
+depends on the properties you set.
 To limit the eligible tools to a given list, use:</p>
 <pre><code>--detect.tools={comma-separated list of tool names, all uppercase}
 </code></pre>
@@ -1630,11 +1641,11 @@ To limit the eligible tools to a given list, use:</p>
 <pre><code>--detect.tools.excluded={comma-separated list of tool names, all uppercase}
 </code></pre>
 <p>Exclusions take precedence over inclusions.</p>
-<p>See <a href="../components/tools/">Tools</a> for the list of tool names.</p>
-<p>See <a href="../properties/all-properties/">Properties</a> for details.</p>
+<p>Refer to <a href="../components/tools/">Tools</a> for the list of tool names.</p>
+<p>Refer to <a href="../properties/all-properties/">Properties</a> for details.</p>
 <h3 id="detectors">Detectors</h3>
-<p>By default, all detectors are eligible to run (the set of detectors that actually
-run depends on what files exist in your project directory).
+<p>By default, all detectors are eligible to run.  The set of detectors that actually
+run depends on the files existing in your project directory.
 To limit the eligible detectors to a given list, use:</p>
 <pre><code>--detect.included.detector.types={comma-separated list of detector names}
 </code></pre>
@@ -1642,17 +1653,17 @@ To limit the eligible detectors to a given list, use:</p>
 <pre><code>--detect.excluded.detector.types={comma-separated list of detector names}
 </code></pre>
 <p>Exclusions take precedence over inclusions.</p>
-<p>See <a href="../components/detectors/">Detectors</a> for the list of detector names.</p>
-<p>See <a href="../properties/all-properties/">Properties</a> for details.</p>
+<p>Refer to <a href="../components/detectors/">Detectors</a> for the list of detector names.</p>
+<p>Refer to <a href="../properties/all-properties/">Properties</a> for details.</p>
 <h2 id="running-with-black-duck">Running with Black Duck</h2>
 <p>Synopsys Detect can be used with Black Duck to perform Software Composition Analysis (SCA).</p>
 <h3 id="overview">Overview</h3>
-<p>When Black Duck connection details are provided, Synopsys Detect will execute
+<p>When Black Duck connection details are provided, Synopsys Detect executes
 the following by default:</p>
 <ul>
-<li>The <a href="../components/detectors/">detector tool</a>, which runs the appropriate package manager-specific detector (the Maven detector
-for Maven projects, the Gradle detector for Gradle projects, etc.).</li>
-<li>The <a href="../properties/Configuration/signature scanner/">Black Duck signature scanner</a>, which does a Black Duck signature scan on the
+<li>The <a href="../components/detectors/">detector tool</a>, which runs the appropriate package manager-specific detector; the Maven detector
+for Maven projects, the Gradle detector for Gradle projects, and so forth.</li>
+<li>The <a href="../properties/Configuration/signature scanner/">Black Duck signature scanner</a>, which performs a Black Duck signature scan on the
 project directory.</li>
 </ul>
 <p>Synopsys Detect can be configured to perform additional tasks, including the following:</p>
@@ -1663,30 +1674,30 @@ project directory.</li>
 <li>Generate a <a href="../properties/Configuration/report/">report</a>.</li>
 <li>Fail on <a href="../properties/Configuration/project/#fail-on-policy-violation-severities">policy violation</a>.</li>
 </ul>
-<p>See <a href="../properties/Configuration/blackduck server/">Black Duck Server properties</a>
+<p>Refer to <a href="../properties/Configuration/blackduck server/">Black Duck Server properties</a>
 and <a href="../properties/Configuration/signature scanner/">Black Duck signature scanner properties</a> for details.</p>
 <h3 id="offline-mode">Offline mode</h3>
-<p>If you have no Black Duck instance, or if your network is down, you can still run Synopsys Detect in offline mode.
+<p>If you do not have a Black Duck instance, or if your network is down, you can still run Synopsys Detect in offline mode.
 In offline mode, Synopsys Detect creates the BDIO content and the dry run Black Duck signature scan output files without attempting to upload them to Black Duck.
 You can run Synopsys Detect in offline mode using the <a href="../properties/Configuration/blackduck server/#offline-mode">offline mode property</a>.</p>
 <h3 id="bdio-format">BDIO format</h3>
 <p>Synopsys Detect produces dependency information for Black Duck in Black Duck Input Output (BDIO) format files.
-Synopsys Detect can produce BDIO files in either of two formats: BDIO version 1, or BDIO version 2.
-Versions of Black Duck prior to 2018.12.4 accept only BDIO 1. Black Duck version 2018.12.4 and later
+Synopsys Detect can produce BDIO files in two formats: BDIO version 1, or BDIO version 2.
+Versions of Black Duck prior to 2018.12.4 accept only BDIO 1. Black Duck versions 2018.12.4 and higher
 accept either BDIO 1 or BDIO 2.
 By default, Synopsys Detect produces BDIO 1 files.</p>
 <p>Use the <a href="../properties/Configuration/paths/#bdio-2-enabled">BDIO2 enabled property</a> to select BDIO 2 format.</p>
 <h2 id="running-with-polaris">Running with Polaris</h2>
 <p>Synopsys Detect can be used with Polaris to perform Static Application Security Testing (SAST).</p>
-<p>When Polaris connection details are provided, Synopsys Detect will execute
+<p>When Polaris connection details are provided, Synopsys Detect executes
 the following by default:</p>
 <ul>
-<li>The detector tool, which runs the appropriate package manager-specific detector (the Maven detector
-for Maven projects, the Gradle detector for Gradle projects, etc.).</li>
+<li>The detector tool, which runs the appropriate package manager-specific detector; the Maven detector
+for Maven projects, the Gradle detector for Gradle projects, and so forth.</li>
 <li>The Polaris tool, which runs the Polaris CLI on the
 project directory.</li>
 </ul>
-<p>See <a href="../properties/Configuration/polaris/">Properties</a> for details.</p>
+<p>Refer to <a href="../properties/Configuration/polaris/">Properties</a> for details.</p>
                 
                   
                 

@@ -234,21 +234,21 @@
       
         <li class="md-nav__item">
   <a href="#step-1-locate-or-acquire-a-source-code-project-on-which-you-will-run-synopsys-detect" class="md-nav__link">
-    Step 1: Locate or acquire a source code project on which you will run Synopsys Detect
+    Step 1: Locate or acquire a source code project on which you will run Synopsys Detect.
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#step-2-run-synopsys-detect-in-offline-mode" class="md-nav__link">
-    Step 2: Run Synopsys Detect in offline mode
+    Step 2: Run Synopsys Detect in offline mode.
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#step-3-run-synopsys-detect-connected-to-black-duck" class="md-nav__link">
-    Step 3: Run Synopsys Detect connected to Black Duck
+    Step 3: Run Synopsys Detect connected to Black Duck.
   </a>
   
 </li>
@@ -380,6 +380,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../advanced/includeexcludewildcards/" title="Property wildcard support" class="md-nav__link">
+      Property wildcard support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -453,13 +465,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-10" type="checkbox" id="nav-9-10">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
     
-    <label class="md-nav__link" for="nav-9-10">
+    <label class="md-nav__link" for="nav-9-11">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-10">
+      <label class="md-nav__title" for="nav-9-11">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -591,8 +603,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -609,13 +621,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1205,21 +1217,21 @@
       
         <li class="md-nav__item">
   <a href="#step-1-locate-or-acquire-a-source-code-project-on-which-you-will-run-synopsys-detect" class="md-nav__link">
-    Step 1: Locate or acquire a source code project on which you will run Synopsys Detect
+    Step 1: Locate or acquire a source code project on which you will run Synopsys Detect.
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#step-2-run-synopsys-detect-in-offline-mode" class="md-nav__link">
-    Step 2: Run Synopsys Detect in offline mode
+    Step 2: Run Synopsys Detect in offline mode.
   </a>
   
 </li>
       
         <li class="md-nav__item">
   <a href="#step-3-run-synopsys-detect-connected-to-black-duck" class="md-nav__link">
-    Step 3: Run Synopsys Detect connected to Black Duck
+    Step 3: Run Synopsys Detect connected to Black Duck.
   </a>
   
 </li>
@@ -1249,9 +1261,9 @@
                 
                 
                 <h1 id="quickstart-guide">Quickstart guide</h1>
-<p>To help you get started using Synopsys Detect, here's a simple example.</p>
-<h2 id="step-1-locate-or-acquire-a-source-code-project-on-which-you-will-run-synopsys-detect">Step 1: Locate or acquire a source code project on which you will run Synopsys Detect</h2>
-<p>To run Synopsys Detect on junit4 (an open source project written in Java and built with Maven), you could acquire
+<p>The following is a simple example to help you get started using Synopsys Detect.</p>
+<h2 id="step-1-locate-or-acquire-a-source-code-project-on-which-you-will-run-synopsys-detect">Step 1: Locate or acquire a source code project on which you will run Synopsys Detect.</h2>
+<p>To run Synopsys Detect on junit4, which is an open source project written in Java and built with Maven, you could acquire
 it by doing the following:</p>
 <pre><code>git clone https://github.com/junit-team/junit4.git
 cd junit4
@@ -1261,32 +1273,31 @@ cd junit4
 project's dependencies without using Synopsys Detect. You might do the following:</p>
 <ol>
 <li>Look in the project directory (junit4) for hints about how dependencies are managed. In this case, the <em>mvnw</em> and <em>pom.xml</em> files are hints that dependencies are managed using Maven.</li>
-<li>Since it's a Maven project, you would likely run <code>./mvnw dependency:tree</code> to reveal the project's dependencies (direct and transitive).</li>
+<li>Since it's a Maven project, you would likely run <code>./mvnw dependency:tree</code> to reveal the project's dependencies; both direct and transitive.</li>
 </ol>
-<p>This is exactly what Synopsys Detect will do on this project. In addition, Synopsys Detect will run the
-Black Duck signature scanner on the directory, which can discover additional dependencies
+<p>This is exactly what Synopsys Detect does on this project. In addition, Synopsys Detect runs the
+Black Duck signature scanner on the directory, which discovers additional dependencies
 added to the project by any means other than the package manager.</p>
-<h2 id="step-2-run-synopsys-detect-in-offline-mode">Step 2: Run Synopsys Detect in offline mode</h2>
+<h2 id="step-2-run-synopsys-detect-in-offline-mode">Step 2: Run Synopsys Detect in offline mode.</h2>
 <p>Running Synopsys Detect in offline mode eliminates the need to provide
 connection details to Black Duck or Polaris,
-while giving you an opportunity to see what Synopsys Detect will
-do on a project.</p>
+while giving you an opportunity to see what Synopsys Detect does on a project.</p>
 <p>At the top level of the project directory (junit4), run Synopsys Detect in offline mode:</p>
 <pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.offline.mode=true
 </code></pre>
-<p>The operations performed by Synopsys Detect will depend on what it finds in your source directory.
+<p>The operations performed by Synopsys Detect depends on what it finds in your source directory.
 By default, Synopsys Detect considers the current working directory to be your source directory.</p>
 <p>In the junit4 case, Synopsys Detect will:</p>
 <ol>
 <li>Run the Maven detector, creating one BDIO (Black Duck Input Output) (.jsonld) file that contains the dependencies discovered using Maven.</li>
 <li>Run the Black Duck signature scanner, creating a .json file that contains the dependencies discovered by the Black Duck signature scanner.</li>
 </ol>
-<p>In offline mode, neither of these will be uploaded to Black Duck.</p>
+<p>In offline mode, neither of these are uploaded to Black Duck.</p>
 <p>To locate these files, look in the log for the message "Run directory: ...". These files are located inside
 the specified run directory.</p>
-<h2 id="step-3-run-synopsys-detect-connected-to-black-duck">Step 3: Run Synopsys Detect connected to Black Duck</h2>
+<h2 id="step-3-run-synopsys-detect-connected-to-black-duck">Step 3: Run Synopsys Detect connected to Black Duck.</h2>
 <p>If you have access to a Black Duck server, you can re-run Synopsys Detect,
-this time connecting (and uploading results) to Black Duck.</p>
+this time connecting and uploading results to Black Duck.</p>
 <p>To connect Synopsys Detect to Black Duck, replace the <code>--blackduck.offline.mode=true</code> command line argument
 with the following three arguments that provide login details for your Black Duck server:</p>
 <ul>
@@ -1294,20 +1305,20 @@ with the following three arguments that provide login details for your Black Duc
 <li><code>--blackduck.username={your Black Duck username}</code></li>
 <li><code>--blackduck.password={your Black Duck password}</code></li>
 </ul>
-<p>The command you run will look like this:</p>
+<p>The command you run looks like this:</p>
 <pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.url={your Black Duck server URL} --blackduck.username={your Black Duck username} --blackduck.password={your Black Duck password}
 </code></pre>
-<p>Run this way, Synopsys Detect will perform the same steps it did in the offline run, plus
+<p>In this way, Synopsys Detect performs the same steps it did in the offline run, plus
 the following:</p>
 <ul>
-<li>Upload the discovered dependencies to Black Duck</li>
-<li>Provide (in the log) a "Black Duck Project BOM" URL that you can use to view the results in Black Duck.</li>
+<li>Uploads the discovered dependencies to Black Duck.</li>
+<li>Provides in the log a "Black Duck Project BOM URL that you can use to view the results in Black Duck.</li>
 </ul>
 <p>Point your browser to the Black Duck Project BOM URL to see the Bill Of Materials for junit4.</p>
 <h2 id="next-steps">Next steps</h2>
 <p>Because Synopsys Detect can be used on a variety of project types in a variety of ways,
 its behavior is highly configurable. More detailed information on how to configure Synopsys Detect
-for your needs is provided in the sections that follow.</p>
+for your needs is provided in the following sections.</p>
                 
                   
                 

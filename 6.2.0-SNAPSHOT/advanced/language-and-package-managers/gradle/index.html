@@ -323,6 +323,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../includeexcludewildcards/" title="Property wildcard support" class="md-nav__link">
+      Property wildcard support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -398,13 +410,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-10" type="checkbox" id="nav-9-10" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11" checked>
     
-    <label class="md-nav__link" for="nav-9-10">
+    <label class="md-nav__link" for="nav-9-11">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-10">
+      <label class="md-nav__title" for="nav-9-11">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -545,8 +557,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -563,13 +575,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1168,20 +1180,20 @@
                 <h1 id="gradle-support">Gradle support</h1>
 <p>Synopsys Detect has two detectors for Gradle:</p>
 <ul>
-<li><a href="#gradleinspectordetector">Gradle inspector ietector</a></li>
+<li><a href="#gradleinspectordetector">Gradle inspector detector</a></li>
 <li><a href="#gradleparsedetector">Gradle parse detector</a></li>
 </ul>
 <p><a name="gradleinspectordetector"></a></p>
 <h1 id="gradle-inspector-detector">Gradle inspector detector</h1>
-<p>The Gradle inspector detector can discover dependencies of Gradle projects.</p>
-<p>The Gradle inspector detector will attempt to run on your project if it finds a build.gradle file in the source directory (top level).</p>
+<p>The Gradle inspector detector discovers dependencies of Gradle projects.</p>
+<p>The Gradle inspector detector attempts to run on your project if it finds a build.gradle file in the source directory (top level).</p>
 <p>The Gradle inspector detector also requires either gradlew or gradle:</p>
 <ol>
-<li>Synopsys Detect looks for gradlew in the source directory (top level). You can override this by setting the gradle path property. If not overridden and not found:</li>
+<li>Synopsys Detect looks for gradlew in the source directory (top level). You can override this by setting the Gradle path property. If not overridden and not found:</li>
 <li>Synopsys Detect looks for gradle on $PATH.</li>
 </ol>
 <p>The Gradle inspector detector runs <code>gradlew dependencies</code> to get a list of the project's dependencies, and then parses the output.</p>
-<p>It consumes the output of <code>gradlew dependencies</code> with the help of a gradle script (<code>init-detect.gradle</code>), which it usually downloads automatically. init-detect.gradle has a dependency DependencyGatherer, that comes from https://github.com/blackducksoftware/integration-gradle-inspector. Filtering (including/excluding projects and configurations) is performed by this gradle/groovy code on the output of the <code>gradlew dependencies</code> command.</p>
+<p>It consumes the output of <code>gradlew dependencies</code> with the help of a Gradle script (<code>init-detect.gradle</code>), which it usually downloads automatically. The file init-detect.gradle has a dependency DependencyGatherer that comes from https://github.com/blackducksoftware/integration-gradle-inspector. Filtering (including/excluding projects and configurations) is performed by this Gradle/Groovy code on the output of the <code>gradlew dependencies</code> command.</p>
 <p><a name="gradleparsedetector"></a></p>
 <h1 id="gradle-parse-detector">Gradle parse detector</h1>
 <p>TBD</p>

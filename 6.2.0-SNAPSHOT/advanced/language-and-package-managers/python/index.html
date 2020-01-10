@@ -323,6 +323,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../includeexcludewildcards/" title="Property wildcard support" class="md-nav__link">
+      Property wildcard support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -398,13 +410,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-10" type="checkbox" id="nav-9-10" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11" checked>
     
-    <label class="md-nav__link" for="nav-9-10">
+    <label class="md-nav__link" for="nav-9-11">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-10">
+      <label class="md-nav__title" for="nav-9-11">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -581,8 +593,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -599,13 +611,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1232,27 +1244,27 @@
 </ul>
 <p><a name="pipdetector"></a></p>
 <h2 id="the-pip-detector">The Pip detector</h2>
-<p>The Pip detector can discover dependencies of Python projects.</p>
-<p>The Pip detector will attempt to run on your project if either a setup.py file is found, or a requirements.txt file is provided via the --detect.pip.requirements.path property.</p>
-<p>The Pip detector also requires python and pip executables:</p>
+<p>The Pip detector discovers dependencies of Python projects.</p>
+<p>The Pip detector attempts to run on your project if either a setup.py file is found, or a requirements.txt file is provided using the --detect.pip.requirements.path property.</p>
+<p>The Pip detector also requires Python and pip executables:</p>
 <ul>
 <li>Synopsys Detect looks for python (or python3 if the python3 property is set to true) on $PATH. You can override this by setting the python path property.</li>
 <li>Synopsys Detect looks for pip (or pip3 if the python3 property is set to true) on $PATH.</li>
 </ul>
-<p>The Pip detector runs the <a href="https://github.com/blackducksoftware/synopsys-detect/blob/master/src/main/resources/pip-inspector.py">pip-inspector.py script</a>, which uses python/pip libararies to query the pip cache for the project (which may or may not be a virtual environment) for dependency information:</p>
+<p>The Pip detector runs the <a href="https://github.com/blackducksoftware/synopsys-detect/blob/master/src/main/resources/pip-inspector.py">pip-inspector.py script</a>, which uses Python/pip libararies to query the pip cache for the project, which may or may not be a virtual environment, for dependency information:</p>
 <ol>
-<li>pip-inspector.py queries for the project dependencies by project name (which can be discovered using setup.py, or provided via the detect.pip.project.name property) using the <a href="https://setuptools.readthedocs.io/en/latest/pkg_resources.html">pkg_resources library</a>. If your project has been installed into the pip cache, this will discover dependencies specified in setup.py.</li>
-<li>If a requirements.txt file was provided, pip-inspector.py uses a python API, parse_requirements, to query the requirements.txt file for possible additional dependencies, and uses the pkg_resources library to query for the details of each one. (The parse_requirements API is unstable, leading to the decision to deprecate this detector.)</li>
+<li>pip-inspector.py queries for the project dependencies by project name which can be discovered using setup.py, or provided using the detect.pip.project.name property, using the <a href="https://setuptools.readthedocs.io/en/latest/pkg_resources.html">pkg_resources library</a>. If your project is installed into the pip cache, this discovers dependencies specified in setup.py.</li>
+<li>If a requirements.txt file is provided, pip-inspector.py uses the Python API called parse_requirements to query the requirements.txt file for possible additional dependencies, and uses the pkg_resources library to query for the details of each. The parse_requirements API is unstable, leading to the decision to deprecate this detector.</li>
 </ol>
 <p>Ramifications of this approach:</p>
 <ul>
-<li>Because pip-inspector.py uses the pkg_resources library to discover dependencies, only those packages which have been installed (via, say, <code>pip install</code>) into the pip cache (that is, appear in the output of <code>pip list</code>) will be included in the output. Naturally, there must be a match between the package version your project depends on and the package version installed in the pip cache. Additional details are available in the <a href="https://setuptools.readthedocs.io/en/latest/pkg_resources.html">pkg_resources library documentation</a>.</li>
-<li>If the packages have been installed into a virtual environment for your project, you will need to run Synopsys Detect from within that virtual environment.</li>
-<li>If you are using a tool (such as poetry) that sets up a python virtual environment, you will need to run Synopsys Detect from within that virtual environment.</li>
+<li>Because pip-inspector.py uses the pkg_resources library to discover dependencies, only those packages which have been installed; using, for example, <code>pip install</code>, into the pip cache; in other words, appearing in the output of <code>pip list</code>, are included in the output. There must be a match between the package version on which your project depends and the package version installed in the pip cache. Additional details are available in the <a href="https://setuptools.readthedocs.io/en/latest/pkg_resources.html">pkg_resources library documentation</a>.</li>
+<li>If the packages are installed into a virtual environment for your project, you must run Synopsys Detect from within that virtual environment.</li>
+<li>If you are using a tool such as Poetry that sets up a Python virtual environment, you must run Synopsys Detect from within that virtual environment.</li>
 </ul>
 <p>Recommendations:</p>
 <ul>
-<li>Be sure that Synopsys Detect is finding the correct python executable (run with logging level at DEBUG and read the log). This is a particular concern if your system has multiple versions of python installed; you want to be sure Synopsys Detect is using the right python version.</li>
+<li>Be sure that Synopsys Detect is finding the correct Python executable; this can be done by running the logging level at DEBUG and then reading the log. This is a particular concern if your system has multiple versions of Python installed; you must be sure Synopsys Detect is using the correct Python version.</li>
 <li>Create a setup.py file for your project.</li>
 <li>Install your project and dependencies into the pip cache:</li>
 </ul>
@@ -1261,25 +1273,25 @@ pip install -r requirements.txt
 </code></pre>
 
 <ul>
-<li>The Pip detector will derive your project name using your setup.py file if you have one. If you do not have a setup.py file, you must provide the correct project name using the --detect.pip.project.name property.</li>
-<li>If there are any dependencies specified in requirements.txt that are not specified in setup.py, provide the requirements.txt file via the Synopsys Detect property.</li>
-<li>If you are using a virtual environment, make sure to switch to that virtual environment when you run Synopsys Detect. This also applies when you are using a tool (such as poetry) that sets up a python virtual environment.</li>
+<li>The Pip detector derives your project name using your setup.py file if you have one. If you do not have a setup.py file, you must provide the correct project name using the propety --detect.pip.project.name.</li>
+<li>If there are any dependencies specified in requirements.txt that are not specified in setup.py, then provide the requirements.txt file using the Synopsys Detect property.</li>
+<li>If you are using a virtual environment, be sure to switch to that virtual environment when you run Synopsys Detect. This also applies when you are using a tool such as Poetry that sets up a Python virtual environment.</li>
 </ul>
 <p><a name="pipenvdetector"></a></p>
 <h2 id="pipenv-detector">Pipenv detector</h2>
-<p>The Pipenv detector can discover dependencies of Python projects.</p>
-<p>The Pipenv detector will attempt to run on your project if either of the following is true:</p>
+<p>The Pipenv detector discovers dependencies of Python projects.</p>
+<p>The Pipenv detector attempts to run on your project if either of the following is true:</p>
 <ol>
-<li>A Pipfile is found</li>
-<li>A Pipfile.lock file is found</li>
+<li>A Pipfile is found.</li>
+<li>A Pipfile.lock file is found.</li>
 </ol>
-<p>The Pipenv detector also requires: python and pipenv executables:</p>
+<p>The Pipenv detector also requires Python and Pipenv executables:</p>
 <ul>
 <li>Synopsys Detect looks for python (or python3 if the python3 property is set to true) on $PATH. You can override this by setting the python path property.</li>
 <li>Synopsys Detect looks for pipenv on $PATH.</li>
 </ul>
-<p>The Pipenv detector runs <code>pipenv run pip freeze</code> and <code>pipenv graph --bare</code> and derives dependency info from the output. The dependency hierarchy is derived from the output of <code>pipenv graph --bare</code>. The output of <code>pipenv run pip freeze</code> is used only to improve the accuracy of dependency versions.</p>
-<p>To troubleshooting of the Pipenv detector, start by running <code>pipenv graph --bare</code>, and making sure that output looks correct (since this is the basis from which Synopsys Detect constructs the BDIO). If the output of <code>pipenv graph --bare</code> does not look correct, make sure the packages (dependencies) have been installed into the pipenv virtual environment (<code>pipenv install</code>).</p>
+<p>The Pipenv detector runs <code>pipenv run pip freeze</code> and <code>pipenv graph --bare</code> and derives dependency information from the output. The dependency hierarchy is derived from the output of <code>pipenv graph --bare</code>. The output of <code>pipenv run pip freeze</code> is used to improve the accuracy of dependency versions.</p>
+<p>To troubleshoot of the Pipenv detector, start by running <code>pipenv graph --bare</code>, and making sure that the output looks correct since this is the basis from which Synopsys Detect constructs the BDIO. If the output of <code>pipenv graph --bare</code> does not look correct, make sure the packages (dependencies) are installed into the Pipenv virtual environment (<code>pipenv install</code>).</p>
                 
                   
                 

@@ -323,6 +323,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../includeexcludewildcards/" title="Property wildcard support" class="md-nav__link">
+      Property wildcard support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -441,13 +453,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-10" type="checkbox" id="nav-9-10">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
     
-    <label class="md-nav__link" for="nav-9-10">
+    <label class="md-nav__link" for="nav-9-11">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-10">
+      <label class="md-nav__title" for="nav-9-11">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -579,8 +591,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../language-and-package-managers/yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../language-and-package-managers/yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -597,13 +609,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1224,20 +1236,20 @@
                 
                 <h1 id="quoting-and-escaping-shell-script-arguments">Quoting and escaping shell script arguments</h1>
 <h2 id="bash-script-detectsh">Bash script (detect.sh)</h2>
-<p>When passing an argument that must be quoted (because, for example, it contains a space) to detect.sh, you need to
-quote the argument using escaped quote characters, by preceding each quote with a backslash character. For example:</p>
+<p>When passing an argument that must be quoted; for example, it contains a space, to detect.sh, you must 
+quote the argument using escaped quote characters by preceding each quote with a backslash character. For example:</p>
 <pre><code>bash &lt;(curl -s -L detect.synopsys.com/detect.sh) --detect.project.name=\"Project Test\"
 </code></pre>
-<p>When passing an argument that contains a character that must be escaped (for example, a exclamation point) to detect.sh, you need to
+<p>When passing an argument that contains a character that must be escaped; for example, an exclamation point, to detect.sh, you must 
 escape the character by preceding the character with a backslash character and quote the string that contains it. For example:</p>
 <pre><code>bash &lt;(curl -s -L detect.synopsys.com/detect.sh) --detect.project.name="Project\!Test"
 </code></pre>
 <h2 id="powershell-script-detectps1">PowerShell script (detect.ps1)</h2>
-<p>When passing an argument that must be quoted (because, for example, it contains a space) to detect.ps1, you need to
+<p>When passing an argument that must be quoted; for example, it contains a space, to detect.ps1, you must 
 quote the argument using escaped quote characters, by preceding each quote with a back quote character. For example:</p>
 <pre><code>powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect" --detect.project.name=`"Project Test`"
 </code></pre>
-<p>When passing an argument that contains a character that must be escaped (for example, a back quote character) to detect.ps1, you need to
+<p>When passing an argument that contains a character that must be escaped; for example, a back quote character, to detect.ps1, you must 
 escape the character by preceding the character with a back quote character. For example:</p>
 <pre><code>powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect" --detect.project.name=Project``Test
 </code></pre>

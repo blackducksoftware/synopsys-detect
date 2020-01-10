@@ -321,6 +321,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../../advanced/includeexcludewildcards/" title="Property wildcard support" class="md-nav__link">
+      Property wildcard support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -394,13 +406,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-10" type="checkbox" id="nav-9-10">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
     
-    <label class="md-nav__link" for="nav-9-10">
+    <label class="md-nav__link" for="nav-9-11">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-10">
+      <label class="md-nav__title" for="nav-9-11">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -532,8 +544,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../../../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -550,13 +562,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -812,13 +824,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-required-bom-tool-types-deprecated" class="md-nav__link">
-    Detect Required Bom Tool Types (Deprecated)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#detect-excluded-bom-tool-types-deprecated" class="md-nav__link">
     Detect Excluded Bom Tool Types (Deprecated)
   </a>
@@ -828,6 +833,13 @@
         <li class="md-nav__item">
   <a href="#detect-included-bom-tool-types-deprecated" class="md-nav__link">
     Detect Included Bom Tool Types (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-required-bom-tool-types-deprecated" class="md-nav__link">
+    Detect Required Bom Tool Types (Deprecated)
   </a>
   
 </li>
@@ -1243,13 +1255,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-required-bom-tool-types-deprecated" class="md-nav__link">
-    Detect Required Bom Tool Types (Deprecated)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#detect-excluded-bom-tool-types-deprecated" class="md-nav__link">
     Detect Excluded Bom Tool Types (Deprecated)
   </a>
@@ -1259,6 +1264,13 @@
         <li class="md-nav__item">
   <a href="#detect-included-bom-tool-types-deprecated" class="md-nav__link">
     Detect Included Bom Tool Types (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-required-bom-tool-types-deprecated" class="md-nav__link">
+    Detect Required Bom Tool Types (Deprecated)
   </a>
   
 </li>
@@ -1329,7 +1341,7 @@
 <pre><code>--detect.excluded.detector.types
 </code></pre>
 
-<p>By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify "ALL". Exclusion rules always win.</p>
+<p>By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify "ALL". Exclusion rules always win. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
 <p>If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them.</p>
 <table>
 <thead>
@@ -1373,7 +1385,7 @@
 <pre><code>--detect.included.detector.types
 </code></pre>
 
-<p>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.</p>
+<p>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
 <p>If you want to limit Detect to a subset of its detectors, use this property to specify that subset.</p>
 <table>
 <thead>
@@ -1386,50 +1398,6 @@
 <tr>
 <td>Added</td>
 <td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="detect-required-bom-tool-types-deprecated">Detect Required Bom Tool Types (Deprecated)</h2>
-<pre><code>--detect.required.bom.tool.types
-</code></pre>
-
-<p>If set, Detect will fail if it does not find the bom tool types supplied here.</p>
-<p><strong>DEPRECATED: This property is changing. Please use --detect.required.detector.types in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.3.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1518,6 +1486,50 @@
 <tr>
 <td>Added</td>
 <td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-required-bom-tool-types-deprecated">Detect Required Bom Tool Types (Deprecated)</h2>
+<pre><code>--detect.required.bom.tool.types
+</code></pre>
+
+<p>If set, Detect will fail if it does not find the bom tool types supplied here.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.required.detector.types in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.3.0</td>
 </tr>
 <tr>
 <td>Type</td>
