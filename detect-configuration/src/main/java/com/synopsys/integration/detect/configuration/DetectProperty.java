@@ -83,6 +83,10 @@ public enum DetectProperty {
     @HelpDescription("The API token used to authenticate with the Black Duck Server.")
     BLACKDUCK_API_TOKEN("blackduck.api.token", "Black Duck API Token", "4.2.0", PropertyType.STRING, PropertyAuthority.NONE),
 
+    @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_BLACKDUCK, DEFAULT_HELP })
+    @HelpDescription("When set to true, user will be able to scan and discover license names in Black Duck")
+    BLACKDUCK_LICENSE_SEARCH("blackduck.license.search", "Black Duck License Search", "6.2.0", PropertyType.BOOLEAN, PropertyAuthority.NONE),
+
     @HelpGroup(primary = GROUP_BLACKDUCK_SERVER, additional = { SEARCH_GROUP_BLACKDUCK, SEARCH_GROUP_OFFLINE, DEFAULT_HELP })
     @HelpDescription("This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
     BLACKDUCK_OFFLINE_MODE("blackduck.offline.mode", "Offline Mode", "4.2.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
@@ -161,6 +165,7 @@ public enum DetectProperty {
     @HelpDescription("The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.")
     @AcceptableValues(value = { "maven_jar", "maven_install", "UNSPECIFIED" }, caseSensitive = true, strict = true)
     DETECT_BAZEL_DEPENDENCY_RULE("detect.bazel.dependency.type", "Bazel workspace external dependency rule", "6.0.0", PropertyType.STRING, PropertyAuthority.NONE, "UNSPECIFIED"),
+
     @HelpGroup(primary = GROUP_PATHS, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("The path to the output directory for all BDIO files.")
     @HelpDetailed("If not set, the BDIO files are placed in a 'BDIO' subdirectory of the output directory.")
@@ -272,9 +277,9 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_PROJECT, additional = { SEARCH_GROUP_PROJECT_SETTING })
     @HelpDescription(category = ADVANCED, value = "If an aggregate BDIO file is being generated and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes from the top layer of the " +
                                                       "dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. " +
-                                                    "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes " +
-                                                    "at the top of the dependency tree, but all components will appear as TRANSITIVE in the BOM.")
-    @AcceptableValues(value = {"DIRECT", "TRANSITIVE"}, caseSensitive = true, strict = true, isCommaSeparatedList = false)
+                                                      "When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes " +
+                                                      "at the top of the dependency tree, but all components will appear as TRANSITIVE in the BOM.")
+    @AcceptableValues(value = { "DIRECT", "TRANSITIVE" }, caseSensitive = true, strict = true, isCommaSeparatedList = false)
     DETECT_BOM_AGGREGATE_REMEDIATION_MODE("detect.bom.aggregate.remediation.mode", "BDIO Aggregate Remediation Mode", "6.1.0", PropertyType.STRING, PropertyAuthority.NONE, "TRANSITIVE"),
 
     @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
@@ -376,7 +381,6 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_DOCKER, additional = { GROUP_SOURCE_PATH })
     @HelpDescription("The Docker image ID to inspect.")
     DETECT_DOCKER_IMAGE_ID("detect.docker.image.id", "Docker Image ID", "6.1.0", PropertyType.STRING, PropertyAuthority.NONE),
-
 
     @HelpGroup(primary = GROUP_DOCKER, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription(category = ADVANCED, value = "The path to the directory containing the Docker Inspector jar and images.")
@@ -813,6 +817,7 @@ public enum DetectProperty {
     @HelpGroup(primary = GROUP_GENERAL, additional = { SEARCH_GROUP_GLOBAL })
     @HelpDescription("If set to true, Detect will wait for Synopsys products until results are available or the blackduck.timeout is exceeded.")
     DETECT_WAIT_FOR_RESULTS("detect.wait.for.results", "Wait For Results", "5.5.0", PropertyType.BOOLEAN, PropertyAuthority.NONE, "false"),
+
     /**********************************************************************************************
      * DEPRECATED START
      *********************************************************************************************/
