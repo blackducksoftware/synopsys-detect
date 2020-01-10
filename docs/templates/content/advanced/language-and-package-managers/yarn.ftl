@@ -1,6 +1,6 @@
 # Yarn support
 
-${solution_name} will run the Yarn detector if it finds both of the following in your project:
+${solution_name} runs the Yarn detector if it finds both of the following files in your project:
 
 * yarn.lock
 * package.json
