@@ -1,15 +1,15 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "lime/0.1.1.33 pip/bom",
+    "spdx:name": "lime/0.1.1.33/lime/0.1.1.33 pip/bom",
     "creationInfo": {
       "spdx:creator": [
-        "Tool: Detect-5.6.2",
-        "Tool: IntegrationBdio-18.1.0"
+        "Tool: Detect-6.0.0",
+        "Tool: IntegrationBdio-18.2.10"
       ],
-      "spdx:created": "2019-11-07T17:09:01.192Z"
+      "spdx:created": "2020-01-10T16:59:31.939Z"
     },
-    "@id": "uuid:958ade2b-eedd-4c50-b36b-2b2790e781fb",
+    "@id": "uuid:0ec05277-132c-4219-944b-f4e5b791ca8e",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -32,7 +32,23 @@
     },
     "relationship": [
       {
-        "related": "http:pypi/scikit_learn/0_21_2",
+        "related": "http:pypi/numpy/1_16_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/backports_functools_lru_cache/1_5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/wheel/0_33_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/scipy/1_3_0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/pip/19_1_1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -40,51 +56,79 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/scipy/1_3_0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/numpy/1_16_4",
+        "related": "http:pypi/subprocess32/3_5_4",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
         "related": "http:pypi/matplotlib/2_1_0",
         "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/scikit_learn/0_21_2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/setuptools/41_0_1",
+        "relationshipType": "DYNAMIC_LINK"
       }
     ]
-
   },
   {
-    "name": "scikit-learn",
-    "revision": "0.21.2",
-    "@id": "http:pypi/scikit_learn/0_21_2",
+    "name": "numpy",
+    "revision": "1.16.4",
+    "@id": "http:pypi/numpy/1_16_4",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
-      "externalId": "scikit-learn/0.21.2",
+      "externalId": "numpy/1.16.4",
       "externalIdMetaData": {
         "forge": {
           "name": "pypi",
           "separator": "/"
         },
-        "name": "scikit-learn",
-        "version": "0.21.2"
+        "name": "numpy",
+        "version": "1.16.4"
       }
     },
-    "relationship": [
-      {
-        "related": "http:pypi/scipy/1_3_0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/numpy/1_16_4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/joblib/0_13_2",
-        "relationshipType": "DYNAMIC_LINK"
+    "relationship": []
+  },
+  {
+    "name": "backports.functools-lru-cache",
+    "revision": "1.5",
+    "@id": "http:pypi/backports_functools_lru_cache/1_5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "backports.functools-lru-cache/1.5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "backports.functools-lru-cache",
+        "version": "1.5"
       }
-    ]
+    },
+    "relationship": []
+  },
+  {
+    "name": "wheel",
+    "revision": "0.33.4",
+    "@id": "http:pypi/wheel/0_33_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "wheel/0.33.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "wheel",
+        "version": "0.33.4"
+      }
+    },
+    "relationship": []
   },
   {
     "name": "scipy",
@@ -111,39 +155,20 @@
     ]
   },
   {
-    "name": "numpy",
-    "revision": "1.16.4",
-    "@id": "http:pypi/numpy/1_16_4",
+    "name": "pip",
+    "revision": "19.1.1",
+    "@id": "http:pypi/pip/19_1_1",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
-      "externalId": "numpy/1.16.4",
+      "externalId": "pip/19.1.1",
       "externalIdMetaData": {
         "forge": {
           "name": "pypi",
           "separator": "/"
         },
-        "name": "numpy",
-        "version": "1.16.4"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "joblib",
-    "revision": "0.13.2",
-    "@id": "http:pypi/joblib/0_13_2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "joblib/0.13.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "joblib",
-        "version": "0.13.2"
+        "name": "pip",
+        "version": "19.1.1"
       }
     },
     "relationship": []
@@ -167,19 +192,11 @@
     },
     "relationship": [
       {
-        "related": "http:pypi/networkx/2_3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:pypi/scipy/1_3_0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:pypi/PyWavelets/1_0_3",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/matplotlib/2_1_0",
+        "related": "http:pypi/Pillow/6_1_0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -187,53 +204,18 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/Pillow/6_1_0",
+        "related": "http:pypi/scipy/1_3_0",
         "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "networkx",
-    "revision": "2.3",
-    "@id": "http:pypi/networkx/2_3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "networkx/2.3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "networkx",
-        "version": "2.3"
-      }
-    },
-    "relationship": [
+      },
       {
-        "related": "http:pypi/decorator/4_4_0",
+        "related": "http:pypi/matplotlib/2_1_0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/networkx/2_3",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "decorator",
-    "revision": "4.4.0",
-    "@id": "http:pypi/decorator/4_4_0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "decorator/4.4.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "decorator",
-        "version": "4.4.0"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "PyWavelets",
@@ -260,6 +242,53 @@
     ]
   },
   {
+    "name": "Pillow",
+    "revision": "6.1.0",
+    "@id": "http:pypi/Pillow/6_1_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "Pillow/6.1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "Pillow",
+        "version": "6.1.0"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "imageio",
+    "revision": "2.5.0",
+    "@id": "http:pypi/imageio/2_5_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "imageio/2.5.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "imageio",
+        "version": "2.5.0"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/Pillow/6_1_0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/numpy/1_16_4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
     "name": "matplotlib",
     "revision": "2.1.0",
     "@id": "http:pypi/matplotlib/2_1_0",
@@ -278,10 +307,6 @@
     },
     "relationship": [
       {
-        "related": "http:pypi/numpy/1_16_4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:pypi/python_dateutil/2_8_0",
         "relationshipType": "DYNAMIC_LINK"
       },
@@ -290,7 +315,11 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/cycler/0_10_0",
+        "related": "http:pypi/numpy/1_16_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/pyparsing/2_4_0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -298,7 +327,7 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/pyparsing/2_4_0",
+        "related": "http:pypi/cycler/0_10_0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -347,6 +376,44 @@
     "relationship": []
   },
   {
+    "name": "pyparsing",
+    "revision": "2.4.0",
+    "@id": "http:pypi/pyparsing/2_4_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "pyparsing/2.4.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "pyparsing",
+        "version": "2.4.0"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pytz",
+    "revision": "2019.1",
+    "@id": "http:pypi/pytz/2019_1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "pytz/2019.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "pytz",
+        "version": "2019.1"
+      }
+    },
+    "relationship": []
+  },
+  {
     "name": "cycler",
     "revision": "0.10.0",
     "@id": "http:pypi/cycler/0_10_0",
@@ -371,58 +438,82 @@
     ]
   },
   {
-    "name": "pytz",
-    "revision": "2019.1",
-    "@id": "http:pypi/pytz/2019_1",
+    "name": "networkx",
+    "revision": "2.3",
+    "@id": "http:pypi/networkx/2_3",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
-      "externalId": "pytz/2019.1",
+      "externalId": "networkx/2.3",
       "externalIdMetaData": {
         "forge": {
           "name": "pypi",
           "separator": "/"
         },
-        "name": "pytz",
-        "version": "2019.1"
+        "name": "networkx",
+        "version": "2.3"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/decorator/4_4_0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "decorator",
+    "revision": "4.4.0",
+    "@id": "http:pypi/decorator/4_4_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "decorator/4.4.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "decorator",
+        "version": "4.4.0"
       }
     },
     "relationship": []
   },
   {
-    "name": "pyparsing",
-    "revision": "2.4.0",
-    "@id": "http:pypi/pyparsing/2_4_0",
+    "name": "subprocess32",
+    "revision": "3.5.4",
+    "@id": "http:pypi/subprocess32/3_5_4",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
-      "externalId": "pyparsing/2.4.0",
+      "externalId": "subprocess32/3.5.4",
       "externalIdMetaData": {
         "forge": {
           "name": "pypi",
           "separator": "/"
         },
-        "name": "pyparsing",
-        "version": "2.4.0"
+        "name": "subprocess32",
+        "version": "3.5.4"
       }
     },
     "relationship": []
   },
   {
-    "name": "imageio",
-    "revision": "2.5.0",
-    "@id": "http:pypi/imageio/2_5_0",
+    "name": "scikit-learn",
+    "revision": "0.21.2",
+    "@id": "http:pypi/scikit_learn/0_21_2",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
-      "externalId": "imageio/2.5.0",
+      "externalId": "scikit-learn/0.21.2",
       "externalIdMetaData": {
         "forge": {
           "name": "pypi",
           "separator": "/"
         },
-        "name": "imageio",
-        "version": "2.5.0"
+        "name": "scikit-learn",
+        "version": "0.21.2"
       }
     },
     "relationship": [
@@ -431,26 +522,49 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/Pillow/6_1_0",
+        "related": "http:pypi/scipy/1_3_0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/joblib/0_13_2",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "Pillow",
-    "revision": "6.1.0",
-    "@id": "http:pypi/Pillow/6_1_0",
+    "name": "joblib",
+    "revision": "0.13.2",
+    "@id": "http:pypi/joblib/0_13_2",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
-      "externalId": "Pillow/6.1.0",
+      "externalId": "joblib/0.13.2",
       "externalIdMetaData": {
         "forge": {
           "name": "pypi",
           "separator": "/"
         },
-        "name": "Pillow",
-        "version": "6.1.0"
+        "name": "joblib",
+        "version": "0.13.2"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "setuptools",
+    "revision": "41.0.1",
+    "@id": "http:pypi/setuptools/41_0_1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "setuptools/41.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "setuptools",
+        "version": "41.0.1"
       }
     },
     "relationship": []
