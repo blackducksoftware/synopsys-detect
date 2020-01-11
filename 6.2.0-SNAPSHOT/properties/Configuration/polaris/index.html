@@ -851,6 +851,20 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#polaris-command-deprecated" class="md-nav__link">
+    Polaris Command (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-polaris-enabled-deprecated" class="md-nav__link">
+    Detect Polaris Enabled (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#polaris-access-token-deprecated" class="md-nav__link">
     Polaris Access Token (Deprecated)
   </a>
@@ -865,22 +879,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-polaris-enabled-deprecated" class="md-nav__link">
-    Detect Polaris Enabled (Deprecated)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#polaris-arguments-deprecated" class="md-nav__link">
     Polaris Arguments (Deprecated)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#polaris-command-deprecated" class="md-nav__link">
-    Polaris Command (Deprecated)
   </a>
   
 </li>
@@ -1227,6 +1227,20 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#polaris-command-deprecated" class="md-nav__link">
+    Polaris Command (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-polaris-enabled-deprecated" class="md-nav__link">
+    Detect Polaris Enabled (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#polaris-access-token-deprecated" class="md-nav__link">
     Polaris Access Token (Deprecated)
   </a>
@@ -1241,22 +1255,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-polaris-enabled-deprecated" class="md-nav__link">
-    Detect Polaris Enabled (Deprecated)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#polaris-arguments-deprecated" class="md-nav__link">
     Polaris Arguments (Deprecated)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#polaris-command-deprecated" class="md-nav__link">
-    Polaris Command (Deprecated)
   </a>
   
 </li>
@@ -1279,6 +1279,94 @@
                 
                 
                 <h1 id="polaris">polaris</h1>
+<h2 id="polaris-command-deprecated">Polaris Command (Deprecated)</h2>
+<pre><code>--polaris.command
+</code></pre>
+
+<p>A replacement command to pass to polaris separated by space. Include the analyze or setup command itself. If specified, polaris.arguments will be ignored and this will take precedence.</p>
+<p><strong>DEPRECATED: This property is being removed. Detect will no longer invoke the Polaris CLI. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-polaris-enabled-deprecated">Detect Polaris Enabled (Deprecated)</h2>
+<pre><code>--detect.polaris.enabled=false
+</code></pre>
+
+<p>Set to false to disable the Synopsys Polaris Tool.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.tools and POLARIS in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.4.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="polaris-access-token-deprecated">Polaris Access Token (Deprecated)</h2>
 <pre><code>--polaris.access.token
 </code></pre>
@@ -1367,50 +1455,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-polaris-enabled-deprecated">Detect Polaris Enabled (Deprecated)</h2>
-<pre><code>--detect.polaris.enabled=false
-</code></pre>
-
-<p>Set to false to disable the Synopsys Polaris Tool.</p>
-<p><strong>DEPRECATED: This property is changing. Please use --detect.tools and POLARIS in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.4.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="polaris-arguments-deprecated">Polaris Arguments (Deprecated)</h2>
 <pre><code>--polaris.arguments
 </code></pre>
@@ -1428,50 +1472,6 @@
 <tr>
 <td>Added</td>
 <td>5.3.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="polaris-command-deprecated">Polaris Command (Deprecated)</h2>
-<pre><code>--polaris.command
-</code></pre>
-
-<p>A replacement command to pass to polaris separated by space. Include the analyze or setup command itself. If specified, polaris.arguments will be ignored and this will take precedence.</p>
-<p><strong>DEPRECATED: This property is being removed. Detect will no longer invoke the Polaris CLI. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
