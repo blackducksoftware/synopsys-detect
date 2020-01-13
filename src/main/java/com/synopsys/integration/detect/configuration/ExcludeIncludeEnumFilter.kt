@@ -1,9 +1,10 @@
 package com.synopsys.integration.detect.configuration
 
-import com.synopsys.integration.configuration.config.All
-import com.synopsys.integration.configuration.config.FilterableEnumValue
-import com.synopsys.integration.configuration.config.None
-import com.synopsys.integration.configuration.config.Value
+import com.synopsys.integration.configuration.property.types.enumfilterable.All
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue
+import com.synopsys.integration.configuration.property.types.enumfilterable.None
+import com.synopsys.integration.configuration.property.types.enumfilterable.Value
+
 
 class ExcludeIncludeEnumFilter<T>(val excluded: List<FilterableEnumValue<T>>, val included: List<FilterableEnumValue<T>>) {
     fun containsAll(list: List<FilterableEnumValue<T>>): Boolean {

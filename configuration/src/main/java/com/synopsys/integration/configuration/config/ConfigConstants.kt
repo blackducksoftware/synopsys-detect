@@ -1,94 +1,96 @@
 package com.synopsys.integration.configuration.config
 
+import com.synopsys.integration.configuration.property.Category
+import com.synopsys.integration.configuration.property.Group
 import kotlin.reflect.full.companionObject
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.memberProperties
-
-class Category(val name: String) {
+//TODO: Back to MAIN.
+class DetectCategory(name: String) : Category(name) {
     companion object {
-        val Advanced = Category("advanced")
-        val Simple = Category("simple")
+        val Advanced = DetectCategory("advanced")
+        val Simple = DetectCategory("simple")
     }
 }
 
-class Group(val name: String, val superGroup: Group? = null) {
+class DetectGroup(name: String, superGroup: DetectGroup? = null): Group(name, superGroup) {
     companion object {
         //Super Groups
-        val Detectors = Group("Detectors")
+        val Detectors = DetectGroup("Detectors")
 
         //Recommended Primary Groups
-        val Artifactory = Group("artifactory")
-        val BlackduckServer = Group("blackduck server")
-        val Cleanup = Group("cleanup")
-        val CodeLocation = Group("codelocation")
-        val General = Group("general")
-        val Logging = Group("logging")
-        val Paths = Group("paths")
-        val PolicyCheck = Group("policy check")
-        val Project = Group("project")
-        val ProjectInfo = Group("project info")
-        val Proxy = Group("proxy")
-        val Report = Group("report")
-        val SourceScan = Group("source scan")
-        val SourcePath = Group("source path")
+        val Artifactory = DetectGroup("artifactory")
+        val BlackduckServer = DetectGroup("blackduck server")
+        val Cleanup = DetectGroup("cleanup")
+        val CodeLocation = DetectGroup("codelocation")
+        val General = DetectGroup("general")
+        val Logging = DetectGroup("logging")
+        val Paths = DetectGroup("paths")
+        val PolicyCheck = DetectGroup("policy check")
+        val Project = DetectGroup("project")
+        val ProjectInfo = DetectGroup("project info")
+        val Proxy = DetectGroup("proxy")
+        val Report = DetectGroup("report")
+        val SourceScan = DetectGroup("source scan")
+        val SourcePath = DetectGroup("source path")
 
         //Tool Groups
-        val Detector = Group("detector")
-        val Polaris = Group("polaris")
-        val SignatureScanner = Group("signature scanner")
+        val Detector = DetectGroup("detector")
+        val Polaris = DetectGroup("polaris")
+        val SignatureScanner = DetectGroup("signature scanner")
 
         //Detector Groups
-        val Bazel = Group("bazel", Detectors)
-        val Bitbake = Group("bitbake", Detectors)
-        val Conda = Group("conda", Detectors)
-        val Cpan = Group("cpan", Detectors)
-        val Docker = Group("docker", Detectors)
-        val Go = Group("go", Detectors)
-        val Gradle = Group("gradle", Detectors)
-        val Hex = Group("hex", Detectors)
-        val Maven = Group("maven", Detectors)
-        val Npm = Group("npm", Detectors)
-        val Nuget = Group("nuget", Detectors)
-        val Packagist = Group("packagist", Detectors)
-        val Pear = Group("pear", Detectors)
-        val Pip = Group("pip", Detectors)
-        val Python = Group("python", Detectors)
-        val Ruby = Group("ruby", Detectors)
-        val Sbt = Group("sbt", Detectors)
-        val Yarn = Group("yarn", Detectors)
+        val Bazel = DetectGroup("bazel", Detectors)
+        val Bitbake = DetectGroup("bitbake", Detectors)
+        val Conda = DetectGroup("conda", Detectors)
+        val Cpan = DetectGroup("cpan", Detectors)
+        val Docker = DetectGroup("docker", Detectors)
+        val Go = DetectGroup("go", Detectors)
+        val Gradle = DetectGroup("gradle", Detectors)
+        val Hex = DetectGroup("hex", Detectors)
+        val Maven = DetectGroup("maven", Detectors)
+        val Npm = DetectGroup("npm", Detectors)
+        val Nuget = DetectGroup("nuget", Detectors)
+        val Packagist = DetectGroup("packagist", Detectors)
+        val Pear = DetectGroup("pear", Detectors)
+        val Pip = DetectGroup("pip", Detectors)
+        val Python = DetectGroup("python", Detectors)
+        val Ruby = DetectGroup("ruby", Detectors)
+        val Sbt = DetectGroup("sbt", Detectors)
+        val Yarn = DetectGroup("yarn", Detectors)
 
         //Additional groups (should not be used as a primary group
-        val Blackduck = Group("blackduck")
-        val Debug = Group("debug")
-        val Global = Group("global")
-        val Offline = Group("offline")
-        val Policy = Group("policy")
-        val ProjectSetting = Group("project setting")
-        val ReportSetting = Group("report setting")
-        val Search = Group("search")
-        val Default = Group("default");
+        val Blackduck = DetectGroup("blackduck")
+        val Debug = DetectGroup("debug")
+        val Global = DetectGroup("global")
+        val Offline = DetectGroup("offline")
+        val Policy = DetectGroup("policy")
+        val ProjectSetting = DetectGroup("project setting")
+        val ReportSetting = DetectGroup("report setting")
+        val Search = DetectGroup("search")
+        val Default = DetectGroup("default");
 
-        fun values(): List<Group> {
-            val clazz = Group::class
+        fun values(): List<DetectGroup> {
+            val clazz = DetectGroup::class
             val companionClass = clazz.companionObject!!
             val companion = clazz.companionObjectInstance!!
-            val members = mutableListOf<Group>()
+            val members = mutableListOf<DetectGroup>()
             for (member in companionClass.memberProperties) {
                 when (val value = member.getter.call(companion)) {
-                    is Group -> members.add(value)
+                    is DetectGroup -> members.add(value)
                 }
             }
             return members;
         }
 
         fun map(): Map<String, String> {
-            val clazz = Group::class
+            val clazz = DetectGroup::class
             val companionClass = clazz.companionObject!!
             val companion = clazz.companionObjectInstance!!
             val members = mutableMapOf<String, String>()
             for (member in companionClass.memberProperties) {
                 when (val value = member.getter.call(companion)) {
-                    is Group -> members[value.name] = member.name
+                    is DetectGroup -> members[value.name] = member.name
                 }
             }
             return members;

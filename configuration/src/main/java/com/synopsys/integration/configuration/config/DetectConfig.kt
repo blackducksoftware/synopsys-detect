@@ -1,9 +1,15 @@
 package com.synopsys.integration.configuration.config
 
+import com.synopsys.integration.configuration.parse.ValueParseException
+import com.synopsys.integration.configuration.property.base.NullableProperty
+import com.synopsys.integration.configuration.property.base.PassthroughProperty
+import com.synopsys.integration.configuration.property.base.TypedProperty
+import com.synopsys.integration.configuration.property.base.ValuedProperty
+
 class DetectConfig(private val orderedPropertySources: List<DetectPropertySource>) {
     private val resolvedCache: MutableMap<String, PropertyValue> = mutableMapOf();
 
-    fun <T> getValueOrNull(property: OptionalProperty<T>): T? {
+    fun <T> getValueOrNull(property: NullableProperty<T>): T? {
         return try {
             getValue(property)
         } catch (e: InvalidPropertyException) {
@@ -11,7 +17,7 @@ class DetectConfig(private val orderedPropertySources: List<DetectPropertySource
         }
     }
 
-    fun <T> getValueOrDefault(property: RequiredProperty<T>): T {
+    fun <T> getValueOrDefault(property: ValuedProperty<T>): T {
         return try {
             getValue(property)
         } catch (e: InvalidPropertyException) {
@@ -21,7 +27,7 @@ class DetectConfig(private val orderedPropertySources: List<DetectPropertySource
 
     @Throws(InvalidPropertyException::class)
     @Suppress("UNCHECKED_CAST")
-    fun <T> getValue(property: OptionalProperty<T>): T? {
+    fun <T> getValue(property: NullableProperty<T>): T? {
         return when (val value = resolveFromCache(property)) {
             is ProvidedValue<*> -> value.value as T
             is ExceptionValue -> throw InvalidPropertyException(property.key, value.source, value.exception)
@@ -31,7 +37,7 @@ class DetectConfig(private val orderedPropertySources: List<DetectPropertySource
 
     @Throws(InvalidPropertyException::class)
     @Suppress("UNCHECKED_CAST")
-    fun <T> getValue(property: RequiredProperty<T>): T {
+    fun <T> getValue(property: ValuedProperty<T>): T {
         return when (val value = resolveFromCache(property)) {
             is ProvidedValue<*> -> value.value as T
             is ExceptionValue -> throw InvalidPropertyException(property.key, value.source, value.exception)
@@ -56,6 +62,16 @@ class DetectConfig(private val orderedPropertySources: List<DetectPropertySource
 
     // TODO: Re-implement
     fun getRaw(keys: Set<String>): Map<String, String> {
+        return emptyMap();
+    }
+
+    // TODO: Re-implement
+    fun getRaw(matches: (String) -> Boolean): Map<String, String> {
+        return emptyMap();
+    }
+
+    // TODO: Re-implement
+    fun getRaw(property: PassthroughProperty): Map<String, String> {
         return emptyMap();
     }
 

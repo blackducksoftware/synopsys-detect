@@ -24,10 +24,10 @@ package com.synopsys.integration.detect.configuration
 
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
-import com.synopsys.integration.configuration.config.BaseValue
 import com.synopsys.integration.configuration.config.DetectConfig
-import com.synopsys.integration.configuration.config.ExtendedValue
-import com.synopsys.integration.configuration.config.populatedValues
+import com.synopsys.integration.configuration.property.types.enumextended.BaseValue
+import com.synopsys.integration.configuration.property.types.enumextended.ExtendedValue
+import com.synopsys.integration.configuration.property.types.enumfilterable.populatedValues
 import com.synopsys.integration.detect.DetectTool
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException
 import com.synopsys.integration.detect.lifecycle.run.RunOptions
