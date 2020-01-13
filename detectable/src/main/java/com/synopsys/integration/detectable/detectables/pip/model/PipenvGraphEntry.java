@@ -24,9 +24,14 @@ package com.synopsys.integration.detectable.detectables.pip.model;
 
 import java.util.List;
 
+import com.google.gson.annotations.SerializedName;
+
 public class PipenvGraphEntry {
+    @SerializedName("package_name")
     private final String name;
+    @SerializedName("installed_version")
     private final String version;
+    @SerializedName("dependencies")
     private final List<PipenvGraphDependency> children;
 
     public PipenvGraphEntry(final String name, final String version, final List<PipenvGraphDependency> children) {
