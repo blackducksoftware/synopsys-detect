@@ -28,13 +28,15 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.gson.GsonBuilder;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectables.pip.model.PipFreeze;
-import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
 import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraph;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
+import com.synopsys.integration.detectable.detectables.pip.parser.PipEnvJsonGraphParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvGraphParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvTransformer;
@@ -45,7 +47,7 @@ public class PipenvExtractor {
     private final PipenvFreezeParser pipenvFreezeParser;
     private final PipenvGraphParser pipenvGraphParser;
 
-    public PipenvExtractor(final ExecutableRunner executableRunner, PipenvTransformer pipenvTransformer, final PipenvFreezeParser pipenvFreezeParser,
+    public PipenvExtractor(final ExecutableRunner executableRunner, final PipenvTransformer pipenvTransformer, final PipenvFreezeParser pipenvFreezeParser,
         final PipenvGraphParser pipenvGraphParser) {
         this.executableRunner = executableRunner;
         this.pipenvTransformer = pipenvTransformer;
@@ -53,19 +55,20 @@ public class PipenvExtractor {
         this.pipenvGraphParser = pipenvGraphParser;
     }
 
-    public Extraction extract(final File directory, final File pythonExe, final File pipenvExe, final File setupFile, final String providedProjectName, final String providedProjectVersionName, boolean includeOnlyProjectTree) {
-        Extraction extraction;
+    public Extraction extract(final File directory, final File pythonExe, final File pipenvExe, final File setupFile, final String providedProjectName, final String providedProjectVersionName, final boolean includeOnlyProjectTree) {
+        final Extraction extraction;
 
         try {
             final String projectName = resolveProjectName(directory, pythonExe, setupFile, providedProjectName);
             final String projectVersionName = resolveProjectVersionName(directory, pythonExe, setupFile, providedProjectVersionName);
 
             final ExecutableOutput pipFreezeOutput = executableRunner.execute(directory, pipenvExe, Arrays.asList("run", "pip", "freeze"));
-            final ExecutableOutput graphOutput = executableRunner.execute(directory, pipenvExe, Arrays.asList("graph", "--bare"));
+            final ExecutableOutput graphOutput = executableRunner.execute(directory, pipenvExe, Arrays.asList("graph", "--bare", "--json-tree"));
 
             final PipFreeze pipFreeze = pipenvFreezeParser.parse(pipFreezeOutput.getStandardOutputAsList());
-            final PipenvGraph pipenvGraph = pipenvGraphParser.parse(graphOutput.getStandardOutputAsList());
-            PipenvResult result = pipenvTransformer.transform(projectName, projectVersionName, pipFreeze, pipenvGraph, includeOnlyProjectTree);
+            // final PipenvGraph pipenvGraph = pipenvGraphParser.parse(graphOutput.getStandardOutputAsList());
+            final PipenvGraph pipenvGraph = new PipEnvJsonGraphParser(new GsonBuilder().setPrettyPrinting().create()).parse(graphOutput.getStandardOutput());
+            final PipenvResult result = pipenvTransformer.transform(projectName, projectVersionName, pipFreeze, pipenvGraph, includeOnlyProjectTree);
 
             return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
         } catch (final Exception e) {
