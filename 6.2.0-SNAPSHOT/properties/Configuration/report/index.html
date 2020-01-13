@@ -899,15 +899,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#generate-notices-report" class="md-nav__link">
-    Generate Notices Report
+  <a href="#generate-risk-report-40pdf41" class="md-nav__link">
+    Generate Risk Report (PDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#notices-report-path" class="md-nav__link">
-    Notices Report Path
+  <a href="#generate-notices-report" class="md-nav__link">
+    Generate Notices Report
   </a>
   
 </li>
@@ -920,8 +920,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#generate-risk-report-40pdf41" class="md-nav__link">
-    Generate Risk Report (PDF)
+  <a href="#notices-report-path" class="md-nav__link">
+    Notices Report Path
   </a>
   
 </li>
@@ -1220,15 +1220,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#generate-notices-report" class="md-nav__link">
-    Generate Notices Report
+  <a href="#generate-risk-report-40pdf41" class="md-nav__link">
+    Generate Risk Report (PDF)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#notices-report-path" class="md-nav__link">
-    Notices Report Path
+  <a href="#generate-notices-report" class="md-nav__link">
+    Generate Notices Report
   </a>
   
 </li>
@@ -1241,8 +1241,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#generate-risk-report-40pdf41" class="md-nav__link">
-    Generate Risk Report (PDF)
+  <a href="#notices-report-path" class="md-nav__link">
+    Notices Report Path
   </a>
   
 </li>
@@ -1265,11 +1265,11 @@
                 
                 
                 <h1 id="report">report</h1>
-<h2 id="generate-notices-report">Generate Notices Report</h2>
-<pre><code>--detect.notices.report=false
+<h2 id="generate-risk-report-40pdf41">Generate Risk Report (PDF)</h2>
+<pre><code>--detect.risk.report.pdf=false
 </code></pre>
 
-<p>When set to true, a Black Duck notices report in text form will be created in your source directory.</p>
+<p>When set to true, a Black Duck risk report in PDF form will be created.</p>
 <table>
 <thead>
 <tr>
@@ -1308,11 +1308,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="notices-report-path">Notices Report Path</h2>
-<pre><code>--detect.notices.report.path=.
+<h2 id="generate-notices-report">Generate Notices Report</h2>
+<pre><code>--detect.notices.report=false
 </code></pre>
 
-<p>The output directory for notices report. Default is the source directory.</p>
+<p>When set to true, a Black Duck notices report in text form will be created in your source directory.</p>
 <table>
 <thead>
 <tr>
@@ -1327,11 +1327,11 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>Boolean</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>.</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1394,11 +1394,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="generate-risk-report-40pdf41">Generate Risk Report (PDF)</h2>
-<pre><code>--detect.risk.report.pdf=false
+<h2 id="notices-report-path">Notices Report Path</h2>
+<pre><code>--detect.notices.report.path=.
 </code></pre>
 
-<p>When set to true, a Black Duck risk report in PDF form will be created.</p>
+<p>The output directory for notices report. Default is the source directory.</p>
 <table>
 <thead>
 <tr>
@@ -1413,11 +1413,11 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>Boolean</td>
+<td>String</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>false</td>
+<td>.</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
