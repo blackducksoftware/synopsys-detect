@@ -947,15 +947,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bazel-workspace-external-dependency-rule" class="md-nav__link">
-    Bazel workspace external dependency rule
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#bazel-cquery-additional-options" class="md-nav__link">
-    Bazel cquery additional options
+  <a href="#bazel-executable" class="md-nav__link">
+    Bazel Executable
   </a>
   
 </li>
@@ -968,8 +961,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-executable" class="md-nav__link">
-    Bazel Executable
+  <a href="#bazel-workspace-external-dependency-rule" class="md-nav__link">
+    Bazel workspace external dependency rule
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bazel-cquery-additional-options" class="md-nav__link">
+    Bazel cquery additional options
   </a>
   
 </li>
@@ -1220,15 +1220,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bazel-workspace-external-dependency-rule" class="md-nav__link">
-    Bazel workspace external dependency rule
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#bazel-cquery-additional-options" class="md-nav__link">
-    Bazel cquery additional options
+  <a href="#bazel-executable" class="md-nav__link">
+    Bazel Executable
   </a>
   
 </li>
@@ -1241,8 +1234,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-executable" class="md-nav__link">
-    Bazel Executable
+  <a href="#bazel-workspace-external-dependency-rule" class="md-nav__link">
+    Bazel workspace external dependency rule
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bazel-cquery-additional-options" class="md-nav__link">
+    Bazel cquery additional options
   </a>
   
 </li>
@@ -1265,11 +1265,11 @@
                 
                 
                 <h1 id="bazel">bazel</h1>
-<h2 id="bazel-workspace-external-dependency-rule">Bazel workspace external dependency rule</h2>
-<pre><code>--detect.bazel.dependency.type=maven_jar,maven_install,UNSPECIFIED 
+<h2 id="bazel-executable">Bazel Executable</h2>
+<pre><code>--detect.bazel.path
 </code></pre>
 
-<p>The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.</p>
+<p>The path to the Bazel executable.</p>
 <table>
 <thead>
 <tr>
@@ -1280,50 +1280,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>UNSPECIFIED</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>maven_jar, maven_install, UNSPECIFIED</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>Yes</td>
-</tr>
-</tbody>
-</table>
-<h2 id="bazel-cquery-additional-options">Bazel cquery additional options</h2>
-<pre><code>--detect.bazel.cquery.options
-</code></pre>
-
-<p>A comma-separated list of additional options to pass to the 'bazel cquery' command when it is invoked by Detect. (This property has no effect on Detect's processing for maven_jar rules, which uses 'bazel query' instead of 'bazel cquery')</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.1.0</td>
+<td>5.2.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1394,11 +1351,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bazel-executable">Bazel Executable</h2>
-<pre><code>--detect.bazel.path
+<h2 id="bazel-workspace-external-dependency-rule">Bazel workspace external dependency rule</h2>
+<pre><code>--detect.bazel.dependency.type=maven_jar,maven_install,UNSPECIFIED 
 </code></pre>
 
-<p>The path to the Bazel executable.</p>
+<p>The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.</p>
 <table>
 <thead>
 <tr>
@@ -1409,7 +1366,50 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>5.2.0</td>
+<td>6.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>UNSPECIFIED</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>maven_jar, maven_install, UNSPECIFIED</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bazel-cquery-additional-options">Bazel cquery additional options</h2>
+<pre><code>--detect.bazel.cquery.options
+</code></pre>
+
+<p>A comma-separated list of additional options to pass to the 'bazel cquery' command when it is invoked by Detect. (This property has no effect on Detect's processing for maven_jar rules, which uses 'bazel query' instead of 'bazel cquery')</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.1.0</td>
 </tr>
 <tr>
 <td>Type</td>

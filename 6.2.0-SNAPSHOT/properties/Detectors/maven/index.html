@@ -1043,6 +1043,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#dependency-scope-excluded" class="md-nav__link">
+    Dependency Scope Excluded
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#maven-executable" class="md-nav__link">
     Maven Executable
   </a>
@@ -1052,13 +1059,6 @@
         <li class="md-nav__item">
   <a href="#maven-build-command" class="md-nav__link">
     Maven Build Command
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dependency-scope-excluded" class="md-nav__link">
-    Dependency Scope Excluded
   </a>
   
 </li>
@@ -1248,6 +1248,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#dependency-scope-excluded" class="md-nav__link">
+    Dependency Scope Excluded
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#maven-executable" class="md-nav__link">
     Maven Executable
   </a>
@@ -1257,13 +1264,6 @@
         <li class="md-nav__item">
   <a href="#maven-build-command" class="md-nav__link">
     Maven Build Command
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dependency-scope-excluded" class="md-nav__link">
-    Dependency Scope Excluded
   </a>
   
 </li>
@@ -1321,6 +1321,50 @@
                 
                 
                 <h1 id="maven">maven</h1>
+<h2 id="dependency-scope-excluded">Dependency Scope Excluded</h2>
+<pre><code>--detect.maven.excluded.scopes
+</code></pre>
+
+<p>A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include). Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>If set, Detect will include only dependencies outside of the given Maven scope.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="maven-executable">Maven Executable</h2>
 <pre><code>--detect.maven.path
 </code></pre>
@@ -1382,50 +1426,6 @@
 <tr>
 <td>Added</td>
 <td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="dependency-scope-excluded">Dependency Scope Excluded</h2>
-<pre><code>--detect.maven.excluded.scopes
-</code></pre>
-
-<p>A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include). Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>If set, Detect will include only dependencies outside of the given Maven scope.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>

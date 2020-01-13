@@ -995,15 +995,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#docker-image-name" class="md-nav__link">
-    Docker Image Name
+  <a href="#docker-image-id" class="md-nav__link">
+    Docker Image ID
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-image-id" class="md-nav__link">
-    Docker Image ID
+  <a href="#docker-image-name" class="md-nav__link">
+    Docker Image Name
   </a>
   
 </li>
@@ -1030,15 +1030,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-version-advanced" class="md-nav__link">
-    Docker Inspector Version (Advanced)
+  <a href="#run-without-docker-in-path-advanced" class="md-nav__link">
+    Run Without Docker in Path (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#run-without-docker-in-path-advanced" class="md-nav__link">
-    Run Without Docker in Path (Advanced)
+  <a href="#docker-inspector-version-advanced" class="md-nav__link">
+    Docker Inspector Version (Advanced)
   </a>
   
 </li>
@@ -1255,15 +1255,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#docker-image-name" class="md-nav__link">
-    Docker Image Name
+  <a href="#docker-image-id" class="md-nav__link">
+    Docker Image ID
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-image-id" class="md-nav__link">
-    Docker Image ID
+  <a href="#docker-image-name" class="md-nav__link">
+    Docker Image Name
   </a>
   
 </li>
@@ -1290,15 +1290,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-version-advanced" class="md-nav__link">
-    Docker Inspector Version (Advanced)
+  <a href="#run-without-docker-in-path-advanced" class="md-nav__link">
+    Run Without Docker in Path (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#run-without-docker-in-path-advanced" class="md-nav__link">
-    Run Without Docker in Path (Advanced)
+  <a href="#docker-inspector-version-advanced" class="md-nav__link">
+    Docker Inspector Version (Advanced)
   </a>
   
 </li>
@@ -1335,11 +1335,11 @@
                 
                 
                 <h1 id="docker">docker</h1>
-<h2 id="docker-image-name">Docker Image Name</h2>
-<pre><code>--detect.docker.image
+<h2 id="docker-image-id">Docker Image ID</h2>
+<pre><code>--detect.docker.image.id
 </code></pre>
 
-<p>The Docker image name to inspect. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
+<p>The Docker image ID to inspect.</p>
 <table>
 <thead>
 <tr>
@@ -1350,7 +1350,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>6.1.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1378,11 +1378,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-image-id">Docker Image ID</h2>
-<pre><code>--detect.docker.image.id
+<h2 id="docker-image-name">Docker Image Name</h2>
+<pre><code>--detect.docker.image
 </code></pre>
 
-<p>The Docker image ID to inspect.</p>
+<p>The Docker image name to inspect. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
 <table>
 <thead>
 <tr>
@@ -1393,7 +1393,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.1.0</td>
+<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1551,49 +1551,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-inspector-version-advanced">Docker Inspector Version (Advanced)</h2>
-<pre><code>--detect.docker.inspector.version
-</code></pre>
-
-<p>Version of the Docker Inspector to use. By default Detect will attempt to automatically determine the version to use.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="run-without-docker-in-path-advanced">Run Without Docker in Path (Advanced)</h2>
 <pre><code>--detect.docker.path.required=false
 </code></pre>
@@ -1618,6 +1575,49 @@
 <tr>
 <td>Default Value</td>
 <td>false</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="docker-inspector-version-advanced">Docker Inspector Version (Advanced)</h2>
+<pre><code>--detect.docker.inspector.version
+</code></pre>
+
+<p>Version of the Docker Inspector to use. By default Detect will attempt to automatically determine the version to use.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
