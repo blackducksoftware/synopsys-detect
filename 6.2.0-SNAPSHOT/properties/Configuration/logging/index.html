@@ -827,13 +827,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#logging-level-shorthand" class="md-nav__link">
-    Logging Level Shorthand
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#logging-level" class="md-nav__link">
     Logging Level
   </a>
@@ -841,8 +834,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#logging-level-deprecated" class="md-nav__link">
-    Logging Level (Deprecated)
+  <a href="#logging-level-shorthand" class="md-nav__link">
+    Logging Level Shorthand
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-suppress-configuration-output-deprecated" class="md-nav__link">
+    Detect Suppress Configuration Output (Deprecated)
   </a>
   
 </li>
@@ -855,8 +855,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-suppress-configuration-output-deprecated" class="md-nav__link">
-    Detect Suppress Configuration Output (Deprecated)
+  <a href="#logging-level-deprecated" class="md-nav__link">
+    Logging Level (Deprecated)
   </a>
   
 </li>
@@ -1227,13 +1227,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#logging-level-shorthand" class="md-nav__link">
-    Logging Level Shorthand
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#logging-level" class="md-nav__link">
     Logging Level
   </a>
@@ -1241,8 +1234,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#logging-level-deprecated" class="md-nav__link">
-    Logging Level (Deprecated)
+  <a href="#logging-level-shorthand" class="md-nav__link">
+    Logging Level Shorthand
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-suppress-configuration-output-deprecated" class="md-nav__link">
+    Detect Suppress Configuration Output (Deprecated)
   </a>
   
 </li>
@@ -1255,8 +1255,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-suppress-configuration-output-deprecated" class="md-nav__link">
-    Detect Suppress Configuration Output (Deprecated)
+  <a href="#logging-level-deprecated" class="md-nav__link">
+    Logging Level (Deprecated)
   </a>
   
 </li>
@@ -1279,49 +1279,6 @@
                 
                 
                 <h1 id="logging">logging</h1>
-<h2 id="logging-level-shorthand">Logging Level Shorthand</h2>
-<pre><code>--logging.level.detect=TRACE,DEBUG,INFO,WARN,ERROR,FATAL,OFF 
-</code></pre>
-
-<p>Shorthand for the logging level of detect. Equivalent to setting logging.level.com.synopsys.integration.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>5.5.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>INFO</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>Yes</td>
-</tr>
-</tbody>
-</table>
 <h2 id="logging-level">Logging Level</h2>
 <pre><code>--logging.level.com.synopsys.integration=TRACE,DEBUG,INFO,WARN,ERROR,FATAL,OFF 
 </code></pre>
@@ -1365,12 +1322,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="logging-level-deprecated">Logging Level (Deprecated)</h2>
-<pre><code>--logging.level.com.blackducksoftware.integration=TRACE,DEBUG,INFO,WARN,ERROR,FATAL,OFF 
+<h2 id="logging-level-shorthand">Logging Level Shorthand</h2>
+<pre><code>--logging.level.detect=TRACE,DEBUG,INFO,WARN,ERROR,FATAL,OFF 
 </code></pre>
 
-<p>The logging level of Detect.</p>
-<p><strong>DEPRECATED: This property is changing. Please use --logging.level.com.synopsys.integration in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<p>Shorthand for the logging level of detect. Equivalent to setting logging.level.com.synopsys.integration.</p>
 <table>
 <thead>
 <tr>
@@ -1381,7 +1337,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>5.5.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1406,6 +1362,50 @@
 <tr>
 <td>Strict</td>
 <td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-suppress-configuration-output-deprecated">Detect Suppress Configuration Output (Deprecated)</h2>
+<pre><code>--detect.suppress.configuration.output=false
+</code></pre>
+
+<p>If true, the default behavior of printing your configuration properties at startup will be suppressed.</p>
+<p><strong>DEPRECATED: This property is being removed. Configuration can no longer be suppressed individually. Log level can be used. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
 </tr>
 </tbody>
 </table>
@@ -1453,12 +1453,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-suppress-configuration-output-deprecated">Detect Suppress Configuration Output (Deprecated)</h2>
-<pre><code>--detect.suppress.configuration.output=false
+<h2 id="logging-level-deprecated">Logging Level (Deprecated)</h2>
+<pre><code>--logging.level.com.blackducksoftware.integration=TRACE,DEBUG,INFO,WARN,ERROR,FATAL,OFF 
 </code></pre>
 
-<p>If true, the default behavior of printing your configuration properties at startup will be suppressed.</p>
-<p><strong>DEPRECATED: This property is being removed. Configuration can no longer be suppressed individually. Log level can be used. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<p>The logging level of Detect.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --logging.level.com.synopsys.integration in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -1473,11 +1473,11 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>Boolean</td>
+<td>String</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>false</td>
+<td>INFO</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1489,11 +1489,11 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>Any</td>
+<td>TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF</td>
 </tr>
 <tr>
 <td>Strict</td>
-<td>No</td>
+<td>Yes</td>
 </tr>
 </tbody>
 </table>
