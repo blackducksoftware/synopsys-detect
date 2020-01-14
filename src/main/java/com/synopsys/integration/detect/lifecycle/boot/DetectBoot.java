@@ -42,7 +42,8 @@ import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectableBeanConfiguration;
 import com.synopsys.integration.detect.RunBeanConfiguration;
-import com.synopsys.integration.detect.configuration.ConnectionManager;
+import com.synopsys.integration.detect.configuration.ConnectionDetails;
+import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectPropertyMap;
@@ -365,8 +366,10 @@ public class DetectBoot {
         final Configuration configuration,
         final String airGapSuffix)
         throws DetectUserFriendlyException {
-        final ConnectionManager connectionManager = new ConnectionManager(detectConfiguration);
-        final ArtifactResolver artifactResolver = new ArtifactResolver(connectionManager, gson);
+        final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration);
+        final ConnectionDetails connectionDetails = detectConfigurationFactory.createConnectionDetails();
+        final ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
+        final ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
 
         //TODO: This is awful, why is making this so convoluted.
         final SimpleFileFinder fileFinder = new SimpleFileFinder();

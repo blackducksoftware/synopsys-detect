@@ -39,7 +39,6 @@ import org.xml.sax.SAXException;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
@@ -212,8 +211,6 @@ public class DetectableBeanConfiguration {
     public DocumentBuilder documentBuilder;
     @Autowired
     public ExternalIdFactory externalIdFactory;
-    @Autowired
-    public ConnectionManager connectionManager;
     @Autowired
     public AirGapInspectorPaths airGapInspectorPaths;
     @Autowired

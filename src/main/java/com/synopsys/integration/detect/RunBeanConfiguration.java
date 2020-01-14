@@ -23,7 +23,9 @@
 package com.synopsys.integration.detect;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -37,10 +39,11 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.detect.configuration.ConnectionManager;
+import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
+import com.synopsys.integration.detect.configuration.DetectorSearchExcludedDirectories;
 import com.synopsys.integration.detect.tool.detector.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.DetectFileFinder;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
@@ -102,18 +105,27 @@ public class RunBeanConfiguration {
 
     @Bean
     public FileFinder fileFinder() {
-        final List<String> excluded = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_FILES());
+        final List<String> userExcluded = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_FILES());
+        final boolean includeDefault = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS());
+
+        final List<String> excluded = new ArrayList<>(userExcluded);
+        if (includeDefault) {
+            List<String> defaultExcluded = Arrays.stream(DetectorSearchExcludedDirectories.values())
+                                               .map(DetectorSearchExcludedDirectories::getDirectoryName)
+                                               .collect(Collectors.toList());
+            excluded.addAll(defaultExcluded);
+        }
         return new DetectFileFinder(excluded);
     }
 
     @Bean
-    public ConnectionManager connectionManager() {
-        return new ConnectionManager(detectConfiguration);
+    public ConnectionFactory connectionFactory() {
+        return new ConnectionFactory(detectConfigurationFactory().createConnectionDetails());
     }
 
     @Bean
     public ArtifactResolver artifactResolver() {
-        return new ArtifactResolver(connectionManager(), gson);
+        return new ArtifactResolver(connectionFactory(), gson);
     }
 
     @Bean

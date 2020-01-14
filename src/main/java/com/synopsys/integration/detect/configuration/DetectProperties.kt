@@ -34,6 +34,7 @@ import com.synopsys.integration.configuration.property.types.bool.NullableBoolea
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedValue
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumListProperty
+import com.synopsys.integration.configuration.property.types.enumfilterable.None
 import com.synopsys.integration.configuration.property.types.enumlist.EnumListProperty
 import com.synopsys.integration.configuration.property.types.enums.EnumProperty
 import com.synopsys.integration.configuration.property.types.integer.IntegerProperty
@@ -88,7 +89,7 @@ class DetectProperties {
             groups(DetectGroup.Proxy, DetectGroup.Blackduck, DetectGroup.Default)
             category(DetectCategory.Advanced)
         }
-        val BLACKDUCK_PROXY_IGNORED_HOSTS = NullableStringProperty("blackduck.proxy.ignored.hosts").apply {
+        val BLACKDUCK_PROXY_IGNORED_HOSTS = StringListProperty("blackduck.proxy.ignored.hosts", emptyList()).apply {
             info("Bypass Proxy Hosts", "4.2.0")
             help("A comma separated list of regular expression host patterns that should not use the proxy.", "These patterns must adhere to Java regular expressions: https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html")
             groups(DetectGroup.Proxy, DetectGroup.Blackduck, DetectGroup.Default)
@@ -716,9 +717,9 @@ class DetectProperties {
             help("Path of the swift executable.")
             groups(DetectGroup.Paths, DetectGroup.Global)
         }
-        val DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES = FilterableEnumListProperty("detect.policy.check.fail.on.severities", emptyList(), PolicySeverityType::valueOf, PolicySeverityType.values().toList()).apply {
+        val DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES = FilterableEnumListProperty("detect.policy.check.fail.on.severities", listOf(None<PolicySeverityType>()), PolicySeverityType::valueOf, PolicySeverityType.values().toList()).apply {
             info("Fail on Policy Violation Severities", "3.0.0")
-            help("A comma-separated list of policy violation severities that will fail Detect. If this is not set, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except UNSPECIFIED.")
+            help("A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE.")
             groups(DetectGroup.Project, DetectGroup.Global, DetectGroup.ProjectSetting, DetectGroup.Policy)
         }
         val DETECT_PROJECT_APPLICATION_ID = NullableStringProperty("detect.project.application.id").apply {

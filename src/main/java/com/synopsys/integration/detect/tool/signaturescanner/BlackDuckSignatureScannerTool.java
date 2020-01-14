@@ -38,13 +38,15 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
-import com.synopsys.integration.detect.configuration.ConnectionManager;
+import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.log.SilentIntLogger;
+import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.NameVersion;
 
@@ -60,7 +62,7 @@ public class BlackDuckSignatureScannerTool {
 
     public SignatureScannerToolResult runScanTool(final BlackDuckRunData blackDuckRunData, final NameVersion projectNameVersion, final Optional<File> dockerTar) throws DetectUserFriendlyException {
         final DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
-        final ConnectionManager connectionManager = detectContext.getBean(ConnectionManager.class);
+        final ConnectionFactory connectionFactory = detectContext.getBean(ConnectionFactory.class);
         final DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
 
         Optional<BlackDuckServerConfig> blackDuckServerConfig = Optional.empty();
@@ -90,7 +92,8 @@ public class BlackDuckSignatureScannerTool {
         } else {
             if (StringUtils.isNotBlank(signatureScannerOptions.getUserProvidedScannerInstallUrl())) {
                 logger.debug("Signature scanner will use the provided url to download/update the scanner.");
-                scanBatchRunner = scanBatchRunnerFactory.withUserProvidedUrl(signatureScannerOptions.getUserProvidedScannerInstallUrl(), connectionManager);
+                final IntHttpClient restConnection = connectionFactory.createConnection(signatureScannerOptions.getUserProvidedScannerInstallUrl(), new SilentIntLogger()); //TODO: Should this be silent?
+                scanBatchRunner = scanBatchRunnerFactory.withUserProvidedUrl(signatureScannerOptions.getUserProvidedScannerInstallUrl(), restConnection);
             } else {
                 logger.debug("Signature scanner either given an existing path for the scanner or is offline - either way, we won't attempt to manage the install.");
                 if (StringUtils.isNotBlank(localScannerInstallPath)) {

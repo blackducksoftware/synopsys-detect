@@ -24,12 +24,14 @@ package com.synopsys.integration.detect.configuration
 
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder
 import com.synopsys.integration.configuration.config.PropertyConfiguration
 import com.synopsys.integration.configuration.property.types.enumextended.BaseValue
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedValue
 import com.synopsys.integration.configuration.property.types.enumfilterable.populatedValues
 import com.synopsys.integration.detect.DetectTool
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException
+import com.synopsys.integration.detect.exitcode.ExitCodeType
 import com.synopsys.integration.detect.lifecycle.run.RunOptions
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFileFilter
@@ -43,22 +45,99 @@ import com.synopsys.integration.detect.workflow.file.DirectoryOptions
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions
 import com.synopsys.integration.detector.finder.DetectorFinderOptions
+import com.synopsys.integration.log.IntLogger
+import com.synopsys.integration.log.SilentIntLogger
+import com.synopsys.integration.rest.credentials.Credentials
+import com.synopsys.integration.rest.credentials.CredentialsBuilder
+import com.synopsys.integration.rest.proxy.ProxyInfo
+import com.synopsys.integration.rest.proxy.ProxyInfoBuilder
+import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.math.NumberUtils
 import java.nio.file.Path
 import java.util.*
+import java.util.regex.Pattern
 
-// TODO: Create private method for accessing properties that assumes a PropertyAuthority of NONE.
 class DetectConfigurationFactory(private val detectConfiguration: PropertyConfiguration) {
-
-    val timeoutInSeconds: Long
-        get() {
-            return if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_API_TIMEOUT)) {
-                val timeout = detectConfiguration.getValue(DetectProperties.DETECT_API_TIMEOUT)
-                timeout / 1000
-            } else {
-                detectConfiguration.getValue(DetectProperties.DETECT_REPORT_TIMEOUT)
-            }
-
+    //#region Prefer These Over Any Property
+    fun findTimeoutInSeconds(): Long {
+        return if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_API_TIMEOUT)) {
+            val timeout = detectConfiguration.getValue(DetectProperties.DETECT_API_TIMEOUT)
+            timeout / 1000
+        } else {
+            detectConfiguration.getValue(DetectProperties.DETECT_REPORT_TIMEOUT)
         }
+    }
+
+    fun findParallelProcessors(): Int {
+        val provided = if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PARALLEL_PROCESSORS)) {
+            detectConfiguration.getValue(DetectProperties.DETECT_PARALLEL_PROCESSORS)
+        } else if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS)) {
+            detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS)
+        } else if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS)) {
+            detectConfiguration.getValue(DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS)
+        } else {
+            null
+        }
+
+        return if (provided != null && provided > 0) {
+            provided
+        } else {
+            return Runtime.getRuntime().availableProcessors()
+        }
+    }
+
+    //#endregion
+
+    //#region Creating Connections
+    //TODO: This should just follow the pattern of the other methods (all properties first, then the work)
+    @Throws(DetectUserFriendlyException::class)
+    fun createBlackDuckProxyInfo(): ProxyInfo {
+        val proxyCredentialsBuilder = CredentialsBuilder()
+        proxyCredentialsBuilder.username = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_USERNAME)
+        proxyCredentialsBuilder.password = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_PASSWORD)
+        val proxyCredentials: Credentials
+        try {
+            proxyCredentials = proxyCredentialsBuilder.build()
+        } catch (e: IllegalArgumentException) {
+            throw DetectUserFriendlyException(String.format("Your proxy credentials configuration is not valid: %s", e.message), e, ExitCodeType.FAILURE_PROXY_CONNECTIVITY)
+        }
+
+        val proxyInfoBuilder = ProxyInfoBuilder()
+
+        proxyInfoBuilder.credentials = proxyCredentials
+        proxyInfoBuilder.host = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_HOST)
+        val proxyPortFromConfiguration = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_PORT)
+        val proxyPort = NumberUtils.toInt(proxyPortFromConfiguration, 0)
+        proxyInfoBuilder.port = proxyPort
+        proxyInfoBuilder.ntlmDomain = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_NTLM_DOMAIN)
+        proxyInfoBuilder.ntlmWorkstation = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_NTLM_WORKSTATION)
+        try {
+            return proxyInfoBuilder.build()
+        } catch (e: IllegalArgumentException) {
+            throw DetectUserFriendlyException(String.format("Your proxy configuration is not valid: %s", e.message), e, ExitCodeType.FAILURE_PROXY_CONNECTIVITY)
+        }
+    }
+
+    fun createConnectionDetails(): ConnectionDetails {
+        val proxyIgnoredHosts = detectConfiguration.getValueOrDefault(DetectProperties.BLACKDUCK_PROXY_IGNORED_HOSTS);
+        val proxyPatterns = proxyIgnoredHosts.map { Pattern.compile(it) }
+        val proxyInformation = createBlackDuckProxyInfo()
+        val alwaysTrust = detectConfiguration.getValueOrDefault(DetectProperties.BLACKDUCK_TRUST_CERT)
+        return ConnectionDetails(createBlackDuckProxyInfo(), proxyPatterns, findTimeoutInSeconds(), alwaysTrust)
+    }
+
+    fun createBlackDuckConnectionDetails(logger: IntLogger = SilentIntLogger()): BlackDuckConnectionDetails {
+        val blackduckUrl = detectConfiguration.getValue(DetectProperties.BLACKDUCK_URL)
+
+        val allBlackDuckKeys: Set<String> = HashSet(BlackDuckServerConfigBuilder().propertyKeys)
+                .filter { it.toLowerCase().contains("proxy") }
+                .toSet()
+
+        val blackDuckProperties = detectConfiguration.getRaw(allBlackDuckKeys)
+
+        return BlackDuckConnectionDetails(blackduckUrl, blackDuckProperties, findParallelProcessors(), createConnectionDetails())
+    }
+    //#endregion
 
     fun createRunOptions(): RunOptions {
         var sigScanDisabled = Optional.empty<Boolean>()
@@ -178,7 +257,6 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
         val exclusionNamePatterns = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS)
 
         val scanMemory = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY)
-        val parallelProcessors = detectConfiguration.getValue(DetectProperties.DETECT_PARALLEL_PROCESSORS)
         val dryRun = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN)
         val uploadSource = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE)
         val codeLocationPrefix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX)
@@ -188,8 +266,13 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
 
         val offlineLocalScannerInstallPath = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH)
         val onlineLocalScannerInstallPath = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH)
-
         val userProvidedScannerInstallUrl = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL)
+
+        if (StringUtils.isNotBlank(offlineLocalScannerInstallPath) && StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
+            throw DetectUserFriendlyException(
+                    "You have provided both a Black Duck signature scanner url AND a local Black Duck signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
+                    ExitCodeType.FAILURE_GENERAL_ERROR)
+        }
 
         val snippetMatching = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING)
         fun fromSnippetExtended(value: ExtendedSnippetMode): SnippetMatching? {
@@ -205,7 +288,7 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
             is BaseValue -> snippetMatching.value
         }
         return BlackDuckSignatureScannerOptions(signatureScannerPaths, exclusionPatterns, exclusionNamePatterns, offlineLocalScannerInstallPath, onlineLocalScannerInstallPath, userProvidedScannerInstallUrl, scanMemory,
-                parallelProcessors, dryRun,
+                findParallelProcessors(), dryRun,
                 snippetMatchingEnum, uploadSource, codeLocationPrefix, codeLocationSuffix, additionalArguments, maxDepth)
     }
 

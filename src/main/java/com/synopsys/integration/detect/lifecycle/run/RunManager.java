@@ -42,7 +42,7 @@ import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectTool;
-import com.synopsys.integration.detect.configuration.ConnectionManager;
+import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -126,7 +126,7 @@ public class RunManager {
         final EventSystem eventSystem = detectContext.getBean(EventSystem.class);
         final CodeLocationNameManager codeLocationNameManager = detectContext.getBean(CodeLocationNameManager.class);
         final BdioCodeLocationCreator bdioCodeLocationCreator = detectContext.getBean(BdioCodeLocationCreator.class);
-        final ConnectionManager connectionManager = detectContext.getBean(ConnectionManager.class);
+        final ConnectionFactory connectionFactory = detectContext.getBean(ConnectionFactory.class);
         final DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
 
         final RunResult runResult = new RunResult();
@@ -371,7 +371,7 @@ public class RunManager {
             logger.info("Will perform Black Duck post actions.");
             final BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
             final BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory, eventSystem);
-            blackDuckPostActions.perform(blackDuckPostOptions, codeLocationWaitData, projectVersionWrapper, detectConfigurationFactory.getTimeoutInSeconds());
+            blackDuckPostActions.perform(blackDuckPostOptions, codeLocationWaitData, projectVersionWrapper, detectConfigurationFactory.findTimeoutInSeconds());
 
             if ((bdioResult.getUploadTargets().size() > 0 || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
                 final Optional<String> componentsLink = Optional.ofNullable(projectVersionWrapper)

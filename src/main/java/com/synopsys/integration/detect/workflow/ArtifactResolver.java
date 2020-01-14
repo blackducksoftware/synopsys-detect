@@ -36,20 +36,21 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.synopsys.integration.detect.configuration.ConnectionManager;
+import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.request.Response;
 
 public class ArtifactResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final ConnectionManager connectionManager;
+    private final ConnectionFactory connectionFactory;
     private final Gson gson;
 
-    public ArtifactResolver(final ConnectionManager connectionManager, final Gson gson) {
-        this.connectionManager = connectionManager;
+    public ArtifactResolver(final ConnectionFactory connectionFactory, final Gson gson) {
+        this.connectionFactory = connectionFactory;
         this.gson = gson;
     }
 
@@ -105,7 +106,7 @@ public class ArtifactResolver {
         final String propertyUrl = apiUrl + "?properties=" + propertyKey;
         logger.debug("Downloading property: " + propertyUrl);
         final Request request = new Request.Builder().uri(propertyUrl).build();
-        final IntHttpClient restConnection = connectionManager.createUnauthenticatedRestConnection(propertyUrl);
+        final IntHttpClient restConnection = connectionFactory.createConnection(propertyUrl, new SilentIntLogger());
         try (final Response response = restConnection.execute(request)) {
             try (final InputStreamReader reader = new InputStreamReader(response.getContent())) {
                 logger.debug("Downloaded property, attempting to parse response.");
@@ -121,8 +122,7 @@ public class ArtifactResolver {
 
     public String parseFileName(final String source) {
         final String[] pieces = source.split("/");
-        final String filename = pieces[pieces.length - 1];
-        return filename;
+        return pieces[pieces.length - 1];
     }
 
     public File downloadOrFindArtifact(final File targetDir, final String source) throws IntegrationException, DetectUserFriendlyException, IOException {
@@ -143,7 +143,7 @@ public class ArtifactResolver {
     public File downloadArtifact(final File target, final String source) throws DetectUserFriendlyException, IntegrationException, IOException {
         logger.debug(String.format("Downloading for artifact to '%s' from '%s'.", target.getAbsolutePath(), source));
         final Request request = new Request.Builder().uri(source).build();
-        final IntHttpClient restConnection = connectionManager.createUnauthenticatedRestConnection(source);
+        final IntHttpClient restConnection = connectionFactory.createConnection(source, new SilentIntLogger());
         try (final Response response = restConnection.execute(request)) {
             logger.debug("Deleting existing file.");
             FileUtils.deleteQuietly(target);
