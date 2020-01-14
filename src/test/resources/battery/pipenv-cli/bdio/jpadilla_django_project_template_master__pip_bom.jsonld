@@ -1,0 +1,389 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "jpadilla/django-project-template/master/ pip/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-6.2.0-SNAPSHOT",
+        "Tool: IntegrationBdio-18.3.4"
+      ],
+      "spdx:created": "2020-01-14T15:42:44.807Z"
+    },
+    "@id": "uuid:720e26e2-39b8-4559-ba3d-f33fbdbb87a5",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "jpadilla/django-project-template",
+    "revision": "master",
+    "@id": "http:pypi",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "",
+        "version": ""
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/pip/19_3_1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/django_extensions/2_2_5",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/wheel/0_33_6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/dj_database_url/0_5_0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/Werkzeug/0_16_0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/whitenoise/4_1_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/psycopg2_binary/2_8_4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/django_configurations/2_1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/django_debug_toolbar/2_0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/gunicorn/20_0_0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "pip",
+    "revision": "19.3.1",
+    "@id": "http:pypi/pip/19_3_1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "pip/19.3.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "pip",
+        "version": "19.3.1"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "django-extensions",
+    "revision": "2.2.5",
+    "@id": "http:pypi/django_extensions/2_2_5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "django-extensions/2.2.5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "django-extensions",
+        "version": "2.2.5"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/six/1_13_0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "six",
+    "revision": "1.13.0",
+    "@id": "http:pypi/six/1_13_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "six/1.13.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "six",
+        "version": "1.13.0"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "wheel",
+    "revision": "0.33.6",
+    "@id": "http:pypi/wheel/0_33_6",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "wheel/0.33.6",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "wheel",
+        "version": "0.33.6"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "dj-database-url",
+    "revision": "0.5.0",
+    "@id": "http:pypi/dj_database_url/0_5_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "dj-database-url/0.5.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "dj-database-url",
+        "version": "0.5.0"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "Werkzeug",
+    "revision": "0.16.0",
+    "@id": "http:pypi/Werkzeug/0_16_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "Werkzeug/0.16.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "Werkzeug",
+        "version": "0.16.0"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "whitenoise",
+    "revision": "4.1.4",
+    "@id": "http:pypi/whitenoise/4_1_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "whitenoise/4.1.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "whitenoise",
+        "version": "4.1.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "psycopg2-binary",
+    "revision": "2.8.4",
+    "@id": "http:pypi/psycopg2_binary/2_8_4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "psycopg2-binary/2.8.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "psycopg2-binary",
+        "version": "2.8.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "django-configurations",
+    "revision": "2.1",
+    "@id": "http:pypi/django_configurations/2_1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "django-configurations/2.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "django-configurations",
+        "version": "2.1"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "django-debug-toolbar",
+    "revision": "2.0",
+    "@id": "http:pypi/django_debug_toolbar/2_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "django-debug-toolbar/2.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "django-debug-toolbar",
+        "version": "2.0"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/sqlparse/0_3_0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/Django/2_2_7",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "sqlparse",
+    "revision": "0.3.0",
+    "@id": "http:pypi/sqlparse/0_3_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "sqlparse/0.3.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "sqlparse",
+        "version": "0.3.0"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "Django",
+    "revision": "2.2.7",
+    "@id": "http:pypi/Django/2_2_7",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "Django/2.2.7",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "Django",
+        "version": "2.2.7"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/sqlparse/0_3_0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/pytz/2019_3",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "pytz",
+    "revision": "2019.3",
+    "@id": "http:pypi/pytz/2019_3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "pytz/2019.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "pytz",
+        "version": "2019.3"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "gunicorn",
+    "revision": "20.0.0",
+    "@id": "http:pypi/gunicorn/20_0_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "gunicorn/20.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "gunicorn",
+        "version": "20.0.0"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/setuptools/45_0_0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "setuptools",
+    "revision": "45.0.0",
+    "@id": "http:pypi/setuptools/45_0_0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "setuptools/45.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "setuptools",
+        "version": "45.0.0"
+      }
+    },
+    "relationship": []
+  }
+]
