@@ -24,10 +24,14 @@ package com.synopsys.integration.detectable.detectables.pip.model;
 
 import java.util.List;
 
+import com.google.gson.annotations.SerializedName;
+
 public class PipenvGraphDependency {
+    @SerializedName("package_name")
     private final String name;
-    //Not Currently Used: public List<String> requiredVersions;
+    @SerializedName("installed_version")
     private final String installedVersion;
+    @SerializedName("dependencies")
     private final List<PipenvGraphDependency> children;
 
     public PipenvGraphDependency(final String name, final String installedVersion, final List<PipenvGraphDependency> children) {

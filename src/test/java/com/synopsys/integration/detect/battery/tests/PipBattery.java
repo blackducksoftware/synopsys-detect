@@ -23,11 +23,12 @@ public class PipBattery {
     @Test
     void pipenv_cli() {
         final BatteryTest test = new BatteryTest("pipenv-cli");
-        test.sourceDirectoryNamed("battery-pipenv");
+        test.sourceDirectoryNamed("pipenv-cli-django");
         test.sourceFileNamed("Pipfile.lock");
         test.sourceFileNamed("Pipfile");
-        test.executable(DetectProperty.DETECT_PYTHON_PATH, "battery-pipenv-project-name", "battery-pipenv-project-version");
+        test.executable(DetectProperty.DETECT_PYTHON_PATH, "jpadilla/django-project-template", "");
         test.executableFromResourceFiles(DetectProperty.DETECT_PIPENV_PATH, "pip-freeze.xout", "pipenv-graph.xout");
+        test.git("https://github.com/jpadilla/django-project-template.git", "master");
         test.expectBdioResources();
         test.run();
     }
@@ -38,11 +39,12 @@ public class PipBattery {
         test.sourceDirectoryNamed("pipenv-cli-projectonly");
         test.sourceFileNamed("Pipfile.lock");
         test.sourceFileNamed("Pipfile");
-        test.executable(DetectProperty.DETECT_PYTHON_PATH, "battery-pipenv-project-name", "battery-pipenv-project-version");
+        test.executable(DetectProperty.DETECT_PYTHON_PATH, "django-debug-toolbar", "2.0");
         test.executableFromResourceFiles(DetectProperty.DETECT_PIPENV_PATH, "pip-freeze.xout", "pipenv-graph.xout");
         test.property(DetectProperty.DETECT_PIP_ONLY_PROJECT_TREE, "true");
-        test.property(DetectProperty.DETECT_PIP_PROJECT_NAME, "lime");
-        test.property(DetectProperty.DETECT_PIP_PROJECT_VERSION_NAME, "0.1.1.33");
+        test.property(DetectProperty.DETECT_PIP_PROJECT_NAME, "django-debug-toolbar");
+        test.property(DetectProperty.DETECT_PIP_PROJECT_VERSION_NAME, "2.0");
+        test.git("https://github.com/jpadilla/django-project-template.git", "master");
         test.expectBdioResources();
         test.run();
     }
