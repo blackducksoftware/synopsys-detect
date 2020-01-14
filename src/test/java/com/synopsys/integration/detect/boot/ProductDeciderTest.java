@@ -10,8 +10,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.configuration.config.DetectPropertySource;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.config.PropertySource;
 import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -97,7 +97,7 @@ public class ProductDeciderTest {
         for (int i = 0; i < keys.length; i += 2) {
             keyMap.put(keys[i], keys[i + 1]);
         }
-        final List<DetectPropertySource> propertySources = new ArrayList<>();
+        final List<PropertySource> propertySources = new ArrayList<>();
 
         return new PropertyConfiguration(propertySources);
     }

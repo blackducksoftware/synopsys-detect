@@ -7,9 +7,9 @@ import com.synopsys.integration.configuration.property.base.PassthroughProperty
 import com.synopsys.integration.configuration.property.base.TypedProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
 
-class PropertyConfiguration(private val orderedPropertySources: List<DetectPropertySource>) {
-    private val resolutionCache: MutableMap<String, PropertyResolution> = mutableMapOf();
-    private val valueCache: MutableMap<String, PropertyValue> = mutableMapOf();
+class PropertyConfiguration(private val orderedPropertySources: List<PropertySource>) {
+    private val resolutionCache: MutableMap<String, PropertyResolution> = mutableMapOf()
+    private val valueCache: MutableMap<String, PropertyValue> = mutableMapOf()
 
     //#region Recommended Usage
     fun <T> getValueOrNull(property: NullableProperty<T>): T? {
@@ -105,7 +105,7 @@ class PropertyConfiguration(private val orderedPropertySources: List<DetectPrope
     private fun resolveFromPropertySources(key: String): PropertyResolution {
         for (source in orderedPropertySources) {
             if (source.hasKey(key)) {
-                val rawValue = source.getKey(key);
+                val rawValue = source.getValue(key)
                 if (rawValue != null) { // If this property source is the first with a value, it is the canonical source of this property key.
                     val propertySourceName = source.getName()
                     return SourceResolution(propertySourceName, rawValue)
@@ -141,10 +141,12 @@ class PropertyConfiguration(private val orderedPropertySources: List<DetectPrope
     //endregion Implementation Details
 }
 
-class InvalidPropertyException(propertyKey: String, propertySourceName: String, innerException: ValueParseException) : Exception("The key '${propertyKey}' in property source '${propertySourceName}' contained a value that could not be reasonably converted to the properties type. The exception was: ${innerException.localizedMessage
-        ?: "Unknown"}", innerException) {}
+class InvalidPropertyException(propertyKey: String, propertySourceName: String, innerException: ValueParseException) : Exception(
+        "The key '${propertyKey}' in property source '${propertySourceName}' contained a value that could not be reasonably converted to the properties type. The exception was: ${innerException.localizedMessage ?: "Unknown"}",
+        innerException
+) {}
 
-sealed class PropertyValue {}
+sealed class PropertyValue
 data class TypedValue<T>(val value: T, val resolution: SourceResolution) : PropertyValue() // A property source contained a value and the value could be parsed to the proper type.
 data class ExceptionValue(val exception: ValueParseException, val resolution: SourceResolution) : PropertyValue() // A property source contained a value but the value could NOT be parsed to the proper type.
 object NoValue : PropertyValue()
