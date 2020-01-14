@@ -1,10 +1,11 @@
-package com.synopsys.integration.configuration.config
+package com.synopsys.integration.detect.configuration
 
 import com.synopsys.integration.configuration.property.Category
 import com.synopsys.integration.configuration.property.Group
 import kotlin.reflect.full.companionObject
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.memberProperties
+
 //TODO: Back to MAIN.
 class DetectCategory(name: String) : Category(name) {
     companion object {
@@ -13,7 +14,7 @@ class DetectCategory(name: String) : Category(name) {
     }
 }
 
-class DetectGroup(name: String, superGroup: DetectGroup? = null): Group(name, superGroup) {
+class DetectGroup(name: String, superGroup: DetectGroup? = null) : Group(name, superGroup) {
     companion object {
         //Super Groups
         val Detectors = DetectGroup("Detectors")
