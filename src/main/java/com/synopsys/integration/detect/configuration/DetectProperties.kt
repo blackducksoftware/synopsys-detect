@@ -27,18 +27,18 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectClone
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionPhaseType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
-import com.synopsys.integration.configuration.config.*
 import com.synopsys.integration.configuration.property.Property
+import com.synopsys.integration.configuration.property.base.PassthroughProperty
 import com.synopsys.integration.configuration.property.types.bool.BooleanProperty
 import com.synopsys.integration.configuration.property.types.bool.NullableBooleanProperty
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedValue
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumListProperty
 import com.synopsys.integration.configuration.property.types.enumlist.EnumListProperty
-import com.synopsys.integration.configuration.property.types.longs.LongProperty
 import com.synopsys.integration.configuration.property.types.enums.EnumProperty
 import com.synopsys.integration.configuration.property.types.integer.IntegerProperty
 import com.synopsys.integration.configuration.property.types.integer.NullableIntegerProperty
+import com.synopsys.integration.configuration.property.types.longs.LongProperty
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty
 import com.synopsys.integration.configuration.property.types.string.StringProperty
 import com.synopsys.integration.configuration.property.types.stringlist.NullableStringListProperty
@@ -404,6 +404,18 @@ class DetectProperties {
             info("Detect Ignore Connection Failures", "5.3.0")
             help("If true, Detect will ignore any products that it cannot connect to.", "If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.")
             groups(DetectGroup.General, DetectGroup.BlackduckServer, DetectGroup.Polaris)
+            category(DetectCategory.Advanced)
+        }
+        val PHONEHOME_PASSTHROUGH = PassthroughProperty("detect.phone.home.passthrough").apply {
+            info("Phone Home Passthrough", "6.0.0")
+            help("Additional values may be sent home for usage information. The keys will be sent without the prefix.")
+            groups(DetectGroup.Docker, DetectGroup.Default)
+            category(DetectCategory.Advanced)
+        }
+        val DOCKER_PASSTHROUGH = PassthroughProperty("detect.docker.passthrough").apply {
+            info("Docker Passthrough", "6.0.0")
+            help("Additional properties may be passed to the docker inspector by adding the prefix detect.docker.passthrough. The keys will be given to docker inspector without the prefix.")
+            groups(DetectGroup.Docker, DetectGroup.Default)
             category(DetectCategory.Advanced)
         }
         val DETECT_DOCKER_IMAGE = NullableStringProperty("detect.docker.image").apply {

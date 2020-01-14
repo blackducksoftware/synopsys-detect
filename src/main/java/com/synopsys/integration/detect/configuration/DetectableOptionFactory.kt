@@ -97,7 +97,7 @@ class DetectableOptionFactory(private val detectConfiguration: PropertyConfigura
         val suppliedDockerTar = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_TAR)
         val dockerInspectorLoggingLevel = detectConfiguration.getValue(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION)
         val dockerInspectorVersion = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_INSPECTOR_VERSION)
-        val additionalDockerProperties = detectConfiguration.getDockerProperties().toMutableMap()
+        val additionalDockerProperties = detectConfiguration.getRaw(DetectProperties.DOCKER_PASSTHROUGH).toMutableMap()
         diagnosticSystemOptional.ifPresent { diagnosticSystem -> additionalDockerProperties.putAll(diagnosticSystem.additionalDockerProperties) }
         val dockerInspectorPath = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_INSPECTOR_PATH)
         val dockerPlatformTopLayerId = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_PLATFORM_TOP_LAYER_ID)
