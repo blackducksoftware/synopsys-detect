@@ -23,7 +23,6 @@
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +37,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.config.SpringPropertySource;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectableBeanConfiguration;
@@ -46,8 +46,6 @@ import com.synopsys.integration.detect.configuration.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.DetectPropertyMap;
-import com.synopsys.integration.detect.configuration.DetectPropertySource;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
@@ -71,7 +69,6 @@ import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.synopsys.integration.detect.property.SpringPropertySource;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
@@ -128,11 +125,9 @@ public class DetectBoot {
 
         final DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
 
-        final SpringPropertySource springPropertySource = new SpringPropertySource(environment);
-        final DetectPropertySource propertySource = new DetectPropertySource(springPropertySource);
-        final DetectPropertyMap propertyMap = new DetectPropertyMap();
-        final PropertyConfiguration detectConfiguration = null;//'//' = new DetectConfiguration(propertySource, propertyMap); TODO: Fix
-        final DetectOptionManager detectOptionManager = null;// = new DetectOptionManager(detectConfiguration, detectInfo); TODO: Fix
+        List<SpringPropertySource> propertySources = SpringPropertySource.Companion.fromConfigurableEnvironment(environment);
+        final PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
+        final DetectOptionManager detectOptionManager = new DetectOptionManager();// = new DetectOptionManager(detectConfiguration, detectInfo); TODO: Fix
 
         final List<DetectOption> options = detectOptionManager.getDetectOptions();
 
@@ -172,11 +167,11 @@ public class DetectBoot {
 
         logger.debug("Initializing Detect.");
 
-        final DetectConfigurationFactory factory = new DetectConfigurationFactory(new PropertyConfiguration(new ArrayList<>())); //TODO: Fix
+        final DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
         final DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
         final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectOptionManager.getDetectOptions(), detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
-        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(new PropertyConfiguration(new ArrayList<>()), diagnosticSystem); //TODO: Fix
+        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem); //TODO: Fix
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
@@ -202,7 +197,7 @@ public class DetectBoot {
 
         logger.debug("Decided what products will be run. Starting product boot.");
 
-        final ProductBootFactory productBootFactory = new ProductBootFactory(detectConfiguration, detectInfo, eventSystem, detectOptionManager);
+        final ProductBootFactory productBootFactory = new ProductBootFactory(detectInfo, eventSystem, factory);
         final ProductBoot productBoot = new ProductBoot();
         final ProductRunData productRunData;
         try {

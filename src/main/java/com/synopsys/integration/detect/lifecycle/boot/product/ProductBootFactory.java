@@ -22,44 +22,43 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot.product;
 
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.BlackDuckConfigFactory;
+import com.synopsys.integration.detect.configuration.BlackDuckConnectionDetails;
+import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.help.DetectOptionManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.phonehome.OnlinePhoneHomeManager;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
+import com.synopsys.integration.log.SilentIntLogger;
 
 public class ProductBootFactory {
-    private final PropertyConfiguration detectConfiguration;
     private final DetectInfo detectInfo;
     private final EventSystem eventSystem;
-    private final DetectOptionManager detectOptionManager;
+    private final DetectConfigurationFactory detectConfigurationFactory;
 
-    public ProductBootFactory(final PropertyConfiguration detectConfiguration, final DetectInfo detectInfo, final EventSystem eventSystem, final DetectOptionManager detectOptionManager) {
-        this.detectConfiguration = detectConfiguration;
+    public ProductBootFactory(final DetectInfo detectInfo, final EventSystem eventSystem, final DetectConfigurationFactory detectConfigurationFactory) {
         this.detectInfo = detectInfo;
         this.eventSystem = eventSystem;
-        this.detectOptionManager = detectOptionManager;
+        this.detectConfigurationFactory = detectConfigurationFactory;
     }
 
     public PhoneHomeManager createPhoneHomeManager(final BlackDuckServicesFactory blackDuckServicesFactory) {
-        final Map<String, String> additionalMetaData = detectConfiguration.getRaw(DetectProperties.Companion.getPHONEHOME_PASSTHROUGH());
         final ExecutorService executorService = Executors.newSingleThreadExecutor();
         final BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(blackDuckServicesFactory, executorService);
-        final PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(additionalMetaData, detectInfo, eventSystem, blackDuckPhoneHomeHelper);
+        final PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(detectConfigurationFactory.createPhoneHomeOptions().getPassthrough(), detectInfo, eventSystem, blackDuckPhoneHomeHelper);
         return phoneHomeManager;
     }
 
     public BlackDuckServerConfig createBlackDuckServerConfig() throws DetectUserFriendlyException {
-        return detectOptionManager.createBlackDuckServerConfig();
+        BlackDuckConnectionDetails connectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
+        BlackDuckConfigFactory blackDuckConfigFactory = new BlackDuckConfigFactory(connectionDetails);
+        return blackDuckConfigFactory.createServerConfig(new SilentIntLogger());
     }
 }

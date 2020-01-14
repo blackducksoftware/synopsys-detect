@@ -42,11 +42,10 @@ import com.synopsys.integration.detect.workflow.bdio.BdioOptions
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions
+import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions
 import com.synopsys.integration.detector.finder.DetectorFinderOptions
-import com.synopsys.integration.log.IntLogger
-import com.synopsys.integration.log.SilentIntLogger
 import com.synopsys.integration.rest.credentials.Credentials
 import com.synopsys.integration.rest.credentials.CredentialsBuilder
 import com.synopsys.integration.rest.proxy.ProxyInfo
@@ -126,11 +125,11 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
         return ConnectionDetails(createBlackDuckProxyInfo(), proxyPatterns, findTimeoutInSeconds(), alwaysTrust)
     }
 
-    fun createBlackDuckConnectionDetails(logger: IntLogger = SilentIntLogger()): BlackDuckConnectionDetails {
+    fun createBlackDuckConnectionDetails(): BlackDuckConnectionDetails {
         val blackduckUrl = detectConfiguration.getValue(DetectProperties.BLACKDUCK_URL)
 
         val allBlackDuckKeys: Set<String> = HashSet(BlackDuckServerConfigBuilder().propertyKeys)
-                .filter { it.toLowerCase().contains("proxy") }
+                .filter { !it.toLowerCase().contains("proxy") }
                 .toSet()
 
         val blackDuckProperties = detectConfiguration.getRaw(allBlackDuckKeys)
@@ -138,6 +137,11 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
         return BlackDuckConnectionDetails(blackduckUrl, blackDuckProperties, findParallelProcessors(), createConnectionDetails())
     }
     //#endregion
+
+    fun createPhoneHomeOptions(): PhoneHomeOptions {
+        val phoneHomePassthrough = detectConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH)
+        return PhoneHomeOptions(phoneHomePassthrough)
+    }
 
     fun createRunOptions(): RunOptions {
         var sigScanDisabled = Optional.empty<Boolean>()
@@ -242,7 +246,7 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
         val tags = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_TAGS)
         val parentProjectName = detectConfiguration.getValue(DetectProperties.DETECT_PARENT_PROJECT_NAME)
         val parentProjectVersion = detectConfiguration.getValue(DetectProperties.DETECT_PARENT_PROJECT_VERSION_NAME)
-        val cloneLatestProjectVersion = detectConfiguration.getValue(DetectProperties.DETECT_CLONE_PROJECT_VERSION_LATEST)
+        val cloneLatestProjectVersion = detectConfiguration.getValue(DetectProperties.DETECT_CLONE_PROJECT_VERSION_LATEST) ?: false //TODO: Jake this is a boolean example. Should be required?
 
         val parser = DetectCustomFieldParser()
         val customFieldDocument = parser.parseCustomFieldDocument(detectConfiguration.getRaw())

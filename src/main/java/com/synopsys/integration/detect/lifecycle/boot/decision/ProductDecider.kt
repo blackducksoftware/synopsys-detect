@@ -33,6 +33,7 @@ import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import java.io.File
 
+//TODO: Should use Configuration Factory. Would solve the other TODO as well.
 class ProductDecider {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 

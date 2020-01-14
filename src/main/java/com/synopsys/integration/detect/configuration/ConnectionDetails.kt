@@ -33,9 +33,9 @@ class BlackDuckConfigFactory(private val blackDuckConnectionDetails: BlackDuckCo
                 .setExecutorService(Executors.newFixedThreadPool(blackDuckConnectionDetails.parallelProcessors))
                 .setLogger(logger)
 
+        blackDuckServerConfigBuilder.setProperties(blackDuckConnectionDetails.blackduckProperties.entries)
+
         if (blackDuckConnectionDetails.blackduckUrl != null && ProxyUtil.shouldIgnoreUrl(blackDuckConnectionDetails.blackduckUrl, connectionDetails.ignoredProxyHostPatterns, logger)) {
-            blackDuckServerConfigBuilder.setProperties(blackDuckConnectionDetails.blackduckProperties.entries);
-        } else {
             blackDuckServerConfigBuilder.setProxyInfo(connectionDetails.proxyInformation);
         }
 

@@ -135,7 +135,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public DetectConfigurationFactory detectConfigurationFactory() {
-        return new DetectConfigurationFactory(new PropertyConfiguration(new ArrayList<>())); //TODO Fix
+        return new DetectConfigurationFactory(detectConfiguration);
     }
 
     @Bean
