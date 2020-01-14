@@ -1067,6 +1067,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#nuget-packages-repository-url" class="md-nav__link">
+    Nuget Packages Repository URL
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#nuget-config-file" class="md-nav__link">
     Nuget Config File
   </a>
@@ -1081,15 +1088,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-packages-repository-url" class="md-nav__link">
-    Nuget Packages Repository URL
+  <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
+    Nuget Inspector AirGap Path (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-projects-excluded-advanced" class="md-nav__link">
-    Nuget Projects Excluded (Advanced)
+  <a href="#nuget-modules-included-advanced" class="md-nav__link">
+    Nuget Modules Included (Advanced)
   </a>
   
 </li>
@@ -1109,15 +1116,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-modules-included-advanced" class="md-nav__link">
-    Nuget Modules Included (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
-    Nuget Inspector AirGap Path (Advanced)
+  <a href="#nuget-projects-excluded-advanced" class="md-nav__link">
+    Nuget Projects Excluded (Advanced)
   </a>
   
 </li>
@@ -1262,6 +1262,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#nuget-packages-repository-url" class="md-nav__link">
+    Nuget Packages Repository URL
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#nuget-config-file" class="md-nav__link">
     Nuget Config File
   </a>
@@ -1276,15 +1283,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-packages-repository-url" class="md-nav__link">
-    Nuget Packages Repository URL
+  <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
+    Nuget Inspector AirGap Path (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-projects-excluded-advanced" class="md-nav__link">
-    Nuget Projects Excluded (Advanced)
+  <a href="#nuget-modules-included-advanced" class="md-nav__link">
+    Nuget Modules Included (Advanced)
   </a>
   
 </li>
@@ -1304,15 +1311,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-modules-included-advanced" class="md-nav__link">
-    Nuget Modules Included (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
-    Nuget Inspector AirGap Path (Advanced)
+  <a href="#nuget-projects-excluded-advanced" class="md-nav__link">
+    Nuget Projects Excluded (Advanced)
   </a>
   
 </li>
@@ -1349,6 +1349,50 @@
                 
                 
                 <h1 id="nuget">nuget</h1>
+<h2 id="nuget-packages-repository-url">Nuget Packages Repository URL</h2>
+<pre><code>--detect.nuget.packages.repo.url=https://api.nuget.org/v3/index.json
+</code></pre>
+
+<p>The source for nuget packages</p>
+<p>Set this to "https://www.nuget.org/api/v2/" if your are still using a nuget client expecting the v2 api.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String[]</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>https://api.nuget.org/v3/index.json</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="nuget-config-file">Nuget Config File</h2>
 <pre><code>--detect.nuget.config.path
 </code></pre>
@@ -1435,12 +1479,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="nuget-packages-repository-url">Nuget Packages Repository URL</h2>
-<pre><code>--detect.nuget.packages.repo.url=https://api.nuget.org/v3/index.json
+<h2 id="nuget-inspector-airgap-path-advanced">Nuget Inspector AirGap Path (Advanced)</h2>
+<pre><code>--detect.nuget.inspector.air.gap.path
 </code></pre>
 
-<p>The source for nuget packages</p>
-<p>Set this to "https://www.nuget.org/api/v2/" if your are still using a nuget client expecting the v2 api.</p>
+<p>The path to the directory containing the nuget inspector nupkg.</p>
 <table>
 <thead>
 <tr>
@@ -1455,11 +1498,11 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>String[]</td>
+<td>String</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>https://api.nuget.org/v3/index.json</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1479,11 +1522,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="nuget-projects-excluded-advanced">Nuget Projects Excluded (Advanced)</h2>
-<pre><code>--detect.nuget.excluded.modules
+<h2 id="nuget-modules-included-advanced">Nuget Modules Included (Advanced)</h2>
+<pre><code>--detect.nuget.included.modules
 </code></pre>
 
-<p>The names of the projects in a solution to exclude.</p>
+<p>The names of the projects in a solution to include (overrides exclude).</p>
 <table>
 <thead>
 <tr>
@@ -1608,54 +1651,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="nuget-modules-included-advanced">Nuget Modules Included (Advanced)</h2>
-<pre><code>--detect.nuget.included.modules
+<h2 id="nuget-projects-excluded-advanced">Nuget Projects Excluded (Advanced)</h2>
+<pre><code>--detect.nuget.excluded.modules
 </code></pre>
 
-<p>The names of the projects in a solution to include (overrides exclude).</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="nuget-inspector-airgap-path-advanced">Nuget Inspector AirGap Path (Advanced)</h2>
-<pre><code>--detect.nuget.inspector.air.gap.path
-</code></pre>
-
-<p>The path to the directory containing the nuget inspector nupkg.</p>
+<p>The names of the projects in a solution to exclude.</p>
 <table>
 <thead>
 <tr>
