@@ -34,7 +34,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.core.env.ConfigurableEnvironment;
 
-import com.synopsys.integration.configuration.config.DetectConfig;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
@@ -132,7 +132,7 @@ public class Application implements ApplicationRunner {
             }
 
             if (detectBootResult.getDetectConfiguration().isPresent()) {
-                final DetectConfig detectConfiguration = detectBootResult.getDetectConfiguration().get();
+                final PropertyConfiguration detectConfiguration = detectBootResult.getDetectConfiguration().get();
                 printOutput = !detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_SUPPRESS_RESULTS_OUTPUT());
                 shouldForceSuccess = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_FORCE_SUCCESS());
             }

@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.detect.configuration
 
-import com.synopsys.integration.configuration.config.DetectConfig
+import com.synopsys.integration.configuration.config.PropertyConfiguration
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem
@@ -51,7 +51,7 @@ import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import java.util.*
 
-class DetectableOptionFactory(private val detectConfiguration: DetectConfig, private val diagnosticSystemOptional: Optional<DiagnosticSystem>) {
+class DetectableOptionFactory(private val detectConfiguration: PropertyConfiguration, private val diagnosticSystemOptional: Optional<DiagnosticSystem>) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     fun createBazelDetectableOptions(): BazelDetectableOptions {

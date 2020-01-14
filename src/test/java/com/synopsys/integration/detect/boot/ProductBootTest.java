@@ -9,7 +9,7 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.configuration.config.DetectConfig;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
@@ -130,7 +130,7 @@ public class ProductBootTest {
 
     private ProductRunData testBoot(final BlackDuckDecision blackDuckDecision, final PolarisDecision polarisDecision, final BlackDuckConnectivityResult blackDuckconnectivityResult, final PolarisConnectivityResult polarisConnectivityResult,
         final Map<DetectProperty, Boolean> properties) throws DetectUserFriendlyException {
-        final DetectConfig detectConfiguration = Mockito.mock(DetectConfig.class);
+        final PropertyConfiguration detectConfiguration = Mockito.mock(PropertyConfiguration.class);
         //TODO: Fix - this might break this test.
         //properties.forEach((key, value) -> Mockito.when(detectConfiguration.getBooleanProperty(key, PropertyAuthority.NONE)).thenReturn(value));
 

@@ -6,14 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.configuration.config.DetectConfig;
 import com.synopsys.integration.configuration.config.DetectPropertySource;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -27,7 +25,7 @@ public class ProductDeciderTest {
     @Test()
     public void shouldRunPolaris() throws DetectUserFriendlyException {
         final File userHome = Mockito.mock(File.class);
-        final DetectConfig detectConfiguration = configuration("POLARIS_ACCESS_TOKEN", "access token text", "POLARIS_URL", "http://polaris.com");
+        final PropertyConfiguration detectConfiguration = configuration("POLARIS_ACCESS_TOKEN", "access token text", "POLARIS_URL", "http://polaris.com");
 
         final ProductDecider productDecider = new ProductDecider();
         final DetectToolFilter detectToolFilter = Mockito.mock(DetectToolFilter.class);
@@ -40,7 +38,7 @@ public class ProductDeciderTest {
     @Test()
     public void shouldRunPolarisWhenExcluded() throws DetectUserFriendlyException {
         final File userHome = Mockito.mock(File.class);
-        final DetectConfig detectConfiguration = configuration("POLARIS_ACCESS_TOKEN", "access token text", "POLARIS_URL", "http://polaris.com");
+        final PropertyConfiguration detectConfiguration = configuration("POLARIS_ACCESS_TOKEN", "access token text", "POLARIS_URL", "http://polaris.com");
 
         final ProductDecider productDecider = new ProductDecider();
         final DetectToolFilter detectToolFilter = Mockito.mock(DetectToolFilter.class);
@@ -53,7 +51,7 @@ public class ProductDeciderTest {
     @Test()
     public void shouldRunBlackDuckOffline() throws DetectUserFriendlyException {
         final File userHome = Mockito.mock(File.class);
-        final DetectConfig detectConfiguration = Mockito.mock(DetectConfig.class);
+        final PropertyConfiguration detectConfiguration = Mockito.mock(PropertyConfiguration.class);
         Mockito.when(detectConfiguration.getValueOrDefault(DetectProperties.Companion.getBLACKDUCK_OFFLINE_MODE())).thenReturn(true);
 
         final ProductDecider productDecider = new ProductDecider();
@@ -68,7 +66,7 @@ public class ProductDeciderTest {
     @Test()
     public void shouldRunBlackDuckOnline() throws DetectUserFriendlyException {
         final File userHome = Mockito.mock(File.class);
-        final DetectConfig detectConfiguration = Mockito.mock(DetectConfig.class);
+        final PropertyConfiguration detectConfiguration = Mockito.mock(PropertyConfiguration.class);
         Mockito.when(detectConfiguration.getValueOrNull(DetectProperties.Companion.getBLACKDUCK_URL())).thenReturn("some-url");
 
         final ProductDecider productDecider = new ProductDecider();
@@ -83,7 +81,7 @@ public class ProductDeciderTest {
     @Test()
     public void decidesNone() throws DetectUserFriendlyException {
         final File userHome = Mockito.mock(File.class);
-        final DetectConfig detectConfiguration = Mockito.mock(DetectConfig.class);
+        final PropertyConfiguration detectConfiguration = Mockito.mock(PropertyConfiguration.class);
 
         final ProductDecider productDecider = new ProductDecider();
         final DetectToolFilter detectToolFilter = Mockito.mock(DetectToolFilter.class);
@@ -93,32 +91,14 @@ public class ProductDeciderTest {
         Assert.assertFalse(productDecision.willRunAny());
     }
 
-    private DetectConfig configuration(final String... keys) {
+    //TODO: FIx?
+    private PropertyConfiguration configuration(final String... keys) {
         final Map<String, String> keyMap = new HashMap<>();
         for (int i = 0; i < keys.length; i += 2) {
             keyMap.put(keys[i], keys[i + 1]);
         }
-        final DetectPropertySource detectPropertySource = new DetectPropertySource() {
-            @Override
-            public boolean hasKey(@NotNull final String key) {
-                return keyMap.containsKey(key);
-            }
-
-            @Nullable
-            @Override
-            public String getKey(@NotNull final String key) {
-                return keyMap.get(key);
-            }
-
-            @NotNull
-            @Override
-            public String getName() {
-                return "Test";
-            }
-        };
         final List<DetectPropertySource> propertySources = new ArrayList<>();
-        propertySources.add(detectPropertySource);
 
-        return new DetectConfig(propertySources);
+        return new PropertyConfiguration(propertySources);
     }
 }

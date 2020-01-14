@@ -32,7 +32,7 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.configuration.config.DetectConfig;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -54,10 +54,10 @@ public class PolarisTool {
     private final DirectoryManager directoryManager;
     private final ExecutableRunner executableRunner;
     private final EventSystem eventSystem;
-    private final DetectConfig detectConfiguration;
+    private final PropertyConfiguration detectConfiguration;
     private final PolarisServerConfig polarisServerConfig;
 
-    public PolarisTool(final EventSystem eventSystem, final DirectoryManager directoryManager, final ExecutableRunner executableRunner, final DetectConfig detectConfiguration, final PolarisServerConfig polarisServerConfig) {
+    public PolarisTool(final EventSystem eventSystem, final DirectoryManager directoryManager, final ExecutableRunner executableRunner, final PropertyConfiguration detectConfiguration, final PolarisServerConfig polarisServerConfig) {
         this.directoryManager = directoryManager;
         this.executableRunner = executableRunner;
         this.eventSystem = eventSystem;

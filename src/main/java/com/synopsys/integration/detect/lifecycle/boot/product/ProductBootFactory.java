@@ -29,8 +29,9 @@ import java.util.concurrent.Executors;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.configuration.config.DetectConfig;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.help.DetectOptionManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -38,12 +39,12 @@ import com.synopsys.integration.detect.workflow.phonehome.OnlinePhoneHomeManager
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 
 public class ProductBootFactory {
-    private final DetectConfig detectConfiguration;
+    private final PropertyConfiguration detectConfiguration;
     private final DetectInfo detectInfo;
     private final EventSystem eventSystem;
     private final DetectOptionManager detectOptionManager;
 
-    public ProductBootFactory(final DetectConfig detectConfiguration, final DetectInfo detectInfo, final EventSystem eventSystem, final DetectOptionManager detectOptionManager) {
+    public ProductBootFactory(final PropertyConfiguration detectConfiguration, final DetectInfo detectInfo, final EventSystem eventSystem, final DetectOptionManager detectOptionManager) {
         this.detectConfiguration = detectConfiguration;
         this.detectInfo = detectInfo;
         this.eventSystem = eventSystem;
@@ -51,7 +52,7 @@ public class ProductBootFactory {
     }
 
     public PhoneHomeManager createPhoneHomeManager(final BlackDuckServicesFactory blackDuckServicesFactory) {
-        final Map<String, String> additionalMetaData = detectConfiguration.getPhoneHomeProperties();
+        final Map<String, String> additionalMetaData = detectConfiguration.getRaw(DetectProperties.Companion.getPHONEHOME_PASSTHROUGH());
         final ExecutorService executorService = Executors.newSingleThreadExecutor();
         final BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(blackDuckServicesFactory, executorService);
         final PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(additionalMetaData, detectInfo, eventSystem, blackDuckPhoneHomeHelper);

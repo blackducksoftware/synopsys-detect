@@ -39,7 +39,7 @@ import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOut
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
-import com.synopsys.integration.configuration.config.DetectConfig;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
@@ -120,7 +120,7 @@ public class RunManager {
 
     public RunResult run(final ProductRunData productRunData) throws DetectUserFriendlyException, IntegrationException {
         //TODO: Better way for run manager to get dependencies so he can be tested. (And better ways of creating his objects)
-        final DetectConfig detectConfiguration = detectContext.getBean(DetectConfig.class);
+        final PropertyConfiguration detectConfiguration = detectContext.getBean(PropertyConfiguration.class);
         final DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         final DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
         final EventSystem eventSystem = detectContext.getBean(EventSystem.class);
@@ -169,7 +169,7 @@ public class RunManager {
         }
     }
 
-    private UniversalToolsResult runUniversalProjectTools(final DetectConfig detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager, final EventSystem eventSystem,
+    private UniversalToolsResult runUniversalProjectTools(final PropertyConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager, final EventSystem eventSystem,
         final RunResult runResult, final RunOptions runOptions, final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         final ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         final DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
@@ -251,7 +251,7 @@ public class RunManager {
         }
     }
 
-    private void runPolarisProduct(final ProductRunData productRunData, final DetectConfig detectConfiguration, final DirectoryManager directoryManager, final EventSystem eventSystem,
+    private void runPolarisProduct(final ProductRunData productRunData, final PropertyConfiguration detectConfiguration, final DirectoryManager directoryManager, final EventSystem eventSystem,
         final DetectToolFilter detectToolFilter) {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
@@ -266,7 +266,7 @@ public class RunManager {
         }
     }
 
-    private void runBlackDuckProduct(final ProductRunData productRunData, final DetectConfig detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager,
+    private void runBlackDuckProduct(final ProductRunData productRunData, final PropertyConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager,
         final EventSystem eventSystem, final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions,
         final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion, final AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException {
         logger.debug("Black Duck tools will run.");

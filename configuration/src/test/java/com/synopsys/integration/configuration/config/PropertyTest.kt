@@ -1,17 +1,17 @@
 package com.synopsys.integration.configuration.config
 
 open class PropertyTest {
-    fun emptyConfig(): DetectConfig {
+    fun emptyConfig(): PropertyConfiguration {
         val propertyMap = emptyMap<String, String>()
         val propertySource = MapPropertySource("map", propertyMap)
         val propertySources = listOf(propertySource)
-        return DetectConfig(propertySources)
+        return PropertyConfiguration(propertySources)
     }
 
-    fun configOf(pair: Pair<String, String>): DetectConfig {
+    fun configOf(pair: Pair<String, String>): PropertyConfiguration {
         val propertyMap = mapOf(pair)
         val propertySource = MapPropertySource("map", propertyMap)
         val propertySources = listOf(propertySource)
-        return DetectConfig(propertySources)
+        return PropertyConfiguration(propertySources)
     }
 }

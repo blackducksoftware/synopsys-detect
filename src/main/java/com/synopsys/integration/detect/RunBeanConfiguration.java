@@ -36,7 +36,7 @@ import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.configuration.config.DetectConfig;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
@@ -76,7 +76,7 @@ public class RunBeanConfiguration {
     @Autowired
     public DetectInfo detectInfo;
     @Autowired
-    public DetectConfig detectConfiguration;
+    public PropertyConfiguration detectConfiguration;
     @Autowired
     public DirectoryManager directoryManager;
     @Autowired
@@ -123,7 +123,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public DetectConfigurationFactory detectConfigurationFactory() {
-        return new DetectConfigurationFactory(new DetectConfig(new ArrayList<>())); //TODO Fix
+        return new DetectConfigurationFactory(new PropertyConfiguration(new ArrayList<>())); //TODO Fix
     }
 
     @Bean

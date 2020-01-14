@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.lifecycle.boot;
 import java.io.File;
 import java.util.Optional;
 
-import com.synopsys.integration.configuration.config.DetectConfig;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -35,7 +35,7 @@ public class DetectBootResult {
 
     //No matter what type of boot occurs, the following should be provided to the best effort of the Boot.
     //Shutdown and cleanup will do best effort with the following dependencies.
-    private final DetectConfig detectConfiguration;
+    private final PropertyConfiguration detectConfiguration;
     private final DirectoryManager directoryManager;
     private final ProductRunData productRunData;
     private final File airGapZip;
@@ -44,7 +44,7 @@ public class DetectBootResult {
     //And in the case of an exception, this should be populated so the proper exit code can be thrown.
     private final Exception exception;
 
-    private DetectBootResult(final BootType bootType, final DetectConfig detectConfiguration, final DirectoryManager directoryManager, final File airGapZip, final DiagnosticSystem diagnosticSystem,
+    private DetectBootResult(final BootType bootType, final PropertyConfiguration detectConfiguration, final DirectoryManager directoryManager, final File airGapZip, final DiagnosticSystem diagnosticSystem,
         final ProductRunData productRunData, final Exception exception) {
         this.bootType = bootType;
         this.detectConfiguration = detectConfiguration;
@@ -55,7 +55,7 @@ public class DetectBootResult {
         this.exception = exception;
     }
 
-    public Optional<DetectConfig> getDetectConfiguration() {
+    public Optional<PropertyConfiguration> getDetectConfiguration() {
         return Optional.ofNullable(detectConfiguration);
     }
 
@@ -89,27 +89,27 @@ public class DetectBootResult {
         EXCEPTION
     }
 
-    public static DetectBootResult run(final DetectConfig detectConfiguration, final ProductRunData productRunData, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
+    public static DetectBootResult run(final PropertyConfiguration detectConfiguration, final ProductRunData productRunData, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
         return new DetectBootResult(BootType.RUN, detectConfiguration, directoryManager, null, diagnosticSystem.orElse(null), productRunData, null);
     }
 
-    public static DetectBootResult exit(final DetectConfig detectConfiguration) {
+    public static DetectBootResult exit(final PropertyConfiguration detectConfiguration) {
         return new DetectBootResult(BootType.EXIT, detectConfiguration, null, null, null, null, null);
     }
 
-    public static DetectBootResult exit(final DetectConfig detectConfiguration, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
+    public static DetectBootResult exit(final PropertyConfiguration detectConfiguration, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
         return new DetectBootResult(BootType.EXIT, detectConfiguration, directoryManager, null, diagnosticSystem.orElse(null), null, null);
     }
 
-    public static DetectBootResult exit(final DetectConfig detectConfiguration, final File airGapZip, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
+    public static DetectBootResult exit(final PropertyConfiguration detectConfiguration, final File airGapZip, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
         return new DetectBootResult(BootType.EXIT, detectConfiguration, directoryManager, airGapZip, diagnosticSystem.orElse(null), null, null);
     }
 
-    public static DetectBootResult exception(final Exception exception, final DetectConfig detectConfiguration) {
+    public static DetectBootResult exception(final Exception exception, final PropertyConfiguration detectConfiguration) {
         return new DetectBootResult(BootType.EXCEPTION, detectConfiguration, null, null, null, null, exception);
     }
 
-    public static DetectBootResult exception(final Exception exception, final DetectConfig detectConfiguration, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
+    public static DetectBootResult exception(final Exception exception, final PropertyConfiguration detectConfiguration, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
         return new DetectBootResult(BootType.EXCEPTION, detectConfiguration, directoryManager, null, diagnosticSystem.orElse(null), null, exception);
     }
 }

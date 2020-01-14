@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.detect.tool.detector.impl
 
-import com.synopsys.integration.configuration.config.DetectConfig
+import com.synopsys.integration.configuration.config.PropertyConfiguration
 import com.synopsys.integration.detect.configuration.DetectProperties
 import com.synopsys.integration.detectable.DetectableEnvironment
 import com.synopsys.integration.detectable.detectable.exception.DetectableException
@@ -34,7 +34,7 @@ import java.io.File
 import java.util.function.Function
 import java.util.function.Supplier
 
-class DetectExecutableResolver(private val simpleExecutableResolver: SimpleExecutableResolver, private val detectConfiguration: DetectConfig) : JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, DockerResolver, DotNetResolver, GitResolver, SwiftResolver, GoResolver {
+class DetectExecutableResolver(private val simpleExecutableResolver: SimpleExecutableResolver, private val detectConfiguration: PropertyConfiguration) : JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, DockerResolver, DotNetResolver, GitResolver, SwiftResolver, GoResolver {
     private val cachedExecutables: MutableMap<String, File> = mutableMapOf()
 
     @Throws(DetectableException::class)

@@ -24,7 +24,7 @@ package com.synopsys.integration.detect.configuration
 
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
-import com.synopsys.integration.configuration.config.DetectConfig
+import com.synopsys.integration.configuration.config.PropertyConfiguration
 import com.synopsys.integration.configuration.property.types.enumextended.BaseValue
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedValue
 import com.synopsys.integration.configuration.property.types.enumfilterable.populatedValues
@@ -47,7 +47,7 @@ import java.nio.file.Path
 import java.util.*
 
 // TODO: Create private method for accessing properties that assumes a PropertyAuthority of NONE.
-class DetectConfigurationFactory(private val detectConfiguration: DetectConfig) {
+class DetectConfigurationFactory(private val detectConfiguration: PropertyConfiguration) {
 
     val timeoutInSeconds: Long
         get() {

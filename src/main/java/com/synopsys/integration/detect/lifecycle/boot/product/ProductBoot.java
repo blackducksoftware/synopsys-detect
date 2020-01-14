@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.configuration.config.DetectConfig;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -44,7 +44,7 @@ import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
 public class ProductBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public ProductRunData boot(final ProductDecision productDecision, final DetectConfig detectConfiguration, final BlackDuckConnectivityChecker blackDuckConnectivityChecker,
+    public ProductRunData boot(final ProductDecision productDecision, final PropertyConfiguration detectConfiguration, final BlackDuckConnectivityChecker blackDuckConnectivityChecker,
         final PolarisConnectivityChecker polarisConnectivityChecker,
         final ProductBootFactory productBootFactory) throws DetectUserFriendlyException {
         if (!productDecision.willRunAny()) {

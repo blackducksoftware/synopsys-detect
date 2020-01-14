@@ -37,7 +37,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.synopsys.integration.configuration.config.DetectConfig;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectableBeanConfiguration;
@@ -130,7 +130,7 @@ public class DetectBoot {
         final SpringPropertySource springPropertySource = new SpringPropertySource(environment);
         final DetectPropertySource propertySource = new DetectPropertySource(springPropertySource);
         final DetectPropertyMap propertyMap = new DetectPropertyMap();
-        final DetectConfig detectConfiguration = null;//'//' = new DetectConfiguration(propertySource, propertyMap); TODO: Fix
+        final PropertyConfiguration detectConfiguration = null;//'//' = new DetectConfiguration(propertySource, propertyMap); TODO: Fix
         final DetectOptionManager detectOptionManager = null;// = new DetectOptionManager(detectConfiguration, detectInfo); TODO: Fix
 
         final List<DetectOption> options = detectOptionManager.getDetectOptions();
@@ -171,11 +171,11 @@ public class DetectBoot {
 
         logger.debug("Initializing Detect.");
 
-        final DetectConfigurationFactory factory = new DetectConfigurationFactory(new DetectConfig(new ArrayList<>())); //TODO: Fix
+        final DetectConfigurationFactory factory = new DetectConfigurationFactory(new PropertyConfiguration(new ArrayList<>())); //TODO: Fix
         final DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
         final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectOptionManager.getDetectOptions(), detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
-        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(new DetectConfig(new ArrayList<>()), diagnosticSystem); //TODO: Fix
+        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(new PropertyConfiguration(new ArrayList<>()), diagnosticSystem); //TODO: Fix
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
@@ -295,7 +295,7 @@ public class DetectBoot {
         detectInfoPrinter.printInfo(System.out, detectInfo);
     }
 
-    private Optional<DetectBootResult> printConfiguration(final boolean fullConfiguration, final DetectOptionManager detectOptionManager, final DetectConfig detectConfiguration, final EventSystem eventSystem,
+    private Optional<DetectBootResult> printConfiguration(final boolean fullConfiguration, final DetectOptionManager detectOptionManager, final PropertyConfiguration detectConfiguration, final EventSystem eventSystem,
         final List<DetectOption> detectOptions) {
 
         //First print the entire configuration.
@@ -331,7 +331,7 @@ public class DetectBoot {
         return Optional.empty();
     }
 
-    private void startInteractiveMode(final DetectOptionManager detectOptionManager, final DetectConfig detectConfiguration, final Gson gson, final ObjectMapper objectMapper) {
+    private void startInteractiveMode(final DetectOptionManager detectOptionManager, final PropertyConfiguration detectConfiguration, final Gson gson, final ObjectMapper objectMapper) {
         final InteractiveManager interactiveManager = new InteractiveManager(detectOptionManager);
         final DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(detectOptionManager);
         interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
@@ -343,7 +343,7 @@ public class DetectBoot {
         return detectArgumentState;
     }
 
-    private void processDetectConfiguration(final DetectInfo detectInfo, final DetectRun detectRun, final DetectConfig detectConfiguration, final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
+    private void processDetectConfiguration(final DetectInfo detectInfo, final DetectRun detectRun, final PropertyConfiguration detectConfiguration, final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
         //TODO: Replicate TILDE PATH
         //final TildeInPathResolver tildeInPathResolver = new TildeInPathResolver(DetectConfigurationManager.USER_HOME, detectInfo.getCurrentOs());
         //final DetectConfigurationManager detectConfigurationManager = new DetectConfigurationManager(tildeInPathResolver, detectConfiguration);
@@ -361,7 +361,8 @@ public class DetectBoot {
         }
     }
 
-    private File createAirGapZip(final DetectFilter inspectorFilter, final DetectConfig detectConfiguration, final DirectoryManager directoryManager, final Gson gson, final EventSystem eventSystem, final Configuration configuration,
+    private File createAirGapZip(final DetectFilter inspectorFilter, final PropertyConfiguration detectConfiguration, final DirectoryManager directoryManager, final Gson gson, final EventSystem eventSystem,
+        final Configuration configuration,
         final String airGapSuffix)
         throws DetectUserFriendlyException {
         final ConnectionManager connectionManager = new ConnectionManager(detectConfiguration);

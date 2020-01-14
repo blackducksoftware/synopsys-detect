@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.detect.configuration
 
-import com.synopsys.integration.configuration.config.DetectConfig
+import com.synopsys.integration.configuration.config.PropertyConfiguration
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException
 import com.synopsys.integration.detect.exitcode.ExitCodeType
 import com.synopsys.integration.detect.util.ProxyUtil
@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory
 import java.net.MalformedURLException
 import java.net.URL
 
-class ConnectionManager(private val detectConfiguration: DetectConfig) {
+class ConnectionManager(private val detectConfiguration: PropertyConfiguration) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     val blackDuckProxyInfo: ProxyInfo

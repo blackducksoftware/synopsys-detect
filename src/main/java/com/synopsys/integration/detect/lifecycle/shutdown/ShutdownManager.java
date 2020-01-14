@@ -32,7 +32,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.configuration.config.DetectConfig;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
@@ -42,7 +42,7 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 public class ShutdownManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public void shutdown(final Optional<ProductRunData> productRunData, final Optional<File> airgapZip, final Optional<DetectConfig> detectConfigurationOptional, final Optional<DirectoryManager> directoryManagerOptional,
+    public void shutdown(final Optional<ProductRunData> productRunData, final Optional<File> airgapZip, final Optional<PropertyConfiguration> detectConfigurationOptional, final Optional<DirectoryManager> directoryManagerOptional,
         final Optional<DiagnosticSystem> diagnosticSystem) {
 
         if (productRunData.isPresent() && productRunData.get().shouldUseBlackDuckProduct()) {
@@ -52,7 +52,7 @@ public class ShutdownManager {
         diagnosticSystem.ifPresent(DiagnosticSystem::finish);
 
         if (detectConfigurationOptional.isPresent() && directoryManagerOptional.isPresent()) {
-            final DetectConfig detectConfiguration = detectConfigurationOptional.get();
+            final PropertyConfiguration detectConfiguration = detectConfigurationOptional.get();
             final DirectoryManager directoryManager = directoryManagerOptional.get();
             cleanupRun(productRunData, airgapZip, directoryManager, detectConfiguration);
         }
@@ -70,7 +70,7 @@ public class ShutdownManager {
         }
     }
 
-    private void cleanupRun(final Optional<ProductRunData> productRunData, final Optional<File> airgapZip, final DirectoryManager directoryManager, final DetectConfig detectConfiguration) {
+    private void cleanupRun(final Optional<ProductRunData> productRunData, final Optional<File> airgapZip, final DirectoryManager directoryManager, final PropertyConfiguration detectConfiguration) {
         try {
             if (detectConfiguration.getValue(DetectProperties.Companion.getDETECT_CLEANUP())) {
                 logger.debug("Detect will cleanup.");

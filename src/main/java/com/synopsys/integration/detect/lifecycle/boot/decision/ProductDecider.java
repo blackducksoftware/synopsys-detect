@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.builder.BuilderStatus;
-import com.synopsys.integration.configuration.config.DetectConfig;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
@@ -42,7 +42,7 @@ import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
 public class ProductDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private PolarisServerConfigBuilder createPolarisServerConfigBuilder(final DetectConfig detectConfiguration, final File userHome) {
+    private PolarisServerConfigBuilder createPolarisServerConfigBuilder(final PropertyConfiguration detectConfiguration, final File userHome) {
         final PolarisServerConfigBuilder polarisServerConfigBuilder = PolarisServerConfig.newBuilder();
         final Set<String> allPolarisKeys = polarisServerConfigBuilder.getPropertyKeys();
         final Map<String, String> polarisProperties = detectConfiguration.getRaw(allPolarisKeys);
@@ -53,7 +53,7 @@ public class ProductDecider {
         return polarisServerConfigBuilder;
     }
 
-    public PolarisDecision determinePolaris(final DetectConfig detectConfiguration, final File userHome, final DetectToolFilter detectToolFilter) {
+    public PolarisDecision determinePolaris(final PropertyConfiguration detectConfiguration, final File userHome, final DetectToolFilter detectToolFilter) {
         if (!detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
             logger.debug("Polaris will NOT run because it is excluded.");
             return PolarisDecision.skip();
@@ -76,7 +76,7 @@ public class ProductDecider {
         }
     }
 
-    private BlackDuckDecision determineBlackDuck(final DetectConfig detectConfiguration) {
+    private BlackDuckDecision determineBlackDuck(final PropertyConfiguration detectConfiguration) {
         final boolean offline = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getBLACKDUCK_OFFLINE_MODE());
         final String blackDuckUrl = detectConfiguration.getValueOrNull(DetectProperties.Companion.getBLACKDUCK_URL());
         if (offline) {
@@ -91,7 +91,7 @@ public class ProductDecider {
         }
     }
 
-    public ProductDecision decide(final DetectConfig detectConfiguration, final File userHome, final DetectToolFilter detectToolFilter) {
+    public ProductDecision decide(final PropertyConfiguration detectConfiguration, final File userHome, final DetectToolFilter detectToolFilter) {
         return new ProductDecision(determineBlackDuck(detectConfiguration), determinePolaris(detectConfiguration, userHome, detectToolFilter));
     }
 
