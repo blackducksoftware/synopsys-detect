@@ -150,7 +150,7 @@ public class HelpPrinter {
     }
 
     public void printDetailedOption(final HelpTextWriter writer, final DetectOption detectOption) {
-        detectOption.printDetailedOption(writer);
+        //detectOption.printDetailedOption(writer); TODO: Replace
     }
 
     public void printOptions(final HelpTextWriter writer, final List<DetectOption> options, final String notes) {
@@ -177,7 +177,7 @@ public class HelpPrinter {
                 writer.println();
                 writer.println("[" + group + "]");
             }
-            detectOption.printOption(writer);
+            //detectOption.printOption(writer); TODO: Replace
         }
     }
 

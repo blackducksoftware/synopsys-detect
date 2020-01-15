@@ -79,6 +79,14 @@ class PropertyConfiguration(private val orderedPropertySources: List<PropertySou
     fun getKeys(): Set<String> {
         return orderedPropertySources.flatMap { it.getKeys() }.toSet()
     }
+
+    fun <T> getPropertyException(property: TypedProperty<T>): ExceptionValue? {
+        return when (val value = valueFromCache(property)) {
+            is ExceptionValue -> value
+            else -> null
+        }
+    }
+
     //#endregion Recommended Usage
 
     //region Advanced Usage
@@ -129,7 +137,7 @@ class PropertyConfiguration(private val orderedPropertySources: List<PropertySou
                 if (rawValue != null) { // If this property source is the first with a value, it is the canonical source of this property key.
                     val propertySourceName = source.getName()
                     val propertyOrigin = source.getOrigin(key) ?: "unknown"
-                    return SourceResolution(propertySourceName, rawValue, propertyOrigin)
+                    return SourceResolution(propertySourceName, propertyOrigin, rawValue)
                 }
             }
         }

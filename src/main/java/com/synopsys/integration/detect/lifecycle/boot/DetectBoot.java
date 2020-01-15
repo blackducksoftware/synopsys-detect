@@ -23,13 +23,18 @@
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -37,7 +42,9 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.config.SpringPropertySource;
+import com.synopsys.integration.configuration.config.SpringConfigurationPropertySource;
+import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
+import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectableBeanConfiguration;
@@ -90,10 +97,10 @@ import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.profiling.DetectorProfiler;
-import com.synopsys.integration.detect.workflow.report.DetectConfigurationReporter;
 import com.synopsys.integration.detect.workflow.report.writer.DebugLogReportWriter;
-import com.synopsys.integration.detect.workflow.report.writer.ErrorLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
+import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
@@ -159,8 +166,8 @@ public class DetectBoot {
 
         logger.debug("Configuration processed completely.");
 
-        final Optional<DetectBootResult> configurationResult = printConfiguration(detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_SUPPRESS_CONFIGURATION_OUTPUT()), detectOptionManager, detectConfiguration,
-            eventSystem, options);
+        Boolean printFull = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_SUPPRESS_CONFIGURATION_OUTPUT());
+        final Optional<DetectBootResult> configurationResult = printConfiguration(printFull, detectOptionManager, detectConfiguration, eventSystem, options, detectInfo);
         if (configurationResult.isPresent()) {
             return configurationResult.get();
         }
@@ -292,37 +299,62 @@ public class DetectBoot {
     }
 
     private Optional<DetectBootResult> printConfiguration(final boolean fullConfiguration, final DetectOptionManager detectOptionManager, final PropertyConfiguration detectConfiguration, final EventSystem eventSystem,
-        final List<DetectOption> detectOptions) {
+        final List<DetectOption> detectOptions, DetectInfo detectInfo) {
+
+        Map<String, String> additionalNotes = new HashMap<>();
+
+        List<Property> deprecatedProperties = new ArrayList<>();
+        deprecatedProperties.add(DetectProperties.Companion.getBLACKDUCK_HUB_USERNAME());
+
+        Map<String, List<String>> deprecationMessages = new HashMap<>();
+        List<Property> usedDeprecatedProperties = new ArrayList<>();
+        List<Property> usedFailureProperties = new ArrayList<>();
+        for (Property property : deprecatedProperties) {
+            if (detectConfiguration.wasKeyProvided(property.getKey())) {
+                usedDeprecatedProperties.add(property);
+
+                additionalNotes.put(property.getKey(), "\\t *** DEPRECATED ***");
+                //TODO: REplace with jakes: option.getDetectOptionHelp().deprecation + " It will cause failure in " + failVersion + " and be removed in " + removeVersion + "."
+                String deprecationMessage = " It will cause failure in ";
+                deprecationMessages.put(property.getKey(), new ArrayList<String>(Collections.singleton(deprecationMessage)));
+
+                Integer failInVersion = 3;
+                if (detectInfo.getDetectMajorVersion() >= failInVersion) {
+                    usedFailureProperties.add(property);
+                } else {
+                    DetectIssue.publish(eventSystem, DetectIssueType.Deprecation, property.getKey(), "\t" + deprecationMessage);
+                }
+            }
+        }
 
         //First print the entire configuration.
-        final DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
+        final PropertyConfigurationHelpContext detectConfigurationReporter = new PropertyConfigurationHelpContext(detectConfiguration);
         final InfoLogReportWriter infoLogReportWriter = new InfoLogReportWriter();
         final DebugLogReportWriter debugLogReportWriter = new DebugLogReportWriter();
         if (!fullConfiguration) {
-            detectConfigurationReporter.print(infoLogReportWriter, debugLogReportWriter, detectOptions);
+            detectConfigurationReporter.printCurrentValues(infoLogReportWriter::writeLine, DetectProperties.Companion.getProperties(), additionalNotes);
         }
 
         //Next check for options that are just plain bad, ie giving an detector type we don't know about.
-        try {
-            final List<DetectOption.OptionValidationResult> invalidDetectOptionResults = detectOptionManager.getAllInvalidOptionResults();
-            if (!invalidDetectOptionResults.isEmpty()) {
-                throw new DetectUserFriendlyException(invalidDetectOptionResults.get(0).getValidationMessage(), ExitCodeType.FAILURE_GENERAL_ERROR);
-            }
-        } catch (final DetectUserFriendlyException e) {
-            return Optional.of(DetectBootResult.exception(e, detectConfiguration));
+        Map<String, List<String>> errorMap = detectConfigurationReporter.findPropertyParseErrors(DetectProperties.Companion.getProperties());
+        if (errorMap.size() > 0) {
+            Map.Entry<String, List<String>> entry = errorMap.entrySet().iterator().next();
+            return Optional.of(DetectBootResult.exception(new DetectUserFriendlyException(entry.getKey() + ": " + entry.getValue().get(0), ExitCodeType.FAILURE_GENERAL_ERROR), detectConfiguration));
         }
 
-        //Check for deprecated fields that are still being used but should cause a failure.
-        final List<DetectOption> failureProperties = detectOptionManager.findDeprecatedFailureProperties();
-        if (failureProperties.size() > 0) {
-            final ErrorLogReportWriter errorLogReportWriter = new ErrorLogReportWriter();
-            detectConfigurationReporter.printFailures(errorLogReportWriter, failureProperties);
+        if (usedFailureProperties.size() > 0) {
+            detectConfigurationReporter.printPropertyErrors(infoLogReportWriter::writeLine, DetectProperties.Companion.getProperties(), deprecationMessages);
+
+            logger.warn(StringUtils.repeat("=", 60));
+            logger.warn("Configuration is using deprecated properties that must be updated for this major version.");
+            logger.warn("You MUST fix these deprecation issues for detect to proceed.");
+            logger.warn("To ignore these messages and force detect to exit with success supply --" + DetectProperties.Companion.getDETECT_FORCE_SUCCESS().getKey() + "=true");
+            logger.warn("This will not force detect to run, but it will pretend to have succeeded.");
+            logger.warn(StringUtils.repeat("=", 60));
+
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION));
             return Optional.of(DetectBootResult.exit(detectConfiguration));
         }
-
-        //Finally log all fields that are deprecated but still being used (that are not failure).
-        detectConfigurationReporter.publishWarnings(eventSystem, detectOptions);
 
         return Optional.empty();
     }

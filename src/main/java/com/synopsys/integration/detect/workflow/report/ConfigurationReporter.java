@@ -38,8 +38,9 @@ public class ConfigurationReporter {
         writer.writeSeparator();
         writer.writeLine("Detect Configuration");
         writer.writeSeparator();
-        final DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
-        detectConfigurationReporter.print(writer, writer, detectOptions);
-        writer.writeSeparator();
+        //TODO: Replace
+        //final DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
+        //detectConfigurationReporter.print(writer, writer, detectOptions);
+        //writer.writeSeparator();
     }
 }
