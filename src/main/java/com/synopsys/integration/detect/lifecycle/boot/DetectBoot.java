@@ -37,7 +37,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.config.SpringPropertySource;
+import com.synopsys.integration.configuration.config.SpringConfigurationPropertySource;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectableBeanConfiguration;
@@ -125,7 +125,7 @@ public class DetectBoot {
 
         final DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
 
-        List<SpringConfigurationPropertySource> propertySources = SpringConfigurationPropertySource.Companion.fromConfigurableEnvironment(environment);
+        final List<SpringConfigurationPropertySource> propertySources = SpringConfigurationPropertySource.Companion.fromConfigurableEnvironment(environment);
         final PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
         final DetectOptionManager detectOptionManager = new DetectOptionManager();// = new DetectOptionManager(detectConfiguration, detectInfo); TODO: Fix
 
