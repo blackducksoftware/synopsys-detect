@@ -22,6 +22,11 @@ class SpringPropertySource(private val propertySource: org.springframework.core.
         return propertySource.name
     }
 
+    //A basic 'Spring Property Source' does not have the concept of Origin. Only Spring Configuration Property Sources do.
+    override fun getOrigin(key: String): String? {
+        return getName();
+    }
+
     override fun getKeys(): Set<String> {
         return if (propertySource is EnumerablePropertySource<*>) {
             propertySource.propertyNames.toSet()

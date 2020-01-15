@@ -48,6 +48,13 @@ class PropertyConfiguration(private val orderedPropertySources: List<PropertySou
         }
     }
 
+    fun wasKeyProvided(key: String): Boolean {
+        return when (val value = resolveFromCache(key)) {
+            is SourceResolution -> true
+            is NoResolution -> false
+        }
+    }
+
     fun <T> wasPropertyProvided(property: TypedProperty<T>): Boolean {
         return when (val value = resolveFromCache(property.key)) {
             is SourceResolution -> true
@@ -62,15 +69,28 @@ class PropertyConfiguration(private val orderedPropertySources: List<PropertySou
         }
     }
 
+    fun getPropertyOrigin(property: Property): String? {
+        return when (val value = resolveFromCache(property.key)) {
+            is SourceResolution -> value.origin
+            is NoResolution -> null
+        }
+    }
+
     fun getKeys(): Set<String> {
         return orderedPropertySources.flatMap { it.getKeys() }.toSet()
     }
     //#endregion Recommended Usage
 
     //region Advanced Usage
+    fun getRaw(property: Property): String? {
+        return when (val value = resolveFromCache(property.key)) {
+            is NoResolution -> null
+            is SourceResolution -> value.raw
+        }
+    }
+
     fun getRaw(): Map<String, String> {
         return getRaw { true }
-
     }
 
     fun getRaw(keys: Set<String>): Map<String, String> {
@@ -108,7 +128,8 @@ class PropertyConfiguration(private val orderedPropertySources: List<PropertySou
                 val rawValue = source.getValue(key)
                 if (rawValue != null) { // If this property source is the first with a value, it is the canonical source of this property key.
                     val propertySourceName = source.getName()
-                    return SourceResolution(propertySourceName, rawValue)
+                    val propertyOrigin = source.getOrigin(key) ?: "unknown"
+                    return SourceResolution(propertySourceName, rawValue, propertyOrigin)
                 }
             }
         }
@@ -135,6 +156,7 @@ class PropertyConfiguration(private val orderedPropertySources: List<PropertySou
             val value = property.parser.parse(resolution.raw)
             TypedValue(value, resolution)
         } catch (e: ValueParseException) {
+            //TODO?: final String validationMesssage = String.format("%s: Unknown value '%s', acceptable values are %s", getDetectProperty().getPropertyKey(), value, getValidValues().stream().collect(Collectors.joining(",")));
             ExceptionValue(e, resolution)
         }
     }
@@ -152,5 +174,5 @@ data class ExceptionValue(val exception: ValueParseException, val resolution: So
 object NoValue : PropertyValue()
 
 sealed class PropertyResolution
-data class SourceResolution(val source: String, val raw: String) : PropertyResolution()
+data class SourceResolution(val source: String, val origin: String, val raw: String) : PropertyResolution()
 object NoResolution : PropertyResolution() // No property source contained a value.

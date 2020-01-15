@@ -1,6 +1,10 @@
 package com.synopsys.integration.configuration.config
 
 class MapPropertySource(private val givenName: String, private val propertyMap: Map<String, String>) : PropertySource {
+    override fun getOrigin(key: String): String? {
+        return givenName;
+    }
+
     override fun hasKey(key: String): Boolean {
         return propertyMap.containsKey(key);
     }

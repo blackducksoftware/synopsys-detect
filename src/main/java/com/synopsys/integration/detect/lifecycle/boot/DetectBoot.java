@@ -125,7 +125,7 @@ public class DetectBoot {
 
         final DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
 
-        List<SpringPropertySource> propertySources = SpringPropertySource.Companion.fromConfigurableEnvironment(environment);
+        List<SpringConfigurationPropertySource> propertySources = SpringConfigurationPropertySource.Companion.fromConfigurableEnvironment(environment);
         final PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
         final DetectOptionManager detectOptionManager = new DetectOptionManager();// = new DetectOptionManager(detectConfiguration, detectInfo); TODO: Fix
 

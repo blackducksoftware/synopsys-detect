@@ -20,19 +20,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.help;
+package com.synopsys.integration.detect.help.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.synopsys.integration.detect.configuration.HelpConstants;
+import com.synopsys.integration.detect.DetectMajorVersion;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface HelpDescription {
-    String category() default HelpConstants.SIMPLE;
+public @interface DetectDeprecation {
+    String description();
 
-    String value();
+    DetectMajorVersion failInVersion();
+
+    DetectMajorVersion removeInVersion();
 }
