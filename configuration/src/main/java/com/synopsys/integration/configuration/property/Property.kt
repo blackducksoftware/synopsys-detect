@@ -6,28 +6,25 @@ package com.synopsys.integration.configuration.property
  **/
 abstract class Property(val key: String) {
     var name: String? = null
-    var from: String? = null
-    var helpShort: String? = null
-    var helpLong: String? = null
-    var primaryGroup: Group? = null
-    var additionalGroups: List<Group>? = null
+    var fromVersion: String? = null
+    var propertyHelpInfo: PropertyHelpInfo? = null
+    var propertyGroupInfo: PropertyGroupInfo? = null
     var category: Category? = null
+    var propertyDeprecationInfo: PropertyDeprecationInfo? = null
 
-    fun info(name: String, from: String): Property {
+    fun info(name: String, fromVersion: String): Property {
         this.name = name
-        this.from = from
+        this.fromVersion = fromVersion
         return this
     }
 
     fun help(short: String, long: String? = null): Property {
-        this.helpShort = short
-        this.helpLong = long
+        this.propertyHelpInfo = PropertyHelpInfo(short, long)
         return this
     }
 
     fun groups(primaryGroup: Group, vararg additionalGroups: Group): Property {
-        this.primaryGroup = primaryGroup
-        this.additionalGroups = additionalGroups.toList()
+        this.propertyGroupInfo = PropertyGroupInfo(primaryGroup, additionalGroups.toList())
         return this
     }
 
@@ -36,8 +33,18 @@ abstract class Property(val key: String) {
         return this
     }
 
+    fun deprecated(description: String, failInVersion: ProductMajorVersion, removeInVersion: ProductMajorVersion): Property {
+        this.propertyDeprecationInfo = PropertyDeprecationInfo(description, failInVersion, removeInVersion)
+        return this
+    }
+
     open fun isCaseSensitive(): Boolean = false
     open fun isOnlyExampleValues(): Boolean = false
     open fun listExampleValues(): List<String>? = emptyList()
     open fun describeDefault(): String? = null
 }
+
+data class PropertyHelpInfo(val short: String, val long: String?)
+data class PropertyGroupInfo(val primaryGroup: Group, val additionalGroups: List<Group>)
+data class PropertyDeprecationInfo(val description: String, val failInVersion: ProductMajorVersion, val removeInVersion: ProductMajorVersion)
+
