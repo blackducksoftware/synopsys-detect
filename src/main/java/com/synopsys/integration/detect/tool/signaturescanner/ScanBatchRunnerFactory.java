@@ -33,6 +33,7 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScannerZipInstaller;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.rest.BlackDuckHttpClient;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.rest.client.IntHttpClient;
@@ -59,7 +60,9 @@ public class ScanBatchRunnerFactory {
 
     public ScanBatchRunner withInstall(final BlackDuckServerConfig blackDuckServerConfig) {
         // will will use the server to download/update the scanner - this is the most likely situation
-        final ScannerZipInstaller scannerZipInstaller = ScannerZipInstaller.defaultUtility(slf4jIntLogger, blackDuckServerConfig, scanPathsUtility, operatingSystemType);
+        BlackDuckHttpClient blackDuckHttpClient = blackDuckServerConfig.createBlackDuckHttpClient(slf4jIntLogger);
+        CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
+        final ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, blackDuckHttpClient, cleanupZipExpander, scanPathsUtility, blackDuckServerConfig.getBlackDuckUrl().toString(), operatingSystemType);
         final ScanBatchRunner scanBatchManager = ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
         return scanBatchManager;
     }
