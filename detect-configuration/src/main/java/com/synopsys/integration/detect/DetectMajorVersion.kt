@@ -20,9 +20,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect;
+package com.synopsys.integration.detect
 
-public enum DetectMajorVersion {
+import com.synopsys.integration.configuration.property.ProductMajorVersion
+
+enum class DetectMajorVersion(private val value: Int) : ProductMajorVersion {
     ONE(1),
     TWO(2),
     THREE(3),
@@ -32,17 +34,7 @@ public enum DetectMajorVersion {
     SEVEN(7),
     EIGHT(8);
 
-    private int value = 0;
-
-    DetectMajorVersion(final int value) {
-        this.value = value;
-    }
-
-    public int getIntValue() {
-        return value;
-    }
-
-    public String getDisplayValue() {
-        return Integer.toString(value) + ".0.0";
+    override fun getIntValue(): Int {
+        return value
     }
 }

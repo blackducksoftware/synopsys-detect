@@ -44,6 +44,7 @@ import com.synopsys.integration.configuration.property.types.string.NullableStri
 import com.synopsys.integration.configuration.property.types.string.StringProperty
 import com.synopsys.integration.configuration.property.types.stringlist.NullableStringListProperty
 import com.synopsys.integration.configuration.property.types.stringlist.StringListProperty
+import com.synopsys.integration.detect.DetectMajorVersion
 import com.synopsys.integration.detect.DetectTool
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule
@@ -68,6 +69,8 @@ enum class ExtendedSnippetMode {
 
 class DetectProperties {
     companion object {
+        //#region Active Properties
+
         val BLACKDUCK_API_TOKEN = NullableStringProperty("blackduck.api.token").apply {
             info("Black Duck API Token", "4.2.0")
             help("The API token used to authenticate with the Black Duck Server.")
@@ -961,274 +964,444 @@ class DetectProperties {
             help("If set to true, Detect will wait for Synopsys products until results are available or the blackduck.timeout is exceeded.")
             groups(DetectGroup.General, DetectGroup.Global)
         }
+
+        //#endregion Active Properties
+
+        //#region Deprecated Properties
+        private const val DEPRECATED_PROPERTY_MESSAGE = "This property is deprecated."
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_BITBAKE_REFERENCE_IMPL = StringProperty("detect.bitbake.reference.impl", "-poky-linux").apply {
             info("Reference implementation", "4.4.0")
             help("The reference implementation of the Yocto project. These characters are stripped from the discovered target architecture.")
             groups(DetectGroup.Bitbake, DetectGroup.SourceScan)
+            deprecated("This property is no longer required and will not be used in the Bitbake Detector.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_API_TIMEOUT = LongProperty("detect.api.timeout", 300000).apply {
             info("Detect Api Timeout", "3.0.0")
             help("Timeout for response from Black Duck regarding your project (i.e. risk reports and policy check). When changing this value, keep in mind the checking of policies might have to wait for a new scan to process which can take some time.")
             groups(DetectGroup.ProjectInfo, DetectGroup.Project)
+            deprecated("This property is now deprecated. Please use --detect.report.timeout in the future. NOTE the new property is in SECONDS not MILLISECONDS.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val BLACKDUCK_HUB_URL = NullableStringProperty("blackduck.hub.url").apply {
             info("Blackduck Hub Url", "3.0.0")
             help("URL of the Hub server.")
             groups(DetectGroup.BlackduckServer)
+            deprecated("This property is changing. Please use --blackduck.url in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val BLACKDUCK_HUB_TIMEOUT = IntegerProperty("blackduck.hub.timeout", 120).apply {
             info("Blackduck Hub Timeout", "3.0.0")
             help("The time to wait for rest connections to complete in seconds.")
             groups(DetectGroup.BlackduckServer)
+            deprecated("This property is changing. Please use --blackduck.timeout in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val BLACKDUCK_HUB_USERNAME = NullableStringProperty("blackduck.hub.username").apply {
             info("Blackduck Hub Username", "3.0.0")
             help("Hub username.")
             groups(DetectGroup.BlackduckServer)
+            deprecated("This property is changing. Please use --blackduck.username in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val BLACKDUCK_HUB_PASSWORD = NullableStringProperty("blackduck.hub.password").apply {
             info("Blackduck Hub Password", "3.0.0")
             help("Hub password.")
             groups(DetectGroup.BlackduckServer)
+            deprecated("This property is changing. Please use --blackduck.password in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val BLACKDUCK_HUB_API_TOKEN = NullableStringProperty("blackduck.hub.api.token").apply {
             info("Blackduck Hub Api Token", "3.1.0")
             help("Hub API Token.")
             groups(DetectGroup.BlackduckServer)
+            deprecated("This property is changing. Please use --blackduck.api.token in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val BLACKDUCK_HUB_PROXY_HOST = NullableStringProperty("blackduck.hub.proxy.host").apply {
             info("Blackduck Hub Proxy Host", "3.0.0")
             help("Proxy host.")
             groups(DetectGroup.BlackduckServer, DetectGroup.Proxy)
+            deprecated("This property is changing. Please use --blackduck.proxy.host in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val BLACKDUCK_HUB_PROXY_PORT = NullableStringProperty("blackduck.hub.proxy.port").apply {
             info("Blackduck Hub Proxy Port", "3.0.0")
             help("Proxy port.")
             groups(DetectGroup.BlackduckServer, DetectGroup.Proxy)
+            deprecated("This property is changing. Please use --blackduck.proxy.port in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val BLACKDUCK_HUB_PROXY_USERNAME = NullableStringProperty("blackduck.hub.proxy.username").apply {
             info("Blackduck Hub Proxy Username", "3.0.0")
             help("Proxy username.")
             groups(DetectGroup.BlackduckServer, DetectGroup.Proxy)
+            deprecated("This property is changing. Please use --blackduck.proxy.username in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val BLACKDUCK_HUB_PROXY_PASSWORD = NullableStringProperty("blackduck.hub.proxy.password").apply {
             info("Blackduck Hub Proxy Password", "3.0.0")
             help("Proxy password.")
             groups(DetectGroup.BlackduckServer, DetectGroup.Proxy)
+            deprecated("This property is changing. Please use --blackduck.proxy.password in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val BLACKDUCK_HUB_PROXY_NTLM_DOMAIN = NullableStringProperty("blackduck.hub.proxy.ntlm.domain").apply {
             info("Blackduck Hub Proxy Ntlm Domain", "3.1.0")
             help("NTLM Proxy domain.")
             groups(DetectGroup.BlackduckServer, DetectGroup.Proxy)
+            deprecated("This property is changing. Please use --blackduck.proxy.ntlm.domain in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val BLACKDUCK_HUB_PROXY_IGNORED_HOSTS = NullableStringProperty("blackduck.hub.proxy.ignored.hosts").apply {
             info("Blackduck Hub Proxy Ignored Hosts", "3.2.0")
             help("A comma-separated list of host patterns that should not use the proxy.")
             groups(DetectGroup.BlackduckServer, DetectGroup.Proxy)
+            deprecated("This property is changing. Please use --blackduck.proxy.ignored.hosts in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION = NullableStringProperty("blackduck.hub.proxy.ntlm.workstation").apply {
             info("Blackduck Hub Proxy Ntlm Workstation", "3.1.0")
             help("NTLM Proxy workstation.")
             groups(DetectGroup.BlackduckServer, DetectGroup.Proxy)
+            deprecated("This property is changing. Please use --blackduck.proxy.ntlm.workstation in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val BLACKDUCK_HUB_TRUST_CERT = BooleanProperty("blackduck.hub.trust.cert", false).apply {
             info("Blackduck Hub Trust Cert", "3.0.0")
             help("If true, automatically trusts the certificate for the current run of Detect only.")
             groups(DetectGroup.BlackduckServer)
+            deprecated("This property is changing. Please use --blackduck.trust.cert in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val BLACKDUCK_HUB_OFFLINE_MODE = BooleanProperty("blackduck.hub.offline.mode", false).apply {
             info("Blackduck Hub Offline Mode", "3.0.0")
             help("This disables any Hub communication. If true, Detect does not upload BDIO files, does not check policies, and does not download and install the signature scanner.")
             groups(DetectGroup.BlackduckServer, DetectGroup.Offline)
+            deprecated("This property is changing. Please use --blackduck.offline.mode in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_DISABLE_WITHOUT_HUB = BooleanProperty("detect.disable.without.hub", false).apply {
             info("Detect Disable Without Hub", "4.0.0")
             help("If true, during initialization Detect will check for Hub connectivity and exit with status code 0 if it cannot connect.")
             groups(DetectGroup.BlackduckServer)
+            deprecated("This property is changing. Please use --detect.ignore.connection.failures in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
+
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_DISABLE_WITHOUT_BLACKDUCK = BooleanProperty("detect.disable.without.blackduck", false).apply {
             info("Check For Valid Black Duck Connection", "4.2.0")
             help("If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect.")
             groups(DetectGroup.BlackduckServer, DetectGroup.Blackduck, DetectGroup.Default)
+            deprecated("This property is changing. Please use --detect.ignore.connection.failures in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_SUPPRESS_CONFIGURATION_OUTPUT = BooleanProperty("detect.suppress.configuration.output", false).apply {
             info("Detect Suppress Configuration Output", "3.0.0")
             help("If true, the default behavior of printing your configuration properties at startup will be suppressed.")
             groups(DetectGroup.Logging)
+            deprecated("This property is being removed. Configuration can no longer be suppressed individually. Log level can be used.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_SUPPRESS_RESULTS_OUTPUT = BooleanProperty("detect.suppress.results.output", false).apply {
             info("Detect Suppress Results Output", "3.0.0")
             help("If true, the default behavior of printing the Detect Results will be suppressed.")
             groups(DetectGroup.Logging)
+            deprecated("This property is being removed. Results can no longer be suppressed individually. Log level can be used.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_EXCLUDED_BOM_TOOL_TYPES = NullableStringProperty("detect.excluded.bom.tool.types").apply {
             info("Detect Excluded Bom Tool Types", "3.0.0")
             help("By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify \"ALL\". Exclusion rules always win.")
             groups(DetectGroup.Detector, DetectGroup.SourceScan)
+            deprecated("This property is changing. Please use --detect.excluded.detector.types in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_BOM_TOOL_SEARCH_EXCLUSION_DEFAULTS = BooleanProperty("detect.bom.tool.search.exclusion.defaults", true).apply {
             info("Detect Bom Tool Search Exclusion Defaults", "3.2.0")
             help("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.", "If true, these directories will be excluded from the bom tool search: bin, build, .git, .gradle, node_modules, out, packages, target")
             groups(DetectGroup.Paths, DetectGroup.Detector)
+            deprecated("This property is changing. Please use --detect.detector.search.exclusion.defaults in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_BOM_TOOL_SEARCH_EXCLUSION = NullableStringListProperty("detect.bom.tool.search.exclusion").apply {
             info("Detect Bom Tool Search Exclusion", "3.2.0")
             help("A comma-separated list of directory names to exclude from the bom tool search.")
             groups(DetectGroup.Paths, DetectGroup.Detector)
+            deprecated("This property is changing. Please use --detect.detector.search.exclusion in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_INCLUDED_BOM_TOOL_TYPES = NullableStringProperty("detect.included.bom.tool.types").apply {
             info("Detect Included Bom Tool Types", "3.0.0")
             help("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.")
             groups(DetectGroup.Detector, DetectGroup.Detector)
+            deprecated("This property is changing. Please use --detect.included.detector.types in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_PROJECT_BOM_TOOL = NullableStringProperty("detect.project.bom.tool").apply {
             info("Detect Project Bom Tool", "4.0.0")
             help("The detector to choose when multiple detector types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.")
             groups(DetectGroup.Paths, DetectGroup.Detector)
+            deprecated("This property is changing. Please use --detect.project.detector in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_BOM_TOOL_SEARCH_DEPTH = IntegerProperty("detect.bom.tool.search.depth", 0).apply {
             info("Detect Bom Tool Search Depth", "3.2.0")
             help("Depth of subdirectories within the source directory to search for files that indicate whether a detector applies.", "A value of 0 (the default) tells Detect not to search any subdirectories, a value of 1 tells Detect to search first-level subdirectories, etc.")
             groups(DetectGroup.Paths, DetectGroup.Detector)
+            deprecated("This property is changing. Please use --detect.detector.search.depth in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_REQUIRED_BOM_TOOL_TYPES = NullableStringProperty("detect.required.bom.tool.types").apply {
             info("Detect Required Bom Tool Types", "4.3.0")
             help("If set, Detect will fail if it does not find the bom tool types supplied here.")
             groups(DetectGroup.Detector, DetectGroup.Detector)
+            deprecated("This property is changing. Please use --detect.required.detector.types in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_BOM_TOOL_SEARCH_CONTINUE = BooleanProperty("detect.bom.tool.search.continue", false).apply {
             info("Detect Bom Tool Search Continue", "3.2.0")
             help("If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.", "If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc. " +
                     "If false, Detect will only find bom tools in subdirectories of a project if they are of a different type such as an Npm project in a subdirectory of a Gradle project .")
             groups(DetectGroup.Paths, DetectGroup.Detector)
+            deprecated("This property is changing. Please use --detect.detector.search.continue in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_GRADLE_INSPECTOR_REPOSITORY_URL = NullableStringProperty("detect.gradle.inspector.repository.url").apply {
             info("Detect Gradle Inspector Repository Url", "3.0.0")
             help("The respository gradle should use to look for the gradle inspector dependencies.")
             groups(DetectGroup.Gradle)
+            deprecated("In the future, the gradle inspector will no longer be downloaded from a custom repository, please use Detect Air Gap instead.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_NUGET_INSPECTOR_NAME = StringProperty("detect.nuget.inspector.name", "IntegrationNugetInspector").apply {
             info("Detect Nuget Inspector Name", "3.0.0")
             help("Name of the Nuget Inspector package and the Nuget Inspector exe. (Do not include '.exe'.)", "The nuget inspector (previously) could be hosted on a custom nuget feed. In this case, Detect needed to know the name of the package to pull and the name of the exe file (which has to match). In the future, Detect will only retreive it from Artifactory or from Air Gap so a custom name is no longer supported.")
             groups(DetectGroup.Nuget)
+            deprecated("In the future, Detect will not look for a custom named inspector.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_NUGET_PATH = NullableStringProperty("detect.nuget.path").apply {
             info("Detect Nuget Path", "3.0.0")
             help("The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package.")
             groups(DetectGroup.Nuget)
+            deprecated("In the future, Detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN = BooleanProperty("detect.hub.signature.scanner.dry.run", false).apply {
             info("Detect Hub Signature Scanner Dry Run", "3.0.0")
             help("If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.")
             groups(DetectGroup.SignatureScanner)
+            deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.dry.run in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_SNIPPET_MODE = BooleanProperty("detect.hub.signature.scanner.snippet.mode", false).apply {
             info("Detect Hub Signature Scanner Snippet Mode", "3.0.0")
             help("If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.")
             groups(DetectGroup.SignatureScanner)
+            deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.snippet.mode in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS = NullableStringListProperty("detect.hub.signature.scanner.exclusion.patterns").apply {
             info("Detect Hub Signature Scanner Exclusion Patterns", "3.0.0")
             help("A comma-separated list of values to be used with the Signature Scanner --exclude flag.")
             groups(DetectGroup.SignatureScanner)
+            deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.patterns in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_PATHS = NullableStringListProperty("detect.hub.signature.scanner.paths").apply {
             info("Detect Hub Signature Scanner Paths", "3.0.0")
             help("These paths and only these paths will be scanned.")
             groups(DetectGroup.SignatureScanner)
+            deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.paths in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS = StringListProperty("detect.hub.signature.scanner.exclusion.name.patterns", listOf("node_modules")).apply {
             info("Detect Hub Signature Scanner Exclusion Name Patterns", "4.0.0")
             help("A comma-separated list of directory name patterns Detect will search for and add to the Signature Scanner --exclude flag values.", "Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner. " +
                     "These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns.")
             groups(DetectGroup.SignatureScanner)
+            deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.name.patterns in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_MEMORY = IntegerProperty("detect.hub.signature.scanner.memory", 4096).apply {
             info("Detect Hub Signature Scanner Memory", "3.0.0")
             help("The memory for the scanner to use.")
             groups(DetectGroup.SignatureScanner)
+            deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.memory in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_DISABLED = BooleanProperty("detect.hub.signature.scanner.disabled", false).apply {
             info("Detect Hub Signature Scanner Disabled", "3.0.0")
             help("Set to true to disable the Hub Signature Scanner.")
             groups(DetectGroup.SignatureScanner)
+            deprecated("This property is changing. Please use --detect.tools in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED = BooleanProperty("detect.blackduck.signature.scanner.disabled", false).apply {
             info("Detect Blackduck Signature Scanner Disabled", "4.2.0")
             help("Set to true to disable the Black Duck Signature Scanner.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Blackduck)
+            deprecated("This property is changing. Please use --detect.tools in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH = NullableStringProperty("detect.hub.signature.scanner.offline.local.path").apply {
             info("Detect Hub Signature Scanner Offline Local Path", "3.0.0")
             help("To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Offline)
+            deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.offline.local.path in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH = NullableStringProperty("detect.hub.signature.scanner.local.path").apply {
             info("Detect Hub Signature Scanner Local Path", "4.2.0")
             help("To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Offline)
+            deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.local.path in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_HOST_URL = NullableStringProperty("detect.hub.signature.scanner.host.url").apply {
             info("Detect Hub Signature Scanner Host Url", "3.0.0")
             help("If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.")
             groups(DetectGroup.SignatureScanner)
+            deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.host.url in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS = IntegerProperty("detect.blackduck.signature.scanner.parallel.processors", 1).apply {
             info("Signature Scanner Parallel Processors", "4.2.0")
             help("The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Global)
             category(DetectCategory.Advanced)
+            deprecated("This property is changing. Please use --detect.parallel.processors in the future. The --detect.parallel.processors property will take precedence over this property.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS = IntegerProperty("detect.hub.signature.scanner.parallel.processors", 1).apply {
             info("Detect Hub Signature Scanner Parallel Processors", "3.0.0")
             help("The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.")
             groups(DetectGroup.SignatureScanner)
+            deprecated("This property is changing. Please use --detect.parallel.processors in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS = NullableStringProperty("detect.hub.signature.scanner.arguments").apply {
             info("Detect Hub Signature Scanner Arguments", "4.0.0")
             help("Additional arguments to use when running the Hub signature scanner.")
             groups(DetectGroup.SignatureScanner)
+            deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.arguments in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_SWIP_ENABLED = BooleanProperty("detect.polaris.enabled", false).apply {
             info("Detect Polaris Enabled", "4.4.0")
             help("Set to false to disable the Synopsys Polaris Tool.")
             groups(DetectGroup.Polaris)
+            deprecated("This property is changing. Please use --detect.tools and POLARIS in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION = EnumProperty("logging.level.com.blackducksoftware.integration", LogLevel.INFO, LogLevel::fromString, LogLevel.values().toList()).apply {
             info("Logging Level", "3.0.0")
             help("The logging level of Detect.")
             groups(DetectGroup.Logging, DetectGroup.Global)
+            deprecated("This property is changing. Please use --logging.level.com.synopsys.integration in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_MAVEN_SCOPE = NullableStringProperty("detect.maven.scope").apply {
             info("Dependency Scope Included", "3.0.0")
             help("The name of a Maven scope. Output will be limited to dependencies with this scope.", "If set, Detect will include only dependencies of the given Maven scope.")
             groups(DetectGroup.Maven, DetectGroup.SourceScan)
+            deprecated("This property is changing. Please use --detect.maven.included.scope in the future.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE = BooleanProperty("detect.blackduck.signature.scanner.snippet.mode", false).apply {
             info("Snippet Scanning", "4.2.0")
             help("If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Global, DetectGroup.SourceScan)
+            deprecated("This property is now deprecated. Please use --detect.blackduck.signature.scanner.snippet.matching in the future. NOTE the new property is one of a particular set of values. You will need to consult the documentation for the Signature Scanner in Black Duck for details.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val POLARIS_URL = NullableStringProperty("polaris.url").apply {
             info("Polaris Url", "4.1.0")
             help("The url of your polaris instance.")
             groups(DetectGroup.Polaris, DetectGroup.Default, DetectGroup.Global)
+            deprecated("This property is being removed. Detect will no longer invoke the Polaris CLI.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val POLARIS_ACCESS_TOKEN = NullableStringProperty("polaris.access.token").apply {
             info("Polaris Access Token", "5.3.0")
             help("The access token for your polaris instance.")
             groups(DetectGroup.Polaris, DetectGroup.Default, DetectGroup.Global)
+            deprecated("This property is being removed. Detect will no longer invoke the Polaris CLI.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val POLARIS_ARGUMENTS = NullableStringProperty("polaris.arguments").apply {
             info("Polaris Arguments", "5.3.0")
             help("Additional arguments to pass to polaris separated by space. The polaris.command takes precedence.")
             groups(DetectGroup.Polaris, DetectGroup.Default, DetectGroup.SourceScan)
+            deprecated("This property is being removed. Detect will no longer invoke the Polaris CLI.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
         }
+
+        @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val POLARIS_COMMAND = NullableStringProperty("polaris.command").apply {
             info("Polaris Command", "6.0.0")
             help("A replacement command to pass to polaris separated by space. Include the analyze or setup command itself. If specified, polaris.arguments will be ignored and this will take precedence.")
             groups(DetectGroup.Polaris, DetectGroup.Default, DetectGroup.SourceScan)
+            deprecated("This property is being removed. Detect will no longer invoke the Polaris CLI.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
         }
+
+        //#endregion Deprecated Properties
+
+        //#region Accessor for all properties
+        val properties = values()
 
         private fun values(): List<Property> {
             val clazz = DetectProperties::class
@@ -1243,7 +1416,7 @@ class DetectProperties {
             return members
         }
 
-        val properties = values()
+        //#endregion Accessor for all properties
     }
 
 }
