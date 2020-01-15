@@ -70,11 +70,11 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detect.DetectMajorVersion;
-import com.synopsys.integration.detect.help.AcceptableValues;
-import com.synopsys.integration.detect.help.DetectDeprecation;
-import com.synopsys.integration.detect.help.HelpDescription;
-import com.synopsys.integration.detect.help.HelpDetailed;
-import com.synopsys.integration.detect.help.HelpGroup;
+import com.synopsys.integration.detect.help.annotation.AcceptableValues;
+import com.synopsys.integration.detect.help.annotation.DetectDeprecation;
+import com.synopsys.integration.detect.help.annotation.HelpDescription;
+import com.synopsys.integration.detect.help.annotation.HelpDetailed;
+import com.synopsys.integration.detect.help.annotation.HelpGroup;
 import com.synopsys.integration.detect.property.PropertyType;
 
 public enum DetectProperty {
