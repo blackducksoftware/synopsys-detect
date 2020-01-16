@@ -46,12 +46,16 @@ import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions
 import com.synopsys.integration.detector.finder.DetectorFinderOptions
+import com.synopsys.integration.log.SilentIntLogger
+import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
+import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder
 import com.synopsys.integration.rest.credentials.Credentials
 import com.synopsys.integration.rest.credentials.CredentialsBuilder
 import com.synopsys.integration.rest.proxy.ProxyInfo
 import com.synopsys.integration.rest.proxy.ProxyInfoBuilder
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.math.NumberUtils
+import java.io.File
 import java.nio.file.Path
 import java.util.*
 import java.util.regex.Pattern
@@ -126,6 +130,7 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
     }
 
     fun createBlackDuckConnectionDetails(): BlackDuckConnectionDetails {
+        val offline = detectConfiguration.getValue(DetectProperties.BLACKDUCK_OFFLINE_MODE)
         val blackduckUrl = detectConfiguration.getValue(DetectProperties.BLACKDUCK_URL)
 
         val allBlackDuckKeys: Set<String> = HashSet(BlackDuckServerConfigBuilder().propertyKeys)
@@ -134,9 +139,20 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
 
         val blackDuckProperties = detectConfiguration.getRaw(allBlackDuckKeys)
 
-        return BlackDuckConnectionDetails(blackduckUrl, blackDuckProperties, findParallelProcessors(), createConnectionDetails())
+        return BlackDuckConnectionDetails(offline, blackduckUrl, blackDuckProperties, findParallelProcessors(), createConnectionDetails())
     }
     //#endregion
+
+    fun createPolarisServerConfigBuilder(userHome: File): PolarisServerConfigBuilder {
+        val polarisServerConfigBuilder = PolarisServerConfig.newBuilder()
+        val allPolarisKeys = polarisServerConfigBuilder.propertyKeys
+        val polarisProperties = detectConfiguration.getRaw(allPolarisKeys)
+        polarisServerConfigBuilder.logger = SilentIntLogger()
+        polarisServerConfigBuilder.setProperties(polarisProperties.entries)
+        polarisServerConfigBuilder.userHome = userHome.absolutePath
+        polarisServerConfigBuilder.timeoutInSeconds = findTimeoutInSeconds().toInt()
+        return polarisServerConfigBuilder
+    }
 
     fun createPhoneHomeOptions(): PhoneHomeOptions {
         val phoneHomePassthrough = detectConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH)

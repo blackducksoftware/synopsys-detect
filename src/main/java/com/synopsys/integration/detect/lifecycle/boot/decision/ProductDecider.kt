@@ -22,44 +22,31 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot.decision
 
-import com.synopsys.integration.configuration.config.PropertyConfiguration
 import com.synopsys.integration.detect.DetectTool
-import com.synopsys.integration.detect.configuration.DetectProperties
+import com.synopsys.integration.detect.configuration.DetectConfigurationFactory
 import com.synopsys.integration.detect.util.filter.DetectToolFilter
-import com.synopsys.integration.log.SilentIntLogger
-import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
-import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import java.io.File
 
-//TODO: Should use Configuration Factory. Would solve the other TODO as well.
-class ProductDecider(val detectConfiguration: PropertyConfiguration) {
+class ProductDecider(private val detectConfigurationFactory: DetectConfigurationFactory) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
-    //TODO: Wrong timeout! Should be using findTimeout()
-    private fun createPolarisServerConfigBuilder(userHome: File): PolarisServerConfigBuilder {
-        val polarisServerConfigBuilder = PolarisServerConfig.newBuilder()
-        val allPolarisKeys = polarisServerConfigBuilder.propertyKeys
-        val polarisProperties = detectConfiguration.getRaw(allPolarisKeys)
-        polarisServerConfigBuilder.logger = SilentIntLogger()
-        polarisServerConfigBuilder.setProperties(polarisProperties.entries)
-        polarisServerConfigBuilder.userHome = userHome.absolutePath
-        polarisServerConfigBuilder.timeoutInSeconds = detectConfiguration.getValueOrDefault(DetectProperties.BLACKDUCK_HUB_TIMEOUT)
-        return polarisServerConfigBuilder
+    fun decide(userHome: File, detectToolFilter: DetectToolFilter): ProductDecision {
+        return ProductDecision(determineBlackDuck(), determinePolaris(userHome, detectToolFilter))
     }
 
-    fun determinePolaris(userHome: File, detectToolFilter: DetectToolFilter): PolarisDecision {
+    private fun determinePolaris(userHome: File, detectToolFilter: DetectToolFilter): PolarisDecision {
         if (!detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
             logger.debug("Polaris will NOT run because it is excluded.")
             return PolarisDecision.skip()
         }
-        val polarisServerConfigBuilder = createPolarisServerConfigBuilder(userHome)
+        val polarisServerConfigBuilder = detectConfigurationFactory.createPolarisServerConfigBuilder(userHome)
         val builderStatus = polarisServerConfigBuilder.validateAndGetBuilderStatus()
         val polarisCanRun = builderStatus.isValid
 
         if (!polarisCanRun) {
-            val polarisUrl = detectConfiguration.getValueOrNull(DetectProperties.POLARIS_URL)
+            val polarisUrl = polarisServerConfigBuilder.url
             if (StringUtils.isBlank(polarisUrl)) {
                 logger.debug("Polaris will NOT run: The Polaris url must be provided.")
             } else {
@@ -73,10 +60,13 @@ class ProductDecider(val detectConfiguration: PropertyConfiguration) {
     }
 
     private fun determineBlackDuck(): BlackDuckDecision {
-        val offline = detectConfiguration.getValueOrDefault(DetectProperties.BLACKDUCK_OFFLINE_MODE)
-        val blackDuckUrl = detectConfiguration.getValueOrNull(DetectProperties.BLACKDUCK_URL)
-        val signatureScannerHostUrl = detectConfiguration.getValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL)
-        val signatureScannerOfflineLocalPath = detectConfiguration.getValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH)
+        val blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails()
+        val offline = blackDuckConnectionDetails.offline
+        val blackDuckUrl = blackDuckConnectionDetails.blackduckUrl
+
+        val blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions()
+        val signatureScannerHostUrl = blackDuckSignatureScannerOptions.userProvidedScannerInstallUrl
+        val signatureScannerOfflineLocalPath = blackDuckSignatureScannerOptions.offlineLocalScannerInstallPath
         if (offline) {
             logger.debug("Black Duck will run: Black Duck offline mode was set to true.")
             return BlackDuckDecision.runOffline()
@@ -94,10 +84,4 @@ class ProductDecider(val detectConfiguration: PropertyConfiguration) {
             return BlackDuckDecision.skip()
         }
     }
-
-    // TODO: Why are we deciding both at the same time? This makes testing difficult. It also adds another class (ProductDecision).
-    fun decide(userHome: File, detectToolFilter: DetectToolFilter): ProductDecision {
-        return ProductDecision(determineBlackDuck(), determinePolaris(userHome, detectToolFilter))
-    }
-
 }

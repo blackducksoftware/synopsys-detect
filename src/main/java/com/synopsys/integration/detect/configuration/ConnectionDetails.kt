@@ -20,6 +20,7 @@ class ConnectionDetails(
 )
 
 class BlackDuckConnectionDetails(
+        val offline: Boolean,
         val blackduckUrl: String?,
         val blackduckProperties: Map<String, String>,
         val parallelProcessors: Int,
