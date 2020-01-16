@@ -961,15 +961,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-target" class="md-nav__link">
-    Bazel Target
+  <a href="#bazel-executable" class="md-nav__link">
+    Bazel Executable
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-executable" class="md-nav__link">
-    Bazel Executable
+  <a href="#bazel-target" class="md-nav__link">
+    Bazel Target
   </a>
   
 </li>
@@ -1234,15 +1234,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-target" class="md-nav__link">
-    Bazel Target
+  <a href="#bazel-executable" class="md-nav__link">
+    Bazel Executable
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-executable" class="md-nav__link">
-    Bazel Executable
+  <a href="#bazel-target" class="md-nav__link">
+    Bazel Target
   </a>
   
 </li>
@@ -1351,11 +1351,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bazel-target">Bazel Target</h2>
-<pre><code>--detect.bazel.target
+<h2 id="bazel-executable">Bazel Executable</h2>
+<pre><code>--detect.bazel.path
 </code></pre>
 
-<p>The Bazel target (for example, //foo:foolib) for which dependencies are collected. For Detect to run Bazel, this property must be set.</p>
+<p>The path to the Bazel executable.</p>
 <table>
 <thead>
 <tr>
@@ -1394,11 +1394,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bazel-executable">Bazel Executable</h2>
-<pre><code>--detect.bazel.path
+<h2 id="bazel-target">Bazel Target</h2>
+<pre><code>--detect.bazel.target
 </code></pre>
 
-<p>The path to the Bazel executable.</p>
+<p>The Bazel target (for example, //foo:foolib) for which dependencies are collected. For Detect to run Bazel, this property must be set.</p>
 <table>
 <thead>
 <tr>
