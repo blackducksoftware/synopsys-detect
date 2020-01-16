@@ -183,11 +183,11 @@ public class DetectBoot {
 
         final RunOptions runOptions = factory.createRunOptions();
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
-        final ProductDecider productDecider = new ProductDecider();
+        final ProductDecider productDecider = new ProductDecider(detectConfiguration);
         final ProductDecision productDecision;
 
         logger.info("");
-        productDecision = productDecider.decide(detectConfiguration, directoryManager.getUserHome(), detectToolFilter);
+        productDecision = productDecider.decide(directoryManager.getUserHome(), detectToolFilter);
 
         logger.debug("Decided what products will be run. Starting product boot.");
 

@@ -121,7 +121,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 }
 
 compileKotlin {

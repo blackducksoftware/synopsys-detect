@@ -34,11 +34,11 @@ import org.slf4j.LoggerFactory
 import java.io.File
 
 //TODO: Should use Configuration Factory. Would solve the other TODO as well.
-class ProductDecider {
+class ProductDecider(val detectConfiguration: PropertyConfiguration) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     //TODO: Wrong timeout! Should be using findTimeout()
-    private fun createPolarisServerConfigBuilder(detectConfiguration: PropertyConfiguration, userHome: File): PolarisServerConfigBuilder {
+    private fun createPolarisServerConfigBuilder(userHome: File): PolarisServerConfigBuilder {
         val polarisServerConfigBuilder = PolarisServerConfig.newBuilder()
         val allPolarisKeys = polarisServerConfigBuilder.propertyKeys
         val polarisProperties = detectConfiguration.getRaw(allPolarisKeys)
@@ -49,12 +49,12 @@ class ProductDecider {
         return polarisServerConfigBuilder
     }
 
-    fun determinePolaris(detectConfiguration: PropertyConfiguration, userHome: File, detectToolFilter: DetectToolFilter): PolarisDecision {
+    fun determinePolaris(userHome: File, detectToolFilter: DetectToolFilter): PolarisDecision {
         if (!detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
             logger.debug("Polaris will NOT run because it is excluded.")
             return PolarisDecision.skip()
         }
-        val polarisServerConfigBuilder = createPolarisServerConfigBuilder(detectConfiguration, userHome)
+        val polarisServerConfigBuilder = createPolarisServerConfigBuilder(userHome)
         val builderStatus = polarisServerConfigBuilder.validateAndGetBuilderStatus()
         val polarisCanRun = builderStatus.isValid
 
@@ -72,7 +72,7 @@ class ProductDecider {
         }
     }
 
-    private fun determineBlackDuck(detectConfiguration: PropertyConfiguration): BlackDuckDecision {
+    private fun determineBlackDuck(): BlackDuckDecision {
         val offline = detectConfiguration.getValueOrDefault(DetectProperties.BLACKDUCK_OFFLINE_MODE)
         val blackDuckUrl = detectConfiguration.getValueOrNull(DetectProperties.BLACKDUCK_URL)
         val signatureScannerHostUrl = detectConfiguration.getValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL)
@@ -95,8 +95,9 @@ class ProductDecider {
         }
     }
 
-    fun decide(detectConfiguration: PropertyConfiguration, userHome: File, detectToolFilter: DetectToolFilter): ProductDecision {
-        return ProductDecision(determineBlackDuck(detectConfiguration), determinePolaris(detectConfiguration, userHome, detectToolFilter))
+    // TODO: Why are we deciding both at the same time? This makes testing difficult. It also adds another class (ProductDecision).
+    fun decide(userHome: File, detectToolFilter: DetectToolFilter): ProductDecision {
+        return ProductDecision(determineBlackDuck(), determinePolaris(userHome, detectToolFilter))
     }
 
 }
