@@ -36,7 +36,7 @@
     
     
       
-        <title>Yocto (Bitbake) - Synopsys Detect</title>
+        <title>Yocto (BitBake) - Synopsys Detect</title>
       
     
     
@@ -101,7 +101,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Yocto (Bitbake)
+                Yocto (BitBake)
               
             </span>
           
@@ -557,11 +557,11 @@
     
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
-        Yocto (Bitbake)
+        Yocto (BitBake)
       </label>
     
-    <a href="./" title="Yocto (Bitbake)" class="md-nav__link md-nav__link--active">
-      Yocto (Bitbake)
+    <a href="./" title="Yocto (BitBake)" class="md-nav__link md-nav__link--active">
+      Yocto (BitBake)
     </a>
     
       
@@ -1262,24 +1262,24 @@
               
                 
                 
-                <h1 id="yocto-bitbake">Yocto (Bitbake)</h1>
-<p>The BitBake detector can discover dependencies of custom Linux distribution projects built using Yocto version 2.0 and higher.</p>
-<p>The BitBake detector will attempt to run on your project if all of the following are true:</p>
+                <h1 id="yocto-bitbake">Yocto (BitBake)</h1>
+<p>The BitBake detector discovers dependencies of custom Linux distribution projects built using Yocto versions 2.0 and higher.</p>
+<p>The BitBake detector attempts to run on your project if all of the following are true:</p>
 <ol>
 <li>A build environment init script (typically <em>oe-init-build-env</em>) is found in the source directory.</li>
-<li>You provide at least one package name via the BitBake package names property.</li>
+<li>You provide at least one package name using the BitBake package names property.</li>
 </ol>
-<p>The BitBake detector will attempt to source the <em>oe-init-build-env</em> file on your behalf.</p>
+<p>The BitBake detector attempts to source the <em>oe-init-build-env</em> file on your behalf.</p>
 <p>The BitBake detector also requires a bash executable, which it looks for on $PATH. You can override this by setting the bash path property.</p>
 <p>The BitBake detector does the following for each provided recipe name: The detector sources the build environment setup script and executes
 <code>bitbake -g {package-name}</code> to generate a dependency file <em>recipe-depends.dot</em> that it parses for dependency information.
-It also <code>bitbake-layers show-recipes</code> to get layer information.</p>
+It also uses <code>bitbake-layers show-recipes</code> to get layer information.</p>
 <h2 id="troubleshooting-tips">Troubleshooting Tips</h2>
 <h3 id="unsupported-yocto-version">Unsupported Yocto version</h3>
-<p>Symptom: Error in log like: 'ERROR: Nothing PROVIDES {package}'</p>
+<p>Symptom: Error in log similar to 'ERROR: Nothing PROVIDES {package}'</p>
 <p>Problem: Synopsys Detect does not support the Yocto version. Synopsys Detect requires Yocto versions 2.0 and higher.</p>
 <h3 id="missing-components-for-projects-using-the-yocto-package-revision-service">Missing components for projects using the Yocto Package Revision Service</h3>
-<p>Symptom: Components are missing from the Black Duck BOM</p>
+<p>Symptom: Components are missing from the Black Duck BOM.</p>
 <p>Problem: The Yocto Package Revision Service can increment a package revision to a value not present in the Black Duck Knowledge Base, causing
 a package to fail to match.</p>
                 

@@ -557,8 +557,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -1187,29 +1187,29 @@
 </ul>
 <p><a name="godeplockdetector"></a></p>
 <h1 id="godeplock-detector">GoDepLock detector</h1>
-<p>The GoDepLock detector can discover dependencies of GoLang projects.</p>
-<p>The GoDepLock detector will attempt to run on your project if a Gopkg.lock file is found in your source directory.</p>
-<p>The GoDepLock detector does not rely on external executables (go, dep, etc.).</p>
+<p>The GoDepLock detector discovers dependencies of GoLang projects.</p>
+<p>The GoDepLock detector attempts to run on your project if a Gopkg.lock file is found in your source directory.</p>
+<p>The GoDepLock detector does not rely on external executables; for example, go, dep, and others.</p>
 <p>The GoDepCli detector parses Gopkg.lock for dependencies.</p>
 <p><a name="godepclidetector"></a></p>
 <h1 id="the-godepcli-detector">The GoDepCli detector</h1>
-<p>The GoDepCli detector can discover dependencies of go language (GoLang) projects.</p>
-<p>The GoDepCli detector will attempt to run on your project if files are found in your source directory with extension "go" ("*.go").</p>
-<p>The GoDepCli detector requires "go" and "dep" executables:
+<p>The GoDepCli detector discovers dependencies of go language (GoLang) projects.</p>
+<p>The GoDepCli detector attempts to run on your project if files are found in your source directory with extension "go" ("*.go").</p>
+<p>The GoDepCli detector requires <em>go</em> and <em>dep</em> executables:
 * Synopsys Detect looks for go on $PATH.
 * Synopsys Detect looks for dep in your source directory.</p>
-<p>The GoDepCli detector looks in your source directory for a Gopkg.lock file. If it does not exist, it runs dep command(s) to create it. Then the GoDepCli detector parses Gopkg.lock for dependencies.</p>
+<p>The GoDepCli detector looks in your source directory for a Gopkg.lock file. If it does not exist, it runs dep commands to create it. Then the GoDepCli detector parses Gopkg.lock for dependencies.</p>
 <p><a name="govendordetector"></a></p>
 <h1 id="the-govendor-detector">The GoVendor detector</h1>
-<p>The GoVendor detector can discover dependencies of go language (GoLang) projects.</p>
-<p>The GoVendor detector will attempt to run on your project if the file vendor/vendor.json is found in your source directory.</p>
-<p>The GoVendor detector does not rely on external executables (go, dep, etc.).</p>
+<p>The GoVendor detector discovers dependencies of go language (GoLang) projects.</p>
+<p>The GoVendor detector attempts to run on your project if the file vendor/vendor.json is found in your source directory.</p>
+<p>The GoVendor detector does not rely on external executables; for example, go, dep, and others.</p>
 <p>The GoVendor detector parses vendor/vendor.json for dependencies.</p>
 <p><a name="govndrdetector"></a></p>
 <h1 id="the-govndr-detector">The GoVndr detector</h1>
-<p>The GoVndr detector can discover dependencies of go language (GoLang) projects.</p>
-<p>The GoVndr detector will attempt to run on your project if the file vendor.conf is found in your source directory.</p>
-<p>The GoVndr detector does not rely on external executables (go, dep, etc.).</p>
+<p>The GoVndr detector discovers dependencies of go language (GoLang) projects.</p>
+<p>The GoVndr detector attempts to run on your project if the file vendor.conf is found in your source directory.</p>
+<p>The GoVndr detector does not rely on external executables; for example, go, dep, and others.</p>
 <p>The GoVndr detector parses vendor.conf for dependencies.</p>
                 
                   

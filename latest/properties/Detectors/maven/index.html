@@ -544,8 +544,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../../../advanced/language-and-package-managers/yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -1050,13 +1050,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-included" class="md-nav__link">
-    Dependency Scope Included
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#dependency-scope-excluded" class="md-nav__link">
     Dependency Scope Excluded
   </a>
@@ -1071,8 +1064,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-modules-included-advanced" class="md-nav__link">
-    Maven Modules Included (Advanced)
+  <a href="#dependency-scope-included" class="md-nav__link">
+    Dependency Scope Included
   </a>
   
 </li>
@@ -1087,6 +1080,13 @@
         <li class="md-nav__item">
   <a href="#maven-include-plugins-advanced" class="md-nav__link">
     Maven Include Plugins (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maven-modules-included-advanced" class="md-nav__link">
+    Maven Modules Included (Advanced)
   </a>
   
 </li>
@@ -1255,13 +1255,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-included" class="md-nav__link">
-    Dependency Scope Included
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#dependency-scope-excluded" class="md-nav__link">
     Dependency Scope Excluded
   </a>
@@ -1276,8 +1269,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-modules-included-advanced" class="md-nav__link">
-    Maven Modules Included (Advanced)
+  <a href="#dependency-scope-included" class="md-nav__link">
+    Dependency Scope Included
   </a>
   
 </li>
@@ -1292,6 +1285,13 @@
         <li class="md-nav__item">
   <a href="#maven-include-plugins-advanced" class="md-nav__link">
     Maven Include Plugins (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maven-modules-included-advanced" class="md-nav__link">
+    Maven Modules Included (Advanced)
   </a>
   
 </li>
@@ -1338,50 +1338,6 @@
 <tr>
 <td>Added</td>
 <td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="dependency-scope-included">Dependency Scope Included</h2>
-<pre><code>--detect.maven.included.scopes
-</code></pre>
-
-<p>A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude). Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>If set, Detect will include only dependencies of the given Maven scope.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1497,12 +1453,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="maven-modules-included-advanced">Maven Modules Included (Advanced)</h2>
-<pre><code>--detect.maven.included.modules
+<h2 id="dependency-scope-included">Dependency Scope Included</h2>
+<pre><code>--detect.maven.included.scopes
 </code></pre>
 
-<p>A comma-separated list of Maven modules (sub-projects) to include. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
+<p>A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude). Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>If set, Detect will include only dependencies of the given Maven scope.</p>
 <table>
 <thead>
 <tr>
@@ -1513,7 +1469,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1605,6 +1561,50 @@
 <tr>
 <td>Type</td>
 <td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="maven-modules-included-advanced">Maven Modules Included (Advanced)</h2>
+<pre><code>--detect.maven.included.modules
+</code></pre>
+
+<p>A comma-separated list of Maven modules (sub-projects) to include. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
 </tr>
 <tr>
 <td>Default Value</td>

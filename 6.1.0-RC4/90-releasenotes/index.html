@@ -1994,7 +1994,7 @@
 <ul>
 <li>Deprecated all Polaris-related properties.</li>
 <li>Added <a href="../advanced/includeexcludewildcards/">wildcard support</a> for several include/exclude list properties.</li>
-<li>Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command.</li>
+<li>Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command. Since the yarn command is no longer executed, the detect.yarn.path property has been removed.</li>
 <li>Improved match accuracy for Bitbake projects by improving external ID generation for dependencies referenced using Git protocols, and dependencies referenced with an epoch and/or revision.</li>
 <li>Improved the reliability of the Bitbake detector by generating recipe-depends.dot and package-depends.dot files the source directory, instead of a temporary directory.</li>
 <li>Changed the logging level of Polaris CLI output from DEBUG to INFO.</li>

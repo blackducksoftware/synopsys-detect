@@ -598,8 +598,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../language-and-package-managers/yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../language-and-package-managers/yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -1251,9 +1251,9 @@
                 <h1 id="running-behind-a-proxy">Running behind a proxy</h1>
 <p>When running behind a proxy:</p>
 <ol>
-<li>The script (detect.sh or detect.ps1) requires proxy details in order to do a version
+<li>The script (detect.sh or detect.ps1) requires proxy details to do a version
 check on, and/or download the Synopsys Detect .jar file.</li>
-<li>Synopsys Detect itself (the code in the .jar file) requires proxy details in order to download inspectors and
+<li>Synopsys Detect; in other words, the code in the .jar file, requires proxy details to download inspectors and
 connect to Black Duck and Polaris.</li>
 </ol>
 <h2 id="providing-proxy-details-to-synopsys-detect">Providing proxy details to Synopsys Detect</h2>
@@ -1265,10 +1265,10 @@ including:</p>
 <li>blackduck.proxy.username (proxy username)</li>
 <li>blackduck.proxy.password (proxy password)</li>
 </ul>
-<p>See <a href="../../properties/Configuration/proxy/">properties</a> for more information.</p>
+<p>Refer to <a href="../../properties/Configuration/proxy/">properties</a> for more information.</p>
 <h2 id="providing-proxy-details-to-detectsh">Providing proxy details to detect.sh</h2>
 <p>The curl commands executed by detect.sh to do a version check on, and/or download the Synopsys Detect
-.jar file require additional command line options when run behind a proxy. For more information
+.jar file, require additional command line options when run behind a proxy. For more information
 on curl options, refer to the <a href="https://curl.haxx.se/docs/manpage.html">curl documentation</a>.</p>
 <p>To provide additional curl command line options for detect.sh to use
 when it executes curl, set the environment variable DETECT_CURL_OPTS before running
@@ -1276,8 +1276,8 @@ detect.sh. For example:</p>
 <pre><code>export DETECT_CURL_OPTS=--proxy http://myproxy:3128
 ./detect.sh
 </code></pre>
-<p>When using detect.sh to execute Synopsys Detect you will also need to set proxy properties
-for Synopsys Detect as described above.</p>
+<p>When using detect.sh to execute Synopsys Detect you must set proxy properties
+for Synopsys Detect as previously described.</p>
 <h2 id="providing-proxy-details-to-detectps1">Providing proxy details to detect.ps1</h2>
 <p>detect.ps1 derives proxy details from environment variables
 whose names match the Synopsys Detect proxy property names.
@@ -1290,7 +1290,7 @@ ${Env:blackduck.proxy.password} = $ProxyUsername
 ${Env:blackduck.proxy.username} = $ProxyPassword
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 </code></pre>
-<p>When using detect.ps1 to execute Synopsys Detect, Synopsys Detect will also receive the proxy details
+<p>When using detect.ps1 to execute Synopsys Detect, Synopsys Detect also receives the proxy details
 from these environment variables, so no additional configuration is required for Synopsys Detect.</p>
                 
                   

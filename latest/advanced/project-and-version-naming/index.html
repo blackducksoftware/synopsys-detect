@@ -584,8 +584,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../language-and-package-managers/yocto-bitbake/" title="Yocto (Bitbake)" class="md-nav__link">
-      Yocto (Bitbake)
+    <a href="../language-and-package-managers/yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
     </a>
   </li>
 
@@ -1221,13 +1221,13 @@
                 
                 
                 <h1 id="project-and-version-naming">Project and version naming</h1>
-<p>The project and version names of the project to which Synopsys Detect writes results are, by default, derived from the project on which Synopsys Detect is run.  The mechanism Synopsys Detect uses to determine the project and version names depends on project type. If Synopsys Detect cannot determine the project and version names, then Synopsys Detect will use the project directory name as the project name, and the value "Default Detect Version" as the version name.</p>
+<p>The project and version names of the project to which Synopsys Detect writes results are, by default, derived from the project on which Synopsys Detect is run.  The mechanism Synopsys Detect uses to determine the project and version names depends on project type. If Synopsys Detect cannot determine the project and version names, then Synopsys Detect uses the project directory name as the project name, and the value "Default Detect Version" as the version name.</p>
 <p>You can use the following properties to override the project and version names:</p>
 <pre><code>--detect.project.name=PROJECT-NAME
 --detect.project.version.name=VERSION-NAME
 </code></pre>
 
-<p>You can use the following property to change the default version to a timestamp.</p>
+<p>You can use the following property to change the default version to a timestamp:</p>
 <pre><code>--detect.default.project.version.scheme=timestamp
 </code></pre>
 
@@ -1236,14 +1236,14 @@
 </code></pre>
 
 <h2 id="project-and-version-naming-for-git-projects">Project and version naming for Git projects</h2>
-<p>If no package manager provides project and version names, you have not provided the project and version names through properties, and the project uses Git, Synopsys Detect attempts to use Git to determine project information
+<p>If no package manager provides project and version names, you have not provided the project and version names through properties, and the project uses Git, Synopsys Detect attempts to use Git to determine project information.
 Project information is extracted from the remote URL for the current branch. The version is the current branch name.  This is performed by the Git detector. If you do not want Synopsys Detect to use Git data, you can omit the Git detector using the following property:</p>
 <pre><code>--detect.excluded.detector.types=GIT
 </code></pre>
 
-<p>For example, for a project with a remote URL of "https://github.com/blackducksoftware/synopsys-detect" and a checked-out branch "5.5.0",
-Synopsys Detect will (by default) use project name "blackducksoftware/synopsys-detect" and project version "5.5.0".</p>
-<p>Synopsys Detect attempts to derive project and version information by running the Git executable. If that is not successful, it will attempt to derive
+<p>For example, for a project with a remote URL of "https://github.com/blackducksoftware/synopsys-detect" and a checked-out branch of "5.5.0",
+Synopsys Detect by default uses the project name "blackducksoftware/synopsys-detect" and project version "5.5.0".</p>
+<p>Synopsys Detect attempts to derive project and version information by running the Git executable. If that is not successful, it attempts to derive
 project and version information by parsing Git files.</p>
 <p>In Synopsys Detect versions 5.5.0 and higher, there is a new Synopsys Detect property for providing the
 path to the Git executable: detect.git.path.</p>
