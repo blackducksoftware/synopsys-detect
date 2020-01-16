@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.BatteryTest;
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
 public class MavenBattery {
@@ -13,7 +13,7 @@ public class MavenBattery {
     @Test
     void property() {
         final BatteryTest test = sharedCliTest("maven-property");
-        test.executableFromResourceFiles(DetectProperty.DETECT_MAVEN_PATH, MAVEN_OUTPUT_RESOURCE);
+        test.executableFromResourceFiles(DetectProperties.Companion.getDETECT_MAVEN_PATH(), MAVEN_OUTPUT_RESOURCE);
         test.run();
     }
 

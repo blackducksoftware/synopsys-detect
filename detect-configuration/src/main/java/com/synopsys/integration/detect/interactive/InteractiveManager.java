@@ -29,7 +29,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.help.DetectOptionManager;
 import com.synopsys.integration.detect.interactive.mode.InteractiveMode;
 import com.synopsys.integration.detect.interactive.reader.ConsoleInteractiveReader;
 import com.synopsys.integration.detect.interactive.reader.InteractiveReader;
@@ -37,12 +36,6 @@ import com.synopsys.integration.detect.interactive.reader.ScannerInteractiveRead
 
 public class InteractiveManager {
     private final Logger logger = LoggerFactory.getLogger(InteractiveManager.class);
-
-    private final DetectOptionManager detectOptionManager;
-
-    public InteractiveManager(final DetectOptionManager detectOptionManager) {
-        this.detectOptionManager = detectOptionManager;
-    }
 
     public void configureInInteractiveMode(InteractiveMode interactiveMode) {
         // TODO: Find a way to close the PrintStream without closing System.out
@@ -67,7 +60,7 @@ public class InteractiveManager {
 
         interactiveMode.configure();
         final List<InteractiveOption> interactiveOptions = interactiveMode.getInteractiveOptions();
-        detectOptionManager.applyInteractiveOptions(interactiveOptions);
+        //detectOptionManager.applyInteractiveOptions(interactiveOptions);
 
     }
 

@@ -22,17 +22,17 @@
  */
 package com.synopsys.integration.detect.interactive;
 
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.configuration.property.Property;
 
 public class InteractiveOption {
-    private DetectProperty detectProperty;
+    private Property detectProperty;
     private String interactiveValue;
 
-    public DetectProperty getDetectProperty() {
+    public Property getDetectProperty() {
         return detectProperty;
     }
 
-    public void setDetectProperty(final DetectProperty detectProperty) {
+    public void setDetectProperty(final Property detectProperty) {
         this.detectProperty = detectProperty;
     }
 

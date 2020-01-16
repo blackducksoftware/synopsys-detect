@@ -25,19 +25,15 @@ package com.synopsys.integration.detect.workflow.project;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectTool;
-import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.util.NameVersion;
 
 public class ProjectNameVersionDecider {

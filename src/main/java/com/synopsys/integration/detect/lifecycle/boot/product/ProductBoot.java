@@ -29,7 +29,6 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
@@ -69,7 +68,7 @@ public class ProductBoot {
                 } else {
                     if (detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_IGNORE_CONNECTION_FAILURES())) {
                         logger.info("Failed to connect to Black Duck: " + blackDuckConnectivityResult.getFailureReason());
-                        logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.", DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES.getPropertyName()));
+                        logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.", DetectProperties.Companion.getDETECT_IGNORE_CONNECTION_FAILURES().getName()));
                     } else {
                         throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + blackDuckConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
                     }
@@ -92,7 +91,7 @@ public class ProductBoot {
         }
 
         if (detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_TEST_CONNECTION())) {
-            logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
+            logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperties.Companion.getDETECT_TEST_CONNECTION().getName()));
             return null;
         }
 

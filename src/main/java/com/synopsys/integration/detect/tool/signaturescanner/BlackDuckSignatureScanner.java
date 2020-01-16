@@ -25,7 +25,6 @@ package com.synopsys.integration.detect.tool.signaturescanner;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -41,7 +40,7 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanTarget;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -49,7 +48,6 @@ import com.synopsys.integration.detect.workflow.blackduck.ExclusionPatternCreato
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.status.SignatureScanStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
@@ -189,7 +187,7 @@ public class BlackDuckSignatureScanner {
         final File target = new File(path);
         final ExclusionPatternCreator exclusionPatternCreator = new ExclusionPatternCreator(fileFinder, target);
 
-        final Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepth, signatureScannerExclusionNamePatterns.toArray(new String[]{}));
+        final Set<String> scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepth, signatureScannerExclusionNamePatterns.toArray(new String[] {}));
         if (null != providedExclusionPatterns) {
             scanExclusionPatterns.addAll(providedExclusionPatterns);
         }
@@ -209,7 +207,7 @@ public class BlackDuckSignatureScanner {
         scanJobBuilder.cleanupOutput(false);
 
         if (signatureScannerOptions.getUploadSource() && signatureScannerOptions.getSnippetMatching() == null) {
-            throw new DetectUserFriendlyException("You must enable snippet matching using " + DetectProperty.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING.getPropertyKey() + " in order to use upload source.",
+            throw new DetectUserFriendlyException("You must enable snippet matching using " + DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING().getName() + " in order to use upload source.",
                 ExitCodeType.FAILURE_CONFIGURATION);
         }
         scanJobBuilder.uploadSource(signatureScannerOptions.getSnippetMatching(), signatureScannerOptions.getUploadSource());

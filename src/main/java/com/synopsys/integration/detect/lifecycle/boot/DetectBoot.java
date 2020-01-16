@@ -45,6 +45,7 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.config.SpringConfigurationPropertySource;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.configuration.property.Property;
+import com.synopsys.integration.configuration.property.PropertyDeprecationInfo;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectableBeanConfiguration;
@@ -52,20 +53,17 @@ import com.synopsys.integration.detect.RunBeanConfiguration;
 import com.synopsys.integration.detect.configuration.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
+import com.synopsys.integration.detect.configuration.DetectGroup;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.help.DetectArgumentState;
 import com.synopsys.integration.detect.help.DetectArgumentStateParser;
-import com.synopsys.integration.detect.help.DetectOption;
-import com.synopsys.integration.detect.help.DetectOptionManager;
 import com.synopsys.integration.detect.help.json.HelpJsonDetector;
 import com.synopsys.integration.detect.help.json.HelpJsonWriter;
 import com.synopsys.integration.detect.help.print.DetectInfoPrinter;
 import com.synopsys.integration.detect.help.print.HelpPrinter;
-import com.synopsys.integration.detect.interactive.InteractiveManager;
-import com.synopsys.integration.detect.interactive.mode.DefaultInteractiveMode;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
@@ -134,40 +132,29 @@ public class DetectBoot {
 
         List<SpringConfigurationPropertySource> propertySources = SpringConfigurationPropertySource.Companion.fromConfigurableEnvironment(environment);
         final PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
-        final DetectOptionManager detectOptionManager = new DetectOptionManager();// = new DetectOptionManager(detectConfiguration, detectInfo); TODO: Fix
-
-        final List<DetectOption> options = detectOptionManager.getDetectOptions();
 
         final DetectArgumentState detectArgumentState = parseDetectArgumentState(sourceArgs);
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
-            printAppropriateHelp(options, detectArgumentState);
+            printAppropriateHelp(DetectProperties.Companion.getProperties(), detectArgumentState);
             return DetectBootResult.exit(detectConfiguration);
         }
 
         if (detectArgumentState.isHelpJsonDocument()) {
-            printHelpJsonDocument(options, detectInfo, gson);
+            printHelpJsonDocument(DetectProperties.Companion.getProperties(), detectInfo, gson);
             return DetectBootResult.exit(detectConfiguration);
         }
 
         printDetectInfo(detectInfo);
 
         if (detectArgumentState.isInteractive()) {
-            startInteractiveMode(detectOptionManager, detectConfiguration, gson, objectMapper);
+            startInteractiveMode(detectConfiguration, gson, objectMapper);
         }
-
-        try {
-            processDetectConfiguration(detectInfo, detectRun, detectConfiguration, options);
-        } catch (final DetectUserFriendlyException e) {
-            return DetectBootResult.exception(e, detectConfiguration);
-        }
-
-        //detectOptionManager.postConfigurationProcessedInit(); //TODO: Fix
 
         logger.debug("Configuration processed completely.");
 
         Boolean printFull = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_SUPPRESS_CONFIGURATION_OUTPUT());
-        final Optional<DetectBootResult> configurationResult = printConfiguration(printFull, detectOptionManager, detectConfiguration, eventSystem, options, detectInfo);
+        final Optional<DetectBootResult> configurationResult = printConfiguration(printFull, detectConfiguration, eventSystem, detectInfo);
         if (configurationResult.isPresent()) {
             return configurationResult.get();
         }
@@ -176,7 +163,7 @@ public class DetectBoot {
 
         final DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
         final DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
-        final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectOptionManager.getDetectOptions(), detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
+        final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectConfiguration, detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
         final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem); //TODO: Fix
 
@@ -248,12 +235,12 @@ public class DetectBoot {
         return DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem);
     }
 
-    private void printAppropriateHelp(final List<DetectOption> detectOptions, final DetectArgumentState detectArgumentState) {
+    private void printAppropriateHelp(final List<Property> properties, final DetectArgumentState detectArgumentState) {
         final HelpPrinter helpPrinter = new HelpPrinter();
-        helpPrinter.printAppropriateHelpMessage(System.out, detectOptions, detectArgumentState);
+        helpPrinter.printAppropriateHelpMessage(System.out, properties, DetectGroup.Companion.values(), DetectGroup.Companion.getBlackduckServer(), detectArgumentState);
     }
 
-    private void printHelpJsonDocument(final List<DetectOption> detectOptions, final DetectInfo detectInfo, final Gson gson) {
+    private void printHelpJsonDocument(final List<Property> properties, final DetectInfo detectInfo, final Gson gson) {
         final DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
         final DetectorRuleSet build = ruleFactory.createRules(new DetectableFactory(), false);
         final DetectorRuleSet buildless = ruleFactory.createRules(new DetectableFactory(), true);
@@ -261,7 +248,7 @@ public class DetectBoot {
         final List<HelpJsonDetector> buildlessDetectors = buildless.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, buildless)).collect(Collectors.toList());
 
         final HelpJsonWriter helpJsonWriter = new HelpJsonWriter(gson);
-        helpJsonWriter.writeGsonDocument(String.format("synopsys-detect-%s-help.json", detectInfo.getDetectVersion()), detectOptions, buildDetectors, buildlessDetectors);
+        helpJsonWriter.writeGsonDocument(String.format("synopsys-detect-%s-help.json", detectInfo.getDetectVersion()), properties, buildDetectors, buildlessDetectors);
     }
 
     private HelpJsonDetector convertDetectorRule(final DetectorRule rule, final DetectorRuleSet ruleSet) {
@@ -298,31 +285,30 @@ public class DetectBoot {
         detectInfoPrinter.printInfo(System.out, detectInfo);
     }
 
-    private Optional<DetectBootResult> printConfiguration(final boolean fullConfiguration, final DetectOptionManager detectOptionManager, final PropertyConfiguration detectConfiguration, final EventSystem eventSystem,
-        final List<DetectOption> detectOptions, DetectInfo detectInfo) {
+    private Optional<DetectBootResult> printConfiguration(final boolean fullConfiguration, final PropertyConfiguration detectConfiguration, final EventSystem eventSystem,
+        DetectInfo detectInfo) {
 
         Map<String, String> additionalNotes = new HashMap<>();
 
-        List<Property> deprecatedProperties = new ArrayList<>();
-        deprecatedProperties.add(DetectProperties.Companion.getBLACKDUCK_HUB_USERNAME());
+        List<Property> deprecatedProperties = DetectProperties.Companion.getProperties()
+                                                  .stream()
+                                                  .filter(property -> property.getPropertyDeprecationInfo() != null)
+                                                  .collect(Collectors.toList());
 
         Map<String, List<String>> deprecationMessages = new HashMap<>();
-        List<Property> usedDeprecatedProperties = new ArrayList<>();
         List<Property> usedFailureProperties = new ArrayList<>();
         for (Property property : deprecatedProperties) {
             if (detectConfiguration.wasKeyProvided(property.getKey())) {
-                usedDeprecatedProperties.add(property);
+                PropertyDeprecationInfo deprecationInfo = property.getPropertyDeprecationInfo();
 
-                additionalNotes.put(property.getKey(), "\\t *** DEPRECATED ***");
-                //TODO: REplace with jakes: option.getDetectOptionHelp().deprecation + " It will cause failure in " + failVersion + " and be removed in " + removeVersion + "."
-                String deprecationMessage = " It will cause failure in ";
+                additionalNotes.put(property.getKey(), "\t *** DEPRECATED ***");
+                String deprecationMessage = property.getPropertyDeprecationInfo().getDeprecationText();
+
                 deprecationMessages.put(property.getKey(), new ArrayList<String>(Collections.singleton(deprecationMessage)));
+                DetectIssue.publish(eventSystem, DetectIssueType.Deprecation, property.getKey(), "\t" + deprecationMessage);
 
-                Integer failInVersion = 3;
-                if (detectInfo.getDetectMajorVersion() >= failInVersion) {
+                if (detectInfo.getDetectMajorVersion() >= deprecationInfo.getFailInVersion().getIntValue()) {
                     usedFailureProperties.add(property);
-                } else {
-                    DetectIssue.publish(eventSystem, DetectIssueType.Deprecation, property.getKey(), "\t" + deprecationMessage);
                 }
             }
         }
@@ -359,10 +345,10 @@ public class DetectBoot {
         return Optional.empty();
     }
 
-    private void startInteractiveMode(final DetectOptionManager detectOptionManager, final PropertyConfiguration detectConfiguration, final Gson gson, final ObjectMapper objectMapper) {
-        final InteractiveManager interactiveManager = new InteractiveManager(detectOptionManager);
-        final DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(detectOptionManager);
-        interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
+    private void startInteractiveMode(final PropertyConfiguration detectConfiguration, final Gson gson, final ObjectMapper objectMapper) {
+        //final InteractiveManager interactiveManager = new InteractiveManager(detectOptionManager);
+        //final DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(detectOptionManager);
+        //interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
     }
 
     private DetectArgumentState parseDetectArgumentState(final String[] sourceArgs) {
@@ -371,18 +357,11 @@ public class DetectBoot {
         return detectArgumentState;
     }
 
-    private void processDetectConfiguration(final DetectInfo detectInfo, final DetectRun detectRun, final PropertyConfiguration detectConfiguration, final List<DetectOption> detectOptions) throws DetectUserFriendlyException {
-        //TODO: Replicate TILDE PATH
-        //final TildeInPathResolver tildeInPathResolver = new TildeInPathResolver(DetectConfigurationManager.USER_HOME, detectInfo.getCurrentOs());
-        //final DetectConfigurationManager detectConfigurationManager = new DetectConfigurationManager(tildeInPathResolver, detectConfiguration);
-        //detectConfigurationManager.process(detectOptions);
-    }
-
     private Optional<DiagnosticSystem> createDiagnostics(
-        final List<DetectOption> detectOptions, final DetectRun detectRun, final DetectInfo detectInfo, final DetectArgumentState detectArgumentState, final EventSystem eventSystem, final DirectoryManager directoryManager) {
+        final PropertyConfiguration propertyConfiguration, final DetectRun detectRun, final DetectInfo detectInfo, final DetectArgumentState detectArgumentState, final EventSystem eventSystem, final DirectoryManager directoryManager) {
         if (detectArgumentState.isDiagnostic() || detectArgumentState.isDiagnosticExtended()) {
             final boolean extendedMode = detectArgumentState.isDiagnosticExtended();
-            final DiagnosticSystem diagnosticSystem = new DiagnosticSystem(extendedMode, detectOptions, detectRun, detectInfo, directoryManager, eventSystem);
+            final DiagnosticSystem diagnosticSystem = new DiagnosticSystem(extendedMode, propertyConfiguration, detectRun, detectInfo, directoryManager, eventSystem);
             return Optional.of(diagnosticSystem);
         } else {
             return Optional.empty();

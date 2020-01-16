@@ -10,7 +10,8 @@ import org.mockito.Mockito;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.configuration.property.Property;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
@@ -44,8 +45,8 @@ public class ProductBootTest {
 
     @Test()
     public void blackDuckFailureWithIgnoreReturnsFalse() throws DetectUserFriendlyException {
-        final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
-        properties.put(DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES, true);
+        final HashMap<Property, Boolean> properties = new HashMap<>();
+        properties.put(DetectProperties.Companion.getDETECT_IGNORE_CONNECTION_FAILURES(), true);
 
         final BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.failure("Failed to connect");
 
@@ -57,8 +58,8 @@ public class ProductBootTest {
 
     @Test(expected = DetectUserFriendlyException.class)
     public void blackDuckConnectionFailureWithTestThrows() throws DetectUserFriendlyException {
-        final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
-        properties.put(DetectProperty.DETECT_TEST_CONNECTION, true);
+        final HashMap<Property, Boolean> properties = new HashMap<>();
+        properties.put(DetectProperties.Companion.getDETECT_TEST_CONNECTION(), true);
 
         final BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.failure("Failed to connect");
 
@@ -67,8 +68,8 @@ public class ProductBootTest {
 
     @Test(expected = DetectUserFriendlyException.class)
     public void polarisConnectionFailureWithTestThrows() throws DetectUserFriendlyException {
-        final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
-        properties.put(DetectProperty.DETECT_TEST_CONNECTION, true);
+        final HashMap<Property, Boolean> properties = new HashMap<>();
+        properties.put(DetectProperties.Companion.getDETECT_TEST_CONNECTION(), true);
 
         final PolarisConnectivityResult connectivityResult = PolarisConnectivityResult.failure("Failed to connect");
 
@@ -77,8 +78,8 @@ public class ProductBootTest {
 
     @Test()
     public void blackDuckConnectionSuccessWithTestReturnsNull() throws DetectUserFriendlyException {
-        final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
-        properties.put(DetectProperty.DETECT_TEST_CONNECTION, true);
+        final HashMap<Property, Boolean> properties = new HashMap<>();
+        properties.put(DetectProperties.Companion.getDETECT_TEST_CONNECTION(), true);
 
         final BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.success(Mockito.mock(BlackDuckServicesFactory.class), Mockito.mock(BlackDuckServerConfig.class));
 
@@ -89,8 +90,8 @@ public class ProductBootTest {
 
     @Test()
     public void polarisConnectionSuccessWithTestReturnsNull() throws DetectUserFriendlyException {
-        final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
-        properties.put(DetectProperty.DETECT_TEST_CONNECTION, true);
+        final HashMap<Property, Boolean> properties = new HashMap<>();
+        properties.put(DetectProperties.Companion.getDETECT_TEST_CONNECTION(), true);
 
         final PolarisConnectivityResult connectivityResult = PolarisConnectivityResult.success();
 
@@ -101,7 +102,7 @@ public class ProductBootTest {
 
     @Test()
     public void blackDuckOnlyWorks() throws DetectUserFriendlyException {
-        final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
+        final HashMap<Property, Boolean> properties = new HashMap<>();
 
         final BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.success(Mockito.mock(BlackDuckServicesFactory.class), Mockito.mock(BlackDuckServerConfig.class));
 
@@ -129,7 +130,7 @@ public class ProductBootTest {
     }
 
     private ProductRunData testBoot(final BlackDuckDecision blackDuckDecision, final PolarisDecision polarisDecision, final BlackDuckConnectivityResult blackDuckconnectivityResult, final PolarisConnectivityResult polarisConnectivityResult,
-        final Map<DetectProperty, Boolean> properties) throws DetectUserFriendlyException {
+        final Map<Property, Boolean> properties) throws DetectUserFriendlyException {
         final PropertyConfiguration detectConfiguration = Mockito.mock(PropertyConfiguration.class);
         //TODO: Fix - this might break this test.
         //properties.forEach((key, value) -> Mockito.when(detectConfiguration.getBooleanProperty(key, PropertyAuthority.NONE)).thenReturn(value));

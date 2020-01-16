@@ -1,9 +1,9 @@
 package com.synopsys.integration.detect.battery;
 
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.configuration.property.Property;
 
 public class BatteryExecutable {
-    public DetectProperty detectProperty = null;
+    public Property detectProperty = null;
     public String windowsSourceFileName = null;
     public String linuxSourceFileName = null;
     public BatteryExecutableCreator creator = null;
@@ -16,7 +16,7 @@ public class BatteryExecutable {
         return executable;
     }
 
-    public static BatteryExecutable propertyOverrideExecutable(final DetectProperty detectProperty, final BatteryExecutableCreator creator) {
+    public static BatteryExecutable propertyOverrideExecutable(final Property detectProperty, final BatteryExecutableCreator creator) {
         final BatteryExecutable executable = new BatteryExecutable();
         executable.creator = creator;
         executable.detectProperty = detectProperty;

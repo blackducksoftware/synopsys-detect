@@ -22,14 +22,16 @@
  */
 package com.synopsys.integration.detect.workflow.report;
 
-import java.util.List;
+import java.util.HashMap;
 
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.help.DetectOption;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 
 public class ConfigurationReporter {
-    public void writeReport(final ReportWriter writer, final DetectInfo detectInfo, final List<DetectOption> detectOptions) {
+    public void writeReport(final ReportWriter writer, final DetectInfo detectInfo, final PropertyConfiguration propertyConfiguration) {
         writer.writeSeparator();
         writer.writeLine("Detect Info");
         writer.writeSeparator();
@@ -38,9 +40,8 @@ public class ConfigurationReporter {
         writer.writeSeparator();
         writer.writeLine("Detect Configuration");
         writer.writeSeparator();
-        //TODO: Replace
-        //final DetectConfigurationReporter detectConfigurationReporter = new DetectConfigurationReporter();
-        //detectConfigurationReporter.print(writer, writer, detectOptions);
-        //writer.writeSeparator();
+        final PropertyConfigurationHelpContext helpContext = new PropertyConfigurationHelpContext(propertyConfiguration);
+        helpContext.printCurrentValues(writer::writeLine, DetectProperties.Companion.getProperties(), new HashMap<>());
+        writer.writeSeparator();
     }
 }

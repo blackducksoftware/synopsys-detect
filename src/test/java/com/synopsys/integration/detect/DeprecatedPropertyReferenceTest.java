@@ -2,9 +2,7 @@ package com.synopsys.integration.detect;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,9 +15,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.detect.boot.ProductDeciderTest;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBoot;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
@@ -53,7 +52,7 @@ public class DeprecatedPropertyReferenceTest {
     @Test
     public void testCodeReferencesToDeprecatedProperties() throws IOException {
         final Set<String> classesInViolation = new HashSet<>();
-        final List<DetectProperty> deprecatedProperties = getDeprecatedProperties();
+        final List<Property> deprecatedProperties = getDeprecatedProperties();
         final String[] targetSuffixes = { "java", "groovy" };
         final File rootDir = new File("src");
         final Collection<File> javaFiles = FileUtils.listFiles(rootDir, targetSuffixes, true);
@@ -63,9 +62,9 @@ public class DeprecatedPropertyReferenceTest {
                 continue;
             }
             final String javaFileContents = FileUtils.readFileToString(javaFile, StandardCharsets.UTF_8);
-            for (final DetectProperty deprecatedProperty : deprecatedProperties) {
-                if (javaFileContents.contains(deprecatedProperty.name())) {
-                    System.out.printf("Deprecated property %s is referenced in %s\n", deprecatedProperty.name(), javaFile.getAbsolutePath());
+            for (final Property deprecatedProperty : deprecatedProperties) {
+                if (javaFileContents.contains(deprecatedProperty.getName())) {
+                    System.out.printf("Deprecated property %s is referenced in %s\n", deprecatedProperty.getName(), javaFile.getAbsolutePath());
                     classesInViolation.add(javaFilename);
                 }
             }
@@ -74,15 +73,10 @@ public class DeprecatedPropertyReferenceTest {
         Assertions.assertEquals(0, classesInViolation.size(), String.format("The following classes are in violation: %s", StringUtils.join(classesInViolation, ", ")));
     }
 
-    private List<DetectProperty> getDeprecatedProperties() {
-        final ArrayList<DetectProperty> deprecatedProperties = new ArrayList<>(64);
-        for (final Field field : DetectProperty.class.getDeclaredFields()) {
-            if (field.isEnumConstant() && field.isAnnotationPresent(Deprecated.class)) {
-                final DetectProperty property = DetectProperty.valueOf(field.getName());
-                deprecatedProperties.add(property);
-            }
-        }
-        return deprecatedProperties;
+    private List<Property> getDeprecatedProperties() {
+        return DetectProperties.Companion.getProperties().stream()
+                   .filter(it -> it.getPropertyDeprecationInfo() != null)
+                   .collect(Collectors.toList());
     }
 
     private boolean isFileAllowedToReferenceDeprecatedProperties(final String fileName) {

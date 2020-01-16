@@ -968,7 +968,7 @@ class DetectProperties {
         //#endregion Active Properties
 
         //#region Deprecated Properties
-        private const val DEPRECATED_PROPERTY_MESSAGE = "This property is deprecated."
+        public const val DEPRECATED_PROPERTY_MESSAGE = "This property is deprecated."
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_BITBAKE_REFERENCE_IMPL = StringProperty("detect.bitbake.reference.impl", "-poky-linux").apply {

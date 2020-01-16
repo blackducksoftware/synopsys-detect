@@ -71,7 +71,7 @@ class DetectGroup(name: String, superGroup: DetectGroup? = null) : Group(name, s
         val Search = DetectGroup("search")
         val Default = DetectGroup("default");
 
-        fun values(): List<DetectGroup> {
+        fun values(): List<Group> {
             val clazz = DetectGroup::class
             val companionClass = clazz.companionObject!!
             val companion = clazz.companionObjectInstance!!

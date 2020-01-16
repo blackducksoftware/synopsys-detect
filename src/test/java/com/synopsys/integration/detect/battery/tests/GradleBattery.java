@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.BatteryTest;
 import com.synopsys.integration.detect.battery.ResourceCopyingExecutableCreator;
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
 public class GradleBattery {
@@ -14,7 +14,7 @@ public class GradleBattery {
     @Test
     void property() {
         final BatteryTest test = sharedInspectorTest("gradle-property");
-        addGradleArguments(test.executableThatCopiesFiles(DetectProperty.DETECT_GRADLE_PATH, RESOURCE_FOLDER));
+        addGradleArguments(test.executableThatCopiesFiles(DetectProperties.Companion.getDETECT_GRADLE_PATH(), RESOURCE_FOLDER));
         test.run();
     }
 

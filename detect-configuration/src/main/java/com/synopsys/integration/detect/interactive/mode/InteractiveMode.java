@@ -35,12 +35,12 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.detect.interactive.InteractiveOption;
 import com.synopsys.integration.detect.interactive.reader.InteractiveReader;
 
 public abstract class InteractiveMode {
-    private final Map<DetectProperty, InteractiveOption> propertyToOptionMap = new HashMap<>();
+    private final Map<Property, InteractiveOption> propertyToOptionMap = new HashMap<>();
     private PrintStream printStream;
     private InteractiveReader interactiveReader;
     private String profileName = null;
@@ -62,17 +62,17 @@ public abstract class InteractiveMode {
         return interactiveReader.readPassword();
     }
 
-    public void setPropertyFromQuestion(final DetectProperty detectProperty, final String question) {
+    public void setPropertyFromQuestion(final Property detectProperty, final String question) {
         final String value = askQuestion(question);
         setProperty(detectProperty, value);
     }
 
-    public void setPropertyFromSecretQuestion(final DetectProperty detectProperty, final String question) {
+    public void setPropertyFromSecretQuestion(final Property detectProperty, final String question) {
         final String value = askSecretQuestion(question);
         setProperty(detectProperty, value);
     }
 
-    public void setProperty(final DetectProperty detectProperty, final String value) {
+    public void setProperty(final Property detectProperty, final String value) {
         final InteractiveOption option;
         if (!propertyToOptionMap.containsKey(detectProperty)) {
             option = new InteractiveOption();
@@ -113,13 +113,13 @@ public abstract class InteractiveMode {
     public Properties optionsToProperties() {
         final Properties properties = new Properties();
         for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
-            properties.put(interactiveOption.getDetectProperty().getPropertyKey(), interactiveOption.getInteractiveValue());
+            properties.put(interactiveOption.getDetectProperty().getKey(), interactiveOption.getInteractiveValue());
         }
 
         return properties;
     }
 
-    public boolean hasValueForField(final DetectProperty field) {
+    public boolean hasValueForField(final Property field) {
         return propertyToOptionMap.containsKey(field);
     }
 

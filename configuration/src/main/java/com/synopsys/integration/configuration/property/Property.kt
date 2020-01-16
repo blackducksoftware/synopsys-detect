@@ -46,5 +46,7 @@ abstract class Property(val key: String) {
 
 data class PropertyHelpInfo(val short: String, val long: String?)
 data class PropertyGroupInfo(val primaryGroup: Group, val additionalGroups: List<Group>)
-data class PropertyDeprecationInfo(val description: String, val failInVersion: ProductMajorVersion, val removeInVersion: ProductMajorVersion)
+data class PropertyDeprecationInfo(val description: String, val failInVersion: ProductMajorVersion, val removeInVersion: ProductMajorVersion) {
+    fun getDeprecationText(): String = "$description It will cause failure in ${failInVersion.getDisplayValue()} and be removed in ${removeInVersion.getDisplayValue()}.";
+}
 
