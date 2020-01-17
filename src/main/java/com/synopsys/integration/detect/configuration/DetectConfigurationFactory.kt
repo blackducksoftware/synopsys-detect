@@ -179,12 +179,9 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
     open fun createBlackDuckConnectionDetails(): BlackDuckConnectionDetails {
         val offline = getPropertyWithDeprecations(DetectProperties.BLACKDUCK_OFFLINE_MODE, DetectProperties.BLACKDUCK_HUB_OFFLINE_MODE)
         val blackduckUrl = getPropertyWithDeprecations(DetectProperties.BLACKDUCK_URL, DetectProperties.BLACKDUCK_HUB_URL)
-
         val allBlackDuckKeys: Set<String> = HashSet(BlackDuckServerConfigBuilder().propertyKeys)
                 .filter { !it.toLowerCase().contains("proxy") }
                 .toSet()
-
-        // TODO: Will this pick up deprecated properties as well? If so does the downstream code know what to do with them?
         val blackDuckProperties = detectConfiguration.getRaw(allBlackDuckKeys)
 
         return BlackDuckConnectionDetails(offline, blackduckUrl, blackDuckProperties, findParallelProcessors(), createConnectionDetails())
@@ -197,7 +194,6 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val polarisProperties = detectConfiguration.getRaw(allPolarisKeys)
         polarisServerConfigBuilder.logger = SilentIntLogger()
 
-        // TODO: Will this pick up deprecated properties as well? If so does the downstream code know what to do with them?
         polarisServerConfigBuilder.setProperties(polarisProperties.entries)
         polarisServerConfigBuilder.userHome = userHome.absolutePath
         polarisServerConfigBuilder.timeoutInSeconds = findTimeoutInSeconds().toInt()
