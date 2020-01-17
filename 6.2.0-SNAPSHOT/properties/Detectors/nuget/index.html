@@ -1067,15 +1067,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#nuget-config-file" class="md-nav__link">
-    Nuget Config File
+  <a href="#dotnet-executable" class="md-nav__link">
+    dotnet Executable
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#dotnet-executable" class="md-nav__link">
-    dotnet Executable
+  <a href="#nuget-config-file" class="md-nav__link">
+    Nuget Config File
   </a>
   
 </li>
@@ -1088,8 +1088,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-modules-included-advanced" class="md-nav__link">
-    Nuget Modules Included (Advanced)
+  <a href="#nuget-inspector-version-advanced" class="md-nav__link">
+    Nuget Inspector Version (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ignore-nuget-failures-advanced" class="md-nav__link">
+    Ignore Nuget Failures (Advanced)
   </a>
   
 </li>
@@ -1109,15 +1116,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-inspector-version-advanced" class="md-nav__link">
-    Nuget Inspector Version (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ignore-nuget-failures-advanced" class="md-nav__link">
-    Ignore Nuget Failures (Advanced)
+  <a href="#nuget-modules-included-advanced" class="md-nav__link">
+    Nuget Modules Included (Advanced)
   </a>
   
 </li>
@@ -1262,15 +1262,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#nuget-config-file" class="md-nav__link">
-    Nuget Config File
+  <a href="#dotnet-executable" class="md-nav__link">
+    dotnet Executable
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#dotnet-executable" class="md-nav__link">
-    dotnet Executable
+  <a href="#nuget-config-file" class="md-nav__link">
+    Nuget Config File
   </a>
   
 </li>
@@ -1283,8 +1283,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-modules-included-advanced" class="md-nav__link">
-    Nuget Modules Included (Advanced)
+  <a href="#nuget-inspector-version-advanced" class="md-nav__link">
+    Nuget Inspector Version (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ignore-nuget-failures-advanced" class="md-nav__link">
+    Ignore Nuget Failures (Advanced)
   </a>
   
 </li>
@@ -1304,15 +1311,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-inspector-version-advanced" class="md-nav__link">
-    Nuget Inspector Version (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#ignore-nuget-failures-advanced" class="md-nav__link">
-    Ignore Nuget Failures (Advanced)
+  <a href="#nuget-modules-included-advanced" class="md-nav__link">
+    Nuget Modules Included (Advanced)
   </a>
   
 </li>
@@ -1349,11 +1349,11 @@
                 
                 
                 <h1 id="nuget">nuget</h1>
-<h2 id="nuget-config-file">Nuget Config File</h2>
-<pre><code>--detect.nuget.config.path
+<h2 id="dotnet-executable">dotnet Executable</h2>
+<pre><code>--detect.dotnet.path
 </code></pre>
 
-<p>The path to the Nuget.Config file to supply to the nuget exe.</p>
+<p>The path to the dotnet executable.</p>
 <table>
 <thead>
 <tr>
@@ -1364,7 +1364,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>4.0.0</td>
+<td>4.4.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1392,11 +1392,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="dotnet-executable">dotnet Executable</h2>
-<pre><code>--detect.dotnet.path
+<h2 id="nuget-config-file">Nuget Config File</h2>
+<pre><code>--detect.nuget.config.path
 </code></pre>
 
-<p>The path to the dotnet executable.</p>
+<p>The path to the Nuget.Config file to supply to the nuget exe.</p>
 <table>
 <thead>
 <tr>
@@ -1407,7 +1407,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>4.4.0</td>
+<td>4.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1479,11 +1479,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="nuget-modules-included-advanced">Nuget Modules Included (Advanced)</h2>
-<pre><code>--detect.nuget.included.modules
+<h2 id="nuget-inspector-version-advanced">Nuget Inspector Version (Advanced)</h2>
+<pre><code>--detect.nuget.inspector.version
 </code></pre>
 
-<p>The names of the projects in a solution to include (overrides exclude).</p>
+<p>Version of the Nuget Inspector. By default Detect will run the latest version that is compatible with the Detect version.</p>
 <table>
 <thead>
 <tr>
@@ -1503,6 +1503,49 @@
 <tr>
 <td>Default Value</td>
 <td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ignore-nuget-failures-advanced">Ignore Nuget Failures (Advanced)</h2>
+<pre><code>--detect.nuget.ignore.failure=false
+</code></pre>
+
+<p>If true errors will be logged and then ignored.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1608,11 +1651,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="nuget-inspector-version-advanced">Nuget Inspector Version (Advanced)</h2>
-<pre><code>--detect.nuget.inspector.version
+<h2 id="nuget-modules-included-advanced">Nuget Modules Included (Advanced)</h2>
+<pre><code>--detect.nuget.included.modules
 </code></pre>
 
-<p>Version of the Nuget Inspector. By default Detect will run the latest version that is compatible with the Detect version.</p>
+<p>The names of the projects in a solution to include (overrides exclude).</p>
 <table>
 <thead>
 <tr>
@@ -1632,49 +1675,6 @@
 <tr>
 <td>Default Value</td>
 <td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="ignore-nuget-failures-advanced">Ignore Nuget Failures (Advanced)</h2>
-<pre><code>--detect.nuget.ignore.failure=false
-</code></pre>
-
-<p>If true errors will be logged and then ignored.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>false</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
