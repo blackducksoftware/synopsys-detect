@@ -49,7 +49,7 @@ class SpringConfigurationPropertySource(private val name: String, private val pr
     }
 
     override fun getValue(key: String): String? {
-        return toConfigurationName(key)?.let { propertySource.getConfigurationProperty(it)?.toString() }
+        return toConfigurationName(key)?.let { propertySource.getConfigurationProperty(it)?.value?.toString() }
     }
 
     override fun getName(): String = name
