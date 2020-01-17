@@ -1066,7 +1066,7 @@ class DetectProperties {
         }
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
-        val BLACKDUCK_HUB_PROXY_IGNORED_HOSTS = StringListProperty("blackduck.hub.proxy.ignored.hosts").apply {
+        val BLACKDUCK_HUB_PROXY_IGNORED_HOSTS = StringListProperty("blackduck.hub.proxy.ignored.hosts", emptyList()).apply {
             info("Blackduck Hub Proxy Ignored Hosts", "3.2.0")
             help("A comma-separated list of host patterns that should not use the proxy.")
             groups(DetectGroup.BlackduckServer, DetectGroup.Proxy)
