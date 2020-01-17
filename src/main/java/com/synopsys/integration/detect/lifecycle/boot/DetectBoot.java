@@ -161,8 +161,8 @@ public class DetectBoot {
 
         logger.debug("Initializing Detect.");
 
-        final DetectConfigurationFactory factory = new DetectConfigurationFactory(detectConfiguration);
-        final DirectoryManager directoryManager = new DirectoryManager(factory.createDirectoryOptions(), detectRun);
+        final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration);
+        final DirectoryManager directoryManager = new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
         final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectConfiguration, detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
         final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem); //TODO: Fix
@@ -181,9 +181,9 @@ public class DetectBoot {
             return DetectBootResult.exit(detectConfiguration, airGapZip, directoryManager, diagnosticSystem);
         }
 
-        final RunOptions runOptions = factory.createRunOptions();
+        final RunOptions runOptions = detectConfigurationFactory.createRunOptions();
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
-        final ProductDecider productDecider = new ProductDecider(detectConfiguration);
+        final ProductDecider productDecider = new ProductDecider(detectConfigurationFactory);
         final ProductDecision productDecision;
 
         logger.info("");
@@ -191,7 +191,7 @@ public class DetectBoot {
 
         logger.debug("Decided what products will be run. Starting product boot.");
 
-        final ProductBootFactory productBootFactory = new ProductBootFactory(detectInfo, eventSystem, factory);
+        final ProductBootFactory productBootFactory = new ProductBootFactory(detectInfo, eventSystem, detectConfigurationFactory);
         final ProductBoot productBoot = new ProductBoot();
         final ProductRunData productRunData;
         try {
