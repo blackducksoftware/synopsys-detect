@@ -1,43 +1,42 @@
 package com.synopsys.integration.detect.boot
 
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import com.synopsys.integration.configuration.config.MapPropertySource
-import com.synopsys.integration.configuration.config.PropertyConfiguration
-import com.synopsys.integration.configuration.config.PropertySource
 import com.synopsys.integration.detect.DetectTool
-import com.synopsys.integration.detect.configuration.DetectProperties
+import com.synopsys.integration.detect.configuration.BlackDuckConnectionDetails
+import com.synopsys.integration.detect.configuration.ConnectionDetails
+import com.synopsys.integration.detect.configuration.DetectConfigurationFactory
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider
+import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions
 import com.synopsys.integration.detect.util.filter.DetectToolFilter
+import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder
+import com.synopsys.integration.rest.proxy.ProxyInfo
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import java.io.File
 
-//TODO: Consider separating configuration.
 class ProductDeciderTest {
     @Test
     fun shouldRunPolaris() {
-        val userHome = mock<File>()
-        val detectConfiguration = configuration(mapOf(
-                "POLARIS_ACCESS_TOKEN" to "access token text",
-                "POLARIS_URL" to "http://polaris.com"
-        ))
-        val productDecider = ProductDecider(detectConfiguration)
+        val detectConfigurationFactory = mock<DetectConfigurationFactory>()
+        mockPolaris(detectConfigurationFactory)
+        mockBlackDuck(detectConfigurationFactory)
+
+        val productDecider = ProductDecider(detectConfigurationFactory)
         val detectToolFilter = mock<DetectToolFilter>()
         whenever(detectToolFilter.shouldInclude(DetectTool.POLARIS)).thenReturn(true)
-        val productDecision = productDecider.decide(userHome, detectToolFilter)
+        val productDecision = productDecider.decide(mock(), detectToolFilter)
 
-        // TODO: Fix this tests. Not sure how this ever passed because the decision requires a valid PolarisServerConfig.
         Assertions.assertTrue(productDecision.polarisDecision.shouldRun())
     }
 
     @Test
     fun shouldRunPolarisWhenExcluded() {
-        val detectConfiguration = configuration(mapOf(
-                "POLARIS_ACCESS_TOKEN" to "access token text",
-                "POLARIS_URL" to "http://polaris.com"
-        ))
-        val productDecider = ProductDecider(detectConfiguration)
+        val detectConfigurationFactory = mock<DetectConfigurationFactory>()
+        mockPolaris(detectConfigurationFactory)
+        mockBlackDuck(detectConfigurationFactory)
+
+        val productDecider = ProductDecider(detectConfigurationFactory)
         val detectToolFilter = mock<DetectToolFilter>()
         whenever(detectToolFilter.shouldInclude(DetectTool.POLARIS)).thenReturn(false)
 
@@ -48,11 +47,11 @@ class ProductDeciderTest {
 
     @Test
     fun shouldRunBlackDuckOffline() {
-        val detectConfiguration = configuration(mapOf(
-                DetectProperties.BLACKDUCK_OFFLINE_MODE.key to "true"
-        ))
+        val detectConfigurationFactory = mock<DetectConfigurationFactory>()
+        mockPolaris(detectConfigurationFactory)
+        mockBlackDuck(detectConfigurationFactory, offlineMode = true)
 
-        val productDecider = ProductDecider(detectConfiguration)
+        val productDecider = ProductDecider(detectConfigurationFactory)
         val detectToolFilter = mock<DetectToolFilter>()
         whenever(detectToolFilter.shouldInclude(DetectTool.POLARIS)).thenReturn(true)
 
@@ -64,11 +63,12 @@ class ProductDeciderTest {
 
     @Test
     fun shouldRunBlackDuckOnline() {
-        val detectConfiguration = configuration(mapOf(
-                DetectProperties.BLACKDUCK_URL.key to "some-url"
-        ))
+        val detectConfigurationFactory = mock<DetectConfigurationFactory>()
+        mockPolaris(detectConfigurationFactory)
+        mockBlackDuck(detectConfigurationFactory, blackDuckUrl = "some-url")
 
-        val productDecider = ProductDecider(detectConfiguration)
+
+        val productDecider = ProductDecider(detectConfigurationFactory)
         val detectToolFilter = mock<DetectToolFilter>()
         whenever(detectToolFilter.shouldInclude(DetectTool.POLARIS)).thenReturn(true)
 
@@ -80,11 +80,11 @@ class ProductDeciderTest {
 
     @Test
     fun decidesNone() {
-        val detectConfiguration = configuration(mapOf(
-                DetectProperties.BLACKDUCK_OFFLINE_MODE.key to "false"
-        ))
+        val detectConfigurationFactory = mock<DetectConfigurationFactory>()
+        mockPolaris(detectConfigurationFactory, accessToken = null, polarisUrl = null)
+        mockBlackDuck(detectConfigurationFactory)
 
-        val productDecider = ProductDecider(detectConfiguration)
+        val productDecider = ProductDecider(detectConfigurationFactory)
         val detectToolFilter = mock<DetectToolFilter>()
         whenever(detectToolFilter.shouldInclude(DetectTool.POLARIS)).thenReturn(true)
 
@@ -93,10 +93,22 @@ class ProductDeciderTest {
         Assertions.assertFalse(productDecision.willRunAny())
     }
 
-    private fun configuration(propertyMap: Map<String, String>): PropertyConfiguration {
-        val mapPropertySource: PropertySource = MapPropertySource("testPropertyMap", propertyMap)
-        val propertySources: List<PropertySource> = listOf(mapPropertySource)
+    private fun mockBlackDuck(detectConfigurationFactory: DetectConfigurationFactory, offlineMode: Boolean = false, blackDuckUrl: String? = null) {
+        whenever(detectConfigurationFactory.createBlackDuckConnectionDetails()).thenReturn(
+                BlackDuckConnectionDetails(offlineMode, blackDuckUrl, mapOf(), 1,
+                        ConnectionDetails(ProxyInfo.NO_PROXY_INFO, listOf(), 300, false)
+                )
+        )
+        whenever(detectConfigurationFactory.createBlackDuckSignatureScannerOptions()).thenReturn(
+                BlackDuckSignatureScannerOptions(listOf(), listOf(), listOf(), null, null, null, null, null, null, null, null, null, null, null, null)
+        )
+    }
 
-        return PropertyConfiguration(propertySources)
+    private fun mockPolaris(detectConfigurationFactory: DetectConfigurationFactory, accessToken: String? = "access token text", polarisUrl: String? = "http://polaris.com") {
+        whenever(detectConfigurationFactory.createPolarisServerConfigBuilder(any())).thenReturn(
+                PolarisServerConfigBuilder()
+                        .setAccessToken(accessToken)
+                        .setUrl(polarisUrl)
+        )
     }
 }

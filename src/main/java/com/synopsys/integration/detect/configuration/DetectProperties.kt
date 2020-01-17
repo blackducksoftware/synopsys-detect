@@ -30,7 +30,6 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.configuration.property.Property
 import com.synopsys.integration.configuration.property.base.PassthroughProperty
 import com.synopsys.integration.configuration.property.types.bool.BooleanProperty
-import com.synopsys.integration.configuration.property.types.bool.NullableBooleanProperty
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedValue
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumListProperty
@@ -312,7 +311,7 @@ class DetectProperties {
             groups(DetectGroup.Project, DetectGroup.Global, DetectGroup.ProjectSetting)
             category(DetectCategory.Advanced)
         }
-        val DETECT_CLONE_PROJECT_VERSION_LATEST = NullableBooleanProperty("detect.clone.project.version.latest").apply {
+        val DETECT_CLONE_PROJECT_VERSION_LATEST = BooleanProperty("detect.clone.project.version.latest", false).apply {
             info("Clone Latest Project Version", "5.6.0")
             help("If set to true, detect will attempt to use the latest project version as the clone for this project. The project must exist and have at least one version.")
             groups(DetectGroup.Project, DetectGroup.Global, DetectGroup.ProjectSetting)
@@ -968,7 +967,7 @@ class DetectProperties {
         //#endregion Active Properties
 
         //#region Deprecated Properties
-        public const val DEPRECATED_PROPERTY_MESSAGE = "This property is deprecated."
+        const val DEPRECATED_PROPERTY_MESSAGE = "This property is deprecated."
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_BITBAKE_REFERENCE_IMPL = StringProperty("detect.bitbake.reference.impl", "-poky-linux").apply {
@@ -1067,7 +1066,7 @@ class DetectProperties {
         }
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
-        val BLACKDUCK_HUB_PROXY_IGNORED_HOSTS = NullableStringProperty("blackduck.hub.proxy.ignored.hosts").apply {
+        val BLACKDUCK_HUB_PROXY_IGNORED_HOSTS = StringListProperty("blackduck.hub.proxy.ignored.hosts", emptyList()).apply {
             info("Blackduck Hub Proxy Ignored Hosts", "3.2.0")
             help("A comma-separated list of host patterns that should not use the proxy.")
             groups(DetectGroup.BlackduckServer, DetectGroup.Proxy)
