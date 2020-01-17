@@ -26,10 +26,11 @@ import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder
 import com.synopsys.integration.configuration.config.PropertyConfiguration
+import com.synopsys.integration.configuration.property.base.NullableProperty
+import com.synopsys.integration.configuration.property.base.ValuedProperty
 import com.synopsys.integration.configuration.property.types.enumextended.BaseValue
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedValue
 import com.synopsys.integration.configuration.property.types.enumfilterable.populatedValues
-import com.synopsys.integration.detect.DetectTool
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException
 import com.synopsys.integration.detect.exitcode.ExitCodeType
 import com.synopsys.integration.detect.lifecycle.run.RunOptions
@@ -60,7 +61,49 @@ import java.nio.file.Path
 import java.util.*
 import java.util.regex.Pattern
 
-class DetectConfigurationFactory(private val detectConfiguration: PropertyConfiguration) {
+open class DetectConfigurationFactory(private val detectConfiguration: PropertyConfiguration) {
+
+    /**
+     * Will get the first property in a list that was provided by the user.
+     */
+    private fun <T> getPropertyWithDeprecations(vararg properties: NullableProperty<T>): T? {
+        for (property in properties) {
+            if (detectConfiguration.wasPropertyProvided(property)) {
+                return detectConfiguration.getValue(property)
+            }
+        }
+
+        return null
+    }
+
+    /**
+     * Will get the first property in a list that was provided by the user.
+     * If no property was provided, the default value of the first property will be used.
+     */
+    private fun <T> getPropertyWithDeprecations(vararg properties: ValuedProperty<T>): T {
+        for (property in properties) {
+            if (detectConfiguration.wasPropertyProvided(property)) {
+                return detectConfiguration.getValue(property)
+            }
+        }
+
+        return properties.first().default
+    }
+
+    /**
+     * Will get the first property in a list that was provided by the user.
+     * If no property was provided, the default will NOT be used.
+     */
+    private fun <T> getPropertyWithDeprecationsNoDefault(vararg properties: ValuedProperty<T>): Optional<T> {
+        for (property in properties) {
+            if (detectConfiguration.wasPropertyProvided(property)) {
+                return Optional.of(detectConfiguration.getValue(property))
+            }
+        }
+
+        return Optional.empty()
+    }
+
     //#region Prefer These Over Any Property
     fun findTimeoutInSeconds(): Long {
         return if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_API_TIMEOUT)) {
@@ -92,12 +135,18 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
     //#endregion
 
     //#region Creating Connections
-    //TODO: This should just follow the pattern of the other methods (all properties first, then the work)
     @Throws(DetectUserFriendlyException::class)
     fun createBlackDuckProxyInfo(): ProxyInfo {
+        val proxyUsername = getPropertyWithDeprecations(DetectProperties.BLACKDUCK_PROXY_USERNAME, DetectProperties.BLACKDUCK_HUB_PROXY_USERNAME)
+        val proxyPassword = getPropertyWithDeprecations(DetectProperties.BLACKDUCK_PROXY_PASSWORD, DetectProperties.BLACKDUCK_HUB_PROXY_PASSWORD)
+        val proxyHost = getPropertyWithDeprecations(DetectProperties.BLACKDUCK_PROXY_HOST, DetectProperties.BLACKDUCK_HUB_PROXY_HOST)
+        val proxyPort = getPropertyWithDeprecations(DetectProperties.BLACKDUCK_PROXY_PORT, DetectProperties.BLACKDUCK_HUB_PROXY_PORT)
+        val proxyNtlmDomain = getPropertyWithDeprecations(DetectProperties.BLACKDUCK_PROXY_NTLM_DOMAIN, DetectProperties.BLACKDUCK_HUB_PROXY_NTLM_DOMAIN)
+        val proxyNtlmWorkstation = getPropertyWithDeprecations(DetectProperties.BLACKDUCK_PROXY_NTLM_WORKSTATION, DetectProperties.BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION)
+
         val proxyCredentialsBuilder = CredentialsBuilder()
-        proxyCredentialsBuilder.username = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_USERNAME)
-        proxyCredentialsBuilder.password = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_PASSWORD)
+        proxyCredentialsBuilder.username = proxyUsername
+        proxyCredentialsBuilder.password = proxyPassword
         val proxyCredentials: Credentials
         try {
             proxyCredentials = proxyCredentialsBuilder.build()
@@ -108,12 +157,10 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
         val proxyInfoBuilder = ProxyInfoBuilder()
 
         proxyInfoBuilder.credentials = proxyCredentials
-        proxyInfoBuilder.host = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_HOST)
-        val proxyPortFromConfiguration = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_PORT)
-        val proxyPort = NumberUtils.toInt(proxyPortFromConfiguration, 0)
-        proxyInfoBuilder.port = proxyPort
-        proxyInfoBuilder.ntlmDomain = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_NTLM_DOMAIN)
-        proxyInfoBuilder.ntlmWorkstation = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_NTLM_WORKSTATION)
+        proxyInfoBuilder.host = proxyHost
+        proxyInfoBuilder.port = NumberUtils.toInt(proxyPort, 0)
+        proxyInfoBuilder.ntlmDomain = proxyNtlmDomain
+        proxyInfoBuilder.ntlmWorkstation = proxyNtlmWorkstation
         try {
             return proxyInfoBuilder.build()
         } catch (e: IllegalArgumentException) {
@@ -122,32 +169,35 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
     }
 
     fun createConnectionDetails(): ConnectionDetails {
-        val proxyIgnoredHosts = detectConfiguration.getValueOrDefault(DetectProperties.BLACKDUCK_PROXY_IGNORED_HOSTS);
+        val alwaysTrust = getPropertyWithDeprecations(DetectProperties.BLACKDUCK_TRUST_CERT, DetectProperties.BLACKDUCK_HUB_TRUST_CERT)
+        val proxyIgnoredHosts = getPropertyWithDeprecations(DetectProperties.BLACKDUCK_PROXY_IGNORED_HOSTS, DetectProperties.BLACKDUCK_HUB_PROXY_IGNORED_HOSTS)
         val proxyPatterns = proxyIgnoredHosts.map { Pattern.compile(it) }
         val proxyInformation = createBlackDuckProxyInfo()
-        val alwaysTrust = detectConfiguration.getValueOrDefault(DetectProperties.BLACKDUCK_TRUST_CERT)
-        return ConnectionDetails(createBlackDuckProxyInfo(), proxyPatterns, findTimeoutInSeconds(), alwaysTrust)
+        return ConnectionDetails(proxyInformation, proxyPatterns, findTimeoutInSeconds(), alwaysTrust)
     }
 
-    fun createBlackDuckConnectionDetails(): BlackDuckConnectionDetails {
-        val offline = detectConfiguration.getValue(DetectProperties.BLACKDUCK_OFFLINE_MODE)
-        val blackduckUrl = detectConfiguration.getValue(DetectProperties.BLACKDUCK_URL)
+    open fun createBlackDuckConnectionDetails(): BlackDuckConnectionDetails {
+        val offline = getPropertyWithDeprecations(DetectProperties.BLACKDUCK_OFFLINE_MODE, DetectProperties.BLACKDUCK_HUB_OFFLINE_MODE)
+        val blackduckUrl = getPropertyWithDeprecations(DetectProperties.BLACKDUCK_URL, DetectProperties.BLACKDUCK_HUB_URL)
 
         val allBlackDuckKeys: Set<String> = HashSet(BlackDuckServerConfigBuilder().propertyKeys)
                 .filter { !it.toLowerCase().contains("proxy") }
                 .toSet()
 
+        // TODO: Will this pick up deprecated properties as well? If so does the downstream code know what to do with them?
         val blackDuckProperties = detectConfiguration.getRaw(allBlackDuckKeys)
 
         return BlackDuckConnectionDetails(offline, blackduckUrl, blackDuckProperties, findParallelProcessors(), createConnectionDetails())
     }
     //#endregion
 
-    fun createPolarisServerConfigBuilder(userHome: File): PolarisServerConfigBuilder {
+    open fun createPolarisServerConfigBuilder(userHome: File): PolarisServerConfigBuilder {
         val polarisServerConfigBuilder = PolarisServerConfig.newBuilder()
         val allPolarisKeys = polarisServerConfigBuilder.propertyKeys
         val polarisProperties = detectConfiguration.getRaw(allPolarisKeys)
         polarisServerConfigBuilder.logger = SilentIntLogger()
+
+        // TODO: Will this pick up deprecated properties as well? If so does the downstream code know what to do with them?
         polarisServerConfigBuilder.setProperties(polarisProperties.entries)
         polarisServerConfigBuilder.userHome = userHome.absolutePath
         polarisServerConfigBuilder.timeoutInSeconds = findTimeoutInSeconds().toInt()
@@ -155,28 +205,20 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
     }
 
     fun createPhoneHomeOptions(): PhoneHomeOptions {
+        // TODO: Will this pick up deprecated properties as well? If so does the downstream code know what to do with them?
         val phoneHomePassthrough = detectConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH)
         return PhoneHomeOptions(phoneHomePassthrough)
     }
 
     fun createRunOptions(): RunOptions {
-        var sigScanDisabled = Optional.empty<Boolean>()
-
         // TODO: Fix this when deprecated properties are removed
         // This is because it is double deprecated so we must check if either property is set.
-        val originalPropertySet = detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED)
-        val newPropertySet = detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)
-        if (originalPropertySet || newPropertySet) {
-            sigScanDisabled = Optional.of(detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED))
-        }
+        val sigScanDisabled = getPropertyWithDeprecationsNoDefault(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)
+        val polarisEnabled = getPropertyWithDeprecationsNoDefault(DetectProperties.DETECT_SWIP_ENABLED)
 
-        var polarisEnabled = Optional.empty<Boolean>()
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_SWIP_ENABLED)) {
-            polarisEnabled = Optional.of(detectConfiguration.getValue(DetectProperties.DETECT_SWIP_ENABLED))
-        }
         val includedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS)
         val excludedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED)
-        val filter = ExcludeIncludeEnumFilter<DetectTool>(excludedTools, includedTools);
+        val filter = ExcludeIncludeEnumFilter(excludedTools, includedTools);
         val detectToolFilter = DetectToolFilter(filter, sigScanDisabled, polarisEnabled)
 
         val unmapCodeLocations = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_UNMAP)
@@ -262,7 +304,7 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
         val tags = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_TAGS)
         val parentProjectName = detectConfiguration.getValue(DetectProperties.DETECT_PARENT_PROJECT_NAME)
         val parentProjectVersion = detectConfiguration.getValue(DetectProperties.DETECT_PARENT_PROJECT_VERSION_NAME)
-        val cloneLatestProjectVersion = detectConfiguration.getValue(DetectProperties.DETECT_CLONE_PROJECT_VERSION_LATEST) ?: false //TODO: Jake this is a boolean example. Should be required?
+        val cloneLatestProjectVersion = detectConfiguration.getValue(DetectProperties.DETECT_CLONE_PROJECT_VERSION_LATEST)
 
         val parser = DetectCustomFieldParser()
         val customFieldDocument = parser.parseCustomFieldDocument(detectConfiguration.getRaw())
@@ -271,22 +313,22 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
                 projectVersionNickname, applicationId, tags, groups, parentProjectName, parentProjectVersion, cloneLatestProjectVersion, customFieldDocument)
     }
 
-    fun createBlackDuckSignatureScannerOptions(): BlackDuckSignatureScannerOptions {
-        val signatureScannerPaths = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS)
-        val exclusionPatterns = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS)
-        val exclusionNamePatterns = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS)
+    open fun createBlackDuckSignatureScannerOptions(): BlackDuckSignatureScannerOptions {
+        val signatureScannerPaths = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_PATHS)
+        val exclusionPatterns = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS)
+        val exclusionNamePatterns = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS)
 
-        val scanMemory = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY)
-        val dryRun = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN)
+        val scanMemory = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_MEMORY)
+        val dryRun = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN)
         val uploadSource = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE)
         val codeLocationPrefix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX)
         val codeLocationSuffix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX)
-        val additionalArguments = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS)
+        val additionalArguments = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS)
         val maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH)
 
-        val offlineLocalScannerInstallPath = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH)
-        val onlineLocalScannerInstallPath = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH)
-        val userProvidedScannerInstallUrl = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL)
+        val offlineLocalScannerInstallPath = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH)
+        val onlineLocalScannerInstallPath = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH)
+        val userProvidedScannerInstallUrl = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL)
 
         if (StringUtils.isNotBlank(offlineLocalScannerInstallPath) && StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
             throw DetectUserFriendlyException(
@@ -294,6 +336,7 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
                     ExitCodeType.FAILURE_GENERAL_ERROR)
         }
 
+        // TODO: Is this managing deprecated properties properly?
         val snippetMatching = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING)
         fun fromSnippetExtended(value: ExtendedSnippetMode): SnippetMatching? {
             return if (detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE)) {
@@ -308,8 +351,7 @@ class DetectConfigurationFactory(private val detectConfiguration: PropertyConfig
             is BaseValue -> snippetMatching.value
         }
         return BlackDuckSignatureScannerOptions(signatureScannerPaths, exclusionPatterns, exclusionNamePatterns, offlineLocalScannerInstallPath, onlineLocalScannerInstallPath, userProvidedScannerInstallUrl, scanMemory,
-                findParallelProcessors(), dryRun,
-                snippetMatchingEnum, uploadSource, codeLocationPrefix, codeLocationSuffix, additionalArguments, maxDepth)
+                findParallelProcessors(), dryRun, snippetMatchingEnum, uploadSource, codeLocationPrefix, codeLocationSuffix, additionalArguments, maxDepth)
     }
 
     fun createBlackDuckPostOptions(): BlackDuckPostOptions {
