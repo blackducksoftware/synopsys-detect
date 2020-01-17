@@ -130,7 +130,7 @@ public class DetectBoot {
 
         final DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
 
-        List<SpringConfigurationPropertySource> propertySources = SpringConfigurationPropertySource.Companion.fromConfigurableEnvironment(environment);
+        final List<SpringConfigurationPropertySource> propertySources = SpringConfigurationPropertySource.Companion.fromConfigurableEnvironment(environment);
         final PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
 
         final DetectArgumentState detectArgumentState = parseDetectArgumentState(sourceArgs);
@@ -153,7 +153,7 @@ public class DetectBoot {
 
         logger.debug("Configuration processed completely.");
 
-        Boolean printFull = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_SUPPRESS_CONFIGURATION_OUTPUT());
+        final Boolean printFull = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_SUPPRESS_CONFIGURATION_OUTPUT());
         final Optional<DetectBootResult> configurationResult = printConfiguration(printFull, detectConfiguration, eventSystem, detectInfo);
         if (configurationResult.isPresent()) {
             return configurationResult.get();
@@ -286,23 +286,23 @@ public class DetectBoot {
     }
 
     private Optional<DetectBootResult> printConfiguration(final boolean fullConfiguration, final PropertyConfiguration detectConfiguration, final EventSystem eventSystem,
-        DetectInfo detectInfo) {
+        final DetectInfo detectInfo) {
 
-        Map<String, String> additionalNotes = new HashMap<>();
+        final Map<String, String> additionalNotes = new HashMap<>();
 
-        List<Property> deprecatedProperties = DetectProperties.Companion.getProperties()
+        final List<Property> deprecatedProperties = DetectProperties.Companion.getProperties()
                                                   .stream()
                                                   .filter(property -> property.getPropertyDeprecationInfo() != null)
                                                   .collect(Collectors.toList());
 
-        Map<String, List<String>> deprecationMessages = new HashMap<>();
-        List<Property> usedFailureProperties = new ArrayList<>();
-        for (Property property : deprecatedProperties) {
+        final Map<String, List<String>> deprecationMessages = new HashMap<>();
+        final List<Property> usedFailureProperties = new ArrayList<>();
+        for (final Property property : deprecatedProperties) {
             if (detectConfiguration.wasKeyProvided(property.getKey())) {
-                PropertyDeprecationInfo deprecationInfo = property.getPropertyDeprecationInfo();
+                final PropertyDeprecationInfo deprecationInfo = property.getPropertyDeprecationInfo();
 
                 additionalNotes.put(property.getKey(), "\t *** DEPRECATED ***");
-                String deprecationMessage = property.getPropertyDeprecationInfo().getDeprecationText();
+                final String deprecationMessage = property.getPropertyDeprecationInfo().getDeprecationText();
 
                 deprecationMessages.put(property.getKey(), new ArrayList<String>(Collections.singleton(deprecationMessage)));
                 DetectIssue.publish(eventSystem, DetectIssueType.Deprecation, property.getKey(), "\t" + deprecationMessage);
@@ -322,9 +322,9 @@ public class DetectBoot {
         }
 
         //Next check for options that are just plain bad, ie giving an detector type we don't know about.
-        Map<String, List<String>> errorMap = detectConfigurationReporter.findPropertyParseErrors(DetectProperties.Companion.getProperties());
+        final Map<String, List<String>> errorMap = detectConfigurationReporter.findPropertyParseErrors(DetectProperties.Companion.getProperties());
         if (errorMap.size() > 0) {
-            Map.Entry<String, List<String>> entry = errorMap.entrySet().iterator().next();
+            final Map.Entry<String, List<String>> entry = errorMap.entrySet().iterator().next();
             return Optional.of(DetectBootResult.exception(new DetectUserFriendlyException(entry.getKey() + ": " + entry.getValue().get(0), ExitCodeType.FAILURE_GENERAL_ERROR), detectConfiguration));
         }
 
