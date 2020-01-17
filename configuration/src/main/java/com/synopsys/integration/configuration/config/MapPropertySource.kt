@@ -1,16 +1,18 @@
 package com.synopsys.integration.configuration.config
 
-class MapPropertySource(private val givenName: String, private val propertyMap: Map<String, String>) : PropertySource {
+class MapPropertySource(private val givenName: String, private val underlyingMap: Map<String, String>) : PropertySource {
+    private val normalizedPropertyMap: Map<String, String> = underlyingMap.map { KeyUtils.normalizeKey(it.key) to it.value }.toMap()
+
     override fun getOrigin(key: String): String? {
         return givenName;
     }
 
     override fun hasKey(key: String): Boolean {
-        return propertyMap.containsKey(key);
+        return normalizedPropertyMap.containsKey(key);
     }
 
     override fun getValue(key: String): String? {
-        return propertyMap.getOrElse(key, { -> null });
+        return normalizedPropertyMap.getOrElse(key, { -> null });
     }
 
     override fun getName(): String {
@@ -18,6 +20,6 @@ class MapPropertySource(private val givenName: String, private val propertyMap: 
     }
 
     override fun getKeys(): Set<String> {
-        return propertyMap.keys
+        return normalizedPropertyMap.keys
     }
 }
