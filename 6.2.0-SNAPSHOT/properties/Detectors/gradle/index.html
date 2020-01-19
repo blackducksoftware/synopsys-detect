@@ -1047,15 +1047,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-inspector-version-advanced" class="md-nav__link">
-    Gradle Inspector Version (Advanced)
+  <a href="#gradle-include-projects-advanced" class="md-nav__link">
+    Gradle Include Projects (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-include-projects-advanced" class="md-nav__link">
-    Gradle Include Projects (Advanced)
+  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
+    Gradle Exclude Projects (Advanced)
   </a>
   
 </li>
@@ -1068,8 +1068,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
-    Gradle Exclude Projects (Advanced)
+  <a href="#gradle-inspector-version-advanced" class="md-nav__link">
+    Gradle Inspector Version (Advanced)
   </a>
   
 </li>
@@ -1283,15 +1283,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-inspector-version-advanced" class="md-nav__link">
-    Gradle Inspector Version (Advanced)
+  <a href="#gradle-include-projects-advanced" class="md-nav__link">
+    Gradle Include Projects (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-include-projects-advanced" class="md-nav__link">
-    Gradle Include Projects (Advanced)
+  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
+    Gradle Exclude Projects (Advanced)
   </a>
   
 </li>
@@ -1304,8 +1304,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
-    Gradle Exclude Projects (Advanced)
+  <a href="#gradle-inspector-version-advanced" class="md-nav__link">
+    Gradle Inspector Version (Advanced)
   </a>
   
 </li>
@@ -1511,12 +1511,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-inspector-version-advanced">Gradle Inspector Version (Advanced)</h2>
-<pre><code>--detect.gradle.inspector.version
+<h2 id="gradle-include-projects-advanced">Gradle Include Projects (Advanced)</h2>
+<pre><code>--detect.gradle.included.projects
 </code></pre>
 
-<p>The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.</p>
-<p>The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector.</p>
+<p>A comma-separated list of Gradle sub-projects to include. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
 <table>
 <thead>
 <tr>
@@ -1555,12 +1555,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-include-projects-advanced">Gradle Include Projects (Advanced)</h2>
-<pre><code>--detect.gradle.included.projects
+<h2 id="gradle-exclude-projects-advanced">Gradle Exclude Projects (Advanced)</h2>
+<pre><code>--detect.gradle.excluded.projects
 </code></pre>
 
-<p>A comma-separated list of Gradle sub-projects to include. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
+<p>A comma-separated list of Gradle sub-projects to exclude. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.</p>
 <table>
 <thead>
 <tr>
@@ -1643,12 +1643,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-exclude-projects-advanced">Gradle Exclude Projects (Advanced)</h2>
-<pre><code>--detect.gradle.excluded.projects
+<h2 id="gradle-inspector-version-advanced">Gradle Inspector Version (Advanced)</h2>
+<pre><code>--detect.gradle.inspector.version
 </code></pre>
 
-<p>A comma-separated list of Gradle sub-projects to exclude. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.</p>
+<p>The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.</p>
+<p>The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector.</p>
 <table>
 <thead>
 <tr>
