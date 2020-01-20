@@ -190,7 +190,6 @@ class PropertyConfiguration(private val orderedPropertySources: List<PropertySou
             val value = property.parser.parse(resolution.raw)
             TypedValue(value, resolution)
         } catch (e: ValueParseException) {
-            //TODO?: final String validationMesssage = String.format("%s: Unknown value '%s', acceptable values are %s", getDetectProperty().getPropertyKey(), value, getValidValues().stream().collect(Collectors.joining(",")));
             ExceptionValue(e, resolution)
         }
     }

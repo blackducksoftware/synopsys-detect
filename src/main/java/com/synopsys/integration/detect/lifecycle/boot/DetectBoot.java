@@ -138,7 +138,7 @@ public class DetectBoot {
         List<SpringConfigurationPropertySource> propertySources;
         try {
             propertySources = SpringConfigurationPropertySource.Companion.fromConfigurableEnvironment(environment, false);
-        } catch (UnknownSpringConfiguration e) {
+        } catch (final UnknownSpringConfiguration e) {
             logger.error("An unknown property source was found, detect will still continue.", e);
             propertySources = SpringConfigurationPropertySource.Companion.fromConfigurableEnvironmentSafely(environment);
         }
@@ -177,7 +177,7 @@ public class DetectBoot {
         final DirectoryManager directoryManager = new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
         final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectConfiguration, detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
-        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, tildeResolver); //TODO: Fix
+        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, tildeResolver);
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
