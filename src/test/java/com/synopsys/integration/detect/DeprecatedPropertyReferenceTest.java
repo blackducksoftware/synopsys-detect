@@ -16,13 +16,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.configuration.property.Property;
-import com.synopsys.integration.detect.boot.ProductDeciderTest;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
-import com.synopsys.integration.detect.lifecycle.boot.DetectBoot;
-import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
-import com.synopsys.integration.detect.tool.polaris.PolarisTool;
 
 public class DeprecatedPropertyReferenceTest {
 
@@ -33,13 +29,9 @@ public class DeprecatedPropertyReferenceTest {
 
     // TODO: Update this list
     private final List<Class> classesAllowedToReferenceDeprecatedComponents = Arrays.asList(
-        Application.class,
-        DetectBoot.class,
-        ProductDecider.class,
         DetectConfigurationFactory.class,
         DetectableOptionFactory.class,
-        PolarisTool.class,
-        ProductDeciderTest.class,
+        DetectProperties.class,
         this.getClass()
     );
 
@@ -54,8 +46,7 @@ public class DeprecatedPropertyReferenceTest {
     public void testCodeReferencesToDeprecatedProperties() throws IOException {
         final Set<String> classesInViolation = new HashSet<>();
         final List<Property> deprecatedProperties = getDeprecatedProperties();
-        // TODO: Should we also be checking kotlin suffixes?
-        final String[] targetSuffixes = { "java", "groovy" };
+        final String[] targetSuffixes = { "java", "groovy", "kt" };
         final File rootDir = new File("src");
         final Collection<File> javaFiles = FileUtils.listFiles(rootDir, targetSuffixes, true);
         for (final File javaFile : javaFiles) {
