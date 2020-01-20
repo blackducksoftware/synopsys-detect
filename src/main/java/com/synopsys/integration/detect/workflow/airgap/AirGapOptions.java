@@ -22,15 +22,24 @@
  */
 package com.synopsys.integration.detect.workflow.airgap;
 
+import java.nio.file.Path;
+
 public class AirGapOptions {
-    private String dockerInspectorPathOverride;
-    private String gradleInspectorPathOverride;
-    private String nugetInspectorPathOverride;
+    private final String dockerInspectorPathOverride;
+    private final String gradleInspectorPathOverride;
+    private final String nugetInspectorPathOverride;
 
     public AirGapOptions(final String dockerInspectorPathOverride, final String gradleInspectorPathOverride, final String nugetInspectorPathOverride) {
         this.dockerInspectorPathOverride = dockerInspectorPathOverride;
         this.gradleInspectorPathOverride = gradleInspectorPathOverride;
         this.nugetInspectorPathOverride = nugetInspectorPathOverride;
+    }
+
+    // TODO: Switch data types from Strings to Paths
+    public AirGapOptions(final Path dockerInspectorPathOverride, final Path gradleInspectorPathOverride, final Path nugetInspectorPathOverride) {
+        this.dockerInspectorPathOverride = dockerInspectorPathOverride.toString();
+        this.gradleInspectorPathOverride = gradleInspectorPathOverride.toString();
+        this.nugetInspectorPathOverride = nugetInspectorPathOverride.toString();
     }
 
     public String getDockerInspectorPathOverride() {

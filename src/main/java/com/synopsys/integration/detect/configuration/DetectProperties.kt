@@ -39,6 +39,8 @@ import com.synopsys.integration.configuration.property.types.enums.EnumProperty
 import com.synopsys.integration.configuration.property.types.integer.IntegerProperty
 import com.synopsys.integration.configuration.property.types.integer.NullableIntegerProperty
 import com.synopsys.integration.configuration.property.types.longs.LongProperty
+import com.synopsys.integration.configuration.property.types.path.NullablePathProperty
+import com.synopsys.integration.configuration.property.types.pathlist.PathListProperty
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty
 import com.synopsys.integration.configuration.property.types.string.StringProperty
 import com.synopsys.integration.configuration.property.types.stringlist.NullableStringListProperty
@@ -155,12 +157,12 @@ class DetectProperties {
             groups(DetectGroup.General, DetectGroup.Global)
             category(DetectCategory.Advanced)
         }
-        val DETECT_BASH_PATH = NullableStringProperty("detect.bash.path").apply {
+        val DETECT_BASH_PATH = NullablePathProperty("detect.bash.path").apply {
             info("Bash Executable", "3.0.0")
             help("Path to the Bash executable.", "If set, Detect will use the given Bash executable instead of searching for one.")
             groups(DetectGroup.Paths, DetectGroup.Global)
         }
-        val DETECT_BAZEL_PATH = NullableStringProperty("detect.bazel.path").apply {
+        val DETECT_BAZEL_PATH = NullablePathProperty("detect.bazel.path").apply {
             info("Bazel Executable", "5.2.0")
             help("The path to the Bazel executable.")
             groups(DetectGroup.Bazel, DetectGroup.Global)
@@ -180,7 +182,7 @@ class DetectProperties {
             help("The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.")
             groups(DetectGroup.Bazel, DetectGroup.SourceScan)
         }
-        val DETECT_BDIO_OUTPUT_PATH = NullableStringProperty("detect.bdio.output.path").apply {
+        val DETECT_BDIO_OUTPUT_PATH = NullablePathProperty("detect.bdio.output.path").apply {
             info("BDIO Output Directory", "3.0.0")
             help("The path to the output directory for all BDIO files.", "If not set, the BDIO files are placed in a 'BDIO' subdirectory of the output directory.")
             groups(DetectGroup.Paths, DetectGroup.Global)
@@ -190,7 +192,7 @@ class DetectProperties {
             help("The version of BDIO files to generate.", "If set to false, BDIO version 1 will be generated. If set to true, BDIO version 2 will be generated.")
             groups(DetectGroup.Paths, DetectGroup.Global)
         }
-        val DETECT_BINARY_SCAN_FILE = NullableStringProperty("detect.binary.scan.file.path").apply {
+        val DETECT_BINARY_SCAN_FILE = NullablePathProperty("detect.binary.scan.file.path").apply {
             info("Binary Scan Target", "4.2.0")
             help("If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns.")
             groups(DetectGroup.SignatureScanner, DetectGroup.SourcePath)
@@ -251,7 +253,7 @@ class DetectProperties {
             groups(DetectGroup.SignatureScanner, DetectGroup.Global)
             category(DetectCategory.Advanced)
         }
-        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH = NullableStringProperty("detect.blackduck.signature.scanner.local.path").apply {
+        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH = NullablePathProperty("detect.blackduck.signature.scanner.local.path").apply {
             info("Signature Scanner Local Path", "4.2.0")
             help("To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Global)
@@ -262,12 +264,14 @@ class DetectProperties {
             groups(DetectGroup.SignatureScanner, DetectGroup.Global)
             category(DetectCategory.Advanced)
         }
-        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH = NullableStringProperty("detect.blackduck.signature.scanner.offline.local.path").apply {
+        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH = NullablePathProperty("detect.blackduck.signature.scanner.offline.local.path").apply {
             info("Signature Scanner Local Path (Offline)", "4.2.0")
             help("To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Global)
             category(DetectCategory.Advanced)
         }
+
+        // TODO: Should this be a NullablePathProperty? If so a list version of this property should be created.
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS = NullableStringListProperty("detect.blackduck.signature.scanner.paths").apply {
             info("Signature Scanner Target Paths", "4.2.0")
             help("These paths and only these paths will be scanned.")
@@ -328,17 +332,17 @@ class DetectProperties {
             help("The name of the anaconda environment used by your project.")
             groups(DetectGroup.Conda, DetectGroup.SourceScan)
         }
-        val DETECT_CONDA_PATH = NullableStringProperty("detect.conda.path").apply {
+        val DETECT_CONDA_PATH = NullablePathProperty("detect.conda.path").apply {
             info("Conda Executable", "3.0.0")
             help("The path to the conda executable.")
             groups(DetectGroup.Conda, DetectGroup.Global)
         }
-        val DETECT_CPAN_PATH = NullableStringProperty("detect.cpan.path").apply {
+        val DETECT_CPAN_PATH = NullablePathProperty("detect.cpan.path").apply {
             info("cpan Executable", "3.0.0")
             help("The path to the cpan executable.")
             groups(DetectGroup.Cpan, DetectGroup.Global)
         }
-        val DETECT_CPANM_PATH = NullableStringProperty("detect.cpanm.path").apply {
+        val DETECT_CPANM_PATH = NullablePathProperty("detect.cpanm.path").apply {
             info("cpanm Executable", "3.0.0")
             help("The path to the cpanm executable.")
             groups(DetectGroup.Cpan, DetectGroup.Global)
@@ -385,6 +389,8 @@ class DetectProperties {
             groups(DetectGroup.Paths, DetectGroup.Detector, DetectGroup.Global, DetectGroup.SourceScan)
             category(DetectCategory.Advanced)
         }
+
+        // TODO: Should this be a NullablePathProperty? If so a list version of this property should be created.
         val DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS = NullableStringListProperty("detect.detector.search.exclusion.paths").apply {
             info(" Detector Directory Path Exclusions", "5.5.0")
             help("A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)", "This property performs the same basic function as detect.detector.search.exclusion, but lets you be more specific.")
@@ -431,13 +437,13 @@ class DetectProperties {
             help("The Docker image ID to inspect.")
             groups(DetectGroup.Docker, DetectGroup.SourcePath)
         }
-        val DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH = NullableStringProperty("detect.docker.inspector.air.gap.path").apply {
+        val DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH = NullablePathProperty("detect.docker.inspector.air.gap.path").apply {
             info("Docker Inspector AirGap Path", "3.0.0")
             help("The path to the directory containing the Docker Inspector jar and images.")
             groups(DetectGroup.Docker, DetectGroup.Global)
             category(DetectCategory.Advanced)
         }
-        val DETECT_DOCKER_INSPECTOR_PATH = NullableStringProperty("detect.docker.inspector.path").apply {
+        val DETECT_DOCKER_INSPECTOR_PATH = NullablePathProperty("detect.docker.inspector.path").apply {
             info("Docker Inspector .jar File Path", "3.0.0")
             help("This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a local Docker Inspector .jar file at this path.")
             groups(DetectGroup.Docker, DetectGroup.Global)
@@ -449,7 +455,7 @@ class DetectProperties {
             groups(DetectGroup.Docker, DetectGroup.Global)
             category(DetectCategory.Advanced)
         }
-        val DETECT_DOCKER_PATH = NullableStringProperty("detect.docker.path").apply {
+        val DETECT_DOCKER_PATH = NullablePathProperty("detect.docker.path").apply {
             info("Docker Executable", "3.0.0")
             help("Path to the docker executable.")
             groups(DetectGroup.Docker, DetectGroup.Global)
@@ -471,7 +477,7 @@ class DetectProperties {
             help("A saved Docker image - must be a .tar file. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.")
             groups(DetectGroup.Docker, DetectGroup.SourcePath)
         }
-        val DETECT_DOTNET_PATH = NullableStringProperty("detect.dotnet.path").apply {
+        val DETECT_DOTNET_PATH = NullablePathProperty("detect.dotnet.path").apply {
             info("dotnet Executable", "4.4.0")
             help("The path to the dotnet executable.")
             groups(DetectGroup.Nuget, DetectGroup.Global)
@@ -488,12 +494,12 @@ class DetectProperties {
             groups(DetectGroup.General, DetectGroup.Global)
             category(DetectCategory.Advanced)
         }
-        val DETECT_GIT_PATH = NullableStringProperty("detect.git.path").apply {
+        val DETECT_GIT_PATH = NullablePathProperty("detect.git.path").apply {
             info("Git Executable", "5.5.0")
             help("Path of the git executable")
             groups(DetectGroup.Paths, DetectGroup.Global)
         }
-        val DETECT_GO_PATH = NullableStringProperty("detect.go.path").apply {
+        val DETECT_GO_PATH = NullablePathProperty("detect.go.path").apply {
             info("Go Executable", "3.0.0")
             help("Path to the Go executable.")
             groups(DetectGroup.Go, DetectGroup.Global)
@@ -527,7 +533,7 @@ class DetectProperties {
             groups(DetectGroup.Gradle, DetectGroup.SourceScan)
             category(DetectCategory.Advanced)
         }
-        val DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH = NullableStringProperty("detect.gradle.inspector.air.gap.path").apply {
+        val DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH = NullablePathProperty("detect.gradle.inspector.air.gap.path").apply {
             info("Gradle Inspector AirGap Path", "3.0.0")
             help("The path to the directory containing the air gap dependencies for the gradle inspector.", "Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory.")
             groups(DetectGroup.Gradle, DetectGroup.Global)
@@ -539,12 +545,12 @@ class DetectProperties {
             groups(DetectGroup.Gradle, DetectGroup.Global)
             category(DetectCategory.Advanced)
         }
-        val DETECT_GRADLE_PATH = NullableStringProperty("detect.gradle.path").apply {
+        val DETECT_GRADLE_PATH = NullablePathProperty("detect.gradle.path").apply {
             info("Gradle Executable", "3.0.0")
             help("The path to the Gradle executable (gradle or gradlew).", "If set, Detect will use the given Gradle executable instead of searching for one.")
             groups(DetectGroup.Gradle)
         }
-        val DETECT_HEX_REBAR3_PATH = NullableStringProperty("detect.hex.rebar3.path").apply {
+        val DETECT_HEX_REBAR3_PATH = NullablePathProperty("detect.hex.rebar3.path").apply {
             info("Rebar3 Executable", "3.0.0")
             help("The path to the rebar3 executable.")
             groups(DetectGroup.Hex, DetectGroup.Global)
@@ -555,7 +561,7 @@ class DetectProperties {
             groups(DetectGroup.Detector, DetectGroup.Global)
             category(DetectCategory.Advanced)
         }
-        val DETECT_JAVA_PATH = NullableStringProperty("detect.java.path").apply {
+        val DETECT_JAVA_PATH = NullablePathProperty("detect.java.path").apply {
             info("Java Executable", "5.0.0")
             help("Path to the java executable.", "If set, Detect will use the given java executable instead of searching for one.")
             groups(DetectGroup.Paths, DetectGroup.Global)
@@ -577,7 +583,7 @@ class DetectProperties {
             groups(DetectGroup.Maven, DetectGroup.SourceScan)
             category(DetectCategory.Advanced)
         }
-        val DETECT_MAVEN_PATH = NullableStringProperty("detect.maven.path").apply {
+        val DETECT_MAVEN_PATH = NullablePathProperty("detect.maven.path").apply {
             info("Maven Executable", "3.0.0")
             help("The path to the Maven executable (mvn or mvnw).", "If set, Detect will use the given Maven executable instead of searching for one.")
             groups(DetectGroup.Maven, DetectGroup.Global)
@@ -603,7 +609,7 @@ class DetectProperties {
             help("When set to true, a Black Duck notices report in text form will be created in your source directory.")
             groups(DetectGroup.Report, DetectGroup.Global)
         }
-        val DETECT_NOTICES_REPORT_PATH = NullableStringProperty("detect.notices.report.path").apply {
+        val DETECT_NOTICES_REPORT_PATH = NullablePathProperty("detect.notices.report.path").apply {
             info("Notices Report Path", "3.0.0")
             help("The output directory for notices report. Default is the source directory.")
             groups(DetectGroup.Report, DetectGroup.Global, DetectGroup.ReportSetting)
@@ -618,12 +624,12 @@ class DetectProperties {
             help("Set this value to false if you would like to exclude your dev dependencies when ran.")
             groups(DetectGroup.Npm, DetectGroup.Global, DetectGroup.SourceScan)
         }
-        val DETECT_NPM_PATH = NullableStringProperty("detect.npm.path").apply {
+        val DETECT_NPM_PATH = NullablePathProperty("detect.npm.path").apply {
             info("NPM Executable", "3.0.0")
             help("The path to the Npm executable.")
             groups(DetectGroup.Npm, DetectGroup.Global)
         }
-        val DETECT_NUGET_CONFIG_PATH = NullableStringProperty("detect.nuget.config.path").apply {
+        val DETECT_NUGET_CONFIG_PATH = NullablePathProperty("detect.nuget.config.path").apply {
             info("Nuget Config File", "4.0.0")
             help("The path to the Nuget.Config file to supply to the nuget exe.")
             groups(DetectGroup.Nuget, DetectGroup.SourceScan)
@@ -646,7 +652,7 @@ class DetectProperties {
             groups(DetectGroup.Nuget, DetectGroup.SourceScan)
             category(DetectCategory.Advanced)
         }
-        val DETECT_NUGET_INSPECTOR_AIR_GAP_PATH = NullableStringProperty("detect.nuget.inspector.air.gap.path").apply {
+        val DETECT_NUGET_INSPECTOR_AIR_GAP_PATH = NullablePathProperty("detect.nuget.inspector.air.gap.path").apply {
             info("Nuget Inspector AirGap Path", "3.0.0")
             help("The path to the directory containing the nuget inspector nupkg.")
             groups(DetectGroup.Nuget, DetectGroup.Global)
@@ -663,12 +669,12 @@ class DetectProperties {
             help("The source for nuget packages", "Set this to \"https://www.nuget.org/api/v2/\" if your are still using a nuget client expecting the v2 api.")
             groups(DetectGroup.Nuget, DetectGroup.Global)
         }
-        val DETECT_OUTPUT_PATH = NullableStringProperty("detect.output.path").apply {
+        val DETECT_OUTPUT_PATH = NullablePathProperty("detect.output.path").apply {
             info("Detect Output Path", "3.0.0")
             help("The path to the output directory.", "If set, Detect will use the given directory to store files that it downloads and creates, instead of using the default location (~/blackduck).")
             groups(DetectGroup.Paths, DetectGroup.Global)
         }
-        val DETECT_TOOLS_OUTPUT_PATH = NullableStringProperty("detect.tools.output.path").apply {
+        val DETECT_TOOLS_OUTPUT_PATH = NullablePathProperty("detect.tools.output.path").apply {
             info("Detect Tools Output Path", "5.6.0")
             help("The path to the tools directory where detect should download and/or access things like the Signature Scanner that it shares over multiple runs.", "If set, Detect will use the given directory instead of using the default location of output path plus tools.")
             groups(DetectGroup.Paths, DetectGroup.Global)
@@ -684,7 +690,7 @@ class DetectProperties {
             help("Set to true if you would like to include only required packages.")
             groups(DetectGroup.Pear, DetectGroup.Global, DetectGroup.SourceScan)
         }
-        val DETECT_PEAR_PATH = NullableStringProperty("detect.pear.path").apply {
+        val DETECT_PEAR_PATH = NullablePathProperty("detect.pear.path").apply {
             info("Pear Executable", "3.0.0")
             help("The path to the pear executable.")
             groups(DetectGroup.Pear, DetectGroup.Global)
@@ -699,7 +705,7 @@ class DetectProperties {
             help("The version of your PIP project, to be used if your project's version name cannot be correctly inferred from its setup.py file.")
             groups(DetectGroup.Pip, DetectGroup.SourceScan)
         }
-        val DETECT_PIP_REQUIREMENTS_PATH = StringListProperty("detect.pip.requirements.path", emptyList()).apply {
+        val DETECT_PIP_REQUIREMENTS_PATH = PathListProperty("detect.pip.requirements.path", emptyList()).apply {
             info("PIP Requirements Path", "3.0.0")
             help("A comma-separated list of paths to requirements.txt files.")
             groups(DetectGroup.Pip, DetectGroup.SourceScan)
@@ -709,12 +715,12 @@ class DetectProperties {
             help("By default, pipenv includes all dependencies found in the graph. Set to true to only include dependencies found underneath the dependency that matches the provided pip project and version name.")
             groups(DetectGroup.Pip, DetectGroup.SourceScan)
         }
-        val DETECT_PIPENV_PATH = NullableStringProperty("detect.pipenv.path").apply {
+        val DETECT_PIPENV_PATH = NullablePathProperty("detect.pipenv.path").apply {
             info("Pipenv Executable", "4.1.0")
             help("The path to the Pipenv executable.")
             groups(DetectGroup.Pip, DetectGroup.Global)
         }
-        val DETECT_SWIFT_PATH = NullableStringProperty("detect.swift.path").apply {
+        val DETECT_SWIFT_PATH = NullablePathProperty("detect.swift.path").apply {
             info("Swift Executable", "6.0.0")
             help("Path of the swift executable.")
             groups(DetectGroup.Paths, DetectGroup.Global)
@@ -855,7 +861,7 @@ class DetectProperties {
                     "The following properties will also be updated on the Version.Version notes (detect.project.version.notes), phase(detect.project.version.phase), distribution(detect.project.version.distribution).")
             groups(DetectGroup.Project, DetectGroup.ProjectSetting)
         }
-        val DETECT_PYTHON_PATH = NullableStringProperty("detect.python.path").apply {
+        val DETECT_PYTHON_PATH = NullablePathProperty("detect.python.path").apply {
             info("Python Executable", "3.0.0")
             help("The path to the Python executable.")
             groups(DetectGroup.Python, DetectGroup.Global)
@@ -885,7 +891,7 @@ class DetectProperties {
             help("When set to true, a Black Duck risk report in PDF form will be created.")
             groups(DetectGroup.Report, DetectGroup.Global, DetectGroup.ReportSetting)
         }
-        val DETECT_RISK_REPORT_PDF_PATH = NullableStringProperty("detect.risk.report.pdf.path").apply {
+        val DETECT_RISK_REPORT_PDF_PATH = NullablePathProperty("detect.risk.report.pdf.path").apply {
             info("Risk Report Output Path", "3.0.0")
             help("The output directory for risk report in PDF. Default is the source directory.")
             groups(DetectGroup.Report, DetectGroup.Global)
@@ -917,12 +923,12 @@ class DetectProperties {
             help("Depth the sbt detector will use to search for report files.")
             groups(DetectGroup.Sbt, DetectGroup.SourceScan)
         }
-        val DETECT_SCAN_OUTPUT_PATH = NullableStringProperty("detect.scan.output.path").apply {
+        val DETECT_SCAN_OUTPUT_PATH = NullablePathProperty("detect.scan.output.path").apply {
             info("Scan Output Path", "3.0.0")
             help("The output directory for all signature scanner output files. If not set, the signature scanner output files will be in a 'scan' subdirectory of the output directory.")
             groups(DetectGroup.Paths, DetectGroup.Global)
         }
-        val DETECT_SOURCE_PATH = NullableStringProperty("detect.source.path").apply {
+        val DETECT_SOURCE_PATH = NullablePathProperty("detect.source.path").apply {
             info("Source Path", "3.0.0")
             help("The path to the project directory to inspect.", "Detect will search the given directory for hints that indicate which package manager(s) the project uses, and will attempt to run the corresponding detector(s).")
             groups(DetectGroup.Paths, DetectGroup.SourcePath)
@@ -1212,7 +1218,7 @@ class DetectProperties {
         }
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
-        val DETECT_NUGET_PATH = NullableStringProperty("detect.nuget.path").apply {
+        val DETECT_NUGET_PATH = NullablePathProperty("detect.nuget.path").apply {
             info("Detect Nuget Path", "3.0.0")
             help("The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package.")
             groups(DetectGroup.Nuget)
@@ -1243,6 +1249,7 @@ class DetectProperties {
             deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.patterns in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
 
+        // TODO: Should this be a NullablePathProperty? If so a list version of this property should be created.
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_PATHS = NullableStringListProperty("detect.hub.signature.scanner.paths").apply {
             info("Detect Hub Signature Scanner Paths", "3.0.0")
@@ -1285,7 +1292,7 @@ class DetectProperties {
         }
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
-        val DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH = NullableStringProperty("detect.hub.signature.scanner.offline.local.path").apply {
+        val DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH = NullablePathProperty("detect.hub.signature.scanner.offline.local.path").apply {
             info("Detect Hub Signature Scanner Offline Local Path", "3.0.0")
             help("To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Offline)
@@ -1293,7 +1300,7 @@ class DetectProperties {
         }
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
-        val DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH = NullableStringProperty("detect.hub.signature.scanner.local.path").apply {
+        val DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH = NullablePathProperty("detect.hub.signature.scanner.local.path").apply {
             info("Detect Hub Signature Scanner Local Path", "4.2.0")
             help("To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Offline)

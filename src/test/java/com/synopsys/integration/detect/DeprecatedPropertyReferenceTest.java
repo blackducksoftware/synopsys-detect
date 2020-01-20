@@ -31,6 +31,7 @@ public class DeprecatedPropertyReferenceTest {
         ".kt"
     );
 
+    // TODO: Update this list
     private final List<Class> classesAllowedToReferenceDeprecatedComponents = Arrays.asList(
         Application.class,
         DetectBoot.class,
@@ -53,6 +54,7 @@ public class DeprecatedPropertyReferenceTest {
     public void testCodeReferencesToDeprecatedProperties() throws IOException {
         final Set<String> classesInViolation = new HashSet<>();
         final List<Property> deprecatedProperties = getDeprecatedProperties();
+        // TODO: Should we also be checking kotlin suffixes?
         final String[] targetSuffixes = { "java", "groovy" };
         final File rootDir = new File("src");
         final Collection<File> javaFiles = FileUtils.listFiles(rootDir, targetSuffixes, true);

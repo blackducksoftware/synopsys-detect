@@ -22,12 +22,14 @@
  */
 package com.synopsys.integration.detect.workflow.file;
 
+import java.nio.file.Path;
+
 public class DirectoryOptions {
-    private String sourcePath;
-    private String outputPath;
-    private String bdioOutputPath;
-    private String scanOutputPath;
-    private String toolsOutputPath;
+    private final String sourcePath;
+    private final String outputPath;
+    private final String bdioOutputPath;
+    private final String scanOutputPath;
+    private final String toolsOutputPath;
 
     public DirectoryOptions(final String sourcePath, final String outputPath, final String bdioOutputPath, final String scanOutputPath, final String toolsOutputPath) {
         this.sourcePath = sourcePath;
@@ -35,6 +37,15 @@ public class DirectoryOptions {
         this.bdioOutputPath = bdioOutputPath;
         this.scanOutputPath = scanOutputPath;
         this.toolsOutputPath = toolsOutputPath;
+    }
+
+    // TODO: Switch data types from Strings to Paths
+    public DirectoryOptions(final Path sourcePath, final Path outputPath, final Path bdioOutputPath, final Path scanOutputPath, final Path toolsOutputPath) {
+        this.sourcePath = sourcePath.toString();
+        this.outputPath = outputPath.toString();
+        this.bdioOutputPath = bdioOutputPath.toString();
+        this.scanOutputPath = scanOutputPath.toString();
+        this.toolsOutputPath = toolsOutputPath.toString();
     }
 
     public String getSourcePathOverride() {

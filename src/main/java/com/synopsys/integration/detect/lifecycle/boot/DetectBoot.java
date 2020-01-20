@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -46,6 +47,7 @@ import com.synopsys.integration.configuration.config.SpringConfigurationProperty
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.PropertyDeprecationInfo;
+import com.synopsys.integration.configuration.property.types.path.TildeResolver;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectableBeanConfiguration;
@@ -80,6 +82,7 @@ import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolv
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
+import com.synopsys.integration.detect.util.TildeInPathResolver;
 import com.synopsys.integration.detect.util.filter.DetectFilter;
 import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
@@ -161,11 +164,12 @@ public class DetectBoot {
 
         logger.debug("Initializing Detect.");
 
-        final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration);
+        final TildeResolver tildeResolver = new TildeInPathResolver(SystemUtils.USER_HOME, detectInfo.getCurrentOs(), detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_RESOLVE_TILDE_IN_PATHS()));
+        final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, tildeResolver);
         final DirectoryManager directoryManager = new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
         final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectConfiguration, detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
-        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem); //TODO: Fix
+        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, tildeResolver); //TODO: Fix
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
@@ -174,7 +178,7 @@ public class DetectBoot {
             final String airGapSuffix = inspectorFilter.getIncludedSet().stream().sorted().collect(Collectors.joining("-"));
             final File airGapZip;
             try {
-                airGapZip = createAirGapZip(inspectorFilter, detectConfiguration, directoryManager, gson, eventSystem, configuration, airGapSuffix);
+                airGapZip = createAirGapZip(inspectorFilter, detectConfiguration, tildeResolver, directoryManager, gson, eventSystem, configuration, airGapSuffix);
             } catch (final DetectUserFriendlyException e) {
                 return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
             }
@@ -291,9 +295,9 @@ public class DetectBoot {
         final Map<String, String> additionalNotes = new HashMap<>();
 
         final List<Property> deprecatedProperties = DetectProperties.Companion.getProperties()
-                                                  .stream()
-                                                  .filter(property -> property.getPropertyDeprecationInfo() != null)
-                                                  .collect(Collectors.toList());
+                                                        .stream()
+                                                        .filter(property -> property.getPropertyDeprecationInfo() != null)
+                                                        .collect(Collectors.toList());
 
         final Map<String, List<String>> deprecationMessages = new HashMap<>();
         final List<Property> usedFailureProperties = new ArrayList<>();
@@ -368,11 +372,12 @@ public class DetectBoot {
         }
     }
 
-    private File createAirGapZip(final DetectFilter inspectorFilter, final PropertyConfiguration detectConfiguration, final DirectoryManager directoryManager, final Gson gson, final EventSystem eventSystem,
+    private File createAirGapZip(final DetectFilter inspectorFilter, final PropertyConfiguration detectConfiguration, final TildeResolver tildeResolver, final DirectoryManager directoryManager, final Gson gson,
+        final EventSystem eventSystem,
         final Configuration configuration,
         final String airGapSuffix)
         throws DetectUserFriendlyException {
-        final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration);
+        final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, tildeResolver);
         final ConnectionDetails connectionDetails = detectConfigurationFactory.createConnectionDetails();
         final ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
         final ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
@@ -383,7 +388,7 @@ public class DetectBoot {
         final SimpleLocalExecutableFinder localExecutableFinder = new SimpleLocalExecutableFinder(simpleExecutableFinder);
         final SimpleSystemExecutableFinder simpleSystemExecutableFinder = new SimpleSystemExecutableFinder(simpleExecutableFinder);
         final SimpleExecutableResolver executableResolver = new SimpleExecutableResolver(new CachedExecutableResolverOptions(false), localExecutableFinder, simpleSystemExecutableFinder);
-        final DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(executableResolver, detectConfiguration);
+        final DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(executableResolver, detectConfiguration, tildeResolver);
         final GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
         final SimpleExecutableRunner simpleExecutableRunner = new SimpleExecutableRunner();
         final GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, gradleInspectorInstaller, simpleExecutableRunner, configuration);

@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -31,6 +31,7 @@ import com.synopsys.integration.configuration.property.base.ValuedProperty
 import com.synopsys.integration.configuration.property.types.enumextended.BaseValue
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedValue
 import com.synopsys.integration.configuration.property.types.enumfilterable.populatedValues
+import com.synopsys.integration.configuration.property.types.path.TildeResolver
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException
 import com.synopsys.integration.detect.exitcode.ExitCodeType
 import com.synopsys.integration.detect.lifecycle.run.RunOptions
@@ -61,7 +62,7 @@ import java.nio.file.Path
 import java.util.*
 import java.util.regex.Pattern
 
-open class DetectConfigurationFactory(private val detectConfiguration: PropertyConfiguration) {
+open class DetectConfigurationFactory(private val detectConfiguration: PropertyConfiguration, private val tildeResolver: TildeResolver) {
 
     /**
      * Will get the first property in a list that was provided by the user.
@@ -227,19 +228,19 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
     }
 
     fun createDirectoryOptions(): DirectoryOptions {
-        val sourcePath = detectConfiguration.getValue(DetectProperties.DETECT_SOURCE_PATH)
-        val outputPath = detectConfiguration.getValue(DetectProperties.DETECT_OUTPUT_PATH)
-        val bdioPath = detectConfiguration.getValue(DetectProperties.DETECT_BDIO_OUTPUT_PATH)
-        val scanPath = detectConfiguration.getValue(DetectProperties.DETECT_SCAN_OUTPUT_PATH)
-        val toolsOutputPath = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_OUTPUT_PATH)
+        val sourcePath = detectConfiguration.getValue(DetectProperties.DETECT_SOURCE_PATH)?.resolvePath(tildeResolver)
+        val outputPath = detectConfiguration.getValue(DetectProperties.DETECT_OUTPUT_PATH)?.resolvePath(tildeResolver)
+        val bdioPath = detectConfiguration.getValue(DetectProperties.DETECT_BDIO_OUTPUT_PATH)?.resolvePath(tildeResolver)
+        val scanPath = detectConfiguration.getValue(DetectProperties.DETECT_SCAN_OUTPUT_PATH)?.resolvePath(tildeResolver)
+        val toolsOutputPath = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_OUTPUT_PATH)?.resolvePath(tildeResolver)
 
         return DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath)
     }
 
     fun createAirGapOptions(): AirGapOptions {
-        val gradleOverride = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH)
-        val nugetOverride = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH)
-        val dockerOverride = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH)
+        val gradleOverride = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH)?.resolvePath(tildeResolver)
+        val nugetOverride = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH)?.resolvePath(tildeResolver)
+        val dockerOverride = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH)?.resolvePath(tildeResolver)
 
         return AirGapOptions(dockerOverride, gradleOverride, nugetOverride)
     }
@@ -322,8 +323,9 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val additionalArguments = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS)
         val maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH)
 
-        val offlineLocalScannerInstallPath = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH)
-        val onlineLocalScannerInstallPath = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH)
+        // TODO: Switch data types from String to Path
+        val offlineLocalScannerInstallPath = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH)?.resolvePath(tildeResolver).toString()
+        val onlineLocalScannerInstallPath = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH)?.resolvePath(tildeResolver).toString()
         val userProvidedScannerInstallUrl = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL)
 
         if (StringUtils.isNotBlank(offlineLocalScannerInstallPath) && StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
@@ -354,8 +356,8 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val waitForResults = detectConfiguration.getValue(DetectProperties.DETECT_WAIT_FOR_RESULTS)
         val runRiskReport = detectConfiguration.getValue(DetectProperties.DETECT_RISK_REPORT_PDF)
         val runNoticesReport = detectConfiguration.getValue(DetectProperties.DETECT_NOTICES_REPORT)
-        val riskReportPdfPath = detectConfiguration.getValue(DetectProperties.DETECT_RISK_REPORT_PDF_PATH)
-        val noticesReportPath = detectConfiguration.getValue(DetectProperties.DETECT_NOTICES_REPORT_PATH)
+        val riskReportPdfPath = detectConfiguration.getValue(DetectProperties.DETECT_RISK_REPORT_PDF_PATH)?.resolvePath(tildeResolver)
+        val noticesReportPath = detectConfiguration.getValue(DetectProperties.DETECT_NOTICES_REPORT_PATH)?.resolvePath(tildeResolver)
         val policySeverities = detectConfiguration.getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)
         val severitiesToFailPolicyCheck = policySeverities.populatedValues(PolicySeverityType.values(), PolicySeverityType::class.java);
 
@@ -363,7 +365,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
     }
 
     fun createBinaryScanOptions(): BinaryScanOptions {
-        val singleTarget = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE)
+        val singleTarget = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE)?.resolvePath(tildeResolver)
         val mutlipleTargets = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE_NAME_PATTERNS)
         val codeLocationPrefix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX)
         val codeLocationSuffix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX)

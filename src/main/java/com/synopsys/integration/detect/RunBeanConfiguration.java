@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
@@ -39,6 +40,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.property.types.path.TildeResolver;
 import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
@@ -51,6 +53,7 @@ import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDocke
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScanner;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
+import com.synopsys.integration.detect.util.TildeInPathResolver;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
@@ -110,9 +113,9 @@ public class RunBeanConfiguration {
 
         final List<String> excluded = new ArrayList<>(userExcluded);
         if (includeDefault) {
-            List<String> defaultExcluded = Arrays.stream(DetectorSearchExcludedDirectories.values())
-                                               .map(DetectorSearchExcludedDirectories::getDirectoryName)
-                                               .collect(Collectors.toList());
+            final List<String> defaultExcluded = Arrays.stream(DetectorSearchExcludedDirectories.values())
+                                                     .map(DetectorSearchExcludedDirectories::getDirectoryName)
+                                                     .collect(Collectors.toList());
             excluded.addAll(defaultExcluded);
         }
         return new DetectFileFinder(excluded);
@@ -134,8 +137,14 @@ public class RunBeanConfiguration {
     }
 
     @Bean
+    public TildeResolver tildeResolver() {
+        final boolean shouldResolveTilde = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_RESOLVE_TILDE_IN_PATHS());
+        return new TildeInPathResolver(SystemUtils.USER_HOME, detectInfo.getCurrentOs(), shouldResolveTilde);
+    }
+
+    @Bean
     public DetectConfigurationFactory detectConfigurationFactory() {
-        return new DetectConfigurationFactory(detectConfiguration);
+        return new DetectConfigurationFactory(detectConfiguration, tildeResolver());
     }
 
     @Bean
@@ -192,7 +201,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public DetectExecutableResolver detectExecutableResolver() {
-        return new DetectExecutableResolver(simpleExecutableResolver(), detectConfiguration);
+        return new DetectExecutableResolver(simpleExecutableResolver(), detectConfiguration, tildeResolver());
     }
 
     @Bean

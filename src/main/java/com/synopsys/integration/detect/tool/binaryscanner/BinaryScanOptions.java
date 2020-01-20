@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.tool.binaryscanner;
 
+import java.nio.file.Path;
 import java.util.List;
 
 public class BinaryScanOptions {
@@ -33,6 +34,14 @@ public class BinaryScanOptions {
 
     public BinaryScanOptions(final String singleTargetFilePath, final List<String> multipleTargetFileNamePatterns, final String codeLocationPrefix, final String codeLocationSuffix) {
         this.singleTargetFilePath = singleTargetFilePath;
+        this.multipleTargetFileNamePatterns = multipleTargetFileNamePatterns;
+        this.codeLocationPrefix = codeLocationPrefix;
+        this.codeLocationSuffix = codeLocationSuffix;
+    }
+
+    // TODO: Switch data types from Strings to Paths
+    public BinaryScanOptions(final Path singleTargetFilePath, final List<String> multipleTargetFileNamePatterns, final String codeLocationPrefix, final String codeLocationSuffix) {
+        this.singleTargetFilePath = singleTargetFilePath.toString();
         this.multipleTargetFileNamePatterns = multipleTargetFileNamePatterns;
         this.codeLocationPrefix = codeLocationPrefix;
         this.codeLocationSuffix = codeLocationSuffix;

@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.tool.detector.impl
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration
+import com.synopsys.integration.configuration.property.types.path.TildeResolver
 import com.synopsys.integration.detect.configuration.DetectProperties
 import com.synopsys.integration.detectable.DetectableEnvironment
 import com.synopsys.integration.detectable.detectable.exception.DetectableException
@@ -34,7 +35,7 @@ import java.io.File
 import java.util.function.Function
 import java.util.function.Supplier
 
-class DetectExecutableResolver(private val simpleExecutableResolver: SimpleExecutableResolver, private val detectConfiguration: PropertyConfiguration) : JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, DockerResolver, DotNetResolver, GitResolver, SwiftResolver, GoResolver {
+class DetectExecutableResolver(private val simpleExecutableResolver: SimpleExecutableResolver, private val detectConfiguration: PropertyConfiguration, private val tildeResolver: TildeResolver) : JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, DockerResolver, DotNetResolver, GitResolver, SwiftResolver, GoResolver {
     private val cachedExecutables: MutableMap<String, File> = mutableMapOf()
 
     @Throws(DetectableException::class)
@@ -70,47 +71,47 @@ class DetectExecutableResolver(private val simpleExecutableResolver: SimpleExecu
 
     @Throws(DetectableException::class)
     override fun resolveBash(): File {
-        return resolveExecutable("bash", Supplier { simpleExecutableResolver.resolveBash() }, detectConfiguration.getValue(DetectProperties.DETECT_BASH_PATH))
+        return resolveExecutable("bash", Supplier { simpleExecutableResolver.resolveBash() }, detectConfiguration.getValue(DetectProperties.DETECT_BASH_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolveBazel(): File {
-        return resolveExecutable("bazel", Supplier { simpleExecutableResolver.resolveBazel() }, detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_PATH))
+        return resolveExecutable("bazel", Supplier { simpleExecutableResolver.resolveBazel() }, detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolveConda(): File {
-        return resolveExecutable("conda", Supplier { simpleExecutableResolver.resolveConda() }, detectConfiguration.getValue(DetectProperties.DETECT_CONDA_PATH))
+        return resolveExecutable("conda", Supplier { simpleExecutableResolver.resolveConda() }, detectConfiguration.getValue(DetectProperties.DETECT_CONDA_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolveCpan(): File {
-        return resolveExecutable("cpan", Supplier { simpleExecutableResolver.resolveCpan() }, detectConfiguration.getValue(DetectProperties.DETECT_CPAN_PATH))
+        return resolveExecutable("cpan", Supplier { simpleExecutableResolver.resolveCpan() }, detectConfiguration.getValue(DetectProperties.DETECT_CPAN_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolveCpanm(): File {
-        return resolveExecutable("cpanm", Supplier { simpleExecutableResolver.resolveCpanm() }, detectConfiguration.getValue(DetectProperties.DETECT_CPANM_PATH))
+        return resolveExecutable("cpanm", Supplier { simpleExecutableResolver.resolveCpanm() }, detectConfiguration.getValue(DetectProperties.DETECT_CPANM_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolveGradle(environment: DetectableEnvironment): File {
-        return resolveExecutableLocally(Function { simpleExecutableResolver.resolveGradle(it) }, environment, detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_PATH))
+        return resolveExecutableLocally(Function { simpleExecutableResolver.resolveGradle(it) }, environment, detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolveMaven(environment: DetectableEnvironment): File {
-        return resolveExecutableLocally(Function { simpleExecutableResolver.resolveMaven(it) }, environment, detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_PATH))
+        return resolveExecutableLocally(Function { simpleExecutableResolver.resolveMaven(it) }, environment, detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolveNpm(environment: DetectableEnvironment): File {
-        return resolveExecutableLocally(Function { simpleExecutableResolver.resolveNpm(it) }, environment, detectConfiguration.getValue(DetectProperties.DETECT_NPM_PATH))
+        return resolveExecutableLocally(Function { simpleExecutableResolver.resolveNpm(it) }, environment, detectConfiguration.getValue(DetectProperties.DETECT_NPM_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolvePear(): File {
-        return resolveExecutable("pear", Supplier { simpleExecutableResolver.resolvePear() }, detectConfiguration.getValue(DetectProperties.DETECT_PEAR_PATH))
+        return resolveExecutable("pear", Supplier { simpleExecutableResolver.resolvePear() }, detectConfiguration.getValue(DetectProperties.DETECT_PEAR_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
@@ -120,46 +121,46 @@ class DetectExecutableResolver(private val simpleExecutableResolver: SimpleExecu
 
     @Throws(DetectableException::class)
     override fun resolvePipenv(): File {
-        return resolveExecutable("pipenv", Supplier { simpleExecutableResolver.resolvePipenv() }, detectConfiguration.getValue(DetectProperties.DETECT_PIPENV_PATH))
+        return resolveExecutable("pipenv", Supplier { simpleExecutableResolver.resolvePipenv() }, detectConfiguration.getValue(DetectProperties.DETECT_PIPENV_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolvePython(): File {
-        return resolveExecutable("python", Supplier { simpleExecutableResolver.resolvePython() }, detectConfiguration.getValue(DetectProperties.DETECT_PYTHON_PATH))
+        return resolveExecutable("python", Supplier { simpleExecutableResolver.resolvePython() }, detectConfiguration.getValue(DetectProperties.DETECT_PYTHON_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolveRebar3(): File {
-        return resolveExecutable("rebar3", Supplier { simpleExecutableResolver.resolveRebar3() }, detectConfiguration.getValue(DetectProperties.DETECT_HEX_REBAR3_PATH))
+        return resolveExecutable("rebar3", Supplier { simpleExecutableResolver.resolveRebar3() }, detectConfiguration.getValue(DetectProperties.DETECT_HEX_REBAR3_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolveJava(): File {
-        return resolveExecutable("java", Supplier { simpleExecutableResolver.resolveJava() }, detectConfiguration.getValue(DetectProperties.DETECT_JAVA_PATH))
+        return resolveExecutable("java", Supplier { simpleExecutableResolver.resolveJava() }, detectConfiguration.getValue(DetectProperties.DETECT_JAVA_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolveDocker(): File {
-        return resolveExecutable("docker", Supplier { simpleExecutableResolver.resolveDocker() }, detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_PATH))
+        return resolveExecutable("docker", Supplier { simpleExecutableResolver.resolveDocker() }, detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolveDotNet(): File {
-        return resolveExecutable("dotnet", Supplier { simpleExecutableResolver.resolveDotNet() }, detectConfiguration.getValue(DetectProperties.DETECT_DOTNET_PATH))
+        return resolveExecutable("dotnet", Supplier { simpleExecutableResolver.resolveDotNet() }, detectConfiguration.getValue(DetectProperties.DETECT_DOTNET_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolveGit(): File {
-        return resolveExecutable("git", Supplier { simpleExecutableResolver.resolveGit() }, detectConfiguration.getValue(DetectProperties.DETECT_GIT_PATH))
+        return resolveExecutable("git", Supplier { simpleExecutableResolver.resolveGit() }, detectConfiguration.getValue(DetectProperties.DETECT_GIT_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolveSwift(): File {
-        return resolveExecutable("swift", Supplier { simpleExecutableResolver.resolveSwift() }, detectConfiguration.getValue(DetectProperties.DETECT_SWIFT_PATH))
+        return resolveExecutable("swift", Supplier { simpleExecutableResolver.resolveSwift() }, detectConfiguration.getValue(DetectProperties.DETECT_SWIFT_PATH)?.resolvePath(tildeResolver).toString())
     }
 
     @Throws(DetectableException::class)
     override fun resolveGo(): File {
-        return resolveExecutable("go", Supplier { simpleExecutableResolver.resolveGo() }, detectConfiguration.getValue(DetectProperties.DETECT_GO_PATH))
+        return resolveExecutable("go", Supplier { simpleExecutableResolver.resolveGo() }, detectConfiguration.getValue(DetectProperties.DETECT_GO_PATH)?.resolvePath(tildeResolver).toString())
     }
 }

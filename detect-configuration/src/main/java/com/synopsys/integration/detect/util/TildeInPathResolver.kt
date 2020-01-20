@@ -20,15 +20,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.util;
+package com.synopsys.integration.detect.util
 
-import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.synopsys.integration.detect.type.OperatingSystemType;
+import com.synopsys.integration.configuration.property.types.path.TildeResolver
+import com.synopsys.integration.detect.type.OperatingSystemType
+import org.apache.commons.lang3.StringUtils
+import org.slf4j.LoggerFactory
+import java.nio.file.Path
+import java.nio.file.Paths
 
 /**
  * // @formatter:off
@@ -43,39 +42,25 @@ import com.synopsys.integration.detect.type.OperatingSystemType;
  * --detect.resolve.tilde.in.paths=false to turn it off.
  * // @formatter:on
  */
-public class TildeInPathResolver {
-    private final Logger logger = LoggerFactory.getLogger(TildeInPathResolver.class);
+class TildeInPathResolver(private val systemUserHome: String, private val currentOs: OperatingSystemType, private val shouldResolveTilde: Boolean = true) : TildeResolver {
+    private val logger = LoggerFactory.getLogger(TildeInPathResolver::class.java)
 
-    private final String systemUserHome;
-    private final OperatingSystemType currentOs;
-
-    public TildeInPathResolver(final String systemUserHome, final OperatingSystemType currentOs) {
-        this.systemUserHome = systemUserHome;
-        this.currentOs = currentOs;
-    }
-
-    public Optional<String> resolveTildeInValue(final String value) {
-        final String originalString = value;
-        if (StringUtils.isNotBlank(originalString)) {
-            final String resolvedPath = resolveTildeInPath(currentOs, systemUserHome, originalString);
-            if (!resolvedPath.equals(originalString)) {
-                logger.warn(String.format("We have resolved %s to %s. If this is not expected, please revise the path provided, or specify --detect.resolve.tilde.in.paths=false.", originalString, resolvedPath));
-                return Optional.of(resolvedPath);
-            }
+    override fun resolveTilde(filePath: String): Path {
+        val resolvedPath = if (shouldResolveTilde) resolveTildeInPath(currentOs, systemUserHome, filePath) else filePath
+        if (resolvedPath != filePath) {
+            logger.warn(String.format("We have resolved %s to %s. If this is not expected, please revise the path provided, or specify --detect.resolve.tilde.in.paths=false.", filePath, resolvedPath))
         }
-        return Optional.empty();
+
+        return Paths.get(resolvedPath)
     }
 
-    public String resolveTildeInPath(final OperatingSystemType currentOs, final String systemUserHome, final String filePath) {
+    fun resolveTildeInPath(currentOs: OperatingSystemType, systemUserHome: String, filePath: String): String {
         if (OperatingSystemType.WINDOWS == currentOs || StringUtils.isBlank(filePath)) {
-            return filePath;
+            return filePath
         }
-
-        if (filePath.startsWith("~/")) {
-            return systemUserHome + filePath.substring(1);
-        }
-
-        return filePath;
+        return if (filePath.startsWith("~/")) {
+            systemUserHome + filePath.substring(1)
+        } else filePath
     }
 
 }

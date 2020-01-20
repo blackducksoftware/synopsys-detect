@@ -22,25 +22,38 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck;
 
-import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
-
+import java.nio.file.Path;
 import java.util.List;
 
+import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
+
 public class BlackDuckPostOptions {
-    private boolean waitForResults;
+    private final boolean waitForResults;
 
-    private boolean generateRiskReport;
-    private boolean generateNoticesReport;
-    private String riskReportPdfPath;
-    private String noticesReportPath;
-    private List<PolicySeverityType> severitiesToFailPolicyCheck;
+    private final boolean generateRiskReport;
+    private final boolean generateNoticesReport;
+    private final String riskReportPdfPath;
+    private final String noticesReportPath;
+    private final List<PolicySeverityType> severitiesToFailPolicyCheck;
 
-    public BlackDuckPostOptions(boolean waitForResults, boolean generateRiskReport, boolean generateNoticesReport, String riskReportPdfPath, String noticesReportPath, List<PolicySeverityType> severitiesToFailPolicyCheck) {
+    public BlackDuckPostOptions(final boolean waitForResults, final boolean generateRiskReport, final boolean generateNoticesReport, final String riskReportPdfPath, final String noticesReportPath,
+        final List<PolicySeverityType> severitiesToFailPolicyCheck) {
         this.waitForResults = waitForResults;
         this.generateRiskReport = generateRiskReport;
         this.generateNoticesReport = generateNoticesReport;
         this.riskReportPdfPath = riskReportPdfPath;
         this.noticesReportPath = noticesReportPath;
+        this.severitiesToFailPolicyCheck = severitiesToFailPolicyCheck;
+    }
+
+    // TODO: Switch data types from Strings to Paths
+    public BlackDuckPostOptions(final boolean waitForResults, final boolean generateRiskReport, final boolean generateNoticesReport, final Path riskReportPdfPath, final Path noticesReportPath,
+        final List<PolicySeverityType> severitiesToFailPolicyCheck) {
+        this.waitForResults = waitForResults;
+        this.generateRiskReport = generateRiskReport;
+        this.generateNoticesReport = generateNoticesReport;
+        this.riskReportPdfPath = riskReportPdfPath.toString();
+        this.noticesReportPath = noticesReportPath.toString();
         this.severitiesToFailPolicyCheck = severitiesToFailPolicyCheck;
     }
 
