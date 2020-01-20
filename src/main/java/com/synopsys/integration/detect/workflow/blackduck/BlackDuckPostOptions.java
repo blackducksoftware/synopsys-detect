@@ -32,28 +32,17 @@ public class BlackDuckPostOptions {
 
     private final boolean generateRiskReport;
     private final boolean generateNoticesReport;
-    private final String riskReportPdfPath;
-    private final String noticesReportPath;
+    private final Path riskReportPdfPath;
+    private final Path noticesReportPath;
     private final List<PolicySeverityType> severitiesToFailPolicyCheck;
 
-    public BlackDuckPostOptions(final boolean waitForResults, final boolean generateRiskReport, final boolean generateNoticesReport, final String riskReportPdfPath, final String noticesReportPath,
+    public BlackDuckPostOptions(final boolean waitForResults, final boolean generateRiskReport, final boolean generateNoticesReport, final Path riskReportPdfPath, final Path noticesReportPath,
         final List<PolicySeverityType> severitiesToFailPolicyCheck) {
         this.waitForResults = waitForResults;
         this.generateRiskReport = generateRiskReport;
         this.generateNoticesReport = generateNoticesReport;
         this.riskReportPdfPath = riskReportPdfPath;
         this.noticesReportPath = noticesReportPath;
-        this.severitiesToFailPolicyCheck = severitiesToFailPolicyCheck;
-    }
-
-    // TODO: Switch data types from Strings to Paths
-    public BlackDuckPostOptions(final boolean waitForResults, final boolean generateRiskReport, final boolean generateNoticesReport, final Path riskReportPdfPath, final Path noticesReportPath,
-        final List<PolicySeverityType> severitiesToFailPolicyCheck) {
-        this.waitForResults = waitForResults;
-        this.generateRiskReport = generateRiskReport;
-        this.generateNoticesReport = generateNoticesReport;
-        this.riskReportPdfPath = riskReportPdfPath.toString();
-        this.noticesReportPath = noticesReportPath.toString();
         this.severitiesToFailPolicyCheck = severitiesToFailPolicyCheck;
     }
 
@@ -77,11 +66,11 @@ public class BlackDuckPostOptions {
         return severitiesToFailPolicyCheck.size() > 0;
     }
 
-    public String getRiskReportPdfPath() {
+    public Path getRiskReportPdfPath() {
         return riskReportPdfPath;
     }
 
-    public String getNoticesReportPath() {
+    public Path getNoticesReportPath() {
         return noticesReportPath;
     }
 
