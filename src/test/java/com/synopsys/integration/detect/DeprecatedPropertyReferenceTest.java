@@ -27,7 +27,6 @@ public class DeprecatedPropertyReferenceTest {
         ".kt"
     );
 
-    // TODO: Update this list
     private final List<Class> classesAllowedToReferenceDeprecatedComponents = Arrays.asList(
         DetectConfigurationFactory.class,
         DetectableOptionFactory.class,
