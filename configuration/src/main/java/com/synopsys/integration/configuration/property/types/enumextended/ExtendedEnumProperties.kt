@@ -28,5 +28,5 @@ class ExtendedEnumProperty<E, B>(key: String, default: ExtendedEnumValue<E, B>, 
     override fun isCaseSensitive(): Boolean = false
     override fun listExampleValues(): List<String>? = valuesExtended.map { it.toString() } + "," + valuesBase.map { it.toString() }
     override fun isOnlyExampleValues(): Boolean = false
-    override fun describeDefault(): String? = default.toString() //TODO: No way this is going to work!
+    override fun describeDefault(): String? = default.toString()
 }

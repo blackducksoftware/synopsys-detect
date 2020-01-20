@@ -32,7 +32,7 @@ class SoftEnumListValueParser<T>(val valueOf: (String) -> T?) : ValueParser<List
     var parser = ValueOfOrNullParser(valueOf)
     override fun parse(value: String): List<SoftEnumValue<T>> {
         return value.split(",").map {
-            when (val enumValue = parser.parse(value)) { //TODO: Catch exception here? What happens when valueOf throws?
+            when (val enumValue = parser.parse(value)) {
                 null -> StringValue<T>(value)
                 else -> ActualValue<T>(enumValue)
             }
