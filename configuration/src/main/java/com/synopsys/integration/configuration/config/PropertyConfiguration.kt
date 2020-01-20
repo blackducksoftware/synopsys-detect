@@ -138,8 +138,12 @@ class PropertyConfiguration(private val orderedPropertySources: List<PropertySou
                 }.toMap()
     }
 
+    // Takes in a 'passthrough.key' and returns key map (whose keys have that value removed)
+    // So value 'passthrough.key.example' is returned as 'example'
     fun getRaw(property: PassthroughProperty): Map<String, String> {
         return getRaw { key -> key.startsWith(property.key) }
+                .map { pair -> pair.key.substring(property.key.length + 1) to pair.value }
+                .toMap()
     }
     //endregion Advanced Usage
 
