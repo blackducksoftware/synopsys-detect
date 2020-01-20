@@ -44,6 +44,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.config.SpringConfigurationPropertySource;
+import com.synopsys.integration.configuration.config.UnknownSpringConfiguration;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.PropertyDeprecationInfo;
@@ -133,7 +134,13 @@ public class DetectBoot {
 
         final DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
 
-        final List<SpringConfigurationPropertySource> propertySources = SpringConfigurationPropertySource.Companion.fromConfigurableEnvironment(environment);
+        List<SpringConfigurationPropertySource> propertySources;
+        try {
+            propertySources = SpringConfigurationPropertySource.Companion.fromConfigurableEnvironment(environment, false);
+        } catch (UnknownSpringConfiguration e) {
+            logger.error("An unknown property source was found, detect will still continue.", e);
+            propertySources = SpringConfigurationPropertySource.Companion.fromConfigurableEnvironmentSafely(environment);
+        }
         final PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
 
         final DetectArgumentState detectArgumentState = parseDetectArgumentState(sourceArgs);
