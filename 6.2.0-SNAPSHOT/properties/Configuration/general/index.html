@@ -404,15 +404,27 @@
           
 
 
+  <li class="md-nav__item">
+    <a href="../../../advanced/verifying/" title="Synopsys Detect code verification" class="md-nav__link">
+      Synopsys Detect code verification
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -562,13 +574,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-13" type="checkbox" id="nav-9-13">
     
-    <label class="md-nav__link" for="nav-9-12">
+    <label class="md-nav__link" for="nav-9-13">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-12">
+      <label class="md-nav__title" for="nav-9-13">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -815,13 +827,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#buildless-mode" class="md-nav__link">
-    Buildless Mode
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#wait-for-results" class="md-nav__link">
     Wait For Results
   </a>
@@ -829,8 +834,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-parallel-processors-advanced" class="md-nav__link">
-    Detect Parallel Processors (Advanced)
+  <a href="#buildless-mode" class="md-nav__link">
+    Buildless Mode
   </a>
   
 </li>
@@ -845,6 +850,13 @@
         <li class="md-nav__item">
   <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
     Detect Ignore Connection Failures (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-parallel-processors-advanced" class="md-nav__link">
+    Detect Parallel Processors (Advanced)
   </a>
   
 </li>
@@ -1227,13 +1239,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#buildless-mode" class="md-nav__link">
-    Buildless Mode
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#wait-for-results" class="md-nav__link">
     Wait For Results
   </a>
@@ -1241,8 +1246,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-parallel-processors-advanced" class="md-nav__link">
-    Detect Parallel Processors (Advanced)
+  <a href="#buildless-mode" class="md-nav__link">
+    Buildless Mode
   </a>
   
 </li>
@@ -1257,6 +1262,13 @@
         <li class="md-nav__item">
   <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
     Detect Ignore Connection Failures (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-parallel-processors-advanced" class="md-nav__link">
+    Detect Parallel Processors (Advanced)
   </a>
   
 </li>
@@ -1279,49 +1291,6 @@
                 
                 
                 <h1 id="general">general</h1>
-<h2 id="buildless-mode">Buildless Mode</h2>
-<pre><code>--detect.detector.buildless=false
-</code></pre>
-
-<p>If set to true, only Detector's capable of running without a build will be run.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>5.4.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="wait-for-results">Wait For Results</h2>
 <pre><code>--detect.wait.for.results=false
 </code></pre>
@@ -1365,11 +1334,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-parallel-processors-advanced">Detect Parallel Processors (Advanced)</h2>
-<pre><code>--detect.parallel.processors=1
+<h2 id="buildless-mode">Buildless Mode</h2>
+<pre><code>--detect.detector.buildless=false
 </code></pre>
 
-<p>The number of threads to run processes in parallel, defaults to 1, but if you specify less than or equal to 0, the number of processors on the machine will be used.</p>
+<p>If set to true, only Detector's capable of running without a build will be run.</p>
 <table>
 <thead>
 <tr>
@@ -1380,15 +1349,15 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.0.0</td>
+<td>5.4.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>Integer</td>
+<td>Boolean</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>1</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1476,6 +1445,49 @@
 <tr>
 <td>Default Value</td>
 <td>false</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-parallel-processors-advanced">Detect Parallel Processors (Advanced)</h2>
+<pre><code>--detect.parallel.processors=1
+</code></pre>
+
+<p>The number of threads to run processes in parallel, defaults to 1, but if you specify less than or equal to 0, the number of processors on the machine will be used.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>1</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

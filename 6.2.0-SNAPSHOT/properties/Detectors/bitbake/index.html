@@ -404,15 +404,27 @@
           
 
 
+  <li class="md-nav__item">
+    <a href="../../../advanced/verifying/" title="Synopsys Detect code verification" class="md-nav__link">
+      Synopsys Detect code verification
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-11" type="checkbox" id="nav-9-11">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
     
-    <label class="md-nav__link" for="nav-9-11">
+    <label class="md-nav__link" for="nav-9-12">
       Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-11">
+      <label class="md-nav__title" for="nav-9-12">
         Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -562,13 +574,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-12" type="checkbox" id="nav-9-12">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-13" type="checkbox" id="nav-9-13">
     
-    <label class="md-nav__link" for="nav-9-12">
+    <label class="md-nav__link" for="nav-9-13">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-12">
+      <label class="md-nav__title" for="nav-9-13">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -959,8 +971,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bitbake-init-script-name" class="md-nav__link">
-    BitBake Init Script Name
+  <a href="#bitbake-source-arguments" class="md-nav__link">
+    BitBake Source Arguments
   </a>
   
 </li>
@@ -973,8 +985,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-source-arguments" class="md-nav__link">
-    BitBake Source Arguments
+  <a href="#bitbake-init-script-name" class="md-nav__link">
+    BitBake Init Script Name
   </a>
   
 </li>
@@ -1227,8 +1239,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bitbake-init-script-name" class="md-nav__link">
-    BitBake Init Script Name
+  <a href="#bitbake-source-arguments" class="md-nav__link">
+    BitBake Source Arguments
   </a>
   
 </li>
@@ -1241,8 +1253,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-source-arguments" class="md-nav__link">
-    BitBake Source Arguments
+  <a href="#bitbake-init-script-name" class="md-nav__link">
+    BitBake Init Script Name
   </a>
   
 </li>
@@ -1279,11 +1291,11 @@
                 
                 
                 <h1 id="bitbake">bitbake</h1>
-<h2 id="bitbake-init-script-name">BitBake Init Script Name</h2>
-<pre><code>--detect.bitbake.build.env.name=oe-init-build-env
+<h2 id="bitbake-source-arguments">BitBake Source Arguments</h2>
+<pre><code>--detect.bitbake.source.arguments
 </code></pre>
 
-<p>The name of the build environment init script.</p>
+<p>A comma-separated list of arguments to supply when sourcing the build environment init script.</p>
 <table>
 <thead>
 <tr>
@@ -1294,15 +1306,15 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>4.4.0</td>
+<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>String[]</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>oe-init-build-env</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1365,11 +1377,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bitbake-source-arguments">BitBake Source Arguments</h2>
-<pre><code>--detect.bitbake.source.arguments
+<h2 id="bitbake-init-script-name">BitBake Init Script Name</h2>
+<pre><code>--detect.bitbake.build.env.name=oe-init-build-env
 </code></pre>
 
-<p>A comma-separated list of arguments to supply when sourcing the build environment init script.</p>
+<p>The name of the build environment init script.</p>
 <table>
 <thead>
 <tr>
@@ -1380,15 +1392,15 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.0.0</td>
+<td>4.4.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>String[]</td>
+<td>String</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>oe-init-build-env</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

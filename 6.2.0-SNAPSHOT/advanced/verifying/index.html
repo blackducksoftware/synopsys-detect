@@ -36,7 +36,7 @@
     
     
       
-        <title>Running behind a proxy - Synopsys Detect</title>
+        <title>Synopsys Detect code verification - Synopsys Detect</title>
       
     
     
@@ -75,7 +75,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#running-behind-a-proxy" tabindex="1" class="md-skip">
+      <a href="#synopsys-detect-code-verification" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -101,7 +101,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Running behind a proxy
+                Synopsys Detect code verification
               
             </span>
           
@@ -345,63 +345,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Running behind a proxy
-      </label>
-    
-    <a href="./" title="Running behind a proxy" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../proxies/" title="Running behind a proxy" class="md-nav__link">
       Running behind a proxy
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#providing-proxy-details-to-synopsys-detect" class="md-nav__link">
-    Providing proxy details to Synopsys Detect
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#providing-proxy-details-to-detectsh" class="md-nav__link">
-    Providing proxy details to detect.sh
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#providing-proxy-details-to-detectps1" class="md-nav__link">
-    Providing proxy details to detect.ps1
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -457,11 +405,56 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../verifying/" title="Synopsys Detect code verification" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Synopsys Detect code verification
+      </label>
+    
+    <a href="./" title="Synopsys Detect code verification" class="md-nav__link md-nav__link--active">
       Synopsys Detect code verification
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#code-signature-verification" class="md-nav__link">
+    Code signature verification
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checksum-verification" class="md-nav__link">
+    Checksum verification
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -1223,22 +1216,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#providing-proxy-details-to-synopsys-detect" class="md-nav__link">
-    Providing proxy details to Synopsys Detect
+  <a href="#code-signature-verification" class="md-nav__link">
+    Code signature verification
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#providing-proxy-details-to-detectsh" class="md-nav__link">
-    Providing proxy details to detect.sh
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#providing-proxy-details-to-detectps1" class="md-nav__link">
-    Providing proxy details to detect.ps1
+  <a href="#checksum-verification" class="md-nav__link">
+    Checksum verification
   </a>
   
 </li>
@@ -1260,50 +1246,43 @@
               
                 
                 
-                <h1 id="running-behind-a-proxy">Running behind a proxy</h1>
-<p>When running behind a proxy:</p>
-<ol>
-<li>The script (detect.sh or detect.ps1) requires proxy details to do a version
-check on, and/or download the Synopsys Detect .jar file.</li>
-<li>Synopsys Detect; in other words, the code in the .jar file, requires proxy details to download inspectors and
-connect to Black Duck and Polaris.</li>
-</ol>
-<h2 id="providing-proxy-details-to-synopsys-detect">Providing proxy details to Synopsys Detect</h2>
-<p>Synopsys Detect looks for proxy details in the properties whose names start with blackduck.proxy,
-including:</p>
-<ul>
-<li>blackduck.proxy.host (proxy host)</li>
-<li>blackduck.proxy.port (proxy port)</li>
-<li>blackduck.proxy.username (proxy username)</li>
-<li>blackduck.proxy.password (proxy password)</li>
-</ul>
-<p>Refer to <a href="../../properties/Configuration/proxy/">properties</a> for more information.</p>
-<h2 id="providing-proxy-details-to-detectsh">Providing proxy details to detect.sh</h2>
-<p>The curl commands executed by detect.sh to do a version check on, and/or download the Synopsys Detect
-.jar file, require additional command line options when run behind a proxy. For more information
-on curl options, refer to the <a href="https://curl.haxx.se/docs/manpage.html">curl documentation</a>.</p>
-<p>To provide additional curl command line options for detect.sh to use
-when it executes curl, set the environment variable DETECT_CURL_OPTS before running
-detect.sh. For example:</p>
-<pre><code>export DETECT_CURL_OPTS=--proxy http://myproxy:3128
-./detect.sh
+                <h1 id="synopsys-detect-code-verification">Synopsys Detect code verification</h1>
+<p>Two methods are available to verify that the Synopsys Detect code you run has not been tampered with since it was built by Synopsys:
+code signature verification and checksum verification.
+Both methods apply to the Synopsys Detect .jar file, and only offer protection when you run
+Synopsys Detect by invoking the Synopsys Detect .jar file directly (as opposed to invoking detect.sh or detect.ps1).</p>
+<h2 id="code-signature-verification">Code signature verification</h2>
+<p>Code signature verification is the most secure method available for verifying Synopsys Detect code. This method relies on Java tools.</p>
+<p>It involves verifying the Synopsys Detect .jar file that you download from <a href="https://sig-repo.synopsys.com">https://sig-repo.synopsys.com</a>
+using a public key certificate that you download from https://detect.synopsys.com (which maps to github.com).
+In the event that either one has been tampered with, verification will fail.</p>
+<p>To verify the Synopsys Detect .jar, you need to obtain the public key certificate:</p>
+<pre><code>curl -O https://detect.synopsys.com/jar_verification.crt
 </code></pre>
-<p>When using detect.sh to execute Synopsys Detect you must set proxy properties
-for Synopsys Detect as previously described.</p>
-<h2 id="providing-proxy-details-to-detectps1">Providing proxy details to detect.ps1</h2>
-<p>detect.ps1 derives proxy details from environment variables
-whose names match the Synopsys Detect proxy property names.
-Configuring detect.ps1 for your proxy involves
-setting those environment variables before running detect.ps1.
-For example:</p>
-<pre><code>${Env:blackduck.proxy.host} = $ProxyHost
-${Env:blackduck.proxy.port} = $ProxyPort
-${Env:blackduck.proxy.password} = $ProxyUsername
-${Env:blackduck.proxy.username} = $ProxyPassword
-powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+<p>Once you have the public key certificate (the jar_verification.crt file), import it into a keystore. You can create a new keystore (which is a file),
+or import the certificate into an existing keystore. If the keystore into which you import the certificate does not exist, it will be created and you
+will be prompted to supply a password for the new keystore. If the keystore does exist, you will be prompted for its password as you import the certificate
+to it.</p>
+<pre><code>keytool -import -alias "blackduck digicert" -file jar_verification.crt -keystore {your keystore file}
 </code></pre>
-<p>When using detect.ps1 to execute Synopsys Detect, Synopsys Detect also receives the proxy details
-from these environment variables, so no additional configuration is required for Synopsys Detect.</p>
+<p>The Common Name (CN) field in the certificate will be "Black Duck Software, Inc.". We recommend you check this to be sure you are
+not importing a different certificate into your keystore, but the integrity of the code verification process does not depend on you verifying
+the contents of the certificate (the next step will do that).</p>
+<p>Finally, verify that the code signature in your Synopsys Detect .jar file matches this certificate:</p>
+<pre><code>jarsigner -verify {your Synopsys Detect .jar file} -keystore {your keystore file}
+</code></pre>
+<p>The output should be <code>jar verified.</code> (with no warnings).</p>
+<h2 id="checksum-verification">Checksum verification</h2>
+<p>Checksum verification provides less protection against tampering than code signature verification provices because
+in the unlikely scenario the <a href="binary_repo_url_base">binary repository</a> has been compromised, an attacker could alter
+both the .jar and the checksum. But checksum verification does provide some degree of protection
+against other attack scenarios.</p>
+<p>The binary repository provides SHA-256, SHA-1, and MD5 checksums for each Synopsys Detect .jar
+file. To find it, navigate to the .jar file in
+<a href="https://sig-repo.synopsys.com/webapp/#/artifacts/browse/tree/General/bds-integrations-release/com/synopsys/integration/synopsys-detect">the binary repository</a>,
+and scroll to the bottom of the page. Various tools (such as md5sum, sha1sum, and sha256sum on Linux, and certutil and Get-FileHash on Windows) are available for
+calculating checksums of files on your computer. Use one of those tools to get a checksum for your copy of the Synopsys Detect .jar, and compare it
+to the corresponding checksum on the binary repository page to make sure they match.</p>
                 
                   
                 
@@ -1324,7 +1303,7 @@ from these environment variables, so no additional configuration is required for
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../project-and-version-naming/" title="Project and version naming" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../usage-metrics/" title="Usage metrics collection" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -1333,19 +1312,19 @@ from these environment variables, so no additional configuration is required for
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Project and version naming
+                Usage metrics collection
               </span>
             </div>
           </a>
         
         
-          <a href="../scan-naming/" title="Code location (scan) naming" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../language-and-package-managers/bazel/" title="Bazel support" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Code location (scan) naming
+                Bazel support
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
