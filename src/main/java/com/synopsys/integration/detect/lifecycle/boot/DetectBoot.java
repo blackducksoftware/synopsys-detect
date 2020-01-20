@@ -74,6 +74,7 @@ import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectiv
 import com.synopsys.integration.detect.lifecycle.boot.product.PolarisConnectivityChecker;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory;
+import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -205,8 +206,9 @@ public class DetectBoot {
         final ProductBootFactory productBootFactory = new ProductBootFactory(detectInfo, eventSystem, detectConfigurationFactory);
         final ProductBoot productBoot = new ProductBoot();
         final ProductRunData productRunData;
+        final ProductBootOptions productBootOptions = detectConfigurationFactory.createProductBootOptions();
         try {
-            productRunData = productBoot.boot(productDecision, detectConfiguration, new BlackDuckConnectivityChecker(), new PolarisConnectivityChecker(), productBootFactory);
+            productRunData = productBoot.boot(productDecision, productBootOptions, new BlackDuckConnectivityChecker(), new PolarisConnectivityChecker(), productBootFactory);
         } catch (final DetectUserFriendlyException e) {
             return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
         }

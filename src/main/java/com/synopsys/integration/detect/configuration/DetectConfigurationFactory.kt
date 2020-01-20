@@ -34,6 +34,7 @@ import com.synopsys.integration.configuration.property.types.enumfilterable.popu
 import com.synopsys.integration.configuration.property.types.path.TildeResolver
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException
 import com.synopsys.integration.detect.exitcode.ExitCodeType
+import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions
 import com.synopsys.integration.detect.lifecycle.run.RunOptions
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFileFilter
@@ -167,6 +168,12 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         } catch (e: IllegalArgumentException) {
             throw DetectUserFriendlyException(String.format("Your proxy configuration is not valid: %s", e.message), e, ExitCodeType.FAILURE_PROXY_CONNECTIVITY)
         }
+    }
+
+    fun createProductBootOptions(): ProductBootOptions {
+        val ignoreFailures = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_IGNORE_CONNECTION_FAILURES)
+        val testConnections = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_TEST_CONNECTION)
+        return ProductBootOptions(ignoreFailures, testConnections);
     }
 
     fun createConnectionDetails(): ConnectionDetails {
