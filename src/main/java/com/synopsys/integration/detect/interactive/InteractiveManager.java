@@ -37,7 +37,7 @@ import com.synopsys.integration.detect.interactive.reader.ScannerInteractiveRead
 public class InteractiveManager {
     private final Logger logger = LoggerFactory.getLogger(InteractiveManager.class);
 
-    public void configureInInteractiveMode(InteractiveMode interactiveMode) {
+    public List<InteractiveOption> configureInInteractiveMode(InteractiveMode interactiveMode) {
         // TODO: Find a way to close the PrintStream without closing System.out
         // DO NOT CLOSE THIS STREAM, IT WILL CLOSE SYSOUT!
         final PrintStream interactivePrintStream = new PrintStream(System.out);
@@ -59,9 +59,6 @@ public class InteractiveManager {
         interactiveMode.println("");
 
         interactiveMode.configure();
-        final List<InteractiveOption> interactiveOptions = interactiveMode.getInteractiveOptions();
-        //detectOptionManager.applyInteractiveOptions(interactiveOptions);
-
+        return interactiveMode.getInteractiveOptions();
     }
-
 }

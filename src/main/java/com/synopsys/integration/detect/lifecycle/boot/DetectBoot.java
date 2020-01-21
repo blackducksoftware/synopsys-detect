@@ -42,7 +42,9 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.synopsys.integration.configuration.config.MapPropertySource;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.config.PropertySource;
 import com.synopsys.integration.configuration.config.SpringConfigurationPropertySource;
 import com.synopsys.integration.configuration.config.UnknownSpringConfiguration;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
@@ -67,6 +69,11 @@ import com.synopsys.integration.detect.help.json.HelpJsonDetector;
 import com.synopsys.integration.detect.help.json.HelpJsonWriter;
 import com.synopsys.integration.detect.help.print.DetectInfoPrinter;
 import com.synopsys.integration.detect.help.print.HelpPrinter;
+import com.synopsys.integration.detect.interactive.InteractiveManager;
+import com.synopsys.integration.detect.interactive.InteractiveOption;
+import com.synopsys.integration.detect.interactive.mode.DefaultInteractiveMode;
+import com.synopsys.integration.detect.interactive.InteractiveManager;
+import com.synopsys.integration.detect.interactive.InteractiveOption;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
@@ -135,32 +142,36 @@ public class DetectBoot {
 
         final DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
 
-        List<SpringConfigurationPropertySource> propertySources;
+        List<PropertySource> propertySources;
         try {
-            propertySources = SpringConfigurationPropertySource.Companion.fromConfigurableEnvironment(environment, false);
+            propertySources = new ArrayList<>(SpringConfigurationPropertySource.Companion.fromConfigurableEnvironment(environment, false));
         } catch (final UnknownSpringConfiguration e) {
             logger.error("An unknown property source was found, detect will still continue.", e);
-            propertySources = SpringConfigurationPropertySource.Companion.fromConfigurableEnvironmentSafely(environment);
+            propertySources = new ArrayList<>(SpringConfigurationPropertySource.Companion.fromConfigurableEnvironmentSafely(environment));
         }
-        final PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
 
         final DetectArgumentState detectArgumentState = parseDetectArgumentState(sourceArgs);
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             printAppropriateHelp(DetectProperties.Companion.getProperties(), detectArgumentState);
-            return DetectBootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(new PropertyConfiguration(propertySources));
         }
 
         if (detectArgumentState.isHelpJsonDocument()) {
             printHelpJsonDocument(DetectProperties.Companion.getProperties(), detectInfo, gson);
-            return DetectBootResult.exit(detectConfiguration);
+            return DetectBootResult.exit(new PropertyConfiguration(propertySources));
         }
 
         printDetectInfo(detectInfo);
 
         if (detectArgumentState.isInteractive()) {
-            startInteractiveMode(detectConfiguration, gson, objectMapper);
+            List<InteractiveOption> interactiveOptions = startInteractiveMode(propertySources);
+            Map<String, String> interactivePropertyMap = interactiveOptions.stream()
+                                                             .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), option -> option.getInteractiveValue()));
+            PropertySource interactivePropertySource = new MapPropertySource("interactive", interactivePropertyMap);
+            propertySources.add(0, interactivePropertySource);
         }
+        final PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
 
         logger.debug("Configuration processed completely.");
 
@@ -359,10 +370,10 @@ public class DetectBoot {
         return Optional.empty();
     }
 
-    private void startInteractiveMode(final PropertyConfiguration detectConfiguration, final Gson gson, final ObjectMapper objectMapper) {
-        //final InteractiveManager interactiveManager = new InteractiveManager(detectOptionManager);
-        //final DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(detectOptionManager);
-        //interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
+    private List<InteractiveOption> startInteractiveMode(final List<PropertySource> propertySources) {
+        final InteractiveManager interactiveManager = new InteractiveManager();
+        final DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(propertySources);
+        return interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
     }
 
     private DetectArgumentState parseDetectArgumentState(final String[] sourceArgs) {
