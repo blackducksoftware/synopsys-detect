@@ -1275,7 +1275,7 @@
                 
                 
                 <h1 id="yocto-bitbake">Yocto (BitBake)</h1>
-<p>The BitBake detector discovers dependencies of custom Linux distribution projects built using Yocto versions 2.0 and higher.</p>
+<p>The BitBake detector discovers dependencies of custom Linux distribution projects built using Yocto versions 2.0 to 2.7. Yocto 3.0 is currently not supported while we investigate possible solutions.</p>
 <p>The BitBake detector attempts to run on your project if all of the following are true:</p>
 <ol>
 <li>A build environment init script (typically <em>oe-init-build-env</em>) is found in the source directory.</li>
@@ -1285,11 +1285,11 @@
 <p>The BitBake detector also requires a bash executable, which it looks for on $PATH. You can override this by setting the bash path property.</p>
 <p>The BitBake detector does the following for each provided recipe name: The detector sources the build environment setup script and executes
 <code>bitbake -g {package-name}</code> to generate a dependency file <em>recipe-depends.dot</em> that it parses for dependency information.
-It also uses <code>bitbake-layers show-recipes</code> to get layer information.</p>
+It also uses <code>bitbake-layers show-recipes</code> to gather layer information.</p>
 <h2 id="troubleshooting-tips">Troubleshooting Tips</h2>
 <h3 id="unsupported-yocto-version">Unsupported Yocto version</h3>
 <p>Symptom: Error in log similar to 'ERROR: Nothing PROVIDES {package}'</p>
-<p>Problem: Synopsys Detect does not support the Yocto version. Synopsys Detect requires Yocto versions 2.0 and higher.</p>
+<p>Problem: Synopsys Detect does not support the Yocto version. Synopsys Detect requires Yocto versions 2.0 to 2.7. Yocto 3.0 is currently not supported while we investigate possible solutions.</p>
 <h3 id="missing-components-for-projects-using-the-yocto-package-revision-service">Missing components for projects using the Yocto Package Revision Service</h3>
 <p>Symptom: Components are missing from the Black Duck BOM.</p>
 <p>Problem: The Yocto Package Revision Service can increment a package revision to a value not present in the Black Duck Knowledge Base, causing
