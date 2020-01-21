@@ -72,8 +72,6 @@ import com.synopsys.integration.detect.help.print.HelpPrinter;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.interactive.InteractiveOption;
 import com.synopsys.integration.detect.interactive.mode.DefaultInteractiveMode;
-import com.synopsys.integration.detect.interactive.InteractiveManager;
-import com.synopsys.integration.detect.interactive.InteractiveOption;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
@@ -165,10 +163,10 @@ public class DetectBoot {
         printDetectInfo(detectInfo);
 
         if (detectArgumentState.isInteractive()) {
-            List<InteractiveOption> interactiveOptions = startInteractiveMode(propertySources);
-            Map<String, String> interactivePropertyMap = interactiveOptions.stream()
+            final List<InteractiveOption> interactiveOptions = startInteractiveMode(propertySources);
+            final Map<String, String> interactivePropertyMap = interactiveOptions.stream()
                                                              .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), option -> option.getInteractiveValue()));
-            PropertySource interactivePropertySource = new MapPropertySource("interactive", interactivePropertyMap);
+            final PropertySource interactivePropertySource = new MapPropertySource("interactive", interactivePropertyMap);
             propertySources.add(0, interactivePropertySource);
         }
         final PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
