@@ -317,8 +317,8 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
     }
 
     open fun createBlackDuckSignatureScannerOptions(): BlackDuckSignatureScannerOptions {
-        val signatureScannerPaths = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_PATHS)
-        val exclusionPatterns = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS)
+        val signatureScannerPaths = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_PATHS) ?: emptyList()
+        val exclusionPatterns = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS) ?: emptyList()
         val exclusionNamePatterns = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS)
 
         val scanMemory = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_MEMORY)
@@ -330,11 +330,11 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH)
 
         // TODO: Switch data types from String to Path
-        val offlineLocalScannerInstallPath = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH)?.resolvePath(pathResolver).toString()
-        val onlineLocalScannerInstallPath = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH)?.resolvePath(pathResolver).toString()
+        val offlineLocalScannerInstallPath = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH)?.resolvePath(pathResolver)
+        val onlineLocalScannerInstallPath = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH)?.resolvePath(pathResolver)
         val userProvidedScannerInstallUrl = getPropertyWithDeprecations(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL)
 
-        if (StringUtils.isNotBlank(offlineLocalScannerInstallPath) && StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
+        if (offlineLocalScannerInstallPath != null && StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
             throw DetectUserFriendlyException(
                     "You have provided both a Black Duck signature scanner url AND a local Black Duck signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
                     ExitCodeType.FAILURE_GENERAL_ERROR)
@@ -354,8 +354,23 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
             is ExtendedValue -> fromSnippetExtended(snippetMatching.value)
             is BaseValue -> snippetMatching.value
         }
-        return BlackDuckSignatureScannerOptions(signatureScannerPaths, exclusionPatterns, exclusionNamePatterns, offlineLocalScannerInstallPath, onlineLocalScannerInstallPath, userProvidedScannerInstallUrl, scanMemory,
-                findParallelProcessors(), dryRun, snippetMatchingEnum, uploadSource, codeLocationPrefix, codeLocationSuffix, additionalArguments, maxDepth)
+        return BlackDuckSignatureScannerOptions(
+                signatureScannerPaths = signatureScannerPaths,
+                exclusionNamePatterns = exclusionNamePatterns,
+                exclusionPatterns = exclusionPatterns,
+                offlineLocalScannerInstallPath = offlineLocalScannerInstallPath,
+                onlineLocalScannerInstallPath = onlineLocalScannerInstallPath,
+                userProvidedScannerInstallUrl = userProvidedScannerInstallUrl,
+                scanMemory = scanMemory,
+                parallelProcessors = findParallelProcessors(),
+                dryRun = dryRun,
+                snippetMatching = snippetMatchingEnum,
+                uploadSource = uploadSource,
+                codeLocationPrefix = codeLocationPrefix,
+                codeLocationSuffix = codeLocationSuffix,
+                additionalArguments = additionalArguments,
+                maxDepth = maxDepth
+        )
     }
 
     fun createBlackDuckPostOptions(): BlackDuckPostOptions {
