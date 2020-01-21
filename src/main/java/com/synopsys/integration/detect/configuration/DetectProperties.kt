@@ -377,21 +377,20 @@ class DetectProperties {
             groups(DetectGroup.Paths, DetectGroup.Detector, DetectGroup.Global, DetectGroup.SourceScan)
             category(DetectCategory.Advanced)
         }
-        val DETECT_DETECTOR_SEARCH_EXCLUSION = NullableStringListProperty("detect.detector.search.exclusion").apply {
+        val DETECT_DETECTOR_SEARCH_EXCLUSION = StringListProperty("detect.detector.search.exclusion", emptyList()).apply {
             info("Detector Directory Exclusions", "3.2.0")
             help("A comma-separated list of directory names to exclude from detector search.", "While searching the source directory to determine which detectors to run, subdirectories whose name appear in this list will not be searched.")
             groups(DetectGroup.Paths, DetectGroup.Detector, DetectGroup.Global, DetectGroup.SourceScan)
             category(DetectCategory.Advanced)
         }
-        val DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS = NullableStringListProperty("detect.detector.search.exclusion.patterns").apply {
+        val DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS = StringListProperty("detect.detector.search.exclusion.patterns", emptyList()).apply {
             info(" Detector Directory Patterns Exclusions", "3.2.0")
             help("A comma-separated list of directory name patterns to exclude from detector search.", "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters).For example, suppose you're running in bash on Linux, you've set--detect.detector.search.depth = 1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it:--detect.detector.search.exclusion.patterns = blackduck-common, --detect.detector.search.exclusion.patterns = 'blackduck-common', --detect.detector.search.exclusion.patterns = 'blackduck-*'")
             groups(DetectGroup.Paths, DetectGroup.Detector, DetectGroup.Global, DetectGroup.SourceScan)
             category(DetectCategory.Advanced)
         }
 
-        // TODO: Should this be a NullablePathProperty? If so a list version of this property should be created.
-        val DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS = NullableStringListProperty("detect.detector.search.exclusion.paths").apply {
+        val DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS = StringListProperty("detect.detector.search.exclusion.paths", emptyList()).apply {
             info(" Detector Directory Path Exclusions", "5.5.0")
             help("A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)", "This property performs the same basic function as detect.detector.search.exclusion, but lets you be more specific.")
             groups(DetectGroup.Paths, DetectGroup.Detector, DetectGroup.Global, DetectGroup.SourceScan)
@@ -877,6 +876,7 @@ class DetectProperties {
             groups(DetectGroup.BlackduckServer, DetectGroup.Global)
         }
         val DETECT_REQUIRED_DETECTOR_TYPES = NullableStringProperty("detect.required.detector.types").apply {
+            // TODO: Make this an enum.
             info("Required Detect Types", "4.3.0")
             help("The set of required detectors.", "If you want one or more detectors to be required (must be found to apply), use this property to specify the set of required detectors. If this property is set, and one (or more) of the given detectors is not found to apply, Detect will fail.")
             groups(DetectGroup.Detector, DetectGroup.Global)
