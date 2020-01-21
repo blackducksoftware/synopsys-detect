@@ -13,6 +13,6 @@ class PassthroughTests {
         val primarySource = MapPropertySource("primary", mapOf("pass.one" to "one value"))
         val configuration = PropertyConfiguration(listOf(primarySource, secondarySource))
 
-        Assertions.assertEquals(mapOf("pass.one" to "one value", "pass.two" to "two value"), configuration.getRaw(passthrough))
+        Assertions.assertEquals(mapOf("one" to "one value", "two" to "two value"), configuration.getRaw(passthrough))
     }
 }
