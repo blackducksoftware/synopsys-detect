@@ -31,25 +31,25 @@ public class DetectConfigrationTest {
         final String givenKeyFull = "detect.phone.home.passthrough." + givenKeyPhoneHomePart;
         final String givenValue = "testValue";
 
-        HashMap<String, String> values = new HashMap<>();
+        final HashMap<String, String> values = new HashMap<>();
         values.put(givenKeyFull, givenValue);
-        List<PropertySource> propertySources = new ArrayList<>();
+        final List<PropertySource> propertySources = new ArrayList<>();
         propertySources.add(new MapPropertySource("test", values));
-        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
+        final PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
 
-        Map<String, String> phoneHomePropertiesMap = propertyConfiguration.getRaw(DetectProperties.Companion.getPHONEHOME_PASSTHROUGH());
+        final Map<String, String> phoneHomePropertiesMap = propertyConfiguration.getRaw(DetectProperties.Companion.getPHONEHOME_PASSTHROUGH());
         Assertions.assertEquals(givenValue, phoneHomePropertiesMap.get(givenKeyPhoneHomePart));
     }
 
     @Test
     public void testDeprecated() {
-        HashMap<String, String> values = new HashMap<>();
+        final HashMap<String, String> values = new HashMap<>();
         values.put(DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS().getKey(), "2");
-        List<PropertySource> propertySources = new ArrayList<>();
+        final List<PropertySource> propertySources = new ArrayList<>();
         propertySources.add(new MapPropertySource("test", values));
-        PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
-        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new TildeInPathResolver("home", OperatingSystemType.WINDOWS, false));
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
+        final PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
+        final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new TildeInPathResolver("home", OperatingSystemType.WINDOWS, false));
+        final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
         Assertions.assertEquals(2, (int) blackDuckSignatureScannerOptions.getParallelProcessors());
     }
 }

@@ -40,7 +40,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.property.types.path.TildeResolver;
+import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
@@ -137,7 +137,7 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public TildeResolver tildeResolver() {
+    public PathResolver tildeResolver() {
         final boolean shouldResolveTilde = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_RESOLVE_TILDE_IN_PATHS());
         return new TildeInPathResolver(SystemUtils.USER_HOME, detectInfo.getCurrentOs(), shouldResolveTilde);
     }

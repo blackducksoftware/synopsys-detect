@@ -48,7 +48,7 @@ import com.synopsys.integration.configuration.config.UnknownSpringConfiguration;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.PropertyDeprecationInfo;
-import com.synopsys.integration.configuration.property.types.path.TildeResolver;
+import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectableBeanConfiguration;
@@ -172,12 +172,12 @@ public class DetectBoot {
 
         logger.debug("Initializing Detect.");
 
-        final TildeResolver tildeResolver = new TildeInPathResolver(SystemUtils.USER_HOME, detectInfo.getCurrentOs(), detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_RESOLVE_TILDE_IN_PATHS()));
-        final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, tildeResolver);
+        final PathResolver pathResolver = new TildeInPathResolver(SystemUtils.USER_HOME, detectInfo.getCurrentOs(), detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_RESOLVE_TILDE_IN_PATHS()));
+        final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver);
         final DirectoryManager directoryManager = new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
         final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectConfiguration, detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
-        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, tildeResolver);
+        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver);
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
@@ -186,7 +186,7 @@ public class DetectBoot {
             final String airGapSuffix = inspectorFilter.getIncludedSet().stream().sorted().collect(Collectors.joining("-"));
             final File airGapZip;
             try {
-                airGapZip = createAirGapZip(inspectorFilter, detectConfiguration, tildeResolver, directoryManager, gson, eventSystem, configuration, airGapSuffix);
+                airGapZip = createAirGapZip(inspectorFilter, detectConfiguration, pathResolver, directoryManager, gson, eventSystem, configuration, airGapSuffix);
             } catch (final DetectUserFriendlyException e) {
                 return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
             }
@@ -381,12 +381,12 @@ public class DetectBoot {
         }
     }
 
-    private File createAirGapZip(final DetectFilter inspectorFilter, final PropertyConfiguration detectConfiguration, final TildeResolver tildeResolver, final DirectoryManager directoryManager, final Gson gson,
+    private File createAirGapZip(final DetectFilter inspectorFilter, final PropertyConfiguration detectConfiguration, final PathResolver pathResolver, final DirectoryManager directoryManager, final Gson gson,
         final EventSystem eventSystem,
         final Configuration configuration,
         final String airGapSuffix)
         throws DetectUserFriendlyException {
-        final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, tildeResolver);
+        final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver);
         final ConnectionDetails connectionDetails = detectConfigurationFactory.createConnectionDetails();
         final ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
         final ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
@@ -397,7 +397,7 @@ public class DetectBoot {
         final SimpleLocalExecutableFinder localExecutableFinder = new SimpleLocalExecutableFinder(simpleExecutableFinder);
         final SimpleSystemExecutableFinder simpleSystemExecutableFinder = new SimpleSystemExecutableFinder(simpleExecutableFinder);
         final SimpleExecutableResolver executableResolver = new SimpleExecutableResolver(new CachedExecutableResolverOptions(false), localExecutableFinder, simpleSystemExecutableFinder);
-        final DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(executableResolver, detectConfiguration, tildeResolver);
+        final DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(executableResolver, detectConfiguration, pathResolver);
         final GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
         final SimpleExecutableRunner simpleExecutableRunner = new SimpleExecutableRunner();
         final GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, gradleInspectorInstaller, simpleExecutableRunner, configuration);

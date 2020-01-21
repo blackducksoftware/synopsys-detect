@@ -32,8 +32,8 @@ class PathValueParser : ValueParser<PathValue>() {
 }
 
 class PathValue(private val value: String) {
-    fun resolvePath(tildeResolver: TildeResolver): Path {
-        return tildeResolver.resolveTilde(value)
+    fun resolvePath(pathResolver: PathResolver): Path? {
+        return pathResolver.resolvePath(value)
     }
 
     override fun toString(): String {
@@ -41,6 +41,6 @@ class PathValue(private val value: String) {
     }
 }
 
-interface TildeResolver {
-    fun resolveTilde(filePath: String): Path
+interface PathResolver {
+    fun resolvePath(filePath: String): Path?
 }

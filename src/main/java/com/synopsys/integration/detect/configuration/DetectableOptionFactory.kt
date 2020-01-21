@@ -23,7 +23,7 @@
 package com.synopsys.integration.detect.configuration
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration
-import com.synopsys.integration.configuration.property.types.path.TildeResolver
+import com.synopsys.integration.configuration.property.types.path.PathResolver
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem
@@ -52,7 +52,7 @@ import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import java.util.*
 
-class DetectableOptionFactory(private val detectConfiguration: PropertyConfiguration, private val diagnosticSystemOptional: Optional<DiagnosticSystem>, private val tildeResolver: TildeResolver) {
+class DetectableOptionFactory(private val detectConfiguration: PropertyConfiguration, private val diagnosticSystemOptional: Optional<DiagnosticSystem>, private val pathResolver: PathResolver) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     fun createBazelDetectableOptions(): BazelDetectableOptions {
@@ -100,7 +100,7 @@ class DetectableOptionFactory(private val detectConfiguration: PropertyConfigura
         val dockerInspectorVersion = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_INSPECTOR_VERSION)
         val additionalDockerProperties = detectConfiguration.getRaw(DetectProperties.DOCKER_PASSTHROUGH).toMutableMap()
         diagnosticSystemOptional.ifPresent { diagnosticSystem -> additionalDockerProperties.putAll(diagnosticSystem.additionalDockerProperties) }
-        val dockerInspectorPath = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_INSPECTOR_PATH)?.resolvePath(tildeResolver)?.toString() // TODO: Switch data types from String to Path
+        val dockerInspectorPath = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_INSPECTOR_PATH)?.resolvePath(pathResolver)?.toString() // TODO: Switch data types from String to Path
         val dockerPlatformTopLayerId = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_PLATFORM_TOP_LAYER_ID)
         return DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, dockerImageId, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath, dockerPlatformTopLayerId)
     }
@@ -162,7 +162,7 @@ class DetectableOptionFactory(private val detectConfiguration: PropertyConfigura
 
     fun createPipInspectorDetectableOptions(): PipInspectorDetectableOptions {
         val pipProjectName = detectConfiguration.getValue(DetectProperties.DETECT_PIP_PROJECT_NAME)
-        val requirementsFilePath = detectConfiguration.getValue(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH).map { it.resolvePath(tildeResolver) }.map { it.toString() } // TODO: Switch data types from String to Path
+        val requirementsFilePath = detectConfiguration.getValue(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH).map { it.resolvePath(pathResolver) }.map { it.toString() } // TODO: Switch data types from String to Path
         return PipInspectorDetectableOptions(pipProjectName, requirementsFilePath)
     }
 
@@ -189,7 +189,7 @@ class DetectableOptionFactory(private val detectConfiguration: PropertyConfigura
         val excludedModules = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_EXCLUDED_MODULES)
         val includedModules = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_INCLUDED_MODULES)
         val packagesRepoUrl = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_PACKAGES_REPO_URL)
-        val nugetConfigPath = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_CONFIG_PATH)?.resolvePath(tildeResolver)?.toString() // TODO: Switch data types from String to Path
+        val nugetConfigPath = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_CONFIG_PATH)?.resolvePath(pathResolver)?.toString() // TODO: Switch data types from String to Path
         return NugetInspectorOptions(ignoreFailures, excludedModules, includedModules, packagesRepoUrl, nugetConfigPath)
     }
 
