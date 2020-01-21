@@ -380,24 +380,24 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
 
     fun createExecutablePaths(): DetectExecutableOptions {
         return DetectExecutableOptions(
-                bashUserPath = detectConfiguration.getValue(DetectProperties.DETECT_BASH_PATH)?.resolvePath(tildeResolver),
-                bazelUserPath = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_PATH)?.resolvePath(tildeResolver),
-                condaUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CONDA_PATH)?.resolvePath(tildeResolver),
-                cpanUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CPAN_PATH)?.resolvePath(tildeResolver),
-                cpanmUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CPANM_PATH)?.resolvePath(tildeResolver),
-                gradleUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_PATH)?.resolvePath(tildeResolver),
-                mavenUserPath = detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_PATH)?.resolvePath(tildeResolver),
-                npmUserPath = detectConfiguration.getValue(DetectProperties.DETECT_NPM_PATH)?.resolvePath(tildeResolver),
-                pearUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PEAR_PATH)?.resolvePath(tildeResolver),
-                pipenvUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PIPENV_PATH)?.resolvePath(tildeResolver),
-                pythonUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PYTHON_PATH)?.resolvePath(tildeResolver),
-                rebarUserPath = detectConfiguration.getValue(DetectProperties.DETECT_HEX_REBAR3_PATH)?.resolvePath(tildeResolver),
-                javaUserPath = detectConfiguration.getValue(DetectProperties.DETECT_JAVA_PATH)?.resolvePath(tildeResolver),
-                dockerUserPath = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_PATH)?.resolvePath(tildeResolver),
-                dotnetUserPath = detectConfiguration.getValue(DetectProperties.DETECT_DOTNET_PATH)?.resolvePath(tildeResolver),
-                gitUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GIT_PATH)?.resolvePath(tildeResolver),
-                goUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GO_PATH)?.resolvePath(tildeResolver),
-                swiftUserPath = detectConfiguration.getValue(DetectProperties.DETECT_SWIFT_PATH)?.resolvePath(tildeResolver)
+                bashUserPath = detectConfiguration.getValue(DetectProperties.DETECT_BASH_PATH)?.resolvePath(pathResolver),
+                bazelUserPath = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_PATH)?.resolvePath(pathResolver),
+                condaUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CONDA_PATH)?.resolvePath(pathResolver),
+                cpanUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CPAN_PATH)?.resolvePath(pathResolver),
+                cpanmUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CPANM_PATH)?.resolvePath(pathResolver),
+                gradleUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_PATH)?.resolvePath(pathResolver),
+                mavenUserPath = detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_PATH)?.resolvePath(pathResolver),
+                npmUserPath = detectConfiguration.getValue(DetectProperties.DETECT_NPM_PATH)?.resolvePath(pathResolver),
+                pearUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PEAR_PATH)?.resolvePath(pathResolver),
+                pipenvUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PIPENV_PATH)?.resolvePath(pathResolver),
+                pythonUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PYTHON_PATH)?.resolvePath(pathResolver),
+                rebarUserPath = detectConfiguration.getValue(DetectProperties.DETECT_HEX_REBAR3_PATH)?.resolvePath(pathResolver),
+                javaUserPath = detectConfiguration.getValue(DetectProperties.DETECT_JAVA_PATH)?.resolvePath(pathResolver),
+                dockerUserPath = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_PATH)?.resolvePath(pathResolver),
+                dotnetUserPath = detectConfiguration.getValue(DetectProperties.DETECT_DOTNET_PATH)?.resolvePath(pathResolver),
+                gitUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GIT_PATH)?.resolvePath(pathResolver),
+                goUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GO_PATH)?.resolvePath(pathResolver),
+                swiftUserPath = detectConfiguration.getValue(DetectProperties.DETECT_SWIFT_PATH)?.resolvePath(pathResolver)
         )
     }
 }
