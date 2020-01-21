@@ -23,34 +23,28 @@
 package com.synopsys.integration.detect.workflow.airgap;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class AirGapOptions {
-    private final String dockerInspectorPathOverride;
-    private final String gradleInspectorPathOverride;
-    private final String nugetInspectorPathOverride;
+    private final Path dockerInspectorPathOverride;
+    private final Path gradleInspectorPathOverride;
+    private final Path nugetInspectorPathOverride;
 
-    public AirGapOptions(final String dockerInspectorPathOverride, final String gradleInspectorPathOverride, final String nugetInspectorPathOverride) {
+    public AirGapOptions(final Path dockerInspectorPathOverride, final Path gradleInspectorPathOverride, final Path nugetInspectorPathOverride) {
         this.dockerInspectorPathOverride = dockerInspectorPathOverride;
         this.gradleInspectorPathOverride = gradleInspectorPathOverride;
         this.nugetInspectorPathOverride = nugetInspectorPathOverride;
     }
 
-    // TODO: Switch data types from Strings to Paths
-    public AirGapOptions(final Path dockerInspectorPathOverride, final Path gradleInspectorPathOverride, final Path nugetInspectorPathOverride) {
-        this.dockerInspectorPathOverride = dockerInspectorPathOverride.toString();
-        this.gradleInspectorPathOverride = gradleInspectorPathOverride.toString();
-        this.nugetInspectorPathOverride = nugetInspectorPathOverride.toString();
+    public Optional<Path> getDockerInspectorPathOverride() {
+        return Optional.ofNullable(dockerInspectorPathOverride);
     }
 
-    public String getDockerInspectorPathOverride() {
-        return dockerInspectorPathOverride;
+    public Optional<Path> getGradleInspectorPathOverride() {
+        return Optional.ofNullable(gradleInspectorPathOverride);
     }
 
-    public String getGradleInspectorPathOverride() {
-        return gradleInspectorPathOverride;
-    }
-
-    public String getNugetInspectorPathOverride() {
-        return nugetInspectorPathOverride;
+    public Optional<Path> getNugetInspectorPathOverride() {
+        return Optional.ofNullable(nugetInspectorPathOverride);
     }
 }

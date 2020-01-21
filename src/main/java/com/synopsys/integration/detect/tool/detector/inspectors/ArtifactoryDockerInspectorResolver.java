@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.tool.detector.inspectors;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -106,7 +107,9 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
     private List<File> getAirGapInspectorImageTarfiles() {
         final List<File> airGapInspectorImageTarfiles;
         airGapInspectorImageTarfiles = new ArrayList<>();
-        final String dockerInspectorAirGapPath = airGapInspectorPaths.getDockerInspectorAirGapPath();
+        final String dockerInspectorAirGapPath = airGapInspectorPaths.getDockerInspectorAirGapPath()
+                                                     .map(Path::toString)
+                                                     .orElse(null);
         for (final String inspectorName : inspectorNames) {
             final File osImage = new File(dockerInspectorAirGapPath, IMAGE_INSPECTOR_FAMILY + "-" + inspectorName + ".tar");
             airGapInspectorImageTarfiles.add(osImage);
