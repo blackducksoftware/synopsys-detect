@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -212,6 +213,10 @@ public abstract class InteractiveMode {
 
     public List<InteractiveOption> getInteractiveOptions() {
         return new ArrayList<>(propertyToOptionMap.values());
+    }
+
+    public Map<String, String> toPropertyMap() {
+        return propertyToOptionMap.values().stream().collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), option -> option.getInteractiveValue()));
     }
 
 }
