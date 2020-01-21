@@ -24,6 +24,7 @@ import com.synopsys.integration.util.NameVersion;
 
 public class BdioCodeLocationCreatorTest {
 
+    // TODO: This test seems suspiciously long and like it might not be testing much. -jp
     @Test
     public void testCreateFromDetectCodeLocations() throws IOException, DetectUserFriendlyException {
 
@@ -48,7 +49,7 @@ public class BdioCodeLocationCreatorTest {
         final DetectCodeLocation detectCodeLocation = DetectCodeLocation.forCreator(dependencyGraph, sourceDir, externalId, "testCreator");
         final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
         detectCodeLocations.add(detectCodeLocation);
-        Mockito.when(codeLocationNameManager.createCodeLocationName(detectCodeLocation, sourceDir, projectNameVersion.getName(), projectNameVersion.getVersion(), null, null)).thenReturn("testCodeLocationName");
+        Mockito.when(codeLocationNameManager.createCodeLocationName(detectCodeLocation, sourceDir, projectNameVersion.getName(), projectNameVersion.getVersion(), "", "")).thenReturn("testCodeLocationName");
 
         final BdioCodeLocationResult result = creator.createFromDetectCodeLocations(detectCodeLocations, "", "", projectNameVersion);
 

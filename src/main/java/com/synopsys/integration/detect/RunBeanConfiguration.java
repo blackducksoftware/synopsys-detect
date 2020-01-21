@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import org.apache.commons.lang3.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
@@ -40,7 +39,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
@@ -53,7 +51,6 @@ import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDocke
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScanner;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
-import com.synopsys.integration.detect.util.TildeInPathResolver;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
@@ -83,6 +80,8 @@ public class RunBeanConfiguration {
     public DetectInfo detectInfo;
     @Autowired
     public PropertyConfiguration detectConfiguration;
+    @Autowired
+    public DetectConfigurationFactory detectConfigurationFactory;
     @Autowired
     public DirectoryManager directoryManager;
     @Autowired
@@ -123,7 +122,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        return new ConnectionFactory(detectConfigurationFactory().createConnectionDetails());
+        return new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
     }
 
     @Bean
@@ -134,17 +133,6 @@ public class RunBeanConfiguration {
     @Bean
     public AirGapPathFinder airGapPathFinder() {
         return new AirGapPathFinder();
-    }
-
-    @Bean
-    public PathResolver tildeResolver() {
-        final boolean shouldResolveTilde = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_RESOLVE_TILDE_IN_PATHS());
-        return new TildeInPathResolver(SystemUtils.USER_HOME, detectInfo.getCurrentOs(), shouldResolveTilde);
-    }
-
-    @Bean
-    public DetectConfigurationFactory detectConfigurationFactory() {
-        return new DetectConfigurationFactory(detectConfiguration, tildeResolver());
     }
 
     @Bean
@@ -165,7 +153,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public AirGapInspectorPaths airGapManager() {
-        final AirGapOptions airGapOptions = detectConfigurationFactory().createAirGapOptions();
+        final AirGapOptions airGapOptions = detectConfigurationFactory.createAirGapOptions();
         return new AirGapInspectorPaths(airGapPathFinder(), airGapOptions);
     }
 
@@ -201,7 +189,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public DetectExecutableResolver detectExecutableResolver() {
-        return new DetectExecutableResolver(simpleExecutableResolver(), detectConfiguration, tildeResolver());
+        return new DetectExecutableResolver(simpleExecutableResolver(), detectConfigurationFactory.createExecutablePaths());
     }
 
     @Bean

@@ -38,6 +38,7 @@ import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions
 import com.synopsys.integration.detect.lifecycle.run.RunOptions
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFileFilter
+import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableOptions
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions
 import com.synopsys.integration.detect.util.filter.DetectToolFilter
 import com.synopsys.integration.detect.workflow.airgap.AirGapOptions
@@ -209,13 +210,11 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
     }
 
     fun createPhoneHomeOptions(): PhoneHomeOptions {
-        // TODO: Will this pick up deprecated properties as well? If so does the downstream code know what to do with them?
         val phoneHomePassthrough = detectConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH)
         return PhoneHomeOptions(phoneHomePassthrough)
     }
 
     fun createRunOptions(): RunOptions {
-        // TODO: Fix this when deprecated properties are removed
         // This is because it is double deprecated so we must check if either property is set.
         val sigScanDisabled = getPropertyWithDeprecationsNoDefault(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)
         val polarisEnabled = getPropertyWithDeprecationsNoDefault(DetectProperties.DETECT_SWIP_ENABLED)
@@ -377,5 +376,28 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val codeLocationPrefix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX)
         val codeLocationSuffix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX)
         return BinaryScanOptions(singleTarget, mutlipleTargets, codeLocationPrefix, codeLocationSuffix)
+    }
+
+    fun createExecutablePaths(): DetectExecutableOptions {
+        return DetectExecutableOptions(
+                bashUserPath = detectConfiguration.getValue(DetectProperties.DETECT_BASH_PATH)?.resolvePath(tildeResolver),
+                bazelUserPath = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_PATH)?.resolvePath(tildeResolver),
+                condaUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CONDA_PATH)?.resolvePath(tildeResolver),
+                cpanUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CPAN_PATH)?.resolvePath(tildeResolver),
+                cpanmUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CPANM_PATH)?.resolvePath(tildeResolver),
+                gradleUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_PATH)?.resolvePath(tildeResolver),
+                mavenUserPath = detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_PATH)?.resolvePath(tildeResolver),
+                npmUserPath = detectConfiguration.getValue(DetectProperties.DETECT_NPM_PATH)?.resolvePath(tildeResolver),
+                pearUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PEAR_PATH)?.resolvePath(tildeResolver),
+                pipenvUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PIPENV_PATH)?.resolvePath(tildeResolver),
+                pythonUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PYTHON_PATH)?.resolvePath(tildeResolver),
+                rebarUserPath = detectConfiguration.getValue(DetectProperties.DETECT_HEX_REBAR3_PATH)?.resolvePath(tildeResolver),
+                javaUserPath = detectConfiguration.getValue(DetectProperties.DETECT_JAVA_PATH)?.resolvePath(tildeResolver),
+                dockerUserPath = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_PATH)?.resolvePath(tildeResolver),
+                dotnetUserPath = detectConfiguration.getValue(DetectProperties.DETECT_DOTNET_PATH)?.resolvePath(tildeResolver),
+                gitUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GIT_PATH)?.resolvePath(tildeResolver),
+                goUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GO_PATH)?.resolvePath(tildeResolver),
+                swiftUserPath = detectConfiguration.getValue(DetectProperties.DETECT_SWIFT_PATH)?.resolvePath(tildeResolver)
+        )
     }
 }

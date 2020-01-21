@@ -231,6 +231,9 @@ public class DetectBoot {
         detectContext.registerBean(profiler);
 
         detectContext.registerBean(detectConfiguration);
+        detectContext.registerBean(detectableOptionFactory);
+        detectContext.registerBean(detectConfigurationFactory);
+
         detectContext.registerBean(detectInfo);
         detectContext.registerBean(directoryManager);
 
@@ -238,8 +241,6 @@ public class DetectBoot {
         detectContext.registerBean(objectMapper);
         detectContext.registerBean(xml);
         detectContext.registerBean(configuration);
-
-        detectContext.registerBean(detectableOptionFactory);
 
         detectContext.registerConfiguration(RunBeanConfiguration.class);
         detectContext.registerConfiguration(DetectableBeanConfiguration.class);
@@ -397,7 +398,7 @@ public class DetectBoot {
         final SimpleLocalExecutableFinder localExecutableFinder = new SimpleLocalExecutableFinder(simpleExecutableFinder);
         final SimpleSystemExecutableFinder simpleSystemExecutableFinder = new SimpleSystemExecutableFinder(simpleExecutableFinder);
         final SimpleExecutableResolver executableResolver = new SimpleExecutableResolver(new CachedExecutableResolverOptions(false), localExecutableFinder, simpleSystemExecutableFinder);
-        final DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(executableResolver, detectConfiguration, pathResolver);
+        final DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(executableResolver, detectConfigurationFactory.createExecutablePaths());
         final GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
         final SimpleExecutableRunner simpleExecutableRunner = new SimpleExecutableRunner();
         final GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, gradleInspectorInstaller, simpleExecutableRunner, configuration);
