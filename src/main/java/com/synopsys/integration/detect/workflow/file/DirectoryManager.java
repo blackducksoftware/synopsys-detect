@@ -23,11 +23,11 @@
 package com.synopsys.integration.detect.workflow.file;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,34 +85,30 @@ public class DirectoryManager {
     private final Map<ExtractionId, File> extractionDirectories = new HashMap<>();
 
     public DirectoryManager(final DirectoryOptions directoryOptions, final DetectRun detectRun) {
-        if (StringUtils.isBlank(directoryOptions.getSourcePathOverride())) {
-            sourceDirectory = new File(System.getProperty("user.dir"));
-        } else {
-            sourceDirectory = new File(directoryOptions.getSourcePathOverride());
-        }
+        sourceDirectory = directoryOptions.getSourcePathOverride()
+                              .map(Path::toFile)
+                              .orElse(new File(System.getProperty("user.dir")));
         logger.info("Source directory: " + sourceDirectory.getAbsolutePath());
 
         userHome = new File(System.getProperty("user.home"));
 
-        final File outputDirectory;
-        if (StringUtils.isBlank(directoryOptions.getOutputPathOverride())) {
-            outputDirectory = new File(userHome, "blackduck");
-            if (outputDirectory.getAbsolutePath().contains("systemprofile")) {
-                logger.warn("You appear to be running in 'systemprofile' which can happen when detect is invoked by a system account or as a service.");
-                logger.warn("If detect has full access to the output directory, no further action is necessary.");
-                logger.warn("However, this folder typically has restricted access and may cause exceptions in detect.");
-                logger.warn("To ensure continued operation, supply an output directory using " + DetectProperties.Companion.getDETECT_OUTPUT_PATH().getName() + " in the future.");
-            }
-        } else {
-            outputDirectory = new File(directoryOptions.getOutputPathOverride());
+        final File outputDirectory = directoryOptions.getOutputPathOverride()
+                                         .map(Path::toFile)
+                                         .orElse(new File(userHome, "blackduck"));
+        if (outputDirectory.getAbsolutePath().contains("systemprofile")) {
+            logger.warn("You appear to be running in 'systemprofile' which can happen when detect is invoked by a system account or as a service.");
+            logger.warn("If detect has full access to the output directory, no further action is necessary.");
+            logger.warn("However, this folder typically has restricted access and may cause exceptions in detect.");
+            logger.warn("To ensure continued operation, supply an output directory using " + DetectProperties.Companion.getDETECT_OUTPUT_PATH().getName() + " in the future.");
         }
         logger.info("Output directory: " + outputDirectory.getAbsolutePath());
 
-        if (StringUtils.isNotBlank(directoryOptions.getToolsOutputPath())) {
-            final File toolPath = new File(directoryOptions.getToolsOutputPath());
-            outputDirectories.put(OutputDirectory.TOOLS, toolPath);
-            logger.info("Tool directory: " + toolPath.getAbsolutePath());
-        }
+        directoryOptions.getToolsOutputPath()
+            .map(Path::toFile)
+            .ifPresent(toolPath -> {
+                outputDirectories.put(OutputDirectory.TOOLS, toolPath);
+                logger.info("Tool directory: " + toolPath.getAbsolutePath());
+            });
 
         EnumSet.allOf(OutputDirectory.class).stream()
             .filter(it -> !outputDirectories.containsKey(it))
@@ -131,13 +127,13 @@ public class DirectoryManager {
             .forEach(it -> runDirectories.put(it, new File(runDirectory, it.getDirectoryName())));
 
         //overrides
-        if (StringUtils.isNotBlank(directoryOptions.getBdioOutputPathOverride())) {
-            runDirectories.put(RunDirectory.BDIO, new File(directoryOptions.getBdioOutputPathOverride()));
-        }
+        directoryOptions.getBdioOutputPathOverride()
+            .map(Path::toFile)
+            .ifPresent(bdioOutputPath -> runDirectories.put(RunDirectory.BDIO, bdioOutputPath));
 
-        if (StringUtils.isNotBlank(directoryOptions.getScanOutputPathOverride())) {
-            runDirectories.put(RunDirectory.SCAN, new File(directoryOptions.getScanOutputPathOverride()));
-        }
+        directoryOptions.getScanOutputPathOverride()
+            .map(Path::toFile)
+            .ifPresent(scanOutputPath -> runDirectories.put(RunDirectory.SCAN, scanOutputPath));
     }
 
     public File getUserHome() {

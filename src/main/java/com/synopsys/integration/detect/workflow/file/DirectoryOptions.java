@@ -23,15 +23,16 @@
 package com.synopsys.integration.detect.workflow.file;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class DirectoryOptions {
-    private final String sourcePath;
-    private final String outputPath;
-    private final String bdioOutputPath;
-    private final String scanOutputPath;
-    private final String toolsOutputPath;
+    private final Path sourcePath;
+    private final Path outputPath;
+    private final Path bdioOutputPath;
+    private final Path scanOutputPath;
+    private final Path toolsOutputPath;
 
-    public DirectoryOptions(final String sourcePath, final String outputPath, final String bdioOutputPath, final String scanOutputPath, final String toolsOutputPath) {
+    public DirectoryOptions(final Path sourcePath, final Path outputPath, final Path bdioOutputPath, final Path scanOutputPath, final Path toolsOutputPath) {
         this.sourcePath = sourcePath;
         this.outputPath = outputPath;
         this.bdioOutputPath = bdioOutputPath;
@@ -39,32 +40,23 @@ public class DirectoryOptions {
         this.toolsOutputPath = toolsOutputPath;
     }
 
-    // TODO: Switch data types from Strings to Paths
-    public DirectoryOptions(final Path sourcePath, final Path outputPath, final Path bdioOutputPath, final Path scanOutputPath, final Path toolsOutputPath) {
-        this.sourcePath = sourcePath.toString();
-        this.outputPath = outputPath.toString();
-        this.bdioOutputPath = bdioOutputPath.toString();
-        this.scanOutputPath = scanOutputPath.toString();
-        this.toolsOutputPath = toolsOutputPath.toString();
+    public Optional<Path> getSourcePathOverride() {
+        return Optional.ofNullable(sourcePath);
     }
 
-    public String getSourcePathOverride() {
-        return sourcePath;
+    public Optional<Path> getOutputPathOverride() {
+        return Optional.ofNullable(outputPath);
     }
 
-    public String getOutputPathOverride() {
-        return outputPath;
+    public Optional<Path> getBdioOutputPathOverride() {
+        return Optional.ofNullable(bdioOutputPath);
     }
 
-    public String getBdioOutputPathOverride() {
-        return bdioOutputPath;
+    public Optional<Path> getScanOutputPathOverride() {
+        return Optional.ofNullable(scanOutputPath);
     }
 
-    public String getScanOutputPathOverride() {
-        return scanOutputPath;
-    }
-
-    public String getToolsOutputPath() {
-        return toolsOutputPath;
+    public Optional<Path> getToolsOutputPath() {
+        return Optional.ofNullable(toolsOutputPath);
     }
 }
