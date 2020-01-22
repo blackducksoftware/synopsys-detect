@@ -875,8 +875,7 @@ class DetectProperties {
             help("The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
             groups(DetectGroup.BlackduckServer, DetectGroup.Global)
         }
-        val DETECT_REQUIRED_DETECTOR_TYPES = NullableStringProperty("detect.required.detector.types").apply {
-            // TODO: Make this an enum.
+        val DETECT_REQUIRED_DETECTOR_TYPES = EnumListProperty("detect.required.detector.types", emptyList(), DetectorType::valueOf, DetectorType.values().toList()).apply {
             info("Required Detect Types", "4.3.0")
             help("The set of required detectors.", "If you want one or more detectors to be required (must be found to apply), use this property to specify the set of required detectors. If this property is set, and one (or more) of the given detectors is not found to apply, Detect will fail.")
             groups(DetectGroup.Detector, DetectGroup.Global)

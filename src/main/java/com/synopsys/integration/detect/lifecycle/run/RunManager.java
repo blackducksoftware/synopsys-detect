@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.lifecycle.run;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.misc.Nullable;
@@ -100,6 +101,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
@@ -208,7 +210,7 @@ public class RunManager {
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
             logger.info("Will include the detector tool.");
             final String projectBomTool = detectConfiguration.getValueOrNull(DetectProperties.Companion.getDETECT_PROJECT_DETECTOR());
-            final String requiredDetectors = detectConfiguration.getValueOrNull(DetectProperties.Companion.getDETECT_REQUIRED_DETECTOR_TYPES());
+            final List<DetectorType> requiredDetectors = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_REQUIRED_DETECTOR_TYPES());
             final boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_BUILDLESS());
 
             final DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();

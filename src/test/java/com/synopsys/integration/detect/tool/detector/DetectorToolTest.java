@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.tool.detector;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -12,12 +13,11 @@ import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.event.EventType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
-
-import com.synopsys.integration.detect.workflow.event.EventType;
 
 public class DetectorToolTest {
 
@@ -37,7 +37,7 @@ public class DetectorToolTest {
         final DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         final String projectBomTool = "testBomTool";
 
-        tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, "");
+        tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, new ArrayList<>());
 
         Mockito.verify(eventSystem).publishEvent(Mockito.any(EventType.class), Mockito.argThat(new FailureExitCodeRequestMatcher()));
     }
