@@ -25,6 +25,7 @@ package com.synopsys.integration.detect.lifecycle.run;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import org.antlr.v4.runtime.misc.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,7 +145,7 @@ public class RunManager {
         final UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, runResult, runOptions, detectToolFilter);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
-            final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName(), runOptions.getAggregateMode(), universalToolsResult);
+            final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName().orElse(null), runOptions.getAggregateMode(), universalToolsResult);
             runBlackDuckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
                 universalToolsResult.getNameVersion(), aggregateOptions);
         } else {
@@ -157,7 +158,7 @@ public class RunManager {
         return runResult;
     }
 
-    private AggregateOptions determineAggregationStrategy(final String aggregateName, final AggregateMode aggregateMode, final UniversalToolsResult universalToolsResult) {
+    private AggregateOptions determineAggregationStrategy(@Nullable final String aggregateName, final AggregateMode aggregateMode, final UniversalToolsResult universalToolsResult) {
         if (StringUtils.isNotBlank(aggregateName)) {
             if (universalToolsResult.anyFailed()) {
                 return AggregateOptions.aggregateButSkipEmpty(aggregateName, aggregateMode);
@@ -277,9 +278,9 @@ public class RunManager {
 
         ProjectVersionWrapper projectVersionWrapper = null;
 
-        BlackDuckServicesFactory blackDuckServicesFactory = null;
-        if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
-            blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().orElse(null);
+
+        if (blackDuckRunData.isOnline() && blackDuckServicesFactory != null) {
             logger.debug("Getting or creating project.");
             final DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
             final ProjectMappingService detectProjectMappingService = blackDuckServicesFactory.createProjectMappingService();

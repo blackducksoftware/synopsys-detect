@@ -71,17 +71,14 @@ class PropertyConfiguration(private val orderedPropertySources: List<PropertySou
     }
 
     fun wasKeyProvided(key: String): Boolean {
-        return when (val value = resolveFromCache(key)) {
+        return when (resolveFromCache(key)) {
             is SourceResolution -> true
             is NoResolution -> false
         }
     }
 
     fun <T> wasPropertyProvided(property: TypedProperty<T>): Boolean {
-        return when (val value = resolveFromCache(property.key)) {
-            is SourceResolution -> true
-            is NoResolution -> false
-        }
+        return wasKeyProvided(property.key)
     }
 
     fun getPropertySource(property: Property): String? {
