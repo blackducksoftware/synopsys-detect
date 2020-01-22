@@ -20,35 +20,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip.model;
+package com.synopsys.integration.detectable.detectables.pip.parser
 
-import java.util.List;
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraph
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraphEntry
 
-import com.google.gson.annotations.SerializedName;
+class PipEnvJsonGraphParser(private val gson: Gson) {
+    inline fun <reified T> Gson.fromJson(json: String): T = this.fromJson<T>(json, object : TypeToken<T>() {}.type)
 
-public class PipenvGraphEntry {
-    @SerializedName("package_name")
-    private final String name;
-    @SerializedName("installed_version")
-    private final String version;
-    @SerializedName("dependencies")
-    private final List<PipenvGraphDependency> children;
-
-    public PipenvGraphEntry(final String name, final String version, final List<PipenvGraphDependency> children) {
-        this.name = name;
-        this.version = version;
-        this.children = children;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public List<PipenvGraphDependency> getChildren() {
-        return children;
+    fun parse(pipenvGraphOutput: String): PipenvGraph {
+        val entries = gson.fromJson<List<PipenvGraphEntry>>(pipenvGraphOutput)
+        return PipenvGraph(entries)
     }
 }
