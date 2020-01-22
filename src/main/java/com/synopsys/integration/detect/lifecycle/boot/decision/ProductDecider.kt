@@ -62,7 +62,7 @@ class ProductDecider(private val detectConfigurationFactory: DetectConfiguration
     private fun determineBlackDuck(): BlackDuckDecision {
         val blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails()
         val offline = blackDuckConnectionDetails.offline
-        val blackDuckUrl = blackDuckConnectionDetails.blackduckUrl
+        val blackDuckUrl = blackDuckConnectionDetails.blackDuckUrl
 
         val blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions()
         val signatureScannerHostUrl = blackDuckSignatureScannerOptions.userProvidedScannerInstallUrl
