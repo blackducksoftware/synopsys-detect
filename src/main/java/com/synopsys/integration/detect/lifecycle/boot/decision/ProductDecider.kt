@@ -62,7 +62,7 @@ class ProductDecider(private val detectConfigurationFactory: DetectConfiguration
     private fun determineBlackDuck(): BlackDuckDecision {
         val blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails()
         val offline = blackDuckConnectionDetails.offline
-        val blackDuckUrl = blackDuckConnectionDetails.blackDuckUrl
+        val blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl()
 
         val blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions()
         val signatureScannerHostUrl = blackDuckSignatureScannerOptions.userProvidedScannerInstallUrl
@@ -76,7 +76,7 @@ class ProductDecider(private val detectConfigurationFactory: DetectConfiguration
         } else if (signatureScannerOfflineLocalPath != null) {
             logger.info("A local Black Duck signature scanner path was provided, which requires Black Duck offline mode.")
             return BlackDuckDecision.runOffline()
-        } else if (blackDuckUrl != null) {
+        } else if (blackDuckUrl.isPresent) {
             logger.debug("Black Duck will run: A Black Duck url was found.")
             return BlackDuckDecision.runOnline()
         } else {
