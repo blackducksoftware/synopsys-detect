@@ -215,9 +215,17 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH)
 
         //File Filter
+        val excludedFiles = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES).toMutableList()
         val excludedDirectories = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION)
         val excludedDirectoryPatterns = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS)
         val excludedDirectoryPaths = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS)
+
+        if (detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS)) {
+            val defaultExcluded = DetectorSearchExcludedDirectories.values()
+                    .map { it.directoryName }
+                    .toList()
+            excludedFiles.addAll(defaultExcluded)
+        }
         val fileFilter = DetectDetectorFileFilter(sourcePath, excludedDirectories, excludedDirectoryPaths, excludedDirectoryPatterns)
 
         return DetectorFinderOptions(fileFilter, maxDepth)
