@@ -841,8 +841,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
-    Detect Ignore Connection Failures (Advanced)
+  <a href="#detect-parallel-processors-advanced" class="md-nav__link">
+    Detect Parallel Processors (Advanced)
   </a>
   
 </li>
@@ -855,8 +855,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-parallel-processors-advanced" class="md-nav__link">
-    Detect Parallel Processors (Advanced)
+  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
+    Detect Ignore Connection Failures (Advanced)
   </a>
   
 </li>
@@ -1253,8 +1253,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
-    Detect Ignore Connection Failures (Advanced)
+  <a href="#detect-parallel-processors-advanced" class="md-nav__link">
+    Detect Parallel Processors (Advanced)
   </a>
   
 </li>
@@ -1267,8 +1267,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-parallel-processors-advanced" class="md-nav__link">
-    Detect Parallel Processors (Advanced)
+  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
+    Detect Ignore Connection Failures (Advanced)
   </a>
   
 </li>
@@ -1377,12 +1377,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-ignore-connection-failures-advanced">Detect Ignore Connection Failures (Advanced)</h2>
-<pre><code>--detect.ignore.connection.failures=false
+<h2 id="detect-parallel-processors-advanced">Detect Parallel Processors (Advanced)</h2>
+<pre><code>--detect.parallel.processors=1
 </code></pre>
 
-<p>If true, Detect will ignore any products that it cannot connect to.</p>
-<p>If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.</p>
+<p>The number of threads to run processes in parallel, defaults to 1, but if you specify less than or equal to 0, the number of processors on the machine will be used.</p>
 <table>
 <thead>
 <tr>
@@ -1393,15 +1392,15 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>5.3.0</td>
+<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>Boolean</td>
+<td>Integer</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>false</td>
+<td>1</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1464,11 +1463,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-parallel-processors-advanced">Detect Parallel Processors (Advanced)</h2>
-<pre><code>--detect.parallel.processors=1
+<h2 id="detect-ignore-connection-failures-advanced">Detect Ignore Connection Failures (Advanced)</h2>
+<pre><code>--detect.ignore.connection.failures=false
 </code></pre>
 
-<p>The number of threads to run processes in parallel, defaults to 1, but if you specify less than or equal to 0, the number of processors on the machine will be used.</p>
+<p>If true, Detect will ignore any products that it cannot connect to.</p>
+<p>If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.</p>
 <table>
 <thead>
 <tr>
@@ -1479,15 +1479,15 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.0.0</td>
+<td>5.3.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>Integer</td>
+<td>Boolean</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>1</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

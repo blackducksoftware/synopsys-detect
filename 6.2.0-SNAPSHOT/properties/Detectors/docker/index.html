@@ -1007,8 +1007,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#docker-executable" class="md-nav__link">
-    Docker Executable
+  <a href="#docker-image-name" class="md-nav__link">
+    Docker Image Name
   </a>
   
 </li>
@@ -1021,8 +1021,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-image-name" class="md-nav__link">
-    Docker Image Name
+  <a href="#docker-executable" class="md-nav__link">
+    Docker Executable
   </a>
   
 </li>
@@ -1035,22 +1035,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#run-without-docker-in-path-advanced" class="md-nav__link">
-    Run Without Docker in Path (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
-    Docker Inspector .jar File Path (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#platform-top-layer-id-advanced" class="md-nav__link">
     Platform Top Layer ID (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-inspector-version-advanced" class="md-nav__link">
+    Docker Inspector Version (Advanced)
   </a>
   
 </li>
@@ -1063,8 +1056,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-version-advanced" class="md-nav__link">
-    Docker Inspector Version (Advanced)
+  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
+    Docker Inspector .jar File Path (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-without-docker-in-path-advanced" class="md-nav__link">
+    Run Without Docker in Path (Advanced)
   </a>
   
 </li>
@@ -1267,8 +1267,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#docker-executable" class="md-nav__link">
-    Docker Executable
+  <a href="#docker-image-name" class="md-nav__link">
+    Docker Image Name
   </a>
   
 </li>
@@ -1281,8 +1281,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-image-name" class="md-nav__link">
-    Docker Image Name
+  <a href="#docker-executable" class="md-nav__link">
+    Docker Executable
   </a>
   
 </li>
@@ -1295,22 +1295,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#run-without-docker-in-path-advanced" class="md-nav__link">
-    Run Without Docker in Path (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
-    Docker Inspector .jar File Path (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#platform-top-layer-id-advanced" class="md-nav__link">
     Platform Top Layer ID (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-inspector-version-advanced" class="md-nav__link">
+    Docker Inspector Version (Advanced)
   </a>
   
 </li>
@@ -1323,8 +1316,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-version-advanced" class="md-nav__link">
-    Docker Inspector Version (Advanced)
+  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
+    Docker Inspector .jar File Path (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#run-without-docker-in-path-advanced" class="md-nav__link">
+    Run Without Docker in Path (Advanced)
   </a>
   
 </li>
@@ -1347,11 +1347,11 @@
                 
                 
                 <h1 id="docker">docker</h1>
-<h2 id="docker-executable">Docker Executable</h2>
-<pre><code>--detect.docker.path
+<h2 id="docker-image-name">Docker Image Name</h2>
+<pre><code>--detect.docker.image
 </code></pre>
 
-<p>Path to the docker executable.</p>
+<p>The Docker image name to inspect. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
 <table>
 <thead>
 <tr>
@@ -1433,11 +1433,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-image-name">Docker Image Name</h2>
-<pre><code>--detect.docker.image
+<h2 id="docker-executable">Docker Executable</h2>
+<pre><code>--detect.docker.path
 </code></pre>
 
-<p>The Docker image name to inspect. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
+<p>Path to the docker executable.</p>
 <table>
 <thead>
 <tr>
@@ -1481,92 +1481,6 @@
 </code></pre>
 
 <p>A saved Docker image - must be a .tar file. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="run-without-docker-in-path-advanced">Run Without Docker in Path (Advanced)</h2>
-<pre><code>--detect.docker.path.required=false
-</code></pre>
-
-<p>If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="docker-inspector-46jar-file-path-advanced">Docker Inspector .jar File Path (Advanced)</h2>
-<pre><code>--detect.docker.inspector.path
-</code></pre>
-
-<p>This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a local Docker Inspector .jar file at this path.</p>
 <table>
 <thead>
 <tr>
@@ -1649,6 +1563,49 @@
 </tr>
 </tbody>
 </table>
+<h2 id="docker-inspector-version-advanced">Docker Inspector Version (Advanced)</h2>
+<pre><code>--detect.docker.inspector.version
+</code></pre>
+
+<p>Version of the Docker Inspector to use. By default Detect will attempt to automatically determine the version to use.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="docker-inspector-airgap-path-advanced">Docker Inspector AirGap Path (Advanced)</h2>
 <pre><code>--detect.docker.inspector.air.gap.path
 </code></pre>
@@ -1692,11 +1649,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-inspector-version-advanced">Docker Inspector Version (Advanced)</h2>
-<pre><code>--detect.docker.inspector.version
+<h2 id="docker-inspector-46jar-file-path-advanced">Docker Inspector .jar File Path (Advanced)</h2>
+<pre><code>--detect.docker.inspector.path
 </code></pre>
 
-<p>Version of the Docker Inspector to use. By default Detect will attempt to automatically determine the version to use.</p>
+<p>This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a local Docker Inspector .jar file at this path.</p>
 <table>
 <thead>
 <tr>
@@ -1716,6 +1673,49 @@
 <tr>
 <td>Default Value</td>
 <td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="run-without-docker-in-path-advanced">Run Without Docker in Path (Advanced)</h2>
+<pre><code>--detect.docker.path.required=false
+</code></pre>
+
+<p>If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
