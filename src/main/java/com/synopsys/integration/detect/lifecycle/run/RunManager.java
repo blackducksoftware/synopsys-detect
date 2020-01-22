@@ -278,9 +278,9 @@ public class RunManager {
 
         ProjectVersionWrapper projectVersionWrapper = null;
 
-        BlackDuckServicesFactory blackDuckServicesFactory = null;
-        if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
-            blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().orElse(null);
+
+        if (blackDuckRunData.isOnline() && blackDuckServicesFactory != null) {
             logger.debug("Getting or creating project.");
             final DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
             final ProjectMappingService detectProjectMappingService = blackDuckServicesFactory.createProjectMappingService();
