@@ -73,17 +73,17 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
                 if (airGapPath.isPresent()) {
                     generatedGradleScriptPath = gradleInspectorScriptCreator.createOfflineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions, airGapPath.get().getCanonicalPath());
                 } else {
-                    final Optional<String> version = gradleInspectorScriptOptions
-                                                         .getProvidedOnlineInspectorVersion() //TODO: i don't like this because it looks like stateless stream ops but is not, we call a method that makes web requests... - jp
-                                                         .map(gradleInspectorInstaller::findVersion)
-                                                         .filter(Optional::isPresent)
-                                                         .map(Optional::get);
-                    if (version.isPresent()) {
-                        logger.debug("Resolved the gradle inspector version: " + version.get());
-                        generatedGradleScriptPath = gradleInspectorScriptCreator.createOnlineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions, version.get());
+                    String gradleInspectorVersion;
+                    if (gradleInspectorScriptOptions.getProvidedOnlineInspectorVersion().isPresent()) {
+                        logger.debug("Attempting to use the provided gradle inspector version.");
+                        gradleInspectorVersion = gradleInspectorScriptOptions.getProvidedOnlineInspectorVersion().get();
                     } else {
-                        throw new DetectableException("Unable to find the gradle inspector version from artifactory.");
+                        logger.debug("Attempting to resolve the gradle inspector version from artifactory.");
+                        gradleInspectorVersion = gradleInspectorInstaller.findVersion()
+                                                     .orElseThrow(() -> new DetectableException("Unable to resolve the gradle inspector version from artifactory!")); // TODO: Really, this is how we want to handle null here?
                     }
+                    logger.debug("Resolved the gradle inspector version: " + gradleInspectorVersion);
+                    generatedGradleScriptPath = gradleInspectorScriptCreator.createOnlineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions, gradleInspectorVersion);
                 }
             } catch (final Exception e) {
                 throw new DetectableException(e);

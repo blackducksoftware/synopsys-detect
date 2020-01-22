@@ -86,20 +86,14 @@ public class ArtifactResolver {
      * @param artifactoryBaseUrl The base url of artifactory, such as http://int-jfrog01.dc1.lan:8081/artifactory/
      * @param repositoryUrl      The url of the repository with the artifact, such as bds-integrations-release/com/blackducksoftware/integration/integration-gradle-inspector
      * @param propertyKey        The property to find, such as DETECT_GRADLE_INSPECTOR_LATEST_0
-     * @param overrideVersion    The version to use, if provided, overrides the property tag.
      * @return the calculated version of the artifact
      */
-    public String resolveArtifactVersion(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey, final String overrideVersion) throws IntegrationException, DetectUserFriendlyException, IOException {
-        if (StringUtils.isNotBlank(overrideVersion)) {
-            logger.debug("Resolved version from override: " + overrideVersion);
-            return overrideVersion;
-        } else {
-            logger.debug(String.format("Resolving artifact version from repository %s with property %s", repositoryUrl, propertyKey));
-            final String apiUrl = artifactoryBaseUrl + "api/storage/" + repositoryUrl;
-            final String artifactVersion = downloadProperty(apiUrl, propertyKey);
-            logger.debug("Resolved version online: " + artifactVersion);
-            return artifactVersion;
-        }
+    public String resolveArtifactVersion(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey) throws IntegrationException, DetectUserFriendlyException, IOException {
+        logger.debug(String.format("Resolving artifact version from repository %s with property %s", repositoryUrl, propertyKey));
+        final String apiUrl = artifactoryBaseUrl + "api/storage/" + repositoryUrl;
+        final String artifactVersion = downloadProperty(apiUrl, propertyKey);
+        logger.debug("Resolved version online: " + artifactVersion);
+        return artifactVersion;
     }
 
     private String downloadProperty(final String apiUrl, final String propertyKey) throws IntegrationException, DetectUserFriendlyException, IOException {

@@ -42,9 +42,9 @@ public class GradleInspectorInstaller {
         this.artifactResolver = artifactResolver;
     }
 
-    public Optional<String> findVersion(final String suppliedGradleInspectorVersion) {
+    public Optional<String> findVersion() {
         try {
-            return Optional.of(artifactResolver.resolveArtifactVersion(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.GRADLE_INSPECTOR_REPO, ArtifactoryConstants.GRADLE_INSPECTOR_PROPERTY, suppliedGradleInspectorVersion));
+            return Optional.of(artifactResolver.resolveArtifactVersion(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.GRADLE_INSPECTOR_REPO, ArtifactoryConstants.GRADLE_INSPECTOR_PROPERTY));
         } catch (final IntegrationException | IOException | DetectUserFriendlyException e) {
             logger.debug("Failed to fetch Gradle inspector version from Artifactory", e);
         }

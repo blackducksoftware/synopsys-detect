@@ -62,12 +62,13 @@ public class GradleInspectorScriptCreator {
     private File createGradleInspector(final File templateFile, final GradleInspectorScriptOptions scriptOptions, final String resolvedOnlineInspectorVersion, final String airGapLibraryPaths) throws DetectableException {
         logger.debug("Generating the gradle script file.");
         final Map<String, String> gradleScriptData = new HashMap<>();
-        Optional.ofNullable(airGapLibraryPaths).ifPresent(arg -> gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(arg)));
-        Optional.ofNullable(resolvedOnlineInspectorVersion).ifPresent(arg -> gradleScriptData.put("gradleInspectorVersion", StringEscapeUtils.escapeJava(arg)));
-        scriptOptions.getExcludedProjectNames().ifPresent(arg -> gradleScriptData.put("excludedProjectNames", arg));
-        scriptOptions.getIncludedProjectNames().ifPresent(arg -> gradleScriptData.put("includedProjectNames", arg));
-        scriptOptions.getExcludedConfigurationNames().ifPresent(arg -> gradleScriptData.put("excludedConfigurationNames", arg));
-        scriptOptions.getIncludedConfigurationNames().ifPresent(arg -> gradleScriptData.put("includedConfigurationNames", arg));
+
+        gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(Optional.ofNullable(airGapLibraryPaths).orElse("")));
+        gradleScriptData.put("gradleInspectorVersion", StringEscapeUtils.escapeJava(Optional.ofNullable(resolvedOnlineInspectorVersion).orElse("")));
+        gradleScriptData.put("excludedProjectNames", scriptOptions.getExcludedProjectNames().orElse(""));
+        gradleScriptData.put("includedProjectNames", scriptOptions.getIncludedProjectNames().orElse(""));
+        gradleScriptData.put("excludedConfigurationNames", scriptOptions.getExcludedConfigurationNames().orElse(""));
+        gradleScriptData.put("includedConfigurationNames", scriptOptions.getIncludedConfigurationNames().orElse(""));
         gradleScriptData.put("customRepositoryUrl", scriptOptions.getGradleInspectorRepositoryUrl());
 
         try {
