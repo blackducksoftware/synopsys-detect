@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * synopsys-detect
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
