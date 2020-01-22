@@ -40,7 +40,6 @@ import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.tool.detector.DetectExecutableRunner;
-import com.synopsys.integration.detect.tool.detector.DetectFileFinder;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
@@ -96,11 +95,6 @@ public class RunBeanConfiguration {
     // This is not a bean!
     public FileFinder simpleFileFinder() {
         return new SimpleFileFinder();
-    }
-
-    @Bean
-    public FileFinder fileFinder() {
-        return new DetectFileFinder(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES, PropertyAuthority.NONE));
     }
 
     @Bean
