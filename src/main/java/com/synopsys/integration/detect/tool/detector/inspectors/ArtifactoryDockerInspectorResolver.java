@@ -83,7 +83,8 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
 
     private DockerInspectorInfo install() throws IntegrationException, IOException, DetectUserFriendlyException {
         final Optional<File> airGapDockerFolder = airGapInspectorPaths.getDockerInspectorAirGapFile();
-        final String providedJarPath = dockerDetectableOptions.getDockerInspectorPath();
+        // TODO: Handle null better.
+        final String providedJarPath = dockerDetectableOptions.getDockerInspectorPath().orElse("");
 
         if (StringUtils.isNotBlank(providedJarPath)) {
             logger.info("Docker tool will attempt to use the provided docker inspector.");
@@ -95,7 +96,8 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
         } else {
             logger.info("Docker tool will attempt to download or find docker inspector.");
             final File dockerDirectory = directoryManager.getPermanentDirectory(DOCKER_SHARED_DIRECTORY_NAME);
-            final String dockerVersion = dockerDetectableOptions.getDockerInspectorVersion();
+            // TODO: Handle null better.
+            final String dockerVersion = dockerDetectableOptions.getDockerInspectorVersion().orElse("");
             return new DockerInspectorInfo(dockerInspectorInstaller.installJar(dockerDirectory, Optional.of(dockerVersion)));
         }
     }

@@ -452,7 +452,8 @@ public class DetectableBeanConfiguration {
             locator = new AirgapNugetInspectorLocator(airGapInspectorPaths);
         } else {
             final NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactResolver);
-            locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion());
+            // TODO: Handle null better.
+            locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion().orElse(""));
         }
         return new LocatorNugetInspectorResolver(detectExecutableResolver, executableRunner, detectInfo, fileFinder, installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator);
     }

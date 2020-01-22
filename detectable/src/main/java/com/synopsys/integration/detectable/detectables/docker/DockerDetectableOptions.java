@@ -23,8 +23,7 @@
 package com.synopsys.integration.detectable.detectables.docker;
 
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
+import java.util.Optional;
 
 import com.synopsys.integration.log.LogLevel;
 
@@ -40,7 +39,8 @@ public class DockerDetectableOptions {
     private final String dockerInspectorPath;
     private final String dockerPlatformTopLayerId;
 
-    public DockerDetectableOptions(final boolean dockerPathRequired, final String suppliedDockerImage, final String suppliedDockerImageId, final String suppliedDockerTar, final LogLevel dockerInspectorLoggingLevel, final String dockerInspectorVersion,
+    public DockerDetectableOptions(final boolean dockerPathRequired, final String suppliedDockerImage, final String suppliedDockerImageId, final String suppliedDockerTar, final LogLevel dockerInspectorLoggingLevel,
+        final String dockerInspectorVersion,
         final Map<String, String> additionalDockerProperties, final String dockerInspectorPath, final String dockerPlatformTopLayerId) {
         this.dockerPathRequired = dockerPathRequired;
         this.suppliedDockerImage = suppliedDockerImage;
@@ -57,39 +57,39 @@ public class DockerDetectableOptions {
         return dockerPathRequired;
     }
 
-    public String getSuppliedDockerImage() {
-        return suppliedDockerImage;
+    public Optional<String> getSuppliedDockerImage() {
+        return Optional.ofNullable(suppliedDockerImage);
     }
 
-    public String getSuppliedDockerImageId() {
-        return suppliedDockerImageId;
+    public Optional<String> getSuppliedDockerImageId() {
+        return Optional.ofNullable(suppliedDockerImageId);
     }
 
-    public String getSuppliedDockerTar() {
-        return suppliedDockerTar;
+    public Optional<String> getSuppliedDockerTar() {
+        return Optional.ofNullable(suppliedDockerTar);
     }
 
     public boolean hasDockerImageOrTar() {
-        return StringUtils.isNotBlank(getSuppliedDockerImage()) || StringUtils.isNotBlank(getSuppliedDockerTar()) || StringUtils.isNotBlank(getSuppliedDockerImageId());
+        return getSuppliedDockerImage().isPresent() || getSuppliedDockerTar().isPresent() || getSuppliedDockerImageId().isPresent();
     }
 
     public LogLevel getDockerInspectorLoggingLevel() {
         return dockerInspectorLoggingLevel;
     }
 
-    public String getDockerInspectorVersion() {
-        return dockerInspectorVersion;
+    public Optional<String> getDockerInspectorVersion() {
+        return Optional.ofNullable(dockerInspectorVersion);
     }
 
     public Map<String, String> getAdditionalDockerProperties() {
         return additionalDockerProperties;
     }
 
-    public String getDockerInspectorPath() {
-        return dockerInspectorPath;
+    public Optional<String> getDockerInspectorPath() {
+        return Optional.ofNullable(dockerInspectorPath);
     }
 
-    public String getDockerPlatformTopLayerId() {
-        return dockerPlatformTopLayerId;
+    public Optional<String> getDockerPlatformTopLayerId() {
+        return Optional.ofNullable(dockerPlatformTopLayerId);
     }
 }

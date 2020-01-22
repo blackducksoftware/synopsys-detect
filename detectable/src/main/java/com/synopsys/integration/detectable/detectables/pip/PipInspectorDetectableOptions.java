@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.pip;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PipInspectorDetectableOptions {
     private final String pipProjectName;
@@ -33,8 +34,8 @@ public class PipInspectorDetectableOptions {
         this.requirementsFilePaths = requirementsFilePaths;
     }
 
-    public String getPipProjectName() {
-        return pipProjectName;
+    public Optional<String> getPipProjectName() {
+        return Optional.ofNullable(pipProjectName);
     }
 
     public List<String> getRequirementsFilePaths() {

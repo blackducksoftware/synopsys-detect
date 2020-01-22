@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,23 +44,21 @@ public class NugetInspectorArguments {
             "--output_directory=" + outputDirectory.getCanonicalPath(),
             "--ignore_failure=" + nugetInspectorOptions.isIgnoreFailures()));
 
-        final String nugetExcludedModules = nugetInspectorOptions.getExcludedModules();
-        if (StringUtils.isNotBlank(nugetExcludedModules)) {
-            options.add("--excluded_modules=" + nugetExcludedModules);
-        }
-        final String nugetIncludedModules = nugetInspectorOptions.getIncludedModules();
-        if (StringUtils.isNotBlank(nugetIncludedModules)) {
-            options.add("--included_modules=" + nugetIncludedModules);
-        }
+        nugetInspectorOptions.getExcludedModules()
+            .ifPresent(arg -> options.add("--excluded_modules=" + arg));
+
+        nugetInspectorOptions.getIncludedModules()
+            .ifPresent(arg -> options.add("--included_modules=" + arg));
+
         final List<String> nugetPackagesRepo = nugetInspectorOptions.getPackagesRepoUrl();
         if (nugetPackagesRepo != null && nugetPackagesRepo.size() > 0) {
             final String packagesRepos = String.join(",", nugetPackagesRepo);
             options.add("--packages_repo_url=" + packagesRepos);
         }
-        final String nugetConfigPath = nugetInspectorOptions.getNugetConfigPath();
-        if (StringUtils.isNotBlank(nugetConfigPath)) {
-            options.add("--nuget_config_path=" + nugetConfigPath);
-        }
+
+        nugetInspectorOptions.getNugetConfigPath()
+            .ifPresent(arg -> options.add("--nuget_config_path=" + arg));
+
         if (logger.isTraceEnabled()) {
             options.add("-v");
         }

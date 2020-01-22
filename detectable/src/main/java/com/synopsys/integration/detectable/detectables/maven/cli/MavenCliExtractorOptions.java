@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
+import java.util.Optional;
+
 public class MavenCliExtractorOptions {
     private final String mavenBuildCommand;
     private final String mavenExcludedScopes;
@@ -37,23 +39,23 @@ public class MavenCliExtractorOptions {
         this.mavenIncludedModules = mavenIncludedModules;
     }
 
-    public String getMavenBuildCommand() {
-        return mavenBuildCommand;
+    public Optional<String> getMavenBuildCommand() {
+        return Optional.ofNullable(mavenBuildCommand);
     }
 
-    public String getMavenExcludedScopes() {
-        return mavenExcludedScopes;
+    public Optional<String> getMavenExcludedScopes() {
+        return Optional.ofNullable(mavenExcludedScopes);
     }
 
-    public String getMavenIncludedScopes() {
-        return mavenIncludedScopes;
+    public Optional<String> getMavenIncludedScopes() {
+        return Optional.ofNullable(mavenIncludedScopes);
     }
 
-    public String getMavenExcludedModules() {
-        return mavenExcludedModules;
+    public Optional<String> getMavenExcludedModules() {
+        return Optional.ofNullable(mavenExcludedModules);
     }
 
-    public String getMavenIncludedModules() {
-        return mavenIncludedModules;
+    public Optional<String> getMavenIncludedModules() {
+        return Optional.ofNullable(mavenIncludedModules);
     }
 }

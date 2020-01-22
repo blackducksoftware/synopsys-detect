@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.npm.cli;
 
+import java.util.Optional;
+
 public class NpmCliExtractorOptions {
     private final boolean includeDevDependencies;
     private final String npmArguments;
@@ -35,7 +37,7 @@ public class NpmCliExtractorOptions {
         return includeDevDependencies;
     }
 
-    public String getNpmArguments() {
-        return npmArguments;
+    public Optional<String> getNpmArguments() {
+        return Optional.ofNullable(npmArguments);
     }
 }

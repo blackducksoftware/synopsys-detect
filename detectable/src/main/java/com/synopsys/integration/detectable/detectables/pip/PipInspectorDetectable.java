@@ -100,6 +100,7 @@ public class PipInspectorDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return pipInspectorExtractor.extract(environment.getDirectory(), pythonExe, pipInspector, setupFile, pipInspectorDetectableOptions.getRequirementsFilePaths(), pipInspectorDetectableOptions.getPipProjectName());
+        //TODO: Handle null better.
+        return pipInspectorExtractor.extract(environment.getDirectory(), pythonExe, pipInspector, setupFile, pipInspectorDetectableOptions.getRequirementsFilePaths(), pipInspectorDetectableOptions.getPipProjectName().orElse(""));
     }
 }

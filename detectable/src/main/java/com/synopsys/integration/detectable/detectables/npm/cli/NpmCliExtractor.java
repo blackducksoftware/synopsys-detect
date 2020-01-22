@@ -62,10 +62,9 @@ public class NpmCliExtractor {
             exeArgs.add("-prod");
         }
 
-        final String additionalArguments = npmCliExtractorOptions.getNpmArguments();
-        if (StringUtils.isNotBlank(additionalArguments)) {
-            exeArgs.addAll(Arrays.asList(additionalArguments.split(" ")));
-        }
+        npmCliExtractorOptions.getNpmArguments()
+            .map(arg -> arg.split(" "))
+            .ifPresent(additionalArguments -> exeArgs.addAll(Arrays.asList(additionalArguments)));
 
         final ExecutableOutput npmLsOutput;
         try {

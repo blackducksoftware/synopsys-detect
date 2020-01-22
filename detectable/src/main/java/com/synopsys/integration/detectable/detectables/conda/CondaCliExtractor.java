@@ -26,8 +26,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -50,11 +48,10 @@ public class CondaCliExtractor {
         try {
             final List<String> condaListOptions = new ArrayList<>();
             condaListOptions.add("list");
-            final String condaEnvironmentName = condaCliDetectableOptions.getCondaEnvironmentName();
-            if (StringUtils.isNotBlank(condaEnvironmentName)) {
+            condaCliDetectableOptions.getCondaEnvironmentName().ifPresent(env -> {
                 condaListOptions.add("-n");
-                condaListOptions.add(condaEnvironmentName);
-            }
+                condaListOptions.add(env);
+            });
             condaListOptions.add("--json");
             final ExecutableOutput condaListOutput = executableRunner.execute(directory, condaExe, condaListOptions);
 

@@ -207,7 +207,7 @@ class DetectProperties {
             help("The name of the build environment init script.")
             groups(DetectGroup.Bitbake, DetectGroup.SourceScan)
         }
-        val DETECT_BITBAKE_PACKAGE_NAMES = NullableStringListProperty("detect.bitbake.package.names").apply {
+        val DETECT_BITBAKE_PACKAGE_NAMES = StringListProperty("detect.bitbake.package.names", emptyList()).apply {
             info("BitBake Package Names", "4.4.0")
             help("A comma-separated list of package names from which dependencies are extracted.")
             groups(DetectGroup.Bitbake, DetectGroup.SourceScan)
