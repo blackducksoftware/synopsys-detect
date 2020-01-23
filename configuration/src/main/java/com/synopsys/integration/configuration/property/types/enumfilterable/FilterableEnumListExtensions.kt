@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.configuration.property.types.enumfilterable
 
-import com.synopsys.integration.configuration.property.types.enumsoft.ActualValue
-
 
 fun <T> List<FilterableEnumValue<T>>.containsNone(): Boolean {
     return this.any {
@@ -37,11 +35,10 @@ fun <T> List<FilterableEnumValue<T>>.containsNone(): Boolean {
 fun <T> List<FilterableEnumValue<T>>.containsAll(): Boolean {
     return this.any {
         when (it) {
-            is None -> true
+            is All -> true
             else -> false
         }
     }
-
 }
 
 fun <T> List<FilterableEnumValue<T>>.containsValue(value: T): Boolean {
@@ -62,11 +59,11 @@ fun <T> List<FilterableEnumValue<T>>.toValueList(clazz: Class<T>): List<T> {
     }.toList()
 }
 
-fun <T> List<FilterableEnumValue<T>>.populatedValues(allValues: Array<T>, clazz: Class<T>): List<T> {
+fun <T> List<FilterableEnumValue<T>>.populatedValues(clazz: Class<T>): List<T> {
     if (this.containsNone()) {
         return emptyList()
     } else if (this.containsAll()) {
-        return allValues.toList()
+        return clazz.enumConstants.toList()
     } else {
         return this.toValueList(clazz)
     }
