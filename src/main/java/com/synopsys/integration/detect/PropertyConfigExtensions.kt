@@ -25,12 +25,11 @@ package com.synopsys.integration.detect
 import com.synopsys.integration.configuration.config.PropertyConfiguration
 import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
-import java.util.*
 
 /**
  * Will get the first property in a list that was provided by the user.
  */
-fun <T> PropertyConfiguration.getPropertyWithDeprecations(vararg properties: NullableProperty<T>): T? {
+fun <T> PropertyConfiguration.getFirstProvidedValueOrNull(vararg properties: NullableProperty<T>): T? {
     for (property in properties) {
         if (this.wasPropertyProvided(property)) {
             return this.getValue(property)
@@ -44,26 +43,20 @@ fun <T> PropertyConfiguration.getPropertyWithDeprecations(vararg properties: Nul
  * Will get the first property in a list that was provided by the user.
  * If no property was provided, the default value of the first property will be used.
  */
-fun <T> PropertyConfiguration.getPropertyWithDeprecations(vararg properties: ValuedProperty<T>): T {
-    for (property in properties) {
-        if (this.wasPropertyProvided(property)) {
-            return this.getValue(property)
-        }
-    }
-
-    return properties.first().default
+fun <T> PropertyConfiguration.getFirstProvidedValueOrDefault(vararg properties: ValuedProperty<T>): T {
+    return getFirstProvidedValueOrNull(*properties) ?: properties.first().default
 }
 
 /**
  * Will get the first property in a list that was provided by the user.
  * If no property was provided, the default will NOT be used.
  */
-fun <T> PropertyConfiguration.getPropertyWithDeprecationsNoDefault(vararg properties: ValuedProperty<T>): Optional<T> {
+fun <T> PropertyConfiguration.getFirstProvidedValueOrNull(vararg properties: ValuedProperty<T>): T? {
     for (property in properties) {
         if (this.wasPropertyProvided(property)) {
-            return Optional.of(this.getValue(property))
+            return this.getValue(property)
         }
     }
 
-    return Optional.empty()
+    return null
 }
