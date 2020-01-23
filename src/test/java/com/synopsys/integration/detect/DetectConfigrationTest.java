@@ -11,11 +11,10 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.configuration.config.MapPropertySource;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.config.PropertySource;
+import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
-import com.synopsys.integration.detect.type.OperatingSystemType;
-import com.synopsys.integration.detect.util.TildeInPathResolver;
 
 //import com.synopsys.integration.detect.DetectInfo;
 //import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -48,7 +47,7 @@ public class DetectConfigrationTest {
         final List<PropertySource> propertySources = new ArrayList<>();
         propertySources.add(new MapPropertySource("test", values));
         final PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
-        final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new TildeInPathResolver("home", OperatingSystemType.WINDOWS, false));
+        final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver());
         final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
         Assertions.assertEquals(2, (int) blackDuckSignatureScannerOptions.getParallelProcessors());
     }

@@ -29,11 +29,10 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.configuration.config.MapPropertySource;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.config.PropertySource;
+import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.detect.configuration.BlackDuckConfigFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.type.OperatingSystemType;
-import com.synopsys.integration.detect.util.TildeInPathResolver;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.rest.client.ConnectionResult;
 
@@ -100,7 +99,7 @@ public class DefaultInteractiveMode extends InteractiveMode {
                         List<PropertySource> propertySources = new ArrayList<>(this.existingPropertySources);
                         propertySources.add(interactivePropertySource);
                         PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
-                        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new TildeInPathResolver("", OperatingSystemType.WINDOWS, false));
+                        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver());
                         BlackDuckConfigFactory blackDuckConfigFactory = new BlackDuckConfigFactory(detectConfigurationFactory.createBlackDuckConnectionDetails());
                         BlackDuckServerConfig blackDuckServerConfig = blackDuckConfigFactory.createServerConfig(new SilentIntLogger());
                         connectionAttempt = blackDuckServerConfig.attemptConnection(new SilentIntLogger());

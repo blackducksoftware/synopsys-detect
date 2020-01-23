@@ -12,15 +12,13 @@ import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 
-import com.synopsys.integration.detect.type.OperatingSystemType;
-
 public class TildeInPathResolverTest {
     @Test
     @DisabledOnOs(WINDOWS) // Due to backslashes being flipped.
     public void testResolvingTilde() {
         Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin", OperatingSystemType.LINUX, true);
+        final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin");
         final Path resolved = resolver.resolvePath("~/Documents/source/funtional/detect");
 
         Assertions.assertNotNull(resolved, "Resolved path should not be null.");
@@ -32,7 +30,7 @@ public class TildeInPathResolverTest {
     public void testResolvingTildeInWindows() {
         Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin", OperatingSystemType.WINDOWS, true);
+        final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin");
         final String filePath = "~/Documents/source/funtional/detect";
         final Path resolved = resolver.resolvePath(filePath);
 
@@ -44,8 +42,8 @@ public class TildeInPathResolverTest {
     @DisabledOnOs(WINDOWS) // Due to backslashes being flipped.
     public void testResolvingTildeInTheMiddleOfAPath() {
         Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
-        
-        final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin", OperatingSystemType.LINUX, true);
+
+        final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin");
         final String filePath = "/Documents/~source/~/funtional/detect";
         final Path resolved = resolver.resolvePath(filePath);
 
@@ -55,7 +53,7 @@ public class TildeInPathResolverTest {
 
     @Test
     public void testBlankPath() {
-        final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin", OperatingSystemType.LINUX, true);
+        final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin");
         final List<String> filePaths = new ArrayList<>();
         filePaths.add("");
         filePaths.add(" ");
@@ -63,7 +61,7 @@ public class TildeInPathResolverTest {
 
         for (final String filePath : filePaths) {
             final Path resolved = resolver.resolvePath(filePath);
-            Assertions.assertNull(resolved, "A blank resolved path should be null.");
+            Assertions.assertEquals("", resolved.toString(), "A blank resolved path should be null.");
         }
     }
 }

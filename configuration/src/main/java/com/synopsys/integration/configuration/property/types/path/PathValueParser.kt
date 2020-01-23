@@ -22,12 +22,19 @@
  */
 package com.synopsys.integration.configuration.property.types.path
 
+import com.synopsys.integration.configuration.parse.ValueParseException
 import com.synopsys.integration.configuration.parse.ValueParser
+import org.apache.commons.lang3.StringUtils
 import java.nio.file.Path
+import java.nio.file.Paths
 
 class PathValueParser : ValueParser<PathValue>() {
     override fun parse(value: String): PathValue {
-        return PathValue(value)
+        if (StringUtils.isNotBlank(value)) {
+            return PathValue(value)
+        } else {
+            throw ValueParseException(value, "Path", "A path must have at least one non-whitespace character!")
+        }
     }
 }
 
@@ -42,5 +49,11 @@ class PathValue(private val value: String) {
 }
 
 interface PathResolver {
-    fun resolvePath(filePath: String): Path?
+    fun resolvePath(filePath: String): Path
+}
+
+class SimplePathResolver : PathResolver {
+    override fun resolvePath(filePath: String): Path {
+        return Paths.get(filePath)
+    }
 }

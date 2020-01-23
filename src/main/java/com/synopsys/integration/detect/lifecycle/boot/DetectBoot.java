@@ -51,6 +51,7 @@ import com.synopsys.integration.configuration.help.PropertyConfigurationHelpCont
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.PropertyDeprecationInfo;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
+import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.DetectableBeanConfiguration;
@@ -89,6 +90,7 @@ import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolv
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
+import com.synopsys.integration.detect.type.OperatingSystemType;
 import com.synopsys.integration.detect.util.TildeInPathResolver;
 import com.synopsys.integration.detect.util.filter.DetectFilter;
 import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
@@ -165,7 +167,7 @@ public class DetectBoot {
         if (detectArgumentState.isInteractive()) {
             final List<InteractiveOption> interactiveOptions = startInteractiveMode(propertySources);
             final Map<String, String> interactivePropertyMap = interactiveOptions.stream()
-                                                             .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), option -> option.getInteractiveValue()));
+                                                                   .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), option -> option.getInteractiveValue()));
             final PropertySource interactivePropertySource = new MapPropertySource("interactive", interactivePropertyMap);
             propertySources.add(0, interactivePropertySource);
         }
@@ -181,7 +183,13 @@ public class DetectBoot {
 
         logger.debug("Initializing Detect.");
 
-        final PathResolver pathResolver = new TildeInPathResolver(SystemUtils.USER_HOME, detectInfo.getCurrentOs(), detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_RESOLVE_TILDE_IN_PATHS()));
+        PathResolver pathResolver;
+        if (detectInfo.getCurrentOs() != OperatingSystemType.WINDOWS && detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_RESOLVE_TILDE_IN_PATHS())) {
+            logger.info("Tilde's will be automatically resolved to USER HOME.");
+            pathResolver = new TildeInPathResolver(SystemUtils.USER_HOME);
+        } else {
+            pathResolver = new SimplePathResolver();
+        }
         final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver);
         final DirectoryManager directoryManager = new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
         final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectConfiguration, detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);

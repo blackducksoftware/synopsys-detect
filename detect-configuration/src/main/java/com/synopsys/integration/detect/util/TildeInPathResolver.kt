@@ -23,8 +23,6 @@
 package com.synopsys.integration.detect.util
 
 import com.synopsys.integration.configuration.property.types.path.PathResolver
-import com.synopsys.integration.detect.type.OperatingSystemType
-import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -35,36 +33,22 @@ import java.nio.file.Paths
  * is shorthand for the user's home directory. If we encounter a property that is formed this way,
  * we can resolve it.
  *
- * To accomplish this, we will look at all fields annotated with @ValueDescripition in
- * DetectConfiguration and if we find *any* property that starts with '~/' we will replace it.
- *
  * If there is concern that this will be too invasive, users can specify
  * --detect.resolve.tilde.in.paths=false to turn it off.
  * // @formatter:on
  */
-class TildeInPathResolver(private val systemUserHome: String, private val currentOs: OperatingSystemType, private val shouldResolveTilde: Boolean = true) : PathResolver {
+class TildeInPathResolver(private val systemUserHome: String) : PathResolver {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    override fun resolvePath(filePath: String): Path? {
-        if (StringUtils.isBlank(filePath)) {
-            return null
-        }
-
-        val resolvedPath = if (shouldResolveTilde) resolveTildeInPath(currentOs, systemUserHome, filePath) else filePath
-        if (resolvedPath != filePath) {
-            logger.warn(String.format("We have resolved %s to %s. If this is not expected, please revise the path provided, or specify --detect.resolve.tilde.in.paths=false.", filePath, resolvedPath))
-        }
-
-        return Paths.get(resolvedPath)
-    }
-
-    fun resolveTildeInPath(currentOs: OperatingSystemType, systemUserHome: String, filePath: String): String {
-        if (OperatingSystemType.WINDOWS == currentOs || StringUtils.isBlank(filePath)) {
-            return filePath
-        }
-        return if (filePath.startsWith("~/")) {
+    override fun resolvePath(filePath: String): Path {
+        val resolved = if (filePath.startsWith("~/")) {
             systemUserHome + filePath.substring(1)
-        } else filePath
+        } else {
+            filePath
+        }
+        if (resolved != filePath) {
+            logger.trace(String.format("We have resolved %s to %s. If this is not expected, please revise the path provided, or specify --detect.resolve.tilde.in.paths=false.", filePath, resolved))
+        }
+        return Paths.get(resolved)
     }
-
 }
