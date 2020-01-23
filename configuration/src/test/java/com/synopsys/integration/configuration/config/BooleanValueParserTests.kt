@@ -9,9 +9,9 @@ import org.junit.jupiter.params.provider.ValueSource
 class BooleanValueParserTests() {
     @ParameterizedTest()
     @ValueSource(strings = ["unknown", "we ird tef ", "243354323", "@Q@ASD"])
-    fun parseUnknownThrows() {
+    fun parseUnknownThrows(value: String) {
         Assertions.assertThrows(ValueParseException::class.java) {
-            BooleanValueParser().parse("unknown")
+            BooleanValueParser().parse(value)
         }
     }
 
