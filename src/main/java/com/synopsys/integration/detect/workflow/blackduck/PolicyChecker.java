@@ -28,16 +28,17 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicySummaryStatusType;
-import com.synopsys.integration.blackduck.api.generated.view.VersionBomPolicyStatusView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionPolicyStatusView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.service.ProjectBomService;
+import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.service.ProjectBomService;
-import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class PolicyChecker {
@@ -68,12 +69,12 @@ public class PolicyChecker {
      * @throws IntegrationException
      */
     public Optional<PolicyStatusDescription> getPolicyStatus(final ProjectBomService projectBomService, final ProjectVersionView version) throws IntegrationException {
-        final Optional<VersionBomPolicyStatusView> versionBomPolicyStatusView = projectBomService.getPolicyStatusForVersion(version);
-        if (!versionBomPolicyStatusView.isPresent()) {
+        final Optional<ProjectVersionPolicyStatusView> ProjectVersionPolicyStatusView = projectBomService.getPolicyStatusForVersion(version);
+        if (!ProjectVersionPolicyStatusView.isPresent()) {
             return Optional.empty();
         }
 
-        final PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(versionBomPolicyStatusView.get());
+        final PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(ProjectVersionPolicyStatusView.get());
 
         PolicySummaryStatusType statusEnum = PolicySummaryStatusType.NOT_IN_VIOLATION;
         if (policyStatusDescription.getCountInViolation() != null && policyStatusDescription.getCountInViolation().value > 0) {

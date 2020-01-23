@@ -156,6 +156,6 @@ public class BdioCodeLocationCreator {
 
     private String createBdioName(final String codeLocationName, final IntegrationEscapeUtil integrationEscapeUtil) {
         final String filenameRaw = StringUtils.replaceEach(codeLocationName, new String[] { "/", "\\", " " }, new String[] { "_", "_", "_" });
-        return integrationEscapeUtil.escapeForUri(filenameRaw);
+        return integrationEscapeUtil.replaceWithUnderscore(filenameRaw);
     }
 }
