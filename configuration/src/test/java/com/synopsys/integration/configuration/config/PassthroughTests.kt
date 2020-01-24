@@ -15,4 +15,13 @@ class PassthroughTests {
 
         Assertions.assertEquals(mapOf("one" to "one value", "two" to "two value"), configuration.getRaw(passthrough))
     }
+
+    @Test
+    fun prefersPrimary() {
+        val secondarySource = propertySourceOf("secondary", "pass.shared" to "secondaryValue")
+        val primarySource = propertySourceOf("primary", "pass.shared" to "primaryValue")
+        val configuration = configOf(primarySource, secondarySource)
+
+        Assertions.assertEquals(mapOf("shared" to "primaryValue"), configuration.getRaw(passthrough))
+    }
 }
