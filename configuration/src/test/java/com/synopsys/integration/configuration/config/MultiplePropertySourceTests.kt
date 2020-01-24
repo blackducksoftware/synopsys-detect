@@ -21,10 +21,19 @@ class MultiplePropertySourceTests {
     @Test
     fun fallbackToSecondary() {
         Assertions.assertEquals("secondValue", configuration.getValue(secondaryProperty))
+        Assertions.assertEquals("secondary", configuration.getPropertySource(secondaryProperty))
     }
 
     @Test
     fun containsKeysFromBothSources() {
         Assertions.assertEquals(setOf("second.key", "shared.key"), configuration.getKeys())
+    }
+
+    @Test
+    fun rawValues() {
+        Assertions.assertEquals(mapOf(
+                "second.key" to "secondValue",
+                "shared.key" to "override"
+        ), configuration.getRaw())
     }
 }
