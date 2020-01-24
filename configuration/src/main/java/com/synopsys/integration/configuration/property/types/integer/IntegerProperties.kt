@@ -28,4 +28,5 @@ import com.synopsys.integration.configuration.property.base.ValuedProperty
 class NullableIntegerProperty(key: String) : NullableProperty<Int>(key, IntegerValueParser()) {}
 class IntegerProperty(key: String, default: Int) : ValuedProperty<Int>(key, IntegerValueParser(), default) {
     override fun describeDefault(): String? = default.toString()
+    override fun describeType(): String? = "Integer"
 }

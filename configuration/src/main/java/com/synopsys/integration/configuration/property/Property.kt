@@ -63,7 +63,9 @@ abstract class Property(val key: String) {
     open fun isCaseSensitive(): Boolean = false
     open fun isOnlyExampleValues(): Boolean = false
     open fun listExampleValues(): List<String>? = emptyList()
+    open fun describeType(): String? = null
     open fun describeDefault(): String? = null
+    open fun isCommaSeparated(): Boolean = false
 }
 
 data class PropertyHelpInfo(val short: String, val long: String?)

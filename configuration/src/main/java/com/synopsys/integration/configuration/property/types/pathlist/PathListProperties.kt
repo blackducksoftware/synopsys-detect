@@ -31,4 +31,6 @@ class NullablePathListProperty(key: String) : NullableProperty<List<PathValue>>(
 // Using @JvmSuppressWildcards to prevent the Kotlin compiler from generating wildcard types: https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics
 class PathListProperty(key: String, default: List<PathValue>) : ValuedProperty<@JvmSuppressWildcards List<PathValue>>(key, PathListValueParser(), default) {
     override fun describeDefault(): String? = default.joinToString { "," }
+    override fun describeType(): String? = "Path"
+    override fun isCommaSeparated(): Boolean = true
 }

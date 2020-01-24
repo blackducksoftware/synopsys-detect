@@ -27,9 +27,11 @@ import com.synopsys.integration.configuration.property.base.ValuedProperty
 
 class NullablePathProperty(key: String) : NullableProperty<PathValue>(key, PathValueParser()) {
     override fun listExampleValues(): List<String>? = listOf("/Users/Synopsys/my-project", "Unix Only: ~/my-project")
+    override fun describeType(): String? = "Path"
 }
 
 class PathProperty(key: String, default: PathValue) : ValuedProperty<PathValue>(key, PathValueParser(), default) {
     override fun listExampleValues(): List<String>? = listOf("/Users/Synopsys/my-project", "Unix Only: ~/my-project")
     override fun describeDefault(): String? = default.toString()
+    override fun describeType(): String? = "Path"
 }

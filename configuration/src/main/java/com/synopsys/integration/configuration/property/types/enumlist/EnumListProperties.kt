@@ -29,6 +29,8 @@ class NullableEnumListProperty<T>(key: String, valueOf: (String) -> T?, val valu
     override fun isCaseSensitive(): Boolean = true
     override fun listExampleValues(): List<String>? = values.map { it.toString() }
     override fun isOnlyExampleValues(): Boolean = true
+    override fun describeType(): String? = "Enum"
+    override fun isCommaSeparated(): Boolean = true
 }
 
 // Using @JvmSuppressWildcards to prevent the Kotlin compiler from generating wildcard types: https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics
@@ -37,4 +39,6 @@ class EnumListProperty<T>(key: String, default: List<T>, valueOf: (String) -> T?
     override fun describeDefault(): String? = default.joinToString { "," }
     override fun listExampleValues(): List<String>? = values.map { it.toString() }
     override fun isOnlyExampleValues(): Boolean = true
+    override fun describeType(): String? = "Enum"
+    override fun isCommaSeparated(): Boolean = true
 }

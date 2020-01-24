@@ -29,4 +29,5 @@ class ExtendedEnumProperty<E, B>(key: String, default: ExtendedEnumValue<E, B>, 
     override fun listExampleValues(): List<String>? = valuesExtended.map { it.toString() } + "," + valuesBase.map { it.toString() }
     override fun isOnlyExampleValues(): Boolean = false
     override fun describeDefault(): String? = default.toString()
+    override fun describeType(): String? = "Enum"
 }

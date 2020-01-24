@@ -79,7 +79,7 @@ public class HelpJsonWriter {
 
         helpJsonOption.setPropertyName(property.getName());
         helpJsonOption.setPropertyKey(property.getKey());
-        //helpJsonOption.setPropertyType(property.().getDisplayName()); TODO: Needed?
+        helpJsonOption.setPropertyType(property.describeType());
         helpJsonOption.setAddedInVersion(property.getFromVersion());
         helpJsonOption.setDefaultValue(property.describeDefault());
 
@@ -99,7 +99,7 @@ public class HelpJsonWriter {
         helpJsonOption.setCaseSensitiveValues(property.isCaseSensitive());
         helpJsonOption.setAcceptableValues(property.listExampleValues().stream().map(Objects::toString).collect(Collectors.toList()));
         helpJsonOption.setHasAcceptableValues(property.listExampleValues().size() > 0);
-        //helpJsonOption.setCommaSeparatedList(property..isCommaSeperatedList()); TODO: Needed?
+        helpJsonOption.setCommaSeparatedList(property.isCommaSeparated());
         return helpJsonOption;
     }
 }

@@ -30,4 +30,6 @@ class SoftEnumListProperty<T>(key: String, default: List<SoftEnumValue<T>>, valu
     override fun listExampleValues(): List<String>? = values.map { it.toString() }
     override fun isOnlyExampleValues(): Boolean = false
     override fun describeDefault(): String? = default.joinToString { "," }
+    override fun describeType(): String? = "Enum"
+    override fun isCommaSeparated(): Boolean = true
 }

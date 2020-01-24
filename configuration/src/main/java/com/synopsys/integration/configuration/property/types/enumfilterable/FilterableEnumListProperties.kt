@@ -35,6 +35,7 @@ class NullableFilterableEnumListProperty<T>(key: String, valueOf: (String) -> T?
     }
 
     override fun isOnlyExampleValues(): Boolean = true
+    override fun isCommaSeparated(): Boolean = true
 }
 
 class FilterableEnumListProperty<T>(key: String, default: List<FilterableEnumValue<T>>, valueOf: (String) -> T?, val values: List<T>) : ValuedProperty<List<FilterableEnumValue<T>>>(key, FilterableEnumListValueParser(valueOf), default) {
@@ -47,5 +48,7 @@ class FilterableEnumListProperty<T>(key: String, default: List<FilterableEnumVal
         return base
     }
 
+    override fun describeType(): String? = "Enum"
     override fun isOnlyExampleValues(): Boolean = true
+    override fun isCommaSeparated(): Boolean = true
 }
