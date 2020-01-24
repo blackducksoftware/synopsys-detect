@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.util
 
 import com.synopsys.integration.configuration.property.types.path.PathResolver
 import org.slf4j.LoggerFactory
+import java.nio.file.InvalidPathException
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -40,6 +41,7 @@ import java.nio.file.Paths
 class TildeInPathResolver(private val systemUserHome: String) : PathResolver {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
+    @Throws(InvalidPathException::class)
     override fun resolvePath(filePath: String): Path {
         val resolved = if (filePath.startsWith("~/")) {
             systemUserHome + filePath.substring(1)
