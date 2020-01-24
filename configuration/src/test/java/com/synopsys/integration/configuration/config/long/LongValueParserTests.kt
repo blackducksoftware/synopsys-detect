@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
-class LongValueParserTests() {
-    @ParameterizedTest()
+class LongValueParserTests {
+    @ParameterizedTest
     @ValueSource(strings = ["unknown", "Nan", "", " 1", "1L", "9223372036854775808"])
     fun parseUnknownThrows(value: String) {
         Assertions.assertThrows(ValueParseException::class.java) {
