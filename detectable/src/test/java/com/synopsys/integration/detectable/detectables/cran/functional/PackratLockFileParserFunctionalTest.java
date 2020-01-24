@@ -2,6 +2,7 @@ package com.synopsys.integration.detectable.detectables.cran.functional;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -13,6 +14,7 @@ import com.synopsys.integration.detectable.util.GraphCompare;
 
 class PackratLockFileParserFunctionalTest {
     @Test
+    @Disabled
     void parseProjectDependencies() throws MissingExternalIdException {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final PackratLockFileParser packRatLockFileParser = new PackratLockFileParser(externalIdFactory);

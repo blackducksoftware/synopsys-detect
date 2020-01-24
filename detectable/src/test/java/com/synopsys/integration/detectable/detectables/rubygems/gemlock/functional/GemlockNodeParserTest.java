@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -20,6 +21,7 @@ import com.synopsys.integration.detectable.util.GraphCompare;
 @FunctionalTest
 public class GemlockNodeParserTest {
     @Test
+    @Disabled
     public void testParsingSmallGemfileLock() throws MissingExternalIdException {
         final String text = FunctionalTestFiles.asString("/rubygems/small_gemfile_lock");
         final List<String> gemfileLockContents = Arrays.asList(text.split("\n"));
@@ -30,6 +32,7 @@ public class GemlockNodeParserTest {
     }
 
     @Test
+    @Disabled
     public void testParsingGemfileLock() throws MissingExternalIdException {
         final String text = FunctionalTestFiles.asString("/rubygems/Gemfile.lock");
         final List<String> gemfileLockContents = Arrays.asList(text.split("\n"));

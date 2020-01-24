@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -42,6 +43,7 @@ public class CpanListParserFunctionalTest {
     }
 
     @Test
+    @Disabled
     public void makeDependencyNodesTest() {
         final List<String> cpanListText = FunctionalTestFiles.asListOfStrings("/cpan/cpanList.txt");
         final List<String> showDepsText = FunctionalTestFiles.asListOfStrings("/cpan/showDeps.txt");

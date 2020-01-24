@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -29,6 +30,7 @@ public class NugetInspectorParserPerfTest {
     public ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
     @Test(timeout = 120000L)
+    @Disabled
     public void performanceTestNuget() throws IOException {
         final String dependencyGraphFile = FunctionalTestFiles.asString("/nuget/dwCheckApi_inspection.json");
 

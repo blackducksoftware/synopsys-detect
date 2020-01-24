@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -21,60 +22,70 @@ import com.synopsys.integration.detectable.util.GraphCompare;
 @FunctionalTest
 public class MavenCodeLocationPackagerFunctionalTest {
     @Test
+    @Disabled
     public void extractCodeLocationsTestWithNumbersRemovedOutput() {
         final String mavenOutputText = FunctionalTestFiles.asString("/maven/hubTeamcityOutputWithStrangePrefixesFoundFromCustomer.txt");
         createNewCodeLocationTest(mavenOutputText, "/maven/hubTeamCityCodeLocation.json", 5, "", "");
     }
 
     @Test
+    @Disabled
     public void extractCodeLocationsTest() {
         final String mavenOutputText = FunctionalTestFiles.asString("/maven/sonarStashOutput.txt");
         createNewCodeLocationTest(mavenOutputText, "/maven/sonarStashCodeLocation.json");
     }
 
     @Test
+    @Disabled
     public void extractCodeLocationsTestTeamCity() {
         final String mavenOutputText = FunctionalTestFiles.asString("/maven/hubTeamcityOutput.txt");
         createNewCodeLocationTest(mavenOutputText, "/maven/hubTeamCityCodeLocation.json", 5, "", "");
     }
 
     @Test
+    @Disabled
     public void extractCodeLocationsTestTeamCityWithUnpackDependencies() {
         final String mavenOutputText = FunctionalTestFiles.asString("/maven/hubTeamcityOutputWithDependencyUnpack.txt");
         createNewCodeLocationTest(mavenOutputText, "/maven/hubTeamCityCodeLocation.json", 5, "", "");
     }
 
     @Test
+    @Disabled
     public void extractCodeLocationsTestTeamCityIncludedModules() {
         final String mavenOutputText = FunctionalTestFiles.asString("/maven/hubTeamcityOutput.txt");
         createNewCodeLocationTest(mavenOutputText, "/maven/hubTeamCityIncludedCodeLocation.json", 1, "", "hub-teamcity-agent");
     }
 
     @Test
+    @Disabled
     public void extractCodeLocationsTestTeamCityExcludedModules() {
         final String mavenOutputText = FunctionalTestFiles.asString("/maven/hubTeamcityOutput.txt");
         createNewCodeLocationTest(mavenOutputText, "/maven/hubTeamCityExcludedCodeLocation.json", 1, "hub-teamcity-common,hub-teamcity-agent,hub-teamcity-assembly,hub-teamcity", "");
     }
 
     @Test
+    @Disabled
     public void extractCodeLocationsCorruptTest() {
         final String mavenOutputText = FunctionalTestFiles.asString("/maven/sonarStashCorruptOutput.txt");
         createNewCodeLocationTest(mavenOutputText, "/maven/sonarStashCorruptCodeLocation.json");
     }
 
     @Test
+    @Disabled
     public void extractCodeLocationsTestWebgoat() {
         final String mavenOutputText = FunctionalTestFiles.asString("/maven/webgoat-container-pom-dependency-tree-output.txt");
         createNewCodeLocationTest(mavenOutputText, "/maven/webgoatCodeLocation.json", 1, "", "");
     }
 
     @Test
+    @Disabled
     public void extractCodeLocationsTestNoScope() {
         final String mavenOutputText = FunctionalTestFiles.asString("/maven/compileScopeUnderTestScope.txt");
         createNewCodeLocationTest(mavenOutputText, "/maven/compileScopeUnderTestScopeNoScope.json", 3, "", "", 2, null, null);
     }
 
     @Test
+    @Disabled
     public void extractCodeLocationsTestCompileScope() {
         final String mavenOutputText = FunctionalTestFiles.asString("/maven/compileScopeUnderTestScope.txt");
         createNewCodeLocationTest(mavenOutputText, "/maven/compileScopeUnderTestScopeCompileScope.json", 3, "", "", 2, null, "compile");
@@ -107,6 +118,7 @@ public class MavenCodeLocationPackagerFunctionalTest {
     }
 
     @Test
+    @Disabled
     public void extractCodeLocationsTestComplexTree() {
         final String mavenOutputText = FunctionalTestFiles.asString("/maven/mavenComplexOutput.txt");
         createNewCodeLocationTest(mavenOutputText, "/maven/mavenComplexOutputResult.json", 85, "", "", 84, null, "compile");
