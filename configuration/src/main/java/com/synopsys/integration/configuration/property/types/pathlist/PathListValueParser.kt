@@ -24,11 +24,13 @@ package com.synopsys.integration.configuration.property.types.pathlist
 
 import com.synopsys.integration.configuration.parse.ValueParser
 import com.synopsys.integration.configuration.property.types.path.PathValue
+import com.synopsys.integration.configuration.property.types.path.PathValueParser
 
 class PathListValueParser : ValueParser<List<PathValue>>() {
+    private val pathParser = PathValueParser()
     override fun parse(value: String): List<PathValue> {
         return value.split(",")
-                .map { PathValue(it) }
+                .map { pathParser.parse(it) }
                 .toList()
     }
 }

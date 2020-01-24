@@ -30,10 +30,11 @@ import java.nio.file.Paths
 
 class PathValueParser : ValueParser<PathValue>() {
     override fun parse(value: String): PathValue {
-        if (StringUtils.isNotBlank(value)) {
-            return PathValue(value)
+        val trimmedValue = value.trim()
+        if (StringUtils.isNotBlank(trimmedValue)) {
+            return PathValue(trimmedValue)
         } else {
-            throw ValueParseException(value, "Path", "A path must have at least one non-whitespace character!")
+            throw ValueParseException(trimmedValue, "Path", "A path must have at least one non-whitespace character!")
         }
     }
 }
