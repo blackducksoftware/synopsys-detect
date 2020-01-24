@@ -1,4 +1,4 @@
-package com.synopsys.integration.configuration.config.bool
+package com.synopsys.integration.configuration.config.integer
 
 import com.synopsys.integration.configuration.config.InvalidPropertyException
 import com.synopsys.integration.configuration.config.PropertyTest
