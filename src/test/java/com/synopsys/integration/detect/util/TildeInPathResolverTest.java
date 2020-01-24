@@ -2,9 +2,8 @@ package com.synopsys.integration.detect.util;
 
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assume;
@@ -54,14 +53,14 @@ public class TildeInPathResolverTest {
     @Test
     public void testBlankPath() {
         final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin");
-        final List<String> filePaths = new ArrayList<>();
-        filePaths.add("");
-        filePaths.add(" ");
-        filePaths.add("     ");
+        Assertions.assertEquals("", resolver.resolvePath("").toString());
+    }
 
-        for (final String filePath : filePaths) {
-            final Path resolved = resolver.resolvePath(filePath);
-            Assertions.assertEquals("", resolved.toString(), "A blank resolved path should be null.");
-        }
+    @Test
+    public void testWhitespacePath() {
+        final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin");
+        Assertions.assertThrows(InvalidPathException.class, () -> {
+            resolver.resolvePath("  ");
+        });
     }
 }
