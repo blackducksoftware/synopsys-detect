@@ -1,5 +1,7 @@
-package com.synopsys.integration.configuration.config
+package com.synopsys.integration.configuration.config.bool
 
+import com.synopsys.integration.configuration.config.InvalidPropertyException
+import com.synopsys.integration.configuration.config.PropertyTest
 import com.synopsys.integration.configuration.property.types.bool.BooleanProperty
 import com.synopsys.integration.configuration.property.types.bool.NullableBooleanProperty
 import org.junit.jupiter.api.Assertions

@@ -1,4 +1,4 @@
-package com.synopsys.integration.configuration.config
+package com.synopsys.integration.configuration.config.bool
 
 import com.synopsys.integration.configuration.parse.ValueParseException
 import com.synopsys.integration.configuration.property.types.bool.BooleanValueParser
