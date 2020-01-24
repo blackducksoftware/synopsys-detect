@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class MultiplePropertySourceTests {
-    val secondaryProperty = NullableStringProperty("second.key")
-    val sharedProperty = NullableStringProperty("shared.key")
+    private val secondaryProperty = NullableStringProperty("second.key")
+    private val sharedProperty = NullableStringProperty("shared.key")
 
-    val secondarySource = MapPropertySource("secondary", mapOf("second.key" to "secondValue", "shared.key" to "base"))
-    val primarySource = MapPropertySource("primary", mapOf("shared.key" to "override"))
-    val configuration = PropertyConfiguration(listOf(primarySource, secondarySource))
+    private val secondarySource = propertySourceOf("secondary", "second.key" to "secondValue", "shared.key" to "base")
+    private val primarySource = propertySourceOf("primary", "shared.key" to "override")
+    private val configuration = configOf(primarySource, secondarySource)
 
     @Test
     fun primaryOverridesSecondary() {

@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class PassthroughTests {
-    @Test
-    fun passthroughFindsTwoProperties() {
-        val passthrough = PassthroughProperty("pass")
+    private val passthrough = PassthroughProperty("pass")
 
-        val secondarySource = MapPropertySource("secondary", mapOf("pass.two" to "two value", "ignore" to "ignore value"))
-        val primarySource = MapPropertySource("primary", mapOf("pass.one" to "one value"))
-        val configuration = PropertyConfiguration(listOf(primarySource, secondarySource))
+    @Test
+    fun findsTwoProperties() {
+        val secondarySource = propertySourceOf("secondary", "pass.two" to "two value", "ignore" to "ignore value")
+        val primarySource = propertySourceOf("primary", "pass.one" to "one value")
+        val configuration = configOf(primarySource, secondarySource)
 
         Assertions.assertEquals(mapOf("one" to "one value", "two" to "two value"), configuration.getRaw(passthrough))
     }
