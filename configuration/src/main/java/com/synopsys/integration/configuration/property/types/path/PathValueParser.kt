@@ -39,7 +39,7 @@ class PathValueParser : ValueParser<PathValue>() {
     }
 }
 
-class PathValue(private val value: String) {
+data class PathValue(private val value: String) {
     fun resolvePath(pathResolver: PathResolver): Path? {
         return pathResolver.resolvePath(value)
     }
