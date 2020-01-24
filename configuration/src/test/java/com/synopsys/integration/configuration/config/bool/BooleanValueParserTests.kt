@@ -1,4 +1,4 @@
-package com.synopsys.integration.configuration.config
+package com.synopsys.integration.configuration.config.bool
 
 import com.synopsys.integration.configuration.parse.ValueParseException
 import com.synopsys.integration.configuration.property.types.bool.BooleanValueParser
@@ -9,9 +9,9 @@ import org.junit.jupiter.params.provider.ValueSource
 class BooleanValueParserTests() {
     @ParameterizedTest()
     @ValueSource(strings = ["unknown", "we ird tef ", "243354323", "@Q@ASD"])
-    fun parseUnknownThrows() {
+    fun parseUnknownThrows(value: String) {
         Assertions.assertThrows(ValueParseException::class.java) {
-            BooleanValueParser().parse("unknown")
+            BooleanValueParser().parse(value)
         }
     }
 

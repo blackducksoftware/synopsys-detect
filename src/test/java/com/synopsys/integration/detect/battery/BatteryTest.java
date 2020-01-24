@@ -138,7 +138,7 @@ public final class BatteryTest {
         detectVersion = "";
     }
 
-    public void withDetectVersion(String version) {
+    public void withDetectVersion(final String version) {
         useDetectScript = true;
         detectVersion = version;
     }
@@ -192,8 +192,8 @@ public final class BatteryTest {
         Application.SHOULD_EXIT = previous;
     }
 
-    private ExecutableOutput downloadDetectBash(File target) throws ExecutableRunnerException {
-        List<String> shellArguments = new ArrayList<>();
+    private ExecutableOutput downloadDetectBash(final File target) throws ExecutableRunnerException {
+        final List<String> shellArguments = new ArrayList<>();
         shellArguments.add("-s");
         shellArguments.add("-L");
         shellArguments.add("https://detect.synopsys.com/detect.sh");
@@ -216,18 +216,18 @@ public final class BatteryTest {
             target = "powershell";
             shellArguments.add("\"[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect\"");
         } else {
-            File scriptTarget = new File(batteryDirectory, "detect.sh");
+            final File scriptTarget = new File(batteryDirectory, "detect.sh");
             if (scriptTarget.exists()) {
                 Assertions.assertTrue(scriptTarget.delete(), "Failed to cleanup an existing detect shell script. This file is cleaned up to ensure latest script is always used.");
             }
-            ExecutableOutput downloadOutput = downloadDetectBash(scriptTarget);
+            final ExecutableOutput downloadOutput = downloadDetectBash(scriptTarget);
             Assertions.assertTrue(downloadOutput.getReturnCode() == 0 && scriptTarget.exists(), "Something went wrong downloading the detect script.");
             Assertions.assertTrue(scriptTarget.setExecutable(true), "Failed to change script permissions to execute. The downloaded detect script must be executable.");
             target = scriptTarget.toString();
         }
         shellArguments.addAll(detectArguments);
 
-        Map<String, String> environmentVariables = new HashMap<>();
+        final Map<String, String> environmentVariables = new HashMap<>();
 
         if (StringUtils.isNotBlank(detectVersion)) {
             environmentVariables.put("DETECT_LATEST_RELEASE_VERSION", detectVersion);
@@ -293,6 +293,9 @@ public final class BatteryTest {
         Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get("BATTERY_TESTS_PATH")));
 
         batteryDirectory = new File(System.getenv("BATTERY_TESTS_PATH"));
+        if (!batteryDirectory.exists()) {
+            Assertions.assertTrue(batteryDirectory.mkdirs(), String.format("Failed to create battery directory at: %s", batteryDirectory.getAbsolutePath()));
+        }
         Assertions.assertTrue(batteryDirectory.exists(), "The detect battery path must exist.");
     }
 
@@ -365,8 +368,8 @@ public final class BatteryTest {
                 final JSONArray expectedJsonArray = (JSONArray) JSONParser.parseJSON(expectedJson);
                 final JSONArray actualJsonArray = (JSONArray) JSONParser.parseJSON(actualJson);
 
-                BdioCompare compare = new BdioCompare();
-                List<BdioCompare.BdioIssue> issues = compare.compare(expectedJsonArray, actualJsonArray);
+                final BdioCompare compare = new BdioCompare();
+                final List<BdioCompare.BdioIssue> issues = compare.compare(expectedJsonArray, actualJsonArray);
 
                 if (issues.size() > 0) {
                     logger.error("=================");

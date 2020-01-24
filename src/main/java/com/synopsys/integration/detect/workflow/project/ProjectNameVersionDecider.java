@@ -33,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectTool;
+import com.synopsys.integration.detect.configuration.DefaultVersionNameScheme;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -79,7 +80,7 @@ public class ProjectNameVersionDecider {
         }
 
         if (!decidedProjectVersion.isPresent()) {
-            if ("timestamp".equals(projectVersionOptions.defaultProjectVersionScheme)) {
+            if (DefaultVersionNameScheme.TIMESTAMP.equals(projectVersionOptions.defaultProjectVersionScheme)) {
                 logger.debug("A project version name could not be decided. Using the current timestamp.");
                 final String timeformat = projectVersionOptions.defaultProjectVersionFormat;
                 final String timeString = DateTimeFormatter.ofPattern(timeformat).withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));

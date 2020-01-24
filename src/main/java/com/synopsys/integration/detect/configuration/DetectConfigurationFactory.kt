@@ -305,10 +305,11 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         if (offlineLocalScannerInstallPath != null && StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
             throw DetectUserFriendlyException(
                     "You have provided both a Black Duck signature scanner url AND a local Black Duck signature scanner path. Only one of these properties can be set at a time. If both are used together, the *correct* source of the signature scanner can not be determined.",
-                    ExitCodeType.FAILURE_GENERAL_ERROR)
+                    ExitCodeType.FAILURE_GENERAL_ERROR
+            )
         }
 
-        // TODO: Is this managing deprecated properties properly?
+        // TODO: Is this managing deprecated properties properly? Why is value unused?
         val snippetMatching = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING)
         fun fromSnippetExtended(value: ExtendedSnippetMode): SnippetMatching? {
             return if (detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE)) {
@@ -318,10 +319,11 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
             }
         }
 
-        var snippetMatchingEnum: SnippetMatching? = when (snippetMatching) {
+        val snippetMatchingEnum: SnippetMatching? = when (snippetMatching) {
             is ExtendedValue -> fromSnippetExtended(snippetMatching.value)
             is BaseValue -> snippetMatching.value
         }
+
         return BlackDuckSignatureScannerOptions(
                 signatureScannerPaths = signatureScannerPaths,
                 exclusionNamePatterns = exclusionNamePatterns,
