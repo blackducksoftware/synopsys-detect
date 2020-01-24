@@ -1,13 +1,14 @@
 package com.synopsys.integration.configuration.config.long
 
 import com.synopsys.integration.configuration.config.InvalidPropertyException
-import com.synopsys.integration.configuration.config.PropertyTest
+import com.synopsys.integration.configuration.config.configOf
+import com.synopsys.integration.configuration.config.emptyConfig
 import com.synopsys.integration.configuration.property.types.integer.IntegerProperty
 import com.synopsys.integration.configuration.property.types.integer.NullableIntegerProperty
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-class LongPropertyTests : PropertyTest() {
+class LongPropertyTests {
     private val exampleKey = "example.key"
     private val defaultPos1 = IntegerProperty(exampleKey, 1)
     private val defaultNeg1 = IntegerProperty(exampleKey, -1)

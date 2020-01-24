@@ -1,13 +1,14 @@
 package com.synopsys.integration.configuration.config.bool
 
 import com.synopsys.integration.configuration.config.InvalidPropertyException
-import com.synopsys.integration.configuration.config.PropertyTest
+import com.synopsys.integration.configuration.config.configOf
+import com.synopsys.integration.configuration.config.emptyConfig
 import com.synopsys.integration.configuration.property.types.bool.BooleanProperty
 import com.synopsys.integration.configuration.property.types.bool.NullableBooleanProperty
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
-class BooleanPropertyTests : PropertyTest() {
+class BooleanPropertyTests {
     private val exampleKey = "example.key"
     private val defaultTrue = BooleanProperty(exampleKey, true)
     private val defaultFalse = BooleanProperty(exampleKey, false)
