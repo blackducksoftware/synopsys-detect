@@ -26,19 +26,19 @@ import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
 
+const val TYPE_DESCRIPTION = "Path"
+
 class NullablePathProperty(key: String) : NullableProperty<PathValue>(key, PathValueParser()) {
     override fun listExampleValues(): List<String>? = listOf("/Users/Synopsys/my-project", "Unix Only: ~/my-project")
-    override fun describeType(): String? = "Path"
+    override fun describeType(): String? = TYPE_DESCRIPTION
 }
 
 class PathProperty(key: String, default: PathValue) : ValuedProperty<PathValue>(key, PathValueParser(), default) {
     override fun listExampleValues(): List<String>? = listOf("/Users/Synopsys/my-project", "Unix Only: ~/my-project")
     override fun describeDefault(): String? = default.toString()
-    override fun describeType(): String? = "Path"
+    override fun describeType(): String? = TYPE_DESCRIPTION
 }
 
 class PathListProperty(key: String, default: List<PathValue>) : ValuedListProperty<PathValue>(key, PathListValueParser(), default) {
-    override fun describeDefault(): String? = default.joinToString { "," }
-    override fun describeType(): String? = "Path"
-    override fun isCommaSeparated(): Boolean = true
+    override fun describeType(): String? = TYPE_DESCRIPTION
 }

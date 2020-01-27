@@ -24,9 +24,12 @@ package com.synopsys.integration.configuration.property.base
 
 import com.synopsys.integration.configuration.parse.ValueParser
 
+/**
+ * This is a property with a key and with a default value, it will always have a value.
+ */
 // Using @JvmSuppressWildcards to prevent the Kotlin compiler from generating wildcard types: https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics
 abstract class ValuedListProperty<T>(key: String, parser: ValueParser<List<T>>, default: List<T>) : ValuedProperty<@JvmSuppressWildcards List<T>>(key, parser, default) {
-    // This is a property with a key and with a default value, it will always have a value.
+
     override fun describeDefault(): String? = default.joinToString { "," }
 
     override fun isCommaSeparated(): Boolean = true

@@ -23,10 +23,20 @@
 package com.synopsys.integration.configuration.property.types.longs
 
 import com.synopsys.integration.configuration.property.base.NullableProperty
+import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
 
-class NullableLongProperty(key: String) : NullableProperty<Long>(key, LongValueParser()) {}
+const val TYPE_DESCRIPTION = "Long"
+
+class NullableLongProperty(key: String) : NullableProperty<Long>(key, LongValueParser()) {
+    override fun describeType(): String? = TYPE_DESCRIPTION
+}
+
 class LongProperty(key: String, default: Long) : ValuedProperty<Long>(key, LongValueParser(), default) {
     override fun describeDefault(): String? = default.toString()
-    override fun describeType(): String? = "Long"
+    override fun describeType(): String? = TYPE_DESCRIPTION
+}
+
+class LongListProperty(key: String, default: List<Long>) : ValuedListProperty<Long>(key, LongListValueParser(), default) {
+    override fun describeType(): String? = TYPE_DESCRIPTION
 }
