@@ -22,8 +22,11 @@
  */
 package com.synopsys.integration.configuration.property.types.string
 
+import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.parse.ValueParser
 
 class StringValueParser : ValueParser<String>() {
-    override fun parse(value: String) : String = value
+    override fun parse(value: String): String = value
 }
+
+class StringListValueParser : ListValueParser<String>(StringValueParser())

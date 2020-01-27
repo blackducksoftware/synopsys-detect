@@ -23,6 +23,7 @@
 package com.synopsys.integration.configuration.property.types.path
 
 import com.synopsys.integration.configuration.property.base.NullableProperty
+import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
 
 class NullablePathProperty(key: String) : NullableProperty<PathValue>(key, PathValueParser()) {
@@ -34,4 +35,10 @@ class PathProperty(key: String, default: PathValue) : ValuedProperty<PathValue>(
     override fun listExampleValues(): List<String>? = listOf("/Users/Synopsys/my-project", "Unix Only: ~/my-project")
     override fun describeDefault(): String? = default.toString()
     override fun describeType(): String? = "Path"
+}
+
+class PathListProperty(key: String, default: List<PathValue>) : ValuedListProperty<PathValue>(key, PathListValueParser(), default) {
+    override fun describeDefault(): String? = default.joinToString { "," }
+    override fun describeType(): String? = "Path"
+    override fun isCommaSeparated(): Boolean = true
 }

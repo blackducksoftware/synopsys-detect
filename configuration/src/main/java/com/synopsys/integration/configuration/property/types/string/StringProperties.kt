@@ -25,7 +25,6 @@ package com.synopsys.integration.configuration.property.types.string
 import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
-import com.synopsys.integration.configuration.property.types.stringlist.StringListValueParser
 
 class NullableStringProperty(key: String) : NullableProperty<String>(key, StringValueParser()) {}
 class StringProperty(key: String, default: String) : ValuedProperty<String>(key, StringValueParser(), default) {
