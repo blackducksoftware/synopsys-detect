@@ -40,5 +40,5 @@ class PathProperty(key: String, default: PathValue) : ValuedProperty<PathValue>(
 }
 
 class PathListProperty(key: String, default: List<PathValue>) : ValuedListProperty<PathValue>(key, PathListValueParser(), default) {
-    override fun describeType(): String? = TYPE_DESCRIPTION
+    override fun describeType(): String? = "$TYPE_DESCRIPTION List"
 }

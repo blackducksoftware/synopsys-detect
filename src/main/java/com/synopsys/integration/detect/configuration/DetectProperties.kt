@@ -34,7 +34,7 @@ import com.synopsys.integration.configuration.property.types.enumextended.Extend
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedValue
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumListProperty
 import com.synopsys.integration.configuration.property.types.enumfilterable.None
-import com.synopsys.integration.configuration.property.types.enumlist.EnumListProperty
+import com.synopsys.integration.configuration.property.types.enums.EnumListProperty
 import com.synopsys.integration.configuration.property.types.enums.EnumProperty
 import com.synopsys.integration.configuration.property.types.integer.IntegerProperty
 import com.synopsys.integration.configuration.property.types.integer.NullableIntegerProperty

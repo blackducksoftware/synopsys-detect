@@ -38,5 +38,5 @@ class LongProperty(key: String, default: Long) : ValuedProperty<Long>(key, LongV
 }
 
 class LongListProperty(key: String, default: List<Long>) : ValuedListProperty<Long>(key, LongListValueParser(), default) {
-    override fun describeType(): String? = TYPE_DESCRIPTION
+    override fun describeType(): String? = "$TYPE_DESCRIPTION List"
 }

@@ -25,7 +25,6 @@ package com.synopsys.integration.configuration.property.types.integer
 import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
-import com.synopsys.integration.configuration.property.types.string.TYPE_DESCRIPTION
 
 const val TYPE_DESCRIPTION = "Integer"
 
@@ -40,5 +39,5 @@ class IntegerProperty(key: String, default: Int) : ValuedProperty<Int>(key, Inte
 }
 
 class IntegerListProperty(key: String, default: List<Int>) : ValuedListProperty<Int>(key, IntegerListValueParser(), default) {
-    override fun describeType(): String? = TYPE_DESCRIPTION
+    override fun describeType(): String? = "$TYPE_DESCRIPTION List"
 }

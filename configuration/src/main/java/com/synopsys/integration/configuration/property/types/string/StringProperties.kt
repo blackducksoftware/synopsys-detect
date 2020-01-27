@@ -38,5 +38,5 @@ class StringProperty(key: String, default: String) : ValuedProperty<String>(key,
 }
 
 class StringListProperty(key: String, default: List<String>) : ValuedListProperty<String>(key, StringListValueParser(), default) {
-    override fun describeType(): String? = TYPE_DESCRIPTION
+    override fun describeType(): String? = "$TYPE_DESCRIPTION List"
 }
