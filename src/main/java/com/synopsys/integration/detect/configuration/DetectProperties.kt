@@ -40,7 +40,7 @@ import com.synopsys.integration.configuration.property.types.integer.IntegerProp
 import com.synopsys.integration.configuration.property.types.integer.NullableIntegerProperty
 import com.synopsys.integration.configuration.property.types.longs.LongProperty
 import com.synopsys.integration.configuration.property.types.path.NullablePathProperty
-import com.synopsys.integration.configuration.property.types.pathlist.PathListProperty
+import com.synopsys.integration.configuration.property.types.path.PathListProperty
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty
 import com.synopsys.integration.configuration.property.types.string.StringListProperty
 import com.synopsys.integration.configuration.property.types.string.StringProperty
