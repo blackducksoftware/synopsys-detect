@@ -1,8 +1,6 @@
-package com.synopsys.integration.configuration.config.path
+package com.synopsys.integration.configuration.property.types.path
 
 import com.synopsys.integration.configuration.parse.ValueParseException
-import com.synopsys.integration.configuration.property.types.path.PathValue
-import com.synopsys.integration.configuration.property.types.path.PathValueParser
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest

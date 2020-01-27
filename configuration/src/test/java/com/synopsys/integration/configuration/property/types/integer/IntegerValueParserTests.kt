@@ -1,7 +1,6 @@
-package com.synopsys.integration.configuration.config.integer
+package com.synopsys.integration.configuration.property.types.integer
 
 import com.synopsys.integration.configuration.parse.ValueParseException
-import com.synopsys.integration.configuration.property.types.integer.IntegerValueParser
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
