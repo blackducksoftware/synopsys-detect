@@ -1045,20 +1045,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
-    Gradle Exclude Projects (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#gradle-include-projects-advanced" class="md-nav__link">
-    Gradle Include Projects (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#gradle-inspector-version-advanced" class="md-nav__link">
     Gradle Inspector Version (Advanced)
   </a>
@@ -1073,8 +1059,22 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#gradle-include-projects-advanced" class="md-nav__link">
+    Gradle Include Projects (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#gradle-inspector-airgap-path-advanced" class="md-nav__link">
     Gradle Inspector AirGap Path (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
+    Gradle Exclude Projects (Advanced)
   </a>
   
 </li>
@@ -1281,20 +1281,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
-    Gradle Exclude Projects (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#gradle-include-projects-advanced" class="md-nav__link">
-    Gradle Include Projects (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#gradle-inspector-version-advanced" class="md-nav__link">
     Gradle Inspector Version (Advanced)
   </a>
@@ -1309,8 +1295,22 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#gradle-include-projects-advanced" class="md-nav__link">
+    Gradle Include Projects (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#gradle-inspector-airgap-path-advanced" class="md-nav__link">
     Gradle Inspector AirGap Path (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
+    Gradle Exclude Projects (Advanced)
   </a>
   
 </li>
@@ -1397,94 +1397,6 @@
 
 <p>The path to the Gradle executable (gradle or gradlew).</p>
 <p>If set, Detect will use the given Gradle executable instead of searching for one.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="gradle-exclude-projects-advanced">Gradle Exclude Projects (Advanced)</h2>
-<pre><code>--detect.gradle.excluded.projects
-</code></pre>
-
-<p>A comma-separated list of Gradle sub-projects to exclude. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="gradle-include-projects-advanced">Gradle Include Projects (Advanced)</h2>
-<pre><code>--detect.gradle.included.projects
-</code></pre>
-
-<p>A comma-separated list of Gradle sub-projects to include. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
 <table>
 <thead>
 <tr>
@@ -1611,12 +1523,100 @@
 </tr>
 </tbody>
 </table>
+<h2 id="gradle-include-projects-advanced">Gradle Include Projects (Advanced)</h2>
+<pre><code>--detect.gradle.included.projects
+</code></pre>
+
+<p>A comma-separated list of Gradle sub-projects to include. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="gradle-inspector-airgap-path-advanced">Gradle Inspector AirGap Path (Advanced)</h2>
 <pre><code>--detect.gradle.inspector.air.gap.path
 </code></pre>
 
 <p>The path to the directory containing the air gap dependencies for the gradle inspector.</p>
 <p>Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="gradle-exclude-projects-advanced">Gradle Exclude Projects (Advanced)</h2>
+<pre><code>--detect.gradle.excluded.projects
+</code></pre>
+
+<p>A comma-separated list of Gradle sub-projects to exclude. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.</p>
 <table>
 <thead>
 <tr>
