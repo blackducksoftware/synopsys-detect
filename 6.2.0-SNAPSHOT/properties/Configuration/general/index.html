@@ -841,6 +841,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
+    Detect Ignore Connection Failures (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#detect-parallel-processors-advanced" class="md-nav__link">
     Detect Parallel Processors (Advanced)
   </a>
@@ -850,13 +857,6 @@
         <li class="md-nav__item">
   <a href="#force-success-advanced" class="md-nav__link">
     Force Success (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
-    Detect Ignore Connection Failures (Advanced)
   </a>
   
 </li>
@@ -1253,6 +1253,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
+    Detect Ignore Connection Failures (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#detect-parallel-processors-advanced" class="md-nav__link">
     Detect Parallel Processors (Advanced)
   </a>
@@ -1262,13 +1269,6 @@
         <li class="md-nav__item">
   <a href="#force-success-advanced" class="md-nav__link">
     Force Success (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#detect-ignore-connection-failures-advanced" class="md-nav__link">
-    Detect Ignore Connection Failures (Advanced)
   </a>
   
 </li>
@@ -1377,6 +1377,50 @@
 </tr>
 </tbody>
 </table>
+<h2 id="detect-ignore-connection-failures-advanced">Detect Ignore Connection Failures (Advanced)</h2>
+<pre><code>--detect.ignore.connection.failures=false
+</code></pre>
+
+<p>If true, Detect will ignore any products that it cannot connect to.</p>
+<p>If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>5.3.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="detect-parallel-processors-advanced">Detect Parallel Processors (Advanced)</h2>
 <pre><code>--detect.parallel.processors=1
 </code></pre>
@@ -1436,50 +1480,6 @@
 <tr>
 <td>Added</td>
 <td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="detect-ignore-connection-failures-advanced">Detect Ignore Connection Failures (Advanced)</h2>
-<pre><code>--detect.ignore.connection.failures=false
-</code></pre>
-
-<p>If true, Detect will ignore any products that it cannot connect to.</p>
-<p>If true, when Detect attempts to boot a product it will also check if it can communicate with it - if it cannot, it will not run the product.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>5.3.0</td>
 </tr>
 <tr>
 <td>Type</td>
