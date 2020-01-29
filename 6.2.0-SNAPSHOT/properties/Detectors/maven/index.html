@@ -742,15 +742,27 @@
           
 
 
+  <li class="md-nav__item">
+    <a href="../../deprecated-properties/" title="Deprecated properties" class="md-nav__link">
+      Deprecated properties
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-11-3" type="checkbox" id="nav-11-3">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-11-4" type="checkbox" id="nav-11-4">
     
-    <label class="md-nav__link" for="nav-11-3">
+    <label class="md-nav__link" for="nav-11-4">
       Configuration
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-11-3">
+      <label class="md-nav__title" for="nav-11-4">
         Configuration
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -914,13 +926,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-11-4" type="checkbox" id="nav-11-4" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-11-5" type="checkbox" id="nav-11-5" checked>
     
-    <label class="md-nav__link" for="nav-11-4">
+    <label class="md-nav__link" for="nav-11-5">
       Detectors
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-11-4">
+      <label class="md-nav__title" for="nav-11-5">
         Detectors
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1055,8 +1067,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-excluded" class="md-nav__link">
-    Dependency Scope Excluded
+  <a href="#dependency-scope-included" class="md-nav__link">
+    Dependency Scope Included
   </a>
   
 </li>
@@ -1069,15 +1081,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-included" class="md-nav__link">
-    Dependency Scope Included
+  <a href="#maven-build-command" class="md-nav__link">
+    Maven Build Command
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-build-command" class="md-nav__link">
-    Maven Build Command
+  <a href="#dependency-scope-excluded" class="md-nav__link">
+    Dependency Scope Excluded
   </a>
   
 </li>
@@ -1090,15 +1102,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-include-plugins-advanced" class="md-nav__link">
-    Maven Include Plugins (Advanced)
+  <a href="#maven-modules-excluded-advanced" class="md-nav__link">
+    Maven Modules Excluded (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-modules-excluded-advanced" class="md-nav__link">
-    Maven Modules Excluded (Advanced)
+  <a href="#maven-include-plugins-advanced" class="md-nav__link">
+    Maven Include Plugins (Advanced)
   </a>
   
 </li>
@@ -1260,8 +1272,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-excluded" class="md-nav__link">
-    Dependency Scope Excluded
+  <a href="#dependency-scope-included" class="md-nav__link">
+    Dependency Scope Included
   </a>
   
 </li>
@@ -1274,15 +1286,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-included" class="md-nav__link">
-    Dependency Scope Included
+  <a href="#maven-build-command" class="md-nav__link">
+    Maven Build Command
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-build-command" class="md-nav__link">
-    Maven Build Command
+  <a href="#dependency-scope-excluded" class="md-nav__link">
+    Dependency Scope Excluded
   </a>
   
 </li>
@@ -1295,15 +1307,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-include-plugins-advanced" class="md-nav__link">
-    Maven Include Plugins (Advanced)
+  <a href="#maven-modules-excluded-advanced" class="md-nav__link">
+    Maven Modules Excluded (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-modules-excluded-advanced" class="md-nav__link">
-    Maven Modules Excluded (Advanced)
+  <a href="#maven-include-plugins-advanced" class="md-nav__link">
+    Maven Include Plugins (Advanced)
   </a>
   
 </li>
@@ -1333,12 +1345,12 @@
                 
                 
                 <h1 id="maven">maven</h1>
-<h2 id="dependency-scope-excluded">Dependency Scope Excluded</h2>
-<pre><code>--detect.maven.excluded.scopes
+<h2 id="dependency-scope-included">Dependency Scope Included</h2>
+<pre><code>--detect.maven.included.scopes
 </code></pre>
 
-<p>A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include). Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>If set, Detect will include only dependencies outside of the given Maven scope.</p>
+<p>A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude). Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>If set, Detect will include only dependencies of the given Maven scope.</p>
 <table>
 <thead>
 <tr>
@@ -1421,12 +1433,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="dependency-scope-included">Dependency Scope Included</h2>
-<pre><code>--detect.maven.included.scopes
+<h2 id="maven-build-command">Maven Build Command</h2>
+<pre><code>--detect.maven.build.command
 </code></pre>
 
-<p>A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude). Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>If set, Detect will include only dependencies of the given Maven scope.</p>
+<p>Maven command line arguments to add to the mvn/mvnw command line.</p>
+<p>By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings ${HOME}/maven_dev_settings.xml --define reason=other'</p>
 <table>
 <thead>
 <tr>
@@ -1437,7 +1449,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.0.0</td>
+<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1465,12 +1477,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="maven-build-command">Maven Build Command</h2>
-<pre><code>--detect.maven.build.command
+<h2 id="dependency-scope-excluded">Dependency Scope Excluded</h2>
+<pre><code>--detect.maven.excluded.scopes
 </code></pre>
 
-<p>Maven command line arguments to add to the mvn/mvnw command line.</p>
-<p>By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings ${HOME}/maven_dev_settings.xml --define reason=other'</p>
+<p>A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include). Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>If set, Detect will include only dependencies outside of the given Maven scope.</p>
 <table>
 <thead>
 <tr>
@@ -1481,7 +1493,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1553,11 +1565,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="maven-include-plugins-advanced">Maven Include Plugins (Advanced)</h2>
-<pre><code>--detect.maven.include.plugins
+<h2 id="maven-modules-excluded-advanced">Maven Modules Excluded (Advanced)</h2>
+<pre><code>--detect.maven.excluded.modules
 </code></pre>
 
-<p>Whether or not detect will include the plugins section when parsing a pom.xml.</p>
+<p>A comma-separated list of Maven modules (sub-projects) to exclude. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property.</p>
 <table>
 <thead>
 <tr>
@@ -1568,11 +1581,11 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>5.6.0</td>
+<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>Boolean</td>
+<td>String</td>
 </tr>
 <tr>
 <td>Default Value</td>
@@ -1596,12 +1609,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="maven-modules-excluded-advanced">Maven Modules Excluded (Advanced)</h2>
-<pre><code>--detect.maven.excluded.modules
+<h2 id="maven-include-plugins-advanced">Maven Include Plugins (Advanced)</h2>
+<pre><code>--detect.maven.include.plugins
 </code></pre>
 
-<p>A comma-separated list of Maven modules (sub-projects) to exclude. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property.</p>
+<p>Whether or not detect will include the plugins section when parsing a pom.xml.</p>
 <table>
 <thead>
 <tr>
@@ -1612,11 +1624,11 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>5.6.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>Boolean</td>
 </tr>
 <tr>
 <td>Default Value</td>
