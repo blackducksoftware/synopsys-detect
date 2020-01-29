@@ -176,7 +176,7 @@ class DetectProperties {
             help("A comma-separated list of additional options to pass to the bazel cquery command.")
             groups(DetectGroup.Bazel, DetectGroup.SourceScan)
         }
-        val DETECT_BAZEL_DEPENDENCY_RULE = EnumProperty("detect.bazel.dependency.type", WorkspaceRule.UNSPECIFIED, WorkspaceRule::valueOf, WorkspaceRule.values().toList()).apply {
+        val DETECT_BAZEL_DEPENDENCY_RULE = EnumProperty("detect.bazel.dependency.type", WorkspaceRule.UNSPECIFIED, WorkspaceRule::class.java).apply {
             info("Bazel workspace external dependency rule", "6.0.0")
             help("The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.")
             groups(DetectGroup.Bazel, DetectGroup.SourceScan)
@@ -292,7 +292,7 @@ class DetectProperties {
             groups(DetectGroup.Project, DetectGroup.ProjectSetting)
             category(DetectCategory.Advanced)
         }
-        val DETECT_BOM_AGGREGATE_REMEDIATION_MODE = EnumProperty("detect.bom.aggregate.remediation.mode", AggregateMode.TRANSITIVE, AggregateMode::valueOf, AggregateMode.values().toList()).apply {
+        val DETECT_BOM_AGGREGATE_REMEDIATION_MODE = EnumProperty("detect.bom.aggregate.remediation.mode", AggregateMode.TRANSITIVE, AggregateMode::class.java).apply {
             info("BDIO Aggregate Remediation Mode", "6.1.0")
             help("If an aggregate BDIO file is being generated and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes from the top layer of the dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes at the top of the dependency tree, but all components will appear as TRANSITIVE in the BOM.")
             groups(DetectGroup.Project, DetectGroup.ProjectSetting)
@@ -346,7 +346,7 @@ class DetectProperties {
             help("The path to the cpanm executable.")
             groups(DetectGroup.Cpan, DetectGroup.Global)
         }
-        val DETECT_DEFAULT_PROJECT_VERSION_SCHEME = EnumProperty("detect.default.project.version.scheme", DefaultVersionNameScheme.DEFAULT, DefaultVersionNameScheme::valueOf, DefaultVersionNameScheme.values().toList()).apply {
+        val DETECT_DEFAULT_PROJECT_VERSION_SCHEME = EnumProperty("detect.default.project.version.scheme", DefaultVersionNameScheme.DEFAULT, DefaultVersionNameScheme::class.java).apply {
             info("Default Project Version Name Scheme", "3.0.0")
             help("The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'.")
             groups(DetectGroup.Project, DetectGroup.Global)
@@ -746,7 +746,7 @@ class DetectProperties {
             groups(DetectGroup.Project, DetectGroup.ProjectSetting)
             category(DetectCategory.Advanced)
         }
-        val DETECT_PROJECT_CLONE_CATEGORIES = EnumListProperty("detect.project.clone.categories", listOf(ProjectCloneCategoriesType.COMPONENT_DATA, ProjectCloneCategoriesType.VULN_DATA), ProjectCloneCategoriesType::valueOf, ProjectCloneCategoriesType.values().toList()).apply {
+        val DETECT_PROJECT_CLONE_CATEGORIES = EnumListProperty("detect.project.clone.categories", listOf(ProjectCloneCategoriesType.COMPONENT_DATA, ProjectCloneCategoriesType.VULN_DATA), ProjectCloneCategoriesType::class.java).apply {
             info("Clone Project Categories", "4.2.0")
             help("An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set.")
             groups(DetectGroup.Project, DetectGroup.ProjectSetting)
@@ -821,13 +821,13 @@ class DetectProperties {
             help("If a Black Duck project tier is specified, your project will be created with this tier.")
             groups(DetectGroup.Project, DetectGroup.ProjectSetting)
         }
-        val DETECT_PROJECT_TOOL = EnumListProperty("detect.project.tool", listOf(DetectTool.DOCKER, DetectTool.DETECTOR, DetectTool.BAZEL), DetectTool::valueOf, DetectTool.values().toList()).apply {
+        val DETECT_PROJECT_TOOL = EnumListProperty("detect.project.tool", listOf(DetectTool.DOCKER, DetectTool.DETECTOR, DetectTool.BAZEL), DetectTool::class.java).apply {
             info("Detector Tool Priority", "5.0.0")
             help("The tool priority for project name and version. The project name and version will be determined by the first tool in this list that provides them.", "This allows you to control which tool provides the project name and version when more than one tool are capable of providing it.")
             groups(DetectGroup.Paths, DetectGroup.Global)
             category(DetectCategory.Advanced)
         }
-        val DETECT_PROJECT_VERSION_DISTRIBUTION = EnumProperty("detect.project.version.distribution", ProjectVersionDistributionType.EXTERNAL, ProjectVersionDistributionType::valueOf, ProjectVersionDistributionType.values().toList()).apply {
+        val DETECT_PROJECT_VERSION_DISTRIBUTION = EnumProperty("detect.project.version.distribution", ProjectVersionDistributionType.EXTERNAL, ProjectVersionDistributionType::class.java).apply {
             info("Version Distribution", "3.0.0")
             help("An override for the Project Version distribution")
             groups(DetectGroup.Project, DetectGroup.ProjectSetting)
@@ -848,7 +848,7 @@ class DetectProperties {
             help("If project version notes are specified, your project version will be created with these notes.")
             groups(DetectGroup.Project, DetectGroup.ProjectSetting)
         }
-        val DETECT_PROJECT_VERSION_PHASE = EnumProperty("detect.project.version.phase", ProjectVersionPhaseType.DEVELOPMENT, ProjectVersionPhaseType::valueOf, ProjectVersionPhaseType.values().toList()).apply {
+        val DETECT_PROJECT_VERSION_PHASE = EnumProperty("detect.project.version.phase", ProjectVersionPhaseType.DEVELOPMENT, ProjectVersionPhaseType::class.java).apply {
             info("Version Phase", "3.0.0")
             help("An override for the Project Version phase.")
             groups(DetectGroup.Project, DetectGroup.ProjectSetting)
@@ -874,7 +874,7 @@ class DetectProperties {
             help("The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
             groups(DetectGroup.BlackduckServer, DetectGroup.Global)
         }
-        val DETECT_REQUIRED_DETECTOR_TYPES = EnumListProperty("detect.required.detector.types", emptyList(), DetectorType::valueOf, DetectorType.values().toList()).apply {
+        val DETECT_REQUIRED_DETECTOR_TYPES = EnumListProperty("detect.required.detector.types", emptyList(), DetectorType::class.java).apply {
             info("Required Detect Types", "4.3.0")
             help("The set of required detectors.", "If you want one or more detectors to be required (must be found to apply), use this property to specify the set of required detectors. If this property is set, and one (or more) of the given detectors is not found to apply, Detect will fail.")
             groups(DetectGroup.Detector, DetectGroup.Global)
@@ -951,12 +951,12 @@ class DetectProperties {
             help("Set this to true to only scan production dependencies.")
             groups(DetectGroup.Yarn, DetectGroup.Global, DetectGroup.SourceScan)
         }
-        val LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION = EnumProperty("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel::fromString, LogLevel.values().toList()).apply {
+        val LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION = EnumProperty("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel::class.java).apply {
             info("Logging Level", "5.3.0")
             help("The logging level of Detect.")
             groups(DetectGroup.Logging, DetectGroup.Global)
         }
-        val LOGGING_LEVEL_DETECT = EnumProperty("logging.level.detect", LogLevel.INFO, LogLevel::fromString, LogLevel.values().toList()).apply {
+        val LOGGING_LEVEL_DETECT = EnumProperty("logging.level.detect", LogLevel.INFO, LogLevel::class.java).apply {
             info("Logging Level Shorthand", "5.5.0")
             help("Shorthand for the logging level of detect. Equivalent to setting logging.level.com.synopsys.integration.")
             groups(DetectGroup.Logging, DetectGroup.Global)
@@ -1347,7 +1347,7 @@ class DetectProperties {
         }
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
-        val LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION = EnumProperty("logging.level.com.blackducksoftware.integration", LogLevel.INFO, LogLevel::fromString, LogLevel.values().toList()).apply {
+        val LOGGING_LEVEL_COM_BLACKDUCKSOFTWARE_INTEGRATION = EnumProperty("logging.level.com.blackducksoftware.integration", LogLevel.INFO, LogLevel::class.java).apply {
             info("Logging Level", "3.0.0")
             help("The logging level of Detect.")
             groups(DetectGroup.Logging, DetectGroup.Global)

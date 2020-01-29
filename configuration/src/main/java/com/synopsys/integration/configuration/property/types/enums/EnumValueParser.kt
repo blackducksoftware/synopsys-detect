@@ -23,14 +23,15 @@
 package com.synopsys.integration.configuration.property.types.enums
 
 import com.synopsys.integration.configuration.parse.ListValueParser
+import com.synopsys.integration.configuration.parse.ValueParseException
 import com.synopsys.integration.configuration.parse.ValueParser
+import org.apache.commons.lang3.EnumUtils
 
-class EnumValueParser<T>(val valueOf: (String) -> T?) : ValueParser<T>() {
-    private val parser = ValueOfParser(valueOf);
+class EnumValueParser<T : Enum<T>>(val enumClass: Class<T>) : ValueParser<T>() {
     override fun parse(value: String): T {
-        return parser.parse(value)
+        return EnumUtils.getEnum(enumClass, value) ?: throw ValueParseException(value, enumClass.simpleName, "Unable to convert '$value' to one of " + EnumUtils.getEnumList(enumClass).joinToString { "," })
     }
 }
 
-class EnumListValueParser<T>(val valueOf: (String) -> T?) : ListValueParser<T>(EnumValueParser(valueOf))
+class EnumListValueParser<T : Enum<T>>(enumClass: Class<T>) : ListValueParser<T>(EnumValueParser(enumClass))
 
