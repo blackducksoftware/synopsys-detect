@@ -9,7 +9,7 @@ class IntegerPropertiesTests {
     @Test
     fun testList() {
         val property = IntegerListProperty("integer.list", emptyList());
-        val config = configOf("integer.list" to "2, 3")
+        val config = configOf("integer.list" to "2,3")
         Assertions.assertEquals(listOf(2, 3), config.getValue(property));
     }
 
