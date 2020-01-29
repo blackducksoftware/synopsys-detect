@@ -1055,8 +1055,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-included" class="md-nav__link">
-    Dependency Scope Included
+  <a href="#dependency-scope-excluded" class="md-nav__link">
+    Dependency Scope Excluded
   </a>
   
 </li>
@@ -1069,15 +1069,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-executable" class="md-nav__link">
-    Maven Executable
+  <a href="#dependency-scope-included" class="md-nav__link">
+    Dependency Scope Included
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-excluded" class="md-nav__link">
-    Dependency Scope Excluded
+  <a href="#maven-executable" class="md-nav__link">
+    Maven Executable
   </a>
   
 </li>
@@ -1260,8 +1260,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-included" class="md-nav__link">
-    Dependency Scope Included
+  <a href="#dependency-scope-excluded" class="md-nav__link">
+    Dependency Scope Excluded
   </a>
   
 </li>
@@ -1274,15 +1274,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-executable" class="md-nav__link">
-    Maven Executable
+  <a href="#dependency-scope-included" class="md-nav__link">
+    Dependency Scope Included
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-excluded" class="md-nav__link">
-    Dependency Scope Excluded
+  <a href="#maven-executable" class="md-nav__link">
+    Maven Executable
   </a>
   
 </li>
@@ -1333,12 +1333,12 @@
                 
                 
                 <h1 id="maven">maven</h1>
-<h2 id="dependency-scope-included">Dependency Scope Included</h2>
-<pre><code>--detect.maven.included.scopes
+<h2 id="dependency-scope-excluded">Dependency Scope Excluded</h2>
+<pre><code>--detect.maven.excluded.scopes
 </code></pre>
 
-<p>A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude). Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>If set, Detect will include only dependencies of the given Maven scope.</p>
+<p>A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include). Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>If set, Detect will include only dependencies outside of the given Maven scope.</p>
 <table>
 <thead>
 <tr>
@@ -1421,12 +1421,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="maven-executable">Maven Executable</h2>
-<pre><code>--detect.maven.path
+<h2 id="dependency-scope-included">Dependency Scope Included</h2>
+<pre><code>--detect.maven.included.scopes
 </code></pre>
 
-<p>The path to the Maven executable (mvn or mvnw).</p>
-<p>If set, Detect will use the given Maven executable instead of searching for one.</p>
+<p>A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude). Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>If set, Detect will include only dependencies of the given Maven scope.</p>
 <table>
 <thead>
 <tr>
@@ -1437,7 +1437,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1465,12 +1465,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="dependency-scope-excluded">Dependency Scope Excluded</h2>
-<pre><code>--detect.maven.excluded.scopes
+<h2 id="maven-executable">Maven Executable</h2>
+<pre><code>--detect.maven.path
 </code></pre>
 
-<p>A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include). Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>If set, Detect will include only dependencies outside of the given Maven scope.</p>
+<p>The path to the Maven executable (mvn or mvnw).</p>
+<p>If set, Detect will use the given Maven executable instead of searching for one.</p>
 <table>
 <thead>
 <tr>
@@ -1481,7 +1481,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.0.0</td>
+<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
