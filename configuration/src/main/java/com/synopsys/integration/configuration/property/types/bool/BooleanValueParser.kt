@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.configuration.property.types.bool
 
+import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.parse.ValueParseException
 import com.synopsys.integration.configuration.parse.ValueParser
 import org.apache.commons.lang3.BooleanUtils
@@ -36,3 +37,5 @@ class BooleanValueParser : ValueParser<Boolean>() {
         }
     }
 }
+
+class BooleanListValueParser : ListValueParser<Boolean>(BooleanValueParser())

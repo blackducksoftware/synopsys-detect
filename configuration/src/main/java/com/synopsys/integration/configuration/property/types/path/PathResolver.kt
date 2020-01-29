@@ -20,17 +20,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.pathlist
+package com.synopsys.integration.configuration.property.types.path
 
-import com.synopsys.integration.configuration.parse.ValueParser
-import com.synopsys.integration.configuration.property.types.path.PathValue
-import com.synopsys.integration.configuration.property.types.path.PathValueParser
+import java.nio.file.Path
+import java.nio.file.Paths
 
-class PathListValueParser : ValueParser<List<PathValue>>() {
-    private val pathParser = PathValueParser()
-    override fun parse(value: String): List<PathValue> {
-        return value.split(",")
-                .map { pathParser.parse(it) }
-                .toList()
+interface PathResolver {
+    fun resolvePath(filePath: String): Path
+}
+
+class SimplePathResolver : PathResolver {
+    override fun resolvePath(filePath: String): Path {
+        return Paths.get(filePath)
     }
 }

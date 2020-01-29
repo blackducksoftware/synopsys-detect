@@ -1,7 +1,6 @@
-package com.synopsys.integration.configuration.config.bool
+package com.synopsys.integration.configuration.property.types.bool
 
 import com.synopsys.integration.configuration.parse.ValueParseException
-import com.synopsys.integration.configuration.property.types.bool.BooleanValueParser
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource

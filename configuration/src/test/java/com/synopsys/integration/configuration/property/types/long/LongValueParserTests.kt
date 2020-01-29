@@ -1,4 +1,4 @@
-package com.synopsys.integration.configuration.config.long
+package com.synopsys.integration.configuration.property.types.long
 
 import com.synopsys.integration.configuration.parse.ValueParseException
 import com.synopsys.integration.configuration.property.types.longs.LongValueParser

@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.configuration.property.types.enumsoft
 
+import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.parse.ValueParser
 import com.synopsys.integration.configuration.property.types.enums.ValueOfOrNullParser
 
@@ -34,3 +35,5 @@ class SoftEnumValueParser<T>(val valueOf: (String) -> T?) : ValueParser<SoftEnum
         }
     }
 }
+
+class SoftEnumListValueParser<T>(val valueOf: (String) -> T?) : ListValueParser<SoftEnumValue<T>>(SoftEnumValueParser(valueOf))

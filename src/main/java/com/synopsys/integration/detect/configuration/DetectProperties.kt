@@ -34,17 +34,16 @@ import com.synopsys.integration.configuration.property.types.enumextended.Extend
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedValue
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumListProperty
 import com.synopsys.integration.configuration.property.types.enumfilterable.None
-import com.synopsys.integration.configuration.property.types.enumlist.EnumListProperty
+import com.synopsys.integration.configuration.property.types.enums.EnumListProperty
 import com.synopsys.integration.configuration.property.types.enums.EnumProperty
 import com.synopsys.integration.configuration.property.types.integer.IntegerProperty
 import com.synopsys.integration.configuration.property.types.integer.NullableIntegerProperty
 import com.synopsys.integration.configuration.property.types.longs.LongProperty
 import com.synopsys.integration.configuration.property.types.path.NullablePathProperty
-import com.synopsys.integration.configuration.property.types.pathlist.PathListProperty
+import com.synopsys.integration.configuration.property.types.path.PathListProperty
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty
+import com.synopsys.integration.configuration.property.types.string.StringListProperty
 import com.synopsys.integration.configuration.property.types.string.StringProperty
-import com.synopsys.integration.configuration.property.types.stringlist.NullableStringListProperty
-import com.synopsys.integration.configuration.property.types.stringlist.StringListProperty
 import com.synopsys.integration.detect.DetectMajorVersion
 import com.synopsys.integration.detect.DetectTool
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode
@@ -197,7 +196,7 @@ class DetectProperties {
             help("If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns.")
             groups(DetectGroup.SignatureScanner, DetectGroup.SourcePath)
         }
-        val DETECT_BINARY_SCAN_FILE_NAME_PATTERNS = NullableStringListProperty("detect.binary.scan.file.name.patterns").apply {
+        val DETECT_BINARY_SCAN_FILE_NAME_PATTERNS = StringListProperty("detect.binary.scan.file.name.patterns", emptyList()).apply {
             info("Binary Scan Filename Patterns", "6.0.0")
             help("If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified.")
             groups(DetectGroup.SignatureScanner, DetectGroup.SourcePath)
@@ -242,7 +241,7 @@ class DetectProperties {
             help("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
             groups(DetectGroup.SignatureScanner, DetectGroup.SourceScan)
         }
-        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS = NullableStringListProperty("detect.blackduck.signature.scanner.exclusion.patterns").apply {
+        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS = StringListProperty("detect.blackduck.signature.scanner.exclusion.patterns", emptyList()).apply {
             info("Exclusion Patterns", "4.2.0")
             help("A comma-separated list of values to be used with the Signature Scanner --exclude flag.", "Each pattern provided is passed to the signature scanner (Black Duck scan CLI) as a value for an --exclude option. The signature scanner requires that these exclusion patterns start and end with a forward slash (/) and may not contain double asterisks (**). These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude from signature scanning. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns=/blackduck-common/, --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-*/'. Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.")
             groups(DetectGroup.SignatureScanner, DetectGroup.SourceScan)
@@ -271,8 +270,8 @@ class DetectProperties {
             category(DetectCategory.Advanced)
         }
 
-        // TODO: Should this be a NullablePathProperty? If so a list version of this property should be created.
-        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS = NullableStringListProperty("detect.blackduck.signature.scanner.paths").apply {
+        // TODO: Should we create a PathListProperty for this?
+        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS = StringListProperty("detect.blackduck.signature.scanner.paths", emptyList()).apply {
             info("Signature Scanner Target Paths", "4.2.0")
             help("These paths and only these paths will be scanned.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Global)
@@ -1152,7 +1151,7 @@ class DetectProperties {
         }
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
-        val DETECT_BOM_TOOL_SEARCH_EXCLUSION = NullableStringListProperty("detect.bom.tool.search.exclusion").apply {
+        val DETECT_BOM_TOOL_SEARCH_EXCLUSION = StringListProperty("detect.bom.tool.search.exclusion", emptyList()).apply {
             info("Detect Bom Tool Search Exclusion", "3.2.0")
             help("A comma-separated list of directory names to exclude from the bom tool search.")
             groups(DetectGroup.Paths, DetectGroup.Detector)
@@ -1241,16 +1240,16 @@ class DetectProperties {
         }
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
-        val DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS = NullableStringListProperty("detect.hub.signature.scanner.exclusion.patterns").apply {
+        val DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS = StringListProperty("detect.hub.signature.scanner.exclusion.patterns", emptyList()).apply {
             info("Detect Hub Signature Scanner Exclusion Patterns", "3.0.0")
             help("A comma-separated list of values to be used with the Signature Scanner --exclude flag.")
             groups(DetectGroup.SignatureScanner)
             deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.patterns in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
 
-        // TODO: Should this be a NullablePathProperty? If so a list version of this property should be created.
+        // TODO: Should we create a PathListProperty for this?
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
-        val DETECT_HUB_SIGNATURE_SCANNER_PATHS = NullableStringListProperty("detect.hub.signature.scanner.paths").apply {
+        val DETECT_HUB_SIGNATURE_SCANNER_PATHS = StringListProperty("detect.hub.signature.scanner.paths", emptyList()).apply {
             info("Detect Hub Signature Scanner Paths", "3.0.0")
             help("These paths and only these paths will be scanned.")
             groups(DetectGroup.SignatureScanner)
