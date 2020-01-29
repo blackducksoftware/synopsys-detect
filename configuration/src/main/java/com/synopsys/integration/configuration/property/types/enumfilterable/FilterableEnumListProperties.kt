@@ -23,18 +23,19 @@
 package com.synopsys.integration.configuration.property.types.enumfilterable
 
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
+import org.apache.commons.lang3.EnumUtils
 
-class FilterableEnumListProperty<T>(key: String, default: List<FilterableEnumValue<T>>, valueOf: (String) -> T?, val values: List<T>) : ValuedListProperty<FilterableEnumValue<T>>(key, FilterableEnumListValueParser(valueOf), default) {
+class FilterableEnumListProperty<T : Enum<T>>(key: String, default: List<FilterableEnumValue<T>>, private val enumClass: Class<T>) : ValuedListProperty<FilterableEnumValue<T>>(key, FilterableEnumListValueParser(enumClass), default) {
     override fun isCaseSensitive(): Boolean = true
     override fun describeDefault(): String? = default.joinToString { "," }
     override fun listExampleValues(): List<String>? {
-        val base = values.map { it.toString() }.toMutableList()
+        val base = EnumUtils.getEnumList(enumClass).map { it.toString() }.toMutableList()
         base.add("ALL")
         base.add("NONE")
         return base
     }
 
-    override fun describeType(): String? = "Enum"
+    override fun describeType(): String? = enumClass.simpleName
     override fun isOnlyExampleValues(): Boolean = true
     override fun isCommaSeparated(): Boolean = true
 }

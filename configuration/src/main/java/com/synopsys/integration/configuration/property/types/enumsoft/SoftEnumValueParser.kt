@@ -24,10 +24,10 @@ package com.synopsys.integration.configuration.property.types.enumsoft
 
 import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.parse.ValueParser
-import com.synopsys.integration.configuration.property.types.enums.ValueOfOrNullParser
+import com.synopsys.integration.configuration.property.types.enums.SafeEnumValueParser
 
-class SoftEnumValueParser<T>(val valueOf: (String) -> T?) : ValueParser<SoftEnumValue<T>>() {
-    var parser = ValueOfOrNullParser(valueOf)
+class SoftEnumValueParser<T : Enum<T>>(enumClass: Class<T>) : ValueParser<SoftEnumValue<T>>() {
+    var parser = SafeEnumValueParser(enumClass)
     override fun parse(value: String): SoftEnumValue<T> {
         return when (val enumValue = parser.parse(value)) {
             null -> StringValue<T>(value)
@@ -36,4 +36,4 @@ class SoftEnumValueParser<T>(val valueOf: (String) -> T?) : ValueParser<SoftEnum
     }
 }
 
-class SoftEnumListValueParser<T>(val valueOf: (String) -> T?) : ListValueParser<SoftEnumValue<T>>(SoftEnumValueParser(valueOf))
+class SoftEnumListValueParser<T : Enum<T>>(enumClass: Class<T>) : ListValueParser<SoftEnumValue<T>>(SoftEnumValueParser(enumClass))

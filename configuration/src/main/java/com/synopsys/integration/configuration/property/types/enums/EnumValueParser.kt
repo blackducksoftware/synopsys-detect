@@ -27,9 +27,21 @@ import com.synopsys.integration.configuration.parse.ValueParseException
 import com.synopsys.integration.configuration.parse.ValueParser
 import org.apache.commons.lang3.EnumUtils
 
-class EnumValueParser<T : Enum<T>>(val enumClass: Class<T>) : ValueParser<T>() {
+class EnumValueParser<T : Enum<T>>(private val enumClass: Class<T>) : ValueParser<T>() {
+    private val parser = SafeEnumValueParser(enumClass);
+    @Throws(ValueParseException::class)
     override fun parse(value: String): T {
-        return EnumUtils.getEnum(enumClass, value) ?: throw ValueParseException(value, enumClass.simpleName, "Unable to convert '$value' to one of " + EnumUtils.getEnumList(enumClass).joinToString { "," })
+        try {
+            return parser.parse(value) ?: throw ValueParseException(value, "enum", additionalMessage = "Unable to convert '$value' to one of " + EnumUtils.getEnumList(enumClass).joinToString { "," })
+        } catch (e: Exception) {
+            throw ValueParseException(value, "enum", innerException = e)
+        }
+    }
+}
+
+class SafeEnumValueParser<T : Enum<T>>(private val enumClass: Class<T>) {
+    fun parse(value: String): T? {
+        return EnumUtils.getEnum(enumClass, value)
     }
 }
 

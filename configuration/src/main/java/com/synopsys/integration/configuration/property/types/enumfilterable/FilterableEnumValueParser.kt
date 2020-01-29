@@ -24,10 +24,10 @@ package com.synopsys.integration.configuration.property.types.enumfilterable
 
 import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.parse.ValueParser
-import com.synopsys.integration.configuration.property.types.enums.ValueOfParser
+import com.synopsys.integration.configuration.property.types.enums.EnumValueParser
 
-class FilterableEnumValueParser<T>(valueOf: (String) -> T?) : ValueParser<FilterableEnumValue<T>>() {
-    private val parser = ValueOfParser(valueOf)
+class FilterableEnumValueParser<T : Enum<T>>(enumClass: Class<T>) : ValueParser<FilterableEnumValue<T>>() {
+    private val parser = EnumValueParser(enumClass)
     override fun parse(value: String): FilterableEnumValue<T> {
         return when {
             value.toLowerCase() == "none" -> None()
@@ -37,4 +37,4 @@ class FilterableEnumValueParser<T>(valueOf: (String) -> T?) : ValueParser<Filter
     }
 }
 
-class FilterableEnumListValueParser<T>(val valueOf: (String) -> T?) : ListValueParser<FilterableEnumValue<T>>(FilterableEnumValueParser(valueOf))
+class FilterableEnumListValueParser<T : Enum<T>>(enumClass: Class<T>) : ListValueParser<FilterableEnumValue<T>>(FilterableEnumValueParser(enumClass))

@@ -25,11 +25,12 @@ package com.synopsys.integration.configuration.property.types.enumextended
 import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.parse.ValueParseException
 import com.synopsys.integration.configuration.parse.ValueParser
-import com.synopsys.integration.configuration.property.types.enums.ValueOfOrNullParser
+import com.synopsys.integration.configuration.property.types.enums.SafeEnumValueParser
+import org.apache.commons.lang3.EnumUtils
 
-class ExtendedEnumValueOfParser<E, B>(valueOfE: (String) -> E?, valueOfB: (String) -> B?) : ValueParser<ExtendedEnumValue<E, B>>() {
-    private var extendedParser = ValueOfOrNullParser(valueOfE)
-    private var baseParser = ValueOfOrNullParser(valueOfB)
+class ExtendedEnumValueOfParser<E : Enum<E>, B : Enum<B>>(private val enumClassE: Class<E>, private val enumClassB: Class<B>) : ValueParser<ExtendedEnumValue<E, B>>() {
+    private var extendedParser = SafeEnumValueParser(enumClassE)
+    private var baseParser = SafeEnumValueParser(enumClassB)
 
     override fun parse(value: String): ExtendedEnumValue<E, B> {
         val eValue = extendedParser.parse(value);
@@ -40,8 +41,9 @@ class ExtendedEnumValueOfParser<E, B>(valueOfE: (String) -> E?, valueOfB: (Strin
         if (bValue != null) {
             return BaseValue(bValue)
         }
-        throw ValueParseException(value, "either enum", additionalMessage = "Value was not a member of either enum set.")//TODO: Mention enum types?
+        val combinedOptions = EnumUtils.getEnumList(enumClassE).joinToString(",") + "," + EnumUtils.getEnumList(enumClassB).joinToString { "," }
+        throw ValueParseException(value, "either enum", additionalMessage = "Value was must be one of $combinedOptions")
     }
 }
 
-class ExtendedEnumListValueOfParser<E, B>(valueOfE: (String) -> E?, valueOfB: (String) -> B) : ListValueParser<ExtendedEnumValue<E, B>>(ExtendedEnumValueOfParser(valueOfE, valueOfB))
+class ExtendedEnumListValueOfParser<E : Enum<E>, B : Enum<B>>(private val enumClassE: Class<E>, private val enumClassB: Class<B>) : ListValueParser<ExtendedEnumValue<E, B>>(ExtendedEnumValueOfParser(enumClassE, enumClassB))

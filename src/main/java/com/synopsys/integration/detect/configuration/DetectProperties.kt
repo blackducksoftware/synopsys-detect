@@ -276,7 +276,7 @@ class DetectProperties {
             help("These paths and only these paths will be scanned.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Global)
         }
-        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING = ExtendedEnumProperty("detect.blackduck.signature.scanner.snippet.matching", ExtendedValue(ExtendedSnippetMode.NONE), ExtendedSnippetMode::valueOf, SnippetMatching::valueOf, ExtendedSnippetMode.values().toList(), SnippetMatching.values().toList()).apply {
+        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING = ExtendedEnumProperty("detect.blackduck.signature.scanner.snippet.matching", ExtendedValue(ExtendedSnippetMode.NONE), ExtendedSnippetMode::class.java, SnippetMatching::class.java).apply {
             info("Snippet Matching", "5.5.0")
             help("Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Global, DetectGroup.SourceScan)
@@ -480,7 +480,7 @@ class DetectProperties {
             help("The path to the dotnet executable.")
             groups(DetectGroup.Nuget, DetectGroup.Global)
         }
-        val DETECT_EXCLUDED_DETECTOR_TYPES = FilterableEnumListProperty("detect.excluded.detector.types", emptyList(), DetectorType::valueOf, DetectorType.values().toList()).apply {
+        val DETECT_EXCLUDED_DETECTOR_TYPES = FilterableEnumListProperty("detect.excluded.detector.types", emptyList(), DetectorType::class.java).apply {
             info("Detector Types Excluded", "3.0.0")
             help("By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win.", "If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them.")
             groups(DetectGroup.Detector, DetectGroup.Global)
@@ -553,7 +553,7 @@ class DetectProperties {
             help("The path to the rebar3 executable.")
             groups(DetectGroup.Hex, DetectGroup.Global)
         }
-        val DETECT_INCLUDED_DETECTOR_TYPES = FilterableEnumListProperty("detect.included.detector.types", emptyList(), DetectorType::valueOf, DetectorType.values().toList()).apply {
+        val DETECT_INCLUDED_DETECTOR_TYPES = FilterableEnumListProperty("detect.included.detector.types", emptyList(), DetectorType::class.java).apply {
             info("Detector Types Included", "3.0.0")
             help("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.", "If you want to limit Detect to a subset of its detectors, use this property to specify that subset.")
             groups(DetectGroup.Detector, DetectGroup.Global)
@@ -723,7 +723,7 @@ class DetectProperties {
             help("Path of the swift executable.")
             groups(DetectGroup.Paths, DetectGroup.Global)
         }
-        val DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES = FilterableEnumListProperty("detect.policy.check.fail.on.severities", listOf(None<PolicySeverityType>()), PolicySeverityType::valueOf, PolicySeverityType.values().toList()).apply {
+        val DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES = FilterableEnumListProperty("detect.policy.check.fail.on.severities", listOf(None<PolicySeverityType>()), PolicySeverityType::class.java).apply {
             info("Fail on Policy Violation Severities", "3.0.0")
             help("A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE.")
             groups(DetectGroup.Project, DetectGroup.Global, DetectGroup.ProjectSetting, DetectGroup.Policy)
@@ -936,12 +936,12 @@ class DetectProperties {
             help("Test the connection to Black Duck with the current configuration.")
             groups(DetectGroup.BlackduckServer, DetectGroup.Global)
         }
-        val DETECT_TOOLS = FilterableEnumListProperty("detect.tools", emptyList(), DetectTool::valueOf, DetectTool.values().toList()).apply {
+        val DETECT_TOOLS = FilterableEnumListProperty("detect.tools", emptyList(), DetectTool::class.java).apply {
             info("Detect Tools Included", "5.0.0")
             help("The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.", "This property and detect.tools.excluded provide control over which tools Detect runs.")
             groups(DetectGroup.Paths, DetectGroup.Global)
         }
-        val DETECT_TOOLS_EXCLUDED = FilterableEnumListProperty("detect.tools.excluded", emptyList(), DetectTool::valueOf, DetectTool.values().toList()).apply {
+        val DETECT_TOOLS_EXCLUDED = FilterableEnumListProperty("detect.tools.excluded", emptyList(), DetectTool::class.java).apply {
             info("Detect Tools Excluded", "5.0.0")
             help("The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.", "This property and detect.tools provide control over which tools Detect runs.")
             groups(DetectGroup.Paths, DetectGroup.Global)

@@ -23,11 +23,19 @@
 package com.synopsys.integration.configuration.property.types.enumextended
 
 import com.synopsys.integration.configuration.property.base.ValuedProperty
+import org.apache.commons.lang3.EnumUtils
 
-class ExtendedEnumProperty<E, B>(key: String, default: ExtendedEnumValue<E, B>, valueOfE: (String) -> E?, valueOfB: (String) -> B?, val valuesExtended: List<E>, val valuesBase: List<B>) : ValuedProperty<ExtendedEnumValue<E, B>>(key, ExtendedEnumValueOfParser(valueOfE, valueOfB), default) {
+class ExtendedEnumProperty<E : Enum<E>, B : Enum<B>>(key: String, default: ExtendedEnumValue<E, B>, enumClassE: Class<E>, val enumClassB: Class<B>) : ValuedProperty<ExtendedEnumValue<E, B>>(key, ExtendedEnumValueOfParser(enumClassE, enumClassB), default) {
+    val options = mutableListOf<String>()
+
+    init {
+        options.addAll(EnumUtils.getEnumList(enumClassE).map { it.toString() })
+        options.addAll(EnumUtils.getEnumList(enumClassB).map { it.toString() })
+    }
+
     override fun isCaseSensitive(): Boolean = false
-    override fun listExampleValues(): List<String>? = valuesExtended.map { it.toString() } + "," + valuesBase.map { it.toString() }
+    override fun listExampleValues(): List<String>? = options
     override fun isOnlyExampleValues(): Boolean = false
     override fun describeDefault(): String? = default.toString()
-    override fun describeType(): String? = "Enum"
+    override fun describeType(): String? = enumClassB.simpleName
 }

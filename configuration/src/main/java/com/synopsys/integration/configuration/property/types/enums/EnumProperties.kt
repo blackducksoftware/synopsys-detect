@@ -27,13 +27,11 @@ import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
 import org.apache.commons.lang3.EnumUtils
 
-const val TYPE_DESCRIPTION = "Enum"
-
 class NullableEnumProperty<T : Enum<T>>(key: String, private val enumClass: Class<T>) : NullableProperty<T>(key, EnumValueParser(enumClass)) {
     override fun isCaseSensitive(): Boolean = true
     override fun listExampleValues(): List<String>? = EnumUtils.getEnumList(enumClass).map { it.toString() }
     override fun isOnlyExampleValues(): Boolean = true
-    override fun describeType(): String? = TYPE_DESCRIPTION
+    override fun describeType(): String? = enumClass.simpleName
 }
 
 class EnumProperty<T : Enum<T>>(key: String, default: T, private val enumClass: Class<T>) : ValuedProperty<T>(key, EnumValueParser(enumClass), default) {
@@ -41,7 +39,7 @@ class EnumProperty<T : Enum<T>>(key: String, default: T, private val enumClass: 
     override fun describeDefault(): String? = default.toString()
     override fun listExampleValues(): List<String>? = EnumUtils.getEnumList(enumClass).map { it.toString() }
     override fun isOnlyExampleValues(): Boolean = true
-    override fun describeType(): String? = TYPE_DESCRIPTION
+    override fun describeType(): String? = enumClass.simpleName
 }
 
 class EnumListProperty<T : Enum<T>>(key: String, default: List<T>, private val enumClass: Class<T>) : ValuedListProperty<T>(key, EnumListValueParser(enumClass), default) {
@@ -49,6 +47,6 @@ class EnumListProperty<T : Enum<T>>(key: String, default: List<T>, private val e
     override fun describeDefault(): String? = default.joinToString { "," }
     override fun listExampleValues(): List<String>? = EnumUtils.getEnumList(enumClass).map { it.toString() }
     override fun isOnlyExampleValues(): Boolean = true
-    override fun describeType(): String? = "$TYPE_DESCRIPTION List"
+    override fun describeType(): String? = "${enumClass.simpleName} List"
     override fun isCommaSeparated(): Boolean = true
 }

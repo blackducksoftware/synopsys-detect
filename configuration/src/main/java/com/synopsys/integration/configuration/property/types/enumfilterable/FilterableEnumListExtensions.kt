@@ -23,7 +23,7 @@
 package com.synopsys.integration.configuration.property.types.enumfilterable
 
 
-fun <T> List<FilterableEnumValue<T>>.containsNone(): Boolean {
+fun <T : Enum<T>> List<FilterableEnumValue<T>>.containsNone(): Boolean {
     return this.any {
         when (it) {
             is None -> true
@@ -32,7 +32,7 @@ fun <T> List<FilterableEnumValue<T>>.containsNone(): Boolean {
     }
 }
 
-fun <T> List<FilterableEnumValue<T>>.containsAll(): Boolean {
+fun <T : Enum<T>> List<FilterableEnumValue<T>>.containsAll(): Boolean {
     return this.any {
         when (it) {
             is All -> true
@@ -41,7 +41,7 @@ fun <T> List<FilterableEnumValue<T>>.containsAll(): Boolean {
     }
 }
 
-fun <T> List<FilterableEnumValue<T>>.containsValue(value: T): Boolean {
+fun <T : Enum<T>> List<FilterableEnumValue<T>>.containsValue(value: T): Boolean {
     return this.any {
         when (it) {
             is Value<*> -> it.value == value
@@ -50,7 +50,7 @@ fun <T> List<FilterableEnumValue<T>>.containsValue(value: T): Boolean {
     }
 }
 
-fun <T> List<FilterableEnumValue<T>>.toValueList(clazz: Class<T>): List<T> {
+fun <T : Enum<T>> List<FilterableEnumValue<T>>.toValueList(clazz: Class<T>): List<T> {
     return this.flatMap {
         when (it) {
             is Value<*> -> listOf(clazz.cast(it.value))
@@ -59,7 +59,7 @@ fun <T> List<FilterableEnumValue<T>>.toValueList(clazz: Class<T>): List<T> {
     }.toList()
 }
 
-fun <T> List<FilterableEnumValue<T>>.populatedValues(clazz: Class<T>): List<T> {
+fun <T : Enum<T>> List<FilterableEnumValue<T>>.populatedValues(clazz: Class<T>): List<T> {
     if (this.containsNone()) {
         return emptyList()
     } else if (this.containsAll()) {
