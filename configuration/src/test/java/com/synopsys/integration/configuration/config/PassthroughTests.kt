@@ -1,6 +1,8 @@
 package com.synopsys.integration.configuration.config
 
 import com.synopsys.integration.configuration.property.base.PassthroughProperty
+import com.synopsys.integration.configuration.util.configOf
+import com.synopsys.integration.configuration.util.propertySourceOf
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
