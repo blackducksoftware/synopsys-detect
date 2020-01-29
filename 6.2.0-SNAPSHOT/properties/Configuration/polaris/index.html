@@ -870,20 +870,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#polaris-arguments-deprecated" class="md-nav__link">
-    Polaris Arguments (Deprecated)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#polaris-url-deprecated" class="md-nav__link">
-    Polaris Url (Deprecated)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#polaris-access-token-deprecated" class="md-nav__link">
     Polaris Access Token (Deprecated)
   </a>
@@ -891,8 +877,22 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#polaris-arguments-deprecated" class="md-nav__link">
+    Polaris Arguments (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#polaris-command-deprecated" class="md-nav__link">
     Polaris Command (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polaris-url-deprecated" class="md-nav__link">
+    Polaris Url (Deprecated)
   </a>
   
 </li>
@@ -1246,20 +1246,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#polaris-arguments-deprecated" class="md-nav__link">
-    Polaris Arguments (Deprecated)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#polaris-url-deprecated" class="md-nav__link">
-    Polaris Url (Deprecated)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#polaris-access-token-deprecated" class="md-nav__link">
     Polaris Access Token (Deprecated)
   </a>
@@ -1267,8 +1253,22 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#polaris-arguments-deprecated" class="md-nav__link">
+    Polaris Arguments (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#polaris-command-deprecated" class="md-nav__link">
     Polaris Command (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#polaris-url-deprecated" class="md-nav__link">
+    Polaris Url (Deprecated)
   </a>
   
 </li>
@@ -1335,11 +1335,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="polaris-arguments-deprecated">Polaris Arguments (Deprecated)</h2>
-<pre><code>--polaris.arguments
+<h2 id="polaris-access-token-deprecated">Polaris Access Token (Deprecated)</h2>
+<pre><code>--polaris.access.token
 </code></pre>
 
-<p>Additional arguments to pass to polaris separated by space. The polaris.command takes precedence.</p>
+<p>The access token for your polaris instance.</p>
 <p><strong>DEPRECATED: This property is being removed. Detect will no longer invoke the Polaris CLI. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
@@ -1379,55 +1379,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="polaris-url-deprecated">Polaris Url (Deprecated)</h2>
-<pre><code>--polaris.url
+<h2 id="polaris-arguments-deprecated">Polaris Arguments (Deprecated)</h2>
+<pre><code>--polaris.arguments
 </code></pre>
 
-<p>The url of your polaris instance.</p>
-<p><strong>DEPRECATED: This property is being removed. Detect will no longer invoke the Polaris CLI. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.1.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="polaris-access-token-deprecated">Polaris Access Token (Deprecated)</h2>
-<pre><code>--polaris.access.token
-</code></pre>
-
-<p>The access token for your polaris instance.</p>
+<p>Additional arguments to pass to polaris separated by space. The polaris.command takes precedence.</p>
 <p><strong>DEPRECATED: This property is being removed. Detect will no longer invoke the Polaris CLI. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
@@ -1484,6 +1440,50 @@
 <tr>
 <td>Added</td>
 <td>6.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="polaris-url-deprecated">Polaris Url (Deprecated)</h2>
+<pre><code>--polaris.url
+</code></pre>
+
+<p>The url of your polaris instance.</p>
+<p><strong>DEPRECATED: This property is being removed. Detect will no longer invoke the Polaris CLI. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.1.0</td>
 </tr>
 <tr>
 <td>Type</td>
