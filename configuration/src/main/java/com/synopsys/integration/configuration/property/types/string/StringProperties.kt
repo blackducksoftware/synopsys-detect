@@ -23,10 +23,16 @@
 package com.synopsys.integration.configuration.property.types.string
 
 import com.synopsys.integration.configuration.property.base.NullableProperty
+import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
+import com.synopsys.integration.configuration.property.types.stringlist.StringListValueParser
 
 class NullableStringProperty(key: String) : NullableProperty<String>(key, StringValueParser()) {}
 class StringProperty(key: String, default: String) : ValuedProperty<String>(key, StringValueParser(), default) {
     override fun describeDefault(): String? = default
+    override fun describeType(): String? = "String"
+}
+
+class StringListProperty(key: String, default: List<String>) : ValuedListProperty<String>(key, StringListValueParser(), default) {
     override fun describeType(): String? = "String"
 }
