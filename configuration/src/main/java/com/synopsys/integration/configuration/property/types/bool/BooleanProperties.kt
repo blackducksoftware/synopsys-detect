@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.configuration.property.types.bool
 
+import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
@@ -37,4 +38,4 @@ class BooleanProperty(key: String, default: Boolean) : ValuedProperty<Boolean>(k
     override fun describeType(): String? = "Boolean"
 }
 
-class BooleanListProperty(key: String, default: List<Boolean>) : ValuedListProperty<Boolean>(key, BooleanListValueParser(), default)
+class BooleanListProperty(key: String, default: List<Boolean>) : ValuedListProperty<Boolean>(key, ListValueParser(BooleanValueParser()), default)

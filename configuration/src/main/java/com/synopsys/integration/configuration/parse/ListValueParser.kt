@@ -32,7 +32,7 @@ package com.synopsys.integration.configuration.parse
  * the beginning to the end of this string, and matches at each position the first element in [delimiters]
  * that is equal to a delimiter in this instance at that position.
  */
-abstract class ListValueParser<T>(private val valueParser: ValueParser<T>, private vararg val delimiters: String = arrayOf(",")) : ValueParser<List<T>>() {
+open class ListValueParser<T>(private val valueParser: ValueParser<T>, private vararg val delimiters: String = arrayOf(",")) : ValueParser<List<T>>() {
     override fun parse(value: String): List<T> {
         return value.split(*delimiters)
                 .map { valueParser.parse(it) }
