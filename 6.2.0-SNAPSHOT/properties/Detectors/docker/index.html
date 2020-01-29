@@ -1007,15 +1007,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#docker-image-archive-file" class="md-nav__link">
-    Docker Image Archive File
+  <a href="#docker-executable" class="md-nav__link">
+    Docker Executable
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-image-name" class="md-nav__link">
-    Docker Image Name
+  <a href="#docker-image-archive-file" class="md-nav__link">
+    Docker Image Archive File
   </a>
   
 </li>
@@ -1028,8 +1028,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-executable" class="md-nav__link">
-    Docker Executable
+  <a href="#docker-image-name" class="md-nav__link">
+    Docker Image Name
   </a>
   
 </li>
@@ -1042,8 +1042,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
-    Docker Inspector .jar File Path (Advanced)
+  <a href="#platform-top-layer-id-advanced" class="md-nav__link">
+    Platform Top Layer ID (Advanced)
   </a>
   
 </li>
@@ -1056,15 +1056,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
-    Docker Inspector AirGap Path (Advanced)
+  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
+    Docker Inspector .jar File Path (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#platform-top-layer-id-advanced" class="md-nav__link">
-    Platform Top Layer ID (Advanced)
+  <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
+    Docker Inspector AirGap Path (Advanced)
   </a>
   
 </li>
@@ -1267,15 +1267,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#docker-image-archive-file" class="md-nav__link">
-    Docker Image Archive File
+  <a href="#docker-executable" class="md-nav__link">
+    Docker Executable
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-image-name" class="md-nav__link">
-    Docker Image Name
+  <a href="#docker-image-archive-file" class="md-nav__link">
+    Docker Image Archive File
   </a>
   
 </li>
@@ -1288,8 +1288,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-executable" class="md-nav__link">
-    Docker Executable
+  <a href="#docker-image-name" class="md-nav__link">
+    Docker Image Name
   </a>
   
 </li>
@@ -1302,8 +1302,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
-    Docker Inspector .jar File Path (Advanced)
+  <a href="#platform-top-layer-id-advanced" class="md-nav__link">
+    Platform Top Layer ID (Advanced)
   </a>
   
 </li>
@@ -1316,15 +1316,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
-    Docker Inspector AirGap Path (Advanced)
+  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
+    Docker Inspector .jar File Path (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#platform-top-layer-id-advanced" class="md-nav__link">
-    Platform Top Layer ID (Advanced)
+  <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
+    Docker Inspector AirGap Path (Advanced)
   </a>
   
 </li>
@@ -1347,11 +1347,11 @@
                 
                 
                 <h1 id="docker">docker</h1>
-<h2 id="docker-image-archive-file">Docker Image Archive File</h2>
-<pre><code>--detect.docker.tar
+<h2 id="docker-executable">Docker Executable</h2>
+<pre><code>--detect.docker.path
 </code></pre>
 
-<p>A saved Docker image - must be a .tar file. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
+<p>Path to the docker executable.</p>
 <table>
 <thead>
 <tr>
@@ -1390,11 +1390,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-image-name">Docker Image Name</h2>
-<pre><code>--detect.docker.image
+<h2 id="docker-image-archive-file">Docker Image Archive File</h2>
+<pre><code>--detect.docker.tar
 </code></pre>
 
-<p>The Docker image name to inspect. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
+<p>A saved Docker image - must be a .tar file. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
 <table>
 <thead>
 <tr>
@@ -1476,11 +1476,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-executable">Docker Executable</h2>
-<pre><code>--detect.docker.path
+<h2 id="docker-image-name">Docker Image Name</h2>
+<pre><code>--detect.docker.image
 </code></pre>
 
-<p>Path to the docker executable.</p>
+<p>The Docker image name to inspect. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
 <table>
 <thead>
 <tr>
@@ -1562,11 +1562,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-inspector-46jar-file-path-advanced">Docker Inspector .jar File Path (Advanced)</h2>
-<pre><code>--detect.docker.inspector.path
+<h2 id="platform-top-layer-id-advanced">Platform Top Layer ID (Advanced)</h2>
+<pre><code>--detect.docker.platform.top.layer.id
 </code></pre>
 
-<p>This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a local Docker Inspector .jar file at this path.</p>
+<p>To exclude components from platform layers from the results, assign to this property the ID of the top layer of the platform image. Get the platform top layer ID from the output of 'docker inspect platformimage:tag'. The platform top layer ID is the last item in RootFS.Layers. For more information, see 'Isolating application components' in the Docker Inspector documentation.</p>
+<p>If you are interested in components from the application layers of your image, but not interested in components from the underlying platform layers, you can exclude components from platform layers from the results by using this property to specify the boundary between platform layers and application layers. </p>
 <table>
 <thead>
 <tr>
@@ -1577,7 +1578,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>6.1.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1648,11 +1649,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-inspector-airgap-path-advanced">Docker Inspector AirGap Path (Advanced)</h2>
-<pre><code>--detect.docker.inspector.air.gap.path
+<h2 id="docker-inspector-46jar-file-path-advanced">Docker Inspector .jar File Path (Advanced)</h2>
+<pre><code>--detect.docker.inspector.path
 </code></pre>
 
-<p>The path to the directory containing the Docker Inspector jar and images.</p>
+<p>This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a local Docker Inspector .jar file at this path.</p>
 <table>
 <thead>
 <tr>
@@ -1691,12 +1692,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="platform-top-layer-id-advanced">Platform Top Layer ID (Advanced)</h2>
-<pre><code>--detect.docker.platform.top.layer.id
+<h2 id="docker-inspector-airgap-path-advanced">Docker Inspector AirGap Path (Advanced)</h2>
+<pre><code>--detect.docker.inspector.air.gap.path
 </code></pre>
 
-<p>To exclude components from platform layers from the results, assign to this property the ID of the top layer of the platform image. Get the platform top layer ID from the output of 'docker inspect platformimage:tag'. The platform top layer ID is the last item in RootFS.Layers. For more information, see 'Isolating application components' in the Docker Inspector documentation.</p>
-<p>If you are interested in components from the application layers of your image, but not interested in components from the underlying platform layers, you can exclude components from platform layers from the results by using this property to specify the boundary between platform layers and application layers. </p>
+<p>The path to the directory containing the Docker Inspector jar and images.</p>
 <table>
 <thead>
 <tr>
@@ -1707,7 +1707,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.1.0</td>
+<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>

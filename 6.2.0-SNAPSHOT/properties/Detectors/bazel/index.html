@@ -959,8 +959,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bazel-target" class="md-nav__link">
-    Bazel Target
+  <a href="#bazel-workspace-external-dependency-rule" class="md-nav__link">
+    Bazel workspace external dependency rule
   </a>
   
 </li>
@@ -973,8 +973,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-workspace-external-dependency-rule" class="md-nav__link">
-    Bazel workspace external dependency rule
+  <a href="#bazel-target" class="md-nav__link">
+    Bazel Target
   </a>
   
 </li>
@@ -1232,8 +1232,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bazel-target" class="md-nav__link">
-    Bazel Target
+  <a href="#bazel-workspace-external-dependency-rule" class="md-nav__link">
+    Bazel workspace external dependency rule
   </a>
   
 </li>
@@ -1246,8 +1246,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-workspace-external-dependency-rule" class="md-nav__link">
-    Bazel workspace external dependency rule
+  <a href="#bazel-target" class="md-nav__link">
+    Bazel Target
   </a>
   
 </li>
@@ -1277,11 +1277,11 @@
                 
                 
                 <h1 id="bazel">bazel</h1>
-<h2 id="bazel-target">Bazel Target</h2>
-<pre><code>--detect.bazel.target
+<h2 id="bazel-workspace-external-dependency-rule">Bazel workspace external dependency rule</h2>
+<pre><code>--detect.bazel.dependency.type=maven_jar,maven_install,UNSPECIFIED 
 </code></pre>
 
-<p>The Bazel target (for example, //foo:foolib) for which dependencies are collected. For Detect to run Bazel, this property must be set.</p>
+<p>The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.</p>
 <table>
 <thead>
 <tr>
@@ -1292,7 +1292,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>5.2.0</td>
+<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1300,7 +1300,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>UNSPECIFIED</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1308,15 +1308,15 @@
 </tr>
 <tr>
 <td>Case Sensative</td>
-<td>No</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>Any</td>
+<td>maven_jar, maven_install, UNSPECIFIED</td>
 </tr>
 <tr>
 <td>Strict</td>
-<td>No</td>
+<td>Yes</td>
 </tr>
 </tbody>
 </table>
@@ -1363,11 +1363,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bazel-workspace-external-dependency-rule">Bazel workspace external dependency rule</h2>
-<pre><code>--detect.bazel.dependency.type=maven_jar,maven_install,UNSPECIFIED 
+<h2 id="bazel-target">Bazel Target</h2>
+<pre><code>--detect.bazel.target
 </code></pre>
 
-<p>The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.</p>
+<p>The Bazel target (for example, //foo:foolib) for which dependencies are collected. For Detect to run Bazel, this property must be set.</p>
 <table>
 <thead>
 <tr>
@@ -1378,7 +1378,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.0.0</td>
+<td>5.2.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1386,7 +1386,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>UNSPECIFIED</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
@@ -1394,15 +1394,15 @@
 </tr>
 <tr>
 <td>Case Sensative</td>
-<td>Yes</td>
+<td>No</td>
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>maven_jar, maven_install, UNSPECIFIED</td>
+<td>Any</td>
 </tr>
 <tr>
 <td>Strict</td>
-<td>Yes</td>
+<td>No</td>
 </tr>
 </tbody>
 </table>
