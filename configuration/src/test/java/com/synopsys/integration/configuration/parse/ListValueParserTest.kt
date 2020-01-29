@@ -20,23 +20,37 @@ internal class ListValueParserTest {
     @Test
     fun parseDefault() {
         val listValueParser = TestDefaultListValueParser(TestValueParser())
-        val actualValues = listValueParser.parse("test,this, , parser")
-        Assertions.assertEquals(listOf("test", "this", " ", " parser"), actualValues, "The list parser should be splitting on comma by default.")
+        val actualValues = listValueParser.parse("test,this,example , parser")
+        Assertions.assertEquals(listOf("test", "this", "example", "parser"), actualValues, "The list parser should be splitting on comma and trimming by default.")
     }
 
     @Test
     fun parseCustomDelimiters() {
         val listValueParser = TestCustomListValueParser(TestValueParser(), " ", "|")
-        val actualValues = listValueParser.parse("test this |parser|for real")
-        Assertions.assertEquals(listOf("test", "this", "", "parser", "for", "real"), actualValues)
+        val actualValues = listValueParser.parse("test this|parser|for real")
+        Assertions.assertEquals(listOf("test", "this", "parser", "for", "real"), actualValues)
     }
 
     @Test
-    fun parseThrows() {
+    fun failsToParseInvalidElement() {
         val listValueParser = TestDefaultListValueParser(TestValueParser())
-
         Assertions.assertThrows(ValueParseException::class.java) {
             listValueParser.parse("test,should,throw,-1,for,test")
+        }
+    }
+
+    @Test
+    fun failsToParseEmpty() {
+        val listValueParser = TestDefaultListValueParser(TestValueParser())
+        Assertions.assertThrows(ValueParseException::class.java) {
+            listValueParser.parse("should,,throw")
+        }
+    }
+
+    fun failsToParseWhitespace() {
+        val listValueParser = TestDefaultListValueParser(TestValueParser())
+        Assertions.assertThrows(ValueParseException::class.java) {
+            listValueParser.parse("should,  ,throw")
         }
     }
 }

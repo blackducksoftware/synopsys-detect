@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.configuration.parse
 
+import org.apache.commons.lang3.StringUtils
+
 /**
  * Splits the configuration provided value to a list of T around occurrences of the specified [delimiters].
  *
@@ -34,8 +36,13 @@ package com.synopsys.integration.configuration.parse
  */
 open class ListValueParser<T>(private val valueParser: ValueParser<T>, private vararg val delimiters: String = arrayOf(",")) : ValueParser<List<T>>() {
     override fun parse(value: String): List<T> {
-        return value.split(*delimiters)
-                .map { valueParser.parse(it) }
-                .toList()
+        val elements = value.split(*delimiters)
+                .map(String::trim)
+        if (elements.any(StringUtils::isBlank)) {
+            throw ValueParseException(value, "List", "Failed to parse list '$value'. The list must be comma separated and each element in the list must not be empty (at least one character that is not whitespace).")
+        } else {
+            return elements.map { valueParser.parse(it) }
+                    .toList()
+        }
     }
 }
