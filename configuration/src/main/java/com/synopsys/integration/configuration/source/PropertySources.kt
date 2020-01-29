@@ -20,28 +20,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.config
+package com.synopsys.integration.configuration.source
 
-class MapPropertySource(private val givenName: String, private val underlyingMap: Map<String, String>) : PropertySource {
-    private val normalizedPropertyMap: Map<String, String> = underlyingMap.map { KeyUtils.normalizeKey(it.key) to it.value }.toMap()
-
-    override fun getOrigin(key: String): String? {
-        return givenName;
-    }
-
-    override fun hasKey(key: String): Boolean {
-        return normalizedPropertyMap.containsKey(key);
-    }
-
-    override fun getValue(key: String): String? {
-        return normalizedPropertyMap.getOrElse(key, { -> null });
-    }
-
-    override fun getName(): String {
-        return givenName;
-    }
-
-    override fun getKeys(): Set<String> {
-        return normalizedPropertyMap.keys
-    }
+// IMPORTANT
+// A property source is responsible for responding with keys in the normalized form "example.key"
+// It must respond to well formed keys in the normalized form "example.key"
+// Use KeyUtils if you have keys from unknown sources to ensure consistent key format.
+interface PropertySource {
+    fun hasKey(key: String): Boolean
+    fun getKeys(): Set<String>
+    fun getValue(key: String): String?
+    fun getOrigin(key: String): String?
+    fun getName(): String
 }

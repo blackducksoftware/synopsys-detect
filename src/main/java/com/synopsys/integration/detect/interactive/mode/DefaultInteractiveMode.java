@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.configuration.config.MapPropertySource;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.config.PropertySource;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
+import com.synopsys.integration.configuration.source.MapPropertySource;
+import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.configuration.BlackDuckConfigFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;

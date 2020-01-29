@@ -22,6 +22,10 @@
  */
 package com.synopsys.integration.configuration.property
 
+import com.synopsys.integration.configuration.util.Category
+import com.synopsys.integration.configuration.util.Group
+import com.synopsys.integration.configuration.util.ProductMajorVersion
+
 /**
  * This is the most basic property.
  * It has no type information and a value cannot be retrieved for it (without a subclass).

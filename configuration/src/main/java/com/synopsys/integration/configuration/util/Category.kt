@@ -20,12 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property
+package com.synopsys.integration.configuration.util
 
-interface ProductMajorVersion {
-    fun getIntValue(): Int
-
-    fun getDisplayValue(): String? {
-        return "${getIntValue()}.0.0"
-    }
+abstract class Category(val name: String) {
 }

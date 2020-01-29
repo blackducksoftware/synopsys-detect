@@ -1,5 +1,6 @@
 package com.synopsys.integration.configuration.config
 
+import com.synopsys.integration.configuration.util.KeyUtils
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

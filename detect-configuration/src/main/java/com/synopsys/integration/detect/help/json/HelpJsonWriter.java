@@ -34,8 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.configuration.property.Group;
 import com.synopsys.integration.configuration.property.Property;
+import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 
 public class HelpJsonWriter {

@@ -24,6 +24,12 @@ package com.synopsys.integration.configuration.property.base
 
 import com.synopsys.integration.configuration.property.Property
 
-class PassthroughProperty(key: String) : Property(key) {
-    //This is a property with no value, but with potentially many values all prefixed by the same key.
-}
+/**
+ * A property whose values are all prefixed with a common key.
+ *
+ * The key is lowercase and dot separated, ending with a dot. For example "docker."
+ * When retrieved from a Configuration, keys will be returned without the starting prefix. For example "docker.enabled.key" should be returned as "enabled.key" when the key is "docker."
+ *
+ * @property key the normalized key such as "example.key." ending with a dot.
+ */
+class PassthroughProperty(key: String) : Property(key) {}

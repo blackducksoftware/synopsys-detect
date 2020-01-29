@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.detect
 
-import com.synopsys.integration.configuration.property.ProductMajorVersion
+import com.synopsys.integration.configuration.util.ProductMajorVersion
 
 enum class DetectMajorVersion(private val value: Int) : ProductMajorVersion {
     ONE(1),

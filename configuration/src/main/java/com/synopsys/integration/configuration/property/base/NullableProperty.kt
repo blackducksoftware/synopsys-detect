@@ -24,6 +24,11 @@ package com.synopsys.integration.configuration.property.base
 
 import com.synopsys.integration.configuration.parse.ValueParser
 
-abstract class NullableProperty<T>(key: String, parser: ValueParser<T>) : TypedProperty<T>(key, parser) {
-    // This is a property with a key and a value, but the value is optional (nullable).
-}
+/**
+ * A property that returns null when it is not present in a Configuration.
+ *
+ * @param T the type this property returns when it is retrieved from a Configuration.
+ * @property key a normalized lowercase dot separated key such as "example.key".
+ * @property parser the parser that converts string values to the given type T.
+ */
+abstract class NullableProperty<T>(key: String, parser: ValueParser<T>) : TypedProperty<T>(key, parser) {}

@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.configuration.property.Group;
 import com.synopsys.integration.configuration.property.Property;
+import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.detect.help.DetectArgumentState;
 
 public class HelpPrinter {

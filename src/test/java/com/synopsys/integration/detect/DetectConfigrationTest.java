@@ -8,10 +8,10 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.configuration.config.MapPropertySource;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.config.PropertySource;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
+import com.synopsys.integration.configuration.source.MapPropertySource;
+import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;

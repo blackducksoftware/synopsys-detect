@@ -28,12 +28,14 @@ import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.PassthroughProperty
 import com.synopsys.integration.configuration.property.base.TypedProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
+import com.synopsys.integration.configuration.source.PropertySource
 
 class PropertyConfiguration(private val orderedPropertySources: List<PropertySource>) {
     private val resolutionCache: MutableMap<String, PropertyResolution> = mutableMapOf()
     private val valueCache: MutableMap<String, PropertyValue> = mutableMapOf()
 
     //#region Recommended Usage
+
     fun <T> getValueOrNull(property: NullableProperty<T>): T? {
         return try {
             getValue(property)
@@ -190,6 +192,7 @@ class PropertyConfiguration(private val orderedPropertySources: List<PropertySou
             ExceptionValue(e, resolution)
         }
     }
+
     //endregion Implementation Details
 }
 

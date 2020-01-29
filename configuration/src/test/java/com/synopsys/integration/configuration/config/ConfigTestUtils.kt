@@ -1,5 +1,8 @@
 package com.synopsys.integration.configuration.config
 
+import com.synopsys.integration.configuration.source.MapPropertySource
+import com.synopsys.integration.configuration.source.PropertySource
+
 fun emptyConfig(): PropertyConfiguration {
     return PropertyConfiguration(emptyList())
 }

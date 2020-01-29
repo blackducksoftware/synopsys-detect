@@ -20,12 +20,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.config
+package com.synopsys.integration.configuration.util
 
-class KeyUtils {
-    companion object {
-        fun normalizeKey(key: String): String {
-            return key.toLowerCase().replace("_", ".");
-        }
-    }
+abstract class Group(val name: String, val superGroup: Group? = null) {
+
 }

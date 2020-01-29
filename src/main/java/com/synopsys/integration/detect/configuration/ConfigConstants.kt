@@ -22,8 +22,8 @@
  */
 package com.synopsys.integration.detect.configuration
 
-import com.synopsys.integration.configuration.property.Category
-import com.synopsys.integration.configuration.property.Group
+import com.synopsys.integration.configuration.util.Category
+import com.synopsys.integration.configuration.util.Group
 import kotlin.reflect.full.companionObject
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.memberProperties
