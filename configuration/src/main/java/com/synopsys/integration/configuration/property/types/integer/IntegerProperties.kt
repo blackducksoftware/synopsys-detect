@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.configuration.property.types.integer
 
+import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
@@ -38,6 +39,6 @@ class IntegerProperty(key: String, default: Int) : ValuedProperty<Int>(key, Inte
     override fun describeType(): String? = TYPE_DESCRIPTION
 }
 
-class IntegerListProperty(key: String, default: List<Int>) : ValuedListProperty<Int>(key, IntegerListValueParser(), default) {
+class IntegerListProperty(key: String, default: List<Int>) : ValuedListProperty<Int>(key, ListValueParser(IntegerValueParser()), default) {
     override fun describeType(): String? = "$TYPE_DESCRIPTION List"
 }
