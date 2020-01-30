@@ -26,19 +26,6 @@ public class TildeInPathResolverTest {
 
     @Test
     @DisabledOnOs(WINDOWS) // Due to backslashes being flipped.
-    public void testResolvingTildeInWindows() {
-        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
-
-        final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin");
-        final String filePath = "~/Documents/source/funtional/detect";
-        final Path resolved = resolver.resolvePath(filePath);
-
-        Assertions.assertNotNull(resolved, "Resolved path should not be null.");
-        Assertions.assertEquals(filePath, resolved.toString(), "Tilde resolution should not occur on Windows.");
-    }
-
-    @Test
-    @DisabledOnOs(WINDOWS) // Due to backslashes being flipped.
     public void testResolvingTildeInTheMiddleOfAPath() {
         Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
