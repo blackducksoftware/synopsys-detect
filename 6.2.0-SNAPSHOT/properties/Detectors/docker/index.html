@@ -1019,6 +1019,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#docker-image-id" class="md-nav__link">
+    Docker Image ID
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#docker-image-archive-file" class="md-nav__link">
     Docker Image Archive File
   </a>
@@ -1033,13 +1040,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-image-id" class="md-nav__link">
-    Docker Image ID
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#docker-image-name" class="md-nav__link">
     Docker Image Name
   </a>
@@ -1047,8 +1047,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
-    Docker Inspector AirGap Path (Advanced)
+  <a href="#platform-top-layer-id-advanced" class="md-nav__link">
+    Platform Top Layer ID (Advanced)
   </a>
   
 </li>
@@ -1061,13 +1061,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
-    Docker Inspector .jar File Path (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#docker-inspector-version-advanced" class="md-nav__link">
     Docker Inspector Version (Advanced)
   </a>
@@ -1075,8 +1068,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#platform-top-layer-id-advanced" class="md-nav__link">
-    Platform Top Layer ID (Advanced)
+  <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
+    Docker Inspector AirGap Path (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
+    Docker Inspector .jar File Path (Advanced)
   </a>
   
 </li>
@@ -1279,6 +1279,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#docker-image-id" class="md-nav__link">
+    Docker Image ID
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#docker-image-archive-file" class="md-nav__link">
     Docker Image Archive File
   </a>
@@ -1293,13 +1300,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-image-id" class="md-nav__link">
-    Docker Image ID
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#docker-image-name" class="md-nav__link">
     Docker Image Name
   </a>
@@ -1307,8 +1307,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
-    Docker Inspector AirGap Path (Advanced)
+  <a href="#platform-top-layer-id-advanced" class="md-nav__link">
+    Platform Top Layer ID (Advanced)
   </a>
   
 </li>
@@ -1321,13 +1321,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
-    Docker Inspector .jar File Path (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#docker-inspector-version-advanced" class="md-nav__link">
     Docker Inspector Version (Advanced)
   </a>
@@ -1335,8 +1328,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#platform-top-layer-id-advanced" class="md-nav__link">
-    Platform Top Layer ID (Advanced)
+  <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
+    Docker Inspector AirGap Path (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
+    Docker Inspector .jar File Path (Advanced)
   </a>
   
 </li>
@@ -1359,6 +1359,49 @@
                 
                 
                 <h1 id="docker">docker</h1>
+<h2 id="docker-image-id">Docker Image ID</h2>
+<pre><code>--detect.docker.image.id
+</code></pre>
+
+<p>The Docker image ID to inspect.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.1.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="docker-image-archive-file">Docker Image Archive File</h2>
 <pre><code>--detect.docker.tar
 </code></pre>
@@ -1445,11 +1488,55 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-image-id">Docker Image ID</h2>
-<pre><code>--detect.docker.image.id
+<h2 id="docker-image-name">Docker Image Name</h2>
+<pre><code>--detect.docker.image
 </code></pre>
 
-<p>The Docker image ID to inspect.</p>
+<p>The Docker image name to inspect. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="platform-top-layer-id-advanced">Platform Top Layer ID (Advanced)</h2>
+<pre><code>--detect.docker.platform.top.layer.id
+</code></pre>
+
+<p>To exclude components from platform layers from the results, assign to this property the ID of the top layer of the platform image. Get the platform top layer ID from the output of 'docker inspect platformimage:tag'. The platform top layer ID is the last item in RootFS.Layers. For more information, see 'Isolating application components' in the Docker Inspector documentation.</p>
+<p>If you are interested in components from the application layers of your image, but not interested in components from the underlying platform layers, you can exclude components from platform layers from the results by using this property to specify the boundary between platform layers and application layers. </p>
 <table>
 <thead>
 <tr>
@@ -1488,11 +1575,54 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-image-name">Docker Image Name</h2>
-<pre><code>--detect.docker.image
+<h2 id="run-without-docker-in-path-advanced">Run Without Docker in Path (Advanced)</h2>
+<pre><code>--detect.docker.path.required=false
 </code></pre>
 
-<p>The Docker image name to inspect. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
+<p>If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="docker-inspector-version-advanced">Docker Inspector Version (Advanced)</h2>
+<pre><code>--detect.docker.inspector.version
+</code></pre>
+
+<p>Version of the Docker Inspector to use. By default Detect will attempt to automatically determine the version to use.</p>
 <table>
 <thead>
 <tr>
@@ -1574,49 +1704,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="run-without-docker-in-path-advanced">Run Without Docker in Path (Advanced)</h2>
-<pre><code>--detect.docker.path.required=false
-</code></pre>
-
-<p>If set to true, Detect will attempt to run the Docker Inspector only if it finds a docker client executable.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="docker-inspector-46jar-file-path-advanced">Docker Inspector .jar File Path (Advanced)</h2>
 <pre><code>--detect.docker.inspector.path
 </code></pre>
@@ -1633,93 +1720,6 @@
 <tr>
 <td>Added</td>
 <td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="docker-inspector-version-advanced">Docker Inspector Version (Advanced)</h2>
-<pre><code>--detect.docker.inspector.version
-</code></pre>
-
-<p>Version of the Docker Inspector to use. By default Detect will attempt to automatically determine the version to use.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="platform-top-layer-id-advanced">Platform Top Layer ID (Advanced)</h2>
-<pre><code>--detect.docker.platform.top.layer.id
-</code></pre>
-
-<p>To exclude components from platform layers from the results, assign to this property the ID of the top layer of the platform image. Get the platform top layer ID from the output of 'docker inspect platformimage:tag'. The platform top layer ID is the last item in RootFS.Layers. For more information, see 'Isolating application components' in the Docker Inspector documentation.</p>
-<p>If you are interested in components from the application layers of your image, but not interested in components from the underlying platform layers, you can exclude components from platform layers from the results by using this property to specify the boundary between platform layers and application layers. </p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.1.0</td>
 </tr>
 <tr>
 <td>Type</td>
