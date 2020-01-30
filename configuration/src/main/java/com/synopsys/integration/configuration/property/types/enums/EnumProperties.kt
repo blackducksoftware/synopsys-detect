@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.configuration.property.types.enums
 
+import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
@@ -42,11 +43,9 @@ class EnumProperty<T : Enum<T>>(key: String, default: T, private val enumClass: 
     override fun describeType(): String? = enumClass.simpleName
 }
 
-class EnumListProperty<T : Enum<T>>(key: String, default: List<T>, private val enumClass: Class<T>) : ValuedListProperty<T>(key, EnumListValueParser(enumClass), default) {
+class EnumListProperty<T : Enum<T>>(key: String, default: List<T>, private val enumClass: Class<T>) : ValuedListProperty<T>(key, ListValueParser<T>(EnumValueParser(enumClass)), default) {
     override fun isCaseSensitive(): Boolean = true
-    override fun describeDefault(): String? = default.joinToString { "," }
     override fun listExampleValues(): List<String>? = EnumUtils.getEnumList(enumClass).map { it.toString() }
     override fun isOnlyExampleValues(): Boolean = true
     override fun describeType(): String? = "${enumClass.simpleName} List"
-    override fun isCommaSeparated(): Boolean = true
 }

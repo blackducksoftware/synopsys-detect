@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.configuration.property.types.enums
 
-import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.parse.ValueParseException
 import com.synopsys.integration.configuration.parse.ValueParser
 import org.apache.commons.lang3.EnumUtils
@@ -44,6 +43,4 @@ class SafeEnumValueParser<T : Enum<T>>(private val enumClass: Class<T>) {
         return EnumUtils.getEnum(enumClass, value)
     }
 }
-
-class EnumListValueParser<T : Enum<T>>(enumClass: Class<T>) : ListValueParser<T>(EnumValueParser(enumClass))
 
