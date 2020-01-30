@@ -7,35 +7,52 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class MultiplePropertySourceTests {
-    private val secondaryProperty = NullableStringProperty("second.key")
-    private val sharedProperty = NullableStringProperty("shared.key")
-
-    private val secondarySource = propertySourceOf("secondary", "second.key" to "secondValue", "shared.key" to "base")
-    private val primarySource = propertySourceOf("primary", "shared.key" to "override")
-    private val configuration = configOf(primarySource, secondarySource)
-
     @Test
-    fun primaryOverridesSecondary() {
-        Assertions.assertEquals("override", configuration.getValue(sharedProperty))
-        Assertions.assertEquals("primary", configuration.getPropertySource(sharedProperty))
+    fun primaryValueUsedOverSecondary() {
+        val sharedProperty = NullableStringProperty("shared.key")
+        val secondarySource = propertySourceOf("secondaryName", sharedProperty.key to "secondaryValue")
+        val primarySource = propertySourceOf("primaryName", sharedProperty.key to "primaryValue")
+
+        val config = configOf(primarySource, secondarySource);
+        Assertions.assertEquals("primaryValue", config.getValue(sharedProperty))
+        Assertions.assertEquals("primaryName", config.getPropertySource(sharedProperty))
     }
 
     @Test
-    fun fallbackToSecondary() {
-        Assertions.assertEquals("secondValue", configuration.getValue(secondaryProperty))
-        Assertions.assertEquals("secondary", configuration.getPropertySource(secondaryProperty))
+    fun valueFromSecondaryWhenNotInPrimary() {
+        val property = NullableStringProperty("any.key")
+        val secondarySource = propertySourceOf("secondaryName", property.key to "secondaryValue")
+        val primarySource = propertySourceOf("primaryName")
+
+        val config = configOf(primarySource, secondarySource)
+        Assertions.assertEquals("secondaryValue", config.getValue(property))
+        Assertions.assertEquals("secondaryName", config.getPropertySource(property))
     }
 
     @Test
     fun containsKeysFromBothSources() {
-        Assertions.assertEquals(setOf("second.key", "shared.key"), configuration.getKeys())
+        val primaryProperty = NullableStringProperty("primary.key")
+        val primarySource = propertySourceOf("primaryName", primaryProperty.key to "primaryValue")
+
+        val secondaryProperty = NullableStringProperty("secondary.key")
+        val secondarySource = propertySourceOf("secondaryName", secondaryProperty.key to "secondaryValue")
+
+        val config = configOf(primarySource, secondarySource)
+        Assertions.assertEquals(setOf(primaryProperty.key, secondaryProperty.key), config.getKeys())
     }
 
     @Test
-    fun rawValues() {
+    fun rawValueMapContainsValuesFromBothSources() {
+        val primaryProperty = NullableStringProperty("primary.key")
+        val primarySource = propertySourceOf("primaryName", primaryProperty.key to "primaryValue")
+
+        val secondaryProperty = NullableStringProperty("secondary.key")
+        val secondarySource = propertySourceOf("secondaryName", secondaryProperty.key to "secondaryValue")
+
+        val config = configOf(primarySource, secondarySource);
         Assertions.assertEquals(mapOf(
-                "second.key" to "secondValue",
-                "shared.key" to "override"
-        ), configuration.getRaw())
+                primaryProperty.key to "primaryValue",
+                secondaryProperty.key to "secondaryValue"
+        ), config.getRaw())
     }
 }
