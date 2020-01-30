@@ -28,7 +28,6 @@ import kotlin.reflect.full.companionObject
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.memberProperties
 
-//TODO: Back to MAIN.
 class DetectCategory(name: String) : Category(name) {
     companion object {
         val Advanced = DetectCategory("advanced")
