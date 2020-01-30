@@ -28,7 +28,10 @@ import getopt
 import pip
 
 pip_major_version = int(pip.__version__.split(".")[0])
-if pip_major_version >= 10:
+if pip_major_version >= 20:
+    from pip._internal.req import parse_requirements
+    class PipSession: {}
+elif pip_major_version >= 10:
     from pip._internal.req import parse_requirements
     from pip._internal.download import PipSession
 else:
