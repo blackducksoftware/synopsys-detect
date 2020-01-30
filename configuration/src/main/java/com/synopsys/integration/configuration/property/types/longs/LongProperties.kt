@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.configuration.property.types.longs
 
+import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
@@ -37,6 +38,6 @@ class LongProperty(key: String, default: Long) : ValuedProperty<Long>(key, LongV
     override fun describeType(): String? = TYPE_DESCRIPTION
 }
 
-class LongListProperty(key: String, default: List<Long>) : ValuedListProperty<Long>(key, LongListValueParser(), default) {
+class LongListProperty(key: String, default: List<Long>) : ValuedListProperty<Long>(key, ListValueParser(LongValueParser()), default) {
     override fun describeType(): String? = "$TYPE_DESCRIPTION List"
 }

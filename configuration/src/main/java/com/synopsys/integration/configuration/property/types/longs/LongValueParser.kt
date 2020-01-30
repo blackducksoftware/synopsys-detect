@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.configuration.property.types.longs
 
-import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.parse.ValueParseException
 import com.synopsys.integration.configuration.parse.ValueParser
 
@@ -35,5 +34,3 @@ class LongValueParser : ValueParser<Long>() {
         }
     }
 }
-
-class LongListValueParser : ListValueParser<Long>(LongValueParser())
