@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.configuration.property.types.path
 
-import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.parse.ValueParseException
 import com.synopsys.integration.configuration.parse.ValueParser
 import org.apache.commons.lang3.StringUtils
@@ -49,5 +48,4 @@ data class PathValue(private val value: String) {
     }
 }
 
-class PathListValueParser : ListValueParser<PathValue>(PathValueParser())
 

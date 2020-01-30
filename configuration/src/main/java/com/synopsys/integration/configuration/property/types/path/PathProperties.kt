@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.configuration.property.types.path
 
+import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
@@ -39,6 +40,6 @@ class PathProperty(key: String, default: PathValue) : ValuedProperty<PathValue>(
     override fun describeType(): String? = TYPE_DESCRIPTION
 }
 
-class PathListProperty(key: String, default: List<PathValue>) : ValuedListProperty<PathValue>(key, PathListValueParser(), default) {
+class PathListProperty(key: String, default: List<PathValue>) : ValuedListProperty<PathValue>(key, ListValueParser(PathValueParser()), default) {
     override fun describeType(): String? = "$TYPE_DESCRIPTION List"
 }
