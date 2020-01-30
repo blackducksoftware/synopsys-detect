@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.configuration.property.types.enumextended
 
-import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.parse.ValueParseException
 import com.synopsys.integration.configuration.parse.ValueParser
 import com.synopsys.integration.configuration.property.types.enums.SafeEnumValueParser
@@ -46,4 +45,3 @@ class ExtendedEnumValueOfParser<E : Enum<E>, B : Enum<B>>(private val enumClassE
     }
 }
 
-class ExtendedEnumListValueOfParser<E : Enum<E>, B : Enum<B>>(private val enumClassE: Class<E>, private val enumClassB: Class<B>) : ListValueParser<ExtendedEnumValue<E, B>>(ExtendedEnumValueOfParser(enumClassE, enumClassB))
