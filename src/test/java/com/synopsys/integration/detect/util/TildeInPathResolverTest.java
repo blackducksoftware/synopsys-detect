@@ -5,11 +5,8 @@ import static org.junit.jupiter.api.condition.OS.WINDOWS;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.junit.Assume;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 
@@ -17,8 +14,6 @@ public class TildeInPathResolverTest {
     @Test
     @DisabledOnOs(WINDOWS) // Due to backslashes being flipped.
     public void testResolvingTilde() {
-        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
-
         final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin");
         final Path resolved = resolver.resolvePath("~/Documents/source/funtional/detect");
 
@@ -29,8 +24,6 @@ public class TildeInPathResolverTest {
     @Test
     @DisabledOnOs(WINDOWS) // Due to backslashes being flipped.
     public void testResolvingTildeInTheMiddleOfAPath() {
-        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
-
         final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin");
         final String filePath = "/Documents/~source/~/funtional/detect";
         final Path resolved = resolver.resolvePath(filePath);
@@ -46,9 +39,8 @@ public class TildeInPathResolverTest {
     }
 
     @Test
-    @EnabledOnOs(WINDOWS)
+    @EnabledOnOs(WINDOWS) // Path is more forgiving of whitespace on Unix systems.
     public void testWhitespacePath() {
-        Assumptions.assumeTrue(SystemUtils.IS_OS_WINDOWS); //Windows paths can't handle spaces. Unix paths are fine with spaces. So this should only have a problem on Windows.
         final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin");
         Assertions.assertThrows(InvalidPathException.class, () -> {
             resolver.resolvePath("  ");
