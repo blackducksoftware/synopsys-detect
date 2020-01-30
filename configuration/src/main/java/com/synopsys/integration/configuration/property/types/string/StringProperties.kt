@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.configuration.property.types.string
 
+import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
@@ -37,6 +38,6 @@ class StringProperty(key: String, default: String) : ValuedProperty<String>(key,
     override fun describeType(): String? = TYPE_DESCRIPTION
 }
 
-class StringListProperty(key: String, default: List<String>) : ValuedListProperty<String>(key, StringListValueParser(), default) {
+class StringListProperty(key: String, default: List<String>) : ValuedListProperty<String>(key, ListValueParser(StringValueParser()), default) {
     override fun describeType(): String? = "$TYPE_DESCRIPTION List"
 }
