@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,11 +84,11 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
     private DockerInspectorInfo install() throws IntegrationException, IOException, DetectUserFriendlyException {
         final Optional<File> airGapDockerFolder = airGapInspectorPaths.getDockerInspectorAirGapFile();
         // TODO: Handle null better.
-        final String providedJarPath = dockerDetectableOptions.getDockerInspectorPath().orElse("");
+        final Optional<Path> providedJarPath = dockerDetectableOptions.getDockerInspectorPath();
 
-        if (StringUtils.isNotBlank(providedJarPath)) {
+        if (providedJarPath.isPresent()) {
             logger.info("Docker tool will attempt to use the provided docker inspector.");
-            return findProvidedJar(providedJarPath);
+            return findProvidedJar(providedJarPath.get());
         } else if (airGapDockerFolder.isPresent()) {
             logger.info("Docker tool will attempt to use the air gapped docker inspector.");
             final Optional<DockerInspectorInfo> airGapInspector = findAirGapInspector();
@@ -119,17 +119,16 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
         return airGapInspectorImageTarfiles;
     }
 
-    private DockerInspectorInfo findProvidedJar(final String providedJarPath) {
-        logger.debug("Checking for user-specified disk-resident docker inspector jar file");
+    private DockerInspectorInfo findProvidedJar(@NotNull final Path providedJarPath) {
         File providedJar = null;
-        if (StringUtils.isNotBlank(providedJarPath)) {
-            logger.debug(String.format("Using user-provided docker inspector jar path: %s", providedJarPath));
-            final File providedJarCandidate = new File(providedJarPath);
-            if (providedJarCandidate.isFile()) {
-                logger.debug(String.format("Found user-specified jar: %s", providedJarCandidate.getAbsolutePath()));
-                providedJar = providedJarCandidate;
-            }
+        
+        logger.debug(String.format("Using user-provided docker inspector jar path: %s", providedJarPath));
+        final File providedJarCandidate = providedJarPath.toFile();
+        if (providedJarCandidate.isFile()) {
+            logger.debug(String.format("Found user-specified jar: %s", providedJarCandidate.getAbsolutePath()));
+            providedJar = providedJarCandidate;
         }
+
         return new DockerInspectorInfo(providedJar);
     }
 
