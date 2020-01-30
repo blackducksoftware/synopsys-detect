@@ -189,7 +189,7 @@ class DetectableOptionFactory(private val detectConfiguration: PropertyConfigura
         val excludedModules = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_EXCLUDED_MODULES)
         val includedModules = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_INCLUDED_MODULES)
         val packagesRepoUrl = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_PACKAGES_REPO_URL)
-        val nugetConfigPath = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_CONFIG_PATH)?.resolvePath(pathResolver)?.toString() // TODO: Switch data types from String to Path
+        val nugetConfigPath = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_CONFIG_PATH)?.resolvePath(pathResolver)
         return NugetInspectorOptions(ignoreFailures, excludedModules, includedModules, packagesRepoUrl, nugetConfigPath)
     }
 
