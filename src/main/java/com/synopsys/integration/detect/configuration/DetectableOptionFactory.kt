@@ -162,7 +162,7 @@ class DetectableOptionFactory(private val detectConfiguration: PropertyConfigura
 
     fun createPipInspectorDetectableOptions(): PipInspectorDetectableOptions {
         val pipProjectName = detectConfiguration.getValue(DetectProperties.DETECT_PIP_PROJECT_NAME)
-        val requirementsFilePath = detectConfiguration.getValue(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH).map { it.resolvePath(pathResolver) }.map { it.toString() } // TODO: Switch data types from String to Path
+        val requirementsFilePath = detectConfiguration.getValue(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH).map { it.resolvePath(pathResolver) }
         return PipInspectorDetectableOptions(pipProjectName, requirementsFilePath)
     }
 

@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.pip;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,14 +47,14 @@ public class PipInspectorExtractor {
         this.pipInspectorTreeParser = pipInspectorTreeParser;
     }
 
-    public Extraction extract(final File directory, final File pythonExe, final File pipInspector, final File setupFile, final List<String> requirementFilePaths, final String providedProjectName) {
+    public Extraction extract(final File directory, final File pythonExe, final File pipInspector, final File setupFile, final List<Path> requirementFilePaths, final String providedProjectName) {
         Extraction extractionResult;
         try {
             final String projectName = getProjectName(directory, pythonExe, setupFile, providedProjectName);
             final List<CodeLocation> codeLocations = new ArrayList<>();
             String projectVersion = null;
 
-            final List<String> requirementsPaths = new ArrayList<>();
+            final List<Path> requirementsPaths = new ArrayList<>();
 
             if (requirementFilePaths.isEmpty()) {
                 requirementsPaths.add(null);
@@ -61,7 +62,7 @@ public class PipInspectorExtractor {
                 requirementsPaths.addAll(requirementFilePaths);
             }
 
-            for (final String requirementFilePath : requirementsPaths) {
+            for (final Path requirementFilePath : requirementsPaths) {
                 final List<String> inspectorOutput = runInspector(directory, pythonExe, pipInspector, projectName, requirementFilePath);
                 final Optional<PipenvResult> result = pipInspectorTreeParser.parse(inspectorOutput, directory.toString());
                 if (result.isPresent()) {
@@ -89,13 +90,12 @@ public class PipInspectorExtractor {
         return extractionResult;
     }
 
-    private List<String> runInspector(final File sourceDirectory, final File pythonExe, final File inspectorScript, final String projectName, final String requirementsFilePath) throws ExecutableRunnerException {
+    private List<String> runInspector(final File sourceDirectory, final File pythonExe, final File inspectorScript, final String projectName, final Path requirementsFilePath) throws ExecutableRunnerException {
         final List<String> inspectorArguments = new ArrayList<>();
         inspectorArguments.add(inspectorScript.getAbsolutePath());
 
-        if (StringUtils.isNotBlank(requirementsFilePath)) {
-            final File requirementsFile = new File(requirementsFilePath);
-            inspectorArguments.add(String.format("--requirements=%s", requirementsFile.getAbsolutePath()));
+        if (requirementsFilePath != null) {
+            inspectorArguments.add(String.format("--requirements=%s", requirementsFilePath.toAbsolutePath().toString()));
         }
 
         if (StringUtils.isNotBlank(projectName)) {
