@@ -9,7 +9,9 @@ import org.apache.commons.lang3.SystemUtils;
 import org.junit.Assume;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.EnabledOnOs;
 
 public class TildeInPathResolverTest {
     @Test
@@ -44,7 +46,9 @@ public class TildeInPathResolverTest {
     }
 
     @Test
+    @EnabledOnOs(WINDOWS)
     public void testWhitespacePath() {
+        Assumptions.assumeTrue(SystemUtils.IS_OS_WINDOWS); //Windows paths can't handle spaces. Unix paths are fine with spaces. So this should only have a problem on Windows.
         final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin");
         Assertions.assertThrows(InvalidPathException.class, () -> {
             resolver.resolvePath("  ");

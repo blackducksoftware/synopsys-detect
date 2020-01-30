@@ -47,6 +47,7 @@ internal class ListValueParserTest {
         }
     }
 
+    @Test
     fun failsToParseWhitespace() {
         val listValueParser = TestDefaultListValueParser(TestValueParser())
         Assertions.assertThrows(ValueParseException::class.java) {
