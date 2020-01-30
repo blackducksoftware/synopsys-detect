@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -76,7 +77,7 @@ public class BlackDuckBinaryScannerTool {
     }
 
     public boolean shouldRun() {
-        if (StringUtils.isNotBlank(binaryScanOptions.getSingleTargetFilePath())) {
+        if (binaryScanOptions.getSingleTargetFilePath().isPresent()) {
             logger.info("Binary scan will upload the single provided binary file path.");
             return true;
         } else if (binaryScanOptions.getMultipleTargetFileNamePatterns().stream().anyMatch(StringUtils::isNotBlank)) {
@@ -89,8 +90,9 @@ public class BlackDuckBinaryScannerTool {
     public BinaryScanToolResult performBinaryScanActions(final NameVersion projectNameVersion) throws DetectUserFriendlyException {
 
         File binaryUpload = null;
-        if (StringUtils.isNotBlank(binaryScanOptions.getSingleTargetFilePath())) {
-            binaryUpload = new File(binaryScanOptions.getSingleTargetFilePath());
+        final Optional<Path> singleTargetFilePath = binaryScanOptions.getSingleTargetFilePath();
+        if (singleTargetFilePath.isPresent()) {
+            binaryUpload = singleTargetFilePath.get().toFile();
         } else if (binaryScanOptions.getMultipleTargetFileNamePatterns().stream().anyMatch(StringUtils::isNotBlank)) {
             final List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), binaryScanOptions.getMultipleTargetFileNamePatterns(), 0);
             if (multipleTargets != null && multipleTargets.size() > 0) {

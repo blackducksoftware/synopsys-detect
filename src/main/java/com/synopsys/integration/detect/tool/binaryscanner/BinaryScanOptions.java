@@ -24,24 +24,19 @@ package com.synopsys.integration.detect.tool.binaryscanner;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
+
+import org.antlr.v4.runtime.misc.Nullable;
 
 public class BinaryScanOptions {
-    private final String singleTargetFilePath;
+    private final Path singleTargetFilePath;
     private final List<String> multipleTargetFileNamePatterns;
 
     private final String codeLocationPrefix;
     private final String codeLocationSuffix;
 
-    public BinaryScanOptions(final String singleTargetFilePath, final List<String> multipleTargetFileNamePatterns, final String codeLocationPrefix, final String codeLocationSuffix) {
+    public BinaryScanOptions(@Nullable final Path singleTargetFilePath, final List<String> multipleTargetFileNamePatterns, final String codeLocationPrefix, final String codeLocationSuffix) {
         this.singleTargetFilePath = singleTargetFilePath;
-        this.multipleTargetFileNamePatterns = multipleTargetFileNamePatterns;
-        this.codeLocationPrefix = codeLocationPrefix;
-        this.codeLocationSuffix = codeLocationSuffix;
-    }
-
-    // TODO: Switch data types from Strings to Paths
-    public BinaryScanOptions(final Path singleTargetFilePath, final List<String> multipleTargetFileNamePatterns, final String codeLocationPrefix, final String codeLocationSuffix) {
-        this.singleTargetFilePath = singleTargetFilePath.toString();
         this.multipleTargetFileNamePatterns = multipleTargetFileNamePatterns;
         this.codeLocationPrefix = codeLocationPrefix;
         this.codeLocationSuffix = codeLocationSuffix;
@@ -51,8 +46,8 @@ public class BinaryScanOptions {
         return multipleTargetFileNamePatterns;
     }
 
-    public String getSingleTargetFilePath() {
-        return singleTargetFilePath;
+    public Optional<Path> getSingleTargetFilePath() {
+        return Optional.ofNullable(singleTargetFilePath);
     }
 
     public String getCodeLocationPrefix() {
