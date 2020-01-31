@@ -87,11 +87,11 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         return if (provided != null && provided > 0) {
             provided
         } else {
-            return findAvailableProcessors()
+            return findRuntimeProcessors()
         }
     }
 
-    open fun findAvailableProcessors(): Int {
+    open fun findRuntimeProcessors(): Int {
         return Runtime.getRuntime().availableProcessors()
     }
 

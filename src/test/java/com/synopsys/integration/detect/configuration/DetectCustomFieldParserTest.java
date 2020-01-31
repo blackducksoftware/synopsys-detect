@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect;
+package com.synopsys.integration.detect.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,12 +6,9 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.synopsys.integration.detect.configuration.DetectCustomFieldParser;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.blackduck.CustomFieldDocument;
 import com.synopsys.integration.detect.workflow.blackduck.CustomFieldElement;
-
-import kotlin.jvm.Throws;
 
 public class DetectCustomFieldParserTest {
 
