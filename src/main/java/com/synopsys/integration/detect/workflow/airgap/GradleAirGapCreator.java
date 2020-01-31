@@ -80,9 +80,11 @@ public class GradleAirGapCreator {
         logger.info("Determining inspector version.");
         String gradleVersion = inspectorVersion;
         if (gradleVersion == null) {
-            // TODO: This doesn't feel right either - feels like gradle inspector installer should throw and we should catch/wrap. Optional feels pointless because we can't proceed without the result. (result|e) instead of (result?)
-            gradleVersion = gradleInspectorInstaller.findVersion()
-                                .orElseThrow(() -> new DetectUserFriendlyException("An error occurred while determining which Gradle version to use while making an Air Gap zip.", ExitCodeType.FAILURE_CONFIGURATION));
+            try {
+                gradleVersion = gradleInspectorInstaller.findVersion();
+            } catch (final DetectableException e) {
+                throw new DetectUserFriendlyException("An error occurred while determining which Gradle version to use while making an Air Gap zip.", e, ExitCodeType.FAILURE_CONFIGURATION);
+            }
         }
         logger.info("Determined inspector version: " + gradleVersion);
 
