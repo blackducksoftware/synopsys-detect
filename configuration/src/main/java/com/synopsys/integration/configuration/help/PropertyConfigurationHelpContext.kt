@@ -39,15 +39,7 @@ import java.util.function.Consumer
 //  For example you may want to search properties by key and log help.
 
 //Maybe split into 'ValueContext' and a 'HelpContext' 
-class PropertyConfigurationHelpContext(val propertyConfiguration: PropertyConfiguration) {
-    fun sourceDisplayNames(): Map<String, String> {
-        return mapOf(
-                "configurationProperties" to "cfg",
-                "systemEnvironment" to "env",
-                "commandLineArgs" to "cmd",
-                "systemProperties" to "jvm"
-        )
-    }
+class PropertyConfigurationHelpContext(private val propertyConfiguration: PropertyConfiguration) {
 
     fun printCurrentValues(logger: Consumer<String>, knownProperties: List<Property>, additionalNotes: Map<String, String>) {
         logger.accept("")
@@ -76,7 +68,7 @@ class PropertyConfigurationHelpContext(val propertyConfiguration: PropertyConfig
             }
 
             val sourceName = propertyConfiguration.getPropertySource(property) ?: "unknown"
-            val sourceDisplayName = sourceDisplayNames().getOrDefault(sourceName, sourceName)
+            val sourceDisplayName = Companion.sourceDisplayNames.getOrDefault(sourceName, sourceName)
 
             val notes = additionalNotes[property.key] ?: ""
 
@@ -117,5 +109,14 @@ class PropertyConfigurationHelpContext(val propertyConfiguration: PropertyConfig
             }
         }
         return exceptions;
+    }
+
+    companion object {
+        val sourceDisplayNames = mapOf(
+                "configurationProperties" to "cfg",
+                "systemEnvironment" to "env",
+                "commandLineArgs" to "cmd",
+                "systemProperties" to "jvm"
+        )
     }
 }
