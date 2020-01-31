@@ -6,7 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
+import java.nio.file.Paths;
+import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,32 +20,32 @@ public class BlackDuckBinaryScannerToolTest {
 
     @Test
     public void testShouldRunFalsePropertyNotSet() {
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions("", Arrays.asList(""), "", "");
+        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(null, Collections.singletonList(""), "", "");
 
         final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
-        boolean shouldRunResponse = tool.shouldRun();
+        final boolean shouldRunResponse = tool.shouldRun();
 
         assertFalse(shouldRunResponse);
     }
 
     @Test
     public void testShouldRunTrueFileNonExistent() {
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions("thisisnotafile", Arrays.asList(""), "", "");
+        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("thisisnotafile"), Collections.singletonList(""), "", "");
 
         final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
 
-        boolean shouldRunResponse = tool.shouldRun();
+        final boolean shouldRunResponse = tool.shouldRun();
 
         assertTrue(shouldRunResponse);
     }
 
     @Test
     public void testShouldRunTruePropertySetToDirectory() {
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(".", Arrays.asList(""), "", "");
+        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "");
 
         final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
 
-        boolean shouldRunResponse = tool.shouldRun();
+        final boolean shouldRunResponse = tool.shouldRun();
 
         assertTrue(shouldRunResponse);
     }
@@ -56,18 +57,18 @@ public class BlackDuckBinaryScannerToolTest {
         assertTrue(binaryScanFile.canRead());
         assertTrue(binaryScanFile.exists());
 
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(binaryScanFile.getAbsolutePath(), Arrays.asList(""), "", "");
+        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(binaryScanFile.toPath(), Collections.singletonList(""), "", "");
 
         final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
 
-        boolean shouldRunResponse = tool.shouldRun();
+        final boolean shouldRunResponse = tool.shouldRun();
 
         assertTrue(shouldRunResponse);
     }
 
     @Test
     public void testShouldFailOnDirectory() throws DetectUserFriendlyException {
-        BinaryScanOptions binaryScanOptions = new BinaryScanOptions(".", Arrays.asList(""), "", "");
+        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "");
 
         final EventSystem eventSystem = Mockito.mock(EventSystem.class);
 

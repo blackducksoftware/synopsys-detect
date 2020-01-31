@@ -183,7 +183,7 @@ public class DetectBoot {
 
         logger.debug("Initializing Detect.");
 
-        PathResolver pathResolver;
+        final PathResolver pathResolver;
         if (detectInfo.getCurrentOs() != OperatingSystemType.WINDOWS && detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_RESOLVE_TILDE_IN_PATHS())) {
             logger.info("Tilde's will be automatically resolved to USER HOME.");
             pathResolver = new TildeInPathResolver(SystemUtils.USER_HOME);
@@ -237,10 +237,6 @@ public class DetectBoot {
 
         //TODO: Only need this if in diagnostic or online (for phone home):
         final DetectorProfiler profiler = new DetectorProfiler(eventSystem);
-
-        //lock the configuration, boot has completed.
-        logger.debug("Configuration is now complete. No changes should occur to configuration.");
-        //..detectConfiguration.lock();
 
         //Finished, populate the detect context
         detectContext.registerBean(detectRun);

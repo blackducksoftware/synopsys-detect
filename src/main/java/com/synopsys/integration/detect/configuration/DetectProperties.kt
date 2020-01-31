@@ -269,9 +269,7 @@ class DetectProperties {
             groups(DetectGroup.SignatureScanner, DetectGroup.Global)
             category(DetectCategory.Advanced)
         }
-
-        // TODO: Should we create a PathListProperty for this?
-        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS = StringListProperty("detect.blackduck.signature.scanner.paths", emptyList()).apply {
+        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS = PathListProperty("detect.blackduck.signature.scanner.paths", emptyList()).apply {
             info("Signature Scanner Target Paths", "4.2.0")
             help("These paths and only these paths will be scanned.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Global)
@@ -1246,10 +1244,9 @@ class DetectProperties {
             groups(DetectGroup.SignatureScanner)
             deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.patterns in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
-
-        // TODO: Should we create a PathListProperty for this?
+        
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
-        val DETECT_HUB_SIGNATURE_SCANNER_PATHS = StringListProperty("detect.hub.signature.scanner.paths", emptyList()).apply {
+        val DETECT_HUB_SIGNATURE_SCANNER_PATHS = PathListProperty("detect.hub.signature.scanner.paths", emptyList()).apply {
             info("Detect Hub Signature Scanner Paths", "3.0.0")
             help("These paths and only these paths will be scanned.")
             groups(DetectGroup.SignatureScanner)

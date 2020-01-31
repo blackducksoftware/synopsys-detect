@@ -57,7 +57,7 @@ public class NugetInspectorArguments {
         }
 
         nugetInspectorOptions.getNugetConfigPath()
-            .ifPresent(arg -> options.add("--nuget_config_path=" + arg));
+            .ifPresent(arg -> options.add("--nuget_config_path=" + arg.toString()));
 
         if (logger.isTraceEnabled()) {
             options.add("-v");

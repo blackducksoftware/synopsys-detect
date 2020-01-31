@@ -22,14 +22,15 @@
  */
 package com.synopsys.integration.detectable.detectables.pip;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
 public class PipInspectorDetectableOptions {
     private final String pipProjectName;
-    private final List<String> requirementsFilePaths;
+    private final List<Path> requirementsFilePaths;
 
-    public PipInspectorDetectableOptions(final String pipProjectName, final List<String> requirementsFilePaths) {
+    public PipInspectorDetectableOptions(final String pipProjectName, final List<Path> requirementsFilePaths) {
         this.pipProjectName = pipProjectName;
         this.requirementsFilePaths = requirementsFilePaths;
     }
@@ -38,7 +39,7 @@ public class PipInspectorDetectableOptions {
         return Optional.ofNullable(pipProjectName);
     }
 
-    public List<String> getRequirementsFilePaths() {
+    public List<Path> getRequirementsFilePaths() {
         return requirementsFilePaths;
     }
 }

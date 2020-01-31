@@ -100,7 +100,7 @@ class DetectableOptionFactory(private val detectConfiguration: PropertyConfigura
         val dockerInspectorVersion = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_INSPECTOR_VERSION)
         val additionalDockerProperties = detectConfiguration.getRaw(DetectProperties.DOCKER_PASSTHROUGH).toMutableMap()
         diagnosticSystemOptional.ifPresent { diagnosticSystem -> additionalDockerProperties.putAll(diagnosticSystem.additionalDockerProperties) }
-        val dockerInspectorPath = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_INSPECTOR_PATH)?.resolvePath(pathResolver)?.toString() // TODO: Switch data types from String to Path
+        val dockerInspectorPath = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_INSPECTOR_PATH)?.resolvePath(pathResolver)
         val dockerPlatformTopLayerId = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_PLATFORM_TOP_LAYER_ID)
         return DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, dockerImageId, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath, dockerPlatformTopLayerId)
     }
@@ -162,7 +162,7 @@ class DetectableOptionFactory(private val detectConfiguration: PropertyConfigura
 
     fun createPipInspectorDetectableOptions(): PipInspectorDetectableOptions {
         val pipProjectName = detectConfiguration.getValue(DetectProperties.DETECT_PIP_PROJECT_NAME)
-        val requirementsFilePath = detectConfiguration.getValue(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH).map { it.resolvePath(pathResolver) }.map { it.toString() } // TODO: Switch data types from String to Path
+        val requirementsFilePath = detectConfiguration.getValue(DetectProperties.DETECT_PIP_REQUIREMENTS_PATH).map { it.resolvePath(pathResolver) }
         return PipInspectorDetectableOptions(pipProjectName, requirementsFilePath)
     }
 
@@ -189,7 +189,7 @@ class DetectableOptionFactory(private val detectConfiguration: PropertyConfigura
         val excludedModules = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_EXCLUDED_MODULES)
         val includedModules = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_INCLUDED_MODULES)
         val packagesRepoUrl = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_PACKAGES_REPO_URL)
-        val nugetConfigPath = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_CONFIG_PATH)?.resolvePath(pathResolver)?.toString() // TODO: Switch data types from String to Path
+        val nugetConfigPath = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_CONFIG_PATH)?.resolvePath(pathResolver)
         return NugetInspectorOptions(ignoreFailures, excludedModules, includedModules, packagesRepoUrl, nugetConfigPath)
     }
 

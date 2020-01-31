@@ -26,7 +26,7 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import java.nio.file.Path
 
 class BlackDuckSignatureScannerOptions(
-        val signatureScannerPaths: List<String>,
+        val signatureScannerPaths: List<Path>,
         val exclusionPatterns: List<String>,
         val exclusionNamePatterns: List<String>,
         val offlineLocalScannerInstallPath: Path?,

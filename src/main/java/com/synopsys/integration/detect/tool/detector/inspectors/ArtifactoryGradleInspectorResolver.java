@@ -73,25 +73,26 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
                 if (airGapPath.isPresent()) {
                     generatedGradleScriptPath = gradleInspectorScriptCreator.createOfflineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions, airGapPath.get().getCanonicalPath());
                 } else {
-                    String gradleInspectorVersion;
-                    if (gradleInspectorScriptOptions.getProvidedOnlineInspectorVersion().isPresent()) {
+                    final String gradleInspectorVersion;
+                    final Optional<String> providedOnlineInspectorVersion = gradleInspectorScriptOptions.getProvidedOnlineInspectorVersion();
+                    if (providedOnlineInspectorVersion.isPresent()) {
                         logger.debug("Attempting to use the provided gradle inspector version.");
-                        gradleInspectorVersion = gradleInspectorScriptOptions.getProvidedOnlineInspectorVersion().get();
+                        gradleInspectorVersion = providedOnlineInspectorVersion.get();
                     } else {
                         logger.debug("Attempting to resolve the gradle inspector version from artifactory.");
-                        gradleInspectorVersion = gradleInspectorInstaller.findVersion()
-                                                     .orElseThrow(() -> new DetectableException("Unable to resolve the gradle inspector version from artifactory!")); // TODO: Really, this is how we want to handle null here?
+                        gradleInspectorVersion = gradleInspectorInstaller.findVersion();
                     }
-                    logger.debug("Resolved the gradle inspector version: " + gradleInspectorVersion);
+                    logger.debug(String.format("Resolved the gradle inspector version: %s", gradleInspectorVersion));
                     generatedGradleScriptPath = gradleInspectorScriptCreator.createOnlineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions, gradleInspectorVersion);
                 }
             } catch (final Exception e) {
                 throw new DetectableException(e);
             }
+
             if (generatedGradleScriptPath == null) {
                 throw new DetectableException("Unable to initialize the gradle inspector.");
             } else {
-                logger.trace("Derived generated gradle script path: " + generatedGradleScriptPath);
+                logger.trace(String.format("Derived generated gradle script path: %s", generatedGradleScriptPath));
             }
         } else {
             logger.debug("Already attempted to resolve the gradle inspector script, will not attempt again.");

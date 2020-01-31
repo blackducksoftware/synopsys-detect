@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectables.docker;
 
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 
@@ -36,12 +37,11 @@ public class DockerDetectableOptions {
     private final LogLevel dockerInspectorLoggingLevel;
     private final String dockerInspectorVersion;
     private final Map<String, String> additionalDockerProperties;
-    private final String dockerInspectorPath;
+    private final Path dockerInspectorPath;
     private final String dockerPlatformTopLayerId;
 
     public DockerDetectableOptions(final boolean dockerPathRequired, final String suppliedDockerImage, final String suppliedDockerImageId, final String suppliedDockerTar, final LogLevel dockerInspectorLoggingLevel,
-        final String dockerInspectorVersion,
-        final Map<String, String> additionalDockerProperties, final String dockerInspectorPath, final String dockerPlatformTopLayerId) {
+        final String dockerInspectorVersion, final Map<String, String> additionalDockerProperties, final Path dockerInspectorPath, final String dockerPlatformTopLayerId) {
         this.dockerPathRequired = dockerPathRequired;
         this.suppliedDockerImage = suppliedDockerImage;
         this.suppliedDockerImageId = suppliedDockerImageId;
@@ -85,7 +85,7 @@ public class DockerDetectableOptions {
         return additionalDockerProperties;
     }
 
-    public Optional<String> getDockerInspectorPath() {
+    public Optional<Path> getDockerInspectorPath() {
         return Optional.ofNullable(dockerInspectorPath);
     }
 

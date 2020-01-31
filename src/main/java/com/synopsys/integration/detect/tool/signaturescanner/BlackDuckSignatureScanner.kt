@@ -47,6 +47,8 @@ import com.synopsys.integration.util.NameVersion
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.*
 
 class BlackDuckSignatureScanner(
@@ -150,10 +152,10 @@ class BlackDuckSignatureScanner(
                 signatureScanPaths.add(scanPath)
             }
         } else if (dockerTarFile != null) {
-            val scanPath = createScanPath(dockerTarFile.canonicalPath, maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns)
+            val scanPath = createScanPath(dockerTarFile.canonicalFile.toPath(), maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns)
             signatureScanPaths.add(scanPath)
         } else {
-            val sourcePath = directoryManager.sourceDirectory.absolutePath
+            val sourcePath = Paths.get(directoryManager.sourceDirectory.absolutePath)
             if (providedSignatureScanPaths.isNotEmpty()) {
                 logger.warn(String.format("No Project name or version found. Skipping User provided scan targets - registering the source path %s to scan", sourcePath))
             } else {
@@ -165,8 +167,8 @@ class BlackDuckSignatureScanner(
         return signatureScanPaths
     }
 
-    private fun createScanPath(path: String, maxDepth: Int, signatureScannerExclusionNamePatterns: List<String>, providedExclusionPatterns: List<String>?): SignatureScanPath {
-        val target = File(path)
+    private fun createScanPath(path: Path, maxDepth: Int, signatureScannerExclusionNamePatterns: List<String>, providedExclusionPatterns: List<String>?): SignatureScanPath {
+        val target = path.toFile()
         val exclusionPatternCreator = ExclusionPatternCreator(fileFinder, target)
 
         val scanExclusionPatterns = exclusionPatternCreator.determineExclusionPatterns(maxDepth, signatureScannerExclusionNamePatterns)?.toMutableSet() ?: mutableSetOf()
