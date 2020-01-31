@@ -95,6 +95,21 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         return Runtime.getRuntime().availableProcessors()
     }
 
+
+    fun findSnippetMatching(): SnippetMatching? {
+        val snippetMatching = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING)
+
+        val deprecatedSnippetMatching = when (detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE)) {
+            true -> SnippetMatching.SNIPPET_MATCHING
+            false -> null
+        }
+
+        return when (snippetMatching) {
+            is ExtendedValue -> deprecatedSnippetMatching // The only extended value is NONE. So this means it was not set and we should fall back to deprecated snippets.
+            is BaseValue -> snippetMatching.value
+        }
+    }
+
     //#endregion
 
     //#region Creating Connections
@@ -309,20 +324,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
             )
         }
 
-        // TODO: Is this managing deprecated properties properly? Why is value unused?
-        val snippetMatching = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING)
-        fun fromSnippetExtended(value: ExtendedSnippetMode): SnippetMatching? {
-            return if (detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE)) {
-                SnippetMatching.SNIPPET_MATCHING
-            } else {
-                null
-            }
-        }
 
-        val snippetMatchingEnum: SnippetMatching? = when (snippetMatching) {
-            is ExtendedValue -> fromSnippetExtended(snippetMatching.value)
-            is BaseValue -> snippetMatching.value
-        }
 
         return BlackDuckSignatureScannerOptions(
                 signatureScannerPaths = signatureScannerPaths,
@@ -334,7 +336,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
                 scanMemory = scanMemory,
                 parallelProcessors = findParallelProcessors(),
                 dryRun = dryRun,
-                snippetMatching = snippetMatchingEnum,
+                snippetMatching = findSnippetMatching(),
                 uploadSource = uploadSource,
                 codeLocationPrefix = codeLocationPrefix,
                 codeLocationSuffix = codeLocationSuffix,
@@ -342,6 +344,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
                 maxDepth = maxDepth
         )
     }
+
 
     fun createBlackDuckPostOptions(): BlackDuckPostOptions {
         val waitForResults = detectConfiguration.getValue(DetectProperties.DETECT_WAIT_FOR_RESULTS)
