@@ -1067,20 +1067,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#maven-build-command" class="md-nav__link">
-    Maven Build Command
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dependency-scope-excluded" class="md-nav__link">
-    Dependency Scope Excluded
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#dependency-scope-included" class="md-nav__link">
     Dependency Scope Included
   </a>
@@ -1088,8 +1074,22 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#maven-build-command" class="md-nav__link">
+    Maven Build Command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#maven-executable" class="md-nav__link">
     Maven Executable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependency-scope-excluded" class="md-nav__link">
+    Dependency Scope Excluded
   </a>
   
 </li>
@@ -1272,20 +1272,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#maven-build-command" class="md-nav__link">
-    Maven Build Command
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dependency-scope-excluded" class="md-nav__link">
-    Dependency Scope Excluded
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#dependency-scope-included" class="md-nav__link">
     Dependency Scope Included
   </a>
@@ -1293,8 +1279,22 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#maven-build-command" class="md-nav__link">
+    Maven Build Command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#maven-executable" class="md-nav__link">
     Maven Executable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependency-scope-excluded" class="md-nav__link">
+    Dependency Scope Excluded
   </a>
   
 </li>
@@ -1345,12 +1345,100 @@
                 
                 
                 <h1 id="maven">maven</h1>
+<h2 id="dependency-scope-included">Dependency Scope Included</h2>
+<pre><code>--detect.maven.included.scopes
+</code></pre>
+
+<p>A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude). Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>If set, Detect will include only dependencies of the given Maven scope.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="maven-build-command">Maven Build Command</h2>
 <pre><code>--detect.maven.build.command
 </code></pre>
 
 <p>Maven command line arguments to add to the mvn/mvnw command line.</p>
 <p>By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings ${HOME}/maven_dev_settings.xml --define reason=other'</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="maven-executable">Maven Executable</h2>
+<pre><code>--detect.maven.path
+</code></pre>
+
+<p>The path to the Maven executable (mvn or mvnw).</p>
+<p>If set, Detect will use the given Maven executable instead of searching for one.</p>
 <table>
 <thead>
 <tr>
@@ -1406,94 +1494,6 @@
 <tr>
 <td>Added</td>
 <td>6.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="dependency-scope-included">Dependency Scope Included</h2>
-<pre><code>--detect.maven.included.scopes
-</code></pre>
-
-<p>A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude). Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>If set, Detect will include only dependencies of the given Maven scope.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="maven-executable">Maven Executable</h2>
-<pre><code>--detect.maven.path
-</code></pre>
-
-<p>The path to the Maven executable (mvn or mvnw).</p>
-<p>If set, Detect will use the given Maven executable instead of searching for one.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
