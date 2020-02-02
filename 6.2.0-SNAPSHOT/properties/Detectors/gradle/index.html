@@ -1043,13 +1043,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gradle-build-command" class="md-nav__link">
-    Gradle Build Command
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#gradle-executable" class="md-nav__link">
     Gradle Executable
   </a>
@@ -1057,8 +1050,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-exclude-configurations-advanced" class="md-nav__link">
-    Gradle Exclude Configurations (Advanced)
+  <a href="#gradle-build-command" class="md-nav__link">
+    Gradle Build Command
   </a>
   
 </li>
@@ -1078,6 +1071,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
+    Gradle Exclude Projects (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#gradle-include-projects-advanced" class="md-nav__link">
     Gradle Include Projects (Advanced)
   </a>
@@ -1092,8 +1092,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
-    Gradle Exclude Projects (Advanced)
+  <a href="#gradle-exclude-configurations-advanced" class="md-nav__link">
+    Gradle Exclude Configurations (Advanced)
   </a>
   
 </li>
@@ -1279,13 +1279,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gradle-build-command" class="md-nav__link">
-    Gradle Build Command
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#gradle-executable" class="md-nav__link">
     Gradle Executable
   </a>
@@ -1293,8 +1286,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-exclude-configurations-advanced" class="md-nav__link">
-    Gradle Exclude Configurations (Advanced)
+  <a href="#gradle-build-command" class="md-nav__link">
+    Gradle Build Command
   </a>
   
 </li>
@@ -1314,6 +1307,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
+    Gradle Exclude Projects (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#gradle-include-projects-advanced" class="md-nav__link">
     Gradle Include Projects (Advanced)
   </a>
@@ -1328,8 +1328,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-exclude-projects-advanced" class="md-nav__link">
-    Gradle Exclude Projects (Advanced)
+  <a href="#gradle-exclude-configurations-advanced" class="md-nav__link">
+    Gradle Exclude Configurations (Advanced)
   </a>
   
 </li>
@@ -1359,50 +1359,6 @@
                 
                 
                 <h1 id="gradle">gradle</h1>
-<h2 id="gradle-build-command">Gradle Build Command</h2>
-<pre><code>--detect.gradle.build.command
-</code></pre>
-
-<p>Gradle command line arguments to add to the mvn/mvnw command line.</p>
-<p>By default, Detect runs the gradle (or gradlew) command with one task: dependencies. You can use this property to insert one or more additional gradle command line arguments (options or tasks) before the dependencies argument.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="gradle-executable">Gradle Executable</h2>
 <pre><code>--detect.gradle.path
 </code></pre>
@@ -1447,12 +1403,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-exclude-configurations-advanced">Gradle Exclude Configurations (Advanced)</h2>
-<pre><code>--detect.gradle.excluded.configurations
+<h2 id="gradle-build-command">Gradle Build Command</h2>
+<pre><code>--detect.gradle.build.command
 </code></pre>
 
-<p>A comma-separated list of Gradle configurations to exclude. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property.</p>
+<p>Gradle command line arguments to add to the mvn/mvnw command line.</p>
+<p>By default, Detect runs the gradle (or gradlew) command with one task: dependencies. You can use this property to insert one or more additional gradle command line arguments (options or tasks) before the dependencies argument.</p>
 <table>
 <thead>
 <tr>
@@ -1579,6 +1535,50 @@
 </tr>
 </tbody>
 </table>
+<h2 id="gradle-exclude-projects-advanced">Gradle Exclude Projects (Advanced)</h2>
+<pre><code>--detect.gradle.excluded.projects
+</code></pre>
+
+<p>A comma-separated list of Gradle sub-projects to exclude. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
 <h2 id="gradle-include-projects-advanced">Gradle Include Projects (Advanced)</h2>
 <pre><code>--detect.gradle.included.projects
 </code></pre>
@@ -1667,12 +1667,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-exclude-projects-advanced">Gradle Exclude Projects (Advanced)</h2>
-<pre><code>--detect.gradle.excluded.projects
+<h2 id="gradle-exclude-configurations-advanced">Gradle Exclude Configurations (Advanced)</h2>
+<pre><code>--detect.gradle.excluded.configurations
 </code></pre>
 
-<p>A comma-separated list of Gradle sub-projects to exclude. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
-<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.</p>
+<p>A comma-separated list of Gradle configurations to exclude. Wildcards are supported (for details, refer to "Property wildcard support" under "Advanced").</p>
+<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property.</p>
 <table>
 <thead>
 <tr>
