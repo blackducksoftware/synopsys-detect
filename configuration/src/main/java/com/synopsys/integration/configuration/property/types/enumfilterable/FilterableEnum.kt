@@ -34,7 +34,7 @@ class None<T : Enum<T>>() : FilterableEnumValue<T>() {
     override fun toString(): String = "NONE"
 }
 
-class Value<T : Enum<T>>(val value: T) : FilterableEnumValue<T>() {
+data class Value<T : Enum<T>>(val value: T) : FilterableEnumValue<T>() {
     override fun toString(): String = value.toString()
 }
 

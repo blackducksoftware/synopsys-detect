@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.configuration.property.types.enumfilterable
 
-import com.synopsys.integration.configuration.parse.ListValueParser
 import com.synopsys.integration.configuration.parse.ValueParser
 import com.synopsys.integration.configuration.property.types.enums.EnumValueParser
 
@@ -36,5 +35,3 @@ class FilterableEnumValueParser<T : Enum<T>>(enumClass: Class<T>) : ValueParser<
         }
     }
 }
-
-class FilterableEnumListValueParser<T : Enum<T>>(enumClass: Class<T>) : ListValueParser<FilterableEnumValue<T>>(FilterableEnumValueParser(enumClass))
