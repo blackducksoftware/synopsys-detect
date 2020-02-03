@@ -27,18 +27,18 @@ import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
 
-const val TYPE_DESCRIPTION = "Integer"
-
 class NullableIntegerProperty(key: String) : NullableProperty<Int>(key, IntegerValueParser()) {
-    override fun describeType(): String? = TYPE_DESCRIPTION
+    override fun describeType(): String? = "Optional Integer"
+    override fun listExampleValues(): List<String>? = listOf("-5", "0", "22")
 }
 
 class IntegerProperty(key: String, default: Int) : ValuedProperty<Int>(key, IntegerValueParser(), default) {
     override fun describeDefault(): String? = default.toString()
-
-    override fun describeType(): String? = TYPE_DESCRIPTION
+    override fun describeType(): String? = "Integer"
+    override fun listExampleValues(): List<String>? = listOf("-5", "0", "22")
 }
 
 class IntegerListProperty(key: String, default: List<Int>) : ValuedListProperty<Int>(key, ListValueParser(IntegerValueParser()), default) {
-    override fun describeType(): String? = "$TYPE_DESCRIPTION List"
+    override fun describeType(): String? = "Integer List"
+    override fun listExampleValues(): List<String>? = listOf("-5", "0", "22")
 }
