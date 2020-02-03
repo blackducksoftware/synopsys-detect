@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect;
+package com.synopsys.integration.detect.configuration;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,9 +16,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.configuration.property.Property;
-import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
-import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 
 public class DeprecatedPropertyReferenceTest {
 

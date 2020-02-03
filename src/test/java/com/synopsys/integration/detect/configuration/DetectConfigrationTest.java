@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect;
+package com.synopsys.integration.detect.configuration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,8 +12,6 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
-import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
-import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 
 //import com.synopsys.integration.detect.DetectInfo;
