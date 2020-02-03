@@ -23,11 +23,26 @@
 package com.synopsys.integration.configuration.property.types.enumextended
 
 import com.synopsys.integration.configuration.parse.ListValueParser
+import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
 import org.apache.commons.lang3.EnumUtils
 
-class ExtendedEnumProperty<E : Enum<E>, B : Enum<B>>(key: String, default: ExtendedEnumValue<E, B>, enumClassE: Class<E>, private val enumClassB: Class<B>) : ValuedProperty<ExtendedEnumValue<E, B>>(key, ExtendedEnumValueOfParser(enumClassE, enumClassB), default) {
+class NullableExtendedEnumProperty<E : Enum<E>, B : Enum<B>>(key: String, enumClassE: Class<E>, private val enumClassB: Class<B>) : NullableProperty<ExtendedEnumValue<E, B>>(key, ExtendedEnumValueParser(enumClassE, enumClassB)) {
+    val options = mutableListOf<String>()
+
+    init {
+        options.addAll(EnumUtils.getEnumList(enumClassE).map { it.toString() })
+        options.addAll(EnumUtils.getEnumList(enumClassB).map { it.toString() })
+    }
+
+    override fun isCaseSensitive(): Boolean = false
+    override fun listExampleValues(): List<String>? = options
+    override fun isOnlyExampleValues(): Boolean = false
+    override fun describeType(): String? = "Optional ${enumClassB.simpleName}"
+}
+
+class ExtendedEnumProperty<E : Enum<E>, B : Enum<B>>(key: String, default: ExtendedEnumValue<E, B>, enumClassE: Class<E>, private val enumClassB: Class<B>) : ValuedProperty<ExtendedEnumValue<E, B>>(key, ExtendedEnumValueParser(enumClassE, enumClassB), default) {
     val options = mutableListOf<String>()
 
     init {
@@ -42,7 +57,7 @@ class ExtendedEnumProperty<E : Enum<E>, B : Enum<B>>(key: String, default: Exten
     override fun describeType(): String? = enumClassB.simpleName
 }
 
-class ExtendedEnumListProperty<E : Enum<E>, B : Enum<B>>(key: String, default: List<ExtendedEnumValue<E, B>>, enumClassE: Class<E>, private val enumClassB: Class<B>) : ValuedListProperty<ExtendedEnumValue<E, B>>(key, ListValueParser(ExtendedEnumValueOfParser(enumClassE, enumClassB)), default) {
+class ExtendedEnumListProperty<E : Enum<E>, B : Enum<B>>(key: String, default: List<ExtendedEnumValue<E, B>>, enumClassE: Class<E>, private val enumClassB: Class<B>) : ValuedListProperty<ExtendedEnumValue<E, B>>(key, ListValueParser(ExtendedEnumValueParser(enumClassE, enumClassB)), default) {
     val options = mutableListOf<String>()
 
     init {
