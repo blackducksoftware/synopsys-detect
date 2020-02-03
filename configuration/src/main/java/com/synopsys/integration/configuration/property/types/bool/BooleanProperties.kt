@@ -27,9 +27,10 @@ import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
 
+
 class NullableBooleanProperty(key: String) : NullableProperty<Boolean>(key, BooleanValueParser()) {
     override fun listExampleValues(): List<String>? = listOf("true", "false")
-    override fun describeType(): String? = "Boolean"
+    override fun describeType(): String? = "Optional Boolean"
 }
 
 class BooleanProperty(key: String, default: Boolean) : ValuedProperty<Boolean>(key, BooleanValueParser(), default) {
@@ -38,4 +39,7 @@ class BooleanProperty(key: String, default: Boolean) : ValuedProperty<Boolean>(k
     override fun describeType(): String? = "Boolean"
 }
 
-class BooleanListProperty(key: String, default: List<Boolean>) : ValuedListProperty<Boolean>(key, ListValueParser(BooleanValueParser()), default)
+class BooleanListProperty(key: String, default: List<Boolean>) : ValuedListProperty<Boolean>(key, ListValueParser(BooleanValueParser()), default) {
+    override fun listExampleValues(): List<String>? = listOf("true", "false", "true,false")
+    override fun describeType(): String? = "Boolean List"
+}
