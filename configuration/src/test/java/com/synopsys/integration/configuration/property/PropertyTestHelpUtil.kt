@@ -42,6 +42,7 @@ class PropertyTestHelpUtil {
 
         fun assertAllHelpValid(property: ValuedProperty<*>, expectedExampleValues: List<String>? = null) {
             assertValidTypeDescription(property)
+            assertHasDefaultDescription(property)
             assertHasExampleValues(property, expectedExampleValues)
         }
 
