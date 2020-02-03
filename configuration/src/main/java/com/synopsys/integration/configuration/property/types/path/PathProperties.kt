@@ -27,19 +27,18 @@ import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
 
-const val TYPE_DESCRIPTION = "Path"
-
 class NullablePathProperty(key: String) : NullableProperty<PathValue>(key, PathValueParser()) {
-    override fun listExampleValues(): List<String>? = listOf("/Users/Synopsys/my-project", "Unix Only: ~/my-project")
-    override fun describeType(): String? = TYPE_DESCRIPTION
+    override fun listExampleValues(): List<String>? = listOf("/nullable/example/path", "another/nullable/example/path")
+    override fun describeType(): String? = "Optional Path"
 }
 
 class PathProperty(key: String, default: PathValue) : ValuedProperty<PathValue>(key, PathValueParser(), default) {
-    override fun listExampleValues(): List<String>? = listOf("/Users/Synopsys/my-project", "Unix Only: ~/my-project")
+    override fun listExampleValues(): List<String>? = listOf("/valued/example/path", "another/valued/example/path")
     override fun describeDefault(): String? = default.toString()
-    override fun describeType(): String? = TYPE_DESCRIPTION
+    override fun describeType(): String? = "Path"
 }
 
 class PathListProperty(key: String, default: List<PathValue>) : ValuedListProperty<PathValue>(key, ListValueParser(PathValueParser()), default) {
-    override fun describeType(): String? = "$TYPE_DESCRIPTION List"
+    override fun listExampleValues(): List<String>? = listOf("/list/example/path", "example/path,/another/list/example/path")
+    override fun describeType(): String? = "Path List"
 }
