@@ -25,7 +25,6 @@ package com.synopsys.integration.configuration.property.types.path
 import com.synopsys.integration.configuration.parse.ValueParseException
 import com.synopsys.integration.configuration.parse.ValueParser
 import org.apache.commons.lang3.StringUtils
-import java.nio.file.Path
 
 class PathValueParser : ValueParser<PathValue>() {
     override fun parse(value: String): PathValue {
@@ -37,15 +36,3 @@ class PathValueParser : ValueParser<PathValue>() {
         }
     }
 }
-
-data class PathValue(private val value: String) {
-    fun resolvePath(pathResolver: PathResolver): Path {
-        return pathResolver.resolvePath(value)
-    }
-
-    override fun toString(): String {
-        return value
-    }
-}
-
-
