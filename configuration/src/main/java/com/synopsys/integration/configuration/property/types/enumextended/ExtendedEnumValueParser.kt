@@ -27,7 +27,7 @@ import com.synopsys.integration.configuration.parse.ValueParser
 import com.synopsys.integration.configuration.property.types.enums.SafeEnumValueParser
 import org.apache.commons.lang3.EnumUtils
 
-class ExtendedEnumValueOfParser<E : Enum<E>, B : Enum<B>>(private val enumClassE: Class<E>, private val enumClassB: Class<B>) : ValueParser<ExtendedEnumValue<E, B>>() {
+class ExtendedEnumValueParser<E : Enum<E>, B : Enum<B>>(private val enumClassE: Class<E>, private val enumClassB: Class<B>) : ValueParser<ExtendedEnumValue<E, B>>() {
     private var extendedParser = SafeEnumValueParser(enumClassE)
     private var baseParser = SafeEnumValueParser(enumClassB)
 
