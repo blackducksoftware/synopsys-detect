@@ -23,16 +23,24 @@
 package com.synopsys.integration.configuration.property.types.enumsoft
 
 import com.synopsys.integration.configuration.parse.ListValueParser
+import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
 import org.apache.commons.lang3.EnumUtils
+
+class NullableSoftEnumProperty<T : Enum<T>>(key: String, private val enumClass: Class<T>) : NullableProperty<SoftEnumValue<T>>(key, SoftEnumValueParser(enumClass)) {
+    override fun isCaseSensitive(): Boolean = false
+    override fun listExampleValues(): List<String>? = EnumUtils.getEnumList(enumClass).map { it.toString() }.toList()
+    override fun isOnlyExampleValues(): Boolean = false
+    override fun describeType(): String? = "Optional ${enumClass.simpleName}"
+}
 
 class SoftEnumProperty<T : Enum<T>>(key: String, default: SoftEnumValue<T>, private val enumClass: Class<T>) : ValuedProperty<SoftEnumValue<T>>(key, SoftEnumValueParser(enumClass), default) {
     override fun isCaseSensitive(): Boolean = false
     override fun listExampleValues(): List<String>? = EnumUtils.getEnumList(enumClass).map { it.toString() }.toList()
     override fun isOnlyExampleValues(): Boolean = false
     override fun describeType(): String? = enumClass.simpleName
-    override fun isCommaSeparated(): Boolean = true
+    override fun describeDefault(): String? = default.toString()
 }
 
 
@@ -41,4 +49,5 @@ class SoftEnumListProperty<T : Enum<T>>(key: String, default: List<SoftEnumValue
     override fun listExampleValues(): List<String>? = EnumUtils.getEnumList(enumClass).map { it.toString() }.toList()
     override fun isOnlyExampleValues(): Boolean = false
     override fun describeType(): String? = "${enumClass.simpleName} List"
+    override fun describeDefault(): String? = default.toString()
 }

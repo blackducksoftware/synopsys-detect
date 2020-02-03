@@ -26,10 +26,10 @@ package com.synopsys.integration.configuration.property.types.enumsoft
 // Useful for properties that might want to be extended by the user such as Black Duck settings where we may know some of the values but don't care if we do not.
 sealed class SoftEnumValue<T : Enum<T>>
 
-class ActualValue<T : Enum<T>>(val value: T) : SoftEnumValue<T>() {
+data class ActualValue<T : Enum<T>>(val value: T) : SoftEnumValue<T>() {
     override fun toString(): String = value.toString()
 }
 
-class StringValue<T : Enum<T>>(val value: String) : SoftEnumValue<T>() {
+data class StringValue<T : Enum<T>>(val value: String) : SoftEnumValue<T>() {
     override fun toString(): String = value
 }
