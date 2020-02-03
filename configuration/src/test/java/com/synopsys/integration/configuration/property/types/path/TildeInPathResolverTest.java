@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.util;
+package com.synopsys.integration.configuration.property.types.path;
 
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
 

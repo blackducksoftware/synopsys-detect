@@ -20,27 +20,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.util
+package com.synopsys.integration.configuration.property.types.path
 
-import com.synopsys.integration.configuration.property.types.path.PathResolver
 import org.slf4j.LoggerFactory
 import java.nio.file.InvalidPathException
 import java.nio.file.Path
 import java.nio.file.Paths
 
-/**
- * // @formatter:off
- * Users can pass paths to detect that begin with a '~' character. In linux/mac environments, this
- * is shorthand for the user's home directory. If we encounter a property that is formed this way,
- * we can resolve it.
- *
- * If there is concern that this will be too invasive, users can specify
- * --detect.resolve.tilde.in.paths=false to turn it off.
- * // @formatter:on
- */
 class TildeInPathResolver(private val systemUserHome: String) : PathResolver {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
+    /**
+     * Resolves a '~' character at the start of [filePath]. In linux/mac environments, this
+     * is shorthand for the user's home directory. If we encounter a property that
+     * is formed this way, we can resolve it.
+     */
     @Throws(InvalidPathException::class)
     override fun resolvePath(filePath: String): Path {
         val resolved = if (filePath.startsWith("~/")) {
