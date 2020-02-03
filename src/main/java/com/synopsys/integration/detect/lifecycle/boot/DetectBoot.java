@@ -48,6 +48,7 @@ import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.PropertyDeprecationInfo;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
+import com.synopsys.integration.configuration.property.types.path.TildeInPathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.configuration.source.SpringConfigurationPropertySource;
@@ -91,7 +92,6 @@ import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorI
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
 import com.synopsys.integration.detect.type.OperatingSystemType;
-import com.synopsys.integration.detect.util.TildeInPathResolver;
 import com.synopsys.integration.detect.util.filter.DetectFilter;
 import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
