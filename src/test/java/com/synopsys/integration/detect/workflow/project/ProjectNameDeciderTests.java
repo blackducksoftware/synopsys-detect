@@ -27,21 +27,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
+import com.synopsys.integration.detect.workflow.nameversion.DetectorProjectInfo;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorProjectInfoMetadata;
 import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
 import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.util.NameVersion;
-import com.synopsys.integration.detect.workflow.nameversion.DetectorProjectInfo;
 
 public class ProjectNameDeciderTests {
 
     @Test
-    public void choosesLowestDepth() throws DetectUserFriendlyException {
+    public void choosesLowestDepth() {
         final List<DetectorProjectInfo> possibilities = new ArrayList<>();
 
         final int lowestDepth = 2;
@@ -54,7 +53,7 @@ public class ProjectNameDeciderTests {
     }
 
     @Test
-    public void choosesUniqueOverMultiple() throws DetectUserFriendlyException {
+    public void choosesUniqueOverMultiple() {
         final List<DetectorProjectInfo> possibilities = new ArrayList<>();
 
         final int lowestDepth = 2;
@@ -66,7 +65,7 @@ public class ProjectNameDeciderTests {
     }
 
     @Test
-    public void choosesAlphabeticalArbitrary() throws DetectUserFriendlyException {
+    public void choosesAlphabeticalArbitrary() {
         final List<DetectorProjectInfo> possibilities = new ArrayList<>();
 
         final int lowestDepth = 1;
@@ -78,7 +77,7 @@ public class ProjectNameDeciderTests {
     }
 
     @Test
-    public void choosesNoneAmongMultiple() throws DetectUserFriendlyException {
+    public void choosesNoneAmongMultiple() {
         final List<DetectorProjectInfo> possibilities = new ArrayList<>();
 
         final int lowestDepth = 1;
@@ -90,7 +89,7 @@ public class ProjectNameDeciderTests {
     }
 
     @Test
-    public void choosesPreferredEvenDeeper() throws DetectUserFriendlyException {
+    public void choosesPreferredEvenDeeper() {
         final List<DetectorProjectInfo> possibilities = new ArrayList<>();
 
         final int lowestDepth = 0;
@@ -101,7 +100,7 @@ public class ProjectNameDeciderTests {
     }
 
     @Test
-    public void choosesShallowestPrefferred() throws DetectUserFriendlyException {
+    public void choosesShallowestPrefferred() {
         final List<DetectorProjectInfo> possibilities = new ArrayList<>();
 
         final int lowestDepth = 0;
@@ -115,7 +114,7 @@ public class ProjectNameDeciderTests {
     }
 
     @Test
-    public void choosesNonWithNoPreferredBomToolFound() throws DetectUserFriendlyException {
+    public void choosesNonWithNoPreferredBomToolFound() {
         final List<DetectorProjectInfo> possibilities = new ArrayList<>();
 
         final int lowestDepth = 0;
@@ -126,7 +125,7 @@ public class ProjectNameDeciderTests {
     }
 
     @Test
-    public void choosesNoPreferredBomToolWhenMultipleFound() throws DetectUserFriendlyException {
+    public void choosesNoPreferredBomToolWhenMultipleFound() {
         final List<DetectorProjectInfo> possibilities = new ArrayList<>();
 
         final int lowestDepth = 0;
@@ -152,15 +151,15 @@ public class ProjectNameDeciderTests {
         return decider.finalDecision().getChosenNameVersion();
     }
 
-    private void assertProject(final String projectName, final DetectorType preferred, final List<DetectorProjectInfo> possibilities) throws DetectUserFriendlyException {
-        Optional<NameVersion> chosen = decide(preferred, possibilities);
-        Assert.assertTrue(chosen.isPresent());
-        Assert.assertEquals(chosen.get().getName(), projectName);
+    private void assertProject(final String projectName, final DetectorType preferred, final List<DetectorProjectInfo> possibilities) {
+        final Optional<NameVersion> chosen = decide(preferred, possibilities);
+        Assertions.assertTrue(chosen.isPresent());
+        Assertions.assertEquals(chosen.get().getName(), projectName);
     }
 
-    private void assertNoProject(final DetectorType preferred, final List<DetectorProjectInfo> possibilities) throws DetectUserFriendlyException {
-        Optional<NameVersion> chosen = decide(preferred, possibilities);
-        Assert.assertFalse(chosen.isPresent());
+    private void assertNoProject(final DetectorType preferred, final List<DetectorProjectInfo> possibilities) {
+        final Optional<NameVersion> chosen = decide(preferred, possibilities);
+        Assertions.assertFalse(chosen.isPresent());
     }
 
     private void add(final DetectorType type, final int depth, final String projectName, final String projectVersion, final List<DetectorProjectInfo> list) {

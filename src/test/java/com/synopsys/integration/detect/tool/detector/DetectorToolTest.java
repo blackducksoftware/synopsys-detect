@@ -64,16 +64,11 @@ public class DetectorToolTest {
         Mockito.verify(eventSystem).publishEvent(Mockito.any(EventType.class), Mockito.argThat(new FailureExitCodeRequestMatcher()));
     }
 
-    private class FailureExitCodeRequestMatcher implements ArgumentMatcher<ExitCodeRequest> {
-
+    private static class FailureExitCodeRequestMatcher implements ArgumentMatcher<ExitCodeRequest> {
         @Override
-        public boolean matches(ExitCodeRequest actualExitCodeRequest) {
+        public boolean matches(final ExitCodeRequest actualExitCodeRequest) {
             System.out.printf("custom matcher called: %d: %s\n", actualExitCodeRequest.getExitCodeType().getExitCode(), actualExitCodeRequest.getReason());
-            if ((actualExitCodeRequest.getExitCodeType() == ExitCodeType.FAILURE_CONFIGURATION) &&
-                    (StringUtils.isNotBlank(actualExitCodeRequest.getReason()))) {
-                return true;
-            }
-            return false;
+            return (actualExitCodeRequest.getExitCodeType() == ExitCodeType.FAILURE_CONFIGURATION) && (StringUtils.isNotBlank(actualExitCodeRequest.getReason()));
         }
     }
 }
