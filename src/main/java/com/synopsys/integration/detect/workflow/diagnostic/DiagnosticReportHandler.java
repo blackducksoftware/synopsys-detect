@@ -24,14 +24,13 @@ package com.synopsys.integration.detect.workflow.diagnostic;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.help.DetectOption;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -161,11 +160,11 @@ public class DiagnosticReportHandler {
         }
     }
 
-    public void configurationsReport(final DetectInfo detectInfo, final List<DetectOption> detectOptions) {
+    public void configurationsReport(final DetectInfo detectInfo, final PropertyConfiguration propertyConfiguration) {
         try {
             final ReportWriter profileWriter = getReportWriter(ReportTypes.CONFIGURATION);
             final ConfigurationReporter reporter = new ConfigurationReporter();
-            reporter.writeReport(profileWriter, detectInfo, detectOptions);
+            reporter.writeReport(profileWriter, detectInfo, propertyConfiguration);
         } catch (final Exception e) {
             logger.error("Failed to write profiling report.", e);
         }

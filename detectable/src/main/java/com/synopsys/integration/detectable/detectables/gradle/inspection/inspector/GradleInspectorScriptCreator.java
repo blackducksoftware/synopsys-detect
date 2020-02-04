@@ -62,16 +62,14 @@ public class GradleInspectorScriptCreator {
     private File createGradleInspector(final File templateFile, final GradleInspectorScriptOptions scriptOptions, final String resolvedOnlineInspectorVersion, final String airGapLibraryPaths) throws DetectableException {
         logger.debug("Generating the gradle script file.");
         final Map<String, String> gradleScriptData = new HashMap<>();
-        final Optional<String> airGapLibPaths = Optional.ofNullable(airGapLibraryPaths);
-        final Optional<String> inspectorVersion = Optional.ofNullable(resolvedOnlineInspectorVersion);
-        gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(airGapLibPaths.orElse("")));
-        gradleScriptData.put("gradleInspectorVersion", StringEscapeUtils.escapeJava(inspectorVersion.orElse("")));
-        gradleScriptData.put("excludedProjectNames", scriptOptions.getExcludedProjectNames());
-        gradleScriptData.put("includedProjectNames", scriptOptions.getIncludedProjectNames());
-        gradleScriptData.put("excludedConfigurationNames", scriptOptions.getExcludedConfigurationNames());
-        gradleScriptData.put("includedConfigurationNames", scriptOptions.getIncludedConfigurationNames());
-        final String gradleInspectorRepositoryUrl = scriptOptions.getGradleInspectorRepositoryUrl();
-        gradleScriptData.put("customRepositoryUrl", gradleInspectorRepositoryUrl);
+
+        gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(Optional.ofNullable(airGapLibraryPaths).orElse("")));
+        gradleScriptData.put("gradleInspectorVersion", StringEscapeUtils.escapeJava(Optional.ofNullable(resolvedOnlineInspectorVersion).orElse("")));
+        gradleScriptData.put("excludedProjectNames", scriptOptions.getExcludedProjectNames().orElse(""));
+        gradleScriptData.put("includedProjectNames", scriptOptions.getIncludedProjectNames().orElse(""));
+        gradleScriptData.put("excludedConfigurationNames", scriptOptions.getExcludedConfigurationNames().orElse(""));
+        gradleScriptData.put("includedConfigurationNames", scriptOptions.getIncludedConfigurationNames().orElse(""));
+        gradleScriptData.put("customRepositoryUrl", scriptOptions.getGradleInspectorRepositoryUrl());
 
         try {
             populateGradleScriptWithData(templateFile, gradleScriptData);

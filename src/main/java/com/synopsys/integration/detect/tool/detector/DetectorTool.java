@@ -40,13 +40,13 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
-import com.synopsys.integration.detect.workflow.nameversion.NameVersionDecision;
-import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
+import com.synopsys.integration.detect.workflow.nameversion.NameVersionDecision;
+import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
@@ -75,7 +75,7 @@ public class DetectorTool {
     }
 
     public DetectorToolResult performDetectors(final File directory, final DetectorRuleSet detectorRuleSet, final DetectorFinderOptions detectorFinderOptions, final DetectorEvaluationOptions evaluationOptions, final String projectDetector,
-        final String requiredDetectors)
+        final List<DetectorType> requiredDetectors)
         throws DetectUserFriendlyException {
         logger.debug("Initializing detector system.");
         final Optional<DetectorEvaluationTree> possibleRootEvaluation;
@@ -194,11 +194,12 @@ public class DetectorTool {
         detectorToolResult.bomToolProjectNameVersion = nameVersionDecision.getChosenNameVersion();
 
         //Check required detector types
-        final RequiredDetectorChecker requiredDetectorChecker = new RequiredDetectorChecker();
-        final RequiredDetectorChecker.RequiredDetectorResult requiredDetectorResult = requiredDetectorChecker.checkForMissingDetectors(requiredDetectors, applicable);
-        if (requiredDetectorResult.wereDetectorsMissing()) {
-            final String missingDetectors = requiredDetectorResult.getMissingDetectors().stream().map(it -> it.toString()).collect(Collectors.joining(","));
-            logger.error("One or more required detector types were not found: " + missingDetectors);
+        final Set<DetectorType> missingDetectors = requiredDetectors.stream()
+                                                       .filter(it -> !applicable.contains(it))
+                                                       .collect(Collectors.toSet());
+        if (missingDetectors.size() > 0) {
+            final String missingDetectorDisplay = missingDetectors.stream().map(Enum::toString).collect(Collectors.joining(","));
+            logger.error("One or more required detector types were not found: " + missingDetectorDisplay);
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR_REQUIRED));
         }
 

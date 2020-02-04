@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.tool.detector;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ public class DetectorToolTest {
         final DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         final String projectBomTool = "testBomTool";
 
-        tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, "");
+        tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, new ArrayList<>());
 
         Mockito.verify(eventSystem).publishEvent(Mockito.any(EventType.class), Mockito.argThat(new FailureExitCodeRequestMatcher()));
     }

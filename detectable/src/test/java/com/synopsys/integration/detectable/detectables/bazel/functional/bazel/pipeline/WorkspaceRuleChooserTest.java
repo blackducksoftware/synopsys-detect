@@ -42,17 +42,17 @@ public class WorkspaceRuleChooserTest {
 
     @Test
     public void testProvidedBazelDependencyRule() throws IOException, IntegrationException {
-        final WorkspaceRule chosenWorkspaceRule = run("maven_install");
+        final WorkspaceRule chosenWorkspaceRule = run(WorkspaceRule.MAVEN_INSTALL);
         assertEquals("maven_install", chosenWorkspaceRule.getName());
     }
 
     @Test
     public void testOverriddenBazelDependencyRule() throws IOException, IntegrationException {
-        final WorkspaceRule chosenWorkspaceRule = run("maven_jar");
+        final WorkspaceRule chosenWorkspaceRule = run(WorkspaceRule.MAVEN_JAR);
         assertEquals("maven_jar", chosenWorkspaceRule.getName());
     }
 
-    private WorkspaceRule run(final String providedBazelDependencyRule) throws IntegrationException {
+    private WorkspaceRule run(final WorkspaceRule providedBazelDependencyRule) throws IntegrationException {
         final WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
         final WorkspaceRule chosenWorkspaceRule = workspaceRuleChooser.choose(WorkspaceRule.MAVEN_INSTALL, providedBazelDependencyRule);
         return chosenWorkspaceRule;

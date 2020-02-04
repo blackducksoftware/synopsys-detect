@@ -9,5 +9,5 @@ dependencies {
     implementation 'org.springframework:spring-core'
     implementation 'org.springframework:spring-context'
 
-    testImplementation "org.mockito:mockito-core:2.+"
+    implementation project(':configuration')
 }

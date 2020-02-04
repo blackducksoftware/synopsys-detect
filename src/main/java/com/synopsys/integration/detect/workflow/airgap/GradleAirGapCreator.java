@@ -78,7 +78,14 @@ public class GradleAirGapCreator {
         }
 
         logger.info("Determining inspector version.");
-        final String gradleVersion = gradleInspectorInstaller.findVersion(inspectorVersion).get();
+        String gradleVersion = inspectorVersion;
+        if (gradleVersion == null) {
+            try {
+                gradleVersion = gradleInspectorInstaller.findVersion();
+            } catch (final DetectableException e) {
+                throw new DetectUserFriendlyException("An error occurred while determining which Gradle version to use while making an Air Gap zip.", e, ExitCodeType.FAILURE_CONFIGURATION);
+            }
+        }
         logger.info("Determined inspector version: " + gradleVersion);
 
         final File gradleOutput = new File(gradleTemp, "dependencies");

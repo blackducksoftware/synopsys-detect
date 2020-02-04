@@ -22,18 +22,12 @@
  */
 package com.synopsys.integration.detect.boot;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
@@ -44,6 +38,7 @@ import com.synopsys.integration.detect.lifecycle.boot.product.PolarisConnectivit
 import com.synopsys.integration.detect.lifecycle.boot.product.PolarisConnectivityResult;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory;
+import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 
@@ -51,35 +46,33 @@ public class ProductBootTest {
     @Test
     public void bothProductsSkippedThrows() {
         Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
-            testBoot(BlackDuckDecision.skip(), PolarisDecision.skip());
+            testBoot(BlackDuckDecision.skip(), PolarisDecision.skip(), new ProductBootOptions(false, false));
         });
     }
 
     @Test
     public void blackDuckConnectionFailureThrows() {
         final BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.failure("Failed to connect");
-        Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
-            testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), connectivityResult, null, new HashMap<>());
-        });
 
+        Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
+            testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), new ProductBootOptions(false, false), connectivityResult, null);
+        });
     }
 
     @Test
     public void polarisConnectionFailureThrows() {
         final PolarisConnectivityResult connectivityResult = PolarisConnectivityResult.failure("Failed to connect");
+
         Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
-            testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), null, connectivityResult, new HashMap<>());
+            testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), new ProductBootOptions(false, false), null, connectivityResult);
         });
     }
 
     @Test
     public void blackDuckFailureWithIgnoreReturnsFalse() throws DetectUserFriendlyException {
-        final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
-        properties.put(DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES, true);
-
         final BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.failure("Failed to connect");
 
-        final ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), connectivityResult, null, properties);
+        final ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), new ProductBootOptions(true, false), connectivityResult, null);
 
         Assertions.assertFalse(productRunData.shouldUseBlackDuckProduct());
         Assertions.assertFalse(productRunData.shouldUsePolarisProduct());
@@ -87,86 +80,68 @@ public class ProductBootTest {
 
     @Test
     public void blackDuckConnectionFailureWithTestThrows() {
-        final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
-        properties.put(DetectProperty.DETECT_TEST_CONNECTION, true);
-
         final BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.failure("Failed to connect");
 
         Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
-            testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), connectivityResult, null, properties);
+            testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), new ProductBootOptions(false, true), connectivityResult, null);
         });
     }
 
     @Test
     public void polarisConnectionFailureWithTestThrows() {
-        final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
-        properties.put(DetectProperty.DETECT_TEST_CONNECTION, true);
-
         final PolarisConnectivityResult connectivityResult = PolarisConnectivityResult.failure("Failed to connect");
 
         Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
-            testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), null, connectivityResult, properties);
+            testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), new ProductBootOptions(false, true), null, connectivityResult);
         });
     }
 
-    @Test()
+    @Test
     public void blackDuckConnectionSuccessWithTestReturnsNull() throws DetectUserFriendlyException {
-        final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
-        properties.put(DetectProperty.DETECT_TEST_CONNECTION, true);
-
         final BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.success(Mockito.mock(BlackDuckServicesFactory.class), Mockito.mock(BlackDuckServerConfig.class));
 
-        final ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), connectivityResult, null, properties);
+        final ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), new ProductBootOptions(false, true), connectivityResult, null);
 
         Assertions.assertNull(productRunData);
     }
 
-    @Test()
+    @Test
     public void polarisConnectionSuccessWithTestReturnsNull() throws DetectUserFriendlyException {
-        final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
-        properties.put(DetectProperty.DETECT_TEST_CONNECTION, true);
-
         final PolarisConnectivityResult connectivityResult = PolarisConnectivityResult.success();
 
-        final ProductRunData productRunData = testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), null, connectivityResult, properties);
+        final ProductRunData productRunData = testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), new ProductBootOptions(false, true), null, connectivityResult);
 
         Assertions.assertNull(productRunData);
     }
 
-    @Test()
+    @Test
     public void blackDuckOnlyWorks() throws DetectUserFriendlyException {
-        final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
-
         final BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.success(Mockito.mock(BlackDuckServicesFactory.class), Mockito.mock(BlackDuckServerConfig.class));
-
-        final ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), connectivityResult, null, properties);
+        final ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), new ProductBootOptions(false, false), connectivityResult, null);
 
         Assertions.assertTrue(productRunData.shouldUseBlackDuckProduct());
         Assertions.assertFalse(productRunData.shouldUsePolarisProduct());
     }
 
-    @Test()
+    @Test
     public void polarisOnlyWorks() throws DetectUserFriendlyException {
         final PolarisDecision polarisDecision = PolarisDecision.runOnline(Mockito.mock(PolarisServerConfig.class));
 
         final PolarisConnectivityResult polarisConnectivityResult = Mockito.mock(PolarisConnectivityResult.class);
         Mockito.when(polarisConnectivityResult.isSuccessfullyConnected()).thenReturn(true);
 
-        final ProductRunData productRunData = testBoot(BlackDuckDecision.skip(), polarisDecision, null, polarisConnectivityResult, new HashMap<>());
+        final ProductRunData productRunData = testBoot(BlackDuckDecision.skip(), polarisDecision, new ProductBootOptions(false, false), null, polarisConnectivityResult);
 
         Assertions.assertFalse(productRunData.shouldUseBlackDuckProduct());
         Assertions.assertTrue(productRunData.shouldUsePolarisProduct());
     }
 
-    private ProductRunData testBoot(final BlackDuckDecision blackDuckDecision, final PolarisDecision polarisDecision) throws DetectUserFriendlyException {
-        return testBoot(blackDuckDecision, polarisDecision, null, null, new HashMap<>());
+    private ProductRunData testBoot(final BlackDuckDecision blackDuckDecision, final PolarisDecision polarisDecision, final ProductBootOptions productBootOptions) throws DetectUserFriendlyException {
+        return testBoot(blackDuckDecision, polarisDecision, productBootOptions, null, null);
     }
 
-    private ProductRunData testBoot(final BlackDuckDecision blackDuckDecision, final PolarisDecision polarisDecision, final BlackDuckConnectivityResult blackDuckconnectivityResult, final PolarisConnectivityResult polarisConnectivityResult,
-        final Map<DetectProperty, Boolean> properties) throws DetectUserFriendlyException {
-        final DetectConfiguration detectConfiguration = Mockito.mock(DetectConfiguration.class);
-        properties.forEach((key, value) -> Mockito.when(detectConfiguration.getBooleanProperty(key, PropertyAuthority.NONE)).thenReturn(value));
-
+    private ProductRunData testBoot(final BlackDuckDecision blackDuckDecision, final PolarisDecision polarisDecision, final ProductBootOptions productBootOptions, final BlackDuckConnectivityResult blackDuckconnectivityResult,
+        final PolarisConnectivityResult polarisConnectivityResult) throws DetectUserFriendlyException {
         final ProductBootFactory productBootFactory = Mockito.mock(ProductBootFactory.class);
         Mockito.when(productBootFactory.createPhoneHomeManager(Mockito.any())).thenReturn(null);
 
@@ -180,6 +155,6 @@ public class ProductBootTest {
         final PolarisConnectivityChecker polarisConnectivityChecker = Mockito.mock(PolarisConnectivityChecker.class);
         Mockito.when(polarisConnectivityChecker.determineConnectivity(Mockito.any())).thenReturn(polarisConnectivityResult);
 
-        return productBoot.boot(productDecision, detectConfiguration, blackDuckConnectivityChecker, polarisConnectivityChecker, productBootFactory);
+        return productBoot.boot(productDecision, productBootOptions, blackDuckConnectivityChecker, polarisConnectivityChecker, productBootFactory);
     }
 }

@@ -26,6 +26,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,10 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.configuration.property.Property;
+import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.detect.help.DetectOption;
-import com.synopsys.integration.detect.help.DetectOptionHelp;
 
 public class HelpJsonWriter {
     private final Logger logger = LoggerFactory.getLogger(HelpJsonWriter.class);
@@ -47,7 +47,7 @@ public class HelpJsonWriter {
         this.gson = gson;
     }
 
-    public void writeGsonDocument(final String filename, final List<DetectOption> detectOptions, final List<HelpJsonDetector> buildDetectors, final List<HelpJsonDetector> buildlessDetectors) {
+    public void writeGsonDocument(final String filename, final List<Property> detectOptions, final List<HelpJsonDetector> buildDetectors, final List<HelpJsonDetector> buildlessDetectors) {
         final HelpJsonData data = new HelpJsonData();
 
         data.getOptions().addAll(detectOptions.stream().map(this::convertOption).collect(Collectors.toList()));
@@ -74,34 +74,32 @@ public class HelpJsonWriter {
         return helpJsonExitCode;
     }
 
-    public HelpJsonOption convertOption(final DetectOption detectOption) {
+    public HelpJsonOption convertOption(final Property property) {
         final HelpJsonOption helpJsonOption = new HelpJsonOption();
 
-        final DetectProperty property = detectOption.getDetectProperty();
-        helpJsonOption.setPropertyName(property.getPropertyName());
-        helpJsonOption.setPropertyKey(property.getPropertyKey());
-        helpJsonOption.setPropertyType(property.getPropertyType().getDisplayName());
-        helpJsonOption.setAddedInVersion(property.getAddedInVersion());
-        helpJsonOption.setDefaultValue(property.getDefaultValue());
+        helpJsonOption.setPropertyName(property.getName());
+        helpJsonOption.setPropertyKey(property.getKey());
+        helpJsonOption.setPropertyType(property.describeType());
+        helpJsonOption.setAddedInVersion(property.getFromVersion());
+        helpJsonOption.setDefaultValue(property.describeDefault());
 
-        final DetectOptionHelp optionHelp = detectOption.getDetectOptionHelp();
-        helpJsonOption.setGroup(optionHelp.primaryGroup);
-        helpJsonOption.setSuperGroup(optionHelp.superGroup);
-        helpJsonOption.setAdditionalGroups(optionHelp.additionalGroups);
-        helpJsonOption.setCategory(optionHelp.category);
-        helpJsonOption.setDescription(optionHelp.description);
-        helpJsonOption.setDetailedDescription(optionHelp.detailedHelp);
-        helpJsonOption.setDeprecated(optionHelp.isDeprecated);
-        if (optionHelp.isDeprecated) {
-            helpJsonOption.setDeprecatedDescription(optionHelp.deprecation);
-            helpJsonOption.setDeprecatedFailInVersion(optionHelp.deprecationFailInVersion.getDisplayValue());
-            helpJsonOption.setDeprecatedRemoveInVersion(optionHelp.deprecationRemoveInVersion.getDisplayValue());
+        helpJsonOption.setGroup(property.getPropertyGroupInfo().getPrimaryGroup().getName());
+        helpJsonOption.setSuperGroup(property.getPropertyGroupInfo().getPrimaryGroup().getSuperGroup().getName());
+        helpJsonOption.setAdditionalGroups(property.getPropertyGroupInfo().getAdditionalGroups().stream().map(Group::getName).collect(Collectors.toList()));
+        helpJsonOption.setCategory(property.getCategory().getName());
+        helpJsonOption.setDescription(property.getPropertyHelpInfo().getShort());
+        helpJsonOption.setDetailedDescription(property.getPropertyHelpInfo().getLong());
+        helpJsonOption.setDeprecated(property.getPropertyDeprecationInfo() != null);
+        if (property.getPropertyDeprecationInfo() != null) {
+            helpJsonOption.setDeprecatedDescription(property.getPropertyDeprecationInfo().getDescription());
+            helpJsonOption.setDeprecatedFailInVersion(property.getPropertyDeprecationInfo().getFailInVersion().getDisplayValue());
+            helpJsonOption.setDeprecatedRemoveInVersion(property.getPropertyDeprecationInfo().getRemoveInVersion().getDisplayValue());
         }
-        helpJsonOption.setStrictValues(detectOption.hasStrictValidation());
-        helpJsonOption.setCaseSensitiveValues(detectOption.hasCaseSensitiveValidation());
-        helpJsonOption.setAcceptableValues(detectOption.getValidValues());
-        helpJsonOption.setHasAcceptableValues(detectOption.getValidValues().size() > 0);
-        helpJsonOption.setCommaSeparatedList(detectOption.isCommaSeperatedList());
+        helpJsonOption.setStrictValues(property.isOnlyExampleValues());
+        helpJsonOption.setCaseSensitiveValues(property.isCaseSensitive());
+        helpJsonOption.setAcceptableValues(property.listExampleValues().stream().map(Objects::toString).collect(Collectors.toList()));
+        helpJsonOption.setHasAcceptableValues(property.listExampleValues().size() > 0);
+        helpJsonOption.setCommaSeparatedList(property.isCommaSeparated());
         return helpJsonOption;
     }
 }

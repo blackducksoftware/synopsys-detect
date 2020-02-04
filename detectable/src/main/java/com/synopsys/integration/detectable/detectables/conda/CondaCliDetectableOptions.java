@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.conda;
 
+import java.util.Optional;
+
 public class CondaCliDetectableOptions {
     private final String condaEnvironmentName;
 
@@ -29,7 +31,7 @@ public class CondaCliDetectableOptions {
         this.condaEnvironmentName = condaEnvironmentName;
     }
 
-    public String getCondaEnvironmentName() {
-        return condaEnvironmentName;
+    public Optional<String> getCondaEnvironmentName() {
+        return Optional.ofNullable(condaEnvironmentName);
     }
 }

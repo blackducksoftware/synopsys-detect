@@ -33,12 +33,11 @@ import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.detect.configuration.ConnectionManager;
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.tool.detector.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
@@ -73,7 +72,9 @@ public class RunBeanConfiguration {
     @Autowired
     public DetectInfo detectInfo;
     @Autowired
-    public DetectConfiguration detectConfiguration;
+    public PropertyConfiguration detectConfiguration;
+    @Autowired
+    public DetectConfigurationFactory detectConfigurationFactory;
     @Autowired
     public DirectoryManager directoryManager;
     @Autowired
@@ -92,19 +93,19 @@ public class RunBeanConfiguration {
         return new ExternalIdFactory();
     }
 
-    // This is not a bean!
-    public FileFinder simpleFileFinder() {
+    @Bean
+    public FileFinder fileFinder() {
         return new SimpleFileFinder();
     }
 
     @Bean
-    public ConnectionManager connectionManager() {
-        return new ConnectionManager(detectConfiguration);
+    public ConnectionFactory connectionFactory() {
+        return new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
     }
 
     @Bean
     public ArtifactResolver artifactResolver() {
-        return new ArtifactResolver(connectionManager(), gson);
+        return new ArtifactResolver(connectionFactory(), gson);
     }
 
     @Bean
@@ -113,13 +114,8 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public DetectConfigurationFactory detectConfigurationFactory() {
-        return new DetectConfigurationFactory(detectConfiguration);
-    }
-
-    @Bean
     public CodeLocationNameGenerator codeLocationNameService() {
-        final String codeLocationNameOverride = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.NONE);
+        final String codeLocationNameOverride = detectConfiguration.getValueOrNull(DetectProperties.Companion.getDETECT_CODE_LOCATION_NAME());
         return new CodeLocationNameGenerator(codeLocationNameOverride);
     }
 
@@ -130,12 +126,12 @@ public class RunBeanConfiguration {
 
     @Bean
     public BdioCodeLocationCreator detectCodeLocationManager() {
-        return new BdioCodeLocationCreator(codeLocationNameManager(), detectConfiguration, directoryManager, eventSystem);
+        return new BdioCodeLocationCreator(codeLocationNameManager(), directoryManager, eventSystem);
     }
 
     @Bean
     public AirGapInspectorPaths airGapManager() {
-        final AirGapOptions airGapOptions = detectConfigurationFactory().createAirGapOptions();
+        final AirGapOptions airGapOptions = detectConfigurationFactory.createAirGapOptions();
         return new AirGapInspectorPaths(airGapPathFinder(), airGapOptions);
     }
 
@@ -151,7 +147,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public SimpleExecutableFinder simpleExecutableFinder() {
-        return SimpleExecutableFinder.forCurrentOperatingSystem(simpleFileFinder());
+        return SimpleExecutableFinder.forCurrentOperatingSystem(fileFinder());
     }
 
     @Bean
@@ -171,18 +167,18 @@ public class RunBeanConfiguration {
 
     @Bean
     public DetectExecutableResolver detectExecutableResolver() {
-        return new DetectExecutableResolver(simpleExecutableResolver(), detectConfiguration);
+        return new DetectExecutableResolver(simpleExecutableResolver(), detectConfigurationFactory.createExecutablePaths());
     }
 
     @Bean
     public DockerInspectorResolver dockerInspectorResolver() {
         final DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver());
-        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), simpleFileFinder(), dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
+        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fileFinder(), dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
     }
 
     @Lazy
     @Bean()
     public BlackDuckSignatureScanner blackDuckSignatureScanner(final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, final ScanBatchRunner scanBatchRunner, final BlackDuckServerConfig blackDuckServerConfig) {
-        return new BlackDuckSignatureScanner(directoryManager, simpleFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, blackDuckServerConfig);
+        return new BlackDuckSignatureScanner(directoryManager, fileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, blackDuckServerConfig, scanBatchRunner);
     }
 }

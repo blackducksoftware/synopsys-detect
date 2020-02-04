@@ -24,7 +24,6 @@ package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -46,15 +45,15 @@ public class ExclusionPatternCreator {
         this.scanTarget = scanTarget;
     }
 
-    public Set<String> determineExclusionPatterns(final int maxDepth, final String... signatureScannerExclusionNamePatterns) {
-        if (null == signatureScannerExclusionNamePatterns || signatureScannerExclusionNamePatterns.length < 1 && scanTarget.isDirectory()) {
+    public Set<String> determineExclusionPatterns(final int maxDepth, final List<String> signatureScannerExclusionNamePatterns) {
+        if (null == signatureScannerExclusionNamePatterns || signatureScannerExclusionNamePatterns.size() < 1 && scanTarget.isDirectory()) {
             return Collections.emptySet();
         }
         final Set<String> scanExclusionPatterns = new HashSet<>();
         try {
             final String scanTargetPath = scanTarget.getCanonicalPath();
             // TODO should we only collect directories since the scanner can only exclude directories?
-            final List<File> matchingFiles = fileFinder.findFiles(scanTarget, Arrays.asList(signatureScannerExclusionNamePatterns), maxDepth, false); //TODO: re-add the depth hit message creator?
+            final List<File> matchingFiles = fileFinder.findFiles(scanTarget, signatureScannerExclusionNamePatterns, maxDepth, false); //TODO: re-add the depth hit message creator?
             for (final File matchingFile : matchingFiles) {
                 final String matchingFilePath = matchingFile.getCanonicalPath();
                 final String scanExclusionPattern = createExclusionPatternFromPaths(scanTargetPath, matchingFilePath);

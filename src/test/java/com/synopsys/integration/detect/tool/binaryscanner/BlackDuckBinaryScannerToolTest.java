@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
@@ -41,7 +42,7 @@ public class BlackDuckBinaryScannerToolTest {
 
     @Test
     public void testShouldRunFalsePropertyNotSet() {
-        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions("", Collections.singletonList(""), "", "");
+        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(null, Collections.singletonList(""), "", "");
 
         final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
         final boolean shouldRunResponse = tool.shouldRun();
@@ -51,7 +52,7 @@ public class BlackDuckBinaryScannerToolTest {
 
     @Test
     public void testShouldRunTrueFileNonExistent() {
-        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions("thisisnotafile", Collections.singletonList(""), "", "");
+        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("thisisnotafile"), Collections.singletonList(""), "", "");
 
         final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
 
@@ -62,7 +63,7 @@ public class BlackDuckBinaryScannerToolTest {
 
     @Test
     public void testShouldRunTruePropertySetToDirectory() {
-        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(".", Collections.singletonList(""), "", "");
+        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "");
 
         final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
 
@@ -78,7 +79,7 @@ public class BlackDuckBinaryScannerToolTest {
         assertTrue(binaryScanFile.canRead());
         assertTrue(binaryScanFile.exists());
 
-        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(binaryScanFile.getAbsolutePath(), Collections.singletonList(""), "", "");
+        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(binaryScanFile.toPath(), Collections.singletonList(""), "", "");
 
         final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
 
@@ -89,7 +90,7 @@ public class BlackDuckBinaryScannerToolTest {
 
     @Test
     public void testShouldFailOnDirectory() throws DetectUserFriendlyException {
-        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(".", Collections.singletonList(""), "", "");
+        final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "");
 
         final EventSystem eventSystem = Mockito.mock(EventSystem.class);
 

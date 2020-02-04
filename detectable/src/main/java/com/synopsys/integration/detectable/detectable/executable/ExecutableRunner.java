@@ -23,32 +23,22 @@
 package com.synopsys.integration.detectable.detectable.executable;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.antlr.v4.runtime.misc.NotNull;
 
 public interface ExecutableRunner {
     @NotNull
-    default ExecutableOutput execute(final File workingDirectory, final String exeCmd, final String... args) throws ExecutableRunnerException {
-        return execute(new Executable(workingDirectory, new HashMap<>(), exeCmd, Arrays.asList(args)));
-    }
+    ExecutableOutput execute(final File workingDirectory, final String exeCmd, final String... args) throws ExecutableRunnerException;
 
     @NotNull
-    default ExecutableOutput execute(final File workingDirectory, final String exeCmd, final List<String> args) throws ExecutableRunnerException {
-        return execute(new Executable(workingDirectory, new HashMap<>(), exeCmd, args));
-    }
+    ExecutableOutput execute(final File workingDirectory, final String exeCmd, final List<String> args) throws ExecutableRunnerException;
 
     @NotNull
-    default ExecutableOutput execute(final File workingDirectory, final File exeFile, final String... args) throws ExecutableRunnerException {
-        return execute(new Executable(workingDirectory, new HashMap<>(), exeFile.toString(), Arrays.asList(args)));
-    }
+    ExecutableOutput execute(final File workingDirectory, final File exeFile, final String... args) throws ExecutableRunnerException;
 
     @NotNull
-    default ExecutableOutput execute(final File workingDirectory, final File exeFile, final List<String> args) throws ExecutableRunnerException {
-        return execute(new Executable(workingDirectory, new HashMap<>(), exeFile.toString(), args));
-    }
+    ExecutableOutput execute(final File workingDirectory, final File exeFile, final List<String> args) throws ExecutableRunnerException;
 
     @NotNull
     ExecutableOutput execute(Executable executable) throws ExecutableRunnerException;

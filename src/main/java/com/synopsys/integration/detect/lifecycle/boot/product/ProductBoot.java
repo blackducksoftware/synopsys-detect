@@ -27,9 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
@@ -44,7 +42,7 @@ import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
 public class ProductBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public ProductRunData boot(final ProductDecision productDecision, final DetectConfiguration detectConfiguration, final BlackDuckConnectivityChecker blackDuckConnectivityChecker,
+    public ProductRunData boot(final ProductDecision productDecision, final ProductBootOptions productBootOptions, final BlackDuckConnectivityChecker blackDuckConnectivityChecker,
         final PolarisConnectivityChecker polarisConnectivityChecker,
         final ProductBootFactory productBootFactory) throws DetectUserFriendlyException {
         if (!productDecision.willRunAny()) {
@@ -67,9 +65,9 @@ public class ProductBoot {
                     final PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
                     blackDuckRunData = BlackDuckRunData.online(blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
                 } else {
-                    if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES, PropertyAuthority.NONE)) {
+                    if (productBootOptions.isIgnoreConnectionFailures()) {
                         logger.info("Failed to connect to Black Duck: " + blackDuckConnectivityResult.getFailureReason());
-                        logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.", DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES.getPropertyName()));
+                        logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.", DetectProperties.Companion.getDETECT_IGNORE_CONNECTION_FAILURES().getName()));
                     } else {
                         throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + blackDuckConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
                     }
@@ -91,8 +89,8 @@ public class ProductBoot {
             }
         }
 
-        if (detectConfiguration.getBooleanProperty(DetectProperty.DETECT_TEST_CONNECTION, PropertyAuthority.NONE)) {
-            logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperty.DETECT_TEST_CONNECTION.getPropertyName()));
+        if (productBootOptions.isTestConnections()) {
+            logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperties.Companion.getDETECT_TEST_CONNECTION().getName()));
             return null;
         }
 

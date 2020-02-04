@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -48,14 +49,14 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
     private final DetectInfo detectInfo;
     private final FileFinder fileFinder;
     private final String nugetInspectorName;
-    private final String[] packagesRepoUrl;
+    private final List<String> packagesRepoUrl;
 
     private boolean hasResolvedInspector;
     private NugetInspector resolvedNugetInspector;
     private final NugetInspectorLocator nugetInspectorLocator;
 
     public LocatorNugetInspectorResolver(final DetectExecutableResolver executableResolver, final ExecutableRunner executableRunner, final DetectInfo detectInfo,
-        final FileFinder fileFinder, final String nugetInspectorName, final String[] packagesRepoUrl, final NugetInspectorLocator nugetInspectorLocator) {
+        final FileFinder fileFinder, final String nugetInspectorName, final List<String> packagesRepoUrl, final NugetInspectorLocator nugetInspectorLocator) {
         this.executableResolver = executableResolver;
         this.executableRunner = executableRunner;
         this.detectInfo = detectInfo;

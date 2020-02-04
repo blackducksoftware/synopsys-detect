@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.BatteryTest;
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
 public class PipBattery {
@@ -35,7 +35,7 @@ public class PipBattery {
         final BatteryTest test = new BatteryTest("pip-cli");
         test.sourceDirectoryNamed("linux-pip");
         test.sourceFileNamed("setup.py");
-        test.executableFromResourceFiles(DetectProperty.DETECT_PYTHON_PATH, "pip-name.xout", "pip-inspector.xout");
+        test.executableFromResourceFiles(DetectProperties.Companion.getDETECT_PYTHON_PATH(), "pip-name.xout", "pip-inspector.xout");
         test.git("https://github.com/nvbn/thefuck.git", "master");
         test.expectBdioResources();
         test.run();
@@ -48,8 +48,8 @@ public class PipBattery {
         test.sourceDirectoryNamed("pipenv-cli-django");
         test.sourceFileNamed("Pipfile.lock");
         test.sourceFileNamed("Pipfile");
-        test.executable(DetectProperty.DETECT_PYTHON_PATH, "jpadilla/django-project-template", "");
-        test.executableFromResourceFiles(DetectProperty.DETECT_PIPENV_PATH, "pip-freeze.xout", "pipenv-graph.xout");
+        test.executable(DetectProperties.Companion.getDETECT_PYTHON_PATH(), "jpadilla/django-project-template", "");
+        test.executableFromResourceFiles(DetectProperties.Companion.getDETECT_PIPENV_PATH(), "pip-freeze.xout", "pipenv-graph.xout");
         test.git("https://github.com/jpadilla/django-project-template.git", "master");
         test.expectBdioResources();
         test.run();
@@ -61,11 +61,11 @@ public class PipBattery {
         test.sourceDirectoryNamed("pipenv-cli-projectonly");
         test.sourceFileNamed("Pipfile.lock");
         test.sourceFileNamed("Pipfile");
-        test.executable(DetectProperty.DETECT_PYTHON_PATH, "django-debug-toolbar", "2.0");
-        test.executableFromResourceFiles(DetectProperty.DETECT_PIPENV_PATH, "pip-freeze.xout", "pipenv-graph.xout");
-        test.property(DetectProperty.DETECT_PIP_ONLY_PROJECT_TREE, "true");
-        test.property(DetectProperty.DETECT_PIP_PROJECT_NAME, "django-debug-toolbar");
-        test.property(DetectProperty.DETECT_PIP_PROJECT_VERSION_NAME, "2.0");
+        test.executable(DetectProperties.Companion.getDETECT_PYTHON_PATH(), "django-debug-toolbar", "2.0");
+        test.executableFromResourceFiles(DetectProperties.Companion.getDETECT_PIPENV_PATH(), "pip-freeze.xout", "pipenv-graph.xout");
+        test.property(DetectProperties.Companion.getDETECT_PIP_ONLY_PROJECT_TREE(), "true");
+        test.property(DetectProperties.Companion.getDETECT_PIP_PROJECT_NAME(), "django-debug-toolbar");
+        test.property(DetectProperties.Companion.getDETECT_PIP_PROJECT_VERSION_NAME(), "2.0");
         test.git("https://github.com/jpadilla/django-project-template.git", "master");
         test.expectBdioResources();
         test.run();
