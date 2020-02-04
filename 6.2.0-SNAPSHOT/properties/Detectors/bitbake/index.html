@@ -983,13 +983,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bitbake-package-names" class="md-nav__link">
-    BitBake Package Names
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#bitbake-source-arguments" class="md-nav__link">
     BitBake Source Arguments
   </a>
@@ -997,15 +990,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-search-depth" class="md-nav__link">
-    BitBake Search Depth
+  <a href="#bitbake-init-script-name" class="md-nav__link">
+    BitBake Init Script Name
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-init-script-name" class="md-nav__link">
-    BitBake Init Script Name
+  <a href="#bitbake-package-names" class="md-nav__link">
+    BitBake Package Names
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bitbake-search-depth" class="md-nav__link">
+    BitBake Search Depth
   </a>
   
 </li>
@@ -1251,13 +1251,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bitbake-package-names" class="md-nav__link">
-    BitBake Package Names
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#bitbake-source-arguments" class="md-nav__link">
     BitBake Source Arguments
   </a>
@@ -1265,15 +1258,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-search-depth" class="md-nav__link">
-    BitBake Search Depth
+  <a href="#bitbake-init-script-name" class="md-nav__link">
+    BitBake Init Script Name
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-init-script-name" class="md-nav__link">
-    BitBake Init Script Name
+  <a href="#bitbake-package-names" class="md-nav__link">
+    BitBake Package Names
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bitbake-search-depth" class="md-nav__link">
+    BitBake Search Depth
   </a>
   
 </li>
@@ -1303,11 +1303,11 @@
                 
                 
                 <h1 id="bitbake">bitbake</h1>
-<h2 id="bitbake-package-names">BitBake Package Names</h2>
-<pre><code>--detect.bitbake.package.names
+<h2 id="bitbake-source-arguments">BitBake Source Arguments</h2>
+<pre><code>--detect.bitbake.source.arguments
 </code></pre>
 
-<p>A comma-separated list of package names from which dependencies are extracted.</p>
+<p>A comma-separated list of arguments to supply when sourcing the build environment init script.</p>
 <table>
 <thead>
 <tr>
@@ -1318,7 +1318,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>4.4.0</td>
+<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1346,11 +1346,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bitbake-source-arguments">BitBake Source Arguments</h2>
-<pre><code>--detect.bitbake.source.arguments
+<h2 id="bitbake-init-script-name">BitBake Init Script Name</h2>
+<pre><code>--detect.bitbake.build.env.name=oe-init-build-env
 </code></pre>
 
-<p>A comma-separated list of arguments to supply when sourcing the build environment init script.</p>
+<p>The name of the build environment init script.</p>
 <table>
 <thead>
 <tr>
@@ -1361,7 +1361,50 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.0.0</td>
+<td>4.4.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>oe-init-build-env</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bitbake-package-names">BitBake Package Names</h2>
+<pre><code>--detect.bitbake.package.names
+</code></pre>
+
+<p>A comma-separated list of package names from which dependencies are extracted.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.4.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1413,49 +1456,6 @@
 <tr>
 <td>Default Value</td>
 <td>1</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="bitbake-init-script-name">BitBake Init Script Name</h2>
-<pre><code>--detect.bitbake.build.env.name=oe-init-build-env
-</code></pre>
-
-<p>The name of the build environment init script.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.4.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>oe-init-build-env</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

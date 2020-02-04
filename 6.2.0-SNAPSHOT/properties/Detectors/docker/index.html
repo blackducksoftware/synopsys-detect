@@ -1026,15 +1026,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-image-id" class="md-nav__link">
-    Docker Image ID
+  <a href="#docker-image-name" class="md-nav__link">
+    Docker Image Name
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-image-name" class="md-nav__link">
-    Docker Image Name
+  <a href="#docker-image-id" class="md-nav__link">
+    Docker Image ID
   </a>
   
 </li>
@@ -1054,8 +1054,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-version-advanced" class="md-nav__link">
-    Docker Inspector Version (Advanced)
+  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
+    Docker Inspector .jar File Path (Advanced)
   </a>
   
 </li>
@@ -1068,15 +1068,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
-    Docker Inspector .jar File Path (Advanced)
+  <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
+    Docker Inspector AirGap Path (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
-    Docker Inspector AirGap Path (Advanced)
+  <a href="#docker-inspector-version-advanced" class="md-nav__link">
+    Docker Inspector Version (Advanced)
   </a>
   
 </li>
@@ -1286,15 +1286,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-image-id" class="md-nav__link">
-    Docker Image ID
+  <a href="#docker-image-name" class="md-nav__link">
+    Docker Image Name
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-image-name" class="md-nav__link">
-    Docker Image Name
+  <a href="#docker-image-id" class="md-nav__link">
+    Docker Image ID
   </a>
   
 </li>
@@ -1314,8 +1314,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-version-advanced" class="md-nav__link">
-    Docker Inspector Version (Advanced)
+  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
+    Docker Inspector .jar File Path (Advanced)
   </a>
   
 </li>
@@ -1328,15 +1328,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
-    Docker Inspector .jar File Path (Advanced)
+  <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
+    Docker Inspector AirGap Path (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
-    Docker Inspector AirGap Path (Advanced)
+  <a href="#docker-inspector-version-advanced" class="md-nav__link">
+    Docker Inspector Version (Advanced)
   </a>
   
 </li>
@@ -1402,11 +1402,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-image-id">Docker Image ID</h2>
-<pre><code>--detect.docker.image.id
+<h2 id="docker-image-name">Docker Image Name</h2>
+<pre><code>--detect.docker.image
 </code></pre>
 
-<p>The Docker image ID to inspect.</p>
+<p>The Docker image name to inspect. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
 <table>
 <thead>
 <tr>
@@ -1417,7 +1417,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.1.0</td>
+<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1445,11 +1445,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-image-name">Docker Image Name</h2>
-<pre><code>--detect.docker.image
+<h2 id="docker-image-id">Docker Image ID</h2>
+<pre><code>--detect.docker.image.id
 </code></pre>
 
-<p>The Docker image name to inspect. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
+<p>The Docker image ID to inspect.</p>
 <table>
 <thead>
 <tr>
@@ -1460,7 +1460,7 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>6.1.0</td>
 </tr>
 <tr>
 <td>Type</td>
@@ -1574,11 +1574,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-inspector-version-advanced">Docker Inspector Version (Advanced)</h2>
-<pre><code>--detect.docker.inspector.version
+<h2 id="docker-inspector-46jar-file-path-advanced">Docker Inspector .jar File Path (Advanced)</h2>
+<pre><code>--detect.docker.inspector.path
 </code></pre>
 
-<p>Version of the Docker Inspector to use. By default Detect will attempt to automatically determine the version to use.</p>
+<p>This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a local Docker Inspector .jar file at this path.</p>
 <table>
 <thead>
 <tr>
@@ -1661,11 +1661,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-inspector-46jar-file-path-advanced">Docker Inspector .jar File Path (Advanced)</h2>
-<pre><code>--detect.docker.inspector.path
+<h2 id="docker-inspector-airgap-path-advanced">Docker Inspector AirGap Path (Advanced)</h2>
+<pre><code>--detect.docker.inspector.air.gap.path
 </code></pre>
 
-<p>This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a local Docker Inspector .jar file at this path.</p>
+<p>The path to the directory containing the Docker Inspector jar and images.</p>
 <table>
 <thead>
 <tr>
@@ -1704,11 +1704,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-inspector-airgap-path-advanced">Docker Inspector AirGap Path (Advanced)</h2>
-<pre><code>--detect.docker.inspector.air.gap.path
+<h2 id="docker-inspector-version-advanced">Docker Inspector Version (Advanced)</h2>
+<pre><code>--detect.docker.inspector.version
 </code></pre>
 
-<p>The path to the directory containing the Docker Inspector jar and images.</p>
+<p>Version of the Docker Inspector to use. By default Detect will attempt to automatically determine the version to use.</p>
 <table>
 <thead>
 <tr>
