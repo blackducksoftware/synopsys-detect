@@ -33,26 +33,25 @@ public class MavenBattery {
     private static final String MAVEN_OUTPUT_RESOURCE = "maven-dependencytree.xout";
 
     @Test
-    void property() {
-        final BatteryTest test = sharedCliTest("maven-property");
+    void mavenFromProperty() {
+        final BatteryTest test = new BatteryTest("maven-property", "maven-cli");
         test.executableFromResourceFiles(DetectProperties.Companion.getDETECT_MAVEN_PATH(), MAVEN_OUTPUT_RESOURCE);
-        test.run();
-    }
-
-    @Test
-    void wrapper() {
-        final BatteryTest test = sharedCliTest("maven-wrapper");
-        test.executableSourceFileFromResourceFiles("mvnw.cmd", "mvnw", MAVEN_OUTPUT_RESOURCE);
-        test.run();
-    }
-
-    BatteryTest sharedCliTest(final String name) {
-        final BatteryTest test = new BatteryTest(name, "maven-cli");
         test.sourceDirectoryNamed("linux-maven");
         test.sourceFileNamed("pom.xml");
         test.git("https://github.com/BlackDuckCoPilot/example-maven-travis", "master");
         test.expectBdioResources();
-        return test;
+        test.run();
+    }
+
+    @Test
+    void mavenFromSourceFile() {
+        final BatteryTest test = new BatteryTest("maven-wrapper", "maven-cli");
+        test.executableSourceFileFromResourceFiles("mvnw.cmd", "mvnw", MAVEN_OUTPUT_RESOURCE);
+        test.sourceDirectoryNamed("linux-maven");
+        test.sourceFileNamed("pom.xml");
+        test.git("https://github.com/BlackDuckCoPilot/example-maven-travis", "master");
+        test.expectBdioResources();
+        test.run();
     }
 }
 
