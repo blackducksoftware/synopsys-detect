@@ -22,8 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.unit;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 
@@ -52,6 +52,6 @@ public class YarnIndentLineLevelTest {
     private void checkLineLevel(final String line, final int level) {
         final YarnLockParser yarnLockParser = new YarnLockParser();
         final int actual = yarnLockParser.countIndent(line);
-        Assert.assertEquals(level, actual);
+        Assertions.assertEquals(level, actual);
     }
 }

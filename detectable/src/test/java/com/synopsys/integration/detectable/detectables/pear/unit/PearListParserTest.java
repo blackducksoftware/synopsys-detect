@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -54,9 +54,9 @@ class PearListParserTest {
         );
 
         final Map<String, String> dependenciesMap = pearListParser.parse(validListLines);
-        Assert.assertEquals(2, dependenciesMap.size());
-        Assert.assertEquals("1.4.3", dependenciesMap.get("Archive_Tar"));
-        Assert.assertEquals("1.4.1", dependenciesMap.get("Console_Getopt"));
+        Assertions.assertEquals(2, dependenciesMap.size());
+        Assertions.assertEquals("1.4.3", dependenciesMap.get("Archive_Tar"));
+        Assertions.assertEquals("1.4.1", dependenciesMap.get("Console_Getopt"));
     }
 
     @Test
@@ -68,7 +68,7 @@ class PearListParserTest {
         );
 
         final Map<String, String> dependenciesMap = pearListParser.parse(notStartLines);
-        Assert.assertEquals(0, dependenciesMap.size());
+        Assertions.assertEquals(0, dependenciesMap.size());
     }
 
     @Test
@@ -83,7 +83,7 @@ class PearListParserTest {
 
         try {
             pearListParser.parse(missingInfoLines);
-            Assert.fail("Should have thrown an exception");
+            Assertions.fail("Should have thrown an exception");
         } catch (final IntegrationException ignore) {
 
         }

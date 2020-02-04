@@ -22,13 +22,14 @@
  */
 package com.synopsys.integration.detectable.detectables.nuget.functional;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -50,23 +51,26 @@ public class NugetInspectorParserPerfTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
-    @Test(timeout = 120000L)
-    public void performanceTestNuget() throws IOException {
-        final String dependencyGraphFile = FunctionalTestFiles.asString("/nuget/dwCheckApi_inspection.json");
+    @Test
+    public void performanceTestNuget() {
+        Assertions.assertTimeout(Duration.ofSeconds(120), () -> {
+            final String dependencyGraphFile = FunctionalTestFiles.asString("/nuget/dwCheckApi_inspection.json");
 
-        final NugetInspectorParser packager = new NugetInspectorParser(gson, externalIdFactory);
+            final NugetInspectorParser packager = new NugetInspectorParser(gson, externalIdFactory);
 
-        final NugetParseResult result = packager.createCodeLocation(dependencyGraphFile);
-        final CodeLocation codeLocation = result.getCodeLocations().get(0);
+            final NugetParseResult result = packager.createCodeLocation(dependencyGraphFile);
+            final CodeLocation codeLocation = result.getCodeLocations().get(0);
 
-        final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
-        final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
-        final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
+            final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
+            final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
+            final DependencyGraphTransformer dependencyGraphTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
 
-        final BdioProject bdioNode = bdioNodeFactory.createProject("test", "1.0.0", BdioId.createFromPieces("bdioId"), externalIdFactory.createMavenExternalId("group", "name", "version"));
+            final BdioProject bdioNode = bdioNodeFactory.createProject("test", "1.0.0", BdioId.createFromPieces("bdioId"), externalIdFactory.createMavenExternalId("group", "name", "version"));
 
-        final List<BdioComponent> components = dependencyGraphTransformer.transformDependencyGraph(codeLocation.getDependencyGraph(), bdioNode, codeLocation.getDependencyGraph().getRootDependencies(), new HashMap<ExternalId, BdioNode>());
+            final List<BdioComponent> components = dependencyGraphTransformer
+                                                       .transformDependencyGraph(codeLocation.getDependencyGraph(), bdioNode, codeLocation.getDependencyGraph().getRootDependencies(), new HashMap<ExternalId, BdioNode>());
 
-        assertEquals(211, components.size());
+            assertEquals(211, components.size());
+        });
     }
 }

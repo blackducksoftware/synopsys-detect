@@ -22,8 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.clang.unit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.List;
@@ -92,7 +92,7 @@ public class RpmPackageManagerTest {
         final ExecutableRunner executableRunner = null;
         final File workingDirectory = null;
         final String queryPackageOutput = "{ epoch: \"(none)\", name: \"glibc-headers\", version: \"2.17-222.el7\", arch: \"x86_64\" }\n" +
-            "{ epoch: \"3\", name: \"test-package\", version: \"test-version\", arch: \"test_arch\" }\n";
+                                              "{ epoch: \"3\", name: \"test-package\", version: \"test-version\", arch: \"test_arch\" }\n";
 
         final List<PackageDetails> pkgs = resolver.resolvePackages(currentPackageManager, executableRunner, workingDirectory, queryPackageOutput);
         assertEquals(2, pkgs.size());

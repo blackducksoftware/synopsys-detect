@@ -29,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
@@ -60,7 +60,7 @@ class PearPackageXmlParserTest {
         final InputStream inputStream = IOUtils.toInputStream(samplePackageXml, StandardCharsets.UTF_8);
         final NameVersion nameVersion = pearPackageXmlParser.parse(inputStream);
 
-        Assert.assertEquals("test-name", nameVersion.getName());
-        Assert.assertEquals("1.1.1", nameVersion.getVersion());
+        Assertions.assertEquals("test-name", nameVersion.getName());
+        Assertions.assertEquals("1.1.1", nameVersion.getVersion());
     }
 }

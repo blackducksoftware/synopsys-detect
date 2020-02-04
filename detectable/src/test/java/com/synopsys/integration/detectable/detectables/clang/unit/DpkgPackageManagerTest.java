@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectables.clang.unit;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
@@ -43,7 +43,7 @@ public class DpkgPackageManagerTest {
     //TODO: Split into 2 tests - one for VersionResolution and one for FullResolution
 
     @Test
-    public void test() throws ExecutableRunnerException, ExecutableRunnerException {
+    public void test() throws ExecutableRunnerException {
         StringBuilder sb = new StringBuilder();
         sb.append("garbage\n");
         sb.append("nonsense\n");

@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.pip.unit;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +38,7 @@ import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezePa
 public class PipenvFreezeParserTests {
     @Test
     void findsThreeNamesAndVersions() {
-        List<String> pipFreezeText = new ArrayList<>();
+        final List<String> pipFreezeText = new ArrayList<>();
         pipFreezeText.add("simple==1");
         pipFreezeText.add("with-dashes==2.0");
         pipFreezeText.add("dots.and-dashes==3.1.2");
@@ -54,11 +52,11 @@ public class PipenvFreezeParserTests {
         assertContains("dots.and-dashes", "3.1.2", pipFreeze);
     }
 
-    private void assertContains(String name, String version, PipFreeze pipFreeze) {
-        Optional<PipFreezeEntry> found = pipFreeze.getEntries().stream()
-            .filter(it->it.getName().equals(name))
-            .filter(it->it.getVersion().equals(version))
-            .findFirst();
+    private void assertContains(final String name, final String version, final PipFreeze pipFreeze) {
+        final Optional<PipFreezeEntry> found = pipFreeze.getEntries().stream()
+                                             .filter(it -> it.getName().equals(name))
+                                             .filter(it -> it.getVersion().equals(version))
+                                             .findFirst();
 
         Assertions.assertTrue(found.isPresent(), String.format("Could not find pip freeze entry with name '%s' and version '%s'", name, version));
     }

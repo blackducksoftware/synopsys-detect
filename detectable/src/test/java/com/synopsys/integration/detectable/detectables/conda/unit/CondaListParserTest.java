@@ -22,10 +22,10 @@
  */
 package com.synopsys.integration.detectable.detectables.conda.unit;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
@@ -38,7 +38,7 @@ import com.synopsys.integration.detectable.detectables.conda.parser.CondaListPar
 public class CondaListParserTest {
     private CondaListParser condaListParser;
 
-    @Before
+    @BeforeEach
     public void init() {
         condaListParser = new CondaListParser(new GsonBuilder().setPrettyPrinting().create(), new ExternalIdFactory());
     }

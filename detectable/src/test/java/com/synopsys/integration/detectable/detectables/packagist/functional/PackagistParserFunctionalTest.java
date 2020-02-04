@@ -22,8 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.packagist.functional;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -44,8 +44,8 @@ public class PackagistParserFunctionalTest {
         final String composerJsonText = FunctionalTestFiles.asString("/packagist/composer.json");
         final PackagistParseResult result = packagistParser.getDependencyGraphFromProject(composerJsonText, composerLockText);
 
-        Assert.assertEquals("clue/graph-composer", result.getProjectName());
-        Assert.assertEquals("1.0.0", result.getProjectVersion());
+        Assertions.assertEquals("clue/graph-composer", result.getProjectName());
+        Assertions.assertEquals("1.0.0", result.getProjectVersion());
 
         GraphCompare.assertEqualsResource("/packagist/PackagistTestDependencyNode_graph.json", result.getCodeLocation().getDependencyGraph());
     }

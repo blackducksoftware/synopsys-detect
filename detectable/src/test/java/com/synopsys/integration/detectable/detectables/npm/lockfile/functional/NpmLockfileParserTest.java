@@ -24,9 +24,9 @@ package com.synopsys.integration.detectable.detectables.npm.lockfile.functional;
 
 import java.util.Optional;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -41,7 +41,7 @@ import com.synopsys.integration.detectable.util.GraphCompare;
 public class NpmLockfileParserTest {
     private NpmLockfileParser npmLockfileParser;
 
-    @Before
+    @BeforeEach
     public void init() {
         npmLockfileParser = new NpmLockfileParser(new GsonBuilder().setPrettyPrinting().create(), new ExternalIdFactory());
     }
@@ -52,8 +52,8 @@ public class NpmLockfileParserTest {
 
         final NpmParseResult result = npmLockfileParser.parse(recreatePackageJsonFromLock(lockFileText), lockFileText, true);
 
-        Assert.assertEquals("knockout-tournament", result.getProjectName());
-        Assert.assertEquals("1.0.0", result.getProjectVersion());
+        Assertions.assertEquals("knockout-tournament", result.getProjectName());
+        Assertions.assertEquals("1.0.0", result.getProjectVersion());
         GraphCompare.assertEqualsResource("/npm/packageLockExpected_graph.json", result.getCodeLocation().getDependencyGraph());
     }
 
@@ -63,8 +63,8 @@ public class NpmLockfileParserTest {
 
         final NpmParseResult result = npmLockfileParser.parse(Optional.empty(), lockFileText, true);
 
-        Assert.assertEquals("knockout-tournament", result.getProjectName());
-        Assert.assertEquals("1.0.0", result.getProjectVersion());
+        Assertions.assertEquals("knockout-tournament", result.getProjectName());
+        Assertions.assertEquals("1.0.0", result.getProjectVersion());
         GraphCompare.assertEqualsResource("/npm/packageLockExpected_graph.json", result.getCodeLocation().getDependencyGraph());
     }
 
@@ -84,8 +84,8 @@ public class NpmLockfileParserTest {
         final String shrinkwrapText = FunctionalTestFiles.asString("/npm/npm-shrinkwrap.json");
         final NpmParseResult result = npmLockfileParser.parse(recreatePackageJsonFromLock(shrinkwrapText), shrinkwrapText, true);
 
-        Assert.assertEquals("fec-builder", result.getProjectName());
-        Assert.assertEquals("1.3.7", result.getProjectVersion());
+        Assertions.assertEquals("fec-builder", result.getProjectName());
+        Assertions.assertEquals("1.3.7", result.getProjectVersion());
         GraphCompare.assertEqualsResource("/npm/shrinkwrapExpected_graph.json", result.getCodeLocation().getDependencyGraph());
     }
 
@@ -94,8 +94,8 @@ public class NpmLockfileParserTest {
         final String shrinkwrapText = FunctionalTestFiles.asString("/npm/npm-shrinkwrap.json");
         final NpmParseResult result = npmLockfileParser.parse(Optional.empty(), shrinkwrapText, true);
 
-        Assert.assertEquals("fec-builder", result.getProjectName());
-        Assert.assertEquals("1.3.7", result.getProjectVersion());
+        Assertions.assertEquals("fec-builder", result.getProjectName());
+        Assertions.assertEquals("1.3.7", result.getProjectVersion());
         GraphCompare.assertEqualsResource("/npm/shrinkwrapExpected_graph.json", result.getCodeLocation().getDependencyGraph());
     }
 }

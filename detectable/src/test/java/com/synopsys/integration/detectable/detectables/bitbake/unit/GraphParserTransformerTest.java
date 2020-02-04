@@ -24,7 +24,7 @@ package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
 import java.util.HashMap;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -46,8 +46,8 @@ public class GraphParserTransformerTest {
         addNode("name", "name\\n:version\\n/some/path/to.bb", nodes, edges);
         final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, BitbakeFileType.RECIPE_DEPENDS);
 
-        Assert.assertEquals(1, bitbakeGraph.getNodes().size());
-        Assert.assertEquals("version", bitbakeGraph.getNodes().get(0).getVersion().get());
+        Assertions.assertEquals(1, bitbakeGraph.getNodes().size());
+        Assertions.assertEquals("version", bitbakeGraph.getNodes().get(0).getVersion().get());
     }
 
     @Test
@@ -58,8 +58,8 @@ public class GraphParserTransformerTest {
         addNode("name", "name :version\\n/some/path/to.bb", nodes, edges);
         final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, BitbakeFileType.PACKAGE_DEPENDS);
 
-        Assert.assertEquals(1, bitbakeGraph.getNodes().size());
-        Assert.assertEquals("version", bitbakeGraph.getNodes().get(0).getVersion().get());
+        Assertions.assertEquals(1, bitbakeGraph.getNodes().size());
+        Assertions.assertEquals("version", bitbakeGraph.getNodes().get(0).getVersion().get());
     }
 
     @Test
@@ -70,8 +70,8 @@ public class GraphParserTransformerTest {
         addNode("name", "name epoch:version\\n/some/path/to.bb", nodes, edges);
         final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, BitbakeFileType.PACKAGE_DEPENDS);
 
-        Assert.assertEquals(1, bitbakeGraph.getNodes().size());
-        Assert.assertEquals("epoch:version", bitbakeGraph.getNodes().get(0).getVersion().get());
+        Assertions.assertEquals(1, bitbakeGraph.getNodes().size());
+        Assertions.assertEquals("epoch:version", bitbakeGraph.getNodes().get(0).getVersion().get());
     }
 
     @Test
@@ -84,9 +84,9 @@ public class GraphParserTransformerTest {
         addEdge("edge1", "parent", "child", nodes, edges);
         final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, BitbakeFileType.RECIPE_DEPENDS);
 
-        Assert.assertEquals(2, bitbakeGraph.getNodes().size());
-        Assert.assertEquals(1, bitbakeGraph.getNodes().get(0).getChildren().size());
-        Assert.assertTrue("Parent node children must contain child", bitbakeGraph.getNodes().get(0).getChildren().contains("child"));
+        Assertions.assertEquals(2, bitbakeGraph.getNodes().size());
+        Assertions.assertEquals(1, bitbakeGraph.getNodes().get(0).getChildren().size());
+        Assertions.assertTrue(bitbakeGraph.getNodes().get(0).getChildren().contains("child"), "Parent node children must contain child");
     }
 
     @Test
@@ -99,9 +99,9 @@ public class GraphParserTransformerTest {
         addEdge("edge1", "parent", "child", nodes, edges);
         final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, BitbakeFileType.PACKAGE_DEPENDS);
 
-        Assert.assertEquals(2, bitbakeGraph.getNodes().size());
-        Assert.assertEquals(1, bitbakeGraph.getNodes().get(0).getChildren().size());
-        Assert.assertTrue("Parent node children must contain child", bitbakeGraph.getNodes().get(0).getChildren().contains("child"));
+        Assertions.assertEquals(2, bitbakeGraph.getNodes().size());
+        Assertions.assertEquals(1, bitbakeGraph.getNodes().get(0).getChildren().size());
+        Assertions.assertTrue(bitbakeGraph.getNodes().get(0).getChildren().contains("child"), "Parent node children must contain child");
     }
 
     @Test
@@ -112,8 +112,8 @@ public class GraphParserTransformerTest {
         addNode("quotes\"removed", "example\\n:example\\n/example", nodes, edges);
         final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, BitbakeFileType.RECIPE_DEPENDS);
 
-        Assert.assertEquals(1, bitbakeGraph.getNodes().size());
-        Assert.assertEquals("quotesremoved", bitbakeGraph.getNodes().get(0).getName());
+        Assertions.assertEquals(1, bitbakeGraph.getNodes().size());
+        Assertions.assertEquals("quotesremoved", bitbakeGraph.getNodes().get(0).getName());
     }
 
     @Test
@@ -124,8 +124,8 @@ public class GraphParserTransformerTest {
         addNode("quotes\"removed", "example :example\\n/example", nodes, edges);
         final BitbakeGraph bitbakeGraph = buildGraph(nodes, edges, BitbakeFileType.PACKAGE_DEPENDS);
 
-        Assert.assertEquals(1, bitbakeGraph.getNodes().size());
-        Assert.assertEquals("quotesremoved", bitbakeGraph.getNodes().get(0).getName());
+        Assertions.assertEquals(1, bitbakeGraph.getNodes().size());
+        Assertions.assertEquals("quotesremoved", bitbakeGraph.getNodes().get(0).getName());
     }
 
     private BitbakeGraph buildGraph(final HashMap<String, GraphNode> nodes, final HashMap<String, GraphEdge> edges, final BitbakeFileType bitbakeFileType) {

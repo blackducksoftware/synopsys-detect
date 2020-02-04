@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -47,7 +47,7 @@ class PearDependencyGraphTransformerTest {
         final DependencyGraph dependencyGraph = buildDependencyGraph(true);
 
         final Set<Dependency> rootDependencies = dependencyGraph.getRootDependencies();
-        Assert.assertEquals(1, rootDependencies.size());
+        Assertions.assertEquals(1, rootDependencies.size());
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final GraphAssert graphAssert = new GraphAssert(Forge.PEAR, dependencyGraph);
@@ -59,7 +59,7 @@ class PearDependencyGraphTransformerTest {
         final DependencyGraph dependencyGraph = buildDependencyGraph(false);
 
         final Set<Dependency> rootDependencies = dependencyGraph.getRootDependencies();
-        Assert.assertEquals(2, rootDependencies.size());
+        Assertions.assertEquals(2, rootDependencies.size());
 
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final GraphAssert graphAssert = new GraphAssert(Forge.PEAR, dependencyGraph);

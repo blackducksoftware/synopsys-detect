@@ -22,14 +22,14 @@
  */
 package com.synopsys.integration.detectable.detectables.clang.unit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
@@ -61,10 +61,10 @@ public class ApkPackageManagerTest {
         final ClangPackageManagerInfo apk = new ClangPackageManagerInfoFactory().apk();
         final List<PackageDetails> pkgs = apkPackageManagerResolver.resolvePackages(apk, null, null, pkgMgrOwnedByOutput);
 
-        assertEquals(1, pkgs.size());
-        assertEquals("musl-dev", pkgs.get(0).getPackageName());
-        assertEquals("1.1.18-r3", pkgs.get(0).getPackageVersion());
-        assertEquals("x86_64", pkgs.get(0).getPackageArch());
+        Assertions.assertEquals(1, pkgs.size());
+        Assertions.assertEquals("musl-dev", pkgs.get(0).getPackageName());
+        Assertions.assertEquals("1.1.18-r3", pkgs.get(0).getPackageVersion());
+        Assertions.assertEquals("x86_64", pkgs.get(0).getPackageArch());
     }
 
     @Test
@@ -78,6 +78,6 @@ public class ApkPackageManagerTest {
         final Optional<String> architecture = architectureResolver.resolveArchitecture(new ClangPackageManagerInfoFactory().apk(), null, executableRunner);
 
         assertTrue(architecture.isPresent());
-        assertEquals("x86_64", architecture.get());
+        Assertions.assertEquals("x86_64", architecture.get());
     }
 }

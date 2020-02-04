@@ -25,7 +25,7 @@ package com.synopsys.integration.detectable.detectables.pear.unit;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -55,11 +55,11 @@ class PearPackageDependenciesParserTest {
         );
 
         final List<PackageDependency> packageDependencies = pearPackageDependenciesParser.parse(validLines);
-        Assert.assertEquals(2, packageDependencies.size());
-        Assert.assertEquals("Archive_Tar", packageDependencies.get(0).getName());
-        Assert.assertTrue(packageDependencies.get(0).isRequired());
-        Assert.assertEquals("Structures_Graph", packageDependencies.get(1).getName());
-        Assert.assertFalse(packageDependencies.get(1).isRequired());
+        Assertions.assertEquals(2, packageDependencies.size());
+        Assertions.assertEquals("Archive_Tar", packageDependencies.get(0).getName());
+        Assertions.assertTrue(packageDependencies.get(0).isRequired());
+        Assertions.assertEquals("Structures_Graph", packageDependencies.get(1).getName());
+        Assertions.assertFalse(packageDependencies.get(1).isRequired());
     }
 
     @Test
@@ -73,7 +73,7 @@ class PearPackageDependenciesParserTest {
         );
 
         final List<PackageDependency> packageDependencies = pearPackageDependenciesParser.parse(noStartLines);
-        Assert.assertEquals(0, packageDependencies.size());
+        Assertions.assertEquals(0, packageDependencies.size());
     }
 
     @Test
@@ -89,7 +89,7 @@ class PearPackageDependenciesParserTest {
 
         try {
             pearPackageDependenciesParser.parse(missingInfoLines);
-            Assert.fail("Should have thrown an exception");
+            Assertions.fail("Should have thrown an exception");
         } catch (final IntegrationException ignore) {
 
         }

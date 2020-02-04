@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.util.ResourceUtil;
 
@@ -67,7 +67,7 @@ public class FunctionalTestFiles {
     public static File asFile(final String relativeResourcePath) {
         final URL resource = FunctionalTestFiles.class.getResource(resourcePrefix + relativeResourcePath);
         final File file = new File(resource.getFile());
-        Assert.assertTrue(file.exists());
+        Assertions.assertTrue(file.exists());
 
         return file;
     }
