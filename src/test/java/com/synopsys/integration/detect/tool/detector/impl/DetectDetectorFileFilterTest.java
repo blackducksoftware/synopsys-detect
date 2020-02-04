@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class DetectDetectorFileFilterTest {
@@ -45,9 +45,9 @@ class DetectDetectorFileFilterTest {
         final File root2 = new File(sourcePath.toFile(), "root2");
         final File doNotExcludeDir = new File(root, "doNotExclude");
 
-        Assert.assertTrue(detectDetectorFileFilter.isExcluded(root));
-        Assert.assertTrue(detectDetectorFileFilter.isExcluded(root2));
-        Assert.assertFalse(detectDetectorFileFilter.isExcluded(doNotExcludeDir));
+        Assertions.assertTrue(detectDetectorFileFilter.isExcluded(root));
+        Assertions.assertTrue(detectDetectorFileFilter.isExcluded(root2));
+        Assertions.assertFalse(detectDetectorFileFilter.isExcluded(doNotExcludeDir));
     }
 
     @Test
@@ -63,10 +63,10 @@ class DetectDetectorFileFilterTest {
         final File subDir2 = new File(root, "subDir2");
         final File deepSubDir2 = new File(subDir1, "subDir2");
 
-        Assert.assertFalse(detectDetectorFileFilter.isExcluded(root));
-        Assert.assertFalse(detectDetectorFileFilter.isExcluded(subDir1));
-        Assert.assertFalse(detectDetectorFileFilter.isExcluded(subDir2));
-        Assert.assertTrue(detectDetectorFileFilter.isExcluded(deepSubDir2));
+        Assertions.assertFalse(detectDetectorFileFilter.isExcluded(root));
+        Assertions.assertFalse(detectDetectorFileFilter.isExcluded(subDir1));
+        Assertions.assertFalse(detectDetectorFileFilter.isExcluded(subDir2));
+        Assertions.assertTrue(detectDetectorFileFilter.isExcluded(deepSubDir2));
     }
 
     @Test
@@ -83,10 +83,10 @@ class DetectDetectorFileFilterTest {
         final File deepSubDir2 = new File(subDir1, "subDir2");
         final File namePatternsDir = new File(root, "namePatternsDir51134");
 
-        Assert.assertFalse(detectDetectorFileFilter.isExcluded(root));
-        Assert.assertTrue(detectDetectorFileFilter.isExcluded(subDir1));
-        Assert.assertFalse(detectDetectorFileFilter.isExcluded(subDir2));
-        Assert.assertFalse(detectDetectorFileFilter.isExcluded(deepSubDir2));
-        Assert.assertTrue(detectDetectorFileFilter.isExcluded(namePatternsDir));
+        Assertions.assertFalse(detectDetectorFileFilter.isExcluded(root));
+        Assertions.assertTrue(detectDetectorFileFilter.isExcluded(subDir1));
+        Assertions.assertFalse(detectDetectorFileFilter.isExcluded(subDir2));
+        Assertions.assertFalse(detectDetectorFileFilter.isExcluded(deepSubDir2));
+        Assertions.assertTrue(detectDetectorFileFilter.isExcluded(namePatternsDir));
     }
 }
