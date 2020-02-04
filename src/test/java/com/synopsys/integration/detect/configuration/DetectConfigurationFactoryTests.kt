@@ -25,8 +25,8 @@ package com.synopsys.integration.detect.configuration
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactoryTestUtils.Companion.factoryOf
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactoryTestUtils.Companion.spyFactoryOf
-import org.junit.Test
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 import org.mockito.Mockito
 
 class DetectConfigurationFactoryTests {
