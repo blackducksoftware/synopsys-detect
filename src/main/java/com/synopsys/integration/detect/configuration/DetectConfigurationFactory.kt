@@ -64,7 +64,8 @@ import java.nio.file.Path
 import java.util.*
 import java.util.regex.Pattern
 
-open class DetectConfigurationFactory(private val detectConfiguration: PropertyConfiguration, private val pathResolver: PathResolver) {
+open class
+DetectConfigurationFactory(private val detectConfiguration: PropertyConfiguration, private val pathResolver: PathResolver) {
 
     //#region Prefer These Over Any Property
     fun findTimeoutInSeconds(): Long {
@@ -311,7 +312,10 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val uploadSource = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE)
         val codeLocationPrefix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX)
         val codeLocationSuffix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX)
-        val additionalArguments = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS)
+        var additionalArguments = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS)
+        if (detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH)) {
+            additionalArguments += "--license-search"
+        }
         val maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH)
         val offlineLocalScannerInstallPath = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH)?.resolvePath(pathResolver)
         val onlineLocalScannerInstallPath = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH)?.resolvePath(pathResolver)
