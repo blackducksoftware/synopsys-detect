@@ -22,14 +22,17 @@
  */
 package com.synopsys.integration.detect.workflow.file;
 
-public class DirectoryOptions {
-    private String sourcePath;
-    private String outputPath;
-    private String bdioOutputPath;
-    private String scanOutputPath;
-    private String toolsOutputPath;
+import java.nio.file.Path;
+import java.util.Optional;
 
-    public DirectoryOptions(final String sourcePath, final String outputPath, final String bdioOutputPath, final String scanOutputPath, final String toolsOutputPath) {
+public class DirectoryOptions {
+    private final Path sourcePath;
+    private final Path outputPath;
+    private final Path bdioOutputPath;
+    private final Path scanOutputPath;
+    private final Path toolsOutputPath;
+
+    public DirectoryOptions(final Path sourcePath, final Path outputPath, final Path bdioOutputPath, final Path scanOutputPath, final Path toolsOutputPath) {
         this.sourcePath = sourcePath;
         this.outputPath = outputPath;
         this.bdioOutputPath = bdioOutputPath;
@@ -37,23 +40,23 @@ public class DirectoryOptions {
         this.toolsOutputPath = toolsOutputPath;
     }
 
-    public String getSourcePathOverride() {
-        return sourcePath;
+    public Optional<Path> getSourcePathOverride() {
+        return Optional.ofNullable(sourcePath);
     }
 
-    public String getOutputPathOverride() {
-        return outputPath;
+    public Optional<Path> getOutputPathOverride() {
+        return Optional.ofNullable(outputPath);
     }
 
-    public String getBdioOutputPathOverride() {
-        return bdioOutputPath;
+    public Optional<Path> getBdioOutputPathOverride() {
+        return Optional.ofNullable(bdioOutputPath);
     }
 
-    public String getScanOutputPathOverride() {
-        return scanOutputPath;
+    public Optional<Path> getScanOutputPathOverride() {
+        return Optional.ofNullable(scanOutputPath);
     }
 
-    public String getToolsOutputPath() {
-        return toolsOutputPath;
+    public Optional<Path> getToolsOutputPath() {
+        return Optional.ofNullable(toolsOutputPath);
     }
 }

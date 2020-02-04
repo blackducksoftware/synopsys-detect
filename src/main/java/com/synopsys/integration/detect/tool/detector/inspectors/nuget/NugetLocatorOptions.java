@@ -22,18 +22,21 @@
  */
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
+import java.util.List;
+import java.util.Optional;
+
 public class NugetLocatorOptions {
-    private final String[] packagesRepoUrl;
+    private final List<String> packagesRepoUrl;
     private final String nugetInspectorName;
     private final String nugetInspectorVersion;
 
-    public NugetLocatorOptions(final String[] packagesRepoUrl, final String nugetInspectorName, final String nugetInspectorVersion) {
+    public NugetLocatorOptions(final List<String> packagesRepoUrl, final String nugetInspectorName, final String nugetInspectorVersion) {
         this.packagesRepoUrl = packagesRepoUrl;
         this.nugetInspectorName = nugetInspectorName;
         this.nugetInspectorVersion = nugetInspectorVersion;
     }
 
-    public String[] getPackagesRepoUrl() {
+    public List<String> getPackagesRepoUrl() {
         return packagesRepoUrl;
     }
 
@@ -41,7 +44,7 @@ public class NugetLocatorOptions {
         return nugetInspectorName;
     }
 
-    public String getNugetInspectorVersion() {
-        return nugetInspectorVersion;
+    public Optional<String> getNugetInspectorVersion() {
+        return Optional.ofNullable(nugetInspectorVersion);
     }
 }

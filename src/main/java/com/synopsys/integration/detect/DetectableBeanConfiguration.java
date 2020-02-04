@@ -39,7 +39,6 @@ import org.xml.sax.SAXException;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
@@ -166,9 +165,9 @@ import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectabl
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipenvExtractor;
+import com.synopsys.integration.detectable.detectables.pip.parser.PipEnvJsonGraphParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
-import com.synopsys.integration.detectable.detectables.pip.parser.PipenvGraphParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvTransformer;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockExtractor;
@@ -212,8 +211,6 @@ public class DetectableBeanConfiguration {
     public DocumentBuilder documentBuilder;
     @Autowired
     public ExternalIdFactory externalIdFactory;
-    @Autowired
-    public ConnectionManager connectionManager;
     @Autowired
     public AirGapInspectorPaths airGapInspectorPaths;
     @Autowired
@@ -455,7 +452,8 @@ public class DetectableBeanConfiguration {
             locator = new AirgapNugetInspectorLocator(airGapInspectorPaths);
         } else {
             final NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactResolver);
-            locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion());
+            // TODO: Handle null better.
+            locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion().orElse(""));
         }
         return new LocatorNugetInspectorResolver(detectExecutableResolver, executableRunner, detectInfo, fileFinder, installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator);
     }
@@ -506,8 +504,8 @@ public class DetectableBeanConfiguration {
     }
 
     @Bean
-    public PipenvGraphParser pipenvGraphParser() {
-        return new PipenvGraphParser();
+    public PipEnvJsonGraphParser pipenvJsonGraphParser() {
+        return new PipEnvJsonGraphParser(gson);
     }
 
     @Bean
@@ -522,7 +520,7 @@ public class DetectableBeanConfiguration {
 
     @Bean
     public PipenvExtractor pipenvExtractor() {
-        return new PipenvExtractor(executableRunner, pipenvTransformer(), pipenvFreezeParser(), pipenvGraphParser());
+        return new PipenvExtractor(executableRunner, pipenvTransformer(), pipenvFreezeParser(), pipenvJsonGraphParser());
     }
 
     @Bean

@@ -23,6 +23,8 @@
 package com.synopsys.integration.detectable;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -98,6 +100,6 @@ public class SingleDetectableApplication {
         final File bashExecutable = executableResolver.resolveBash();
 
         //Extraction
-        return bitbakeExtractor.extract(sourceDirectory, bitbakeFile, new String[] { "" }, new String[] { "" }, 1, bashExecutable);
+        return bitbakeExtractor.extract(sourceDirectory, bitbakeFile, Arrays.asList(""), Arrays.asList(""), 1, bashExecutable);
     }
 }

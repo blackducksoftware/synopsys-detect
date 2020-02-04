@@ -73,25 +73,26 @@ public class ArtifactoryGradleInspectorResolver implements GradleInspectorResolv
                 if (airGapPath.isPresent()) {
                     generatedGradleScriptPath = gradleInspectorScriptCreator.createOfflineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions, airGapPath.get().getCanonicalPath());
                 } else {
-                    final Optional<String> version = gradleInspectorScriptOptions
-                                                         .getProvidedOnlineInspectorVersion() //TODO: i don't like this because it looks like stateless stream ops but is not, we call a method that makes web requests... - jp
-                                                         .map(gradleInspectorInstaller::findVersion)
-                                                         .filter(Optional::isPresent)
-                                                         .map(Optional::get);
-                    if (version.isPresent()) {
-                        logger.debug("Resolved the gradle inspector version: " + version.get());
-                        generatedGradleScriptPath = gradleInspectorScriptCreator.createOnlineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions, version.get());
+                    final String gradleInspectorVersion;
+                    final Optional<String> providedOnlineInspectorVersion = gradleInspectorScriptOptions.getProvidedOnlineInspectorVersion();
+                    if (providedOnlineInspectorVersion.isPresent()) {
+                        logger.debug("Attempting to use the provided gradle inspector version.");
+                        gradleInspectorVersion = providedOnlineInspectorVersion.get();
                     } else {
-                        throw new DetectableException("Unable to find the gradle inspector version from artifactory.");
+                        logger.debug("Attempting to resolve the gradle inspector version from artifactory.");
+                        gradleInspectorVersion = gradleInspectorInstaller.findVersion();
                     }
+                    logger.debug(String.format("Resolved the gradle inspector version: %s", gradleInspectorVersion));
+                    generatedGradleScriptPath = gradleInspectorScriptCreator.createOnlineGradleInspector(generatedGradleScriptFile, gradleInspectorScriptOptions, gradleInspectorVersion);
                 }
             } catch (final Exception e) {
                 throw new DetectableException(e);
             }
+
             if (generatedGradleScriptPath == null) {
                 throw new DetectableException("Unable to initialize the gradle inspector.");
             } else {
-                logger.trace("Derived generated gradle script path: " + generatedGradleScriptPath);
+                logger.trace(String.format("Derived generated gradle script path: %s", generatedGradleScriptPath));
             }
         } else {
             logger.debug("Already attempted to resolve the gradle inspector script, will not attempt again.");

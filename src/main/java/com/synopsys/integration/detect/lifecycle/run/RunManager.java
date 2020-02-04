@@ -23,8 +23,10 @@
 package com.synopsys.integration.detect.lifecycle.run;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
+import org.antlr.v4.runtime.misc.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,13 +41,12 @@ import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOut
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectTool;
-import com.synopsys.integration.detect.configuration.ConnectionManager;
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
+import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
-import com.synopsys.integration.detect.configuration.DetectProperty;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
@@ -73,6 +74,7 @@ import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
+import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostActions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
@@ -99,6 +101,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
+import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
@@ -120,13 +123,13 @@ public class RunManager {
 
     public RunResult run(final ProductRunData productRunData) throws DetectUserFriendlyException, IntegrationException {
         //TODO: Better way for run manager to get dependencies so he can be tested. (And better ways of creating his objects)
-        final DetectConfiguration detectConfiguration = detectContext.getBean(DetectConfiguration.class);
+        final PropertyConfiguration detectConfiguration = detectContext.getBean(PropertyConfiguration.class);
         final DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         final DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
         final EventSystem eventSystem = detectContext.getBean(EventSystem.class);
         final CodeLocationNameManager codeLocationNameManager = detectContext.getBean(CodeLocationNameManager.class);
         final BdioCodeLocationCreator bdioCodeLocationCreator = detectContext.getBean(BdioCodeLocationCreator.class);
-        final ConnectionManager connectionManager = detectContext.getBean(ConnectionManager.class);
+        final ConnectionFactory connectionFactory = detectContext.getBean(ConnectionFactory.class);
         final DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
 
         final RunResult runResult = new RunResult();
@@ -144,7 +147,7 @@ public class RunManager {
         final UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, runResult, runOptions, detectToolFilter);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
-            final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName(), runOptions.getAggregateMode(), universalToolsResult);
+            final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName().orElse(null), runOptions.getAggregateMode(), universalToolsResult);
             runBlackDuckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
                 universalToolsResult.getNameVersion(), aggregateOptions);
         } else {
@@ -157,7 +160,7 @@ public class RunManager {
         return runResult;
     }
 
-    private AggregateOptions determineAggregationStrategy(final String aggregateName, final AggregateMode aggregateMode, final UniversalToolsResult universalToolsResult) {
+    private AggregateOptions determineAggregationStrategy(@Nullable final String aggregateName, final AggregateMode aggregateMode, final UniversalToolsResult universalToolsResult) {
         if (StringUtils.isNotBlank(aggregateName)) {
             if (universalToolsResult.anyFailed()) {
                 return AggregateOptions.aggregateButSkipEmpty(aggregateName, aggregateMode);
@@ -169,7 +172,7 @@ public class RunManager {
         }
     }
 
-    private UniversalToolsResult runUniversalProjectTools(final DetectConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager, final EventSystem eventSystem,
+    private UniversalToolsResult runUniversalProjectTools(final PropertyConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager, final EventSystem eventSystem,
         final RunResult runResult, final RunOptions runOptions, final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         final ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         final DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
@@ -206,9 +209,9 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
             logger.info("Will include the detector tool.");
-            final String projectBomTool = detectConfiguration.getProperty(DetectProperty.DETECT_PROJECT_DETECTOR, PropertyAuthority.NONE);
-            final String requiredDetectors = detectConfiguration.getProperty(DetectProperty.DETECT_REQUIRED_DETECTOR_TYPES, PropertyAuthority.NONE);
-            final boolean buildless = detectConfiguration.getBooleanProperty(DetectProperty.DETECT_BUILDLESS, PropertyAuthority.NONE);
+            final String projectBomTool = detectConfiguration.getValueOrNull(DetectProperties.Companion.getDETECT_PROJECT_DETECTOR());
+            final List<DetectorType> requiredDetectors = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_REQUIRED_DETECTOR_TYPES());
+            final boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_BUILDLESS());
 
             final DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
             final DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectableFactory, buildless);
@@ -251,7 +254,7 @@ public class RunManager {
         }
     }
 
-    private void runPolarisProduct(final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DirectoryManager directoryManager, final EventSystem eventSystem,
+    private void runPolarisProduct(final ProductRunData productRunData, final PropertyConfiguration detectConfiguration, final DirectoryManager directoryManager, final EventSystem eventSystem,
         final DetectToolFilter detectToolFilter) {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
@@ -266,7 +269,7 @@ public class RunManager {
         }
     }
 
-    private void runBlackDuckProduct(final ProductRunData productRunData, final DetectConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager,
+    private void runBlackDuckProduct(final ProductRunData productRunData, final PropertyConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager,
         final EventSystem eventSystem, final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions,
         final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion, final AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException {
         logger.debug("Black Duck tools will run.");
@@ -277,9 +280,9 @@ public class RunManager {
 
         ProjectVersionWrapper projectVersionWrapper = null;
 
-        BlackDuckServicesFactory blackDuckServicesFactory = null;
-        if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
-            blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().get();
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().orElse(null);
+
+        if (blackDuckRunData.isOnline() && blackDuckServicesFactory != null) {
             logger.debug("Getting or creating project.");
             final DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
             final ProjectMappingService detectProjectMappingService = blackDuckServicesFactory.createProjectMappingService();
@@ -301,14 +304,15 @@ public class RunManager {
         logger.debug("Completed project and version actions.");
 
         logger.debug("Processing Detect Code Locations.");
+        final BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
         final BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new Bdio2Factory(), new IntegrationEscapeUtil(), codeLocationNameManager, bdioCodeLocationCreator, directoryManager, eventSystem);
-        final BdioResult bdioResult = bdioManager.createBdioFiles(aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations(), runOptions.shouldUseBdio2());
+        final BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations(), runOptions.shouldUseBdio2());
 
         final CodeLocationWaitData codeLocationWaitData = new CodeLocationWaitData();
         if (bdioResult.getUploadTargets().size() > 0) {
             logger.info("Created " + bdioResult.getUploadTargets().size() + " BDIO files.");
             if (null != blackDuckServicesFactory) {
-                final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService(detectConfiguration);
+                final DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService();
 
                 logger.debug("Uploading BDIO files.");
                 final CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData;
@@ -320,7 +324,9 @@ public class RunManager {
                     bdioUploader = blackDuckServicesFactory.createBdioUploadService()::uploadBdio;
                 }
 
-                uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult.getUploadTargets(), bdioUploader);
+                // TODO: There is no way this is the proper way to do this.
+                final String blackduckUrl = detectConfiguration.getValueOrNull(DetectProperties.Companion.getBLACKDUCK_URL());
+                uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(blackduckUrl, bdioResult.getUploadTargets(), bdioUploader);
                 codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
             }
         } else {
@@ -368,7 +374,7 @@ public class RunManager {
             logger.info("Will perform Black Duck post actions.");
             final BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
             final BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory, eventSystem);
-            blackDuckPostActions.perform(blackDuckPostOptions, codeLocationWaitData, projectVersionWrapper, detectConfigurationFactory.getTimeoutInSeconds());
+            blackDuckPostActions.perform(blackDuckPostOptions, codeLocationWaitData, projectVersionWrapper, detectConfigurationFactory.findTimeoutInSeconds());
 
             if ((bdioResult.getUploadTargets().size() > 0 || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
                 final Optional<String> componentsLink = Optional.ofNullable(projectVersionWrapper)

@@ -25,19 +25,16 @@ package com.synopsys.integration.detect.workflow.project;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectTool;
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.DefaultVersionNameScheme;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.util.NameVersion;
 
 public class ProjectNameVersionDecider {
@@ -49,7 +46,7 @@ public class ProjectNameVersionDecider {
         this.projectVersionOptions = projectVersionOptions;
     }
 
-    public NameVersion decideProjectNameVersion(final String preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
+    public NameVersion decideProjectNameVersion(final List<DetectTool> preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
         Optional<String> decidedProjectName = Optional.empty();
         Optional<String> decidedProjectVersion = Optional.empty();
 
@@ -83,7 +80,7 @@ public class ProjectNameVersionDecider {
         }
 
         if (!decidedProjectVersion.isPresent()) {
-            if ("timestamp".equals(projectVersionOptions.defaultProjectVersionScheme)) {
+            if (DefaultVersionNameScheme.TIMESTAMP.equals(projectVersionOptions.defaultProjectVersionScheme)) {
                 logger.debug("A project version name could not be decided. Using the current timestamp.");
                 final String timeformat = projectVersionOptions.defaultProjectVersionFormat;
                 final String timeString = DateTimeFormatter.ofPattern(timeformat).withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
@@ -103,19 +100,9 @@ public class ProjectNameVersionDecider {
                    .findFirst();
     }
 
-    private Optional<DetectToolProjectInfo> decideToolProjectInfo(final String preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
+    private Optional<DetectToolProjectInfo> decideToolProjectInfo(final List<DetectTool> preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
         Optional<DetectToolProjectInfo> chosenTool = Optional.empty();
-
-        List<DetectTool> toolOrder = null;
-        if (StringUtils.isNotBlank(preferredDetectTools)) {
-            final String[] tools = preferredDetectTools.split(",");
-            toolOrder = Arrays.stream(tools).map(DetectTool::valueOf).collect(Collectors.toList());
-        }
-        if (toolOrder == null) {
-            throw new DetectUserFriendlyException("Could not determine project tool order. Please specify a tool order using " + DetectProperty.DETECT_PROJECT_TOOL.getPropertyName(), ExitCodeType.FAILURE_CONFIGURATION);
-        }
-
-        for (final DetectTool tool : toolOrder) {
+        for (final DetectTool tool : preferredDetectTools) {
             chosenTool = findProjectInfoForTool(tool, detectToolProjectInfo);
 
             if (chosenTool.isPresent()) {

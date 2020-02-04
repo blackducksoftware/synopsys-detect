@@ -2,6 +2,16 @@
 
 ## Version 6.1.0
 ### New features
+* The ${solution_name} .jar file is now signed, enabling [code verification](advanced/verifying.md) by users.
+
+### Changed features
+* TBD
+
+### Resolved issues
+* TBD
+
+## Version 6.1.0
+### New features
 * Added the property [detect.bdio2.enabled](properties/Configuration/paths.md#bdio-2-enabled).
 * Added the property [detect.pip.only.project.tree](properties/Detectors/pip.md#pip-include-only-project-tree).
 * Added the property [detect.bitbake.search.depth](properties/Detectors/bitbake.md#bitbake-search-depth).
@@ -13,7 +23,7 @@
 ### Changed features
 * Deprecated all ${polaris_product_name}-related properties.
 * Added [wildcard support](advanced/includeexcludewildcards.md) for several include/exclude list properties.
-* Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command.
+* Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command. Since the yarn command is no longer executed, the detect.yarn.path property has been removed.
 * Improved match accuracy for Bitbake projects by improving external ID generation for dependencies referenced using Git protocols, and dependencies referenced with an epoch and/or revision.
 * Improved the reliability of the Bitbake detector by generating recipe-depends.dot and package-depends.dot files the source directory, instead of a temporary directory.
 * Changed the logging level of ${polaris_product_name} CLI output from DEBUG to INFO.

@@ -23,30 +23,30 @@
 package com.synopsys.integration.detect.workflow.airgap;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AirGapInspectorPaths {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final String dockerInspectorAirGapPath;
-    private final String nugetInspectorAirGapPath;
-    private final String gradleInspectorAirGapPath;
+    private final Path dockerInspectorAirGapPath;
+    private final Path nugetInspectorAirGapPath;
+    private final Path gradleInspectorAirGapPath;
 
-    public AirGapInspectorPaths(AirGapPathFinder pathFinder, final AirGapOptions airGapOptions) {
-        File detectJar = pathFinder.findDetectJar();
-        dockerInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getDockerInspectorPathOverride(), AirGapPathFinder.DOCKER);
-        gradleInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getGradleInspectorPathOverride(), AirGapPathFinder.GRADLE);
-        nugetInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getNugetInspectorPathOverride(), AirGapPathFinder.NUGET);
+    public AirGapInspectorPaths(final AirGapPathFinder pathFinder, final AirGapOptions airGapOptions) {
+        final File detectJar = pathFinder.findDetectJar();
+        dockerInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getDockerInspectorPathOverride().orElse(null), AirGapPathFinder.DOCKER);
+        gradleInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getGradleInspectorPathOverride().orElse(null), AirGapPathFinder.GRADLE);
+        nugetInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, airGapOptions.getNugetInspectorPathOverride().orElse(null), AirGapPathFinder.NUGET);
     }
 
-    private String determineInspectorAirGapPath(final File detectJar, AirGapPathFinder airGapPathFinder, final String inspectorLocationProperty, final String inspectorName) {
-        if (StringUtils.isBlank(inspectorLocationProperty) && detectJar != null) {
+    private Path determineInspectorAirGapPath(final File detectJar, final AirGapPathFinder airGapPathFinder, final Path inspectorLocationProperty, final String inspectorName) {
+        if (inspectorLocationProperty == null && detectJar != null) {
             try {
-                return airGapPathFinder.createRelativePackagedInspectorsFile(detectJar.getParentFile(), inspectorName).getCanonicalPath();
+                return airGapPathFinder.createRelativePackagedInspectorsFile(detectJar.getParentFile(), inspectorName).toPath();
             } catch (final Exception e) {
                 logger.debug(String.format("Exception encountered when guessing air gap path for %s, returning the detect property instead", inspectorName));
                 logger.debug(e.getMessage());
@@ -55,34 +55,27 @@ public class AirGapInspectorPaths {
         return inspectorLocationProperty;
     }
 
-    public String getDockerInspectorAirGapPath() {
-        return dockerInspectorAirGapPath;
+    public Optional<Path> getDockerInspectorAirGapPath() {
+        return Optional.ofNullable(dockerInspectorAirGapPath);
     }
 
-    private String getNugetInspectorAirGapPath() {
-        return nugetInspectorAirGapPath;
+    private Optional<Path> getNugetInspectorAirGapPath() {
+        return Optional.ofNullable(nugetInspectorAirGapPath);
     }
 
-    private String getGradleInspectorAirGapPath() {
-        return gradleInspectorAirGapPath;
+    private Optional<Path> getGradleInspectorAirGapPath() {
+        return Optional.ofNullable(gradleInspectorAirGapPath);
     }
 
     public Optional<File> getNugetInspectorAirGapFile() {
-        return getFileFromPath(getNugetInspectorAirGapPath());
+        return getNugetInspectorAirGapPath().map(Path::toFile).filter(File::exists);
     }
 
     public Optional<File> getDockerInspectorAirGapFile() {
-        return getFileFromPath(getDockerInspectorAirGapPath());
+        return getDockerInspectorAirGapPath().map(Path::toFile).filter(File::exists);
     }
 
     public Optional<File> getGradleInspectorAirGapFile() {
-        return getFileFromPath(getGradleInspectorAirGapPath());
-    }
-
-    private Optional<File> getFileFromPath(final String path) {
-        return Optional.ofNullable(path)
-                   .filter(StringUtils::isNotBlank)
-                   .map(File::new)
-                   .filter(File::exists);
+        return getGradleInspectorAirGapPath().map(Path::toFile).filter(File::exists);
     }
 }

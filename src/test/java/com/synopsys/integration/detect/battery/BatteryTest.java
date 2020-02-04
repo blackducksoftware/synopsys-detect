@@ -1,3 +1,25 @@
+/**
+ * synopsys-detect
+ *
+ * Copyright (c) 2020 Synopsys, Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.synopsys.integration.detect.battery;
 
 import java.io.File;
@@ -18,7 +40,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.skyscreamer.jsonassert.JSONParser;
@@ -26,8 +47,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeroturnaround.zip.ZipUtil;
 
+import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.detect.Application;
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
@@ -77,7 +99,7 @@ public final class BatteryTest {
                    .collect(Collectors.toList());
     }
 
-    public void executableFromResourceFiles(final DetectProperty detectProperty, final String... resourceFiles) {
+    public void executableFromResourceFiles(final Property detectProperty, final String... resourceFiles) {
         final ResourceTypingExecutableCreator creator = new ResourceTypingExecutableCreator(prefixResources(resourceFiles));
         executables.add(BatteryExecutable.propertyOverrideExecutable(detectProperty, creator));
     }
@@ -87,7 +109,7 @@ public final class BatteryTest {
         executables.add(BatteryExecutable.sourceFileExecutable(windowsName, linuxName, creator));
     }
 
-    public ResourceCopyingExecutableCreator executableThatCopiesFiles(final DetectProperty detectProperty, final String... resourceFiles) {
+    public ResourceCopyingExecutableCreator executableThatCopiesFiles(final Property detectProperty, final String... resourceFiles) {
         final ResourceCopyingExecutableCreator resourceCopyingExecutable = new ResourceCopyingExecutableCreator(prefixResources(resourceFiles));
         executables.add(BatteryExecutable.propertyOverrideExecutable(detectProperty, resourceCopyingExecutable));
         return resourceCopyingExecutable;
@@ -99,13 +121,13 @@ public final class BatteryTest {
         return resourceCopyingExecutable;
     }
 
-    public void executable(final DetectProperty detectProperty, final String... responses) {
+    public void executable(final Property detectProperty, final String... responses) {
         executables.add(BatteryExecutable.propertyOverrideExecutable(detectProperty, new StringTypingExecutableCreator(Arrays.asList(responses))));
     }
 
     public void git(final String origin, final String branch) {
         sourceFileNamed(".git");
-        executable(DetectProperty.DETECT_GIT_PATH, origin, branch);
+        executable(DetectProperties.Companion.getDETECT_GIT_PATH(), origin, branch);
     }
 
     public void sourceFileNamed(final String filename) {
@@ -124,20 +146,20 @@ public final class BatteryTest {
         shouldExpectBdioResources = true;
     }
 
-    public void property(final DetectProperty property, final String value) {
-        property(property.getPropertyKey(), value);
+    public void property(final Property property, final String value) {
+        property(property.getKey(), value);
     }
 
     public void property(final String property, final String value) {
         additionalProperties.add("--" + property + "=" + value);
     }
 
-    public void withDetectLatest(){
+    public void withDetectLatest() {
         useDetectScript = true;
         detectVersion = "";
     }
 
-    public void withDetectVersion(String version){
+    public void withDetectVersion(final String version) {
         useDetectScript = true;
         detectVersion = version;
     }
@@ -158,17 +180,17 @@ public final class BatteryTest {
 
     private void runDetect(final List<String> additionalArguments) throws IOException, ExecutableRunnerException {
         final List<String> detectArguments = new ArrayList<>();
-        final Map<DetectProperty, String> properties = new HashMap<>();
-        
-        properties.put(DetectProperty.DETECT_TOOLS, "DETECTOR");
-        properties.put(DetectProperty.BLACKDUCK_OFFLINE_MODE, "true");
-        properties.put(DetectProperty.DETECT_OUTPUT_PATH, outputDirectory.getCanonicalPath());
-        properties.put(DetectProperty.DETECT_BDIO_OUTPUT_PATH, bdioDirectory.getCanonicalPath());
-        properties.put(DetectProperty.DETECT_CLEANUP, "false");
-        properties.put(DetectProperty.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION, "DEBUG");
-        properties.put(DetectProperty.DETECT_SOURCE_PATH, sourceDirectory.getCanonicalPath());
-        for (final Map.Entry<DetectProperty, String> entry : properties.entrySet()) {
-            detectArguments.add("--" + entry.getKey().getPropertyKey() + "=" + entry.getValue());
+        final Map<Property, String> properties = new HashMap<>();
+
+        properties.put(DetectProperties.Companion.getDETECT_TOOLS(), "DETECTOR");
+        properties.put(DetectProperties.Companion.getBLACKDUCK_OFFLINE_MODE(), "true");
+        properties.put(DetectProperties.Companion.getDETECT_OUTPUT_PATH(), outputDirectory.getCanonicalPath());
+        properties.put(DetectProperties.Companion.getDETECT_BDIO_OUTPUT_PATH(), bdioDirectory.getCanonicalPath());
+        properties.put(DetectProperties.Companion.getDETECT_CLEANUP(), "false");
+        properties.put(DetectProperties.Companion.getLOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION(), "DEBUG");
+        properties.put(DetectProperties.Companion.getDETECT_SOURCE_PATH(), sourceDirectory.getCanonicalPath());
+        for (final Map.Entry<Property, String> entry : properties.entrySet()) {
+            detectArguments.add("--" + entry.getKey().getKey() + "=" + entry.getValue());
         }
 
         detectArguments.addAll(additionalArguments);
@@ -176,9 +198,9 @@ public final class BatteryTest {
 
         if (executeDetectScript(detectArguments)) {
             logger.info("Executed as script.");
-        }else if (executeDetectJar(detectArguments)) {
+        } else if (executeDetectJar(detectArguments)) {
             logger.info("Executed as jar.");
-        } else  {
+        } else {
             logger.info("Executed as static.");
             executeDetectStatic(detectArguments);
         }
@@ -191,8 +213,8 @@ public final class BatteryTest {
         Application.SHOULD_EXIT = previous;
     }
 
-    private ExecutableOutput downloadDetectBash(File target) throws ExecutableRunnerException {
-        List<String> shellArguments = new ArrayList<>();
+    private ExecutableOutput downloadDetectBash(final File target) throws ExecutableRunnerException {
+        final List<String> shellArguments = new ArrayList<>();
         shellArguments.add("-s");
         shellArguments.add("-L");
         shellArguments.add("https://detect.synopsys.com/detect.sh");
@@ -215,20 +237,20 @@ public final class BatteryTest {
             target = "powershell";
             shellArguments.add("\"[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect\"");
         } else {
-            File scriptTarget = new File(batteryDirectory, "detect.sh");
+            final File scriptTarget = new File(batteryDirectory, "detect.sh");
             if (scriptTarget.exists()) {
                 Assertions.assertTrue(scriptTarget.delete(), "Failed to cleanup an existing detect shell script. This file is cleaned up to ensure latest script is always used.");
             }
-            ExecutableOutput downloadOutput = downloadDetectBash(scriptTarget);
-            Assertions.assertTrue(downloadOutput.getReturnCode() == 0 && scriptTarget.exists(),  "Something went wrong downloading the detect script.");
+            final ExecutableOutput downloadOutput = downloadDetectBash(scriptTarget);
+            Assertions.assertTrue(downloadOutput.getReturnCode() == 0 && scriptTarget.exists(), "Something went wrong downloading the detect script.");
             Assertions.assertTrue(scriptTarget.setExecutable(true), "Failed to change script permissions to execute. The downloaded detect script must be executable.");
             target = scriptTarget.toString();
         }
         shellArguments.addAll(detectArguments);
 
-        Map<String, String> environmentVariables = new HashMap<>();
+        final Map<String, String> environmentVariables = new HashMap<>();
 
-        if (StringUtils.isNotBlank(detectVersion)){
+        if (StringUtils.isNotBlank(detectVersion)) {
             environmentVariables.put("DETECT_LATEST_RELEASE_VERSION", detectVersion);
         }
 
@@ -282,16 +304,19 @@ public final class BatteryTest {
         bdioDirectory = new File(testDirectory, "bdio");
         sourceDirectory = new File(testDirectory, sourceDirectoryName);
 
-        Assert.assertTrue(outputDirectory.mkdirs());
-        Assert.assertTrue(sourceDirectory.mkdirs());
-        Assert.assertTrue(bdioDirectory.mkdirs());
-        Assert.assertTrue(mockDirectory.mkdirs());
+        Assertions.assertTrue(outputDirectory.mkdirs());
+        Assertions.assertTrue(sourceDirectory.mkdirs());
+        Assertions.assertTrue(bdioDirectory.mkdirs());
+        Assertions.assertTrue(mockDirectory.mkdirs());
     }
 
     private void checkEnvironment() {
         Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get("BATTERY_TESTS_PATH")));
 
         batteryDirectory = new File(System.getenv("BATTERY_TESTS_PATH"));
+        if (!batteryDirectory.exists()) {
+            Assertions.assertTrue(batteryDirectory.mkdirs(), String.format("Failed to create battery directory at: %s", batteryDirectory.getAbsolutePath()));
+        }
         Assertions.assertTrue(batteryDirectory.exists(), "The detect battery path must exist.");
     }
 
@@ -304,7 +329,7 @@ public final class BatteryTest {
             final BatteryExecutableInfo info = new BatteryExecutableInfo(mockDirectory, sourceDirectory);
             final File commandFile = executable.creator.createExecutable(id, info, commandCount);
             if (executable.detectProperty != null) {
-                properties.add("--" + executable.detectProperty.getPropertyKey() + "=" + commandFile.getCanonicalPath());
+                properties.add("--" + executable.detectProperty.getKey() + "=" + commandFile.getCanonicalPath());
             } else if (executable.linuxSourceFileName != null && executable.windowsSourceFileName != null) {
                 final File target;
                 if (SystemUtils.IS_OS_WINDOWS) {
@@ -364,8 +389,8 @@ public final class BatteryTest {
                 final JSONArray expectedJsonArray = (JSONArray) JSONParser.parseJSON(expectedJson);
                 final JSONArray actualJsonArray = (JSONArray) JSONParser.parseJSON(actualJson);
 
-                BdioCompare compare = new BdioCompare();
-                List<BdioCompare.BdioIssue> issues = compare.compare(expectedJsonArray, actualJsonArray);
+                final BdioCompare compare = new BdioCompare();
+                final List<BdioCompare.BdioIssue> issues = compare.compare(expectedJsonArray, actualJsonArray);
 
                 if (issues.size() > 0) {
                     logger.error("=================");

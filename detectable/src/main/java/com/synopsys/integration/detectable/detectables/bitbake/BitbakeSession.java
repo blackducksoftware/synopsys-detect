@@ -48,10 +48,10 @@ public class BitbakeSession {
     private final BitbakeRecipesParser bitbakeRecipesParser;
     private final File workingDirectory;
     private final File buildEnvScript;
-    private final String[] sourceArguments;
+    private final List<String> sourceArguments;
     private final File bashExecutable;
 
-    public BitbakeSession(final FileFinder fileFinder, final ExecutableRunner executableRunner, final BitbakeRecipesParser bitbakeRecipesParser, final File workingDirectory, final File buildEnvScript, final String[] sourceArguments,
+    public BitbakeSession(final FileFinder fileFinder, final ExecutableRunner executableRunner, final BitbakeRecipesParser bitbakeRecipesParser, final File workingDirectory, final File buildEnvScript, final List<String> sourceArguments,
         final File bashExecutable) {
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;

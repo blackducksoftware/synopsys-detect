@@ -1,6 +1,6 @@
 # Docker image support
 
-${solution_name} can invoke Docker Inspector to inspect Docker images. For simple use cases, add either ```--detect.docker.image=<repo>:<tag>``` or ```--detect.docker.tar=<path to a Docker saved tarfile>``` to the ${solution_name} command line.
+${solution_name} can invoke Docker Inspector to inspect Docker images. For simple use cases, add either ```--detect.docker.image={repo}:{tag}``` or ```--detect.docker.tar={path to a Docker saved tarfile}``` to the ${solution_name} command line.
 
 The documentation for Docker Inspector is available [here](https://blackducksoftware.github.io/blackduck-docker-inspector/latest/overview/).
 
@@ -40,6 +40,6 @@ Run the docker inspect command on the base image; in our example this is ubuntu:
 Find the last element in the RootFS.Layers array. This is the platform top layer ID. In the following example, this is sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c.
 Set the value of the Docker Inspector property docker.platform.top.layer.id to the platform top layer ID. For example:
 
-./detect.sh ... --detect.docker.image=<your application image> --detect.docker.passthrough.docker.platform.top.layer.id=sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c
+    ./detect.sh ... --detect.docker.image={your application image} --detect.docker.platform.top.layer.id=sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c
 
-    In this mode, there may be some loss in match accuracy from the ${blackduck_signature_scanner_name} because, in this scenario, the ${blackduck_signature_scanner_name} may be deprived of some contextual information, such as the operating system files that enable it to determine the Linux distribution, and that that may negatively affect its ability to accurately identify components.
+In this mode, there may be some loss in match accuracy from the ${blackduck_signature_scanner_name} because, in this scenario, the ${blackduck_signature_scanner_name} may be deprived of some contextual information, such as the operating system files that enable it to determine the Linux distribution, and that that may negatively affect its ability to accurately identify components.
