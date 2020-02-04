@@ -34,12 +34,11 @@ import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.event.EventType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
-
-import com.synopsys.integration.detect.workflow.event.EventType;
 
 public class DetectorToolTest {
 
@@ -64,16 +63,11 @@ public class DetectorToolTest {
         Mockito.verify(eventSystem).publishEvent(Mockito.any(EventType.class), Mockito.argThat(new FailureExitCodeRequestMatcher()));
     }
 
-    private class FailureExitCodeRequestMatcher implements ArgumentMatcher<ExitCodeRequest> {
-
+    private static class FailureExitCodeRequestMatcher implements ArgumentMatcher<ExitCodeRequest> {
         @Override
-        public boolean matches(ExitCodeRequest actualExitCodeRequest) {
+        public boolean matches(final ExitCodeRequest actualExitCodeRequest) {
             System.out.printf("custom matcher called: %d: %s\n", actualExitCodeRequest.getExitCodeType().getExitCode(), actualExitCodeRequest.getReason());
-            if ((actualExitCodeRequest.getExitCodeType() == ExitCodeType.FAILURE_CONFIGURATION) &&
-                    (StringUtils.isNotBlank(actualExitCodeRequest.getReason()))) {
-                return true;
-            }
-            return false;
+            return (actualExitCodeRequest.getExitCodeType() == ExitCodeType.FAILURE_CONFIGURATION) && (StringUtils.isNotBlank(actualExitCodeRequest.getReason()));
         }
     }
 }

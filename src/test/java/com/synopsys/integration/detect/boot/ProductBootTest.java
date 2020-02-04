@@ -25,8 +25,8 @@ package com.synopsys.integration.detect.boot;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
@@ -48,24 +48,31 @@ import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 
 public class ProductBootTest {
-    @Test(expected = DetectUserFriendlyException.class)
-    public void bothProductsSkippedThrows() throws DetectUserFriendlyException {
-        testBoot(BlackDuckDecision.skip(), PolarisDecision.skip());
+    @Test
+    public void bothProductsSkippedThrows() {
+        Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
+            testBoot(BlackDuckDecision.skip(), PolarisDecision.skip());
+        });
     }
 
-    @Test(expected = DetectUserFriendlyException.class)
-    public void blackDuckConnectionFailureThrows() throws DetectUserFriendlyException {
+    @Test
+    public void blackDuckConnectionFailureThrows() {
         final BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.failure("Failed to connect");
-        testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), connectivityResult, null, new HashMap<>());
+        Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
+            testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), connectivityResult, null, new HashMap<>());
+        });
+
     }
 
-    @Test(expected = DetectUserFriendlyException.class)
-    public void polarisConnectionFailureThrows() throws DetectUserFriendlyException {
+    @Test
+    public void polarisConnectionFailureThrows() {
         final PolarisConnectivityResult connectivityResult = PolarisConnectivityResult.failure("Failed to connect");
-        testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), null, connectivityResult, new HashMap<>());
+        Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
+            testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), null, connectivityResult, new HashMap<>());
+        });
     }
 
-    @Test()
+    @Test
     public void blackDuckFailureWithIgnoreReturnsFalse() throws DetectUserFriendlyException {
         final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
         properties.put(DetectProperty.DETECT_IGNORE_CONNECTION_FAILURES, true);
@@ -74,28 +81,32 @@ public class ProductBootTest {
 
         final ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), connectivityResult, null, properties);
 
-        Assert.assertFalse(productRunData.shouldUseBlackDuckProduct());
-        Assert.assertFalse(productRunData.shouldUsePolarisProduct());
+        Assertions.assertFalse(productRunData.shouldUseBlackDuckProduct());
+        Assertions.assertFalse(productRunData.shouldUsePolarisProduct());
     }
 
-    @Test(expected = DetectUserFriendlyException.class)
-    public void blackDuckConnectionFailureWithTestThrows() throws DetectUserFriendlyException {
+    @Test
+    public void blackDuckConnectionFailureWithTestThrows() {
         final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
         properties.put(DetectProperty.DETECT_TEST_CONNECTION, true);
 
         final BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.failure("Failed to connect");
 
-        testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), connectivityResult, null, properties);
+        Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
+            testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), connectivityResult, null, properties);
+        });
     }
 
-    @Test(expected = DetectUserFriendlyException.class)
-    public void polarisConnectionFailureWithTestThrows() throws DetectUserFriendlyException {
+    @Test
+    public void polarisConnectionFailureWithTestThrows() {
         final HashMap<DetectProperty, Boolean> properties = new HashMap<>();
         properties.put(DetectProperty.DETECT_TEST_CONNECTION, true);
 
         final PolarisConnectivityResult connectivityResult = PolarisConnectivityResult.failure("Failed to connect");
 
-        testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), null, connectivityResult, properties);
+        Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
+            testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), null, connectivityResult, properties);
+        });
     }
 
     @Test()
@@ -107,7 +118,7 @@ public class ProductBootTest {
 
         final ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), connectivityResult, null, properties);
 
-        Assert.assertNull(productRunData);
+        Assertions.assertNull(productRunData);
     }
 
     @Test()
@@ -119,7 +130,7 @@ public class ProductBootTest {
 
         final ProductRunData productRunData = testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), null, connectivityResult, properties);
 
-        Assert.assertNull(productRunData);
+        Assertions.assertNull(productRunData);
     }
 
     @Test()
@@ -130,8 +141,8 @@ public class ProductBootTest {
 
         final ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), connectivityResult, null, properties);
 
-        Assert.assertTrue(productRunData.shouldUseBlackDuckProduct());
-        Assert.assertFalse(productRunData.shouldUsePolarisProduct());
+        Assertions.assertTrue(productRunData.shouldUseBlackDuckProduct());
+        Assertions.assertFalse(productRunData.shouldUsePolarisProduct());
     }
 
     @Test()
@@ -143,8 +154,8 @@ public class ProductBootTest {
 
         final ProductRunData productRunData = testBoot(BlackDuckDecision.skip(), polarisDecision, null, polarisConnectivityResult, new HashMap<>());
 
-        Assert.assertFalse(productRunData.shouldUseBlackDuckProduct());
-        Assert.assertTrue(productRunData.shouldUsePolarisProduct());
+        Assertions.assertFalse(productRunData.shouldUseBlackDuckProduct());
+        Assertions.assertTrue(productRunData.shouldUsePolarisProduct());
     }
 
     private ProductRunData testBoot(final BlackDuckDecision blackDuckDecision, final PolarisDecision polarisDecision) throws DetectUserFriendlyException {
