@@ -46,6 +46,9 @@ import com.synopsys.integration.configuration.property.types.string.StringListPr
 import com.synopsys.integration.configuration.property.types.string.StringProperty
 import com.synopsys.integration.detect.DetectMajorVersion
 import com.synopsys.integration.detect.DetectTool
+import com.synopsys.integration.detect.configuration.enums.DefaultVersionNameScheme
+import com.synopsys.integration.detect.configuration.enums.ExtendedSnippetMode
+import com.synopsys.integration.detect.configuration.enums.IndividualFileMatchMode
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule
 import com.synopsys.integration.detector.base.DetectorType
@@ -53,19 +56,6 @@ import com.synopsys.integration.log.LogLevel
 import kotlin.reflect.full.companionObject
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.memberProperties
-
-enum class DefaultVersionNameScheme {
-    TIMESTAMP,
-    DEFAULT
-}
-
-enum class ExtendedPolicySeverityType {
-    NONE
-}
-
-enum class ExtendedSnippetMode {
-    NONE
-}
 
 class DetectProperties {
     companion object {
@@ -245,6 +235,11 @@ class DetectProperties {
             info("Exclusion Patterns", "4.2.0")
             help("A comma-separated list of values to be used with the Signature Scanner --exclude flag.", "Each pattern provided is passed to the signature scanner (Black Duck scan CLI) as a value for an --exclude option. The signature scanner requires that these exclusion patterns start and end with a forward slash (/) and may not contain double asterisks (**). These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude from signature scanning. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns=/blackduck-common/, --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-*/'. Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.")
             groups(DetectGroup.SignatureScanner, DetectGroup.SourceScan)
+        }
+        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING = EnumProperty("detect.blackduck.signature.scanner.individual.file.matching", IndividualFileMatchMode.NONE, IndividualFileMatchMode::class.java).apply {
+            info("Individual File Matching", "6.2.0")
+            help("Users may set this property to SOURCE, BINARY, ALL, or NONE, to indicate what types of files they want to match")
+            groups(DetectGroup.SignatureScanner)
         }
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL = NullableStringProperty("detect.blackduck.signature.scanner.host.url").apply {
             info("Signature Scanner Host URL", "4.2.0")
@@ -1244,7 +1239,7 @@ class DetectProperties {
             groups(DetectGroup.SignatureScanner)
             deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.patterns in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
-        
+
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_PATHS = PathListProperty("detect.hub.signature.scanner.paths", emptyList()).apply {
             info("Detect Hub Signature Scanner Paths", "3.0.0")
