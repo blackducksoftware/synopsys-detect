@@ -22,12 +22,10 @@
  */
 package com.synopsys.integration.detectable.detectables.go.functional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -39,7 +37,7 @@ import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 public class GoVendorJsonParserTest {
 
     @Test
-    public void test() throws IOException {
+    public void test() {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final GoVendorJsonParser parser = new GoVendorJsonParser(externalIdFactory);
         final DependencyGraph graph = parser.parseVendorJson(new Gson(), FunctionalTestFiles.asString("/go/vendor/vendor.json"));

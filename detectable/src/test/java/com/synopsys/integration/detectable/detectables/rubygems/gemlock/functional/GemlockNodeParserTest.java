@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectables.rubygems.gemlock.functional;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
 import java.util.List;

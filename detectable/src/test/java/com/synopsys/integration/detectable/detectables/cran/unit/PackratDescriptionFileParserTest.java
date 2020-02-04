@@ -25,7 +25,7 @@ package com.synopsys.integration.detectable.detectables.cran.unit;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -61,11 +61,11 @@ class PackratDescriptionFileParserTest {
     @Test
     void getProjectNameVersion() {
         NameVersion nameVersion = packratDescriptionFileParser.getProjectNameVersion(validDescriptionFileLines, "", "");
-        Assert.assertEquals("TestProjectName", nameVersion.getName());
-        Assert.assertEquals("1.0.0", nameVersion.getVersion());
+        Assertions.assertEquals("TestProjectName", nameVersion.getName());
+        Assertions.assertEquals("1.0.0", nameVersion.getVersion());
 
         nameVersion = packratDescriptionFileParser.getProjectNameVersion(invalidDescriptionFileLines, "nameDefault", "versionDefault");
-        Assert.assertEquals("nameDefault", nameVersion.getName());
-        Assert.assertEquals("versionDefault", nameVersion.getVersion());
+        Assertions.assertEquals("nameDefault", nameVersion.getName());
+        Assertions.assertEquals("versionDefault", nameVersion.getVersion());
     }
 }

@@ -25,7 +25,7 @@ package com.synopsys.integration.detectable.detectables.gradle.functional;
 import java.io.File;
 import java.util.Optional;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -49,13 +49,13 @@ public class GradleReportParserFunctionalTest {
     void extractCodeLocationTest() {
         final GradleReportParser gradleReportParser = new GradleReportParser();
         final Optional<GradleReport> gradleReport = gradleReportParser.parseReport(FunctionalTestFiles.asFile("/gradle/dependencyGraph.txt"));
-        Assert.assertTrue(gradleReport.isPresent());
+        Assertions.assertTrue(gradleReport.isPresent());
         final GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory());
         final CodeLocation codeLocation = transformer.transform(gradleReport.get());
-        Assert.assertNotNull(codeLocation);
+        Assertions.assertNotNull(codeLocation);
 
-        Assert.assertEquals("hub-detect", gradleReport.get().getProjectName());
-        Assert.assertEquals("2.0.0-SNAPSHOT", gradleReport.get().getProjectVersionName());
+        Assertions.assertEquals("hub-detect", gradleReport.get().getProjectName());
+        Assertions.assertEquals("2.0.0-SNAPSHOT", gradleReport.get().getProjectVersionName());
 
         final String actual = new Gson().toJson(codeLocation);
 
@@ -69,7 +69,7 @@ public class GradleReportParserFunctionalTest {
     @Test
     void complexTest() {
         final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/parse-tests/complex_dependencyGraph.txt");
-        Assert.assertTrue(codeLocation.isPresent());
+        Assertions.assertTrue(codeLocation.isPresent());
         final DependencyGraph graph = codeLocation.get().getDependencyGraph();
 
         final MavenGraphAssert graphAssert = new MavenGraphAssert(graph);
@@ -109,14 +109,14 @@ public class GradleReportParserFunctionalTest {
     @Test
     void testSpringFrameworkAop() {
         final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/spring-framework/spring_aop_dependencyGraph.txt");
-        Assert.assertTrue(codeLocation.isPresent());
+        Assertions.assertTrue(codeLocation.isPresent());
         System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation.get()));
     }
 
     @Test
     void testImplementationsGraph() {
         final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/gradle_implementations_dependencyGraph.txt");
-        Assert.assertTrue(codeLocation.isPresent());
+        Assertions.assertTrue(codeLocation.isPresent());
         System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation.get()));
     }
 }

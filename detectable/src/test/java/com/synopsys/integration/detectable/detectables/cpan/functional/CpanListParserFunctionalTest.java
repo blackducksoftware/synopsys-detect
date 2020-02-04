@@ -22,11 +22,9 @@
  */
 package com.synopsys.integration.detectable.detectables.cpan.functional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -45,11 +43,11 @@ public class CpanListParserFunctionalTest {
         final List<String> showDepsText = FunctionalTestFiles.asListOfStrings("/cpan/showDeps.txt");
         final List<String> names = cpanListParser.getDirectModuleNames(showDepsText);
 
-        assertEquals(4, names.size());
-        assertTrue(names.contains("ExtUtils::MakeMaker"));
-        assertTrue(names.contains("Test::More"));
-        assertTrue(names.contains("perl"));
-        assertTrue(names.contains("ExtUtils::MakeMaker"));
+        Assertions.assertEquals(4, names.size());
+        Assertions.assertTrue(names.contains("ExtUtils::MakeMaker"));
+        Assertions.assertTrue(names.contains("Test::More"));
+        Assertions.assertTrue(names.contains("perl"));
+        Assertions.assertTrue(names.contains("ExtUtils::MakeMaker"));
     }
 
     @Test

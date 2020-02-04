@@ -36,7 +36,7 @@ public class BazelVariableSubstitutorTest {
 
     @Test
     public void testTargetOnly() {
-        BazelVariableSubstitutor substitutor = new BazelVariableSubstitutor("//foo:foolib", new ArrayList<>(0));
+        final BazelVariableSubstitutor substitutor = new BazelVariableSubstitutor("//foo:foolib", new ArrayList<>(0));
         final List<String> origArgs = new ArrayList<>();
         origArgs.add("query");
         origArgs.add("filter(\"@.*:jar\", deps(${detect.bazel.target}))");
@@ -49,7 +49,7 @@ public class BazelVariableSubstitutorTest {
 
     @Test
     public void testInput() {
-        BazelVariableSubstitutor substitutor = new BazelVariableSubstitutor("//foo:foolib", null);
+        final BazelVariableSubstitutor substitutor = new BazelVariableSubstitutor("//foo:foolib", null);
         final List<String> origArgs = new ArrayList<>();
         origArgs.add("query");
         origArgs.add("filter(\"@.*:jar\", deps(${detect.bazel.target}))");
@@ -62,10 +62,9 @@ public class BazelVariableSubstitutorTest {
         assertEquals("kind(maven_jar, //external:org_apache_commons_commons_io)", adjustedArgs.get(2));
     }
 
-
     @Test
     public void testListInsertion() {
-        BazelVariableSubstitutor substitutor = new BazelVariableSubstitutor("//foo:foolib", Arrays.asList("--define=a=b", "--define=c=d"));
+        final BazelVariableSubstitutor substitutor = new BazelVariableSubstitutor("//foo:foolib", Arrays.asList("--define=a=b", "--define=c=d"));
         final List<String> origArgs = new ArrayList<>();
         origArgs.add("cquery");
         origArgs.add("${detect.bazel.cquery.options}");

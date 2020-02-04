@@ -23,7 +23,6 @@
 package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline.stepexecutor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;

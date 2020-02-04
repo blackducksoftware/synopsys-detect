@@ -22,8 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.npm.lockfile.functional;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
@@ -38,8 +38,8 @@ public class NpmOutputParserTest {
         final String testIn = FunctionalTestFiles.asString("/npm/packman_proj_dependencies.json");
         final NpmParseResult result = parser.convertNpmJsonFileToCodeLocation(testIn);
 
-        Assert.assertEquals("node-js", result.getProjectName());
-        Assert.assertEquals("0.2.0", result.getProjectVersion());
+        Assertions.assertEquals("node-js", result.getProjectName());
+        Assertions.assertEquals("0.2.0", result.getProjectVersion());
         GraphCompare.assertEqualsResource("/npm/npmParseOutput_graph.json", result.getCodeLocation().getDependencyGraph());
     }
 }

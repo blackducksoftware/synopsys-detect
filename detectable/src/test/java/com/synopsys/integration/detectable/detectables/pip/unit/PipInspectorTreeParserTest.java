@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -88,9 +88,9 @@ public class PipInspectorTreeParserTest {
         pipInspectorOutput.add("   wcwidth==0.1.7");
 
         final Optional<PipenvResult> validParse = parser.parse(pipInspectorOutput, "");
-        Assert.assertTrue(validParse.isPresent());
-        Assert.assertEquals("projectName", validParse.get().getProjectName());
-        Assert.assertEquals("projectVersionName", validParse.get().getProjectVersion());
+        Assertions.assertTrue(validParse.isPresent());
+        Assertions.assertEquals("projectName", validParse.get().getProjectName());
+        Assertions.assertEquals("projectVersionName", validParse.get().getProjectVersion());
     }
 
     @Test
@@ -99,7 +99,7 @@ public class PipInspectorTreeParserTest {
         invalidText.add("i am not a valid file");
         invalidText.add("the status should be optional.empty()");
         final Optional<PipenvResult> invalidParse = parser.parse(invalidText, "");
-        Assert.assertFalse(invalidParse.isPresent());
+        Assertions.assertFalse(invalidParse.isPresent());
     }
 
     @Test
@@ -109,6 +109,6 @@ public class PipInspectorTreeParserTest {
         invalidText.add(PipInspectorTreeParser.UNPARSEABLE_REQUIREMENTS_PREFIX + "/not/a/real/path/encrypted/requirements.txt");
         invalidText.add(PipInspectorTreeParser.UNKNOWN_REQUIREMENTS_PREFIX + "/not/a/real/path/requirements.txt");
         final Optional<PipenvResult> invalidParse = parser.parse(invalidText, "");
-        Assert.assertFalse(invalidParse.isPresent());
+        Assertions.assertFalse(invalidParse.isPresent());
     }
 }

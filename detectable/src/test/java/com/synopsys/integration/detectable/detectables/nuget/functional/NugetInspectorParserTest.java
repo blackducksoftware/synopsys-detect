@@ -22,15 +22,17 @@
  */
 package com.synopsys.integration.detectable.detectables.nuget.functional;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -82,33 +84,35 @@ public class NugetInspectorParserTest {
         createCodeLocation(dependencyNodeFile, expectedOutputFiles);
     }
 
-    @Test(timeout = 5000L)
-    public void createCodeLocationDWService() throws IOException {
-        final String dependencyNodeFile = FunctionalTestFiles.asString("/nuget/dwCheckApi_inspection_martin.json");
-        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+    @Test
+    public void createCodeLocationDWService() {
+        Assertions.assertTimeout(Duration.ofMillis(5000L), () -> {
+            final String dependencyNodeFile = FunctionalTestFiles.asString("/nuget/dwCheckApi_inspection_martin.json");
+            final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
-        final NugetInspectorParser packager = new NugetInspectorParser(gson, externalIdFactory);
-        final NugetParseResult result = packager.createCodeLocation(dependencyNodeFile);
+            final NugetInspectorParser packager = new NugetInspectorParser(gson, externalIdFactory);
+            final NugetParseResult result = packager.createCodeLocation(dependencyNodeFile);
 
-        for (final CodeLocation codeLocation : result.getCodeLocations()) {
-            final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
-            final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
+            for (final CodeLocation codeLocation : result.getCodeLocations()) {
+                final BdioPropertyHelper bdioPropertyHelper = new BdioPropertyHelper();
+                final BdioNodeFactory bdioNodeFactory = new BdioNodeFactory(bdioPropertyHelper);
 
-            final DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
+                final DependencyGraphTransformer dependencyNodeTransformer = new DependencyGraphTransformer(bdioPropertyHelper, bdioNodeFactory);
 
-            final BdioExternalIdentifier projectId = bdioPropertyHelper.createExternalIdentifier(codeLocation.getExternalId().get());
-            final BdioProject project = bdioNodeFactory.createProject(result.getProjectName(), result.getProjectVersion(), BdioId.createFromPieces(Forge.NUGET.toString()), projectId);
+                final BdioExternalIdentifier projectId = bdioPropertyHelper.createExternalIdentifier(codeLocation.getExternalId().get());
+                final BdioProject project = bdioNodeFactory.createProject(result.getProjectName(), result.getProjectVersion(), BdioId.createFromPieces(Forge.NUGET.toString()), projectId);
 
-            final Map<ExternalId, BdioNode> components = new HashMap<>();
-            components.put(codeLocation.getExternalId().get(), project);
+                final Map<ExternalId, BdioNode> components = new HashMap<>();
+                components.put(codeLocation.getExternalId().get(), project);
 
-            final List<BdioComponent> bdioComponents = dependencyNodeTransformer.transformDependencyGraph(codeLocation.getDependencyGraph(), project, codeLocation.getDependencyGraph().getRootDependencies(), components);
+                final List<BdioComponent> bdioComponents = dependencyNodeTransformer.transformDependencyGraph(codeLocation.getDependencyGraph(), project, codeLocation.getDependencyGraph().getRootDependencies(), components);
 
-            assertEquals(bdioComponents.size(), bdioComponents.size());
-        }
+                assertEquals(bdioComponents.size(), bdioComponents.size());
+            }
+        });
     }
 
-    private void createCodeLocation(final String dependencyNodeFile, final List<String> expectedOutputFiles) throws IOException {
+    private void createCodeLocation(final String dependencyNodeFile, final List<String> expectedOutputFiles) {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final NugetInspectorParser packager = new NugetInspectorParser(gson, externalIdFactory);
 

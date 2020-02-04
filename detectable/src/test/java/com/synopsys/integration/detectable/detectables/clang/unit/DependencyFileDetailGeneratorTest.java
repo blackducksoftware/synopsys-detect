@@ -22,23 +22,24 @@
  */
 package com.synopsys.integration.detectable.detectables.clang.unit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetailGenerator;
@@ -47,21 +48,21 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Pack
 
 public class DependencyFileDetailGeneratorTest {
     @Test
-    public void testFileThatDoesNotExistIsSkipped() throws ExecutableRunnerException {
+    public void testFileThatDoesNotExistIsSkipped() {
         final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.toString()).thenReturn("Example");
 
         final FilePathGenerator filePathGenerator = Mockito.mock(FilePathGenerator.class);
-        Mockito.when(filePathGenerator.fromCompileCommand(mockFile, null, true)).thenReturn(Arrays.asList("does_not_exist.h"));
+        Mockito.when(filePathGenerator.fromCompileCommand(mockFile, null, true)).thenReturn(Collections.singletonList("does_not_exist.h"));
 
         final DependencyFileDetailGenerator dependencyFileDetailGenerator = new DependencyFileDetailGenerator(filePathGenerator);
 
-        final Set<File> fileDetailsSet = dependencyFileDetailGenerator.fromCompileCommands(Arrays.asList(new CompileCommand()), null, true);
-        Assert.assertEquals(0, fileDetailsSet.size());
+        final Set<File> fileDetailsSet = dependencyFileDetailGenerator.fromCompileCommands(Collections.singletonList(new CompileCommand()), null, true);
+        Assertions.assertEquals(0, fileDetailsSet.size());
     }
 
     @Test
-    public void testDependencyCreatedWithEachForge() throws ExecutableRunnerException {
+    public void testDependencyCreatedWithEachForge() {
         final File mockFile = Mockito.mock(File.class);
         Mockito.when(mockFile.toString()).thenReturn("Example");
 
@@ -88,9 +89,9 @@ public class DependencyFileDetailGeneratorTest {
             assertEquals(String.format("testPackageArch%c", indexChar), dependency.getExternalId().getArchitecture());
 
             assertEquals(forge, dependency.getExternalId().getForge().getName());
-            assertEquals(null, dependency.getExternalId().getGroup());
+            assertNull(dependency.getExternalId().getGroup());
             assertEquals(String.format("testPackageName%c", indexChar), dependency.getExternalId().getName());
-            assertEquals(null, dependency.getExternalId().getPath());
+            assertNull(dependency.getExternalId().getPath());
             assertEquals(String.format("testPackageVersion%c", indexChar), dependency.getExternalId().getVersion());
         }
     }

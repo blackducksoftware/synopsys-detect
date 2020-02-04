@@ -22,8 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.conda.functional;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -37,7 +37,7 @@ import com.synopsys.integration.detectable.util.GraphCompare;
 public class CondaListParserFunctionalTest {
     private CondaListParser condaListParser;
 
-    @Before
+    @BeforeEach
     public void init() {
         condaListParser = new CondaListParser(new GsonBuilder().setPrettyPrinting().create(), new ExternalIdFactory());
     }

@@ -24,7 +24,7 @@ package com.synopsys.integration.detectable.detectables.rubygems.gemlock.functio
 
 import java.util.List;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -47,7 +47,7 @@ public class RubygemsNodePackagerTest {
         final List<String> actualText = FunctionalTestFiles.asListOfStrings("/rubygems/Gemfile.lock");
         final GemlockParser rubygemsNodePackager = new GemlockParser(new ExternalIdFactory());
         final DependencyGraph projects = rubygemsNodePackager.parseProjectDependencies(actualText);
-        Assert.assertEquals(8, projects.getRootDependencies().size());
+        Assertions.assertEquals(8, projects.getRootDependencies().size());
 
         GraphCompare.assertEqualsResource("/rubygems/expectedPackager_graph.json", projects);
     }
