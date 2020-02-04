@@ -22,9 +22,9 @@
  */
 package com.synopsys.integration.detect.testutils;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
@@ -56,9 +56,9 @@ public class DependencyGraphAssertions {
         final ExternalId parentId = mavenGavToExternalId(parentGav);
         final ExternalId childId = mavenGavToExternalId(targetGavChild);
         final Dependency dep = dependencyGraph.getDependency(parentId);
-        assertNotNull("Graph does not have gav '" + parentGav + "'", dep);
+        assertNotNull(dep, "Graph does not have gav '" + parentGav + "'");
         final Set<ExternalId> children = dependencyGraph.getChildrenExternalIdsForParent(dep);
-        assertTrue("Parent gav '" + parentGav + "' does not have child gav '" + targetGavChild + "'", children.contains(childId));
+        assertTrue(children.contains(childId), "Parent gav '" + parentGav + "' does not have child gav '" + targetGavChild + "'");
     }
 
     private static ExternalId mavenGavToExternalId(final String gav) {
@@ -99,31 +99,31 @@ public class DependencyGraphAssertions {
 
     public static void assertDoesNotHaveName(final Dependency dep, final String name) {
         if (dep.getName() != null) {
-            assertFalse("Dependency name contains '" + name + "'", dep.getName().contains(name));
+            assertFalse(dep.getName().contains(name), "Dependency name contains '" + name + "'");
         }
     }
 
     public static void assertDoesNotHaveVersion(final Dependency dep, final String name) {
         if (dep.getVersion() != null) {
-            assertFalse("Dependency version contains '" + name + "'", dep.getVersion().contains(name));
+            assertFalse(dep.getVersion().contains(name), "Dependency version contains '" + name + "'");
         }
     }
 
     public static void assertDoesNotHaveVersion(final ExternalId externalId, final String name) {
         if (externalId.getVersion() != null) {
-            assertFalse("External id version contains '" + name + "'", externalId.getVersion().contains(name));
+            assertFalse(externalId.getVersion().contains(name), "External id version contains '" + name + "'");
         }
     }
 
     public static void assertDoesNotHaveGroup(final ExternalId externalId, final String name) {
         if (externalId.getGroup() != null) {
-            assertFalse("External id group contains '" + name + "'", externalId.getGroup().contains(name));
+            assertFalse(externalId.getGroup().contains(name), "External id group contains '" + name + "'");
         }
     }
 
     public static void assertDoesNotHaveName(final ExternalId externalId, final String name) {
         if (externalId.getName() != null) {
-            assertFalse("External id name contains '" + name + "'", externalId.getName().contains(name));
+            assertFalse(externalId.getName().contains(name), "External id name contains '" + name + "'");
         }
     }
 
@@ -136,7 +136,7 @@ public class DependencyGraphAssertions {
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final ExternalId id = externalIdFactory.createMavenExternalId(org, name, version);
         final Dependency dep = dependencyGraph.getDependency(id);
-        assertNotNull("Expected dependency '" + org + ":" + name + ":" + version + "' to exist in graph but it was null.", dep);
+        assertNotNull(dep, "Expected dependency '" + org + ":" + name + ":" + version + "' to exist in graph but it was null.");
 
     }
 }
