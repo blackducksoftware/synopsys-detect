@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detectable.file.impl;
 
-import org.apache.commons.lang3.SystemUtils;
-import org.junit.Assume;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
@@ -36,12 +34,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
-
 
 public class SimpleFileFinderTest {
 
