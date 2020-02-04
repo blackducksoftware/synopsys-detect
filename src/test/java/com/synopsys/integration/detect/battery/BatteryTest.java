@@ -40,7 +40,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.skyscreamer.jsonassert.JSONParser;
@@ -305,10 +304,10 @@ public final class BatteryTest {
         bdioDirectory = new File(testDirectory, "bdio");
         sourceDirectory = new File(testDirectory, sourceDirectoryName);
 
-        Assert.assertTrue(outputDirectory.mkdirs());
-        Assert.assertTrue(sourceDirectory.mkdirs());
-        Assert.assertTrue(bdioDirectory.mkdirs());
-        Assert.assertTrue(mockDirectory.mkdirs());
+        Assertions.assertTrue(outputDirectory.mkdirs());
+        Assertions.assertTrue(sourceDirectory.mkdirs());
+        Assertions.assertTrue(bdioDirectory.mkdirs());
+        Assertions.assertTrue(mockDirectory.mkdirs());
     }
 
     private void checkEnvironment() {
