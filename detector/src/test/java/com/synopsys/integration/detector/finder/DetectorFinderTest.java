@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.detector.finder;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
@@ -38,8 +38,8 @@ import java.util.function.Predicate;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.junit.Assume;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -67,7 +67,7 @@ public class DetectorFinderTest {
     @Test
     @DisabledOnOs(WINDOWS) //TODO: See if we can fix on windows.
     public void testSimple() throws DetectorFinderDirectoryListException {
-        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         final File initialDirectory = initialDirectoryPath.toFile();
         final File subDir = new File(initialDirectory, "testSimple");
@@ -105,7 +105,7 @@ public class DetectorFinderTest {
     @Test
     @DisabledOnOs(WINDOWS) //TODO: See if we can fix on windows.
     public void testSymLinksNotFollowed() throws IOException, DetectorFinderDirectoryListException {
-        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         // Create a subDir with a symlink that loops back to its parent
         final File initialDirectory = initialDirectoryPath.toFile();
