@@ -34,7 +34,6 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScannerZipInstaller;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.rest.BlackDuckHttpClient;
-import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.util.CleanupZipExpander;
@@ -73,9 +72,8 @@ public class ScanBatchRunnerFactory {
         return ScanBatchRunner.createWithNoInstaller(intEnvironmentVariables, defaultInstallDirectory, scanPathsUtility, scanCommandRunner);
     }
 
-    public ScanBatchRunner withUserProvidedUrl(final String userProvidedScannerInstallUrl, final ConnectionManager connectionManager) throws DetectUserFriendlyException {
+    public ScanBatchRunner withUserProvidedUrl(final String userProvidedScannerInstallUrl, final IntHttpClient restConnection) throws DetectUserFriendlyException {
         // we will use the provided url to download/update the scanner
-        final IntHttpClient restConnection = connectionManager.createUnauthenticatedRestConnection(userProvidedScannerInstallUrl);
         final CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
         final ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, restConnection, cleanupZipExpander, scanPathsUtility, userProvidedScannerInstallUrl, operatingSystemType);
 
