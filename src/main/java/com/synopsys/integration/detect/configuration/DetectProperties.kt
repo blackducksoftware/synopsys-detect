@@ -962,7 +962,7 @@ class DetectProperties {
 
         val DETECT_WAIT_FOR_RESULTS = BooleanProperty("detect.wait.for.results", false).apply {
             info("Wait For Results", "5.5.0")
-            help("If set to true, Detect will wait for Synopsys products until results are available or the blackduck.timeout is exceeded.")
+            help("If set to true, Detect will wait for Synopsys products until results are available or the detect.report.timeout is exceeded.")
             groups(DetectGroup.General, DetectGroup.Global)
         }
 
@@ -1244,7 +1244,7 @@ class DetectProperties {
             groups(DetectGroup.SignatureScanner)
             deprecated("This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.patterns in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN)
         }
-        
+
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_HUB_SIGNATURE_SCANNER_PATHS = PathListProperty("detect.hub.signature.scanner.paths", emptyList()).apply {
             info("Detect Hub Signature Scanner Paths", "3.0.0")
