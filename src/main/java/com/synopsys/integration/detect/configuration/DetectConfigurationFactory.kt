@@ -316,6 +316,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val offlineLocalScannerInstallPath = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH)?.resolvePath(pathResolver)
         val onlineLocalScannerInstallPath = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH)?.resolvePath(pathResolver)
         val userProvidedScannerInstallUrl = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL)
+        val individualFileMatching = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING).name
 
         if (offlineLocalScannerInstallPath != null && StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
             throw DetectUserFriendlyException(
@@ -341,7 +342,8 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
                 codeLocationPrefix = codeLocationPrefix,
                 codeLocationSuffix = codeLocationSuffix,
                 additionalArguments = additionalArguments,
-                maxDepth = maxDepth
+                maxDepth = maxDepth,
+                individualFileMatching = individualFileMatching
         )
     }
 

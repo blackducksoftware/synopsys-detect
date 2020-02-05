@@ -204,6 +204,9 @@ class BlackDuckSignatureScanner(
         val projectVersionName = projectNameVersion.version
         scanJobBuilder.projectAndVersionNames(projectName, projectVersionName)
 
+        val individualFileMatching = signatureScannerOptions.individualFileMatching
+        // TODO - scanJobBuilder.individualFileMatching(individualFileMatching)
+
         val sourcePath = directoryManager.sourceDirectory
         val prefix = signatureScannerOptions.codeLocationPrefix
         val suffix = signatureScannerOptions.codeLocationSuffix
