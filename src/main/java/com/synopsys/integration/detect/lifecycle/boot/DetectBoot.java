@@ -235,7 +235,6 @@ public class DetectBoot {
             return DetectBootResult.exit(detectConfiguration, directoryManager, diagnosticSystem);
         }
 
-        //TODO: Only need this if in diagnostic or online (for phone home):
         final DetectorProfiler profiler = new DetectorProfiler(eventSystem);
 
         //Finished, populate the detect context
