@@ -44,7 +44,6 @@ import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectTool;
-import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -129,7 +128,6 @@ public class RunManager {
         final EventSystem eventSystem = detectContext.getBean(EventSystem.class);
         final CodeLocationNameManager codeLocationNameManager = detectContext.getBean(CodeLocationNameManager.class);
         final BdioCodeLocationCreator bdioCodeLocationCreator = detectContext.getBean(BdioCodeLocationCreator.class);
-        final ConnectionFactory connectionFactory = detectContext.getBean(ConnectionFactory.class);
         final DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
 
         final RunResult runResult = new RunResult();
@@ -280,7 +278,7 @@ public class RunManager {
 
         ProjectVersionWrapper projectVersionWrapper = null;
 
-        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().orElse(null);
+        final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().orElse(null);
 
         if (blackDuckRunData.isOnline() && blackDuckServicesFactory != null) {
             logger.debug("Getting or creating project.");
