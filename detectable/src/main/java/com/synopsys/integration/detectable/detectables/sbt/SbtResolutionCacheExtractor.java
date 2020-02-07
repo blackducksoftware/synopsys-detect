@@ -61,16 +61,13 @@ public class SbtResolutionCacheExtractor {
 
     private final FileFinder fileFinder;
     private final ExternalIdFactory externalIdFactory;
-    private final SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions;
 
-    public SbtResolutionCacheExtractor(final FileFinder fileFinder, final ExternalIdFactory externalIdFactory,
-        final SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions) {
+    public SbtResolutionCacheExtractor(final FileFinder fileFinder, final ExternalIdFactory externalIdFactory) {
         this.fileFinder = fileFinder;
         this.externalIdFactory = externalIdFactory;
-        this.sbtResolutionCacheDetectableOptions = sbtResolutionCacheDetectableOptions;
     }
 
-    public Extraction extract(final File directory) {
+    public Extraction extract(final File directory, SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions) { //TODO: Extractor should not use DetectableOptions
         try {
             final String included = sbtResolutionCacheDetectableOptions.getIncludedConfigurations();
             final String excluded = sbtResolutionCacheDetectableOptions.getExcludedConfigurations();

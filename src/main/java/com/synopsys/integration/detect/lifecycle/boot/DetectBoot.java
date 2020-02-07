@@ -38,7 +38,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
-import com.synopsys.integration.detect.DetectableBeanConfiguration;
 import com.synopsys.integration.detect.RunBeanConfiguration;
 import com.synopsys.integration.detect.configuration.ConnectionManager;
 import com.synopsys.integration.detect.configuration.DetectConfiguration;
@@ -72,8 +71,8 @@ import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.property.SpringPropertySource;
-import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
+import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
@@ -241,7 +240,6 @@ public class DetectBoot {
         detectContext.registerBean(detectableOptionFactory);
 
         detectContext.registerConfiguration(RunBeanConfiguration.class);
-        detectContext.registerConfiguration(DetectableBeanConfiguration.class);
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
         return DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem);
@@ -254,8 +252,10 @@ public class DetectBoot {
 
     private void printHelpJsonDocument(final List<DetectOption> detectOptions, final DetectInfo detectInfo, final Gson gson) {
         final DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
-        final DetectorRuleSet build = ruleFactory.createRules(new DetectableFactory(), false);
-        final DetectorRuleSet buildless = ruleFactory.createRules(new DetectableFactory(), true);
+        // TODO: Is there a better way to build a fake set of rules?
+        final DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null);
+        final DetectorRuleSet build = ruleFactory.createRules(mockFactory, false);
+        final DetectorRuleSet buildless = ruleFactory.createRules(mockFactory, true);
         final List<HelpJsonDetector> buildDetectors = build.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, build)).collect(Collectors.toList());
         final List<HelpJsonDetector> buildlessDetectors = buildless.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, buildless)).collect(Collectors.toList());
 
@@ -278,11 +278,11 @@ public class DetectBoot {
         //Not currently possible. Need a full DetectableConfiguration to be able to make Detectables.
         final Class<Detectable> detectableClass = rule.getDetectableClass();
         final Optional<DetectableInfo> infoSearch = Arrays.stream(detectableClass.getAnnotations())
-                                        .filter(annotation -> annotation instanceof DetectableInfo)
-                                        .map(annotation -> (DetectableInfo) annotation)
-                                        .findFirst();
+                                                        .filter(annotation -> annotation instanceof DetectableInfo)
+                                                        .map(annotation -> (DetectableInfo) annotation)
+                                                        .findFirst();
 
-        if (infoSearch.isPresent()){
+        if (infoSearch.isPresent()) {
             final DetectableInfo info = infoSearch.get();
             helpData.setDetectableLanguage(info.language());
             helpData.setDetectableRequirementsMarkdown(info.requirementsMarkdown());
@@ -383,7 +383,7 @@ public class DetectBoot {
         final DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
 
         final AirGapCreator airGapCreator = new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
-        final String gradleInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION,PropertyAuthority.NONE);
+        final String gradleInspectorVersion = detectConfiguration.getProperty(DetectProperty.DETECT_GRADLE_INSPECTOR_VERSION, PropertyAuthority.NONE);
         return airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix, gradleInspectorVersion);
     }
 }

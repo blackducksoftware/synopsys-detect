@@ -39,16 +39,14 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 public class MavenCliExtractor {
     private final ExecutableRunner executableRunner;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
-    private final MavenCliExtractorOptions mavenCliExtractorOptions;
 
-    public MavenCliExtractor(final ExecutableRunner executableRunner, final MavenCodeLocationPackager mavenCodeLocationPackager, final MavenCliExtractorOptions mavenCliExtractorOptions) {
+    public MavenCliExtractor(final ExecutableRunner executableRunner, final MavenCodeLocationPackager mavenCodeLocationPackager) {
         this.executableRunner = executableRunner;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
-        this.mavenCliExtractorOptions = mavenCliExtractorOptions;
     }
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
-    public Extraction extract(final File directory, final File mavenExe) {
+    public Extraction extract(final File directory, final File mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) {
         try {
             String mavenCommand = mavenCliExtractorOptions.getMavenBuildCommand();
             if (StringUtils.isNotBlank(mavenCommand)) {

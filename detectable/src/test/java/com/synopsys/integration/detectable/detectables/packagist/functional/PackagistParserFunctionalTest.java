@@ -17,11 +17,11 @@ public class PackagistParserFunctionalTest {
     @Disabled
     public void packagistParserTest() throws MissingExternalIdException {
         final ComposerLockDetectableOptions composerLockDetectableOptions = new ComposerLockDetectableOptions(true);
-        final PackagistParser packagistParser = new PackagistParser(new ExternalIdFactory(), composerLockDetectableOptions);
+        final PackagistParser packagistParser = new PackagistParser(new ExternalIdFactory());
 
         final String composerLockText = FunctionalTestFiles.asString("/packagist/composer.lock");
         final String composerJsonText = FunctionalTestFiles.asString("/packagist/composer.json");
-        final PackagistParseResult result = packagistParser.getDependencyGraphFromProject(composerJsonText, composerLockText);
+        final PackagistParseResult result = packagistParser.getDependencyGraphFromProject(composerJsonText, composerLockText, composerLockDetectableOptions.shouldIncludeDevDependencies());
 
         Assert.assertEquals("clue/graph-composer", result.getProjectName());
         Assert.assertEquals("1.0.0", result.getProjectVersion());

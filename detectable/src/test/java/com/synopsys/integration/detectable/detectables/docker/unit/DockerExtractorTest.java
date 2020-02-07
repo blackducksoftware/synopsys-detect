@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.google.gson.Gson;
@@ -179,18 +178,16 @@ public class DockerExtractorTest {
     }
 
     private DockerExtractor getMockDockerExtractor(ExecutableRunner executableRunner, FileFinder fileFinder) {
-        final DockerProperties dockerProperties = Mockito.mock(DockerProperties.class);
-
         final BdioTransformer bdioTransformer = Mockito.mock(BdioTransformer.class);
         final ExternalIdFactory externalIdFactory = Mockito.mock(ExternalIdFactory.class);
         final Gson gson = new Gson();
 
-        return new DockerExtractor(fileFinder, dockerProperties, executableRunner, bdioTransformer, externalIdFactory, gson);
+        return new DockerExtractor(fileFinder, executableRunner, bdioTransformer, externalIdFactory, gson);
     }
 
     private Extraction extract(final String image, final String imageId, final String tar,
-            File returnedContainerFileSystemFile,
-            File returnedSquashedImageFile,
+        File returnedContainerFileSystemFile,
+        File returnedSquashedImageFile,
         final ExecutableRunner executableRunner) {
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
         final DockerExtractor dockerExtractor = getMockDockerExtractor(executableRunner, fileFinder);
@@ -205,7 +202,7 @@ public class DockerExtractorTest {
         Mockito.when(fileFinder.findFile(outputDirectory, DockerExtractor.SQUASHED_IMAGE_FILENAME_PATTERN)).thenReturn(returnedSquashedImageFile);
         Mockito.when(dockerInspectorInfo.getDockerInspectorJar()).thenReturn(new File("fake/test/dockerinspector.jar"));
 
-        return dockerExtractor.extract(directory, outputDirectory, bashExe, javaExe, image, imageId, tar, dockerInspectorInfo);
+        return dockerExtractor.extract(directory, outputDirectory, bashExe, javaExe, image, imageId, tar, dockerInspectorInfo, Mockito.mock(DockerProperties.class));
     }
 
 }

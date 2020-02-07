@@ -49,16 +49,19 @@ public class NpmCliDetectable extends Detectable {
     private final NpmResolver npmResolver;
     private final NpmCliExtractor npmCliExtractor;
     private final NpmPackageJsonDiscoverer npmPackageJsonDiscoverer;
+    private final NpmCliExtractorOptions npmCliExtractorOptions;
 
     private File packageJson;
     private File npmExe;
 
-    public NpmCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NpmResolver npmResolver, final NpmCliExtractor npmCliExtractor, final NpmPackageJsonDiscoverer npmPackageJsonDiscoverer) {
+    public NpmCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NpmResolver npmResolver, final NpmCliExtractor npmCliExtractor, final NpmPackageJsonDiscoverer npmPackageJsonDiscoverer,
+        NpmCliExtractorOptions npmCliExtractorOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.npmResolver = npmResolver;
         this.npmCliExtractor = npmCliExtractor;
         this.npmPackageJsonDiscoverer = npmPackageJsonDiscoverer;
+        this.npmCliExtractorOptions = npmCliExtractorOptions; // TODO: Should this be wrapped in a detectables option?
     }
 
     @Override
@@ -96,7 +99,7 @@ public class NpmCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return npmCliExtractor.extract(environment.getDirectory(), npmExe);
+        return npmCliExtractor.extract(environment.getDirectory(), npmExe, npmCliExtractorOptions);
     }
 
 }

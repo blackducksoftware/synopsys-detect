@@ -46,8 +46,8 @@ public class MavenParseExtractorTest {
     @Test
     public void testParsingPomFile() throws Exception {
         final File pomInputStream = FunctionalTestFiles.asFile("/maven/hub-teamcity-pom.xml");
-        final MavenParseExtractor pomXmlParser = new MavenParseExtractor(new ExternalIdFactory(), SAXParserFactory.newInstance().newSAXParser(), new MavenParseOptions(false));
-        final Extraction extraction = pomXmlParser.extract(pomInputStream);
+        final MavenParseExtractor pomXmlParser = new MavenParseExtractor(new ExternalIdFactory(), SAXParserFactory.newInstance().newSAXParser());
+        final Extraction extraction = pomXmlParser.extract(pomInputStream, new MavenParseOptions(false));
         final DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
 
         final Set<String> externalIds = dependencyGraph.getRootDependencies().stream().map(dependency -> dependency.getExternalId().createExternalId()).collect(Collectors.toSet());
@@ -57,8 +57,8 @@ public class MavenParseExtractorTest {
     @Test
     public void testIncludingPluginDependencies() throws Exception {
         final File pomInputStream = FunctionalTestFiles.asFile("/maven/hub-teamcity-pom.xml");
-        final MavenParseExtractor pomXmlParser = new MavenParseExtractor(new ExternalIdFactory(), SAXParserFactory.newInstance().newSAXParser(), new MavenParseOptions(true));
-        final Extraction extraction = pomXmlParser.extract(pomInputStream);
+        final MavenParseExtractor pomXmlParser = new MavenParseExtractor(new ExternalIdFactory(), SAXParserFactory.newInstance().newSAXParser());
+        final Extraction extraction = pomXmlParser.extract(pomInputStream, new MavenParseOptions(true));
         final DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
 
         final Set<String> externalIds = dependencyGraph.getRootDependencies().stream().map(dependency -> dependency.getExternalId().createExternalId()).collect(Collectors.toSet());

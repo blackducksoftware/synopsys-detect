@@ -15,6 +15,7 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.model.Packag
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfileParser;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
+import com.synopsys.integration.detectable.util.GraphCompare;
 
 public class NpmLockfileParserTest {
     private NpmLockfileParser npmLockfileParser;
@@ -25,7 +26,6 @@ public class NpmLockfileParserTest {
     }
 
     @Test
-    @Disabled
     public void parseLockFileWithRecreatedJsonTest() {
         final String lockFileText = FunctionalTestFiles.asString("/npm/package-lock.json");
 
@@ -33,7 +33,8 @@ public class NpmLockfileParserTest {
 
         Assert.assertEquals("knockout-tournament", result.getProjectName());
         Assert.assertEquals("1.0.0", result.getProjectVersion());
-        //GraphCompare.assertEqualsResource("/npm/packageLockExpected_graph.json", result.getCodeLocation().getDependencyGraph());
+        GraphCompare.assertEqualsResource("/npm/packageLockExpected_graph.json", result.getCodeLocation().getDependencyGraph());
+
     }
 
     @Test

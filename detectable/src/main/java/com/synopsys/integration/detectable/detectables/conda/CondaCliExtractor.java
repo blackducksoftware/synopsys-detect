@@ -38,19 +38,16 @@ import com.synopsys.integration.detectable.detectables.conda.parser.CondaListPar
 public class CondaCliExtractor {
     private final CondaListParser condaListParser;
     private final ExecutableRunner executableRunner;
-    private final CondaCliDetectableOptions condaCliDetectableOptions;
 
-    public CondaCliExtractor(final CondaListParser condaListParser, final ExecutableRunner executableRunner, final CondaCliDetectableOptions condaCliDetectableOptions) {
+    public CondaCliExtractor(final CondaListParser condaListParser, final ExecutableRunner executableRunner) {
         this.condaListParser = condaListParser;
         this.executableRunner = executableRunner;
-        this.condaCliDetectableOptions = condaCliDetectableOptions;
     }
 
-    public Extraction extract(final File directory, final File condaExe, final File workingDirectory) {
+    public Extraction extract(final File directory, final File condaExe, final File workingDirectory, String condaEnvironmentName) {
         try {
             final List<String> condaListOptions = new ArrayList<>();
             condaListOptions.add("list");
-            final String condaEnvironmentName = condaCliDetectableOptions.getCondaEnvironmentName();
             if (StringUtils.isNotBlank(condaEnvironmentName)) {
                 condaListOptions.add("-n");
                 condaListOptions.add(condaEnvironmentName);

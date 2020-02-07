@@ -1,5 +1,7 @@
 package com.synopsys.integration.detectable.util.graph;
 
+import org.junit.jupiter.api.Assertions;
+
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -22,6 +24,7 @@ public class NameVersionGraphAssert extends GraphAssert {
     }
 
     public void hasParentChildRelationship(final String name1, final String version1, final String name2, final String version2) {
-        assert graph.getChildrenExternalIdsForParent(externalIdFactory.createNameVersionExternalId(forge, name1, version1)).contains(externalIdFactory.createNameVersionExternalId(forge, name2, version2));
+        Assertions.assertTrue(graph.getChildrenExternalIdsForParent(externalIdFactory.createNameVersionExternalId(forge, name1, version1)).contains(externalIdFactory.createNameVersionExternalId(forge, name2, version2)),
+            "Expected dependency " + name1 + " " + version1 + " to have dependency of " + name2 + " " + version2);
     }
 }

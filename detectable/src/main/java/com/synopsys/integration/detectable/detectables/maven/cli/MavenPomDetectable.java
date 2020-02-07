@@ -44,14 +44,17 @@ public class MavenPomDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final MavenResolver mavenResolver;
     private final MavenCliExtractor mavenCliExtractor;
+    private final MavenCliExtractorOptions mavenCliExtractorOptions;
 
     private File mavenExe;
 
-    public MavenPomDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final MavenResolver mavenResolver, final MavenCliExtractor mavenCliExtractor) {
+    public MavenPomDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final MavenResolver mavenResolver, final MavenCliExtractor mavenCliExtractor,
+        final MavenCliExtractorOptions mavenCliExtractorOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.mavenResolver = mavenResolver;
         this.mavenCliExtractor = mavenCliExtractor;
+        this.mavenCliExtractorOptions = mavenCliExtractorOptions; //TODO: Should this be wrapped in a detectables options? -jp
     }
 
     @Override
@@ -78,7 +81,7 @@ public class MavenPomDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return mavenCliExtractor.extract(environment.getDirectory(), mavenExe);
+        return mavenCliExtractor.extract(environment.getDirectory(), mavenExe, mavenCliExtractorOptions);
     }
 
 }
