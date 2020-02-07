@@ -26,8 +26,8 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -48,6 +48,7 @@ public class NpmLockfileParserTest {
     }
 
     @Test
+    @Disabled
     public void parseLockFileWithRecreatedJsonTest() {
         final String lockFileText = FunctionalTestFiles.asString("/npm/package-lock.json");
 

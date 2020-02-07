@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -58,6 +58,7 @@ public class NugetInspectorParserTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Test
+    @Disabled
     public void createCodeLocationLDServiceDashboard() throws IOException {
         final String dependencyNodeFile = FunctionalTestFiles.asString("/nuget/LDService.Dashboard_inspection.json");
         final ArrayList<String> expectedOutputFiles = new ArrayList<>();
