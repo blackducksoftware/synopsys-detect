@@ -1,6 +1,6 @@
 # Yocto (BitBake)
 
-The BitBake detector discovers dependencies of custom Linux distribution projects built using Yocto versions 2.0 and higher.
+The BitBake detector discovers dependencies of custom Linux distribution projects built using Yocto versions 2.0 to 2.7. Yocto 3.0 is currently not supported while we investigate possible solutions.
 
 The BitBake detector attempts to run on your project if all of the following are true:
 
@@ -13,7 +13,7 @@ The BitBake detector also requires a bash executable, which it looks for on $PAT
 
 The BitBake detector does the following for each provided recipe name: The detector sources the build environment setup script and executes
 `bitbake -g {package-name}` to generate a dependency file _recipe-depends.dot_ that it parses for dependency information.
-It also uses `bitbake-layers show-recipes` to get layer information.
+It also uses `bitbake-layers show-recipes` to gather layer information.
 
 ## Troubleshooting Tips
 
@@ -21,7 +21,7 @@ It also uses `bitbake-layers show-recipes` to get layer information.
 
 Symptom: Error in log similar to 'ERROR: Nothing PROVIDES {package}'
 
-Problem: ${solution_name} does not support the Yocto version. ${solution_name} requires Yocto versions 2.0 and higher.
+Problem: ${solution_name} does not support the Yocto version. ${solution_name} requires Yocto versions 2.0 to 2.7. Yocto 3.0 is currently not supported while we investigate possible solutions.
 
 ### Missing components for projects using the Yocto Package Revision Service
 

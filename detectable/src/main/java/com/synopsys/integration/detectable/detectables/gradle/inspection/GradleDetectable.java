@@ -95,6 +95,7 @@ public class GradleDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleInspectorOptions.getGradleBuildCommand(), gradleInspector, extractionEnvironment.getOutputDirectory());
+        String gradleCommand = gradleInspectorOptions.getGradleBuildCommand().orElse(""); // TODO: Nullable.
+        return gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleCommand, gradleInspector, extractionEnvironment.getOutputDirectory());
     }
 }

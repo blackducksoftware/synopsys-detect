@@ -57,7 +57,7 @@ public class BazelExtractor {
     }
 
     public Extraction extract(final File bazelExe, final File workspaceDir, final BazelWorkspace bazelWorkspace, final String bazelTarget,
-            final BazelProjectNameGenerator bazelProjectNameGenerator, final String providedBazelDependencyType,
+            final BazelProjectNameGenerator bazelProjectNameGenerator, final WorkspaceRule providedBazelDependencyType,
             final List<String> providedCqueryAdditionalOptions) {
         logger.debug("Bazel extraction:");
         try {

@@ -27,10 +27,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detect.configuration.HelpConstants;
+import org.apache.commons.lang3.StringUtils;
+
+import com.synopsys.integration.configuration.property.Property;
+import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.detect.help.DetectArgumentState;
-import com.synopsys.integration.detect.help.DetectOption;
-import com.synopsys.integration.detect.help.DetectOptionHelp;
 
 public class HelpPrinter {
     private static final String DIAGNOSTIC_HELP_TEXT = "\nDiagnostics mode:\n\n" +
@@ -40,24 +41,23 @@ public class HelpPrinter {
                                                            "The path to the generated diagnostics file can be found in the log (look for: \"Diagnostics file created at: ...\").\n" +
                                                            "The diagnostics file can be large, so you may want to generate it only when you will actually use it.\n";
 
-    private static final Comparator<DetectOption> SORT_BY_GROUP_THEN_KEY = (o1, o2) -> {
-        if (o1.getDetectOptionHelp().primaryGroup.equals(o2.getDetectOptionHelp().primaryGroup)) {
-            return o1.getDetectProperty().getPropertyKey().compareTo(o2.getDetectProperty().getPropertyKey());
+    private static final Comparator<Property> SORT_BY_GROUP_THEN_KEY = (o1, o2) -> {
+        if (o1.getPropertyGroupInfo().getPrimaryGroup().getName().equals(o2.getPropertyGroupInfo().getPrimaryGroup().getName())) {
+            return o1.getKey().compareTo(o2.getKey());
         } else {
-            return o1.getDetectOptionHelp().primaryGroup.compareTo(o2.getDetectOptionHelp().primaryGroup);
+            return o1.getPropertyGroupInfo().getPrimaryGroup().getName().compareTo(o2.getPropertyGroupInfo().getPrimaryGroup().getName());
         }
     };
 
-    public void printAppropriateHelpMessage(final PrintStream printStream, final List<DetectOption> allOptions, final DetectArgumentState state) {
+    public void printAppropriateHelpMessage(final PrintStream printStream, final List<Property> allOptions, List<Group> allGroups, Group defaultGroup, final DetectArgumentState state) {
         final HelpTextWriter writer = new HelpTextWriter();
 
-        final List<DetectOption> currentOptions = allOptions.stream()
-                                                      .filter(it -> !it.getDetectOptionHelp().isDeprecated)
-                                                      .collect(Collectors.toList());
-        final List<DetectOption> deprecatedOptions = allOptions.stream()
-                                                         .filter(it -> it.getDetectOptionHelp().isDeprecated)
-                                                         .collect(Collectors.toList());
-        final List<String> allPrintGroups = getPrintGroups(currentOptions);
+        final List<Property> currentOptions = allOptions.stream()
+                                                  .filter(it -> it.getPropertyDeprecationInfo() == null)
+                                                  .collect(Collectors.toList());
+        final List<Property> deprecatedOptions = allOptions.stream()
+                                                     .filter(it -> it.getPropertyDeprecationInfo() != null)
+                                                     .collect(Collectors.toList());
 
         if (state.isVerboseHelp()) {
             printOptions(writer, currentOptions, null);
@@ -67,7 +67,7 @@ public class HelpPrinter {
             if (state.getParsedValue() != null) {
                 if (isProperty(currentOptions, state.getParsedValue())) {
                     printDetailedHelp(writer, allOptions, state.getParsedValue());
-                } else if (isPrintGroup(allPrintGroups, state.getParsedValue())) {
+                } else if (isPrintGroup(allGroups, state.getParsedValue())) {
                     printHelpFilteredByPrintGroup(writer, currentOptions, state.getParsedValue());
                 } else {
                     printHelpFilteredBySearchTerm(writer, currentOptions, state.getParsedValue());
@@ -75,19 +75,19 @@ public class HelpPrinter {
             } else if (state.isDiagnostic() || state.isDiagnosticExtended()) {
                 printStream.println(DIAGNOSTIC_HELP_TEXT);
             } else {
-                printDefaultHelp(writer, currentOptions);
+                printHelpFilteredByPrintGroup(writer, allOptions, defaultGroup.getName());
             }
         }
 
-        printStandardFooter(writer, getPrintGroupText(allPrintGroups));
+        printStandardFooter(writer, allGroups.stream().map(Group::getName).collect(Collectors.joining(", ")));
 
         writer.write(printStream);
     }
 
-    private void printDetailedHelp(final HelpTextWriter writer, final List<DetectOption> options, final String optionName) {
-        final DetectOption option = options.stream()
-                                        .filter(it -> it.getDetectProperty().getPropertyKey().equals(optionName))
-                                        .findFirst().orElse(null);
+    private void printDetailedHelp(final HelpTextWriter writer, final List<Property> options, final String optionName) {
+        final Property option = options.stream()
+                                    .filter(it -> it.getKey().equals(optionName))
+                                    .findFirst().orElse(null);
 
         if (option == null) {
             writer.println("Could not find option named: " + optionName);
@@ -96,70 +96,91 @@ public class HelpPrinter {
         }
     }
 
-    private void printDefaultHelp(final HelpTextWriter writer, final List<DetectOption> options) {
-        printHelpFilteredByPrintGroup(writer, options, HelpConstants.PRINT_GROUP_DEFAULT);
-    }
-
-    private void printHelpFilteredByPrintGroup(final HelpTextWriter writer, final List<DetectOption> options, final String filterGroup) {
+    private void printHelpFilteredByPrintGroup(final HelpTextWriter writer, final List<Property> options, final String filterGroup) {
         final String notes = "Showing help only for: " + filterGroup;
 
-        final List<DetectOption> filteredOptions = options.stream()
-                                                       .filter(detectOption -> optionMatchesFilterGroup(detectOption.getDetectOptionHelp(), filterGroup))
-                                                       .collect(Collectors.toList());
+        final List<Property> filteredOptions = options.stream()
+                                                   .filter(detectOption -> optionMatchesFilterGroup(detectOption, filterGroup))
+                                                   .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
     }
 
-    private boolean optionMatchesFilterGroup(final DetectOptionHelp detectOptionHelp, final String filterGroup) {
-        final boolean primaryMatches = detectOptionHelp.primaryGroup.equalsIgnoreCase(filterGroup);
-        final boolean additionalMatches = detectOptionHelp.additionalGroups.stream()
-                                              .anyMatch(printGroup -> printGroup.equalsIgnoreCase(filterGroup));
+    private boolean optionMatchesFilterGroup(final Property property, final String filterGroup) {
+
+        final boolean primaryMatches = property.getPropertyGroupInfo().getPrimaryGroup().getName().equalsIgnoreCase(filterGroup);
+        final boolean additionalMatches = property.getPropertyGroupInfo().getAdditionalGroups().stream()
+                                              .anyMatch(printGroup -> printGroup.getName().equalsIgnoreCase(filterGroup));
         return primaryMatches || additionalMatches;
     }
 
-    private void printHelpFilteredBySearchTerm(final HelpTextWriter writer, final List<DetectOption> options, final String searchTerm) {
+    private void printHelpFilteredBySearchTerm(final HelpTextWriter writer, final List<Property> options, final String searchTerm) {
         final String notes = "Showing help only for fields that contain: " + searchTerm;
 
-        final List<DetectOption> filteredOptions = options.stream()
-                                                       .filter(it -> it.getDetectProperty().getPropertyKey().contains(searchTerm))
-                                                       .collect(Collectors.toList());
+        final List<Property> filteredOptions = options.stream()
+                                                   .filter(it -> it.getKey().contains(searchTerm))
+                                                   .collect(Collectors.toList());
 
         printOptions(writer, filteredOptions, notes);
     }
 
-    private boolean isPrintGroup(final List<String> allPrintGroups, final String filterGroup) {
-        return allPrintGroups.contains(filterGroup);
+    private boolean isPrintGroup(final List<Group> allPrintGroups, final String filterGroup) {
+        return allPrintGroups.stream().map(Group::getName).anyMatch(name -> name.contains(filterGroup));
     }
 
-    private boolean isProperty(final List<DetectOption> allOptions, final String filterTerm) {
+    private boolean isProperty(final List<Property> allOptions, final String filterTerm) {
         return allOptions.stream()
-                   .map(it -> it.getDetectProperty().getPropertyKey())
+                   .map(it -> it.getKey())
                    .anyMatch(it -> it.equals(filterTerm));
     }
 
-    private List<String> getPrintGroups(final List<DetectOption> options) {
-        return options.stream()
-                   .flatMap(it -> it.getDetectOptionHelp().additionalGroups.stream())
-                   .distinct()
-                   .sorted()
-                   .collect(Collectors.toList());
+    public void printDetailedOption(final HelpTextWriter writer, final Property property) {
+        writer.println("");
+        writer.println("Detailed information for " + property.getKey());
+        writer.println("");
+        if (property.getPropertyDeprecationInfo() != null) {
+            writer.println("Deprecated: " + property.getPropertyDeprecationInfo().getDeprecationText());
+            writer.println("Deprecation description: " + property.getPropertyDeprecationInfo().getDescription());
+            writer.println("");
+        }
+        writer.println("Property description: " + property.getPropertyHelpInfo().getShort());
+
+        writer.println("Property default value: " + property.describeDefault());
+        if (property.listExampleValues().size() > 0) {
+            writer.println("Property acceptable values: " + property.listExampleValues().stream().collect(Collectors.joining(", ")));
+        }
+        writer.println("");
+
+        if (StringUtils.isNotBlank(property.getPropertyHelpInfo().getLong())) {
+            writer.println("Detailed help:");
+            writer.println(property.getPropertyHelpInfo().getLong());
+            writer.println();
+        }
     }
 
-    private String getPrintGroupText(final List<String> printGroups) {
-        return printGroups.stream().collect(Collectors.joining(","));
+    public void printOption(final HelpTextWriter writer, final Property property) {
+        String description = property.getPropertyHelpInfo().getShort();
+        if (property.getPropertyDeprecationInfo() != null) {
+            description = property.getPropertyDeprecationInfo().getDeprecationText() + description;
+        }
+        if (property.listExampleValues().size() > 0) {
+            description += " (" + property.listExampleValues().stream().collect(Collectors.joining("|")) + ")";
+        }
+        String propertyKey = property.getKey();
+        String defaultValue = "";
+        if (StringUtils.isNotBlank(property.describeDefault())) {
+            defaultValue = property.describeDefault();
+        }
+        writer.printColumns("--" + propertyKey, defaultValue, description);
     }
 
-    public void printDetailedOption(final HelpTextWriter writer, final DetectOption detectOption) {
-        detectOption.printDetailedOption(writer);
-    }
-
-    public void printOptions(final HelpTextWriter writer, final List<DetectOption> options, final String notes) {
+    public void printOptions(final HelpTextWriter writer, final List<Property> options, final String notes) {
         writer.printColumns("Property Name", "Default", "Description");
         writer.printSeperator();
 
-        final List<DetectOption> sorted = options.stream()
-                                              .sorted(SORT_BY_GROUP_THEN_KEY)
-                                              .collect(Collectors.toList());
+        final List<Property> sorted = options.stream()
+                                          .sorted(SORT_BY_GROUP_THEN_KEY)
+                                          .collect(Collectors.toList());
 
         if (notes != null) {
             writer.println(notes);
@@ -167,8 +188,8 @@ public class HelpPrinter {
         }
 
         String group = null;
-        for (final DetectOption detectOption : sorted) {
-            final String currentGroup = detectOption.getDetectOptionHelp().primaryGroup;
+        for (final Property detectOption : sorted) {
+            final String currentGroup = detectOption.getPropertyGroupInfo().getPrimaryGroup().getName();
             if (group == null) {
                 group = currentGroup;
                 writer.println("[" + group + "]");
@@ -177,7 +198,7 @@ public class HelpPrinter {
                 writer.println();
                 writer.println("[" + group + "]");
             }
-            detectOption.printOption(writer);
+            printOption(writer, detectOption);
         }
     }
 

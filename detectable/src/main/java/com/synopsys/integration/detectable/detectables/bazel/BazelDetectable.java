@@ -24,8 +24,6 @@ package com.synopsys.integration.detectable.detectables.bazel;
 
 import java.io.File;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
@@ -61,7 +59,7 @@ public class BazelDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        if (StringUtils.isBlank(bazelDetectableOptions.getTargetName())) {
+        if (!bazelDetectableOptions.getTargetName().isPresent()) {
             return new PropertyInsufficientDetectableResult();
         }
         return new PassedDetectableResult();
@@ -84,7 +82,8 @@ public class BazelDetectable extends Detectable {
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         final BazelProjectNameGenerator projectNameGenerator = new BazelProjectNameGenerator();
-        final Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), bazelWorkspace, bazelDetectableOptions.getTargetName(), projectNameGenerator, bazelDetectableOptions.getBazelDependencyRule(),
+        @SuppressWarnings("OptionalGetWithoutIsPresent") // Checked in applicable.
+        final Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), bazelWorkspace, bazelDetectableOptions.getTargetName().get(), projectNameGenerator, bazelDetectableOptions.getBazelDependencyRule(),
             bazelDetectableOptions.getBazelCqueryAdditionalOptions());
         return extractResult;
     }

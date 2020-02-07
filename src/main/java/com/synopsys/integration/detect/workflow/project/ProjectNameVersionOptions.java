@@ -22,16 +22,18 @@
  */
 package com.synopsys.integration.detect.workflow.project;
 
+import com.synopsys.integration.detect.configuration.DefaultVersionNameScheme;
+
 public class ProjectNameVersionOptions {
     public final String sourcePathName;
     public final String overrideProjectName;
     public final String overrideProjectVersionName;
     public final String defaultProjectVersionText;
-    public final String defaultProjectVersionScheme;
+    public final DefaultVersionNameScheme defaultProjectVersionScheme;
     public final String defaultProjectVersionFormat;
 
     public ProjectNameVersionOptions(final String sourcePathName, final String overrideProjectName, final String overrideProjectVersionName, final String defaultProjectVersionText,
-        final String defaultProjectVersionScheme, final String defaultProjectVersionFormat) {
+        final DefaultVersionNameScheme defaultProjectVersionScheme, final String defaultProjectVersionFormat) {
 
         this.sourcePathName = sourcePathName;
         this.overrideProjectName = overrideProjectName;

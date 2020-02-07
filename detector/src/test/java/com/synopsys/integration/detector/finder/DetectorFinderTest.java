@@ -1,10 +1,28 @@
+/**
+ * detector
+ *
+ * Copyright (c) 2020 Synopsys, Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.synopsys.integration.detector.finder;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.junit.Assume;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
@@ -18,7 +36,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -38,7 +59,7 @@ public class DetectorFinderTest {
     public static void cleanup() {
         try {
             FileUtils.deleteDirectory(initialDirectoryPath.toFile());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             // ignore
         }
     }
@@ -46,7 +67,7 @@ public class DetectorFinderTest {
     @Test
     @DisabledOnOs(WINDOWS) //TODO: See if we can fix on windows.
     public void testSimple() throws DetectorFinderDirectoryListException {
-        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         final File initialDirectory = initialDirectoryPath.toFile();
         final File subDir = new File(initialDirectory, "testSimple");
@@ -69,7 +90,7 @@ public class DetectorFinderTest {
         // make sure both dirs were found
         final Set<DetectorEvaluationTree> testDirs = tree.get().getChildren();
         DetectorEvaluationTree simpleTestDir = null;
-        for (DetectorEvaluationTree testDir : testDirs) {
+        for (final DetectorEvaluationTree testDir : testDirs) {
             if (testDir.getDirectory().getName().equals("testSimple")) {
                 simpleTestDir = testDir;
                 break;
@@ -77,14 +98,14 @@ public class DetectorFinderTest {
         }
         final Set<DetectorEvaluationTree> subDirResults = simpleTestDir.getChildren();
         assertEquals(2, subDirResults.size());
-        String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
+        final String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
         assertTrue(subDirContentsName.startsWith("subSubDir"));
     }
 
     @Test
     @DisabledOnOs(WINDOWS) //TODO: See if we can fix on windows.
     public void testSymLinksNotFollowed() throws IOException, DetectorFinderDirectoryListException {
-        Assume.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         // Create a subDir with a symlink that loops back to its parent
         final File initialDirectory = initialDirectoryPath.toFile();
@@ -111,7 +132,7 @@ public class DetectorFinderTest {
         //        final Set<DetectorEvaluationTree> subDirResults = tree.get().getChildren().iterator().next().getChildren();
         final Set<DetectorEvaluationTree> testDirs = tree.get().getChildren();
         DetectorEvaluationTree symLinkTestDir = null;
-        for (DetectorEvaluationTree testDir : testDirs) {
+        for (final DetectorEvaluationTree testDir : testDirs) {
             if (testDir.getDirectory().getName().equals("testSymLinksNotFollowed")) {
                 symLinkTestDir = testDir;
                 break;
@@ -120,7 +141,7 @@ public class DetectorFinderTest {
         final Set<DetectorEvaluationTree> subDirResults = symLinkTestDir.getChildren();
 
         assertEquals(1, subDirResults.size());
-        String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
+        final String subDirContentsName = subDirResults.iterator().next().getDirectory().getName();
         assertEquals("regularDir", subDirContentsName);
     }
 

@@ -22,14 +22,18 @@
  */
 package com.synopsys.integration.detectable.detectable.inspector.nuget;
 
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
+
 public class NugetInspectorOptions {
     private final boolean ignoreFailures;
     private final String excludedModules;
     private final String includedModules;
-    private final String[] packagesRepoUrl;
-    private final String nugetConfigPath;
+    private final List<String> packagesRepoUrl;
+    private final Path nugetConfigPath;
 
-    public NugetInspectorOptions(final boolean ignoreFailures, final String excludedModules, final String includedModules, final String[] packagesRepoUrl, final String nugetConfigPath) {
+    public NugetInspectorOptions(final boolean ignoreFailures, final String excludedModules, final String includedModules, final List<String> packagesRepoUrl, final Path nugetConfigPath) {
         this.ignoreFailures = ignoreFailures;
         this.excludedModules = excludedModules;
         this.includedModules = includedModules;
@@ -41,19 +45,19 @@ public class NugetInspectorOptions {
         return ignoreFailures;
     }
 
-    public String getExcludedModules() {
-        return excludedModules;
+    public Optional<String> getExcludedModules() {
+        return Optional.ofNullable(excludedModules);
     }
 
-    public String getIncludedModules() {
-        return includedModules;
+    public Optional<String> getIncludedModules() {
+        return Optional.ofNullable(includedModules);
     }
 
-    public String[] getPackagesRepoUrl() {
+    public List<String> getPackagesRepoUrl() {
         return packagesRepoUrl;
     }
 
-    public String getNugetConfigPath() {
-        return nugetConfigPath;
+    public Optional<Path> getNugetConfigPath() {
+        return Optional.ofNullable(nugetConfigPath);
     }
 }

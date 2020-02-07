@@ -144,7 +144,7 @@ public class DetectProjectService {
 
     }
 
-    private void addUserGroupsToProject(final ProjectUsersService projectUsersService, final ProjectVersionWrapper projectVersionWrapper, final String[] groupsToAddToProject) throws IntegrationException {
+    private void addUserGroupsToProject(final ProjectUsersService projectUsersService, final ProjectVersionWrapper projectVersionWrapper, final List<String> groupsToAddToProject) throws IntegrationException {
         if (groupsToAddToProject == null) {
             return;
         }
@@ -156,11 +156,11 @@ public class DetectProjectService {
         }
     }
 
-    private void addTagsToProject(final TagService tagService, final ProjectVersionWrapper projectVersionWrapper, final String[] tags) throws IntegrationException {
+    private void addTagsToProject(final TagService tagService, final ProjectVersionWrapper projectVersionWrapper, final List<String> tags) throws IntegrationException {
         if (tags == null) {
             return;
         }
-        final List<String> validTags = Arrays.stream(tags).filter(StringUtils::isNotBlank).collect(Collectors.toList());
+        final List<String> validTags = tags.stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
         if (validTags.size() > 0) {
             final List<TagView> currentTags = tagService.getAllTags(projectVersionWrapper.getProjectView());
             for (final String tag : validTags) {
@@ -183,12 +183,8 @@ public class DetectProjectService {
         // TODO: Handle a boolean property not being set in detect configuration - ie need to determine if this property actually exists in the ConfigurableEnvironment - just omit this one?
         projectSyncModel.setProjectLevelAdjustments(detectProjectServiceOptions.isProjectLevelAdjustments());
 
-        final Optional<ProjectVersionPhaseType> phase = tryGetEnumValue(ProjectVersionPhaseType.class, detectProjectServiceOptions.getProjectVersionPhase());
-        phase.ifPresent(projectSyncModel::setPhase);
-
-        final Optional<LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType> distribution = tryGetEnumValue(LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType.class,
-            detectProjectServiceOptions.getProjectVersionDistribution());
-        distribution.ifPresent(projectSyncModel::setDistribution);
+        Optional.ofNullable(detectProjectServiceOptions.getProjectVersionPhase()).ifPresent(projectSyncModel::setPhase);
+        Optional.ofNullable(detectProjectServiceOptions.getProjectVersionDistribution()).ifPresent(projectSyncModel::setDistribution);
 
         final Integer projectTier = detectProjectServiceOptions.getProjectTier();
         if (null != projectTier && projectTier >= 1 && projectTier <= 5) {
@@ -205,7 +201,7 @@ public class DetectProjectService {
             projectSyncModel.setReleaseComments(releaseComments);
         }
 
-        final List<ProjectCloneCategoriesType> cloneCategories = convertClonePropertyToEnum(detectProjectServiceOptions.getCloneCategories());
+        final List<ProjectCloneCategoriesType> cloneCategories = detectProjectServiceOptions.getCloneCategories();
         if (!cloneCategories.isEmpty()) {
             projectSyncModel.setCloneCategories(cloneCategories);
         }
@@ -222,25 +218,6 @@ public class DetectProjectService {
         }
 
         return projectSyncModel;
-    }
-
-    public static <E extends Enum<E>> Optional<E> tryGetEnumValue(final Class<E> enumClass, final String value) {
-        final String enumName = StringUtils.trimToEmpty(value).toUpperCase();
-        try {
-            return Optional.of(Enum.valueOf(enumClass, enumName));
-        } catch (final IllegalArgumentException ex) {
-            return Optional.empty();
-        }
-    }
-
-    private List<ProjectCloneCategoriesType> convertClonePropertyToEnum(final String[] cloneCategories) {
-        final List<ProjectCloneCategoriesType> categories = Arrays
-                                                                .stream(cloneCategories)
-                                                                .filter(cloneCategoryValue -> EnumUtils.isValidEnum(ProjectCloneCategoriesType.class, cloneCategoryValue))
-                                                                .map(ProjectCloneCategoriesType::valueOf)
-                                                                .collect(Collectors.toList());
-        logger.debug("Found clone categories:" + categories.stream().map(Enum::toString).collect(Collectors.joining(",")));
-        return categories;
     }
 
     public Optional<String> findCloneUrl(final String projectName) throws DetectUserFriendlyException {

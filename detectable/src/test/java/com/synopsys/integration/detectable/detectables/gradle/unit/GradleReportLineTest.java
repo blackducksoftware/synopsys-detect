@@ -1,7 +1,29 @@
+/**
+ * detectable
+ *
+ * Copyright (c) 2020 Synopsys, Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.synopsys.integration.detectable.detectables.gradle.unit;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -93,8 +115,8 @@ public class GradleReportLineTest {
         final ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getArtifact(), gav.getVersion());
         final Dependency dependency = new Dependency(gav.getArtifact(), gav.getVersion(), externalId);
 
-        Assert.assertEquals(expectedResults[0], dependency.getName());
-        Assert.assertEquals(expectedResults[1], dependency.getVersion());
-        Assert.assertEquals(expectedResults[2], dependency.getExternalId().createExternalId());
+        Assertions.assertEquals(expectedResults[0], dependency.getName());
+        Assertions.assertEquals(expectedResults[1], dependency.getVersion());
+        Assertions.assertEquals(expectedResults[2], dependency.getExternalId().createExternalId());
     }
 }

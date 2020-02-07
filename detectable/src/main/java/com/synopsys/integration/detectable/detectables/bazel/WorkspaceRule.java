@@ -27,7 +27,7 @@ import com.synopsys.integration.exception.IntegrationException;
 public enum WorkspaceRule {
     MAVEN_JAR("maven_jar"),
     MAVEN_INSTALL("maven_install"),
-    UNKNOWN(null);
+    UNSPECIFIED(null); //changed to UNSPECIFIED so property is simpler, if this causes confusion willing to discuss - jp
 
     private String name;
 
@@ -37,15 +37,5 @@ public enum WorkspaceRule {
 
     public String getName() {
         return name;
-    }
-
-    public static WorkspaceRule lookup(final String targetName) throws IntegrationException {
-        final String trimmedTargetName = targetName.trim();
-        for (final WorkspaceRule candidate : WorkspaceRule.values()) {
-            if ((candidate != WorkspaceRule.UNKNOWN) && candidate.getName().equals(trimmedTargetName)) {
-                return candidate;
-            }
-        }
-        throw new IntegrationException(String.format("Unsupported bazel workspace rule: %s", targetName));
     }
 }

@@ -25,6 +25,7 @@ package com.synopsys.integration.detectable.detectables.conda;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 

@@ -32,11 +32,9 @@ public enum DetectorSearchExcludedDirectories {
     PACKAGES("packages"),
     TARGET("target");
 
-    public static final String DIRECTORY_NAMES = "bin, build, .git, .gradle, node_modules, out, packages, target";
-
     private final String directoryName;
 
-    private DetectorSearchExcludedDirectories(final String directoryName) {
+    DetectorSearchExcludedDirectories(final String directoryName) {
         this.directoryName = directoryName;
     }
 

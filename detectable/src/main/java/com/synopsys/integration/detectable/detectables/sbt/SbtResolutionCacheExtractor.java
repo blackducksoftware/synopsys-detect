@@ -69,8 +69,9 @@ public class SbtResolutionCacheExtractor {
 
     public Extraction extract(final File directory, SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions) { //TODO: Extractor should not use DetectableOptions
         try {
-            final String included = sbtResolutionCacheDetectableOptions.getIncludedConfigurations();
-            final String excluded = sbtResolutionCacheDetectableOptions.getExcludedConfigurations();
+            // TODO: Handle null better.
+            final String included = sbtResolutionCacheDetectableOptions.getIncludedConfigurations().orElse("");
+            final String excluded = sbtResolutionCacheDetectableOptions.getExcludedConfigurations().orElse("");
             final int depth = sbtResolutionCacheDetectableOptions.getReportDepth();
 
             final SbtProject project = extractProject(directory, depth, included, excluded);

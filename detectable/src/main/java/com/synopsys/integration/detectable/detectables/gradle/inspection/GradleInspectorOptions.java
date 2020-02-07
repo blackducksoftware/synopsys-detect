@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.gradle.inspection;
 
+import java.util.Optional;
+
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 
 public class GradleInspectorOptions {
@@ -33,8 +35,8 @@ public class GradleInspectorOptions {
         this.gradleInspectorScriptOptions = gradleInspectorScriptOptions;
     }
 
-    public String getGradleBuildCommand() {
-        return gradleBuildCommand;
+    public Optional<String> getGradleBuildCommand() {
+        return Optional.ofNullable(gradleBuildCommand);
     }
 
     public GradleInspectorScriptOptions getGradleInspectorScriptOptions() {

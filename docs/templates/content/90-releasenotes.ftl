@@ -2,6 +2,16 @@
 
 ## Version 6.1.0
 ### New features
+* The ${solution_name} .jar file is now signed, enabling [code verification](advanced/verifying.md) by users.
+
+### Changed features
+* TBD
+
+### Resolved issues
+* TBD
+
+## Version 6.1.0
+### New features
 * Added the property [detect.bdio2.enabled](properties/Configuration/paths.md#bdio-2-enabled).
 * Added the property [detect.pip.only.project.tree](properties/Detectors/pip.md#pip-include-only-project-tree).
 * Added the property [detect.bitbake.search.depth](properties/Detectors/bitbake.md#bitbake-search-depth).

@@ -46,20 +46,20 @@ public class GradleInspectorScriptOptions {
         return gradleInspectorRepositoryUrl;
     }
 
-    public String getExcludedProjectNames() {
-        return excludedProjectNames;
+    public Optional<String> getExcludedProjectNames() {
+        return Optional.ofNullable(excludedProjectNames);
     }
 
-    public String getIncludedProjectNames() {
-        return includedProjectNames;
+    public Optional<String> getIncludedProjectNames() {
+        return Optional.ofNullable(includedProjectNames);
     }
 
-    public String getExcludedConfigurationNames() {
-        return excludedConfigurationNames;
+    public Optional<String> getExcludedConfigurationNames() {
+        return Optional.ofNullable(excludedConfigurationNames);
     }
 
-    public String getIncludedConfigurationNames() {
-        return includedConfigurationNames;
+    public Optional<String> getIncludedConfigurationNames() {
+        return Optional.ofNullable(includedConfigurationNames);
     }
 
     public Optional<String> getProvidedOnlineInspectorVersion() {

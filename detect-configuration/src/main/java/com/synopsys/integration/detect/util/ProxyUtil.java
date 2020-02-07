@@ -22,12 +22,15 @@
  */
 package com.synopsys.integration.detect.util;
 
-import java.util.ArrayList;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.synopsys.integration.log.IntLogger;
 
 public class ProxyUtil {
     /**
@@ -47,22 +50,13 @@ public class ProxyUtil {
         return false;
     }
 
-    public static List<Pattern> getIgnoredProxyHostPatterns(final String ignoredProxyHosts) {
-        final List<Pattern> ignoredProxyHostPatterns = new ArrayList<>();
-        if (StringUtils.isNotBlank(ignoredProxyHosts)) {
-            String[] ignoreHosts = null;
-            if (ignoredProxyHosts.contains(",")) {
-                ignoreHosts = ignoredProxyHosts.split(",");
-                for (final String ignoreHost : ignoreHosts) {
-                    final Pattern pattern = Pattern.compile(ignoreHost.trim());
-                    ignoredProxyHostPatterns.add(pattern);
-                }
-            } else {
-                final Pattern pattern = Pattern.compile(ignoredProxyHosts);
-                ignoredProxyHostPatterns.add(pattern);
-            }
+    public static boolean shouldIgnoreUrl(final String url, final List<Pattern> ignoredProxyHostPatterns, IntLogger logger) {
+        try {
+            return ProxyUtil.shouldIgnoreHost(new URL(url).getHost(), ignoredProxyHostPatterns);
+        } catch (MalformedURLException e) {
+            logger.error("Unable to decide if proxy should be used for the given host, will use proxy.");
+            return false;
         }
-        return ignoredProxyHostPatterns;
     }
 
 }
