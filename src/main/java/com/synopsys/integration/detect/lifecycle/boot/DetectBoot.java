@@ -326,10 +326,15 @@ public class DetectBoot {
             if (detectConfiguration.wasKeyProvided(property.getKey())) {
                 final PropertyDeprecationInfo deprecationInfo = property.getPropertyDeprecationInfo();
 
-                additionalNotes.put(property.getKey(), "\t *** DEPRECATED ***");
-                final String deprecationMessage = property.getPropertyDeprecationInfo().getDeprecationText();
+                if (deprecationInfo == null) {
+                    logger.debug("A deprecated property is missing deprecation info.");
+                    continue;
+                }
 
-                deprecationMessages.put(property.getKey(), new ArrayList<String>(Collections.singleton(deprecationMessage)));
+                additionalNotes.put(property.getKey(), "\t *** DEPRECATED ***");
+                final String deprecationMessage = deprecationInfo.getDeprecationText();
+
+                deprecationMessages.put(property.getKey(), new ArrayList<>(Collections.singleton(deprecationMessage)));
                 DetectIssue.publish(eventSystem, DetectIssueType.Deprecation, property.getKey(), "\t" + deprecationMessage);
 
                 if (detectInfo.getDetectMajorVersion() >= deprecationInfo.getFailInVersion().getIntValue()) {
