@@ -166,7 +166,7 @@ public class DetectBoot {
         if (detectArgumentState.isInteractive()) {
             final List<InteractiveOption> interactiveOptions = startInteractiveMode(propertySources);
             final Map<String, String> interactivePropertyMap = interactiveOptions.stream()
-                                                                   .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), option -> option.getInteractiveValue()));
+                                                                   .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), InteractiveOption::getInteractiveValue));
             final PropertySource interactivePropertySource = new MapPropertySource("interactive", interactivePropertyMap);
             propertySources.add(0, interactivePropertySource);
         }
