@@ -1,7 +1,7 @@
 PODS:
   - Allihoopa-macOS (1.1.0):
     - AllihoopaCore (~> 1.1.0)
-  - AllihoopaCore (1.1.0)
+  - AllihoopaCore (1.2.0)
   - Mapbox-macOS-SDK (0.4.1)
   - RepliesSDK-macOS (0.2.22)
 
