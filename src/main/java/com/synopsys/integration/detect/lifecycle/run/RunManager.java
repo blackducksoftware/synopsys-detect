@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.lifecycle.run;
 
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +39,7 @@ import com.synopsys.integration.blackduck.bdio2.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
+import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
@@ -146,7 +148,7 @@ public class RunManager {
 
         if (productRunData.shouldUseBlackDuckProduct()) {
             final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName().orElse(null), runOptions.getAggregateMode(), universalToolsResult);
-            runBlackDuckProduct(productRunData, detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
+            runBlackDuckProduct(productRunData, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
                 universalToolsResult.getNameVersion(), aggregateOptions);
         } else {
             logger.info("Black Duck tools will not be run.");
@@ -267,9 +269,10 @@ public class RunManager {
         }
     }
 
-    private void runBlackDuckProduct(final ProductRunData productRunData, final PropertyConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager,
-        final EventSystem eventSystem, final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions,
+    private void runBlackDuckProduct(final ProductRunData productRunData, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager, final EventSystem eventSystem,
+        final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions,
         final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion, final AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException {
+
         logger.debug("Black Duck tools will run.");
 
         final BlackDuckRunData blackDuckRunData = productRunData.getBlackDuckRunData();
@@ -322,9 +325,11 @@ public class RunManager {
                     bdioUploader = blackDuckServicesFactory.createBdioUploadService()::uploadBdio;
                 }
 
-                // TODO: There is no way this is the proper way to do this.
-                final String blackduckUrl = detectConfiguration.getValueOrNull(DetectProperties.Companion.getBLACKDUCK_URL());
-                uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(blackduckUrl, bdioResult.getUploadTargets(), bdioUploader);
+                final String blackDuckUrl = blackDuckRunData.getBlackDuckServerConfig()
+                                                .map(BlackDuckServerConfig::getBlackDuckUrl)
+                                                .map(URL::toExternalForm)
+                                                .orElse("Unknown Host");
+                uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(blackDuckUrl, bdioResult.getUploadTargets(), bdioUploader);
                 codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
             }
         } else {
