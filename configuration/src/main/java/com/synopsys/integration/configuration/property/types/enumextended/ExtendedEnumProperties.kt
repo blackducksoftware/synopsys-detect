@@ -38,7 +38,7 @@ class NullableExtendedEnumProperty<E : Enum<E>, B : Enum<B>>(key: String, enumCl
 
     override fun isCaseSensitive(): Boolean = false
     override fun listExampleValues(): List<String>? = options
-    override fun isOnlyExampleValues(): Boolean = false
+    override fun isOnlyExampleValues(): Boolean = true
     override fun describeType(): String? = "Optional ${enumClassB.simpleName}"
 }
 
@@ -52,7 +52,7 @@ class ExtendedEnumProperty<E : Enum<E>, B : Enum<B>>(key: String, default: Exten
 
     override fun isCaseSensitive(): Boolean = false
     override fun listExampleValues(): List<String>? = options
-    override fun isOnlyExampleValues(): Boolean = false
+    override fun isOnlyExampleValues(): Boolean = true
     override fun describeDefault(): String? = default.toString()
     override fun describeType(): String? = enumClassB.simpleName
 }
@@ -67,6 +67,6 @@ class ExtendedEnumListProperty<E : Enum<E>, B : Enum<B>>(key: String, default: L
 
     override fun isCaseSensitive(): Boolean = false
     override fun listExampleValues(): List<String>? = options
-    override fun isOnlyExampleValues(): Boolean = false
+    override fun isOnlyExampleValues(): Boolean = true
     override fun describeType(): String? = "${enumClassB.simpleName} List"
 }
