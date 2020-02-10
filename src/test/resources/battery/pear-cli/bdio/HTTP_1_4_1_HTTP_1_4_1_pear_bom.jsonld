@@ -4,19 +4,19 @@
     "spdx:name": "HTTP/1.4.1/HTTP/1.4.1 pear/bom",
     "creationInfo": {
       "spdx:creator": [
-        "Tool: Detect-6.0.0-SNAPSHOT",
-        "Tool: IntegrationBdio-18.1.0"
+        "Tool: Detect-6.2.0-SNAPSHOT",
+        "Tool: IntegrationBdio-19.0.0"
       ],
-      "spdx:created": "2019-10-11T15:22:56.146Z"
+      "spdx:created": "2020-02-10T18:48:36.880Z"
     },
-    "@id": "uuid:1c72b06e-a9c2-490b-9986-48f91f977f17",
+    "@id": "uuid:9a0f5167-c1bb-4931-b70a-feb6704d960e",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "HTTP",
     "revision": "1.4.1",
-    "@id": "http:pear/HTTP/1_4_1",
+    "@id": "http:pear/HTTP/1.4.1",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "pear",
@@ -32,7 +32,7 @@
     },
     "relationship": [
       {
-        "related": "http:pear/PEAR/1_9_5",
+        "related": "http:pear/PEAR/1.9.5",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -40,7 +40,7 @@
   {
     "name": "PEAR",
     "revision": "1.9.5",
-    "@id": "http:pear/PEAR/1_9_5",
+    "@id": "http:pear/PEAR/1.9.5",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pear",
