@@ -1091,22 +1091,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#nuget-config-file" class="md-nav__link">
-    Nuget Config File
+  <a href="#dotnet-executable-advanced" class="md-nav__link">
+    dotnet Executable (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-packages-repository-url" class="md-nav__link">
-    Nuget Packages Repository URL
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dotnet-executable" class="md-nav__link">
-    dotnet Executable
+  <a href="#nuget-config-file-advanced" class="md-nav__link">
+    Nuget Config File (Advanced)
   </a>
   
 </li>
@@ -1126,15 +1119,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
-    Nuget Inspector AirGap Path (Advanced)
+  <a href="#nuget-modules-included-advanced" class="md-nav__link">
+    Nuget Modules Included (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-modules-included-advanced" class="md-nav__link">
-    Nuget Modules Included (Advanced)
+  <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
+    Nuget Inspector AirGap Path (Advanced)
   </a>
   
 </li>
@@ -1147,8 +1140,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-nuget-path-deprecated" class="md-nav__link">
-    Detect Nuget Path (Deprecated)
+  <a href="#nuget-packages-repository-url-advanced" class="md-nav__link">
+    Nuget Packages Repository URL (Advanced)
   </a>
   
 </li>
@@ -1156,6 +1149,13 @@
         <li class="md-nav__item">
   <a href="#detect-nuget-inspector-name-deprecated" class="md-nav__link">
     Detect Nuget Inspector Name (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-nuget-path-deprecated" class="md-nav__link">
+    Detect Nuget Path (Deprecated)
   </a>
   
 </li>
@@ -1286,22 +1286,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#nuget-config-file" class="md-nav__link">
-    Nuget Config File
+  <a href="#dotnet-executable-advanced" class="md-nav__link">
+    dotnet Executable (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-packages-repository-url" class="md-nav__link">
-    Nuget Packages Repository URL
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#dotnet-executable" class="md-nav__link">
-    dotnet Executable
+  <a href="#nuget-config-file-advanced" class="md-nav__link">
+    Nuget Config File (Advanced)
   </a>
   
 </li>
@@ -1321,15 +1314,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
-    Nuget Inspector AirGap Path (Advanced)
+  <a href="#nuget-modules-included-advanced" class="md-nav__link">
+    Nuget Modules Included (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-modules-included-advanced" class="md-nav__link">
-    Nuget Modules Included (Advanced)
+  <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
+    Nuget Inspector AirGap Path (Advanced)
   </a>
   
 </li>
@@ -1342,8 +1335,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detect-nuget-path-deprecated" class="md-nav__link">
-    Detect Nuget Path (Deprecated)
+  <a href="#nuget-packages-repository-url-advanced" class="md-nav__link">
+    Nuget Packages Repository URL (Advanced)
   </a>
   
 </li>
@@ -1351,6 +1344,13 @@
         <li class="md-nav__item">
   <a href="#detect-nuget-inspector-name-deprecated" class="md-nav__link">
     Detect Nuget Inspector Name (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-nuget-path-deprecated" class="md-nav__link">
+    Detect Nuget Path (Deprecated)
   </a>
   
 </li>
@@ -1373,11 +1373,11 @@
                 
                 
                 <h1 id="nuget">nuget</h1>
-<h2 id="nuget-config-file">Nuget Config File</h2>
-<pre><code>--detect.nuget.config.path
+<h2 id="dotnet-executable-advanced">dotnet Executable (Advanced)</h2>
+<pre><code>--detect.dotnet.path
 </code></pre>
 
-<p>The path to the Nuget.Config file to supply to the nuget exe.</p>
+<p>The path to the dotnet executable.</p>
 <table>
 <thead>
 <tr>
@@ -1388,11 +1388,11 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>4.0.0</td>
+<td>4.4.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>Optional Path</td>
 </tr>
 <tr>
 <td>Default Value</td>
@@ -1416,12 +1416,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="nuget-packages-repository-url">Nuget Packages Repository URL</h2>
-<pre><code>--detect.nuget.packages.repo.url=https://api.nuget.org/v3/index.json
+<h2 id="nuget-config-file-advanced">Nuget Config File (Advanced)</h2>
+<pre><code>--detect.nuget.config.path
 </code></pre>
 
-<p>The source for nuget packages</p>
-<p>Set this to "https://www.nuget.org/api/v2/" if your are still using a nuget client expecting the v2 api.</p>
+<p>The path to the Nuget.Config file to supply to the nuget exe.</p>
 <table>
 <thead>
 <tr>
@@ -1432,54 +1431,11 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>4.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>String[]</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>https://api.nuget.org/v3/index.json</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="dotnet-executable">dotnet Executable</h2>
-<pre><code>--detect.dotnet.path
-</code></pre>
-
-<p>The path to the dotnet executable.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.4.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
+<td>Optional Path</td>
 </tr>
 <tr>
 <td>Default Value</td>
@@ -1522,7 +1478,7 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>Optional String</td>
 </tr>
 <tr>
 <td>Default Value</td>
@@ -1589,11 +1545,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="nuget-inspector-airgap-path-advanced">Nuget Inspector AirGap Path (Advanced)</h2>
-<pre><code>--detect.nuget.inspector.air.gap.path
+<h2 id="nuget-modules-included-advanced">Nuget Modules Included (Advanced)</h2>
+<pre><code>--detect.nuget.included.modules
 </code></pre>
 
-<p>The path to the directory containing the nuget inspector nupkg.</p>
+<p>The names of the projects in a solution to include (overrides exclude).</p>
 <table>
 <thead>
 <tr>
@@ -1608,7 +1564,7 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>Optional String</td>
 </tr>
 <tr>
 <td>Default Value</td>
@@ -1632,11 +1588,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="nuget-modules-included-advanced">Nuget Modules Included (Advanced)</h2>
-<pre><code>--detect.nuget.included.modules
+<h2 id="nuget-inspector-airgap-path-advanced">Nuget Inspector AirGap Path (Advanced)</h2>
+<pre><code>--detect.nuget.inspector.air.gap.path
 </code></pre>
 
-<p>The names of the projects in a solution to include (overrides exclude).</p>
+<p>The path to the directory containing the nuget inspector nupkg.</p>
 <table>
 <thead>
 <tr>
@@ -1651,7 +1607,7 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>Optional Path</td>
 </tr>
 <tr>
 <td>Default Value</td>
@@ -1694,7 +1650,7 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>Optional String</td>
 </tr>
 <tr>
 <td>Default Value</td>
@@ -1718,12 +1674,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-nuget-path-deprecated">Detect Nuget Path (Deprecated)</h2>
-<pre><code>--detect.nuget.path
+<h2 id="nuget-packages-repository-url-advanced">Nuget Packages Repository URL (Advanced)</h2>
+<pre><code>--detect.nuget.packages.repo.url=,
 </code></pre>
 
-<p>The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package.</p>
-<p><strong>DEPRECATED: In the future, Detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<p>The source for nuget packages</p>
+<p>Set this to "https://www.nuget.org/api/v2/" if your are still using a nuget client expecting the v2 api.</p>
 <table>
 <thead>
 <tr>
@@ -1738,15 +1694,15 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>String List</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>,</td>
 </tr>
 <tr>
 <td>Comma Seperated</td>
-<td>No</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>Case Sensative</td>
@@ -1788,6 +1744,50 @@
 <tr>
 <td>Default Value</td>
 <td>IntegrationNugetInspector</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-nuget-path-deprecated">Detect Nuget Path (Deprecated)</h2>
+<pre><code>--detect.nuget.path
+</code></pre>
+
+<p>The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package.</p>
+<p><strong>DEPRECATED: In the future, Detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional Path</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

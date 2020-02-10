@@ -923,29 +923,29 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#risk-report-output-path" class="md-nav__link">
-    Risk Report Output Path
+  <a href="#generate-notices-report-advanced" class="md-nav__link">
+    Generate Notices Report (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#notices-report-path" class="md-nav__link">
-    Notices Report Path
+  <a href="#notices-report-path-advanced" class="md-nav__link">
+    Notices Report Path (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#generate-notices-report" class="md-nav__link">
-    Generate Notices Report
+  <a href="#generate-risk-report-40pdf41-advanced" class="md-nav__link">
+    Generate Risk Report (PDF) (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#generate-risk-report-40pdf41" class="md-nav__link">
-    Generate Risk Report (PDF)
+  <a href="#risk-report-output-path-advanced" class="md-nav__link">
+    Risk Report Output Path (Advanced)
   </a>
   
 </li>
@@ -1244,29 +1244,29 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#risk-report-output-path" class="md-nav__link">
-    Risk Report Output Path
+  <a href="#generate-notices-report-advanced" class="md-nav__link">
+    Generate Notices Report (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#notices-report-path" class="md-nav__link">
-    Notices Report Path
+  <a href="#notices-report-path-advanced" class="md-nav__link">
+    Notices Report Path (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#generate-notices-report" class="md-nav__link">
-    Generate Notices Report
+  <a href="#generate-risk-report-40pdf41-advanced" class="md-nav__link">
+    Generate Risk Report (PDF) (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#generate-risk-report-40pdf41" class="md-nav__link">
-    Generate Risk Report (PDF)
+  <a href="#risk-report-output-path-advanced" class="md-nav__link">
+    Risk Report Output Path (Advanced)
   </a>
   
 </li>
@@ -1289,93 +1289,7 @@
                 
                 
                 <h1 id="report">report</h1>
-<h2 id="risk-report-output-path">Risk Report Output Path</h2>
-<pre><code>--detect.risk.report.pdf.path=.
-</code></pre>
-
-<p>The output directory for risk report in PDF. Default is the source directory.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>.</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="notices-report-path">Notices Report Path</h2>
-<pre><code>--detect.notices.report.path=.
-</code></pre>
-
-<p>The output directory for notices report. Default is the source directory.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>.</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="generate-notices-report">Generate Notices Report</h2>
+<h2 id="generate-notices-report-advanced">Generate Notices Report (Advanced)</h2>
 <pre><code>--detect.notices.report=false
 </code></pre>
 
@@ -1418,7 +1332,50 @@
 </tr>
 </tbody>
 </table>
-<h2 id="generate-risk-report-40pdf41">Generate Risk Report (PDF)</h2>
+<h2 id="notices-report-path-advanced">Notices Report Path (Advanced)</h2>
+<pre><code>--detect.notices.report.path
+</code></pre>
+
+<p>The output directory for notices report. Default is the source directory.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional Path</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="generate-risk-report-40pdf41-advanced">Generate Risk Report (PDF) (Advanced)</h2>
 <pre><code>--detect.risk.report.pdf=false
 </code></pre>
 
@@ -1442,6 +1399,49 @@
 <tr>
 <td>Default Value</td>
 <td>false</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="risk-report-output-path-advanced">Risk Report Output Path (Advanced)</h2>
+<pre><code>--detect.risk.report.pdf.path
+</code></pre>
+
+<p>The output directory for risk report in PDF. Default is the source directory.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional Path</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Seperated</td>

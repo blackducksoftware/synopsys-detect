@@ -851,22 +851,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#logging-level" class="md-nav__link">
-    Logging Level
+  <a href="#logging-level-advanced" class="md-nav__link">
+    Logging Level (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#logging-level-shorthand" class="md-nav__link">
-    Logging Level Shorthand
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#logging-level-deprecated" class="md-nav__link">
-    Logging Level (Deprecated)
+  <a href="#logging-level-shorthand-advanced" class="md-nav__link">
+    Logging Level Shorthand (Advanced)
   </a>
   
 </li>
@@ -881,6 +874,13 @@
         <li class="md-nav__item">
   <a href="#detect-suppress-results-output-deprecated" class="md-nav__link">
     Detect Suppress Results Output (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logging-level-deprecated" class="md-nav__link">
+    Logging Level (Deprecated)
   </a>
   
 </li>
@@ -1251,22 +1251,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#logging-level" class="md-nav__link">
-    Logging Level
+  <a href="#logging-level-advanced" class="md-nav__link">
+    Logging Level (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#logging-level-shorthand" class="md-nav__link">
-    Logging Level Shorthand
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#logging-level-deprecated" class="md-nav__link">
-    Logging Level (Deprecated)
+  <a href="#logging-level-shorthand-advanced" class="md-nav__link">
+    Logging Level Shorthand (Advanced)
   </a>
   
 </li>
@@ -1281,6 +1274,13 @@
         <li class="md-nav__item">
   <a href="#detect-suppress-results-output-deprecated" class="md-nav__link">
     Detect Suppress Results Output (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logging-level-deprecated" class="md-nav__link">
+    Logging Level (Deprecated)
   </a>
   
 </li>
@@ -1303,8 +1303,8 @@
                 
                 
                 <h1 id="logging">logging</h1>
-<h2 id="logging-level">Logging Level</h2>
-<pre><code>--logging.level.com.synopsys.integration=TRACE,DEBUG,INFO,WARN,ERROR,FATAL,OFF 
+<h2 id="logging-level-advanced">Logging Level (Advanced)</h2>
+<pre><code>--logging.level.com.synopsys.integration=OFF,ERROR,WARN,INFO,DEBUG,TRACE 
 </code></pre>
 
 <p>The logging level of Detect.</p>
@@ -1322,7 +1322,7 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>LogLevel</td>
 </tr>
 <tr>
 <td>Default Value</td>
@@ -1334,11 +1334,11 @@
 </tr>
 <tr>
 <td>Case Sensative</td>
-<td>No</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF</td>
+<td>OFF, ERROR, WARN, INFO, DEBUG, TRACE</td>
 </tr>
 <tr>
 <td>Strict</td>
@@ -1346,8 +1346,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="logging-level-shorthand">Logging Level Shorthand</h2>
-<pre><code>--logging.level.detect=TRACE,DEBUG,INFO,WARN,ERROR,FATAL,OFF 
+<h2 id="logging-level-shorthand-advanced">Logging Level Shorthand (Advanced)</h2>
+<pre><code>--logging.level.detect=OFF,ERROR,WARN,INFO,DEBUG,TRACE 
 </code></pre>
 
 <p>Shorthand for the logging level of detect. Equivalent to setting logging.level.com.synopsys.integration.</p>
@@ -1365,7 +1365,7 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>String</td>
+<td>LogLevel</td>
 </tr>
 <tr>
 <td>Default Value</td>
@@ -1377,55 +1377,11 @@
 </tr>
 <tr>
 <td>Case Sensative</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF</td>
-</tr>
-<tr>
-<td>Strict</td>
 <td>Yes</td>
 </tr>
-</tbody>
-</table>
-<h2 id="logging-level-deprecated">Logging Level (Deprecated)</h2>
-<pre><code>--logging.level.com.blackducksoftware.integration=TRACE,DEBUG,INFO,WARN,ERROR,FATAL,OFF 
-</code></pre>
-
-<p>The logging level of Detect.</p>
-<p><strong>DEPRECATED: This property is changing. Please use --logging.level.com.synopsys.integration in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>INFO</td>
-</tr>
-<tr>
-<td>Comma Seperated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensative</td>
-<td>No</td>
-</tr>
 <tr>
 <td>Acceptable Values</td>
-<td>TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF</td>
+<td>OFF, ERROR, WARN, INFO, DEBUG, TRACE</td>
 </tr>
 <tr>
 <td>Strict</td>
@@ -1518,6 +1474,50 @@
 <tr>
 <td>Strict</td>
 <td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="logging-level-deprecated">Logging Level (Deprecated)</h2>
+<pre><code>--logging.level.com.blackducksoftware.integration=OFF,ERROR,WARN,INFO,DEBUG,TRACE 
+</code></pre>
+
+<p>The logging level of Detect.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --logging.level.com.synopsys.integration in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>LogLevel</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>INFO</td>
+</tr>
+<tr>
+<td>Comma Seperated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensative</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>OFF, ERROR, WARN, INFO, DEBUG, TRACE</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>Yes</td>
 </tr>
 </tbody>
 </table>
