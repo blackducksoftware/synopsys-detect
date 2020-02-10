@@ -30,11 +30,15 @@ import com.synopsys.integration.detectable.Extraction
 import com.synopsys.integration.detectable.ExtractionEnvironment
 import com.synopsys.integration.detectable.factory.DetectableFactory
 import com.synopsys.integration.detectable.util.FunctionalTestFiles
-import org.apache.commons.io.FileUtils
+import org.apache.commons.io.IOUtils
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 
 /*
 A functional test creates a small sample detectable environment and verifies the detectable produces the expected Code Locations.
@@ -45,26 +49,35 @@ Functional tests use real output from package managers.
 abstract class DetectableFunctionalTest(val name: String) {
 
     val folder = Files.createTempDirectory(name).toFile()
-    val source = File(folder, "source")
+    val source = TestDirectory(folder.toPath().resolve("source")) // TestFile(folder, "source")
     val output = File(folder, "output")
     val fileFinder = FunctionalFileFinder()
     val executableRunner = FunctionalExecutableRunner()
     val externalIdFactory = ExternalIdFactory()
     val detectableFactory = DetectableFactory(fileFinder, executableRunner, externalIdFactory, GsonBuilder().create())
 
-    fun addFileFromResource(name: String, resourcePath: String) {
-        val inputStream = FunctionalTestFiles.asInputStream(resourcePath)
-        Assertions.assertNotNull(inputStream, "Could not find resource file: $resourcePath")
-        val destination = File(source, name)
-        FileUtils.copyInputStreamToFile(inputStream, destination)
-        fileFinder.addFile(destination, 0)
+    fun addFiles(init: TestDirectory.() -> Unit): TestDirectory {
+        source.init()
+
+        addToFileFinder(source)
+        return source
+    }
+
+    private fun addToFileFinder(directory: TestDirectory, depth: Int = 0) {
+        fileFinder.addFile(directory.path.toFile(), depth)
+        directory.listFiles.forEach {
+            fileFinder.addFile(it.path.toFile(), depth)
+            if (it is TestDirectory) {
+                addToFileFinder(it, depth + 1)
+            }
+        }
     }
 
     @Test
     fun run() {
         setup()
 
-        val detectableEnvironment = DetectableEnvironment(source)
+        val detectableEnvironment = DetectableEnvironment(source.path.toFile())
         val detectable = create(detectableEnvironment)
         val applicable = detectable.applicable()
         Assertions.assertTrue(applicable.passed, "Applicable should have passed but was: ${applicable.toDescription()}")
@@ -83,4 +96,49 @@ abstract class DetectableFunctionalTest(val name: String) {
     abstract fun setup()
     abstract fun create(environment: DetectableEnvironment): Detectable
     abstract fun assert(extraction: Extraction)
+}
+
+sealed class FileSystemElement(val path: Path)
+class TestDirectory(path: Path) : FileSystemElement(path) {
+    val listFiles = mutableListOf<FileSystemElement>()
+
+    init {
+        if (!Files.exists(path)) {
+            Files.createDirectory(path)
+        }
+    }
+
+    fun file(name: String, fileContent: String): TestFile {
+        val newPath = path.resolve(name)
+        val file = TestFile(newPath, fileContent)
+        listFiles.add(file)
+        return file
+    }
+
+    fun fileFromResources(name: String, resourcePath: String, encoding: Charset = StandardCharsets.UTF_8): TestFile {
+        val inputStream = FunctionalTestFiles.asInputStream(resourcePath)
+        Assertions.assertNotNull(inputStream, "Could not find resource file: $resourcePath")
+        return file(name, IOUtils.toString(inputStream, encoding))
+    }
+
+    fun directory(name: String): TestDirectory {
+        val newPath = Paths.get(name)
+        val directory = TestDirectory(newPath)
+        listFiles.add(directory)
+        return directory
+    }
+
+    fun directory(name: String, init: TestDirectory.() -> Unit): TestDirectory {
+        val newPath = Paths.get(name)
+        val directory = TestDirectory(newPath)
+        directory.init()
+        listFiles.add(directory)
+        return directory
+    }
+}
+
+class TestFile(path: Path, val content: String) : FileSystemElement(path) {
+    init {
+        Files.write(path, content.split(System.lineSeparator()))
+    }
 }

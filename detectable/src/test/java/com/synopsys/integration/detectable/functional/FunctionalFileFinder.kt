@@ -33,7 +33,7 @@ class FunctionalFileFinder : FileFinder {
 
     fun addFile(file: File, depth: Int) {
         if (!files.containsKey(depth)) {
-            files.put(depth, mutableListOf())
+            files[depth] = mutableListOf()
         }
         files[depth]!!.add(file)
     }
@@ -42,7 +42,7 @@ class FunctionalFileFinder : FileFinder {
         val found: MutableList<File> = ArrayList()
         for (i in 0..depth) {
             if (files.containsKey(i)) {
-                val possibles = files[i]!!;
+                val possibles = files[i]!!
                 for (pattern in filenamePatterns) {
                     val fileFilter: FileFilter = WildcardFileFilter(pattern)
                     for (possible in possibles) {
