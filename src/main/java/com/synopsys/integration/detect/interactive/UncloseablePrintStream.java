@@ -1,5 +1,5 @@
 /**
- * detector
+ * synopsys-detect
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,12 +20,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.base;
+package com.synopsys.integration.detect.interactive;
 
-import com.synopsys.integration.detectable.Detectable;
-import com.synopsys.integration.detectable.DetectableEnvironment;
+import java.io.PrintStream;
 
-@FunctionalInterface
-public interface DetectableCreatable<T extends Detectable> {
-    T createDetectable(DetectableEnvironment environment);
+/**
+ * A wrapped PrintStream that does nothing when closed.
+ * Useful for wrapping System.out without the underlying stream being closed.
+ */
+public class UncloseablePrintStream extends PrintStream {
+    public UncloseablePrintStream(final PrintStream printStream) {
+        super(printStream);
+    }
+
+    @Override
+    public void close() {
+        // Do nothing
+    }
 }

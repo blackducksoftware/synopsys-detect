@@ -41,14 +41,16 @@ public class ComposerLockDetectable extends Detectable {
 
     private final FileFinder fileFinder;
     private final ComposerLockExtractor composerLockExtractor;
+    private final ComposerLockDetectableOptions composerLockDetectableOptions;
 
     private File composerLock;
     private File composerJson;
 
-    public ComposerLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final ComposerLockExtractor composerLockExtractor) {
+    public ComposerLockDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final ComposerLockExtractor composerLockExtractor, ComposerLockDetectableOptions composerLockDetectableOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.composerLockExtractor = composerLockExtractor;
+        this.composerLockDetectableOptions = composerLockDetectableOptions;
     }
 
     @Override
@@ -73,7 +75,7 @@ public class ComposerLockDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return composerLockExtractor.extract(composerJson, composerLock);
+        return composerLockExtractor.extract(composerJson, composerLock, composerLockDetectableOptions.shouldIncludeDevDependencies());
     }
 
 }

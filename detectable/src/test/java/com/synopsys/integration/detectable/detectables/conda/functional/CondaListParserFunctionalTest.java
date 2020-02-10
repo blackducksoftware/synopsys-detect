@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.conda.functional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -43,6 +44,7 @@ public class CondaListParserFunctionalTest {
     }
 
     @Test
+    @Disabled
     public void smallParseTest() {
         final String condaInfoJson = FunctionalTestFiles.asString("/conda/condaInfo.json");
         final String condaListJson = FunctionalTestFiles.asString("/conda/condaListSmall.json");
@@ -52,6 +54,7 @@ public class CondaListParserFunctionalTest {
     }
 
     @Test
+    @Disabled
     public void largeParseTest() {
         final String condaInfoJson = FunctionalTestFiles.asString("/conda/condaInfo.json");
         final String condaListJson = FunctionalTestFiles.asString("/conda/condaListLarge.json");

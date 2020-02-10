@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.InputStream;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -37,6 +38,7 @@ import com.synopsys.integration.detectable.util.GraphCompare;
 
 public class GoLockParserTest {
     @Test
+    @Disabled
     public void gopkgParserTest() {
         final GoLockParser gopkgLockParser = new GoLockParser(new ExternalIdFactory());
         final InputStream gopkgLockInputStream = FunctionalTestFiles.asInputStream("/go/Gopkg.lock");

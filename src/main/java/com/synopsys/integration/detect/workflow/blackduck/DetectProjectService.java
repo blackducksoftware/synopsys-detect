@@ -24,11 +24,8 @@ package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.EnumUtils;
@@ -37,13 +34,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.core.BlackDuckView;
+import com.synopsys.integration.blackduck.api.generated.enumeration.LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionPhaseType;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.api.generated.view.TagView;
-import com.synopsys.integration.blackduck.api.generated.view.VersionBomComponentView;
+import com.synopsys.integration.blackduck.api.manual.throwaway.generated.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectBomService;
@@ -111,7 +108,8 @@ public class DetectProjectService {
         return projectVersionWrapper;
     }
 
-    private void mapToParentProjectVersion(final BlackDuckService blackDuckService, final ProjectService projectService, final ProjectBomService projectBomService, final String parentProjectName, final String parentVersionName, final ProjectVersionWrapper projectVersionWrapper)
+    private void mapToParentProjectVersion(final BlackDuckService blackDuckService, final ProjectService projectService, final ProjectBomService projectBomService, final String parentProjectName, final String parentVersionName,
+        final ProjectVersionWrapper projectVersionWrapper)
         throws DetectUserFriendlyException {
         if (StringUtils.isNotBlank(parentProjectName) || StringUtils.isNotBlank(parentVersionName)) {
             logger.debug("Will attempt to add this project to a parent.");
@@ -126,11 +124,11 @@ public class DetectProjectService {
                     ProjectVersionView parentProjectVersionView = parentWrapper.get().getProjectVersionView();
                     Request.Builder requestBuilder = new Request.Builder();
                     RequestFactory.addBlackDuckFilter(requestBuilder, BlackDuckRequestFilter.createFilterWithSingleValue("bomComponentSource", "custom_project"));
-                    List<VersionBomComponentView> components = blackDuckService.getAllResponses(parentProjectVersionView, ProjectVersionView.COMPONENTS_LINK_RESPONSE, requestBuilder);
-                    Optional<VersionBomComponentView> existingProjectComponent = components.stream()
-                                                                                     .filter(component -> component.getComponentName().equals(projectName))
-                                                                                     .filter(component -> component.getComponentVersionName().equals(projectVersionName))
-                                                                                     .findFirst();
+                    List<ProjectVersionComponentView> components = blackDuckService.getAllResponses(parentProjectVersionView, ProjectVersionView.COMPONENTS_LINK_RESPONSE, requestBuilder);
+                    Optional<ProjectVersionComponentView> existingProjectComponent = components.stream()
+                                                                                         .filter(component -> component.getComponentName().equals(projectName))
+                                                                                         .filter(component -> component.getComponentVersionName().equals(projectVersionName))
+                                                                                         .findFirst();
                     if (existingProjectComponent.isPresent()) {
                         logger.debug("This project already exists on the parent so it will not be added to the parent again.");
                     } else {

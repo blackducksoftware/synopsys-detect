@@ -33,6 +33,7 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractor;
+import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 
 public class MavenPomDetectableTest {
@@ -51,7 +52,7 @@ public class MavenPomDetectableTest {
         Mockito.when(environment.getDirectory()).thenReturn(dir);
         Mockito.when(fileFinder.findFile(dir, POM_FILENAME)).thenReturn(new File(POM_FILENAME));
 
-        final MavenPomDetectable detectable = new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor);
+        final MavenPomDetectable detectable = new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor, new MavenCliExtractorOptions("", "", "", "", ""));
 
         assertTrue(detectable.applicable().getPassed());
     }

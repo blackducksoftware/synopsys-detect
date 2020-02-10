@@ -23,9 +23,9 @@
 package com.synopsys.integration.detect.configuration
 
 import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
+import com.synopsys.integration.blackduck.api.generated.enumeration.LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionPhaseType
+import com.synopsys.integration.blackduck.api.manual.throwaway.generated.enumeration.ProjectVersionPhaseType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
 import com.synopsys.integration.configuration.property.Property
 import com.synopsys.integration.configuration.property.base.PassthroughProperty
@@ -830,7 +830,7 @@ class DetectProperties {
             groups(DetectGroup.Paths, DetectGroup.Global)
             category(DetectCategory.Advanced)
         }
-        val DETECT_PROJECT_VERSION_DISTRIBUTION = EnumProperty("detect.project.version.distribution", ProjectVersionDistributionType.EXTERNAL, ProjectVersionDistributionType::class.java).apply {
+        val DETECT_PROJECT_VERSION_DISTRIBUTION = EnumProperty("detect.project.version.distribution", LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType.EXTERNAL, LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType::class.java).apply {
             info("Version Distribution", "3.0.0")
             help("An override for the Project Version distribution")
             groups(DetectGroup.Project, DetectGroup.ProjectSetting)
@@ -967,7 +967,7 @@ class DetectProperties {
 
         val DETECT_WAIT_FOR_RESULTS = BooleanProperty("detect.wait.for.results", false).apply {
             info("Wait For Results", "5.5.0")
-            help("If set to true, Detect will wait for Synopsys products until results are available or the blackduck.timeout is exceeded.")
+            help("If set to true, Detect will wait for Synopsys products until results are available or the detect.report.timeout is exceeded.")
             groups(DetectGroup.General, DetectGroup.Global)
         }
 

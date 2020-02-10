@@ -25,6 +25,9 @@ package com.synopsys.integration.detectable.detectables.conda;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Extraction;
@@ -36,22 +39,20 @@ import com.synopsys.integration.detectable.detectables.conda.parser.CondaListPar
 public class CondaCliExtractor {
     private final CondaListParser condaListParser;
     private final ExecutableRunner executableRunner;
-    private final CondaCliDetectableOptions condaCliDetectableOptions;
 
-    public CondaCliExtractor(final CondaListParser condaListParser, final ExecutableRunner executableRunner, final CondaCliDetectableOptions condaCliDetectableOptions) {
+    public CondaCliExtractor(final CondaListParser condaListParser, final ExecutableRunner executableRunner) {
         this.condaListParser = condaListParser;
         this.executableRunner = executableRunner;
-        this.condaCliDetectableOptions = condaCliDetectableOptions;
     }
 
-    public Extraction extract(final File directory, final File condaExe, final File workingDirectory) {
+    public Extraction extract(final File directory, final File condaExe, final File workingDirectory, String condaEnvironmentName) {
         try {
             final List<String> condaListOptions = new ArrayList<>();
             condaListOptions.add("list");
-            condaCliDetectableOptions.getCondaEnvironmentName().ifPresent(env -> {
+            if (StringUtils.isNotBlank(condaEnvironmentName)) {
                 condaListOptions.add("-n");
-                condaListOptions.add(env);
-            });
+                condaListOptions.add(condaEnvironmentName);
+            }
             condaListOptions.add("--json");
             final ExecutableOutput condaListOutput = executableRunner.execute(directory, condaExe, condaListOptions);
 

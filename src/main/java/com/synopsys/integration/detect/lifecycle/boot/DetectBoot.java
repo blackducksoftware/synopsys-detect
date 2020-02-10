@@ -55,7 +55,6 @@ import com.synopsys.integration.configuration.source.SpringConfigurationProperty
 import com.synopsys.integration.configuration.source.UnknownSpringConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
-import com.synopsys.integration.detect.DetectableBeanConfiguration;
 import com.synopsys.integration.detect.RunBeanConfiguration;
 import com.synopsys.integration.detect.configuration.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.ConnectionFactory;
@@ -85,8 +84,8 @@ import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
+import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
@@ -107,7 +106,6 @@ import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.profiling.DetectorProfiler;
-import com.synopsys.integration.detect.workflow.report.writer.DebugLogReportWriter;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
@@ -167,7 +165,7 @@ public class DetectBoot {
         if (detectArgumentState.isInteractive()) {
             final List<InteractiveOption> interactiveOptions = startInteractiveMode(propertySources);
             final Map<String, String> interactivePropertyMap = interactiveOptions.stream()
-                                                                   .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), option -> option.getInteractiveValue()));
+                                                                   .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), InteractiveOption::getInteractiveValue));
             final PropertySource interactivePropertySource = new MapPropertySource("interactive", interactivePropertyMap);
             propertySources.add(0, interactivePropertySource);
         }
@@ -235,7 +233,6 @@ public class DetectBoot {
             return DetectBootResult.exit(detectConfiguration, directoryManager, diagnosticSystem);
         }
 
-        //TODO: Only need this if in diagnostic or online (for phone home):
         final DetectorProfiler profiler = new DetectorProfiler(eventSystem);
 
         //Finished, populate the detect context
@@ -256,7 +253,6 @@ public class DetectBoot {
         detectContext.registerBean(configuration);
 
         detectContext.registerConfiguration(RunBeanConfiguration.class);
-        detectContext.registerConfiguration(DetectableBeanConfiguration.class);
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
         return DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem);
@@ -269,8 +265,10 @@ public class DetectBoot {
 
     private void printHelpJsonDocument(final List<Property> properties, final DetectInfo detectInfo, final Gson gson) {
         final DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
-        final DetectorRuleSet build = ruleFactory.createRules(new DetectableFactory(), false);
-        final DetectorRuleSet buildless = ruleFactory.createRules(new DetectableFactory(), true);
+        // TODO: Is there a better way to build a fake set of rules?
+        final DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null);
+        final DetectorRuleSet build = ruleFactory.createRules(mockFactory, false);
+        final DetectorRuleSet buildless = ruleFactory.createRules(mockFactory, true);
         final List<HelpJsonDetector> buildDetectors = build.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, build)).collect(Collectors.toList());
         final List<HelpJsonDetector> buildlessDetectors = buildless.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, buildless)).collect(Collectors.toList());
 
@@ -328,10 +326,15 @@ public class DetectBoot {
             if (detectConfiguration.wasKeyProvided(property.getKey())) {
                 final PropertyDeprecationInfo deprecationInfo = property.getPropertyDeprecationInfo();
 
-                additionalNotes.put(property.getKey(), "\t *** DEPRECATED ***");
-                final String deprecationMessage = property.getPropertyDeprecationInfo().getDeprecationText();
+                if (deprecationInfo == null) {
+                    logger.debug("A deprecated property is missing deprecation info.");
+                    continue;
+                }
 
-                deprecationMessages.put(property.getKey(), new ArrayList<String>(Collections.singleton(deprecationMessage)));
+                additionalNotes.put(property.getKey(), "\t *** DEPRECATED ***");
+                final String deprecationMessage = deprecationInfo.getDeprecationText();
+
+                deprecationMessages.put(property.getKey(), new ArrayList<>(Collections.singleton(deprecationMessage)));
                 DetectIssue.publish(eventSystem, DetectIssueType.Deprecation, property.getKey(), "\t" + deprecationMessage);
 
                 if (detectInfo.getDetectMajorVersion() >= deprecationInfo.getFailInVersion().getIntValue()) {
@@ -343,7 +346,6 @@ public class DetectBoot {
         //First print the entire configuration.
         final PropertyConfigurationHelpContext detectConfigurationReporter = new PropertyConfigurationHelpContext(detectConfiguration);
         final InfoLogReportWriter infoLogReportWriter = new InfoLogReportWriter();
-        final DebugLogReportWriter debugLogReportWriter = new DebugLogReportWriter();
         if (!fullConfiguration) {
             detectConfigurationReporter.printCurrentValues(infoLogReportWriter::writeLine, DetectProperties.Companion.getProperties(), additionalNotes);
         }
