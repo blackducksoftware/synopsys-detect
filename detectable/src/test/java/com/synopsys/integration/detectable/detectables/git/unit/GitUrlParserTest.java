@@ -20,13 +20,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.git.cli;
+package com.synopsys.integration.detectable.detectables.git.unit;
 
 import java.net.MalformedURLException;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.exception.IntegrationException;
 
 class GitUrlParserTest {

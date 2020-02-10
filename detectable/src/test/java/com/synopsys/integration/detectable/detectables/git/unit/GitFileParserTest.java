@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.git.parsing.parse;
+package com.synopsys.integration.detectable.detectables.git.unit;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +34,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigElement;
+import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
 
 class GitFileParserTest {
     @Test
