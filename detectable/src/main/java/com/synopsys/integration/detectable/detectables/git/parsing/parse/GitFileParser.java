@@ -42,11 +42,13 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 public class GitFileParser {
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
+    // TODO: Accept a String rather than an input stream.
     public String parseGitHead(final InputStream inputStream) throws IOException {
         final String line = IOUtils.toString(inputStream, StandardCharsets.UTF_8).trim();
         return line.replaceFirst("ref:\\w*", "").trim();
     }
 
+    // TODO: Accept a list of Strings representing lines rather than an input stream.
     public List<GitConfigElement> parseGitConfig(final InputStream inputStream) throws IOException {
         final List<String> gitConfigLines = IOUtils.readLines(inputStream, StandardCharsets.UTF_8);
 
