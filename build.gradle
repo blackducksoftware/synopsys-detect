@@ -21,7 +21,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.synopsys.integration:common-gradle-plugin:1.0.0'
+        classpath 'com.synopsys.integration:common-gradle-plugin:1.1.1'
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
         classpath "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
