@@ -20,92 +20,80 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.git.unit;
+package com.synopsys.integration.detectable.detectables.git.unit
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser
+import com.synopsys.integration.detectable.util.TestExtensionFunctions.Companion.toInputStream
+import org.apache.commons.io.IOUtils
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import java.io.IOException
+import java.nio.charset.StandardCharsets
 
-import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigElement;
-import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
-
-class GitFileParserTest {
+internal class GitFileParserTest {
     @Test
-    void parseHeadFile() throws IOException {
-        final GitFileParser gitFileParser = new GitFileParser();
-        final String gitHeadContent = "ref: refs/heads/master\n";
-
-        final InputStream inputStream = IOUtils.toInputStream(gitHeadContent, StandardCharsets.UTF_8);
-        final String head = gitFileParser.parseGitHead(inputStream);
-
-        Assertions.assertEquals("refs/heads/master", head);
+    @Throws(IOException::class)
+    fun parseHeadFile() {
+        val gitFileParser = GitFileParser()
+        val gitHeadContent = "ref: refs/heads/master\n"
+        val inputStream = IOUtils.toInputStream(gitHeadContent, StandardCharsets.UTF_8)
+        val head = gitFileParser.parseGitHead(inputStream)
+        Assertions.assertEquals("refs/heads/master", head)
     }
 
     @Test
-    void parseGitConfig() throws IOException {
-        final GitFileParser gitFileParser = new GitFileParser();
-        final String gitConfigContent = "[core]\n"
-                                            + "\trepositoryformatversion = 0\n"
-                                            + "\tfilemode = true\n"
-                                            + "\tbare = false\n"
-                                            + "\tlogallrefupdates = true\n"
-                                            + "\tignorecase = true\n"
-                                            + "\tprecomposeunicode = true\n"
-                                            + "[remote \"origin\"]\n"
-                                            + "\turl = https://github.com/blackducksoftware/synopsys-detect.git\n"
-                                            + "\tfetch = +refs/heads/*:refs/remotes/origin/*\n"
-                                            + "[branch \"master\"]\n"
-                                            + "\tremote = origin\n"
-                                            + "\tmerge = refs/heads/master\n"
-                                            + "[branch \"master-backup\"]\n"
-                                            + "\tremote = origin\n"
-                                            + "\tmerge = refs/heads/master-backup\n"
-                                            + "[branch \"6.0.0-actual\"]\n"
-                                            + "\tremote = origin\n"
-                                            + "\tmerge = refs/heads/6.0.0-actual\n"
-                                            + "[branch \"deployment-test\"]\n"
-                                            + "\tremote = origin\n"
-                                            + "\tmerge = refs/heads/deployment-test\n"
-                                            + "[branch \"verify-config\"]\n"
-                                            + "\tremote = origin\n"
-                                            + "\tmerge = refs/heads/verify-config\n";
+    @Throws(IOException::class)
+    fun parseGitConfig() {
+        val gitFileParser = GitFileParser()
+        val inputStream = """
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+	ignorecase = true
+	precomposeunicode = true
+[remote "origin"]
+	url = https://github.com/blackducksoftware/synopsys-detect.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+	remote = origin
+	merge = refs/heads/master
+[branch "master-backup"]
+	remote = origin
+	merge = refs/heads/master-backup
+[branch "6.0.0-actual"]
+	remote = origin
+	merge = refs/heads/6.0.0-actual
+[branch "deployment-test"]
+	remote = origin
+	merge = refs/heads/deployment-test
+[branch "verify-config"]
+	remote = origin
+	merge = refs/heads/verify-config
+""".toInputStream()
 
-        final InputStream inputStream = IOUtils.toInputStream(gitConfigContent, StandardCharsets.UTF_8);
-        final List<GitConfigElement> gitConfigElements = gitFileParser.parseGitConfig(inputStream);
+        val gitConfigElements = gitFileParser.parseGitConfig(inputStream)
+        Assertions.assertEquals(7, gitConfigElements.size)
 
-        Assertions.assertEquals(7, gitConfigElements.size());
+        val gitConfigCores = gitConfigElements.filter { it.elementType == "core" }
+        Assertions.assertEquals(1, gitConfigCores.size)
 
-        final List<GitConfigElement> gitConfigCores = gitConfigElements.stream()
-                                                          .filter(gitConfigElement -> gitConfigElement.getElementType().equals("core"))
-                                                          .collect(Collectors.toList());
-        Assertions.assertEquals(1, gitConfigCores.size());
+        val gitConfigRemotes = gitConfigElements.filter { it.elementType == "remote" }
+        Assertions.assertEquals(1, gitConfigRemotes.size)
 
-        final List<GitConfigElement> gitConfigRemotes = gitConfigElements.stream()
-                                                            .filter(gitConfigElement -> gitConfigElement.getElementType().equals("remote"))
-                                                            .collect(Collectors.toList());
-        Assertions.assertEquals(1, gitConfigRemotes.size());
+        val gitConfigBranches = gitConfigElements.filter { it.elementType == "branch" }
+        Assertions.assertEquals(5, gitConfigBranches.size)
 
-        final List<GitConfigElement> gitConfigBranches = gitConfigElements.stream()
-                                                             .filter(gitConfigElement -> gitConfigElement.getElementType().equals("branch"))
-                                                             .collect(Collectors.toList());
-        Assertions.assertEquals(5, gitConfigBranches.size());
+        val remoteOrigin = gitConfigElements
+                .filter { it.elementType == "remote" }
+                .filter { it.name.isPresent }
+                .first { it.name.get() == "origin" }
 
-        final Optional<GitConfigElement> remoteOrigin = gitConfigElements.stream()
-                                                            .filter(gitConfigElement -> gitConfigElement.getElementType().equals("remote"))
-                                                            .filter(gitConfigElement -> gitConfigElement.getName().isPresent())
-                                                            .filter(gitConfigElement -> gitConfigElement.getName().get().equals("origin"))
-                                                            .findAny();
-        Assertions.assertTrue(remoteOrigin.isPresent());
-        Assertions.assertTrue(remoteOrigin.get().containsKey("fetch"));
+        Assertions.assertNotNull(remoteOrigin)
+        Assertions.assertTrue(remoteOrigin.containsKey("fetch"))
 
-        final String fetch = remoteOrigin.get().getProperty("fetch");
-        Assertions.assertEquals("+refs/heads/*:refs/remotes/origin/*", fetch);
+        val fetch = remoteOrigin.getProperty("fetch")
+        Assertions.assertEquals("+refs/heads/*:refs/remotes/origin/*", fetch)
     }
 }
