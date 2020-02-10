@@ -122,7 +122,7 @@ class ProductDeciderTest {
                 )
         )
         whenever(detectConfigurationFactory.createBlackDuckSignatureScannerOptions()).thenReturn(
-                BlackDuckSignatureScannerOptions(listOf(), listOf(), listOf(), null, null, null, 1024, 1, false, null, false, null, null, null, 1)
+                BlackDuckSignatureScannerOptions(listOf(), listOf(), listOf(), null, null, null, 1024, 1, false, null, false, null, null, null, 1, false)
         )
     }
 
