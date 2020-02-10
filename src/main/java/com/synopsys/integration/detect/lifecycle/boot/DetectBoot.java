@@ -55,7 +55,6 @@ import com.synopsys.integration.configuration.source.SpringConfigurationProperty
 import com.synopsys.integration.configuration.source.UnknownSpringConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
-import com.synopsys.integration.detect.DetectableBeanConfiguration;
 import com.synopsys.integration.detect.RunBeanConfiguration;
 import com.synopsys.integration.detect.configuration.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.ConnectionFactory;
@@ -85,8 +84,8 @@ import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
+import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
@@ -254,7 +253,6 @@ public class DetectBoot {
         detectContext.registerBean(configuration);
 
         detectContext.registerConfiguration(RunBeanConfiguration.class);
-        detectContext.registerConfiguration(DetectableBeanConfiguration.class);
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
         return DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem);
@@ -267,8 +265,10 @@ public class DetectBoot {
 
     private void printHelpJsonDocument(final List<Property> properties, final DetectInfo detectInfo, final Gson gson) {
         final DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
-        final DetectorRuleSet build = ruleFactory.createRules(new DetectableFactory(), false);
-        final DetectorRuleSet buildless = ruleFactory.createRules(new DetectableFactory(), true);
+        // TODO: Is there a better way to build a fake set of rules?
+        final DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null);
+        final DetectorRuleSet build = ruleFactory.createRules(mockFactory, false);
+        final DetectorRuleSet buildless = ruleFactory.createRules(mockFactory, true);
         final List<HelpJsonDetector> buildDetectors = build.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, build)).collect(Collectors.toList());
         final List<HelpJsonDetector> buildlessDetectors = buildless.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, buildless)).collect(Collectors.toList());
 

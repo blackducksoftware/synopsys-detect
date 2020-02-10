@@ -40,13 +40,15 @@ public class MavenParseDetectable extends Detectable {
 
     private final FileFinder fileFinder;
     private final MavenParseExtractor mavenParseExtractor;
+    private final MavenParseOptions mavenParseOptions;
 
     private File pomXmlFile;
 
-    public MavenParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final MavenParseExtractor mavenParseExtractor) {
+    public MavenParseDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final MavenParseExtractor mavenParseExtractor, MavenParseOptions mavenParseOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.mavenParseExtractor = mavenParseExtractor;
+        this.mavenParseOptions = mavenParseOptions;
     }
 
     @Override
@@ -67,7 +69,7 @@ public class MavenParseDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return mavenParseExtractor.extract(pomXmlFile);
+        return mavenParseExtractor.extract(pomXmlFile, mavenParseOptions);
     }
 
 }

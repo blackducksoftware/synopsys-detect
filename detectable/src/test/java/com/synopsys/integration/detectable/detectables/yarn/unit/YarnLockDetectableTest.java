@@ -41,7 +41,7 @@ public class YarnLockDetectableTest {
         final DetectableEnvironment environment = MockDetectableEnvironment.empty();
         final FileFinder fileFinder = MockFileFinder.withFilesNamed("yarn.lock", "package.json");
 
-        final YarnLockDetectable detectable = new YarnLockDetectable(environment, fileFinder, yarnLockExtractor);
+        final YarnLockDetectable detectable = new YarnLockDetectable(environment, fileFinder, yarnLockExtractor, false);
 
         assertTrue(detectable.applicable().getPassed());
     }

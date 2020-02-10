@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
@@ -43,6 +44,7 @@ public class RubygemsNodePackagerTest {
     private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
     @Test
+    @Disabled
     void packagerTest() throws MissingExternalIdException {
         final List<String> actualText = FunctionalTestFiles.asListOfStrings("/rubygems/Gemfile.lock");
         final GemlockParser rubygemsNodePackager = new GemlockParser(new ExternalIdFactory());

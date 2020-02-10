@@ -62,10 +62,10 @@ import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanToolResult;
 import com.synopsys.integration.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.DetectExecutableRunner;
-import com.synopsys.integration.detect.tool.detector.DetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorTool;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
+import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.tool.polaris.PolarisTool;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
@@ -100,8 +100,6 @@ import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
-import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
-import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
@@ -131,6 +129,7 @@ public class RunManager {
         final CodeLocationNameManager codeLocationNameManager = detectContext.getBean(CodeLocationNameManager.class);
         final BdioCodeLocationCreator bdioCodeLocationCreator = detectContext.getBean(BdioCodeLocationCreator.class);
         final DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
+        final DetectDetectableFactory detectDetectableFactory = detectContext.getBean(DetectDetectableFactory.class);
 
         final RunResult runResult = new RunResult();
         final RunOptions runOptions = detectConfigurationFactory.createRunOptions();
@@ -144,7 +143,7 @@ public class RunManager {
             logger.info("Polaris tools will not be run.");
         }
 
-        final UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, runResult, runOptions, detectToolFilter);
+        final UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, detectDetectableFactory, runResult, runOptions, detectToolFilter);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
             final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName().orElse(null), runOptions.getAggregateMode(), universalToolsResult);
@@ -172,10 +171,10 @@ public class RunManager {
         }
     }
 
-    private UniversalToolsResult runUniversalProjectTools(final PropertyConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager, final EventSystem eventSystem,
+    private UniversalToolsResult runUniversalProjectTools(final PropertyConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory,
+        final DirectoryManager directoryManager, final EventSystem eventSystem, DetectDetectableFactory detectDetectableFactory,
         final RunResult runResult, final RunOptions runOptions, final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         final ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
-        final DetectableFactory detectableFactory = detectContext.getBean(DetectableFactory.class);
         final CodeLocationConverter codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
 
         boolean anythingFailed = false;
@@ -183,7 +182,8 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the Docker tool.");
-            final DetectableTool detectableTool = new DetectableTool(environment -> detectableFactory.createDetectable(DockerDetectable.class, environment), extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
+            final DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createDockerDetectable,
+                extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
                 eventSystem);
             final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
             runResult.addDetectableToolResult(detectableToolResult);
@@ -196,7 +196,8 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the Bazel tool.");
-            final DetectableTool detectableTool = new DetectableTool(environment -> detectableFactory.createDetectable(BazelDetectable.class, environment), extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL,
+            final DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createBazelDetectable,
+                extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL,
                 eventSystem);
             final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
             runResult.addDetectableToolResult(detectableToolResult);
@@ -214,7 +215,7 @@ public class RunManager {
             final boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_BUILDLESS());
 
             final DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
-            final DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectableFactory, buildless);
+            final DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectDetectableFactory, buildless);
 
             final Path sourcePath = directoryManager.getSourceDirectory().toPath();
             final DetectorFinderOptions finderOptions = detectConfigurationFactory.createSearchOptions(sourcePath);

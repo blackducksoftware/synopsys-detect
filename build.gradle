@@ -11,7 +11,7 @@ import com.synopsys.integration.log.PrintStreamIntLogger
 buildscript {
     ext {
         springBootVersion = '2.2.4.RELEASE'
-        blackDuckCommonVersion = '45.0.5'
+        blackDuckCommonVersion = '45.1.1'
         polarisCommonVersion = '0.13.2'
         junitPlatformDefaultTestTags = "integration, performance, battery"
     }
@@ -21,9 +21,9 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.blackducksoftware.integration:common-gradle-plugin:0.0.+'
+        classpath 'com.synopsys.integration:common-gradle-plugin:1.0.0'
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-        classpath "com.blackducksoftware.integration:blackduck-common:${blackDuckCommonVersion}"
+        classpath "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
         classpath "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
     }
 }
@@ -35,7 +35,7 @@ plugins {
 group = 'com.synopsys.integration'
 version = '6.2.0-SNAPSHOT'
 
-apply plugin: 'com.blackducksoftware.integration.solution'
+apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
 apply from: 'artifactory-properties.gradle'
 apply from: 'docs.gradle'
@@ -55,7 +55,7 @@ allprojects {
     dependencies {
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         implementation "org.jetbrains.kotlin:kotlin-reflect"
-        implementation "com.blackducksoftware.integration:blackduck-common:${blackDuckCommonVersion}"
+        implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
         implementation 'com.paypal.digraph:digraph-parser:1.0'
         implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0'
         implementation 'com.fasterxml.jackson.core:jackson-core:2.10.0'
@@ -68,7 +68,7 @@ allprojects {
 subprojects {
     group = rootProject.group
     version = rootProject.version
-    apply plugin: 'com.blackducksoftware.integration.simple'
+    apply plugin: 'com.synopsys.integration.simple'
 
     license {
         header rootProject.file('LICENSE')
