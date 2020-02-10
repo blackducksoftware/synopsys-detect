@@ -205,7 +205,7 @@ class BlackDuckSignatureScanner(
         scanJobBuilder.projectAndVersionNames(projectName, projectVersionName)
 
         val licenseSearch = signatureScannerOptions.licenseSearch
-        // TODO - scanJobBuilder.licenseSearch(licenseSearch)
+        scanJobBuilder.licenseSearch(licenseSearch)
 
         val sourcePath = directoryManager.sourceDirectory
         val prefix = signatureScannerOptions.codeLocationPrefix
