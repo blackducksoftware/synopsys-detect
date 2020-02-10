@@ -41,5 +41,6 @@ class BlackDuckSignatureScannerOptions(
         val codeLocationSuffix: String?,
         val additionalArguments: String?,
         val maxDepth: Int,
-        val individualFileMatching: String?
+        val individualFileMatching: String?,
+        val licenseSearch: Boolean
 )

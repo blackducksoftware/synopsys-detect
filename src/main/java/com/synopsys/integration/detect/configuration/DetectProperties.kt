@@ -247,6 +247,11 @@ class DetectProperties {
             groups(DetectGroup.SignatureScanner, DetectGroup.Global)
             category(DetectCategory.Advanced)
         }
+        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH = BooleanProperty("detect.blackduck.signature.scanner.license.search", false).apply {
+            info("Signature Scanner License Search", "6.2.0")
+            help("When set to true, user will be able to scan and discover license names in Black Duck")
+            groups(DetectGroup.SignatureScanner)
+        }
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH = NullablePathProperty("detect.blackduck.signature.scanner.local.path").apply {
             info("Signature Scanner Local Path", "4.2.0")
             help("To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
