@@ -39,7 +39,7 @@ public class DetectorRuleBuilder<T extends Detectable> {
 
     private DetectorRuleSetBuilder detectorRuleSetBuilder;
 
-    public DetectorRuleBuilder(final String name, final DetectorType detectorType, final Class<T> detectableClass, final DetectableCreatable detectableCreatable) {
+    public DetectorRuleBuilder(final String name, final DetectorType detectorType, final Class<T> detectableClass, final DetectableCreatable<T> detectableCreatable) {
         this.name = name;
         this.detectorType = detectorType;
         this.detectableCreatable = detectableCreatable;

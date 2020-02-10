@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -36,6 +37,7 @@ import com.synopsys.integration.detectable.util.GraphCompare;
 
 public class VndrParserTest {
     @Test
+    @Disabled
     public void vndrParserTest() {
         final VndrParser vndrParser = new VndrParser(new ExternalIdFactory());
 

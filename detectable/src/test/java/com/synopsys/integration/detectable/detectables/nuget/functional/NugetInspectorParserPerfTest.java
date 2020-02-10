@@ -30,7 +30,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.Disabled;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.BdioNodeFactory;
@@ -51,6 +51,7 @@ public class NugetInspectorParserPerfTest {
     public Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
+    @Disabled
     @Test
     public void performanceTestNuget() {
         Assertions.assertTimeout(Duration.ofSeconds(120), () -> {

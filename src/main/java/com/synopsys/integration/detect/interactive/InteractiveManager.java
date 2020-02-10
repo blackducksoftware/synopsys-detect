@@ -37,28 +37,28 @@ import com.synopsys.integration.detect.interactive.reader.ScannerInteractiveRead
 public class InteractiveManager {
     private final Logger logger = LoggerFactory.getLogger(InteractiveManager.class);
 
-    public List<InteractiveOption> configureInInteractiveMode(InteractiveMode interactiveMode) {
-        // TODO: Find a way to close the PrintStream without closing System.out
-        // DO NOT CLOSE THIS STREAM, IT WILL CLOSE SYSOUT!
-        final PrintStream interactivePrintStream = new PrintStream(System.out);
-        final InteractiveReader interactiveReader;
-        final Console console = System.console();
+    public List<InteractiveOption> configureInInteractiveMode(final InteractiveMode interactiveMode) {
+        // Using an UncloseablePrintStream so we don't accidentally close System.out
+        try (final PrintStream interactivePrintStream = new UncloseablePrintStream(System.out)) {
+            final InteractiveReader interactiveReader;
+            final Console console = System.console();
 
-        if (console != null) {
-            interactiveReader = new ConsoleInteractiveReader(console);
-        } else {
-            logger.warn("It may be insecure to enter passwords because you are running in a virtual console.");
-            interactiveReader = new ScannerInteractiveReader(System.in);
+            if (console != null) {
+                interactiveReader = new ConsoleInteractiveReader(console);
+            } else {
+                logger.warn("It may be insecure to enter passwords because you are running in a virtual console.");
+                interactiveReader = new ScannerInteractiveReader(System.in);
+            }
+
+            interactiveMode.init(interactivePrintStream, interactiveReader);
+
+            interactiveMode.println("");
+            interactiveMode.println("Interactive flag found.");
+            interactiveMode.println("Starting default interactive mode.");
+            interactiveMode.println("");
+
+            interactiveMode.configure();
+            return interactiveMode.getInteractiveOptions();
         }
-
-        interactiveMode.init(interactivePrintStream, interactiveReader);
-
-        interactiveMode.println("");
-        interactiveMode.println("Interactive flag found.");
-        interactiveMode.println("Starting default interactive mode.");
-        interactiveMode.println("");
-
-        interactiveMode.configure();
-        return interactiveMode.getInteractiveOptions();
     }
 }

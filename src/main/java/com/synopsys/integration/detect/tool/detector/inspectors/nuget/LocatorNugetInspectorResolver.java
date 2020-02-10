@@ -150,7 +150,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         }
 
         //if customers have overridden the repo url's and include a v2 api, we must use the old nuget inspector (exe inspector) until 5.0.0 of detect.
-        //TODO: Remove in 6.0.0
+        //TODO: Remove in 7.0.0
         for (final String source : packagesRepoUrl) {
             if (source.contains("v2")) {
                 logger.warn("You are using Version 2 of the Nuget Api. Please update to version 3. Support for 2 is deprecated.");

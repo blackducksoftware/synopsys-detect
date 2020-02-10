@@ -88,7 +88,7 @@ public class AggregateBdioCreator {
 
         final SimpleBdioDocument aggregateBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectNameVersion.getName(), projectNameVersion.getVersion(), projectExternalId, aggregateDependencyGraph);
 
-        final String filename = String.format("%s.jsonld", integrationEscapeUtil.escapeForUri(aggregateName));
+        final String filename = String.format("%s.jsonld", integrationEscapeUtil.replaceWithUnderscore(aggregateName));
         final File aggregateBdioFile = new File(bdioDirectory, filename);
 
         detectBdioWriter.writeBdioFile(aggregateBdioFile, aggregateBdioDocument);
@@ -108,7 +108,7 @@ public class AggregateBdioCreator {
         final Project project = bdio2Factory.createProject(projectExternalId, projectNameVersion.getName(), projectNameVersion.getVersion());
         final Bdio2Document bdio2Document = bdio2Factory.createBdio2Document(bdioMetadata, project, aggregateDependencyGraph);
 
-        final String bdio2Filename = String.format("%s.bdio", integrationEscapeUtil.escapeForUri(aggregateName));
+        final String bdio2Filename = String.format("%s.bdio", integrationEscapeUtil.replaceWithUnderscore(aggregateName));
         final File aggregateBdioFile = new File(bdioDirectory, bdio2Filename);
 
         final Bdio2Writer bdio2Writer = new Bdio2Writer();

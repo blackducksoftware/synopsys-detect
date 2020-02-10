@@ -24,7 +24,7 @@ package com.synopsys.integration.detectable.detectables.npm.lockfile.functional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
+import org.junit.jupiter.api.Disabled;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
@@ -33,6 +33,7 @@ import com.synopsys.integration.detectable.util.GraphCompare;
 
 public class NpmOutputParserTest {
     @Test
+    @Disabled
     public void npmCliDependencyFinder() {
         final NpmCliParser parser = new NpmCliParser(new ExternalIdFactory());
         final String testIn = FunctionalTestFiles.asString("/npm/packman_proj_dependencies.json");

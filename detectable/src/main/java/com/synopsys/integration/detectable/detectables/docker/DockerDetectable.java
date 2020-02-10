@@ -113,9 +113,10 @@ public class DockerDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        final String image = dockerDetectableOptions.getSuppliedDockerImage().orElse(""); //TODO: Should these use nullable?
+        final String image = dockerDetectableOptions.getSuppliedDockerImage().orElse("");
         final String imageId = dockerDetectableOptions.getSuppliedDockerImageId().orElse("");
         final String tar = dockerDetectableOptions.getSuppliedDockerTar().orElse("");
-        return dockerExtractor.extract(environment.getDirectory(), extractionEnvironment.getOutputDirectory(), bashExe, javaExe, image, imageId, tar, dockerInspectorInfo);
+        return dockerExtractor.extract(environment.getDirectory(), extractionEnvironment.getOutputDirectory(), bashExe, javaExe, image, imageId, tar, dockerInspectorInfo,
+            new DockerProperties(dockerDetectableOptions)); //TODO, doesn't feel right to construct properties here. -jp
     }
 }
