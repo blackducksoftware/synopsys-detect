@@ -30,6 +30,7 @@ import com.synopsys.integration.detectable.Extraction
 import com.synopsys.integration.detectable.ExtractionEnvironment
 import com.synopsys.integration.detectable.detectable.executable.Executable
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput
+import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder
 import com.synopsys.integration.detectable.factory.DetectableFactory
 import com.synopsys.integration.detectable.util.FunctionalTestFiles
 import org.apache.commons.io.IOUtils
@@ -40,7 +41,6 @@ import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 
 /*
 A functional test creates a small sample detectable environment and verifies the detectable produces the expected Code Locations.
@@ -53,7 +53,7 @@ abstract class DetectableFunctionalTest(val name: String) {
     val folder = Files.createTempDirectory(name).toFile()
     val source = TestDirectory(folder.toPath().resolve("source"))
     val output = File(folder, "output")
-    val fileFinder = FunctionalFileFinder()
+    val fileFinder = SimpleFileFinder()
     val executableRunner = FunctionalExecutableRunner()
     val externalIdFactory = ExternalIdFactory()
     val detectableFactory = DetectableFactory(fileFinder, executableRunner, externalIdFactory, GsonBuilder().create())
@@ -66,9 +66,7 @@ abstract class DetectableFunctionalTest(val name: String) {
     }
 
     private fun addToFileFinder(directory: TestDirectory, depth: Int = 0) {
-        fileFinder.addFile(directory.path.toFile(), depth)
         directory.listFiles.forEach {
-            fileFinder.addFile(it.path.toFile(), depth)
             if (it is TestDirectory) {
                 addToFileFinder(it, depth + 1)
             }
