@@ -73,8 +73,8 @@ abstract class DetectableFunctionalTest(val name: String) {
         }
     }
 
-    fun addExecutableOutput(executableOutput: ExecutableOutput, exeCmd: String, vararg args: String) {
-        val executable = Executable(source.path.toFile(), emptyMap(), exeCmd, args.toList())
+    fun addExecutableOutput(executableOutput: ExecutableOutput, exeCmd: String, vararg args: String, environment: Map<String, String> = emptyMap()) {
+        val executable = Executable(source.path.toFile(), environment, exeCmd, args.toList())
         addExecutableOutput(executableOutput, executable)
     }
 
@@ -84,7 +84,7 @@ abstract class DetectableFunctionalTest(val name: String) {
 
     @Test
     fun run() {
-        println("Using temp directory: ${folder.canonicalPath}")
+        println("Functional Test ($name) is using temp directory: ${folder.canonicalPath}")
 
         setup()
 
