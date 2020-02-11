@@ -25,8 +25,8 @@ package com.synopsys.integration.detectable.detectables.rubygems.gemlock.functio
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
@@ -36,7 +36,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.parse.GemlockParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
-import com.synopsys.integration.detectable.util.GraphCompare;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
 @FunctionalTest
@@ -51,7 +50,15 @@ public class RubygemsNodePackagerTest {
         final DependencyGraph projects = rubygemsNodePackager.parseProjectDependencies(actualText);
         Assertions.assertEquals(8, projects.getRootDependencies().size());
 
-        GraphCompare.assertEqualsResource("/rubygems/expectedPackager_graph.json", projects);
+        GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, projects);
+
+        ExternalId rubyInLineExternalId = createExternalId("RubyInline", "3.12.4");
+        graphAssert.hasDependency(rubyInLineExternalId);
+        graphAssert.hasParentChildRelationship(rubyInLineExternalId, createExternalId("ZenTest", "4.11.1"));
+
+        ExternalId activeSupportExternalId = createExternalId("activesupport", "4.2.8");
+        graphAssert.hasParentChildRelationship(activeSupportExternalId, createExternalId("thread_safe", "0.3.6"));
+        graphAssert.hasParentChildRelationship(createExternalId("cocoapods", "1.2.1"), activeSupportExternalId);
     }
 
     @Test

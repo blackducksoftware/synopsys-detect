@@ -64,6 +64,8 @@ public class GemlockNodeParserTest {
         GraphCompare.assertEqualsResource("/rubygems/expectedParser_graph.json", dependencyGraph);
     }
 
+    // ^ these two test the exact same thing, and they are the same as RubyGemsNodePackagerTest.packagerTest
+
     @Test
     public void testParsingEqualsGemfileLock() throws MissingExternalIdException {
         final String text = FunctionalTestFiles.asString("/rubygems/Gemfile_equals_version.lock");
