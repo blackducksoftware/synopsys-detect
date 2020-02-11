@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.DetectableEnvironment
 import com.synopsys.integration.detectable.Extraction
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert
+import org.junit.jupiter.api.Assertions
 
 class PodlockDetectableTest : DetectableFunctionalTest("podlock") {
     override fun setup() {
@@ -64,6 +65,8 @@ COCOAPODS: 1.2.0
     }
 
     override fun assert(extraction: Extraction) {
+        Assertions.assertNotEquals(0, extraction.codeLocations.size, "A code location should have been generated.")
+        
         val graphAssert = NameVersionGraphAssert(Forge.COCOAPODS, extraction.codeLocations.first().dependencyGraph)
         graphAssert.hasRootSize(3)
         graphAssert.hasRootDependency("Allihoopa-macOS", "1.1.0");

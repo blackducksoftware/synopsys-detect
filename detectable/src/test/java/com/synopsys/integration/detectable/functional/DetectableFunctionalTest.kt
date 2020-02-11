@@ -99,8 +99,6 @@ abstract class DetectableFunctionalTest(val name: String) {
         val extractionEnvironment = ExtractionEnvironment(output)
         val extraction = detectable.extract(extractionEnvironment)
 
-        Assertions.assertTrue(extraction.codeLocations.size > 0)
-
         assert(extraction)
     }
 
