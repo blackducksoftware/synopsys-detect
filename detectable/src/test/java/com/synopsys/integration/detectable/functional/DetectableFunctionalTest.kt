@@ -28,6 +28,8 @@ import com.synopsys.integration.detectable.Detectable
 import com.synopsys.integration.detectable.DetectableEnvironment
 import com.synopsys.integration.detectable.Extraction
 import com.synopsys.integration.detectable.ExtractionEnvironment
+import com.synopsys.integration.detectable.detectable.executable.Executable
+import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput
 import com.synopsys.integration.detectable.factory.DetectableFactory
 import com.synopsys.integration.detectable.util.FunctionalTestFiles
 import org.apache.commons.io.IOUtils
@@ -63,7 +65,6 @@ abstract class DetectableFunctionalTest(val name: String) {
         return source
     }
 
-
     private fun addToFileFinder(directory: TestDirectory, depth: Int = 0) {
         fileFinder.addFile(directory.path.toFile(), depth)
         directory.listFiles.forEach {
@@ -72,6 +73,15 @@ abstract class DetectableFunctionalTest(val name: String) {
                 addToFileFinder(it, depth + 1)
             }
         }
+    }
+
+    fun addExecutableOutput(executableOutput: ExecutableOutput, exeCmd: String, vararg args: String) {
+        val executable = Executable(source.path.toFile(), emptyMap(), exeCmd, args.toList())
+        addExecutableOutput(executableOutput, executable)
+    }
+
+    fun addExecutableOutput(executableOutput: ExecutableOutput, executable: Executable) {
+        executableRunner.addExecutableOutput(executableOutput, executable)
     }
 
     @Test
