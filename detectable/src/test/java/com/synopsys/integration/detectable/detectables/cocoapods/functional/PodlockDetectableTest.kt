@@ -66,12 +66,12 @@ COCOAPODS: 1.2.0
 
     override fun assert(extraction: Extraction) {
         Assertions.assertNotEquals(0, extraction.codeLocations.size, "A code location should have been generated.")
-        
+
         val graphAssert = NameVersionGraphAssert(Forge.COCOAPODS, extraction.codeLocations.first().dependencyGraph)
         graphAssert.hasRootSize(3)
-        graphAssert.hasRootDependency("Allihoopa-macOS", "1.1.0");
-        graphAssert.hasRootDependency("Mapbox-macOS-SDK", "0.4.1");
-        graphAssert.hasRootDependency("RepliesSDK-macOS", "0.2.22");
+        graphAssert.hasRootDependency("Allihoopa-macOS", "1.1.0")
+        graphAssert.hasRootDependency("Mapbox-macOS-SDK", "0.4.1")
+        graphAssert.hasRootDependency("RepliesSDK-macOS", "0.2.22")
 
         graphAssert.hasParentChildRelationship("Allihoopa-macOS", "1.1.0", "AllihoopaCore", "1.1.0")
     }
