@@ -20,20 +20,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.hex.unit;
+package com.synopsys.integration.detectable.detectables.rebar.unit;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
-
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.hex.RebarDetectable;
-import com.synopsys.integration.detectable.detectables.hex.RebarExtractor;
+import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
+import com.synopsys.integration.detectable.detectables.rebar.RebarExtractor;
 import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
 import com.synopsys.integration.detectable.util.MockFileFinder;
 

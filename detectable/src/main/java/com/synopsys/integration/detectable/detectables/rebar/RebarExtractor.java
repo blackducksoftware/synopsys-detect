@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.hex;
+package com.synopsys.integration.detectable.detectables.rebar;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,8 +32,8 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectables.hex.model.RebarParseResult;
-import com.synopsys.integration.detectable.detectables.hex.parse.Rebar3TreeParser;
+import com.synopsys.integration.detectable.detectables.rebar.model.RebarParseResult;
+import com.synopsys.integration.detectable.detectables.rebar.parse.Rebar3TreeParser;
 
 public class RebarExtractor {
     private final ExecutableRunner executableRunner;

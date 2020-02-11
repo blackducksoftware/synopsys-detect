@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.hex.functional;
+package com.synopsys.integration.detectable.detectables.rebar.functional;
 
 import java.util.List;
 
@@ -34,8 +34,8 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.hex.model.RebarParseResult;
-import com.synopsys.integration.detectable.detectables.hex.parse.Rebar3TreeParser;
+import com.synopsys.integration.detectable.detectables.rebar.model.RebarParseResult;
+import com.synopsys.integration.detectable.detectables.rebar.parse.Rebar3TreeParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.GraphCompare;
 
