@@ -81,12 +81,9 @@ class PropertyTestHelpUtil {
         }
 
         fun assertHasExampleValues(property: TypedProperty<*>, expectedExampleValues: List<String>?) {
-            Assertions.assertNotNull(property.listExampleValues(), "A ${property.describeType()} property has a limited number of values that should be described.")
-
-            if (expectedExampleValues == null) {
-                Assertions.assertNotEquals(emptyList<String>(), property.listExampleValues(), "${property.javaClass.simpleName} is typed and therefore should provide example values.")
-            } else {
-                Assertions.assertEquals(expectedExampleValues.sorted(), property.listExampleValues()?.sorted(), "The ${property.javaClass.simpleName} provided unexpected example values.")
+            if (expectedExampleValues != null) {
+                Assertions.assertNotNull(property.listExampleValues(), "A ${property.describeType()} property has a limited number of values that should be described.")
+                Assertions.assertEquals(expectedExampleValues.sorted(), property.listExampleValues()!!.sorted(), "The ${property.javaClass.simpleName} provided unexpected example values.")
             }
         }
 

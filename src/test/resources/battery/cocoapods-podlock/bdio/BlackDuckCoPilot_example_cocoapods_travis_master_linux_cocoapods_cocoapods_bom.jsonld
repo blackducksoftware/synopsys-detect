@@ -4,19 +4,19 @@
     "spdx:name": "BlackDuckCoPilot/example-cocoapods-travis/master/linux-cocoapods cocoapods/bom",
     "creationInfo": {
       "spdx:creator": [
-        "Tool: Detect-6.0.0-SNAPSHOT",
-        "Tool: IntegrationBdio-18.1.0"
+        "Tool: Detect-6.2.0-SNAPSHOT",
+        "Tool: IntegrationBdio-19.0.0"
       ],
-      "spdx:created": "2019-10-01T16:46:38.011Z"
+      "spdx:created": "2020-02-10T18:47:45.241Z"
     },
-    "@id": "uuid:dd5c377e-82c3-490e-84d7-94f0a5406ffa",
+    "@id": "uuid:1289b46f-4ab4-459a-a091-ed7db998d5a3",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "BlackDuckCoPilot/example-cocoapods-travis",
     "revision": "master",
-    "@id": "http:detect/linux_cocoapods",
+    "@id": "http:detect/linux-cocoapods",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "detect",
@@ -31,112 +31,31 @@
     },
     "relationship": [
       {
-        "related": "http:cocoapods/ZIPFoundation/0_9_9",
+        "related": "http:cocoapods/SwiftyJSON/3.1.4",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:cocoapods/Socket_IO_Client_Swift/11_1_1",
+        "related": "http:cocoapods/PromiseKit/4.4.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:cocoapods/PromiseKit/4_4_0",
+        "related": "http:cocoapods/Socket.IO-Client-Swift/11.1.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:cocoapods/SwiftyJSON/3_1_4",
+        "related": "http:cocoapods/ZIPFoundation/0.9.9",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:cocoapods/SwiftHTTP/2_0_2",
+        "related": "http:cocoapods/SwiftHTTP/2.0.2",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "ZIPFoundation",
-    "revision": "0.9.9",
-    "@id": "http:cocoapods/ZIPFoundation/0_9_9",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "cocoapods",
-      "externalId": "ZIPFoundation:0.9.9",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "cocoapods",
-          "separator": ":"
-        },
-        "name": "ZIPFoundation",
-        "version": "0.9.9"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "Socket.IO-Client-Swift",
-    "revision": "11.1.1",
-    "@id": "http:cocoapods/Socket_IO_Client_Swift/11_1_1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "cocoapods",
-      "externalId": "Socket.IO-Client-Swift:11.1.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "cocoapods",
-          "separator": ":"
-        },
-        "name": "Socket.IO-Client-Swift",
-        "version": "11.1.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:cocoapods/StarscreamSocketIO/8_0_4",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "StarscreamSocketIO",
-    "revision": "8.0.4",
-    "@id": "http:cocoapods/StarscreamSocketIO/8_0_4",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "cocoapods",
-      "externalId": "StarscreamSocketIO:8.0.4",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "cocoapods",
-          "separator": ":"
-        },
-        "name": "StarscreamSocketIO",
-        "version": "8.0.4"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "PromiseKit",
-    "revision": "4.4.0",
-    "@id": "http:cocoapods/PromiseKit/4_4_0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "cocoapods",
-      "externalId": "PromiseKit:4.4.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "cocoapods",
-          "separator": ":"
-        },
-        "name": "PromiseKit",
-        "version": "4.4.0"
-      }
-    },
-    "relationship": []
   },
   {
     "name": "SwiftyJSON",
     "revision": "3.1.4",
-    "@id": "http:cocoapods/SwiftyJSON/3_1_4",
+    "@id": "http:cocoapods/SwiftyJSON/3.1.4",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "cocoapods",
@@ -153,9 +72,90 @@
     "relationship": []
   },
   {
+    "name": "PromiseKit",
+    "revision": "4.4.0",
+    "@id": "http:cocoapods/PromiseKit/4.4.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "cocoapods",
+      "externalId": "PromiseKit:4.4.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "cocoapods",
+          "separator": ":"
+        },
+        "name": "PromiseKit",
+        "version": "4.4.0"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "Socket.IO-Client-Swift",
+    "revision": "11.1.1",
+    "@id": "http:cocoapods/Socket.IO-Client-Swift/11.1.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "cocoapods",
+      "externalId": "Socket.IO-Client-Swift:11.1.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "cocoapods",
+          "separator": ":"
+        },
+        "name": "Socket.IO-Client-Swift",
+        "version": "11.1.1"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:cocoapods/StarscreamSocketIO/8.0.4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "StarscreamSocketIO",
+    "revision": "8.0.4",
+    "@id": "http:cocoapods/StarscreamSocketIO/8.0.4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "cocoapods",
+      "externalId": "StarscreamSocketIO:8.0.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "cocoapods",
+          "separator": ":"
+        },
+        "name": "StarscreamSocketIO",
+        "version": "8.0.4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "ZIPFoundation",
+    "revision": "0.9.9",
+    "@id": "http:cocoapods/ZIPFoundation/0.9.9",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "cocoapods",
+      "externalId": "ZIPFoundation:0.9.9",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "cocoapods",
+          "separator": ":"
+        },
+        "name": "ZIPFoundation",
+        "version": "0.9.9"
+      }
+    },
+    "relationship": []
+  },
+  {
     "name": "SwiftHTTP",
     "revision": "2.0.2",
-    "@id": "http:cocoapods/SwiftHTTP/2_0_2",
+    "@id": "http:cocoapods/SwiftHTTP/2.0.2",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "cocoapods",

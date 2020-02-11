@@ -28,23 +28,29 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import java.io.File
 
 class FunctionalExecutableRunner : ExecutableRunner {
-    override fun execute(workingDirectory: File?, exeCmd: String?, vararg args: String?): ExecutableOutput {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    private val executableOutputMap: MutableMap<Executable, ExecutableOutput> = mutableMapOf()
+
+    fun addExecutableOutput(executableOutput: ExecutableOutput, executable: Executable) {
+        executableOutputMap[executable] = executableOutput
     }
 
-    override fun execute(workingDirectory: File?, exeCmd: String?, args: MutableList<String>?): ExecutableOutput {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun execute(workingDirectory: File, exeCmd: String, vararg args: String): ExecutableOutput? {
+        return execute(workingDirectory, exeCmd, args.toMutableList())
     }
 
-    override fun execute(workingDirectory: File?, exeFile: File?, vararg args: String?): ExecutableOutput {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun execute(workingDirectory: File, exeCmd: String, args: MutableList<String>): ExecutableOutput? {
+        return execute(workingDirectory, File(exeCmd), args.toMutableList())
     }
 
-    override fun execute(workingDirectory: File?, exeFile: File?, args: MutableList<String>?): ExecutableOutput {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun execute(workingDirectory: File, exeFile: File, vararg args: String): ExecutableOutput? {
+        return execute(workingDirectory, exeFile, args.toMutableList())
     }
 
-    override fun execute(executable: Executable?): ExecutableOutput {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun execute(workingDirectory: File, exeFile: File, args: MutableList<String>): ExecutableOutput? {
+        return execute(Executable(workingDirectory, emptyMap(), exeFile.toString(), args))
+    }
+
+    override fun execute(executable: Executable): ExecutableOutput? {
+        return executableOutputMap[executable]
     }
 }
