@@ -28,7 +28,7 @@ import com.synopsys.integration.detectable.Extraction
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest
 import org.junit.jupiter.api.Assertions
 
-class GitParseDetectableTest : DetectableFunctionalTest("git-cli") {
+class GitParseDetectableTest : DetectableFunctionalTest("git-parse") {
 
     override fun setup() {
         addFiles {
