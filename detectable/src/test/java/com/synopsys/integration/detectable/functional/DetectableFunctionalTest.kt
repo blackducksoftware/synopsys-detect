@@ -49,7 +49,7 @@ Functional tests use real output from package managers.
 abstract class DetectableFunctionalTest(val name: String) {
 
     val folder = Files.createTempDirectory(name).toFile()
-    val source = TestDirectory(folder.toPath().resolve("source")) // TestFile(folder, "source")
+    val source = TestDirectory(folder.toPath().resolve("source"))
     val output = File(folder, "output")
     val fileFinder = FunctionalFileFinder()
     val executableRunner = FunctionalExecutableRunner()
@@ -62,6 +62,7 @@ abstract class DetectableFunctionalTest(val name: String) {
         addToFileFinder(source)
         return source
     }
+
 
     private fun addToFileFinder(directory: TestDirectory, depth: Int = 0) {
         fileFinder.addFile(directory.path.toFile(), depth)
@@ -98,9 +99,10 @@ abstract class DetectableFunctionalTest(val name: String) {
     abstract fun assert(extraction: Extraction)
 }
 
-sealed class FileSystemElement(val path: Path)
-class TestDirectory(path: Path) : FileSystemElement(path) {
-    val listFiles = mutableListOf<FileSystemElement>()
+
+sealed class TestFileSystemElement(val path: Path)
+class TestDirectory(path: Path) : TestFileSystemElement(path) {
+    val listFiles = mutableListOf<TestFileSystemElement>()
 
     init {
         if (!Files.exists(path)) {
@@ -108,14 +110,14 @@ class TestDirectory(path: Path) : FileSystemElement(path) {
         }
     }
 
-    fun file(name: String, fileContent: String): TestFile {
+    fun file(name: String, fileContent: String): TestTestFile {
         val newPath = path.resolve(name)
-        val file = TestFile(newPath, fileContent)
+        val file = TestTestFile(newPath, fileContent)
         listFiles.add(file)
         return file
     }
 
-    fun fileFromResources(name: String, resourcePath: String, encoding: Charset = StandardCharsets.UTF_8): TestFile {
+    fun fileFromResources(name: String, resourcePath: String, encoding: Charset = StandardCharsets.UTF_8): TestTestFile {
         val inputStream = FunctionalTestFiles.asInputStream(resourcePath)
         Assertions.assertNotNull(inputStream, "Could not find resource file: $resourcePath")
         return file(name, IOUtils.toString(inputStream, encoding))
@@ -137,7 +139,7 @@ class TestDirectory(path: Path) : FileSystemElement(path) {
     }
 }
 
-class TestFile(path: Path, val content: String) : FileSystemElement(path) {
+class TestTestFile(path: Path, val content: String) : TestFileSystemElement(path) {
     init {
         Files.write(path, content.split(System.lineSeparator()))
     }
