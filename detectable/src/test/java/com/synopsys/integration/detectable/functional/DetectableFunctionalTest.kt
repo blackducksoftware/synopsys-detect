@@ -84,6 +84,8 @@ abstract class DetectableFunctionalTest(val name: String) {
 
     @Test
     fun run() {
+        println("Using temp directory: ${folder.canonicalPath}")
+
         setup()
 
         val detectableEnvironment = DetectableEnvironment(source.path.toFile())
@@ -130,17 +132,17 @@ class TestDirectory(path: Path) : TestFileSystemElement(path) {
     }
 
     fun directory(name: String): TestDirectory {
-        val newPath = Paths.get(name)
+        val newPath = path.resolve(name)
         val directory = TestDirectory(newPath)
         listFiles.add(directory)
         return directory
     }
 
     fun directory(name: String, init: TestDirectory.() -> Unit): TestDirectory {
-        val newPath = Paths.get(name)
+        val newPath = path.resolve(name)
         val directory = TestDirectory(newPath)
-        directory.init()
         listFiles.add(directory)
+        directory.init()
         return directory
     }
 }
