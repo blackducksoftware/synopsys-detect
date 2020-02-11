@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.hex.model;
+package com.synopsys.integration.detectable.detectables.rebar.model;
 
 import java.util.Optional;
 
@@ -31,7 +31,7 @@ public class RebarParseResult {
     private final Optional<NameVersion> projectNameVersion;
     private final CodeLocation codeLocation;
 
-    public RebarParseResult(NameVersion projectNameVersion, final CodeLocation codeLocation) {
+    public RebarParseResult(final NameVersion projectNameVersion, final CodeLocation codeLocation) {
         this.projectNameVersion = Optional.of(projectNameVersion);
         this.codeLocation = codeLocation;
     }
