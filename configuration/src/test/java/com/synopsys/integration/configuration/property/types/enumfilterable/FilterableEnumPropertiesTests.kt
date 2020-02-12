@@ -26,6 +26,7 @@ import com.synopsys.integration.configuration.property.PropertyTestHelpUtil
 import com.synopsys.integration.configuration.util.configOf
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.fail
 
 // Simple glue sanity tests. Theoretically if Config is well tested and Parser is well tested, these will pass so they are not exhaustive.
 class FilterableEnumPropertiesTests {
@@ -41,8 +42,8 @@ class FilterableEnumPropertiesTests {
         val config = configOf("enum.nullable" to "NONE")
 
         when (val value = config.getValue(property)) {
-            is Value -> Assertions.fail<NullableFilterableEnumProperty<Example>>("Expected type to be None instead of Value: ${value.value}")
-            is All -> Assertions.fail<NullableFilterableEnumProperty<Example>>("Expected type to be None instead of All.")
+            is Value<*> -> fail("Expected type to be None instead of Value: ${value.value}")
+            is All<*> -> fail("Expected type to be None instead of All.")
         }
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD", "NONE", "ALL"))
@@ -55,8 +56,8 @@ class FilterableEnumPropertiesTests {
 
         when (val value = config.getValue(property)) {
             is Value -> Assertions.assertEquals(Value(Example.THIRD), value)
-            is All -> Assertions.fail<NullableFilterableEnumProperty<Example>>("Expected type to be Value instead of All.")
-            is None -> Assertions.fail<NullableFilterableEnumProperty<Example>>("Expected type to be Value instead of None.")
+            is All -> fail("Expected type to be Value instead of All.")
+            is None -> fail("Expected type to be Value instead of None.")
         }
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD", "NONE", "ALL"))
@@ -69,8 +70,8 @@ class FilterableEnumPropertiesTests {
 
         when (val value = config.getValue(property)) {
             is Value<*> -> Assertions.assertEquals(listOf(Value(Example.ANOTHER), Value(Example.THIRD)), value)
-            is All<*> -> Assertions.fail<NullableFilterableEnumProperty<Example>>("Expected type to be Value instead of All.")
-            is None<*> -> Assertions.fail<NullableFilterableEnumProperty<Example>>("Expected type to be Value instead of None.")
+            is All<*> -> fail("Expected type to be Value instead of All.")
+            is None<*> -> fail("Expected type to be Value instead of None.")
         }
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD", "NONE", "ALL"))

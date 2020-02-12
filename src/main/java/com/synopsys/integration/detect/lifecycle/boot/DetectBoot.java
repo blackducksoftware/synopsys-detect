@@ -422,7 +422,7 @@ public class DetectBoot {
         final DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
 
         final AirGapCreator airGapCreator = new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
-        final String gradleInspectorVersion = detectConfiguration.getValueOrNull(DetectProperties.Companion.getDETECT_GRADLE_INSPECTOR_VERSION());
+        final String gradleInspectorVersion = detectConfiguration.getValueOrEmpty(DetectProperties.Companion.getDETECT_GRADLE_INSPECTOR_VERSION()).orElse(null);
         return airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix, gradleInspectorVersion);
     }
 }

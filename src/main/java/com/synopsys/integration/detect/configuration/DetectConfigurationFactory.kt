@@ -33,7 +33,7 @@ import com.synopsys.integration.configuration.property.types.path.PathResolver
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException
 import com.synopsys.integration.detect.exitcode.ExitCodeType
 import com.synopsys.integration.detect.getFirstProvidedValueOrDefault
-import com.synopsys.integration.detect.getFirstProvidedValueOrNull
+import com.synopsys.integration.detect.getFirstProvidedValueOrEmpty
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions
 import com.synopsys.integration.detect.lifecycle.run.RunOptions
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions
@@ -115,12 +115,12 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
     //#region Creating Connections
     @Throws(DetectUserFriendlyException::class)
     fun createBlackDuckProxyInfo(): ProxyInfo {
-        val proxyUsername = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.BLACKDUCK_PROXY_USERNAME, DetectProperties.BLACKDUCK_HUB_PROXY_USERNAME)
-        val proxyPassword = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.BLACKDUCK_PROXY_PASSWORD, DetectProperties.BLACKDUCK_HUB_PROXY_PASSWORD)
-        val proxyHost = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.BLACKDUCK_PROXY_HOST, DetectProperties.BLACKDUCK_HUB_PROXY_HOST)
-        val proxyPort = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.BLACKDUCK_PROXY_PORT, DetectProperties.BLACKDUCK_HUB_PROXY_PORT)
-        val proxyNtlmDomain = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.BLACKDUCK_PROXY_NTLM_DOMAIN, DetectProperties.BLACKDUCK_HUB_PROXY_NTLM_DOMAIN)
-        val proxyNtlmWorkstation = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.BLACKDUCK_PROXY_NTLM_WORKSTATION, DetectProperties.BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION)
+        val proxyUsername = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.BLACKDUCK_PROXY_USERNAME, DetectProperties.BLACKDUCK_HUB_PROXY_USERNAME).orElse(null)
+        val proxyPassword = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.BLACKDUCK_PROXY_PASSWORD, DetectProperties.BLACKDUCK_HUB_PROXY_PASSWORD).orElse(null)
+        val proxyHost = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.BLACKDUCK_PROXY_HOST, DetectProperties.BLACKDUCK_HUB_PROXY_HOST).orElse(null)
+        val proxyPort = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.BLACKDUCK_PROXY_PORT, DetectProperties.BLACKDUCK_HUB_PROXY_PORT).orElse(null)
+        val proxyNtlmDomain = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.BLACKDUCK_PROXY_NTLM_DOMAIN, DetectProperties.BLACKDUCK_HUB_PROXY_NTLM_DOMAIN).orElse(null)
+        val proxyNtlmWorkstation = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.BLACKDUCK_PROXY_NTLM_WORKSTATION, DetectProperties.BLACKDUCK_HUB_PROXY_NTLM_WORKSTATION).orElse(null)
 
         val proxyCredentialsBuilder = CredentialsBuilder()
         proxyCredentialsBuilder.username = proxyUsername
@@ -162,7 +162,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
 
     open fun createBlackDuckConnectionDetails(): BlackDuckConnectionDetails {
         val offline = detectConfiguration.getFirstProvidedValueOrDefault(DetectProperties.BLACKDUCK_OFFLINE_MODE, DetectProperties.BLACKDUCK_HUB_OFFLINE_MODE)
-        val blackduckUrl = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.BLACKDUCK_URL, DetectProperties.BLACKDUCK_HUB_URL)
+        val blackduckUrl = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.BLACKDUCK_URL, DetectProperties.BLACKDUCK_HUB_URL).orElse(null)
         val allBlackDuckKeys: Set<String> = HashSet(BlackDuckServerConfigBuilder().propertyKeys)
                 .filter { !it.toLowerCase().contains("proxy") }
                 .toSet()
@@ -191,8 +191,8 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
 
     fun createRunOptions(): RunOptions {
         // This is because it is double deprecated so we must check if either property is set.
-        val sigScanDisabled = Optional.ofNullable(detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_DISABLED))
-        val polarisEnabled = Optional.ofNullable(detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_SWIP_ENABLED))
+        val sigScanDisabled = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_DISABLED)
+        val polarisEnabled = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.DETECT_SWIP_ENABLED)
 
         val includedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS)
         val excludedTools = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_EXCLUDED)
@@ -200,7 +200,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val detectToolFilter = DetectToolFilter(filter, sigScanDisabled, polarisEnabled)
 
         val unmapCodeLocations = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_UNMAP)
-        val aggregateName = detectConfiguration.getValue(DetectProperties.DETECT_BOM_AGGREGATE_NAME)
+        val aggregateName = detectConfiguration.getValue(DetectProperties.DETECT_BOM_AGGREGATE_NAME).orElse(null)
         val aggregateMode = detectConfiguration.getValue(DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE)
         val preferredTools = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_TOOL)
         val useBdio2 = detectConfiguration.getValue(DetectProperties.DETECT_BDIO2_ENABLED)
@@ -209,19 +209,19 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
     }
 
     fun createDirectoryOptions(): DirectoryOptions {
-        val sourcePath = detectConfiguration.getValue(DetectProperties.DETECT_SOURCE_PATH)?.resolvePath(pathResolver)
-        val outputPath = detectConfiguration.getValue(DetectProperties.DETECT_OUTPUT_PATH)?.resolvePath(pathResolver)
-        val bdioPath = detectConfiguration.getValue(DetectProperties.DETECT_BDIO_OUTPUT_PATH)?.resolvePath(pathResolver)
-        val scanPath = detectConfiguration.getValue(DetectProperties.DETECT_SCAN_OUTPUT_PATH)?.resolvePath(pathResolver)
-        val toolsOutputPath = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_OUTPUT_PATH)?.resolvePath(pathResolver)
+        val sourcePath = detectConfiguration.getValue(DetectProperties.DETECT_SOURCE_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
+        val outputPath = detectConfiguration.getValue(DetectProperties.DETECT_OUTPUT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
+        val bdioPath = detectConfiguration.getValue(DetectProperties.DETECT_BDIO_OUTPUT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
+        val scanPath = detectConfiguration.getValue(DetectProperties.DETECT_SCAN_OUTPUT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
+        val toolsOutputPath = detectConfiguration.getValue(DetectProperties.DETECT_TOOLS_OUTPUT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
 
         return DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath)
     }
 
     fun createAirGapOptions(): AirGapOptions {
-        val gradleOverride = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH)?.resolvePath(pathResolver)
-        val nugetOverride = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH)?.resolvePath(pathResolver)
-        val dockerOverride = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH)?.resolvePath(pathResolver)
+        val gradleOverride = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
+        val nugetOverride = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_INSPECTOR_AIR_GAP_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
+        val dockerOverride = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
 
         return AirGapOptions(dockerOverride, gradleOverride, nugetOverride)
     }
@@ -259,14 +259,14 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
     }
 
     fun createBdioOptions(): BdioOptions {
-        val prefix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX)
-        val suffix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX)
+        val prefix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX).orElse(null)
+        val suffix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX).orElse(null)
         return BdioOptions(prefix, suffix)
     }
 
     fun createProjectNameVersionOptions(sourceDirectoryName: String): ProjectNameVersionOptions {
-        val overrideProjectName = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_NAME)
-        val overrideProjectVersionName = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_NAME)
+        val overrideProjectName = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_NAME).orElse(null)
+        val overrideProjectVersionName = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_NAME).orElse(null)
         val defaultProjectVersionText = detectConfiguration.getValue(DetectProperties.DETECT_DEFAULT_PROJECT_VERSION_TEXT)
         val defaultProjectVersionScheme = detectConfiguration.getValue(DetectProperties.DETECT_DEFAULT_PROJECT_VERSION_SCHEME)
         val defaultProjectVersionFormat = detectConfiguration.getValue(DetectProperties.DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT)
@@ -277,19 +277,19 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
     fun createDetectProjectServiceOptions(): DetectProjectServiceOptions {
         val projectVersionPhase = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_PHASE)
         val projectVersionDistribution = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_DISTRIBUTION)
-        val projectTier = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_TIER)
-        val projectDescription = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_DESCRIPTION)
-        val projectVersionNotes = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_NOTES)
+        val projectTier = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_TIER).orElse(null)
+        val projectDescription = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_DESCRIPTION).orElse(null)
+        val projectVersionNotes = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_NOTES).orElse(null)
         val cloneCategories = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CLONE_CATEGORIES)
         val projectLevelAdjustments = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_LEVEL_ADJUSTMENTS)
         val forceProjectVersionUpdate = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_UPDATE)
-        val cloneVersionName = detectConfiguration.getValue(DetectProperties.DETECT_CLONE_PROJECT_VERSION_NAME)
-        val projectVersionNickname = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_NICKNAME)
-        val applicationId = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_APPLICATION_ID)
+        val cloneVersionName = detectConfiguration.getValue(DetectProperties.DETECT_CLONE_PROJECT_VERSION_NAME).orElse(null)
+        val projectVersionNickname = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_VERSION_NICKNAME).orElse(null)
+        val applicationId = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_APPLICATION_ID).orElse(null)
         val groups = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_USER_GROUPS)
         val tags = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_TAGS)
-        val parentProjectName = detectConfiguration.getValue(DetectProperties.DETECT_PARENT_PROJECT_NAME)
-        val parentProjectVersion = detectConfiguration.getValue(DetectProperties.DETECT_PARENT_PROJECT_VERSION_NAME)
+        val parentProjectName = detectConfiguration.getValue(DetectProperties.DETECT_PARENT_PROJECT_NAME).orElse(null)
+        val parentProjectVersion = detectConfiguration.getValue(DetectProperties.DETECT_PARENT_PROJECT_VERSION_NAME).orElse(null)
         val cloneLatestProjectVersion = detectConfiguration.getValue(DetectProperties.DETECT_CLONE_PROJECT_VERSION_LATEST)
 
         val parser = DetectCustomFieldParser()
@@ -300,22 +300,23 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
     }
 
     open fun createBlackDuckSignatureScannerOptions(): BlackDuckSignatureScannerOptions {
-        val signatureScannerPaths = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_PATHS)
+        val signatureScannerPaths = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_PATHS).orElse(null)
                 ?.map { it.resolvePath(pathResolver) }
                 ?: emptyList()
-        val exclusionPatterns = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS) ?: emptyList()
+        val exclusionPatterns = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS).orElse(null)
+                ?: emptyList()
         val exclusionNamePatterns = detectConfiguration.getFirstProvidedValueOrDefault(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS)
 
         val scanMemory = detectConfiguration.getFirstProvidedValueOrDefault(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_MEMORY)
         val dryRun = detectConfiguration.getFirstProvidedValueOrDefault(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN)
         val uploadSource = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE)
-        val codeLocationPrefix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX)
-        val codeLocationSuffix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX)
-        val additionalArguments = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS)
+        val codeLocationPrefix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX).orElse(null)
+        val codeLocationSuffix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX).orElse(null)
+        val additionalArguments = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS).orElse(null)
         val maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH)
-        val offlineLocalScannerInstallPath = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH)?.resolvePath(pathResolver)
-        val onlineLocalScannerInstallPath = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH)?.resolvePath(pathResolver)
-        val userProvidedScannerInstallUrl = detectConfiguration.getFirstProvidedValueOrNull(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL)
+        val offlineLocalScannerInstallPath = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
+        val onlineLocalScannerInstallPath = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
+        val userProvidedScannerInstallUrl = detectConfiguration.getFirstProvidedValueOrEmpty(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_HOST_URL).orElse(null)
 
         if (offlineLocalScannerInstallPath != null && StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
             throw DetectUserFriendlyException(
@@ -350,8 +351,8 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val waitForResults = detectConfiguration.getValue(DetectProperties.DETECT_WAIT_FOR_RESULTS)
         val runRiskReport = detectConfiguration.getValue(DetectProperties.DETECT_RISK_REPORT_PDF)
         val runNoticesReport = detectConfiguration.getValue(DetectProperties.DETECT_NOTICES_REPORT)
-        val riskReportPdfPath = detectConfiguration.getValue(DetectProperties.DETECT_RISK_REPORT_PDF_PATH)?.resolvePath(pathResolver)
-        val noticesReportPath = detectConfiguration.getValue(DetectProperties.DETECT_NOTICES_REPORT_PATH)?.resolvePath(pathResolver)
+        val riskReportPdfPath = detectConfiguration.getValue(DetectProperties.DETECT_RISK_REPORT_PDF_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
+        val noticesReportPath = detectConfiguration.getValue(DetectProperties.DETECT_NOTICES_REPORT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
         val policySeverities = detectConfiguration.getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)
         val severitiesToFailPolicyCheck = policySeverities.populatedValues(PolicySeverityType::class.java);
 
@@ -359,33 +360,33 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
     }
 
     fun createBinaryScanOptions(): BinaryScanOptions {
-        val singleTarget = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE)?.resolvePath(pathResolver)
+        val singleTarget = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE).map { path -> path.resolvePath(pathResolver) }.orElse(null)
         val mutlipleTargets = detectConfiguration.getValue(DetectProperties.DETECT_BINARY_SCAN_FILE_NAME_PATTERNS)
-        val codeLocationPrefix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX)
-        val codeLocationSuffix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX)
+        val codeLocationPrefix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX).orElse(null)
+        val codeLocationSuffix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX).orElse(null)
         return BinaryScanOptions(singleTarget, mutlipleTargets, codeLocationPrefix, codeLocationSuffix)
     }
 
     fun createExecutablePaths(): DetectExecutableOptions {
         return DetectExecutableOptions(
-                bashUserPath = detectConfiguration.getValue(DetectProperties.DETECT_BASH_PATH)?.resolvePath(pathResolver),
-                bazelUserPath = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_PATH)?.resolvePath(pathResolver),
-                condaUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CONDA_PATH)?.resolvePath(pathResolver),
-                cpanUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CPAN_PATH)?.resolvePath(pathResolver),
-                cpanmUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CPANM_PATH)?.resolvePath(pathResolver),
-                gradleUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_PATH)?.resolvePath(pathResolver),
-                mavenUserPath = detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_PATH)?.resolvePath(pathResolver),
-                npmUserPath = detectConfiguration.getValue(DetectProperties.DETECT_NPM_PATH)?.resolvePath(pathResolver),
-                pearUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PEAR_PATH)?.resolvePath(pathResolver),
-                pipenvUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PIPENV_PATH)?.resolvePath(pathResolver),
-                pythonUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PYTHON_PATH)?.resolvePath(pathResolver),
-                rebarUserPath = detectConfiguration.getValue(DetectProperties.DETECT_HEX_REBAR3_PATH)?.resolvePath(pathResolver),
-                javaUserPath = detectConfiguration.getValue(DetectProperties.DETECT_JAVA_PATH)?.resolvePath(pathResolver),
-                dockerUserPath = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_PATH)?.resolvePath(pathResolver),
-                dotnetUserPath = detectConfiguration.getValue(DetectProperties.DETECT_DOTNET_PATH)?.resolvePath(pathResolver),
-                gitUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GIT_PATH)?.resolvePath(pathResolver),
-                goUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GO_PATH)?.resolvePath(pathResolver),
-                swiftUserPath = detectConfiguration.getValue(DetectProperties.DETECT_SWIFT_PATH)?.resolvePath(pathResolver)
+                bashUserPath = detectConfiguration.getValue(DetectProperties.DETECT_BASH_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                bazelUserPath = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                condaUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CONDA_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                cpanUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CPAN_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                cpanmUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CPANM_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                gradleUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                mavenUserPath = detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                npmUserPath = detectConfiguration.getValue(DetectProperties.DETECT_NPM_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                pearUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PEAR_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                pipenvUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PIPENV_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                pythonUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PYTHON_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                rebarUserPath = detectConfiguration.getValue(DetectProperties.DETECT_HEX_REBAR3_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                javaUserPath = detectConfiguration.getValue(DetectProperties.DETECT_JAVA_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                dockerUserPath = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                dotnetUserPath = detectConfiguration.getValue(DetectProperties.DETECT_DOTNET_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                gitUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GIT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                goUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GO_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                swiftUserPath = detectConfiguration.getValue(DetectProperties.DETECT_SWIFT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
         )
     }
 }

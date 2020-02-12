@@ -24,6 +24,7 @@ package com.synopsys.integration.configuration.property.types.enumsoft
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.fail
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
@@ -42,7 +43,7 @@ class SoftEnumValueParserTest {
                 Assertions.assertEquals(expectedValue, resolvedValue.value)
                 Assertions.assertEquals(expectedValue, resolvedValue.toString())
             }
-            else -> Assertions.fail("Should have resolved to a ${StringValue::class.java.simpleName}.")
+            else -> fail("Should have resolved to a ${StringValue::class.java.simpleName}.")
         }
     }
 
@@ -53,7 +54,7 @@ class SoftEnumValueParserTest {
             Assertions.assertEquals(ActualValue(expectedValue), actualValue)
             Assertions.assertEquals(rawValue, actualValue.toString())
         }
-        
+
         assertValidSoftEnum(Example.THING, "THING")
         assertValidSoftEnum(Example.ANOTHER, "ANOTHER")
         assertValidSoftEnum(Example.THIRD, "THIRD")
