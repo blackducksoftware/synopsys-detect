@@ -25,18 +25,19 @@ package com.synopsys.integration.detect
 import com.synopsys.integration.configuration.config.PropertyConfiguration
 import com.synopsys.integration.configuration.property.base.NullableProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
+import java.util.*
 
 /**
  * Will get the first property in a list that was provided by the user.
  */
-fun <T> PropertyConfiguration.getFirstProvidedValueOrNull(vararg properties: NullableProperty<T>): T? {
+fun <T> PropertyConfiguration.getFirstProvidedValueOrEmpty(vararg properties: NullableProperty<T>): Optional<T> {
     for (property in properties) {
         if (this.wasPropertyProvided(property)) {
             return this.getValue(property)
         }
     }
 
-    return null
+    return Optional.empty()
 }
 
 /**
@@ -44,19 +45,19 @@ fun <T> PropertyConfiguration.getFirstProvidedValueOrNull(vararg properties: Nul
  * If no property was provided, the default value of the first property will be used.
  */
 fun <T> PropertyConfiguration.getFirstProvidedValueOrDefault(vararg properties: ValuedProperty<T>): T {
-    return getFirstProvidedValueOrNull(*properties) ?: properties.first().default
+    return getFirstProvidedValueOrEmpty(*properties).orElse(properties.first().default)
 }
 
 /**
  * Will get the first property in a list that was provided by the user.
  * If no property was provided, the default will NOT be used.
  */
-fun <T> PropertyConfiguration.getFirstProvidedValueOrNull(vararg properties: ValuedProperty<T>): T? {
+fun <T> PropertyConfiguration.getFirstProvidedValueOrEmpty(vararg properties: ValuedProperty<T>): Optional<T> {
     for (property in properties) {
         if (this.wasPropertyProvided(property)) {
-            return this.getValue(property)
+            return Optional.of(this.getValue(property))
         }
     }
 
-    return null
+    return Optional.empty();
 }

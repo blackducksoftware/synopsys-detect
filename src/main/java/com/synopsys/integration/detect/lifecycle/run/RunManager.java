@@ -210,7 +210,7 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
             logger.info("Will include the detector tool.");
-            final String projectBomTool = detectConfiguration.getValueOrNull(DetectProperties.Companion.getDETECT_PROJECT_DETECTOR());
+            final String projectBomTool = detectConfiguration.getValueOrEmpty(DetectProperties.Companion.getDETECT_PROJECT_DETECTOR()).orElse(null);
             final List<DetectorType> requiredDetectors = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_REQUIRED_DETECTOR_TYPES());
             final boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_BUILDLESS());
 

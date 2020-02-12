@@ -87,11 +87,8 @@ class PearPackageDependenciesParserTest {
             "No       Package"
         );
 
-        try {
+        Assertions.assertThrows(IntegrationException.class, () -> {
             pearPackageDependenciesParser.parse(missingInfoLines);
-            Assertions.fail("Should have thrown an exception");
-        } catch (final IntegrationException ignore) {
-
-        }
+        });
     }
 }

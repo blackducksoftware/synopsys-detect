@@ -32,4 +32,8 @@ import com.synopsys.integration.configuration.property.Property
  *
  * @property key the normalized key such as "example.key." ending with a dot.
  */
-class PassthroughProperty(key: String) : Property(key) {}
+class PassthroughProperty(key: String) : Property(key) {
+    fun trimKey(givenKey: String): String {
+        return givenKey.substring(key.length + 1)
+    }
+}

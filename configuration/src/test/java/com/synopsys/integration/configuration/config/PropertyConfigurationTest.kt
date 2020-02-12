@@ -56,7 +56,7 @@ class PropertyConfigurationTest {
     @Test
     fun getValueOrNull() {
         val nullableProperty = NullableTestProperty("example.key")
-        Assertions.assertNull(configOf(nullableProperty.key to UNKNOWN_VALUE).getValueOrNull(nullableProperty), "An unknown value should fail to parse and the config should provide null.")
+        Assertions.assertNull(configOf(nullableProperty.key to UNKNOWN_VALUE).getValueOrEmpty(nullableProperty), "An unknown value should fail to parse and the config should provide null.")
     }
 
     @Test

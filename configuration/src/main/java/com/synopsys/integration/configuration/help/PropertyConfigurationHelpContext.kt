@@ -54,10 +54,10 @@ class PropertyConfigurationHelpContext(private val propertyConfiguration: Proper
                 continue
             }
 
-            val value = when (property) {
+            val value: String = when (property) {
                 is ValuedProperty<*> -> propertyConfiguration.getValueOrDefault(property).toString()
-                is NullableProperty<*> -> propertyConfiguration.getValueOrNull(property).toString()
-                else -> propertyConfiguration.getRaw(property)
+                is NullableProperty<*> -> propertyConfiguration.getValueOrEmpty(property).map { it.toString() }.orElse(null)
+                else -> propertyConfiguration.getRaw(property).orElse(null)
             }
 
             val containsPassword = property.key.toLowerCase().contains("password") || property.key.toLowerCase().contains("api.token") || property.key.toLowerCase().contains("access.token")
@@ -103,8 +103,8 @@ class PropertyConfigurationHelpContext(private val propertyConfiguration: Proper
         for (property in sortedProperties) {
             if (property is TypedProperty<*>) {
                 val exception = propertyConfiguration.getPropertyException(property);
-                if (exception != null) {
-                    exceptions[property.key] = listOf(exception.exception.message ?: exception.toString())
+                if (exception.isPresent) {
+                    exceptions[property.key] = listOf(exception.get().message ?: exception.toString())
                 }
             }
         }
