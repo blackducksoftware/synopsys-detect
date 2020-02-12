@@ -30,7 +30,7 @@ class LongValueParser : ValueParser<Long>() {
         return try {
             value.toLong()
         } catch (e: NumberFormatException) {
-            throw ValueParseException(value, "long", innerException = e)
+            throw ValueParseException(value, "long", e)
         }
     }
 }

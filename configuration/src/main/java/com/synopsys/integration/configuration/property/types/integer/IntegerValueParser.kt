@@ -30,7 +30,7 @@ class IntegerValueParser : ValueParser<Int>() {
         return try {
             value.toInt()
         } catch (e: NumberFormatException) {
-            throw ValueParseException(value, "integer", innerException = e)
+            throw ValueParseException(value, "integer", e)
         }
     }
 }

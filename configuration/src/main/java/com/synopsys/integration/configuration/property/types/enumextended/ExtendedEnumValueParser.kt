@@ -41,7 +41,7 @@ class ExtendedEnumValueParser<E : Enum<E>, B : Enum<B>>(private val enumClassE: 
             return BaseValue(bValue)
         }
         val combinedOptions = EnumUtils.getEnumList(enumClassE).joinToString(",") + "," + EnumUtils.getEnumList(enumClassB).joinToString { "," }
-        throw ValueParseException(value, "either enum", additionalMessage = "Value was must be one of $combinedOptions")
+        throw ValueParseException(value, "either enum", "Value was must be one of $combinedOptions")
     }
 }
 

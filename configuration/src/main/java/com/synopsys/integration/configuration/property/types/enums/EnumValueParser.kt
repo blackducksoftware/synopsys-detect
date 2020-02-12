@@ -31,9 +31,9 @@ class EnumValueParser<T : Enum<T>>(private val enumClass: Class<T>) : ValueParse
     @Throws(ValueParseException::class)
     override fun parse(value: String): T {
         try {
-            return parser.parse(value) ?: throw ValueParseException(value, "enum", additionalMessage = "Unable to convert '$value' to one of " + EnumUtils.getEnumList(enumClass).joinToString { "," })
+            return parser.parse(value) ?: throw ValueParseException(value, "enum", "Unable to convert '$value' to one of " + EnumUtils.getEnumList(enumClass).joinToString { "," })
         } catch (e: Exception) {
-            throw ValueParseException(value, "enum", innerException = e)
+            throw ValueParseException(value, "enum", e)
         }
     }
 }
