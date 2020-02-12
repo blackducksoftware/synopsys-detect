@@ -25,7 +25,6 @@ package com.synopsys.integration.detectable.detectables.rubygems.gemlock.functio
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -43,12 +42,11 @@ public class RubygemsNodePackagerTest {
     private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
     @Test
-    @Disabled
     void packagerTest() throws MissingExternalIdException {
         final List<String> actualText = FunctionalTestFiles.asListOfStrings("/rubygems/Gemfile.lock");
         final GemlockParser rubygemsNodePackager = new GemlockParser(new ExternalIdFactory());
         final DependencyGraph projects = rubygemsNodePackager.parseProjectDependencies(actualText);
-        Assertions.assertEquals(8, projects.getRootDependencies().size());
+        Assertions.assertEquals(2, projects.getRootDependencies().size());
 
         GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, projects);
 
