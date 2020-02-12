@@ -19,25 +19,22 @@ class GemlockDetectableTest : DetectableFunctionalTest("gemlock") {
                           ZenTest (~> 4.3)
                     ZenTest (4.11.1)
                     activesupport (4.2.8)
-                          i18n (~> 0.7)
-                          minitest (~> 5.1)
                           thread_safe (~> 0.3, >= 0.3.4)
                     thread_safe (0.3.6)
                     cocoapods (1.2.1)
                           activesupport (>= 4.0.2, < 5)
+                    cocoapods-keys (2.0.0)
+                        osx_keychain
+                    osx_keychain (1.0.1)
+                          RubyInline (~> 3)
                           
                 PLATFORMS
                   ruby
 
                 DEPENDENCIES
                   cocoapods (>= 1.1.0)
-                  cocoapods-check
                   cocoapods-keys
-                  danger
-                  lowdown
-                  nokogiri (>= 1.6.7)
-                  second_curtain
-                  xcpretty
+                  
 
                 BUNDLED WITH
                    1.14.6

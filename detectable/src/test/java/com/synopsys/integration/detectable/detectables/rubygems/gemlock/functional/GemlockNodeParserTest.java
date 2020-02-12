@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -38,33 +37,9 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.parse.GemlockParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
-import com.synopsys.integration.detectable.util.GraphCompare;
 
 @FunctionalTest
 public class GemlockNodeParserTest {
-    @Test
-    @Disabled
-    public void testParsingSmallGemfileLock() throws MissingExternalIdException {
-        final String text = FunctionalTestFiles.asString("/rubygems/small_gemfile_lock");
-        final List<String> gemfileLockContents = Arrays.asList(text.split("\n"));
-        final GemlockParser gemlockNodeParser = new GemlockParser(new ExternalIdFactory());
-        final DependencyGraph dependencyGraph = gemlockNodeParser.parseProjectDependencies(gemfileLockContents);
-
-        GraphCompare.assertEqualsResource("/rubygems/expectedSmallParser_graph.json", dependencyGraph);
-    }
-
-    @Test
-    @Disabled
-    public void testParsingGemfileLock() throws MissingExternalIdException {
-        final String text = FunctionalTestFiles.asString("/rubygems/Gemfile.lock");
-        final List<String> gemfileLockContents = Arrays.asList(text.split("\n"));
-        final GemlockParser gemlockNodeParser = new GemlockParser(new ExternalIdFactory());
-        final DependencyGraph dependencyGraph = gemlockNodeParser.parseProjectDependencies(gemfileLockContents);
-
-        GraphCompare.assertEqualsResource("/rubygems/expectedParser_graph.json", dependencyGraph);
-    }
-
-    // ^ these two test the exact same thing, and they are the same as RubyGemsNodePackagerTest.packagerTest
 
     @Test
     public void testParsingEqualsGemfileLock() throws MissingExternalIdException {
