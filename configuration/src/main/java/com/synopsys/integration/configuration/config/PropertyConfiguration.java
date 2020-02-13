@@ -197,9 +197,9 @@ public class PropertyConfiguration {
 
         final Map<String, String> rawValues = getRaw((String key) -> key.startsWith(property.getKey()));
         final Map<String, String> trimmedKeys = new HashMap<>();
-        for (final String key : rawValues.keySet()) {
-            if (rawValues.get(key) != null) {
-                trimmedKeys.put(property.trimKey(key), rawValues.get(key));
+        for (final Map.Entry<String, String> entry : rawValues.entrySet()) {
+            if (entry.getValue() != null) {
+                trimmedKeys.put(property.trimKey(entry.getKey()), entry.getValue());
             }
         }
         return trimmedKeys;
@@ -271,7 +271,7 @@ public class PropertyConfiguration {
             final T value = property.getValueParser().parse(propertyResolutionInfo.getRaw());
             return new ValuedPropertyValue<>(value, propertyResolutionInfo);
         } catch (final ValueParseException e) {
-            return new ExceptionPropertyValue<T>(e);
+            return new ExceptionPropertyValue<>(e);
         }
     }
     //endregion
