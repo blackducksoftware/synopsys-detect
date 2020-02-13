@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.enumextended
+package com.synopsys.integration.configuration.property.types.enumfilterable
 
 import com.synopsys.integration.configuration.parse.ValueParseException
 import org.junit.jupiter.api.Assertions
@@ -31,27 +31,22 @@ import org.junit.jupiter.params.provider.ValueSource
 class FilterableEnumValueParserTests {
     private enum class Example {
         THING,
-        ANOTHER,
-        THIRD
-    }
-
-    private enum class ExampleExtended {
-        FOURTH
+        ANOTHER
     }
 
     @ParameterizedTest
     @ValueSource(strings = ["unknown", "Thing ", " THING", "tHiNg", "fourth"])
     fun unknownValues(value: String) {
         Assertions.assertThrows(ValueParseException::class.java) {
-            ExtendedEnumValueParser(ExampleExtended::class.java, Example::class.java).parse(value)
+            FilterableEnumValueParser(Example::class.java).parse(value)
         }
     }
 
     @Test
     fun parsesEnumValue() {
-        Assertions.assertEquals(BaseValue<ExampleExtended, Example>(Example.THING), ExtendedEnumValueParser(ExampleExtended::class.java, Example::class.java).parse("THING"))
-        Assertions.assertEquals(BaseValue<ExampleExtended, Example>(Example.ANOTHER), ExtendedEnumValueParser(ExampleExtended::class.java, Example::class.java).parse("ANOTHER"))
-        Assertions.assertEquals(BaseValue<ExampleExtended, Example>(Example.THIRD), ExtendedEnumValueParser(ExampleExtended::class.java, Example::class.java).parse("THIRD"))
-        Assertions.assertEquals(ExtendedValue<ExampleExtended, Example>(ExampleExtended.FOURTH), ExtendedEnumValueParser(ExampleExtended::class.java, Example::class.java).parse("FOURTH"))
+        Assertions.assertEquals(Value(Example.THING), FilterableEnumValueParser(Example::class.java).parse("THING"))
+        Assertions.assertEquals(Value(Example.ANOTHER), FilterableEnumValueParser(Example::class.java).parse("ANOTHER"))
+        Assertions.assertEquals(All<Example>().toString(), FilterableEnumValueParser(Example::class.java).parse("ALL").toString())
+        Assertions.assertEquals(None<Example>().toString(), FilterableEnumValueParser(Example::class.java).parse("NONE").toString())
     }
 }
