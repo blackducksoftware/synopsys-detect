@@ -51,79 +51,88 @@ import com.synopsys.integration.configuration.property.base.ValuedProperty;
 import com.synopsys.integration.configuration.source.PropertySource;
 
 public class PropertyConfiguration {
-    private Map<String, PropertyResolution> resolutionCache = new HashMap<>();
-    private Map<String, PropertyValue> valueCache = new HashMap<>();
-    private List<PropertySource> orderedPropertySources;
 
-    public PropertyConfiguration(List<PropertySource> orderedPropertySources) {
+    private final Map<String, PropertyResolution> resolutionCache = new HashMap<>();
+    private final Map<String, PropertyValue<?>> valueCache = new HashMap<>();
+    private final List<PropertySource> orderedPropertySources;
+
+    public PropertyConfiguration(@NotNull final List<PropertySource> orderedPropertySources) {
         this.orderedPropertySources = orderedPropertySources;
     }
 
     //region
     @NotNull
-    public <T> Optional<T> getValueOrEmpty(@NotNull NullableProperty<T> property) {
-        Assert.notNull(property, "Must provide a property.");
+    public <T> Optional<T> getValueOrEmpty(@NotNull final NullableProperty<T> property) {
+        assertPropertyNotNull(property);
         try {
             return getValue(property);
-        } catch (InvalidPropertyException e) {
+        } catch (final InvalidPropertyException e) {
             return Optional.empty();
         }
     }
 
     @NotNull
-    public <T> T getValueOrDefault(@NotNull ValuedProperty<T> property) {
-        Assert.notNull(property, "Must provide a property.");
+    public <T> T getValueOrDefault(@NotNull final ValuedProperty<T> property) {
+        assertPropertyNotNull(property);
         try {
             return getValue(property);
-        } catch (InvalidPropertyException e) {
-            return property.getDefault();
+        } catch (final InvalidPropertyException e) {
+            return property.getDefaultValue();
         }
     }
 
     @NotNull
-    public <T> Optional<T> getValue(@NotNull NullableProperty<T> property) throws InvalidPropertyException {
-        Assert.notNull(property, "Must provide a property.");
-        PropertyValue<T> value = valueFromCache(property);
+    public <T> Optional<T> getValue(@NotNull final NullableProperty<T> property) throws InvalidPropertyException {
+        assertPropertyNotNull(property);
+
+        final PropertyValue<T> value = valueFromCache(property);
+        final Optional<ValueParseException> parseException = value.getException();
+        final Optional<PropertyResolutionInfo> propertyResolutionInfo = value.getResolutionInfo();
+
         if (value.getValue().isPresent()) {
             return value.getValue();
-        } else if (value.getException().isPresent() && value.getResolutionInfo().isPresent()) {
-            throw new InvalidPropertyException(property.getKey(), value.getResolutionInfo().get().getSource(), value.getException().get());
+        } else if (parseException.isPresent() && propertyResolutionInfo.isPresent()) {
+            throw new InvalidPropertyException(property.getKey(), propertyResolutionInfo.get().getSource(), parseException.get());
         } else {
-            final Optional<T> empty = Optional.empty();
-            return empty;
+            return Optional.empty();
         }
     }
 
     @NotNull
-    public <T> T getValue(@NotNull ValuedProperty<T> property) throws InvalidPropertyException {
-        Assert.notNull(property, "Must provide a property.");
-        PropertyValue<T> value = valueFromCache(property);
-        if (value.getValue().isPresent()) {
-            return value.getValue().get();
-        } else if (value.getException().isPresent() && value.getResolutionInfo().isPresent()) {
-            throw new InvalidPropertyException(property.getKey(), value.getResolutionInfo().get().getSource(), value.getException().get());
+    public <T> T getValue(@NotNull final ValuedProperty<T> property) throws InvalidPropertyException {
+        assertPropertyNotNull(property);
+        final PropertyValue<T> propertyValue = valueFromCache(property);
+
+        final Optional<T> value = propertyValue.getValue();
+        final Optional<ValueParseException> parseException = propertyValue.getException();
+        final Optional<PropertyResolutionInfo> propertyResolutionInfo = propertyValue.getResolutionInfo();
+
+        if (value.isPresent()) {
+            return value.get();
+        } else if (parseException.isPresent() && propertyResolutionInfo.isPresent()) {
+            throw new InvalidPropertyException(property.getKey(), propertyResolutionInfo.get().getSource(), parseException.get());
         } else {
-            return property.getDefault();
+            return property.getDefaultValue();
         }
     }
 
-    public boolean wasKeyProvided(@NotNull String key) {
+    public boolean wasKeyProvided(@NotNull final String key) {
         Assert.notNull(key, "Must provide a property.");
         return resolveFromCache(key).getResolutionInfo().isPresent();
     }
 
-    public <T> boolean wasPropertyProvided(@NotNull TypedProperty<T> property) {
-        Assert.notNull(property, "Must provide a property.");
+    public <T> boolean wasPropertyProvided(@NotNull final TypedProperty<T> property) {
+        assertPropertyNotNull(property);
         return wasKeyProvided(property.getKey());
     }
 
-    public Optional<String> getPropertySource(@NotNull Property property) {
-        Assert.notNull(property, "Must provide a property.");
+    public Optional<String> getPropertySource(@NotNull final Property property) {
+        assertPropertyNotNull(property);
         return resolveFromCache(property.getKey()).getResolutionInfo().map(PropertyResolutionInfo::getSource);
     }
 
-    public Optional<String> getPropertyOrigin(@NotNull Property property) {
-        Assert.notNull(property, "Must provide a property.");
+    public Optional<String> getPropertyOrigin(@NotNull final Property property) {
+        assertPropertyNotNull(property);
         return resolveFromCache(property.getKey()).getResolutionInfo().map(PropertyResolutionInfo::getRaw);
     }
 
@@ -135,17 +144,17 @@ public class PropertyConfiguration {
                    .collect(Collectors.toSet());
     }
 
-    public <T> Optional<ValueParseException> getPropertyException(@NotNull TypedProperty<T> property) {
-        Assert.notNull(property, "Must provide a property.");
+    public <T> Optional<ValueParseException> getPropertyException(@NotNull final TypedProperty<T> property) {
+        assertPropertyNotNull(property);
         return valueFromCache(property).getException();
     }
 
     //endregion
 
     //region Advanced Usage
-    public Optional<String> getRaw(@NotNull Property property) {
-        Assert.notNull(property, "Must supply a property get raw keys.");
-        PropertyResolution propertyResolution = resolveFromCache(property.getKey());
+    public Optional<String> getRaw(@NotNull final Property property) {
+        assertPropertyNotNull(property, "Must supply a property get raw keys.");
+        final PropertyResolution propertyResolution = resolveFromCache(property.getKey());
         return propertyResolution.getResolutionInfo().map(PropertyResolutionInfo::getRaw);
     }
 
@@ -155,25 +164,25 @@ public class PropertyConfiguration {
     }
 
     @NotNull
-    public Map<String, String> getRaw(@NotNull Set<String> keys) {
+    public Map<String, String> getRaw(@NotNull final Set<String> keys) {
         Assert.notNull(keys, "Must supply a set of keys to get raw keys");
         return getRaw(keys::contains);
     }
 
     @NotNull
-    public Map<String, String> getRaw(@NotNull Predicate<String> predicate) {
+    public Map<String, String> getRaw(@NotNull final Predicate<String> predicate) {
         Assert.notNull(predicate, "Must supply a predicate to get raw keys");
 
-        Set<String> keys = getKeys().stream()
-                               .filter(predicate)
-                               .filter(Objects::nonNull)
-                               .collect(Collectors.toSet());
+        final Set<String> keys = getKeys().stream()
+                                     .filter(predicate)
+                                     .filter(Objects::nonNull)
+                                     .collect(Collectors.toSet());
 
-        Map<String, String> keyMap = new HashMap<>();
+        final Map<String, String> keyMap = new HashMap<>();
         keys.forEach(key -> {
-            PropertyResolution resolution = resolveFromCache(key);
+            final PropertyResolution resolution = resolveFromCache(key);
             if (resolution != null && resolution.getResolutionInfo().isPresent()) {
-                String rawValue = resolution.getResolutionInfo().map(PropertyResolutionInfo::getRaw).get();
+                final String rawValue = resolution.getResolutionInfo().map(PropertyResolutionInfo::getRaw).get();
                 keyMap.put(key, rawValue);
             }
         });
@@ -183,12 +192,12 @@ public class PropertyConfiguration {
     // Takes in a 'passthrough.key' and returns key map (whose keys have that value removed)
     // So value 'passthrough.key.example' is returned as 'example'
     @NotNull
-    public Map<String, String> getRaw(@NotNull PassthroughProperty property) {
-        Assert.notNull(property, "Must supply a passthrough to get raw keys");
+    public Map<String, String> getRaw(@NotNull final PassthroughProperty property) {
+        assertPropertyNotNull(property, "Must supply a passthrough to get raw keys");
 
-        Map<String, String> rawValues = getRaw((String key) -> key.startsWith(property.getKey()));
-        Map<String, String> trimmedKeys = new HashMap<>();
-        for (String key : rawValues.keySet()) {
+        final Map<String, String> rawValues = getRaw((String key) -> key.startsWith(property.getKey()));
+        final Map<String, String> trimmedKeys = new HashMap<>();
+        for (final String key : rawValues.keySet()) {
             if (rawValues.get(key) != null) {
                 trimmedKeys.put(property.trimKey(key), rawValues.get(key));
             }
@@ -198,26 +207,35 @@ public class PropertyConfiguration {
     //endregion Advanced Usage
 
     //region Implementation Details
-    private PropertyResolution resolveFromCache(@NotNull String key) {
+
+    private void assertPropertyNotNull(final Property property) {
+        assertPropertyNotNull(property, "Must provide a property.");
+    }
+
+    private void assertPropertyNotNull(final Property property, @NotNull final String message) {
+        Assert.notNull(property, message);
+    }
+
+    private PropertyResolution resolveFromCache(@NotNull final String key) {
         Assert.notNull(key, "Cannot resolve a null key.");
         if (!resolutionCache.containsKey(key)) {
             resolutionCache.put(key, resolveFromPropertySources(key));
         }
 
-        PropertyResolution value = resolutionCache.get(key);
+        final PropertyResolution value = resolutionCache.get(key);
         Assert.notNull(value, "Could not resolve a value, something has gone wrong with properties!");
         return value;
     }
 
-    private PropertyResolution resolveFromPropertySources(@NotNull String key) {
+    private PropertyResolution resolveFromPropertySources(@NotNull final String key) {
         Assert.notNull(key, "Cannot resolve a null key.");
-        for (PropertySource propertySource : orderedPropertySources) {
+        for (final PropertySource propertySource : orderedPropertySources) {
             if (propertySource.hasKey(key)) {
-                String rawValue = propertySource.getValue(key);
+                final String rawValue = propertySource.getValue(key);
                 if (rawValue != null) {
-                    String name = propertySource.getName();
-                    String origin = propertySource.getOrigin(key);
-                    PropertyResolutionInfo propertyResolutionInfo = new PropertyResolutionInfo(name, origin, rawValue);
+                    final String name = propertySource.getName();
+                    final String origin = propertySource.getOrigin(key);
+                    final PropertyResolutionInfo propertyResolutionInfo = new PropertyResolutionInfo(name, origin, rawValue);
                     return new SourcePropertyResolution(propertyResolutionInfo);
                 }
             }
@@ -225,33 +243,34 @@ public class PropertyConfiguration {
         return new NoPropertyResolution();
     }
 
-    private <T> PropertyValue<T> valueFromCache(TypedProperty<T> property) {
+    @NotNull
+    private <T> PropertyValue<T> valueFromCache(@NotNull final TypedProperty<T> property) {
         if (!valueCache.containsKey(property.getKey())) {
             valueCache.put(property.getKey(), valueFromResolution(property));
         }
 
-        @SuppressWarnings("unchecked") PropertyValue<T> value = valueCache.get(property.getKey());
+        @SuppressWarnings("unchecked") final PropertyValue<T> value = (PropertyValue<T>) valueCache.get(property.getKey());
         Assert.notNull(value, "Could not source a value, something has gone wrong with properties!");
         return value;
     }
 
-    private <T> PropertyValue<T> valueFromResolution(@NotNull TypedProperty<T> property) {
+    @NotNull
+    private <T> PropertyValue<T> valueFromResolution(@NotNull final TypedProperty<T> property) {
         Assert.notNull(property, "Cannot resolve a null property.");
-        PropertyResolution propertyResolution = resolveFromCache(property.getKey());
-        if (propertyResolution.getResolutionInfo().isPresent()) {
-            return coerceValue(property, propertyResolution.getResolutionInfo().get());
-        } else {
-            return new NoValuePropertyValue<T>();
-        }
+        final Optional<PropertyResolutionInfo> propertyResolution = resolveFromCache(property.getKey()).getResolutionInfo();
+        return propertyResolution
+                   .map(propertyResolutionInfo -> coerceValue(property, propertyResolutionInfo))
+                   .orElseGet(NoValuePropertyValue::new);
     }
 
-    private <T> PropertyValue<T> coerceValue(@NotNull TypedProperty<T> property, @NotNull PropertyResolutionInfo propertyResolutionInfo) {
+    @NotNull
+    private <T> PropertyValue<T> coerceValue(@NotNull final TypedProperty<T> property, @NotNull final PropertyResolutionInfo propertyResolutionInfo) {
         Assert.notNull(property, "Cannot resolve a null property.");
         Assert.notNull(propertyResolutionInfo, "Cannot coerce a null property resolution.");
         try {
-            T value = property.getParser().parse(propertyResolutionInfo.getRaw());
+            final T value = property.getValueParser().parse(propertyResolutionInfo.getRaw());
             return new ValuedPropertyValue<>(value, propertyResolutionInfo);
-        } catch (ValueParseException e) {
+        } catch (final ValueParseException e) {
             return new ExceptionPropertyValue<T>(e);
         }
     }
