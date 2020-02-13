@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.configuration.parse.ListValueParser;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
+import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
 public class ExtendedEnumListProperty<E extends Enum<E>, B extends Enum<B>> extends NullableProperty<List<ExtendedEnumValue<E, B>>> {
     private List<String> allOptions;

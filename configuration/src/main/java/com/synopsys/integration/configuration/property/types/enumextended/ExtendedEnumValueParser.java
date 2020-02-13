@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.parse.ValueParser;
 import com.synopsys.integration.configuration.property.types.enums.SafeEnumValueParser;
+import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
 class ExtendedEnumValueParser<E extends Enum<E>, B extends Enum<B>> extends ValueParser<ExtendedEnumValue<E, B>> {
     private Class<E> enumClassE;

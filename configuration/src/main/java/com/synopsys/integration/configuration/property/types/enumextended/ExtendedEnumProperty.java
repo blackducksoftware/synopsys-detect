@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
+import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
 public class ExtendedEnumProperty<E extends Enum<E>, B extends Enum<B>> extends ValuedProperty<ExtendedEnumValue<E, B>> {
     private List<String> allOptions;

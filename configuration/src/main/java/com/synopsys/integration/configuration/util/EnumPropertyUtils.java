@@ -1,4 +1,4 @@
-package com.synopsys.integration.configuration.property.types.enumextended;
+package com.synopsys.integration.configuration.util;
 
 import java.util.ArrayList;
 import java.util.List;
