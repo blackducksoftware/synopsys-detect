@@ -32,7 +32,7 @@ class NullablePathProperty(key: String) : NullableProperty<PathValue>(key, PathV
 }
 
 class PathProperty(key: String, default: PathValue) : ValuedProperty<PathValue>(key, PathValueParser(), default) {
-    override fun describeDefault(): String? = default.toString()
+    override fun describeDefault(): String? = defaultValue.toString()
     override fun describeType(): String? = "Path"
 }
 

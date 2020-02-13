@@ -32,7 +32,7 @@ class NullableStringProperty(key: String) : NullableProperty<String>(key, String
 }
 
 class StringProperty(key: String, default: String) : ValuedProperty<String>(key, StringValueParser(), default) {
-    override fun describeDefault(): String? = default
+    override fun describeDefault(): String? = defaultValue
     override fun describeType(): String? = "String"
 }
 

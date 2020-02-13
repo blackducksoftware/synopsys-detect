@@ -43,7 +43,7 @@ class NullableFilterableEnumProperty<T : Enum<T>>(key: String, private val enumC
 
 class FilterableEnumProperty<T : Enum<T>>(key: String, default: FilterableEnumValue<T>, private val enumClass: Class<T>) : ValuedProperty<FilterableEnumValue<T>>(key, FilterableEnumValueParser(enumClass), default) {
     override fun isCaseSensitive(): Boolean = true
-    override fun describeDefault(): String? = default.toString()
+    override fun describeDefault(): String? = defaultValue.toString()
     override fun listExampleValues(): List<String>? {
         val base = EnumUtils.getEnumList(enumClass).map { it.toString() }.toMutableList()
         base.add("ALL")

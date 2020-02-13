@@ -37,7 +37,7 @@ class NullableEnumProperty<T : Enum<T>>(key: String, private val enumClass: Clas
 
 class EnumProperty<T : Enum<T>>(key: String, default: T, private val enumClass: Class<T>) : ValuedProperty<T>(key, EnumValueParser(enumClass), default) {
     override fun isCaseSensitive(): Boolean = true
-    override fun describeDefault(): String? = default.toString()
+    override fun describeDefault(): String? = defaultValue.toString()
     override fun listExampleValues(): List<String>? = EnumUtils.getEnumList(enumClass).map { it.toString() }
     override fun isOnlyExampleValues(): Boolean = true
     override fun describeType(): String? = enumClass.simpleName

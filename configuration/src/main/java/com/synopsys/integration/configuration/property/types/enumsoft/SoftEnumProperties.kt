@@ -40,7 +40,7 @@ class SoftEnumProperty<T : Enum<T>>(key: String, default: SoftEnumValue<T>, priv
     override fun listExampleValues(): List<String>? = EnumUtils.getEnumList(enumClass).map { it.toString() }.toList()
     override fun isOnlyExampleValues(): Boolean = false
     override fun describeType(): String? = enumClass.simpleName
-    override fun describeDefault(): String? = default.toString()
+    override fun describeDefault(): String? = defaultValue.toString()
 }
 
 
@@ -49,5 +49,5 @@ class SoftEnumListProperty<T : Enum<T>>(key: String, default: List<SoftEnumValue
     override fun listExampleValues(): List<String>? = EnumUtils.getEnumList(enumClass).map { it.toString() }.toList()
     override fun isOnlyExampleValues(): Boolean = false
     override fun describeType(): String? = "${enumClass.simpleName} List"
-    override fun describeDefault(): String? = default.toString()
+    override fun describeDefault(): String? = defaultValue.toString()
 }

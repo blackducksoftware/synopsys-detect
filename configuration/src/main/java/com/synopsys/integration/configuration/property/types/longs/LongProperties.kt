@@ -32,7 +32,7 @@ class NullableLongProperty(key: String) : NullableProperty<Long>(key, LongValueP
 }
 
 class LongProperty(key: String, default: Long) : ValuedProperty<Long>(key, LongValueParser(), default) {
-    override fun describeDefault(): String? = default.toString()
+    override fun describeDefault(): String? = defaultValue.toString()
     override fun describeType(): String? = "Long"
 }
 

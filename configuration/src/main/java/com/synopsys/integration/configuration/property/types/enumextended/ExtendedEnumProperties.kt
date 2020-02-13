@@ -42,7 +42,7 @@ class NullableExtendedEnumProperty<E : Enum<E>, B : Enum<B>>(key: String, enumCl
     override fun describeType(): String? = "Optional ${enumClassB.simpleName}"
 }
 
-class ExtendedEnumProperty<E : Enum<E>, B : Enum<B>>(key: String, default: ExtendedEnumValue<E, B>, enumClassE: Class<E>, private val enumClassB: Class<B>) : ValuedProperty<ExtendedEnumValue<E, B>>(key, ExtendedEnumValueParser(enumClassE, enumClassB), default) {
+class ExtendedEnumProperty<E : Enum<E>, B : Enum<B>>(key: String, val default: ExtendedEnumValue<E, B>, enumClassE: Class<E>, private val enumClassB: Class<B>) : ValuedProperty<ExtendedEnumValue<E, B>>(key, ExtendedEnumValueParser(enumClassE, enumClassB), default) {
     val options = mutableListOf<String>()
 
     init {
