@@ -9,7 +9,7 @@ import com.synopsys.integration.configuration.parse.ListValueParser;
 import com.synopsys.integration.configuration.property.base.ValuedListProperty;
 
 public class BooleanListProperty extends ValuedListProperty<Boolean> {
-    public BooleanListProperty(@NotNull final String key, final List<Boolean> defaultValue) {
+    public BooleanListProperty(@NotNull final String key, @NotNull final List<Boolean> defaultValue) {
         super(key, new ListValueParser<Boolean>(new BooleanValueParser()), defaultValue);
     }
 
