@@ -49,7 +49,7 @@ public class ListValueParser<T> extends ValueParser<List<T>> {
     public List<T> parse(@NotNull final String rawValue) throws ValueParseException {
         final List<T> parsedValues = new ArrayList<>();
 
-        for (final String element : StringUtils.split(rawValue, delimiter)) {
+        for (final String element : StringUtils.splitPreserveAllTokens(rawValue, delimiter)) {
             final String trimmedElement = element.trim();
 
             if (StringUtils.isBlank(trimmedElement)) {
