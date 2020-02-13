@@ -45,7 +45,7 @@ fun <T> PropertyConfiguration.getFirstProvidedValueOrEmpty(vararg properties: Nu
  * If no property was provided, the default value of the first property will be used.
  */
 fun <T> PropertyConfiguration.getFirstProvidedValueOrDefault(vararg properties: ValuedProperty<T>): T {
-    return getFirstProvidedValueOrEmpty(*properties).orElse(properties.first().default)
+    return getFirstProvidedValueOrEmpty(*properties).orElse(properties.first().defaultValue)
 }
 
 /**

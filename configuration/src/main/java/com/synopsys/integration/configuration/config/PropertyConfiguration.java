@@ -133,7 +133,7 @@ public class PropertyConfiguration {
 
     public Optional<String> getPropertyOrigin(@NotNull final Property property) {
         assertPropertyNotNull(property);
-        return resolveFromCache(property.getKey()).getResolutionInfo().map(PropertyResolutionInfo::getRaw);
+        return resolveFromCache(property.getKey()).getResolutionInfo().map(PropertyResolutionInfo::getOrigin);
     }
 
     @NotNull
@@ -271,7 +271,7 @@ public class PropertyConfiguration {
             final T value = property.getValueParser().parse(propertyResolutionInfo.getRaw());
             return new ValuedPropertyValue<>(value, propertyResolutionInfo);
         } catch (final ValueParseException e) {
-            return new ExceptionPropertyValue<>(e);
+            return new ExceptionPropertyValue<>(e, propertyResolutionInfo);
         }
     }
     //endregion

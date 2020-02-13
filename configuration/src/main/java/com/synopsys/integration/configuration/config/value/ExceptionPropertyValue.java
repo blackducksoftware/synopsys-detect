@@ -30,22 +30,19 @@ import org.springframework.util.Assert;
 import com.synopsys.integration.configuration.config.resolution.PropertyResolutionInfo;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 
-public class ExceptionPropertyValue<T> extends PropertyValue<T> {
+public class ExceptionPropertyValue<T> extends ResolvedPropertyValue<T> {
     @NotNull
-    private ValueParseException exception;
+    private final ValueParseException exception;
 
-    public ExceptionPropertyValue(final ValueParseException exception) {
+    public ExceptionPropertyValue(@NotNull final ValueParseException exception, @NotNull final PropertyResolutionInfo propertyResolutionInfo) {
+        super(propertyResolutionInfo);
         Assert.notNull(exception, "Exception cannot be null.");
+        Assert.notNull(propertyResolutionInfo, "PropertyResolutionInfo cannot be null.");
         this.exception = exception;
     }
 
     @Override
     public Optional<T> getValue() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<PropertyResolutionInfo> getResolutionInfo() {
         return Optional.empty();
     }
 
