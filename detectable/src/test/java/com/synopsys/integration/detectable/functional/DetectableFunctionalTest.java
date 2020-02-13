@@ -87,21 +87,31 @@ public abstract class DetectableFunctionalTest {
         FileUtils.deleteDirectory(tempDirectory.toFile());
     }
 
+    @NotNull
     public Path addFile(@NotNull final Path path) throws IOException {
         return addFile(path, Collections.emptyList());
     }
 
-    public Path addFileFromResources(@NotNull final Path path, @NotNull final String resourcePath) throws IOException {
-        final List<String> lines = FunctionalTestFiles.asListOfStrings(resourcePath);
-        return addFile(path, lines);
+    @NotNull
+    public Path addFile(@NotNull final Path path, @NotNull final String... lines) throws IOException {
+        final List<String> fileContent = Arrays.asList(lines);
+        return addFile(path, fileContent);
     }
 
+    @NotNull
     public Path addFile(@NotNull final Path path, @NotNull final Iterable<? extends String> lines) throws IOException {
         final Path relativePath = sourceDirectory.resolve(path);
         Files.createDirectories(relativePath.getParent());
         return Files.write(relativePath, lines);
     }
 
+    @NotNull
+    public Path addFileFromResources(@NotNull final Path path, @NotNull final String resourcePath) throws IOException {
+        final List<String> lines = FunctionalTestFiles.asListOfStrings(resourcePath);
+        return addFile(path, lines);
+    }
+
+    @NotNull
     public Path addDirectory(@NotNull final Path path) throws IOException {
         final Path relativePath = sourceDirectory.resolve(path);
         return Files.createDirectories(relativePath);
