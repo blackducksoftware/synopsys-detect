@@ -20,19 +20,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.base
+package com.synopsys.integration.configuration.property.base;
 
-import com.synopsys.integration.configuration.parse.ValueParser
-import com.synopsys.integration.configuration.property.Property
+import org.jetbrains.annotations.NotNull;
+
+import com.synopsys.integration.configuration.parse.ValueParser;
+import com.synopsys.integration.configuration.property.Property;
 
 /**
  * A property that is associated with a single type.
  *
  * It can't itself be retrieved from a Configuration but provides a shared parent class
  * for Nullable and Valued properties, both of which need a property with a single type.
- *
- * @param T the type this property returns when it is retrieved from a Configuration.
- * @property key a normalized lowercase dot separated key such as "example.key".
- * @property parser the parser that converts string values to the given type T.
+ * @param <T> the type this property returns when it is retrieved from a Configuration.
  */
-abstract class TypedProperty<T>(key: String, val parser: ValueParser<T>) : Property(key) {}
+public abstract class TypedProperty<T> extends Property {
+    @NotNull
+    private final ValueParser<T> valueParser;
+
+    public TypedProperty(@NotNull final String key, @NotNull ValueParser<T> valueParser) {
+        super(key);
+        this.valueParser = valueParser;
+    }
+
+    @NotNull
+    public ValueParser<T> getValueParser() {
+        return valueParser;
+    }
+}

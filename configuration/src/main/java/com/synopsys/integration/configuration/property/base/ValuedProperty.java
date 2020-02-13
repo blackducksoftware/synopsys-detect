@@ -20,19 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.bool
+package com.synopsys.integration.configuration.property.base;
 
-import com.synopsys.integration.configuration.parse.ValueParseException
-import com.synopsys.integration.configuration.parse.ValueParser
-import org.apache.commons.lang3.BooleanUtils
+import org.jetbrains.annotations.NotNull;
 
-class BooleanValueParser : ValueParser<Boolean>() {
-    override fun parse(value: String): Boolean {
-        val trimmed = value.toLowerCase().trim()
-        return if (trimmed.isBlank()) {
-            true
-        } else {
-            BooleanUtils.toBooleanObject(trimmed) ?: throw ValueParseException(value, "boolean", "Unknown boolean format. Supported values include true and false.")
-        }
+import com.synopsys.integration.configuration.parse.ValueParser;
+
+/**
+ * A property that returns null when it is not present in a Configuration.
+ * @param T the type this property returns when it is retrieved from a Configuration.
+ */
+public abstract class ValuedProperty<T> extends TypedProperty<T> {
+    private T defaultValue;
+
+    public ValuedProperty(@NotNull final String key, @NotNull final ValueParser<T> valueParser, final T defaultValue) {
+        super(key, valueParser);
+        this.defaultValue = defaultValue;
+    }
+
+    public T getDefaultValue() {
+        return defaultValue;
     }
 }

@@ -20,17 +20,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.base
+package com.synopsys.integration.configuration.property.base;
 
-import com.synopsys.integration.configuration.parse.ValueParser
+import org.jetbrains.annotations.NotNull;
+
+import com.synopsys.integration.configuration.property.Property;
 
 /**
- * This is a property with a key and with a default value, it will always have a value.
+ * A property whose values are all prefixed with a common key.
+ *
+ * The key is lowercase and dot separated, ending with a dot. For example "docker."
+ * When retrieved from a Configuration, keys will be returned without the starting prefix. For example "docker.enabled.key" should be returned as "enabled.key" when the key is "docker."
  */
-// Using @JvmSuppressWildcards to prevent the Kotlin compiler from generating wildcard types: https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics
-abstract class ValuedListProperty<T>(key: String, parser: ValueParser<List<T>>, default: List<T>) : ValuedProperty<@JvmSuppressWildcards List<T>>(key, parser, default) {
+public class PassthroughProperty extends Property {
+    public PassthroughProperty(@NotNull final String key) {
+        super(key);
+    }
 
-    override fun describeDefault(): String? = default.joinToString { "," }
-
-    override fun isCommaSeparated(): Boolean = true
+    public String trimKey(String givenKey) {
+        return givenKey.substring(getKey().length() + 1);
+    }
 }
