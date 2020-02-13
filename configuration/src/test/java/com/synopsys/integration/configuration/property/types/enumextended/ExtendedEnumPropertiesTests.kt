@@ -26,6 +26,7 @@ import com.synopsys.integration.configuration.property.PropertyTestHelpUtil
 import com.synopsys.integration.configuration.util.configOf
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.util.*
 
 // Simple glue sanity tests. Theoretically if Config is well tested and Parser is well tested, these will pass so they are not exhaustive.
 class ExtendedEnumPropertiesTests {
@@ -44,7 +45,7 @@ class ExtendedEnumPropertiesTests {
         val property = NullableExtendedEnumProperty("enum.nullable", ExampleExtension::class.java, Example::class.java)
         val config = configOf("enum.nullable" to "NONE")
         val value = config.getValue(property)
-        Assertions.assertEquals(ExtendedEnumValue.ofExtendedValue<ExampleExtension, Example>(ExampleExtension.NONE), value)
+        Assertions.assertEquals(Optional.of(ExtendedEnumValue.ofExtendedValue<ExampleExtension, Example>(ExampleExtension.NONE)), value)
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD", "NONE"))
     }

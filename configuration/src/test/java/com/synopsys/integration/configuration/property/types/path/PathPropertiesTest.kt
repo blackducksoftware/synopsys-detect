@@ -26,6 +26,7 @@ import com.synopsys.integration.configuration.property.PropertyTestHelpUtil
 import com.synopsys.integration.configuration.util.configOf
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.util.*
 
 // Simple glue sanity tests. Theoretically if Config is well tested and Parser is well tested, these will pass so they are not exhaustive.
 class PathPropertiesTest {
@@ -33,7 +34,7 @@ class PathPropertiesTest {
     fun testNullable() {
         val property = NullablePathProperty("path.nullable")
         val config = configOf("path.nullable" to "/new/path")
-        Assertions.assertEquals(PathValue("/new/path"), config.getValue(property))
+        Assertions.assertEquals(Optional.of(PathValue("/new/path")), config.getValue(property))
 
         PropertyTestHelpUtil.assertAllHelpValid(property)
     }

@@ -46,6 +46,6 @@ public class ExtendedEnumProperty<E extends Enum<E>, B extends Enum<B>> extends 
     @Nullable
     @Override
     public String describeType() {
-        return bClass.getSimpleName() + " List";
+        return bClass.getSimpleName();
     }
 }

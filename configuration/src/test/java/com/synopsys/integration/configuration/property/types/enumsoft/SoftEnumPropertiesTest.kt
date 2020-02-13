@@ -26,6 +26,7 @@ import com.synopsys.integration.configuration.property.PropertyTestHelpUtil
 import com.synopsys.integration.configuration.util.configOf
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.util.*
 
 // Simple glue sanity tests. Theoretically if Config is well tested and Parser is well tested, these will pass so they are not exhaustive.
 class SoftEnumPropertiesTest {
@@ -39,7 +40,7 @@ class SoftEnumPropertiesTest {
     fun testNullableActualValue() {
         val property = NullableSoftEnumProperty("enum.nullable", Example::class.java)
         val config = configOf("enum.nullable" to "ANOTHER")
-        Assertions.assertEquals(ActualValue(Example.ANOTHER), config.getValue(property))
+        Assertions.assertEquals(Optional.of(ActualValue(Example.ANOTHER)), config.getValue(property))
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD"))
     }
@@ -48,7 +49,7 @@ class SoftEnumPropertiesTest {
     fun testNullableStringValue() {
         val property = NullableSoftEnumProperty("enum.nullable", Example::class.java)
         val config = configOf("enum.nullable" to "ANOTHER ONE")
-        Assertions.assertEquals(StringValue<Example>("ANOTHER ONE"), config.getValue(property))
+        Assertions.assertEquals(Optional.of(StringValue<Example>("ANOTHER ONE")), config.getValue(property))
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD"))
     }

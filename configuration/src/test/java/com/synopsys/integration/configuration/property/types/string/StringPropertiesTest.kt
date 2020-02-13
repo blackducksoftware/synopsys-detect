@@ -26,6 +26,7 @@ import com.synopsys.integration.configuration.property.PropertyTestHelpUtil
 import com.synopsys.integration.configuration.util.configOf
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.util.*
 
 // Simple glue sanity tests. Theoretically if Config is well tested and Parser is well tested, these will pass so they are not exhaustive.
 class StringPropertiesTest {
@@ -33,7 +34,7 @@ class StringPropertiesTest {
     fun testNullable() {
         val property = NullableStringProperty("string.nullable")
         val config = configOf("string.nullable" to "abc")
-        Assertions.assertEquals("abc", config.getValue(property))
+        Assertions.assertEquals(Optional.of("abc"), config.getValue(property))
 
         PropertyTestHelpUtil.assertAllHelpValid(property)
     }

@@ -1,5 +1,7 @@
 package com.synopsys.integration.configuration.property.types.enumextended;
 
+import java.util.Optional;
+
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.misc.Nullable;
 import org.springframework.util.Assert;
@@ -16,7 +18,7 @@ public class ExtendedEnumValue<E extends Enum<E>, B extends Enum<B>> {
         } else if (extendedValue == null) {
             Assert.notNull(baseValue, "You must provide either a base value or an extended value.");
         }
-        Assert.isTrue(baseValue != null && extendedValue != null, "Only one value may be not null.");
+        Assert.isTrue(baseValue == null || extendedValue == null, "One value must be null.");
 
         this.baseValue = baseValue;
         this.extendedValue = extendedValue;
@@ -30,5 +32,36 @@ public class ExtendedEnumValue<E extends Enum<E>, B extends Enum<B>> {
     @NotNull
     public static <E extends Enum<E>, B extends Enum<B>> ExtendedEnumValue<E, B> ofExtendedValue(@NotNull final E extendedValue) {
         return new ExtendedEnumValue<>(extendedValue, null);
+    }
+
+    @NotNull
+    public Optional<E> getExtendedValue() {
+        return Optional.ofNullable(extendedValue);
+    }
+
+    @NotNull
+    public Optional<B> getBaseValue() {
+        return Optional.ofNullable(baseValue);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        final ExtendedEnumValue<?, ?> that = (ExtendedEnumValue<?, ?>) o;
+
+        if (getExtendedValue().isPresent() ? !getExtendedValue().equals(that.getExtendedValue()) : that.getExtendedValue().isPresent())
+            return false;
+        return getBaseValue().isPresent() ? getBaseValue().equals(that.getBaseValue()) : !that.getBaseValue().isPresent();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getExtendedValue().isPresent() ? getExtendedValue().hashCode() : 0;
+        result = 31 * result + (getBaseValue().isPresent() ? getBaseValue().hashCode() : 0);
+        return result;
     }
 }
