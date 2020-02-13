@@ -32,7 +32,7 @@ class NullableIntegerProperty(key: String) : NullableProperty<Int>(key, IntegerV
 }
 
 class IntegerProperty(key: String, default: Int) : ValuedProperty<Int>(key, IntegerValueParser(), default) {
-    override fun describeDefault(): String? = default.toString()
+    override fun describeDefault(): String? = defaultValue.toString()
     override fun describeType(): String? = "Integer"
 }
 
