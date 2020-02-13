@@ -44,27 +44,28 @@ class ExtendedEnumPropertiesTests {
         val property = NullableExtendedEnumProperty("enum.nullable", ExampleExtension::class.java, Example::class.java)
         val config = configOf("enum.nullable" to "NONE")
         val value = config.getValue(property)
-        Assertions.assertEquals(ExtendedValue<ExampleExtension, Example>(ExampleExtension.NONE), value)
+        Assertions.assertEquals(ExtendedEnumValue.ofExtendedValue<ExampleExtension, Example>(ExampleExtension.NONE), value)
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD", "NONE"))
     }
 
     @Test
     fun testValued() {
-        val property = ExtendedEnumProperty("enum.nullable", ExtendedValue(ExampleExtension.NONE), ExampleExtension::class.java, Example::class.java)
+        val property = ExtendedEnumProperty<ExampleExtension, Example>("enum.nullable", ExtendedEnumValue.ofExtendedValue<ExampleExtension, Example>(ExampleExtension.NONE), ExampleExtension::class.java, Example::class.java)
         val config = configOf("enum.nullable" to "ANOTHER")
         val value = config.getValue(property)
-        Assertions.assertEquals(BaseValue<ExampleExtension, Example>(Example.ANOTHER), value)
+        Assertions.assertEquals(ExtendedEnumValue.ofBaseValue<ExampleExtension, Example>(Example.ANOTHER), value)
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD", "NONE"))
     }
 
     @Test
     fun testList() {
-        val property = ExtendedEnumListProperty("enum.nullable", listOf(BaseValue(Example.THING), ExtendedValue(ExampleExtension.NONE)), ExampleExtension::class.java, Example::class.java)
+        val defaultValue = listOf(ExtendedEnumValue.ofBaseValue<ExampleExtension, Example>(Example.THING), ExtendedEnumValue.ofExtendedValue<ExampleExtension, Example>(ExampleExtension.NONE))
+        val property = ExtendedEnumListProperty("enum.nullable", defaultValue, ExampleExtension::class.java, Example::class.java)
         val config = configOf("enum.nullable" to "THIRD,NONE")
         val value = config.getValue(property)
-        Assertions.assertEquals(listOf(BaseValue<ExampleExtension, Example>(Example.THIRD), ExtendedValue<ExampleExtension, Example>(ExampleExtension.NONE)), value)
+        Assertions.assertEquals(listOf(ExtendedEnumValue.ofBaseValue<ExampleExtension, Example>(Example.THIRD), ExtendedEnumValue.ofExtendedValue<ExampleExtension, Example>(ExampleExtension.NONE)), value)
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD", "NONE"))
     }

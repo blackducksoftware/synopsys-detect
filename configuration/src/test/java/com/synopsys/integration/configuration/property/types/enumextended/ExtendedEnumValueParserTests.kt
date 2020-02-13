@@ -49,9 +49,9 @@ class ExtendedEnumValueParserTests {
 
     @Test
     fun parsesEnumValue() {
-        Assertions.assertEquals(BaseValue<ExampleExtended, Example>(Example.THING), ExtendedEnumValueParser(ExampleExtended::class.java, Example::class.java).parse("THING"))
-        Assertions.assertEquals(BaseValue<ExampleExtended, Example>(Example.ANOTHER), ExtendedEnumValueParser(ExampleExtended::class.java, Example::class.java).parse("ANOTHER"))
-        Assertions.assertEquals(BaseValue<ExampleExtended, Example>(Example.THIRD), ExtendedEnumValueParser(ExampleExtended::class.java, Example::class.java).parse("THIRD"))
-        Assertions.assertEquals(ExtendedValue<ExampleExtended, Example>(ExampleExtended.FOURTH), ExtendedEnumValueParser(ExampleExtended::class.java, Example::class.java).parse("FOURTH"))
+        Assertions.assertEquals(ExtendedEnumValue.ofBaseValue<ExampleExtended, Example>(Example.THING), ExtendedEnumValueParser(ExampleExtended::class.java, Example::class.java).parse("THING"))
+        Assertions.assertEquals(ExtendedEnumValue.ofBaseValue<ExampleExtended, Example>(Example.ANOTHER), ExtendedEnumValueParser(ExampleExtended::class.java, Example::class.java).parse("ANOTHER"))
+        Assertions.assertEquals(ExtendedEnumValue.ofBaseValue<ExampleExtended, Example>(Example.THIRD), ExtendedEnumValueParser(ExampleExtended::class.java, Example::class.java).parse("THIRD"))
+        Assertions.assertEquals(ExtendedEnumValue.ofExtendedValue<ExampleExtended, Example>(ExampleExtended.FOURTH), ExtendedEnumValueParser(ExampleExtended::class.java, Example::class.java).parse("FOURTH"))
     }
 }

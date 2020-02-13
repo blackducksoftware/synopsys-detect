@@ -10,14 +10,11 @@ import com.synopsys.integration.configuration.property.base.ValuedProperty;
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
 public class ExtendedEnumProperty<E extends Enum<E>, B extends Enum<B>> extends ValuedProperty<ExtendedEnumValue<E, B>> {
-    private List<String> allOptions;
-    private Class<B> bClass;
+    private final List<String> allOptions;
+    private final Class<B> bClass;
 
-    public ExtendedEnumProperty(@NotNull final String key,
-        @NotNull final Class<E> eClass,
-        @NotNull final Class<B> bClass,
-        @NotNull ExtendedEnumValue<E, B> defaultValue) {
-        super(key, new ExtendedEnumValueParser<E, B>(eClass, bClass), defaultValue);
+    public ExtendedEnumProperty(@NotNull final String key, @NotNull final ExtendedEnumValue<E, B> defaultValue, @NotNull final Class<E> eClass, @NotNull final Class<B> bClass) {
+        super(key, new ExtendedEnumValueParser<>(eClass, bClass), defaultValue);
         allOptions = new ArrayList<>();
         allOptions.addAll(EnumPropertyUtils.getEnumNames(eClass));
         allOptions.addAll(EnumPropertyUtils.getEnumNames(bClass));

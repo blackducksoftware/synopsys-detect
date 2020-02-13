@@ -1,15 +1,16 @@
 package com.synopsys.integration.configuration.property.types.enumextended;
 
+import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.misc.Nullable;
 import org.springframework.util.Assert;
 
 public class ExtendedEnumValue<E extends Enum<E>, B extends Enum<B>> {
     @Nullable
-    private E extendedValue;
+    private final E extendedValue;
     @Nullable
-    private B baseValue;
+    private final B baseValue;
 
-    private ExtendedEnumValue(E extendedValue, B baseValue) {
+    private ExtendedEnumValue(@Nullable final E extendedValue, @Nullable final B baseValue) {
         if (baseValue == null) {
             Assert.notNull(extendedValue, "You must provide either a base value or an extended value.");
         } else if (extendedValue == null) {
@@ -21,11 +22,13 @@ public class ExtendedEnumValue<E extends Enum<E>, B extends Enum<B>> {
         this.extendedValue = extendedValue;
     }
 
-    public static <E extends Enum<E>, B extends Enum<B>> ExtendedEnumValue<E, B> ofBaseValue(B baseValue) {
-        return new ExtendedEnumValue<E, B>(null, baseValue);
+    @NotNull
+    public static <E extends Enum<E>, B extends Enum<B>> ExtendedEnumValue<E, B> ofBaseValue(@NotNull final B baseValue) {
+        return new ExtendedEnumValue<>(null, baseValue);
     }
 
-    public static <E extends Enum<E>, B extends Enum<B>> ExtendedEnumValue<E, B> ofExtendedValue(E extendedValue) {
-        return new ExtendedEnumValue<E, B>(extendedValue, null);
+    @NotNull
+    public static <E extends Enum<E>, B extends Enum<B>> ExtendedEnumValue<E, B> ofExtendedValue(@NotNull final E extendedValue) {
+        return new ExtendedEnumValue<>(extendedValue, null);
     }
 }

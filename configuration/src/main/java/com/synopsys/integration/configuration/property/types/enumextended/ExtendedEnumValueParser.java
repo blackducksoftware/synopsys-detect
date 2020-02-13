@@ -33,32 +33,33 @@ import com.synopsys.integration.configuration.property.types.enums.SafeEnumValue
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
 class ExtendedEnumValueParser<E extends Enum<E>, B extends Enum<B>> extends ValueParser<ExtendedEnumValue<E, B>> {
-    private Class<E> enumClassE;
-    private Class<B> enumClassB;
-    private SafeEnumValueParser<E> extendedParser;
-    private SafeEnumValueParser<B> baseParser;
+    private final Class<E> enumClassE;
+    private final Class<B> enumClassB;
+    private final SafeEnumValueParser<E> extendedParser;
+    private final SafeEnumValueParser<B> baseParser;
 
-    public ExtendedEnumValueParser(@NotNull Class<E> enumClassE, @NotNull Class<B> enumClassB) {
+    public ExtendedEnumValueParser(@NotNull final Class<E> enumClassE, @NotNull final Class<B> enumClassB) {
         this.enumClassE = enumClassE;
         this.enumClassB = enumClassB;
-        this.extendedParser = new SafeEnumValueParser<E>(enumClassE);
-        this.baseParser = new SafeEnumValueParser<B>(enumClassB);
+        this.extendedParser = new SafeEnumValueParser<>(enumClassE);
+        this.baseParser = new SafeEnumValueParser<>(enumClassB);
     }
 
+    @Override
     @NotNull
-    public ExtendedEnumValue<E, B> parse(@NotNull String value) throws ValueParseException {
-        E eValue = extendedParser.parse(value);
+    public ExtendedEnumValue<E, B> parse(@NotNull final String value) throws ValueParseException {
+        final E eValue = extendedParser.parse(value);
         if (eValue != null) {
             return ExtendedEnumValue.ofExtendedValue(eValue);
         }
-        B bValue = baseParser.parse(value);
+        final B bValue = baseParser.parse(value);
         if (bValue != null) {
             return ExtendedEnumValue.ofBaseValue(bValue);
         }
-        List<String> combinedOptions = new ArrayList<>();
+        final List<String> combinedOptions = new ArrayList<>();
         combinedOptions.addAll(EnumPropertyUtils.getEnumNames(enumClassE));
         combinedOptions.addAll(EnumPropertyUtils.getEnumNames(enumClassB));
-        String optionText = String.join(",", combinedOptions);
+        final String optionText = String.join(",", combinedOptions);
         throw new ValueParseException(value, "either enum", "Value was must be one of " + optionText);
     }
 }
