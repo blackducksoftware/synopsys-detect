@@ -27,6 +27,7 @@ import com.synopsys.integration.configuration.util.configOf
 import com.synopsys.integration.configuration.util.propertySourceOf
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.util.*
 
 class MultiplePropertySourceTests {
     @Test
@@ -36,8 +37,8 @@ class MultiplePropertySourceTests {
         val primarySource = propertySourceOf("primaryName", sharedProperty.key to "primaryValue")
 
         val config = configOf(primarySource, secondarySource);
-        Assertions.assertEquals("primaryValue", config.getValue(sharedProperty))
-        Assertions.assertEquals("primaryName", config.getPropertySource(sharedProperty))
+        Assertions.assertEquals(Optional.of("primaryValue"), config.getValue(sharedProperty))
+        Assertions.assertEquals(Optional.of("primaryName"), config.getPropertySource(sharedProperty))
     }
 
     @Test
@@ -47,8 +48,8 @@ class MultiplePropertySourceTests {
         val primarySource = propertySourceOf("primaryName")
 
         val config = configOf(primarySource, secondarySource)
-        Assertions.assertEquals("secondaryValue", config.getValue(property))
-        Assertions.assertEquals("secondaryName", config.getPropertySource(property))
+        Assertions.assertEquals(Optional.of("secondaryValue"), config.getValue(property))
+        Assertions.assertEquals(Optional.of("secondaryName"), config.getPropertySource(property))
     }
 
     @Test
