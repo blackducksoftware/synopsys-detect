@@ -22,16 +22,11 @@
  */
 package com.synopsys.integration.detectable.detectables.git.unit;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.ReaderInputStream;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -41,18 +36,17 @@ import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFile
 
 class GitFileParserTest {
     @Test
-    public void parseHeadFile() throws IOException {
+    public void parseHeadFile() {
         final GitFileParser gitFileParser = new GitFileParser();
         final String gitHeadContent = "ref: refs/heads/master\n";
-        final InputStream inputStream = IOUtils.toInputStream(gitHeadContent, StandardCharsets.UTF_8);
-        final String head = gitFileParser.parseGitHead(inputStream);
+        final String head = gitFileParser.parseGitHead(gitHeadContent);
         Assertions.assertEquals("refs/heads/master", head);
     }
 
     @Test
-    public void parseGitConfig() throws IOException {
+    public void parseGitConfig() {
         final GitFileParser gitFileParser = new GitFileParser();
-        final String output = String.join("\n",
+        final List<String> output = Arrays.asList(
             "[core]",
             "	repositoryformatversion = 0",
             "	filemode = true",
@@ -70,9 +64,8 @@ class GitFileParserTest {
             "	remote = origin",
             "	merge = refs/heads/test"
         );
-        final InputStream inputStream = new ReaderInputStream(new StringReader(output), StandardCharsets.UTF_8);
 
-        final List<GitConfigElement> gitConfigElements = gitFileParser.parseGitConfig(inputStream);
+        final List<GitConfigElement> gitConfigElements = gitFileParser.parseGitConfig(output);
         Assertions.assertEquals(4, gitConfigElements.size());
 
         final List<GitConfigElement> gitConfigCores = getElements(gitConfigElements, "core");
