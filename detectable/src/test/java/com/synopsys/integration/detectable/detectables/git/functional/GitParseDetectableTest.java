@@ -43,7 +43,25 @@ public class GitParseDetectableTest extends DetectableFunctionalTest {
     @Override
     public void setup() throws IOException {
         final Path gitDirectory = addDirectory(Paths.get(".git"));
-        addFileFromResources(gitDirectory.resolve("config"), "/git/GitParseDetectableTest-config");
+        addFile(gitDirectory.resolve("config"),
+            "[core]",
+            "	repositoryformatversion = 0",
+            "	filemode = true",
+            "	bare = false",
+            "	logallrefupdates = true",
+            "	ignorecase = true",
+            "	precomposeunicode = true",
+            "[remote \"origin\"]",
+            "	url = https://github.com/blackducksoftware/synopsys-detect.git",
+            "	fetch = +refs/heads/*:refs/remotes/origin/*",
+            "[branch \"master\"]",
+            "	remote = origin",
+            "	merge = refs/heads/master",
+            "[branch \"test\"]",
+            "	remote = origin",
+            "	merge = refs/heads/test"
+        );
+
         addFile(gitDirectory.resolve("HEAD"), Collections.singletonList("ref: refs/heads/master\n"));
     }
 

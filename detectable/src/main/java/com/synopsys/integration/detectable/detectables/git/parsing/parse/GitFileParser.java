@@ -22,16 +22,12 @@
  */
 package com.synopsys.integration.detectable.detectables.git.parsing.parse;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
@@ -42,16 +38,11 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 public class GitFileParser {
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
-    // TODO: Accept a String rather than an input stream.
-    public String parseGitHead(final InputStream inputStream) throws IOException {
-        final String line = IOUtils.toString(inputStream, StandardCharsets.UTF_8).trim();
-        return line.replaceFirst("ref:\\w*", "").trim();
+    public String parseGitHead(final String headFileContent) {
+        return headFileContent.trim().replaceFirst("ref:\\w*", "").trim();
     }
 
-    // TODO: Accept a list of Strings representing lines rather than an input stream.
-    public List<GitConfigElement> parseGitConfig(final InputStream inputStream) throws IOException {
-        final List<String> gitConfigLines = IOUtils.readLines(inputStream, StandardCharsets.UTF_8);
-
+    public List<GitConfigElement> parseGitConfig(final List<String> gitConfigLines) {
         final List<GitConfigElement> gitConfigElements = new ArrayList<>();
         final List<String> lineBuffer = new ArrayList<>();
         for (final String rawLine : gitConfigLines) {
