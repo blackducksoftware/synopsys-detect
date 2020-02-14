@@ -44,9 +44,9 @@ class FilterableEnumValueParserTests {
 
     @Test
     fun parsesEnumValue() {
-        Assertions.assertEquals(Value(Example.THING), FilterableEnumValueParser(Example::class.java).parse("THING"))
-        Assertions.assertEquals(Value(Example.ANOTHER), FilterableEnumValueParser(Example::class.java).parse("ANOTHER"))
-        Assertions.assertEquals(All<Example>().toString(), FilterableEnumValueParser(Example::class.java).parse("ALL").toString())
-        Assertions.assertEquals(None<Example>().toString(), FilterableEnumValueParser(Example::class.java).parse("NONE").toString())
+        Assertions.assertEquals(FilterableEnumValue.value(Example.THING), FilterableEnumValueParser(Example::class.java).parse("THING"))
+        Assertions.assertEquals(FilterableEnumValue.value(Example.ANOTHER), FilterableEnumValueParser(Example::class.java).parse("ANOTHER"))
+        Assertions.assertEquals(FilterableEnumValue.allValue<Example>().toString(), FilterableEnumValueParser(Example::class.java).parse("ALL").toString())
+        Assertions.assertEquals(FilterableEnumValue.noneValue<Example>().toString(), FilterableEnumValueParser(Example::class.java).parse("NONE").toString())
     }
 }

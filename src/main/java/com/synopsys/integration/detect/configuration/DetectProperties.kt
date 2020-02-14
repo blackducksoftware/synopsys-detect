@@ -33,7 +33,7 @@ import com.synopsys.integration.configuration.property.types.bool.BooleanPropert
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumListProperty
-import com.synopsys.integration.configuration.property.types.enumfilterable.None
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils
 import com.synopsys.integration.configuration.property.types.enums.EnumListProperty
 import com.synopsys.integration.configuration.property.types.enums.EnumProperty
 import com.synopsys.integration.configuration.property.types.integer.IntegerProperty
@@ -721,7 +721,7 @@ class DetectProperties {
             help("Path of the swift executable.")
             groups(DetectGroup.Paths, DetectGroup.Global)
         }
-        val DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES = FilterableEnumListProperty("detect.policy.check.fail.on.severities", listOf(None<PolicySeverityType>()), PolicySeverityType::class.java).apply {
+        val DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES = FilterableEnumListProperty("detect.policy.check.fail.on.severities", FilterableEnumUtils.noneList(), PolicySeverityType::class.java).apply {
             info("Fail on Policy Violation Severities", "3.0.0")
             help("A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE.")
             groups(DetectGroup.Project, DetectGroup.Global, DetectGroup.ProjectSetting, DetectGroup.Policy)
