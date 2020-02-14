@@ -26,8 +26,6 @@ import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder
 import com.synopsys.integration.configuration.config.PropertyConfiguration
-import com.synopsys.integration.configuration.property.types.enumextended.BaseValue
-import com.synopsys.integration.configuration.property.types.enumextended.ExtendedValue
 import com.synopsys.integration.configuration.property.types.enumfilterable.populatedValues
 import com.synopsys.integration.configuration.property.types.path.PathResolver
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException
@@ -59,6 +57,7 @@ import com.synopsys.integration.rest.proxy.ProxyInfo
 import com.synopsys.integration.rest.proxy.ProxyInfoBuilder
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.math.NumberUtils
+import org.jetbrains.annotations.Nullable
 import java.io.File
 import java.nio.file.Path
 import java.util.*
@@ -95,7 +94,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         return Runtime.getRuntime().availableProcessors()
     }
 
-
+    @Nullable
     fun findSnippetMatching(): SnippetMatching? {
         val snippetMatching = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING)
 
@@ -104,10 +103,15 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
             false -> null
         }
 
-        return when (snippetMatching) {
-            is ExtendedValue -> deprecatedSnippetMatching // The only extended value is NONE. So this means it was not set and we should fall back to deprecated snippets.
-            is BaseValue -> snippetMatching.value
+        if (snippetMatching.baseValue.isPresent) {
+            return snippetMatching.baseValue.get()
         }
+
+        if (snippetMatching.extendedValue.isPresent) {
+            return deprecatedSnippetMatching
+        }
+
+        return null
     }
 
     //#endregion

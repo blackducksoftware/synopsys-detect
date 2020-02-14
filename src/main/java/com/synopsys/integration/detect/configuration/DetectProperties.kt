@@ -31,7 +31,7 @@ import com.synopsys.integration.configuration.property.Property
 import com.synopsys.integration.configuration.property.base.PassthroughProperty
 import com.synopsys.integration.configuration.property.types.bool.BooleanProperty
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty
-import com.synopsys.integration.configuration.property.types.enumextended.ExtendedValue
+import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumListProperty
 import com.synopsys.integration.configuration.property.types.enumfilterable.None
 import com.synopsys.integration.configuration.property.types.enums.EnumListProperty
@@ -274,7 +274,7 @@ class DetectProperties {
             help("These paths and only these paths will be scanned.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Global)
         }
-        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING = ExtendedEnumProperty("detect.blackduck.signature.scanner.snippet.matching", ExtendedValue(ExtendedSnippetMode.NONE), ExtendedSnippetMode::class.java, SnippetMatching::class.java).apply {
+        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING = ExtendedEnumProperty("detect.blackduck.signature.scanner.snippet.matching", ExtendedEnumValue.ofExtendedValue(ExtendedSnippetMode.NONE), ExtendedSnippetMode::class.java, SnippetMatching::class.java).apply {
             info("Snippet Matching", "5.5.0")
             help("Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help.")
             groups(DetectGroup.SignatureScanner, DetectGroup.Global, DetectGroup.SourceScan)
