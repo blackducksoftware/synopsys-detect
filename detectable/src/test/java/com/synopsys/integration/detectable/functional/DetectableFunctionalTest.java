@@ -158,7 +158,7 @@ public abstract class DetectableFunctionalTest {
     @NotNull
     public ExecutableOutput createStandardOutput(final String... outputLines) {
         final String output = String.join(System.lineSeparator(), outputLines);
-        return new ExecutableOutput("executbale", 0, output, "");
+        return new ExecutableOutput("executable", 0, output, "");
     }
 
     protected abstract void setup() throws IOException;
