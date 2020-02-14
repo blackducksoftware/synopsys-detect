@@ -20,31 +20,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.bool;
+package com.synopsys.integration.configuration.property.types.enumsoft;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.configuration.parse.ListValueParser;
-import com.synopsys.integration.configuration.property.base.ValuedListProperty;
-import com.synopsys.integration.configuration.util.PropertyUtils;
+import com.synopsys.integration.configuration.parse.ValueParseException;
+import com.synopsys.integration.configuration.parse.ValueParser;
+import com.synopsys.integration.configuration.property.types.enums.SafeEnumValueParser;
 
-public class BooleanListProperty extends ValuedListProperty<Boolean> {
-    public BooleanListProperty(@NotNull final String key, @NotNull final List<Boolean> defaultValue) {
-        super(key, new ListValueParser<Boolean>(new BooleanValueParser()), defaultValue);
+class SoftEnumValueParser<T extends Enum<T>> extends ValueParser<SoftEnumValue<T>> {
+    private final SafeEnumValueParser<T> parser;
+
+    public SoftEnumValueParser(@NotNull Class<T> enumClass) {
+        this.parser = new SafeEnumValueParser<T>(enumClass);
     }
 
-    @Nullable
+    @NotNull
     @Override
-    public String describeDefault() {
-        return PropertyUtils.describeObjectList(getDefaultValue());
-    }
-
-    @Nullable
-    @Override
-    public String describeType() {
-        return "Boolean List";
+    public SoftEnumValue<T> parse(@NotNull final String value) throws ValueParseException {
+        Optional<T> enumValue = parser.parse(value);
+        return enumValue.map(SoftEnumValue::ofEnumValue)
+                   .orElseGet(() -> SoftEnumValue.ofSoftValue(value));
     }
 }

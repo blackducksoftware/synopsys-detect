@@ -20,16 +20,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.enumsoft
+package com.synopsys.integration.configuration.util;
 
-// An enum that can be the given ENUM or can be STRING
-// Useful for properties that might want to be extended by the user such as Black Duck settings where we may know some of the values but don't care if we do not.
-sealed class SoftEnumValue<T : Enum<T>>
+import java.util.List;
+import java.util.stream.Collectors;
 
-data class ActualValue<T : Enum<T>>(val value: T) : SoftEnumValue<T>() {
-    override fun toString(): String = value.toString()
-}
-
-data class StringValue<T : Enum<T>>(val value: String) : SoftEnumValue<T>() {
-    override fun toString(): String = value
+public class PropertyUtils {
+    public static <T> String describeObjectList(List<T> objects) {
+        return objects.stream()
+                   .map(Object::toString)
+                   .collect(Collectors.joining(","));
+    }
 }

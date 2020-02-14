@@ -23,7 +23,6 @@
 package com.synopsys.integration.configuration.property.types.enumfilterable;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import com.synopsys.integration.configuration.parse.ListValueParser;
 import com.synopsys.integration.configuration.property.base.ValuedListProperty;
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
+import com.synopsys.integration.configuration.util.PropertyUtils;
 
 public class FilterableEnumListProperty<E extends Enum<E>> extends ValuedListProperty<FilterableEnumValue<E>> {
     @NotNull
@@ -55,7 +55,7 @@ public class FilterableEnumListProperty<E extends Enum<E>> extends ValuedListPro
     @Nullable
     @Override
     public String describeDefault() {
-        return getDefaultValue().stream().map(Object::toString).collect(Collectors.joining(","));
+        return PropertyUtils.describeObjectList(getDefaultValue());
     }
 
     @Nullable
