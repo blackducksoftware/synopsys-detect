@@ -20,18 +20,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.enumsoft
+package com.synopsys.integration.configuration.property.types.enums;
 
-import com.synopsys.integration.configuration.parse.ValueParser
-import com.synopsys.integration.configuration.property.types.enums.SafeEnumValueParser
+import java.util.Optional;
 
-class SoftEnumValueParser<T : Enum<T>>(enumClass: Class<T>) : ValueParser<SoftEnumValue<T>>() {
-    val parser = SafeEnumValueParser(enumClass)
-    override fun parse(value: String): SoftEnumValue<T> {
-        val enumValue = parser.parse(value);
-        return when (enumValue.isPresent) {
-            false -> StringValue(value)
-            else -> ActualValue(enumValue.get())
-        }
+import org.apache.commons.lang3.EnumUtils;
+import org.jetbrains.annotations.NotNull;
+
+public class SafeEnumValueParser<T extends Enum<T>> {
+    private final Class<T> enumClass;
+
+    public SafeEnumValueParser(@NotNull Class<T> enumClass) {
+        this.enumClass = enumClass;
+    }
+
+    @NotNull
+    public Optional<T> parse(@NotNull String value) {
+        return Optional.ofNullable(EnumUtils.getEnum(enumClass, value));
     }
 }

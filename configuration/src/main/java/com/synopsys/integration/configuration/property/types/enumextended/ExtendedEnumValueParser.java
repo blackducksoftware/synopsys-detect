@@ -24,6 +24,7 @@ package com.synopsys.integration.configuration.property.types.enumextended;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -48,13 +49,13 @@ class ExtendedEnumValueParser<E extends Enum<E>, B extends Enum<B>> extends Valu
     @Override
     @NotNull
     public ExtendedEnumValue<E, B> parse(@NotNull final String value) throws ValueParseException {
-        final E eValue = extendedParser.parse(value);
-        if (eValue != null) {
-            return ExtendedEnumValue.ofExtendedValue(eValue);
+        final Optional<E> eValue = extendedParser.parse(value);
+        if (eValue.isPresent()) {
+            return ExtendedEnumValue.ofExtendedValue(eValue.get());
         }
-        final B bValue = baseParser.parse(value);
-        if (bValue != null) {
-            return ExtendedEnumValue.ofBaseValue(bValue);
+        final Optional<B> bValue = baseParser.parse(value);
+        if (bValue.isPresent()) {
+            return ExtendedEnumValue.ofBaseValue(bValue.get());
         }
         final List<String> combinedOptions = new ArrayList<>();
         combinedOptions.addAll(EnumPropertyUtils.getEnumNames(enumClassE));
