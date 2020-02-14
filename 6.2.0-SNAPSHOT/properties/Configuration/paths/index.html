@@ -2249,7 +2249,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>,, ,, ,</td>
+<td>DOCKER,DETECTOR,BAZEL</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2443,7 +2443,7 @@
 </tbody>
 </table>
 <h2 id="detect-tools-included-advanced">Detect Tools Included (Advanced)</h2>
-<pre><code>--detect.tools=DETECTOR,SIGNATURE_SCAN,BINARY_SCAN,POLARIS,DOCKER,BAZEL,ALL,NONE 
+<pre><code>--detect.tools=ALL,NONE,DETECTOR,SIGNATURE_SCAN,BINARY_SCAN,POLARIS,DOCKER,BAZEL 
 </code></pre>
 
 <p>The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.</p>
@@ -2478,7 +2478,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL, ALL, NONE</td>
+<td>ALL, NONE, DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL</td>
 </tr>
 <tr>
 <td>Strict</td>
@@ -2487,7 +2487,7 @@
 </tbody>
 </table>
 <h2 id="detect-tools-excluded-advanced">Detect Tools Excluded (Advanced)</h2>
-<pre><code>--detect.tools.excluded=DETECTOR,SIGNATURE_SCAN,BINARY_SCAN,POLARIS,DOCKER,BAZEL,ALL,NONE 
+<pre><code>--detect.tools.excluded=ALL,NONE,DETECTOR,SIGNATURE_SCAN,BINARY_SCAN,POLARIS,DOCKER,BAZEL 
 </code></pre>
 
 <p>The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.</p>
@@ -2522,7 +2522,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL, ALL, NONE</td>
+<td>ALL, NONE, DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL</td>
 </tr>
 <tr>
 <td>Strict</td>

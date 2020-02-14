@@ -1413,7 +1413,7 @@
 </tr>
 <tr>
 <td><a href="../Configuration/paths#detector-tool-priority-advanced">detect.project.tool</a> <br /> (Advanced)</td>
-<td>default: ,, ,, , <br /><br />  Acceptable Values: DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL <br /><br />Detector Tool Priority: The tool priority for project name and version. The project name and version will be determined by the first tool in this list that provides them. <br /><br /></td>
+<td>default: DOCKER,DETECTOR,BAZEL <br /><br />  Acceptable Values: DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL <br /><br />Detector Tool Priority: The tool priority for project name and version. The project name and version will be determined by the first tool in this list that provides them. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/paths#resolve-tilde-in-paths-advanced">detect.resolve.tilde.in.paths</a> <br /> (Advanced)</td>
@@ -1433,11 +1433,11 @@
 </tr>
 <tr>
 <td><a href="../Configuration/paths#detect-tools-included-advanced">detect.tools</a> <br /> (Advanced)</td>
-<td>Acceptable Values: DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL, ALL, NONE <br /><br />Detect Tools Included: The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win. <br /><br /></td>
+<td>Acceptable Values: ALL, NONE, DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL <br /><br />Detect Tools Included: The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/paths#detect-tools-excluded-advanced">detect.tools.excluded</a> <br /> (Advanced)</td>
-<td>Acceptable Values: DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL, ALL, NONE <br /><br />Detect Tools Excluded: The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win. <br /><br /></td>
+<td>Acceptable Values: ALL, NONE, DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL <br /><br />Detect Tools Excluded: The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/paths#detect-tools-output-path-advanced">detect.tools.output.path</a> <br /> (Advanced)</td>
@@ -1519,7 +1519,7 @@
 </tr>
 <tr>
 <td><a href="../Configuration/signature scanner#directory-name-exclusion-patterns-advanced">detect.blackduck.signature.scanner.exclusion.name.patterns</a> <br /> (Advanced)</td>
-<td>default: , <br /><br /> Directory Name Exclusion Patterns: A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values. <br /><br /></td>
+<td>default: node_modules <br /><br /> Directory Name Exclusion Patterns: A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/signature scanner#exclusion-patterns-advanced">detect.blackduck.signature.scanner.exclusion.patterns</a> <br /> (Advanced)</td>
@@ -1551,7 +1551,7 @@
 </tr>
 <tr>
 <td><a href="../Configuration/signature scanner#snippet-matching-advanced">detect.blackduck.signature.scanner.snippet.matching</a> <br /> (Advanced)</td>
-<td>default: NONE <br /><br />  Acceptable Values: NONE, SNIPPET_MATCHING, SNIPPET_MATCHING_ONLY, FULL_SNIPPET_MATCHING, FULL_SNIPPET_MATCHING_ONLY <br /><br />Snippet Matching: Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. <br /><br /></td>
+<td>default: com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue@1b428925 <br /><br />  Acceptable Values: NONE, SNIPPET_MATCHING, SNIPPET_MATCHING_ONLY, FULL_SNIPPET_MATCHING, FULL_SNIPPET_MATCHING_ONLY <br /><br />Snippet Matching: Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/signature scanner#upload-source-mode-advanced">detect.blackduck.signature.scanner.upload.source.mode</a> <br /> (Advanced)</td>
@@ -1583,7 +1583,7 @@
 </tr>
 <tr>
 <td><a href="../Configuration/signature scanner#detect-hub-signature-scanner-exclusion-name-patterns-deprecated">detect.hub.signature.scanner.exclusion.name.patterns</a> <br /> (Deprecated)</td>
-<td>default: , <br /><br /> Detect Hub Signature Scanner Exclusion Name Patterns: A comma-separated list of directory name patterns Detect will search for and add to the Signature Scanner --exclude flag values. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.name.patterns in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
+<td>default: node_modules <br /><br /> Detect Hub Signature Scanner Exclusion Name Patterns: A comma-separated list of directory name patterns Detect will search for and add to the Signature Scanner --exclude flag values. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.name.patterns in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../Configuration/signature scanner#detect-hub-signature-scanner-exclusion-patterns-deprecated">detect.hub.signature.scanner.exclusion.patterns</a> <br /> (Deprecated)</td>
@@ -1709,7 +1709,7 @@
 </tr>
 <tr>
 <td><a href="../Configuration/project#fail-on-policy-violation-severities-advanced">detect.policy.check.fail.on.severities</a> <br /> (Advanced)</td>
-<td>default: , <br /><br />  Acceptable Values: BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL, UNSPECIFIED, ALL, NONE <br /><br />Fail on Policy Violation Severities: A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE. <br /><br /></td>
+<td>default: NONE <br /><br />  Acceptable Values: ALL, NONE, BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL, UNSPECIFIED <br /><br />Fail on Policy Violation Severities: A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/project#application-id-advanced">detect.project.application.id</a> <br /> (Advanced)</td>
@@ -1717,7 +1717,7 @@
 </tr>
 <tr>
 <td><a href="../Configuration/project#clone-project-categories-advanced">detect.project.clone.categories</a> <br /> (Advanced)</td>
-<td>default: ,, , <br /><br />  Acceptable Values: COMPONENT_DATA, VULN_DATA, LICENSE_TERM_FULFILLMENT <br /><br />Clone Project Categories: An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set. <br /><br /></td>
+<td>default: COMPONENT_DATA,VULN_DATA <br /><br />  Acceptable Values: COMPONENT_DATA, VULN_DATA, LICENSE_TERM_FULFILLMENT <br /><br />Clone Project Categories: An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/project#scan-name-prefix-advanced">detect.project.codelocation.prefix</a> <br /> (Advanced)</td>
@@ -1959,7 +1959,7 @@
 </tr>
 <tr>
 <td><a href="../Detectors/nuget#nuget-packages-repository-url-advanced">detect.nuget.packages.repo.url</a> <br /> (Advanced)</td>
-<td>default: , <br /><br /> Nuget Packages Repository URL: The source for nuget packages <br /><br /></td>
+<td>default: https://api.nuget.org/v3/index.json <br /><br /> Nuget Packages Repository URL: The source for nuget packages <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Detectors/nuget#detect-nuget-inspector-name-deprecated">detect.nuget.inspector.name</a> <br /> (Deprecated)</td>
@@ -1982,11 +1982,11 @@
 <tbody>
 <tr>
 <td><a href="../Configuration/detector#detector-types-excluded-advanced">detect.excluded.detector.types</a> <br /> (Advanced)</td>
-<td>Acceptable Values: BITBAKE, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG, ALL, NONE <br /><br />Detector Types Excluded: By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify "ALL". Exclusion rules always win. <br /><br /></td>
+<td>Acceptable Values: ALL, NONE, BITBAKE, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG <br /><br />Detector Types Excluded: By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify "ALL". Exclusion rules always win. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/detector#detector-types-included-advanced">detect.included.detector.types</a> <br /> (Advanced)</td>
-<td>Acceptable Values: BITBAKE, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG, ALL, NONE <br /><br />Detector Types Included: By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win. <br /><br /></td>
+<td>Acceptable Values: ALL, NONE, BITBAKE, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG <br /><br />Detector Types Included: By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/detector#required-detect-types-advanced">detect.required.detector.types</a> <br /> (Advanced)</td>

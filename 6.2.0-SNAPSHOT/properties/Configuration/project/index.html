@@ -2170,7 +2170,7 @@
 </tbody>
 </table>
 <h2 id="fail-on-policy-violation-severities-advanced">Fail on Policy Violation Severities (Advanced)</h2>
-<pre><code>--detect.policy.check.fail.on.severities=BLOCKER,CRITICAL,MAJOR,MINOR,TRIVIAL,UNSPECIFIED,ALL,NONE 
+<pre><code>--detect.policy.check.fail.on.severities=ALL,NONE,BLOCKER,CRITICAL,MAJOR,MINOR,TRIVIAL,UNSPECIFIED 
 </code></pre>
 
 <p>A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE.</p>
@@ -2192,7 +2192,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>,</td>
+<td>NONE</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2204,7 +2204,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL, UNSPECIFIED, ALL, NONE</td>
+<td>ALL, NONE, BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL, UNSPECIFIED</td>
 </tr>
 <tr>
 <td>Strict</td>
@@ -2278,7 +2278,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>,, ,</td>
+<td>COMPONENT_DATA,VULN_DATA</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
