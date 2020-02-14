@@ -25,6 +25,7 @@ package com.synopsys.integration.detectable.functional;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -110,6 +111,11 @@ public abstract class DetectableFunctionalTest {
     }
 
     @NotNull
+    public Path addFile(@NotNull final String path) throws IOException {
+        return addFile(Paths.get(path));
+    }
+
+    @NotNull
     public Path addFile(@NotNull final Path path) throws IOException {
         return addFile(path, Collections.emptyList());
     }
@@ -147,6 +153,12 @@ public abstract class DetectableFunctionalTest {
         final List<String> commandList = Arrays.asList(command);
         final Executable executable = new Executable(sourceDirectory.toFile(), environment, commandList);
         executableRunner.addExecutableOutput(executable, executableOutput);
+    }
+
+    @NotNull
+    public ExecutableOutput createStandardOutput(final String... outputLines) {
+        final String output = String.join(System.lineSeparator(), outputLines);
+        return new ExecutableOutput("executbale", 0, output, "");
     }
 
     protected abstract void setup() throws IOException;

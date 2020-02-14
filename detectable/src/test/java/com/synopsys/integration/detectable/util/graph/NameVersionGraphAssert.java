@@ -41,12 +41,12 @@ public class NameVersionGraphAssert extends GraphAssert {
         return this.hasDependency(externalIdFactory.createNameVersionExternalId(forge, name, version));
     }
 
-    public ExternalId noDependency(final String name, final String version) {
+    public ExternalId hasNoDependency(final String name, final String version) {
         return this.hasNoDependency(externalIdFactory.createNameVersionExternalId(forge, name, version));
     }
 
-    public void hasParentChildRelationship(final String name1, final String version1, final String name2, final String version2) {
-        Assertions.assertTrue(graph.getChildrenExternalIdsForParent(externalIdFactory.createNameVersionExternalId(forge, name1, version1)).contains(externalIdFactory.createNameVersionExternalId(forge, name2, version2)),
-            "Expected dependency " + name1 + " " + version1 + " to have dependency of " + name2 + " " + version2);
+    public void hasParentChildRelationship(final String parentName, final String parentVersion, final String childName, final String childVersion) {
+        Assertions.assertTrue(graph.getChildrenExternalIdsForParent(externalIdFactory.createNameVersionExternalId(forge, parentName, parentVersion)).contains(externalIdFactory.createNameVersionExternalId(forge, childName, childVersion)),
+            "Expected dependency " + parentName + " " + parentVersion + " to have dependency of " + childName + " " + childVersion);
     }
 }
