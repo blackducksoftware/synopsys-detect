@@ -20,10 +20,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.string
+package com.synopsys.integration.configuration.property.types.string;
 
-import com.synopsys.integration.configuration.parse.ValueParser
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-class StringValueParser : ValueParser<String>() {
-    override fun parse(value: String): String = value
+import com.synopsys.integration.configuration.property.base.ValuedProperty;
+
+public class StringProperty extends ValuedProperty<String> {
+    public StringProperty(@NotNull final String key, String defaultValue) {
+        super(key, new StringValueParser(), defaultValue);
+    }
+
+    @Nullable
+    @Override
+    public String describeDefault() {
+        return getDefaultValue();
+    }
+
+    @Nullable
+    @Override
+    public String describeType() {
+        return "String";
+    }
 }
