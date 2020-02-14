@@ -20,17 +20,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.integer
+package com.synopsys.integration.configuration.property.types.integer;
 
-import com.synopsys.integration.configuration.parse.ValueParseException
-import com.synopsys.integration.configuration.parse.ValueParser
+import org.jetbrains.annotations.NotNull;
 
-class IntegerValueParser : ValueParser<Int>() {
-    override fun parse(value: String): Int {
-        return try {
-            value.toInt()
-        } catch (e: NumberFormatException) {
-            throw ValueParseException(value, "integer", e)
+import com.synopsys.integration.configuration.parse.ValueParseException;
+import com.synopsys.integration.configuration.parse.ValueParser;
+
+class IntegerValueParser extends ValueParser<Integer> {
+    @NotNull
+    @Override
+    public Integer parse(@NotNull String value) throws ValueParseException {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new ValueParseException(value, "integer", e);
         }
     }
 }
