@@ -44,7 +44,7 @@ public class PearPackageDependenciesParser {
             if (!started) {
                 started = line.startsWith(START_TOKEN);
                 continue;
-            } else if (StringUtils.isBlank(line) || line.startsWith("Required")) {
+            } else if (StringUtils.isBlank(line) || line.startsWith("Required") || line.startsWith("REQUIRED")) {
                 continue;
             }
 
