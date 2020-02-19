@@ -91,8 +91,8 @@ public class HelpJsonWriter {
         helpJsonOption.setSuperGroup(superGroupName);
         helpJsonOption.setAdditionalGroups(property.getPropertyGroupInfo().getAdditionalGroups().stream().map(Group::getName).collect(Collectors.toList()));
         helpJsonOption.setCategory(property.getCategory() == null ? "" : property.getCategory().getName());
-        helpJsonOption.setDescription(property.getPropertyHelpInfo().getShort());
-        helpJsonOption.setDetailedDescription(property.getPropertyHelpInfo().getLong() == null ? "" : property.getPropertyHelpInfo().getLong());
+        helpJsonOption.setDescription(property.getPropertyHelpInfo().getShortText());
+        helpJsonOption.setDetailedDescription(property.getPropertyHelpInfo().getLongText() == null ? "" : property.getPropertyHelpInfo().getLongText());
         helpJsonOption.setDeprecated(property.getPropertyDeprecationInfo() != null);
         if (property.getPropertyDeprecationInfo() != null) {
             helpJsonOption.setDeprecatedDescription(property.getPropertyDeprecationInfo().getDescription());
