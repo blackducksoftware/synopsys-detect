@@ -29,6 +29,7 @@ import com.synopsys.integration.configuration.property.types.enums.NullableEnumP
 import com.synopsys.integration.configuration.util.configOf
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.util.*
 
 // Simple glue sanity tests. Theoretically if Config is well tested and Parser is well tested, these will pass so they are not exhaustive.
 class EnumPropertiesTests {
@@ -48,7 +49,7 @@ class EnumPropertiesTests {
     fun testNullable() {
         val property = NullableEnumProperty("enum.nullable", Example::class.java)
         val config = configOf("enum.nullable" to "ANOTHER")
-        Assertions.assertEquals(Example.ANOTHER, config.getValue(property))
+        Assertions.assertEquals(Optional.of(Example.ANOTHER), config.getValue(property))
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD"))
     }

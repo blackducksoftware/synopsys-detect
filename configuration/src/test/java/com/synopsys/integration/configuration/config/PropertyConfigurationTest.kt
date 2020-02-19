@@ -33,6 +33,7 @@ import com.synopsys.integration.configuration.util.emptyConfig
 import com.synopsys.integration.configuration.util.propertySourceOf
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.util.*
 
 class PropertyConfigurationTest {
     companion object {
@@ -56,20 +57,20 @@ class PropertyConfigurationTest {
     @Test
     fun getValueOrNull() {
         val nullableProperty = NullableTestProperty("example.key")
-        Assertions.assertNull(configOf(nullableProperty.key to UNKNOWN_VALUE).getValueOrNull(nullableProperty), "An unknown value should fail to parse and the config should provide null.")
+        Assertions.assertEquals(Optional.empty<String>(), configOf(nullableProperty.key to UNKNOWN_VALUE).getValueOrEmpty(nullableProperty), "An unknown value should fail to parse and the config should provide null.")
     }
 
     @Test
     fun getValueOrDefault() {
         val propertyWithDefault = ValuedTestProperty("example.key", "defaultValue")
-        Assertions.assertEquals(propertyWithDefault.default, configOf(propertyWithDefault.key to UNKNOWN_VALUE).getValueOrDefault(propertyWithDefault), "An unknown value should fail to parse and the config should provide the default value.")
+        Assertions.assertEquals(propertyWithDefault.defaultValue, configOf(propertyWithDefault.key to UNKNOWN_VALUE).getValueOrDefault(propertyWithDefault), "An unknown value should fail to parse and the config should provide the default value.")
     }
 
     @Test
     fun getValueNullableValue() {
         val nullableProperty = NullableTestProperty("example.key")
         val config = configOf(nullableProperty.key to "providedValue")
-        Assertions.assertEquals("providedValue", config.getValue(nullableProperty), "A provided nullable property should return the provided value.")
+        Assertions.assertEquals(Optional.of("providedValue"), config.getValue(nullableProperty), "A provided nullable property should return the provided value.")
     }
 
     @Test
@@ -83,7 +84,7 @@ class PropertyConfigurationTest {
     @Test
     fun getValueNullableNull() {
         val nullableProperty = NullableTestProperty("example.key")
-        Assertions.assertNull(emptyConfig().getValue(nullableProperty), "Config should provide null if the property is nullable.")
+        Assertions.assertEquals(Optional.empty<String>(), emptyConfig().getValue(nullableProperty), "Config should provide an empty Optional if the property is nullable.")
     }
 
     @Test
@@ -105,7 +106,7 @@ class PropertyConfigurationTest {
     @Test
     fun getValueProvidesDefault() {
         val propertyWithDefault = ValuedTestProperty("example.key", "defaultValue")
-        Assertions.assertEquals(propertyWithDefault.default, emptyConfig().getValue(propertyWithDefault), "Config should provide default value when property is not provided.")
+        Assertions.assertEquals(propertyWithDefault.defaultValue, emptyConfig().getValue(propertyWithDefault), "Config should provide default value when property is not provided.")
     }
 
     @Test()
@@ -125,15 +126,15 @@ class PropertyConfigurationTest {
     @Test
     fun getPropertySource() {
         val nullableProperty = NullableTestProperty("example.key")
-        Assertions.assertEquals("map", configOf(nullableProperty.key to UNKNOWN_VALUE).getPropertySource(nullableProperty), "The source of this property should exist.")
-        Assertions.assertNull(emptyConfig().getPropertySource(nullableProperty), "The property is not provided and therefore should not have a source.")
+        Assertions.assertEquals(Optional.of("map"), configOf(nullableProperty.key to UNKNOWN_VALUE).getPropertySource(nullableProperty), "The source of this property should exist.")
+        Assertions.assertEquals(Optional.empty<String>(), emptyConfig().getPropertySource(nullableProperty), "The property is not provided and therefore should not have a source.")
     }
 
     @Test
     fun getPropertyOrigin() {
         val nullableProperty = NullableTestProperty("example.key")
-        Assertions.assertEquals("map", configOf(nullableProperty.key to UNKNOWN_VALUE).getPropertyOrigin(nullableProperty), "The property was provided and should have an origin.")
-        Assertions.assertNull(emptyConfig().getPropertyOrigin(nullableProperty), "The property was not provided and should not have an origin.")
+        Assertions.assertEquals(Optional.of("map"), configOf(nullableProperty.key to UNKNOWN_VALUE).getPropertyOrigin(nullableProperty), "The property was provided and should have an origin.")
+        Assertions.assertEquals(Optional.empty<String>(), emptyConfig().getPropertyOrigin(nullableProperty), "The property was not provided and should not have an origin.")
     }
 
     @Test
@@ -145,9 +146,9 @@ class PropertyConfigurationTest {
     @Test
     fun getPropertyException() {
         val nullableProperty = NullableTestProperty("example.key")
-        Assertions.assertNotNull(configOf(nullableProperty.key to UNKNOWN_VALUE).getPropertyException(nullableProperty), "The property value should not parse successfully.")
-        Assertions.assertNull(configOf(nullableProperty.key to "something").getPropertyException(nullableProperty), "The property was provided and should be parsable.")
-        Assertions.assertNull(emptyConfig().getPropertyException(nullableProperty), "The property was not provided and should not have an exception value.")
+        Assertions.assertTrue(configOf(nullableProperty.key to UNKNOWN_VALUE).getPropertyException(nullableProperty).isPresent, "The property value should not parse successfully.")
+        Assertions.assertEquals(Optional.empty<String>(), configOf(nullableProperty.key to "something").getPropertyException(nullableProperty), "The property was provided and should be parsable.")
+        Assertions.assertEquals(Optional.empty<ValueParseException>(), emptyConfig().getPropertyException(nullableProperty), "The property was not provided and should not have an exception value.")
     }
 
     //#endregion Recommended Usage
@@ -157,8 +158,8 @@ class PropertyConfigurationTest {
     @Test
     fun getRawFromProperty() {
         val nullableProperty = NullableTestProperty("example.key")
-        Assertions.assertEquals(" true ", configOf(nullableProperty.key to " true ").getRaw(nullableProperty), "The property should be resolved.")
-        Assertions.assertNull(emptyConfig().getRaw(nullableProperty), "The property was not provided and should not resolve a value.")
+        Assertions.assertEquals(Optional.of(" true "), configOf(nullableProperty.key to " true ").getRaw(nullableProperty), "The property should be resolved.")
+        Assertions.assertEquals(Optional.empty<String>(), emptyConfig().getRaw(nullableProperty), "The property was not provided and should not resolve a value.")
     }
 
     @Test

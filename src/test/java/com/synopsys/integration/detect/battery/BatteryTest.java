@@ -311,7 +311,7 @@ public final class BatteryTest {
     }
 
     private void checkEnvironment() {
-        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get("BATTERY_TESTS_PATH")));
+        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get("BATTERY_TESTS_PATH")), "The environment variable BATTERY_TESTS_PATH must be set.");
 
         batteryDirectory = new File(System.getenv("BATTERY_TESTS_PATH"));
         if (!batteryDirectory.exists()) {
