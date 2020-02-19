@@ -52,6 +52,7 @@ public class TildeInPathResolver implements PathResolver {
         }
 
         if (!resolved.equals(filePath)) {
+            // TODO: Add callback for this? Properties should not be explicitly referenced in the configuration module.
             logger.trace(String.format("We have resolved %s to %s. If this is not expected, please revise the path provided, or specify --detect.resolve.tilde.in.paths=false.", filePath, resolved));
         }
 
