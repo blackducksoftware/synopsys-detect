@@ -85,7 +85,7 @@ public class GraphAssert {
     }
 
     public void hasRootSize(final int size) {
-        hasRootSize(size, String.format("Graph should have a root size of %d", size));
+        hasRootSize(size, String.format("Graph should have a root size of %d.", size));
     }
 
     public void hasRootSize(final int size, final String message) {
