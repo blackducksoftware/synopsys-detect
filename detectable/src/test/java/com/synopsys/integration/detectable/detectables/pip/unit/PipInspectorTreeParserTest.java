@@ -48,52 +48,27 @@ public class PipInspectorTreeParserTest {
     }
 
     @Test
-    public void indendtationAndLineToNodeTest() {
-        final List<String> pipInspectorOutput = new ArrayList<>();
-        pipInspectorOutput.add("projectName==projectVersionName");
-        pipInspectorOutput.add("   appnope==0.1.0");
-        pipInspectorOutput.add("   decorator==4.3.0");
-        pipInspectorOutput.add("   dj-database-url==0.5.0");
-        pipInspectorOutput.add("   Django==1.10.4");
-        pipInspectorOutput.add("   ipython==5.1.0");
-        pipInspectorOutput.add("       pexpect==4.6.0");
-        pipInspectorOutput.add("           ptyprocess==0.6.0");
-        pipInspectorOutput.add("       appnope==0.1.0");
-        pipInspectorOutput.add("       setuptools==40.0.0");
-        pipInspectorOutput.add("       simplegeneric==0.8.1");
-        pipInspectorOutput.add("       decorator==4.3.0");
-        pipInspectorOutput.add("       pickleshare==0.7.4");
-        pipInspectorOutput.add("       traitlets==4.3.2");
-        pipInspectorOutput.add("           six==1.11.0");
-        pipInspectorOutput.add("           ipython-genutils==0.2.0");
-        pipInspectorOutput.add("           decorator==4.3.0");
-        pipInspectorOutput.add("       Pygments==2.2.0");
-        pipInspectorOutput.add("       prompt-toolkit==1.0.15");
-        pipInspectorOutput.add("           six==1.11.0");
-        pipInspectorOutput.add("           wcwidth==0.1.7");
-        pipInspectorOutput.add("   ipython-genutils==0.2.0");
-        pipInspectorOutput.add("   mypackage==5.2.0");
-        pipInspectorOutput.add("   pexpect==4.6.0");
-        pipInspectorOutput.add("       ptyprocess==0.6.0");
-        pipInspectorOutput.add("   pickleshare==0.7.4");
-        pipInspectorOutput.add("   prompt-toolkit==1.0.15");
-        pipInspectorOutput.add("       six==1.11.0");
-        pipInspectorOutput.add("       wcwidth==0.1.7");
-        pipInspectorOutput.add("   psycopg2==2.7.5");
-        pipInspectorOutput.add("   ptyprocess==0.6.0");
-        pipInspectorOutput.add("   Pygments==2.2.0");
-        pipInspectorOutput.add("   simplegeneric==0.8.1");
-        pipInspectorOutput.add("   six==1.11.0");
-        pipInspectorOutput.add("   traitlets==4.3.2");
-        pipInspectorOutput.add("       six==1.11.0");
-        pipInspectorOutput.add("       ipython-genutils==0.2.0");
-        pipInspectorOutput.add("       decorator==4.3.0");
-        pipInspectorOutput.add("   wcwidth==0.1.7");
+    public void validTest() {
+        final List<String> pipInspectorOutput = Arrays.asList(
+            "projectName==projectVersionName",
+            "   with-dashes==1.0.0",
+            "   Uppercase==2.0.0",
+            "      child==3.0.0",
+            "   test==4.0.0"
+        );
 
         final Optional<PipenvResult> validParse = parser.parse(pipInspectorOutput, "");
         Assertions.assertTrue(validParse.isPresent());
         Assertions.assertEquals("projectName", validParse.get().getProjectName());
         Assertions.assertEquals("projectVersionName", validParse.get().getProjectVersion());
+
+        final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, validParse.get().getCodeLocation().getDependencyGraph());
+        graphAssert.hasRootDependency("with-dashes", "1.0.0");
+        graphAssert.hasRootDependency("Uppercase", "2.0.0");
+        graphAssert.hasRootDependency("test", "4.0.0");
+        graphAssert.hasParentChildRelationship("Uppercase", "2.0.0", "child", "3.0.0");
+
+        graphAssert.hasRootSize(3);
     }
 
     @Test
