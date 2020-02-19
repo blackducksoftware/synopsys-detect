@@ -20,9 +20,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.enumextended;
+package com.synopsys.integration.configuration.property.types.enums;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -33,17 +32,13 @@ import com.synopsys.integration.configuration.property.base.ValuedListProperty;
 import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 import com.synopsys.integration.configuration.util.PropertyUtils;
 
-public class ExtendedEnumListProperty<E extends Enum<E>, B extends Enum<B>> extends ValuedListProperty<ExtendedEnumValue<E, B>> {
-    private final List<String> allOptions;
-    private final Class<B> bClass;
+public class EnumListProperty<E extends Enum<E>> extends ValuedListProperty<E> {
+    @NotNull
+    private final Class<E> enumClass;
 
-    public ExtendedEnumListProperty(@NotNull final String key, @NotNull final List<ExtendedEnumValue<E, B>> defaultValue, @NotNull final Class<E> eClass, @NotNull final Class<B> bClass) {
-        super(key, new ListValueParser<>(new ExtendedEnumValueParser<>(eClass, bClass)), defaultValue);
-
-        allOptions = new ArrayList<>();
-        allOptions.addAll(EnumPropertyUtils.getEnumNames(eClass));
-        allOptions.addAll(EnumPropertyUtils.getEnumNames(bClass));
-        this.bClass = bClass;
+    public EnumListProperty(@NotNull final String key, @NotNull final List<E> defaultValue, @NotNull Class<E> enumClass) {
+        super(key, new ListValueParser<>(new EnumValueParser<E>(enumClass)), defaultValue);
+        this.enumClass = enumClass;
     }
 
     @Nullable
@@ -54,13 +49,13 @@ public class ExtendedEnumListProperty<E extends Enum<E>, B extends Enum<B>> exte
 
     @Override
     public boolean isCaseSensitive() {
-        return false;
+        return true;
     }
 
     @Nullable
     @Override
     public List<String> listExampleValues() {
-        return allOptions;
+        return EnumPropertyUtils.getEnumNames(enumClass);
     }
 
     @Override
@@ -71,6 +66,6 @@ public class ExtendedEnumListProperty<E extends Enum<E>, B extends Enum<B>> exte
     @Nullable
     @Override
     public String describeType() {
-        return bClass.getSimpleName() + " List";
+        return enumClass.getSimpleName() + " List";
     }
 }

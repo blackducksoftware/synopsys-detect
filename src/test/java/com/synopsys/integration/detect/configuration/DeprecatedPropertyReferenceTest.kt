@@ -48,7 +48,7 @@ class DeprecatedPropertyReferenceTest {
 
     private val deprecatedPropertyReferenceStrings: List<String> = DetectProperties.properties
             .filter { it.propertyDeprecationInfo != null }
-            .map(Property::key)
+            .map(Property::getKey)
             .map(String::toUpperCase)
             .map { key -> key.replace(".", "_") }
 

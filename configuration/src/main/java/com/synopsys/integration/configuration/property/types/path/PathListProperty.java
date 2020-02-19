@@ -20,21 +20,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.enumfilterable
+package com.synopsys.integration.configuration.property.types.path;
 
-// An enum that can be ALL, NONE or ENUM
-// Useful for properties that want to be used with the ExcludeIncludeEnumFilter.
-sealed class FilterableEnumValue<T : Enum<T>>
+import java.util.List;
 
-class All<T : Enum<T>>() : FilterableEnumValue<T>() {
-    override fun toString(): String = "ALL"
+import org.jetbrains.annotations.NotNull;
+
+import com.synopsys.integration.configuration.parse.ListValueParser;
+import com.synopsys.integration.configuration.property.base.ValuedListProperty;
+
+public class PathListProperty extends ValuedListProperty<PathValue> {
+    public PathListProperty(@NotNull final String key,
+        final List<PathValue> defaultValue) {
+        super(key, new ListValueParser<>(new PathValueParser()), defaultValue);
+    }
+
+    @Override
+    public String describeType() {
+        return "Path List";
+    }
 }
-
-class None<T : Enum<T>>() : FilterableEnumValue<T>() {
-    override fun toString(): String = "NONE"
-}
-
-data class Value<T : Enum<T>>(val value: T) : FilterableEnumValue<T>() {
-    override fun toString(): String = value.toString()
-}
-

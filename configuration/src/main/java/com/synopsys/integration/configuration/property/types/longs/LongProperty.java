@@ -20,17 +20,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.enumsoft
+package com.synopsys.integration.configuration.property.types.longs;
 
-import com.synopsys.integration.configuration.parse.ValueParser
-import com.synopsys.integration.configuration.property.types.enums.SafeEnumValueParser
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-class SoftEnumValueParser<T : Enum<T>>(enumClass: Class<T>) : ValueParser<SoftEnumValue<T>>() {
-    val parser = SafeEnumValueParser(enumClass)
-    override fun parse(value: String): SoftEnumValue<T> {
-        return when (val enumValue = parser.parse(value)) {
-            null -> StringValue(value)
-            else -> ActualValue(enumValue)
-        }
+import com.synopsys.integration.configuration.property.base.ValuedProperty;
+
+public class LongProperty extends ValuedProperty<Long> {
+    public LongProperty(@NotNull final String key, Long defaultValue) {
+        super(key, new LongValueParser(), defaultValue);
+    }
+
+    @Nullable
+    @Override
+    public String describeDefault() {
+        return getDefaultValue().toString();
+    }
+
+    @Nullable
+    @Override
+    public String describeType() {
+        return "Long";
     }
 }

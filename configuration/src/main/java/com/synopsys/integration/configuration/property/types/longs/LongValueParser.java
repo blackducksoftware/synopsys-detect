@@ -20,33 +20,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.base;
-
-import java.util.List;
+package com.synopsys.integration.configuration.property.types.longs;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.parse.ValueParser;
-import com.synopsys.integration.configuration.util.PropertyUtils;
 
-/**
- * This is a property with a key and with a default value, it will always have a value.
- */
-// Using @JvmSuppressWildcards to prevent the Kotlin compiler from generating wildcard types: https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics
-public abstract class ValuedListProperty<T> extends ValuedProperty<List<T>> {
-    public ValuedListProperty(@NotNull final String key, @NotNull final ValueParser<List<T>> valueParser, final List<T> defaultValue) {
-        super(key, valueParser, defaultValue);
-    }
-
+public class LongValueParser extends ValueParser<Long> {
+    @NotNull
     @Override
-    public boolean isCommaSeparated() {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public String describeDefault() {
-        return PropertyUtils.describeObjectList(getDefaultValue());
+    public Long parse(@NotNull final String value) throws ValueParseException {
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            throw new ValueParseException(value, "long", e);
+        }
     }
 }

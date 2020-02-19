@@ -20,29 +20,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.util;
+package com.synopsys.integration.configuration.property;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.EnumUtils;
+import com.synopsys.integration.configuration.util.Group;
 
-public class EnumPropertyUtils {
+//data class PropertyGroupInfo(val primaryGroup:Group,val additionalGroups:List<Group>)
+public class PropertyGroupInfo {
+    private final Group primaryGroup;
+    private final List<Group> additionalGroups;
 
-    public static <T extends Enum<T>> List<String> getEnumNamesAnd(Class<T> enumClass, String... additional) {
-        List<String> exampleValues = new ArrayList<>();
-        exampleValues.addAll(Arrays.asList(additional));
-        exampleValues.addAll(EnumPropertyUtils.getEnumNames(enumClass));
-        return exampleValues;
+    public PropertyGroupInfo(final Group primaryGroup, final Group[] additionalGroups) {
+
+        this.primaryGroup = primaryGroup;
+        this.additionalGroups = Arrays.asList(additionalGroups);
     }
 
-    public static <T extends Enum<T>> List<String> getEnumNames(Class<T> enumClass) {
-        final List<T> values = new ArrayList<>(EnumUtils.getEnumList(enumClass));
-        return values.stream()
-                   .map(Objects::toString)
-                   .collect(Collectors.toList());
+    public Group getPrimaryGroup() {
+        return primaryGroup;
+    }
+
+    public List<Group> getAdditionalGroups() {
+        return additionalGroups;
     }
 }

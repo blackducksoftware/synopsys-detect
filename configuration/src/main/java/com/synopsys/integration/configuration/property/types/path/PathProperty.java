@@ -20,18 +20,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.enumfilterable
+package com.synopsys.integration.configuration.property.types.path;
 
-import com.synopsys.integration.configuration.parse.ValueParser
-import com.synopsys.integration.configuration.property.types.enums.EnumValueParser
+import org.jetbrains.annotations.NotNull;
 
-class FilterableEnumValueParser<T : Enum<T>>(enumClass: Class<T>) : ValueParser<FilterableEnumValue<T>>() {
-    private val parser = EnumValueParser(enumClass)
-    override fun parse(value: String): FilterableEnumValue<T> {
-        return when {
-            value.toLowerCase() == "none" -> None()
-            value.toLowerCase() == "all" -> All()
-            else -> Value(parser.parse(value))
-        }
+import com.synopsys.integration.configuration.property.base.ValuedProperty;
+
+public class PathProperty extends ValuedProperty<PathValue> {
+    public PathProperty(@NotNull final String key, final PathValue defaultValue) {
+        super(key, new PathValueParser(), defaultValue);
+    }
+
+    @Override
+    public String describeType() {
+        return "Path";
+    }
+
+    @Override
+    public String describeDefault() {
+        return getDefaultValue().toString();
     }
 }

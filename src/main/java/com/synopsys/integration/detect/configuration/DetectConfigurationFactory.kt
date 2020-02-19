@@ -26,7 +26,7 @@ import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder
 import com.synopsys.integration.configuration.config.PropertyConfiguration
-import com.synopsys.integration.configuration.property.types.enumfilterable.populatedValues
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils
 import com.synopsys.integration.configuration.property.types.path.PathResolver
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException
 import com.synopsys.integration.detect.exitcode.ExitCodeType
@@ -358,7 +358,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val riskReportPdfPath = detectConfiguration.getValue(DetectProperties.DETECT_RISK_REPORT_PDF_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
         val noticesReportPath = detectConfiguration.getValue(DetectProperties.DETECT_NOTICES_REPORT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
         val policySeverities = detectConfiguration.getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)
-        val severitiesToFailPolicyCheck = policySeverities.populatedValues(PolicySeverityType::class.java);
+        val severitiesToFailPolicyCheck = FilterableEnumUtils.populatedValues(policySeverities, PolicySeverityType::class.java);
 
         return BlackDuckPostOptions(waitForResults, runRiskReport, runNoticesReport, riskReportPdfPath, noticesReportPath, severitiesToFailPolicyCheck)
     }

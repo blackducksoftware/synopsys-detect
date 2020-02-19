@@ -20,17 +20,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.longs
+package com.synopsys.integration.configuration.property.types.integer;
 
-import com.synopsys.integration.configuration.parse.ValueParseException
-import com.synopsys.integration.configuration.parse.ValueParser
+import org.jetbrains.annotations.NotNull;
 
-class LongValueParser : ValueParser<Long>() {
-    override fun parse(value: String): Long {
-        return try {
-            value.toLong()
-        } catch (e: NumberFormatException) {
-            throw ValueParseException(value, "long", e)
+import com.synopsys.integration.configuration.parse.ValueParseException;
+import com.synopsys.integration.configuration.parse.ValueParser;
+
+class IntegerValueParser extends ValueParser<Integer> {
+    @NotNull
+    @Override
+    public Integer parse(@NotNull String value) throws ValueParseException {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            throw new ValueParseException(value, "integer", e);
         }
     }
 }

@@ -20,33 +20,44 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.base;
+package com.synopsys.integration.configuration.property.types.enumfilterable;
 
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.configuration.parse.ValueParser;
-import com.synopsys.integration.configuration.util.PropertyUtils;
+import com.synopsys.integration.configuration.property.base.NullableProperty;
+import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
-/**
- * This is a property with a key and with a default value, it will always have a value.
- */
-// Using @JvmSuppressWildcards to prevent the Kotlin compiler from generating wildcard types: https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics
-public abstract class ValuedListProperty<T> extends ValuedProperty<List<T>> {
-    public ValuedListProperty(@NotNull final String key, @NotNull final ValueParser<List<T>> valueParser, final List<T> defaultValue) {
-        super(key, valueParser, defaultValue);
+public class NullableFilterableEnumProperty<E extends Enum<E>> extends NullableProperty<FilterableEnumValue<E>> {
+    @NotNull
+    private final Class<E> enumClass;
+
+    public NullableFilterableEnumProperty(@NotNull final String key, @NotNull Class<E> enumClass) {
+        super(key, new FilterableEnumValueParser<E>(enumClass));
+        this.enumClass = enumClass;
     }
 
     @Override
-    public boolean isCommaSeparated() {
+    public boolean isCaseSensitive() {
         return true;
     }
 
     @Nullable
     @Override
-    public String describeDefault() {
-        return PropertyUtils.describeObjectList(getDefaultValue());
+    public List<String> listExampleValues() {
+        return EnumPropertyUtils.getEnumNamesAnd(enumClass, "ALL", "NONE");
+    }
+
+    @Nullable
+    @Override
+    public String describeType() {
+        return "Optional " + enumClass.getSimpleName();
+    }
+
+    @Override
+    public boolean isOnlyExampleValues() {
+        return true;
     }
 }

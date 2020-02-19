@@ -20,33 +20,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.base;
-
-import java.util.List;
+package com.synopsys.integration.configuration.property.types.enumfilterable;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.parse.ValueParser;
-import com.synopsys.integration.configuration.util.PropertyUtils;
+import com.synopsys.integration.configuration.property.types.enums.EnumValueParser;
 
-/**
- * This is a property with a key and with a default value, it will always have a value.
- */
-// Using @JvmSuppressWildcards to prevent the Kotlin compiler from generating wildcard types: https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics
-public abstract class ValuedListProperty<T> extends ValuedProperty<List<T>> {
-    public ValuedListProperty(@NotNull final String key, @NotNull final ValueParser<List<T>> valueParser, final List<T> defaultValue) {
-        super(key, valueParser, defaultValue);
+public class FilterableEnumValueParser<T extends Enum<T>> extends ValueParser<FilterableEnumValue<T>> {
+    private EnumValueParser<T> enumValueParser;
+
+    public FilterableEnumValueParser(@NotNull Class<T> enumClass) {
+        this.enumValueParser = new EnumValueParser<>(enumClass);
     }
 
+    @NotNull
     @Override
-    public boolean isCommaSeparated() {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public String describeDefault() {
-        return PropertyUtils.describeObjectList(getDefaultValue());
+    public FilterableEnumValue<T> parse(@NotNull final String value) throws ValueParseException {
+        String trimmedValue = value.toLowerCase().trim();
+        if (trimmedValue.equals("none")) {
+            return FilterableEnumValue.noneValue();
+        } else if (trimmedValue.equals("all")) {
+            return FilterableEnumValue.allValue();
+        } else {
+            return FilterableEnumValue.value(enumValueParser.parse(value));
+        }
     }
 }

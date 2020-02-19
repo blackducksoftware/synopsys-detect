@@ -20,17 +20,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.integer
+package com.synopsys.integration.configuration.property;
 
-import com.synopsys.integration.configuration.parse.ValueParseException
-import com.synopsys.integration.configuration.parse.ValueParser
+//data class PropertyHelpInfo(val short: String, val long: String?)
+public class PropertyHelpInfo {
+    private final String shortText;
+    private final String longText;
 
-class IntegerValueParser : ValueParser<Int>() {
-    override fun parse(value: String): Int {
-        return try {
-            value.toInt()
-        } catch (e: NumberFormatException) {
-            throw ValueParseException(value, "integer", e)
-        }
+    public PropertyHelpInfo(final String shortText, final String longText) {
+        this.shortText = shortText;
+        this.longText = longText;
+    }
+
+    public String getShortText() {
+        return shortText;
+    }
+
+    public String getLongText() {
+        return longText;
     }
 }

@@ -20,29 +20,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.util;
+package com.synopsys.integration.configuration.property.types.enums;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import org.apache.commons.lang3.EnumUtils;
+import org.jetbrains.annotations.NotNull;
 
-public class EnumPropertyUtils {
+public class SafeEnumValueParser<T extends Enum<T>> {
+    private final Class<T> enumClass;
 
-    public static <T extends Enum<T>> List<String> getEnumNamesAnd(Class<T> enumClass, String... additional) {
-        List<String> exampleValues = new ArrayList<>();
-        exampleValues.addAll(Arrays.asList(additional));
-        exampleValues.addAll(EnumPropertyUtils.getEnumNames(enumClass));
-        return exampleValues;
+    public SafeEnumValueParser(@NotNull Class<T> enumClass) {
+        this.enumClass = enumClass;
     }
 
-    public static <T extends Enum<T>> List<String> getEnumNames(Class<T> enumClass) {
-        final List<T> values = new ArrayList<>(EnumUtils.getEnumList(enumClass));
-        return values.stream()
-                   .map(Objects::toString)
-                   .collect(Collectors.toList());
+    @NotNull
+    public Optional<T> parse(@NotNull String value) {
+        return Optional.ofNullable(EnumUtils.getEnum(enumClass, value));
     }
 }

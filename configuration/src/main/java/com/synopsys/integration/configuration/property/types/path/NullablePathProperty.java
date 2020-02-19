@@ -20,31 +20,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.bool;
-
-import java.util.List;
+package com.synopsys.integration.configuration.property.types.path;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.configuration.parse.ListValueParser;
-import com.synopsys.integration.configuration.property.base.ValuedListProperty;
-import com.synopsys.integration.configuration.util.PropertyUtils;
+import com.synopsys.integration.configuration.property.base.NullableProperty;
 
-public class BooleanListProperty extends ValuedListProperty<Boolean> {
-    public BooleanListProperty(@NotNull final String key, @NotNull final List<Boolean> defaultValue) {
-        super(key, new ListValueParser<Boolean>(new BooleanValueParser()), defaultValue);
+public class NullablePathProperty extends NullableProperty<PathValue> {
+    public NullablePathProperty(@NotNull final String key) {
+        super(key, new PathValueParser());
     }
 
-    @Nullable
-    @Override
-    public String describeDefault() {
-        return PropertyUtils.describeObjectList(getDefaultValue());
-    }
-
-    @Nullable
     @Override
     public String describeType() {
-        return "Boolean List";
+        return "Optional Path";
     }
 }

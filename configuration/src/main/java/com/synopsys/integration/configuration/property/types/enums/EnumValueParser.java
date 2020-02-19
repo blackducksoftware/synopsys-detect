@@ -20,33 +20,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.base;
+package com.synopsys.integration.configuration.property.types.enums;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.parse.ValueParser;
-import com.synopsys.integration.configuration.util.PropertyUtils;
+import com.synopsys.integration.configuration.util.EnumPropertyUtils;
 
-/**
- * This is a property with a key and with a default value, it will always have a value.
- */
-// Using @JvmSuppressWildcards to prevent the Kotlin compiler from generating wildcard types: https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics
-public abstract class ValuedListProperty<T> extends ValuedProperty<List<T>> {
-    public ValuedListProperty(@NotNull final String key, @NotNull final ValueParser<List<T>> valueParser, final List<T> defaultValue) {
-        super(key, valueParser, defaultValue);
+public class EnumValueParser<T extends Enum<T>> extends ValueParser<T> {
+    private final Class<T> enumClass;
+    private SafeEnumValueParser<T> parser;
+
+    public EnumValueParser(@NotNull Class<T> enumClass) {
+        this.enumClass = enumClass;
+        this.parser = new SafeEnumValueParser<T>(enumClass);
     }
 
+    @NotNull
     @Override
-    public boolean isCommaSeparated() {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public String describeDefault() {
-        return PropertyUtils.describeObjectList(getDefaultValue());
+    public T parse(@NotNull String value) throws ValueParseException {
+        Optional<T> enumValue = this.parser.parse(value);
+        if (enumValue.isPresent()) {
+            return enumValue.get();
+        } else {
+            throw new ValueParseException(value, "enum", "Unable to convert '$value' to one of " + String.join(",", EnumPropertyUtils.getEnumNames(enumClass)));
+        }
     }
 }
+
+

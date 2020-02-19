@@ -20,33 +20,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.base;
+package com.synopsys.integration.configuration.property.types.enumsoft;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.parse.ValueParser;
-import com.synopsys.integration.configuration.util.PropertyUtils;
+import com.synopsys.integration.configuration.property.types.enums.SafeEnumValueParser;
 
-/**
- * This is a property with a key and with a default value, it will always have a value.
- */
-// Using @JvmSuppressWildcards to prevent the Kotlin compiler from generating wildcard types: https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#variant-generics
-public abstract class ValuedListProperty<T> extends ValuedProperty<List<T>> {
-    public ValuedListProperty(@NotNull final String key, @NotNull final ValueParser<List<T>> valueParser, final List<T> defaultValue) {
-        super(key, valueParser, defaultValue);
+class SoftEnumValueParser<T extends Enum<T>> extends ValueParser<SoftEnumValue<T>> {
+    private final SafeEnumValueParser<T> parser;
+
+    public SoftEnumValueParser(@NotNull Class<T> enumClass) {
+        this.parser = new SafeEnumValueParser<T>(enumClass);
     }
 
+    @NotNull
     @Override
-    public boolean isCommaSeparated() {
-        return true;
-    }
-
-    @Nullable
-    @Override
-    public String describeDefault() {
-        return PropertyUtils.describeObjectList(getDefaultValue());
+    public SoftEnumValue<T> parse(@NotNull final String value) throws ValueParseException {
+        Optional<T> enumValue = parser.parse(value);
+        return enumValue.map(SoftEnumValue::ofEnumValue)
+                   .orElseGet(() -> SoftEnumValue.ofSoftValue(value));
     }
 }

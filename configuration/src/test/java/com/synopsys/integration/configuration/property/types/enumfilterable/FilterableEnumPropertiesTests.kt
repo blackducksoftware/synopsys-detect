@@ -41,9 +41,12 @@ class FilterableEnumPropertiesTests {
         val property = NullableFilterableEnumProperty("enum.nullable", Example::class.java)
         val config = configOf("enum.nullable" to "NONE")
 
-        when (val value = config.getValue(property)) {
-            is Value<*> -> fail("Expected type to be None instead of Value: ${value.value}")
-            is All<*> -> fail("Expected type to be None instead of All.")
+        val value = config.getValue(property).get();
+
+        if (value.isAll) {
+            fail("Expected type to be None instead of All.")
+        } else if (value.value.isPresent) {
+            fail("Expected type to be None instead of Value: ${value.value.get()}")
         }
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD", "NONE", "ALL"))
@@ -51,13 +54,17 @@ class FilterableEnumPropertiesTests {
 
     @Test
     fun testValued() {
-        val property = FilterableEnumProperty("enum.valued", All(), Example::class.java)
+        val property = FilterableEnumProperty("enum.valued", FilterableEnumValue.allValue(), Example::class.java)
         val config = configOf("enum.valued" to "THIRD")
 
-        when (val value = config.getValue(property)) {
-            is Value -> Assertions.assertEquals(Value(Example.THIRD), value)
-            is All -> fail("Expected type to be Value instead of All.")
-            is None -> fail("Expected type to be Value instead of None.")
+        val value = config.getValue(property);
+
+        if (value.isNone) {
+            fail("Expected type to be Value instead of None.")
+        } else if (value.isAll) {
+            fail("Expected type to be Value instead of All.")
+        } else {
+            Assertions.assertEquals(FilterableEnumValue.value(Example.THIRD), value);
         }
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD", "NONE", "ALL"))
@@ -65,15 +72,18 @@ class FilterableEnumPropertiesTests {
 
     @Test
     fun testList() {
-        val property = FilterableEnumListProperty("enum.list", listOf(Value(Example.ANOTHER), Value(Example.THING)), Example::class.java)
+        val property = FilterableEnumListProperty("enum.list", listOf(FilterableEnumValue.value(Example.ANOTHER), FilterableEnumValue.value(Example.THING)), Example::class.java)
         val config = configOf("enum.valued" to "ANOTHER,THING")
 
-        when (val value = config.getValue(property)) {
-            is Value<*> -> Assertions.assertEquals(listOf(Value(Example.ANOTHER), Value(Example.THIRD)), value)
-            is All<*> -> fail("Expected type to be Value instead of All.")
-            is None<*> -> fail("Expected type to be Value instead of None.")
-        }
+        val value = config.getValue(property);
 
+        if (FilterableEnumUtils.containsNone(value)) {
+            fail("Expected type to be Value instead of None.")
+        } else if (FilterableEnumUtils.containsAll(value)) {
+            fail("Expected type to be Value instead of All.")
+        } else {
+            Assertions.assertEquals(listOf(FilterableEnumValue.value(Example.ANOTHER), FilterableEnumValue.value(Example.THING)), value)
+        }
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD", "NONE", "ALL"))
     }
 }

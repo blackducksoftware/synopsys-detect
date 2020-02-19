@@ -143,7 +143,7 @@ public class HelpPrinter {
             writer.println("Deprecation description: " + property.getPropertyDeprecationInfo().getDescription());
             writer.println("");
         }
-        writer.println("Property description: " + property.getPropertyHelpInfo().getShort());
+        writer.println("Property description: " + property.getPropertyHelpInfo().getShortText());
 
         writer.println("Property default value: " + property.describeDefault());
         if (property.listExampleValues().size() > 0) {
@@ -151,15 +151,15 @@ public class HelpPrinter {
         }
         writer.println("");
 
-        if (StringUtils.isNotBlank(property.getPropertyHelpInfo().getLong())) {
+        if (StringUtils.isNotBlank(property.getPropertyHelpInfo().getLongText())) {
             writer.println("Detailed help:");
-            writer.println(property.getPropertyHelpInfo().getLong());
+            writer.println(property.getPropertyHelpInfo().getLongText());
             writer.println();
         }
     }
 
     public void printOption(final HelpTextWriter writer, final Property property) {
-        String description = property.getPropertyHelpInfo().getShort();
+        String description = property.getPropertyHelpInfo().getShortText();
         if (property.getPropertyDeprecationInfo() != null) {
             description = property.getPropertyDeprecationInfo().getDeprecationText() + description;
         }

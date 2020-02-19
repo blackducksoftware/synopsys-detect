@@ -38,12 +38,11 @@ class SoftEnumValueParserTest {
     @ParameterizedTest
     @ValueSource(strings = ["unknown", "Thing ", " THING"])
     fun unknownValues(expectedValue: String) {
-        when (val resolvedValue = SoftEnumValueParser(Example::class.java).parse(expectedValue)) {
-            is StringValue -> {
-                Assertions.assertEquals(expectedValue, resolvedValue.value)
-                Assertions.assertEquals(expectedValue, resolvedValue.toString())
-            }
-            else -> fail("Should have resolved to a ${StringValue::class.java.simpleName}.")
+        val resolvedValue = SoftEnumValueParser(Example::class.java).parse(expectedValue);
+        if (resolvedValue.softValue.isPresent) {
+            Assertions.assertEquals(expectedValue, resolvedValue.softValue.get(), "Should parse value to a soft string.")
+        } else {
+            fail("Should have resolved to an soft string and not an enum.")
         }
     }
 
@@ -51,7 +50,7 @@ class SoftEnumValueParserTest {
     fun parsesEnumValue() {
         fun assertValidSoftEnum(expectedValue: Example, rawValue: String) {
             val actualValue = SoftEnumValueParser(Example::class.java).parse(rawValue)
-            Assertions.assertEquals(ActualValue(expectedValue), actualValue)
+            Assertions.assertEquals(SoftEnumValue.ofEnumValue(expectedValue), actualValue)
             Assertions.assertEquals(rawValue, actualValue.toString())
         }
 
