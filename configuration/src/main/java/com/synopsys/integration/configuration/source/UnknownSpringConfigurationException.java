@@ -20,7 +20,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.util
+package com.synopsys.integration.configuration.source;
 
-abstract class Category(val name: String) {
+public class UnknownSpringConfigurationException extends Exception {
+    public UnknownSpringConfigurationException(String msg) {
+        super(msg);
+    }
 }

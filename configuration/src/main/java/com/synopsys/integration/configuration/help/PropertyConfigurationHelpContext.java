@@ -24,13 +24,11 @@ package com.synopsys.integration.configuration.help;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -38,6 +36,7 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.TypedProperty;
+import com.synopsys.integration.configuration.util.Bds;
 
 //The idea is that this is here to help you log information about a particular property configuration with particular things you want to express.
 //  For example you may want to log deprecation warning when a particular property is set.
@@ -68,9 +67,9 @@ public class PropertyConfigurationHelpContext {
     }
 
     private List<Property> sortProperties(List<Property> knownProperties) {
-        return knownProperties.stream()
-                   .sorted(Comparator.comparing(Property::getKey))
-                   .collect(Collectors.toList());
+        return Bds.of(knownProperties)
+                   .sortedBy(Property::getKey)
+                   .toList();
     }
 
     public void printCurrentValues(Consumer<String> logger, List<Property> knownProperties, Map<String, String> additionalNotes) {
@@ -114,15 +113,21 @@ public class PropertyConfigurationHelpContext {
             .forEach(property -> {
                 logger.accept(StringUtils.repeat("=", 60));
                 List<String> propertyErrors = errors.get(property.getKey());
-                String header = "ERROR (1)";
-                if (propertyErrors.size() != 1) {
-                    header = "ERRORS (" + propertyErrors.size() + ")";
-                }
+                int errorCount = propertyErrors.size();
+                String header = String.format("%s (%s)", pluralize("ERROR", "ERRORS", errorCount), errorCount);
                 logger.accept(header);
                 propertyErrors.forEach(errorMessage -> {
                     logger.accept(property.getKey() + ": " + errorMessage);
                 });
             });
+    }
+
+    public String pluralize(String singular, String plural, Integer number) {
+        if (number == 1) {
+            return singular;
+        } else {
+            return plural;
+        }
     }
 
     public Map<String, List<String>> findPropertyParseErrors(List<Property> knownProperties) {

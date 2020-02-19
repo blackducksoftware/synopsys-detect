@@ -20,12 +20,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.util
+package com.synopsys.integration.configuration.util;
 
-interface ProductMajorVersion {
-    fun getIntValue(): Int
+import org.antlr.v4.runtime.misc.NotNull;
 
-    fun getDisplayValue(): String? {
-        return "${getIntValue()}.0.0"
+public class ProductMajorVersion {
+    private final Integer intValue;
+
+    public ProductMajorVersion(final Integer intValue) {
+        this.intValue = intValue;
+    }
+
+    public Integer getIntValue() {
+        return intValue;
+    }
+
+    @NotNull
+    public String getDisplayValue() {
+        return String.format("%s.0.0", getIntValue());
     }
 }

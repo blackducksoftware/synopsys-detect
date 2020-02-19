@@ -23,6 +23,7 @@
 package com.synopsys.integration.configuration.config
 
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty
+import com.synopsys.integration.configuration.source.PropertySource
 import com.synopsys.integration.configuration.source.SpringConfigurationPropertySource
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
@@ -35,7 +36,7 @@ class SpringConfigurationPropertySourceTests {
         val m = MockEnvironment()
         m.setProperty("example.key", "value")
 
-        val sources = SpringConfigurationPropertySource.fromConfigurableEnvironment(m)
+        val sources: List<PropertySource> = SpringConfigurationPropertySource.fromConfigurableEnvironment(m)
         val config = PropertyConfiguration(sources)
 
         val property = NullableStringProperty("example.key")

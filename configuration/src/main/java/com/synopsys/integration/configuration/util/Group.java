@@ -20,30 +20,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.source
+package com.synopsys.integration.configuration.util;
 
-import com.synopsys.integration.configuration.util.KeyUtils
+import java.util.Optional;
 
-class MapPropertySource(private val givenName: String, private val underlyingMap: Map<String, String>) : PropertySource {
-    private val normalizedPropertyMap: Map<String, String> = underlyingMap.map { KeyUtils.normalizeKey(it.key) to it.value }.toMap()
+import org.antlr.v4.runtime.misc.NotNull;
+import org.antlr.v4.runtime.misc.Nullable;
 
-    override fun getOrigin(key: String): String? {
-        return givenName;
+public abstract class Group {
+    @NotNull
+    private String name;
+    @Nullable
+    private Group superGroup;
+
+    protected Group(final String name, final Group superGroup) {
+        this.name = name;
+        this.superGroup = superGroup;
     }
 
-    override fun hasKey(key: String): Boolean {
-        return normalizedPropertyMap.containsKey(key);
+    @NotNull
+    public String getName() {
+        return name;
     }
 
-    override fun getValue(key: String): String? {
-        return normalizedPropertyMap.getOrElse(key, { -> null });
-    }
-
-    override fun getName(): String {
-        return givenName;
-    }
-
-    override fun getKeys(): Set<String> {
-        return normalizedPropertyMap.keys
+    public Optional<Group> getSuperGroup() {
+        return Optional.ofNullable(superGroup);
     }
 }

@@ -52,7 +52,6 @@ import com.synopsys.integration.configuration.property.types.path.TildeInPathRes
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.configuration.source.SpringConfigurationPropertySource;
-import com.synopsys.integration.configuration.source.UnknownSpringConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.RunBeanConfiguration;
@@ -142,10 +141,10 @@ public class DetectBoot {
 
         List<PropertySource> propertySources;
         try {
-            propertySources = new ArrayList<>(SpringConfigurationPropertySource.Companion.fromConfigurableEnvironment(environment, false));
-        } catch (final UnknownSpringConfiguration e) {
+            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, false));
+        } catch (final RuntimeException e) {
             logger.error("An unknown property source was found, detect will still continue.", e);
-            propertySources = new ArrayList<>(SpringConfigurationPropertySource.Companion.fromConfigurableEnvironmentSafely(environment));
+            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, true));
         }
 
         final DetectArgumentState detectArgumentState = parseDetectArgumentState(sourceArgs);

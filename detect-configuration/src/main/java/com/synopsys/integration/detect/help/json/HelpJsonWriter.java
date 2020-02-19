@@ -85,8 +85,8 @@ public class HelpJsonWriter {
 
         helpJsonOption.setGroup(property.getPropertyGroupInfo().getPrimaryGroup().getName());
         String superGroupName = "";
-        if (property.getPropertyGroupInfo().getPrimaryGroup().getSuperGroup() != null) {
-            superGroupName = property.getPropertyGroupInfo().getPrimaryGroup().getSuperGroup().getName();
+        if (property.getPropertyGroupInfo().getPrimaryGroup().getSuperGroup().isPresent()) {
+            superGroupName = property.getPropertyGroupInfo().getPrimaryGroup().getSuperGroup().get().getName();
         }
         helpJsonOption.setSuperGroup(superGroupName);
         helpJsonOption.setAdditionalGroups(property.getPropertyGroupInfo().getAdditionalGroups().stream().map(Group::getName).collect(Collectors.toList()));

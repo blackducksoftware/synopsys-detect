@@ -1,5 +1,5 @@
 /**
- * configuration
+ * detect-configuration
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,12 +20,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.util
+package com.synopsys.integration.detect;
 
-class KeyUtils {
-    companion object {
-        fun normalizeKey(key: String): String {
-            return key.toLowerCase().replace("_", ".");
-        }
+import com.synopsys.integration.configuration.util.ProductMajorVersion;
+
+public class DetectMajorVersion extends ProductMajorVersion {
+    public static DetectMajorVersion ONE = new DetectMajorVersion(1);
+    public static DetectMajorVersion TWO = new DetectMajorVersion(2);
+    public static DetectMajorVersion THREE = new DetectMajorVersion(3);
+    public static DetectMajorVersion FOUR = new DetectMajorVersion(4);
+    public static DetectMajorVersion FIVE = new DetectMajorVersion(5);
+    public static DetectMajorVersion SIX = new DetectMajorVersion(6);
+    public static DetectMajorVersion SEVEN = new DetectMajorVersion(7);
+    public static DetectMajorVersion EIGHT = new DetectMajorVersion(8);
+
+    public DetectMajorVersion(final Integer intValue) {
+        super(intValue);
     }
 }

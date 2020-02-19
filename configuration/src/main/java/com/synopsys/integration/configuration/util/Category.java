@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * configuration
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,21 +20,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect
+package com.synopsys.integration.configuration.util;
 
-import com.synopsys.integration.configuration.util.ProductMajorVersion
+import org.antlr.v4.runtime.misc.NotNull;
 
-enum class DetectMajorVersion(private val value: Int) : ProductMajorVersion {
-    ONE(1),
-    TWO(2),
-    THREE(3),
-    FOUR(4),
-    FIVE(5),
-    SIX(6),
-    SEVEN(7),
-    EIGHT(8);
+public abstract class Category {
+    private final String name;
 
-    override fun getIntValue(): Int {
-        return value
+    protected Category(@NotNull final String name) {
+        this.name = name;
+    }
+
+    @NotNull
+    public String getName() {
+        return name;
     }
 }
