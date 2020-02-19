@@ -20,16 +20,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.path
+package com.synopsys.integration.configuration.property.types.path;
 
-import java.nio.file.Path
+import java.nio.file.Path;
 
-data class PathValue(private val value: String) {
-    fun resolvePath(pathResolver: PathResolver): Path {
-        return pathResolver.resolvePath(value)
-    }
-
-    override fun toString(): String {
-        return value
-    }
+public interface PathResolver {
+    Path resolvePath(final String filePath);
 }
+

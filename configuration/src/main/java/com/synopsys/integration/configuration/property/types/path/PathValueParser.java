@@ -20,19 +20,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.path
+package com.synopsys.integration.configuration.property.types.path;
 
-import com.synopsys.integration.configuration.parse.ValueParseException
-import com.synopsys.integration.configuration.parse.ValueParser
-import org.apache.commons.lang3.StringUtils
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
-class PathValueParser : ValueParser<PathValue>() {
-    override fun parse(value: String): PathValue {
-        val trimmedValue = value.trim()
+import com.synopsys.integration.configuration.parse.ValueParseException;
+import com.synopsys.integration.configuration.parse.ValueParser;
+
+public class PathValueParser extends ValueParser<PathValue> {
+    @NotNull
+    @Override
+    public PathValue parse(@NotNull final String value) throws ValueParseException {
+        final String trimmedValue = value.trim();
         if (StringUtils.isNotBlank(trimmedValue)) {
-            return PathValue(trimmedValue)
+            return new PathValue(trimmedValue);
         } else {
-            throw ValueParseException(trimmedValue, "Path", "A path must have at least one non-whitespace character!")
+            throw new ValueParseException(trimmedValue, "Path", "A path must have at least one non-whitespace character!");
         }
     }
 }

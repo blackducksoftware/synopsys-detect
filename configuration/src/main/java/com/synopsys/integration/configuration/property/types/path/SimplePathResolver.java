@@ -20,13 +20,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.path
+package com.synopsys.integration.configuration.property.types.path;
 
-import java.nio.file.Path
-import java.nio.file.Paths
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-class SimplePathResolver : PathResolver {
-    override fun resolvePath(filePath: String): Path {
-        return Paths.get(filePath)
+public class SimplePathResolver implements PathResolver {
+    @Override
+    public Path resolvePath(final String filePath) {
+        return Paths.get(filePath);
     }
 }
