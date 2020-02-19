@@ -12,13 +12,14 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class PipEnvDetectableTest extends DetectableFunctionalTest {
+    private final static String PYTHON_CMD = "python";
+    private final static String PIPENV_CMD = "pipenv";
+
     protected PipEnvDetectableTest() throws IOException {
         super("pipenv");
     }
@@ -29,15 +30,15 @@ public class PipEnvDetectableTest extends DetectableFunctionalTest {
         addFile("Pipfile.lock");
         final Path setupFilePath = addFile("setup.py");
 
-        addExecutableOutput(createStandardOutput("project-name"), "python", setupFilePath.toAbsolutePath().toString(), "--name");
+        addExecutableOutput(createStandardOutput("project-name"), PYTHON_CMD, setupFilePath.toAbsolutePath().toString(), "--name");
 
-        addExecutableOutput(createStandardOutput("version-name"), "python", setupFilePath.toAbsolutePath().toString(), "--version");
+        addExecutableOutput(createStandardOutput("version-name"), PYTHON_CMD, setupFilePath.toAbsolutePath().toString(), "--version");
 
         addExecutableOutput(createStandardOutput(
             "simple==1",
             "with-dashes==2.0",
             "dots.and-dashes==3.1.2"
-        ), "pipenv", "run", "pip", "freeze");
+        ), PIPENV_CMD, "run", "pip", "freeze");
 
         addExecutableOutput(createStandardOutput(
             "[",
@@ -72,14 +73,14 @@ public class PipEnvDetectableTest extends DetectableFunctionalTest {
             "        ]",
             "    },",
             "]"
-        ), "pipenv", "graph", "--bare", "--json-tree");
+        ), PIPENV_CMD, "graph", "--bare", "--json-tree");
     }
 
     @NotNull
     @Override
     public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
         final PipenvDetectableOptions pipenvDetectableOptions = new PipenvDetectableOptions("simple", "1", false);
-        return detectableFactory.createPipenvDetectable(detectableEnvironment, pipenvDetectableOptions, new TestPythonResolver(), new TestPipResolver());
+        return detectableFactory.createPipenvDetectable(detectableEnvironment, pipenvDetectableOptions, () -> new File(PYTHON_CMD), () -> new File(PIPENV_CMD));
     }
 
     @Override
@@ -95,19 +96,5 @@ public class PipEnvDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasRootDependency("with-dashes", "2.0");
         graphAssert.hasRootDependency("dots.and-dashes", "3.1.2");
         graphAssert.hasParentChildRelationship("with-dashes", "2.0", "dots.and-dashes", "3.1.2");
-    }
-
-    private static class TestPythonResolver implements PythonResolver {
-        @Override
-        public File resolvePython() {
-            return new File("python");
-        }
-    }
-
-    private static class TestPipResolver implements PipenvResolver {
-        @Override
-        public File resolvePipenv() {
-            return new File("pipenv");
-        }
     }
 }
