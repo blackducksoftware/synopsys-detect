@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.pip.unit;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,10 +31,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
+import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 @UnitTest
 public class PipInspectorTreeParserTest {
