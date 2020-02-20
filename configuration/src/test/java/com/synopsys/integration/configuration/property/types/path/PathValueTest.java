@@ -20,16 +20,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.path
+package com.synopsys.integration.configuration.property.types.path;
 
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
-import java.nio.file.Paths
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-class SimplePathResolverTest {
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+public class PathValueTest {
+    private static class TestPathResolver implements PathResolver {
+        @Override
+        public Path resolvePath(final String filePath) {
+            return Paths.get(filePath);
+        }
+    }
+
     @Test
-    fun resolvePathTest() {
-        val simplePathResolver = SimplePathResolver()
-        Assertions.assertEquals(Paths.get("/simple/test"), simplePathResolver.resolvePath("/simple/test"))
+    public void resolvePathTest() {
+        Assertions.assertEquals(Paths.get("/test"), new PathValue("/test").resolvePath(new TestPathResolver()));
+    }
+
+    @Test
+    public void toStringTest() {
+        Assertions.assertEquals("/test/toString", new PathValue("/test/toString").toString());
     }
 }

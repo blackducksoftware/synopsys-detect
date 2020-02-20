@@ -20,25 +20,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.path
+package com.synopsys.integration.configuration.property.types.path;
 
-import com.synopsys.integration.configuration.parse.ValueParseException
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
+import java.nio.file.Paths;
 
-class PathValueParserTest {
-    @ParameterizedTest
-    @ValueSource(strings = ["", " ", "     "])
-    fun parseEmpty(value: String) {
-        Assertions.assertThrows(ValueParseException::class.java) {
-            PathValueParser().parse(value)
-        }
-    }
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
+public class SimplePathResolverTest {
     @Test
-    fun parseValid() {
-        Assertions.assertEquals(PathValue("/valid/path"), PathValueParser().parse("/valid/path"))
+    public void resolvePathTest() {
+        final PathResolver simplePathResolver = new SimplePathResolver();
+        Assertions.assertEquals(Paths.get("/simple/test"), simplePathResolver.resolvePath("/simple/test"));
     }
 }
