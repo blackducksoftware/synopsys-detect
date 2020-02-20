@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test
 
 internal class ListValueParserTest {
 
-    class TestValueParser : ValueParser<String>() {
+    private class TestValueParser : ValueParser<String>() {
         override fun parse(value: String): String {
             if (value == "-1") {
                 throw ValueParseException(value, "String", "Can convert anything but this value to a String.")

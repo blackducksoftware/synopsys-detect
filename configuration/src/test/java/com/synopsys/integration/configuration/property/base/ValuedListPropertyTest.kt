@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 internal class ValuedListPropertyTest {
-    class TestValueParser : ValueParser<String>() {
+    private class TestValueParser : ValueParser<String>() {
         override fun parse(value: String): String {
             return value
         }

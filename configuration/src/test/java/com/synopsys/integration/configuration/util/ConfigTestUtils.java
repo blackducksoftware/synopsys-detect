@@ -64,6 +64,12 @@ public class ConfigTestUtils {
     }
 
     @NotNull
+    public static PropertyConfiguration configOf(@NotNull final Map<String, String> properties) {
+        final PropertySource propertySource = new MapPropertySource("map", properties);
+        return configOf(propertySource);
+    }
+
+    @NotNull
     public static PropertyConfiguration configOf(@NotNull final PropertySource... propertySources) {
         return new PropertyConfiguration(Arrays.asList(propertySources));
     }

@@ -20,25 +20,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.config
+package com.synopsys.integration.configuration.config;
 
-import com.synopsys.integration.configuration.util.KeyUtils
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-open class KeyUtilsTests {
+import com.synopsys.integration.configuration.util.KeyUtils;
+
+public class KeyUtilsTests {
     @Test
-    fun replacesUnderscores() {
-        Assertions.assertEquals("key.dot.dot", KeyUtils.normalizeKey("key_dot_dot"))
+    public void replacesUnderscores() {
+        Assertions.assertEquals("key.dot.dot", KeyUtils.normalizeKey("key_dot_dot"));
     }
 
     @Test
-    fun replacesCapitals() {
-        Assertions.assertEquals("key.lower", KeyUtils.normalizeKey("KEY.LOWER"))
+    public void replacesCapitals() {
+        Assertions.assertEquals("key.lower", KeyUtils.normalizeKey("KEY.LOWER"));
     }
 
     @Test
-    fun normalizesEnvKey() {
-        Assertions.assertEquals("env.key", KeyUtils.normalizeKey("ENV_KEY"))
+    public void normalizesEnvKey() {
+        Assertions.assertEquals("env.key", KeyUtils.normalizeKey("ENV_KEY"));
     }
 }

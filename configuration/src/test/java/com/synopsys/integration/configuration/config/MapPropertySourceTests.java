@@ -20,23 +20,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.config
+package com.synopsys.integration.configuration.config;
 
-import com.synopsys.integration.configuration.source.MapPropertySource
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import java.util.Collections;
+import java.util.Set;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import com.synopsys.integration.configuration.source.MapPropertySource;
+import com.synopsys.integration.configuration.source.PropertySource;
 
 class MapPropertySourceTests {
     @Test
-    fun testNormalizesKeys() {
-        val source = MapPropertySource("test", mapOf("CAPITAL_UNDERSCORE" to "value"))
-        val keys = source.getKeys()
-        Assertions.assertEquals(setOf("capital.underscore"), keys)
+    public void testNormalizesKeys() {
+        final PropertySource source = new MapPropertySource("test", Collections.singletonMap("CAPITAL_UNDERSCORE", "value"));
+        final Set<String> keys = source.getKeys();
+        Assertions.assertEquals(Collections.singleton("capital.underscore"), keys);
     }
 
     @Test
-    fun returnsKey() {
-        val source = MapPropertySource("test", mapOf("property.key" to "value"))
+    public void returnsKey() {
+        final PropertySource source = new MapPropertySource("test", Collections.singletonMap("property.key", "value"));
         Assertions.assertEquals("value", source.getValue("property.key"));
         Assertions.assertEquals("test", source.getOrigin("property.key"));
         Assertions.assertEquals("test", source.getName());
