@@ -20,13 +20,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.help.json
+package com.synopsys.integration.detect.help.json;
 
-import java.util.ArrayList
+public class HelpJsonExitCode {
+    private String exitCodeKey = "";
+    private String exitCodeDescription = "";
+    private Integer exitCodeValue = 0;
 
-class HelpJsonData {
-    val exitCodes: List<HelpJsonExitCode> = ArrayList()
-    var buildDetectors: List<HelpJsonDetector> = ArrayList()
-    var buildlessDetectors: List<HelpJsonDetector> = ArrayList()
-    val options: List<HelpJsonOption> = ArrayList()
+    public Integer getExitCodeValue() {
+        return exitCodeValue;
+    }
+
+    public void setExitCodeValue(final Integer exitCodeValue) {
+        this.exitCodeValue = exitCodeValue;
+    }
+
+    public String getExitCodeKey() {
+        return exitCodeKey;
+    }
+
+    public void setExitCodeKey(final String exitCodeKey) {
+        this.exitCodeKey = exitCodeKey;
+    }
+
+    public String getExitCodeDescription() {
+        return exitCodeDescription;
+    }
+
+    public void setExitCodeDescription(final String exitCodeDescription) {
+        this.exitCodeDescription = exitCodeDescription;
+    }
+
 }

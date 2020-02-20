@@ -21,7 +21,8 @@ import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 public class PipInspectorDetectableTest extends DetectableFunctionalTest {
     private final static String PYTHON_CMD = "python";
     private final static String PIP_CMD = "pip";
-    private final static String PIP_INSPECTOR_CMD = "/pip-inspector";
+
+    Path pipInspectorPath;
 
     protected PipInspectorDetectableTest() throws IOException {
         super("pip-inspector");
@@ -29,6 +30,7 @@ public class PipInspectorDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
+        pipInspectorPath = addOutputFile("pip-inspector");
         final Path setupFilePath = addFile("setup.py");
 
         addExecutableOutput(createStandardOutput("project-name"), PYTHON_CMD, setupFilePath.toAbsolutePath().toString(), "--name");
@@ -38,7 +40,7 @@ public class PipInspectorDetectableTest extends DetectableFunctionalTest {
             "    dep1==1.0",
             "        dep12==2.0",
             "    dep2==3.0"
-        ), PYTHON_CMD, PIP_INSPECTOR_CMD, "--projectname=project-name");
+        ), PYTHON_CMD, pipInspectorPath.toString(), "--projectname=project-name");
     }
 
     @NotNull
@@ -46,7 +48,7 @@ public class PipInspectorDetectableTest extends DetectableFunctionalTest {
     public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
         final List<Path> requirementTxtPaths = new ArrayList<>();
         final PipInspectorDetectableOptions pipInspectorDetectableOptions = new PipInspectorDetectableOptions("project-name", requirementTxtPaths);
-        return detectableFactory.createPipInspectorDetectable(detectableEnvironment, pipInspectorDetectableOptions, () -> new File(PIP_INSPECTOR_CMD), () -> new File(PYTHON_CMD), () -> new File(PIP_CMD));
+        return detectableFactory.createPipInspectorDetectable(detectableEnvironment, pipInspectorDetectableOptions, () -> pipInspectorPath.toFile(), () -> new File(PYTHON_CMD), () -> new File(PIP_CMD));
     }
 
     @Override

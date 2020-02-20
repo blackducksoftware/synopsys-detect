@@ -134,6 +134,18 @@ public abstract class DetectableFunctionalTest {
     }
 
     @NotNull
+    public Path addOutputFile(@NotNull final String path) throws IOException {
+        return addOutputFile(Paths.get(path), Collections.emptyList());
+    }
+
+    @NotNull
+    public Path addOutputFile(@NotNull final Path path, @NotNull final Iterable<? extends String> lines) throws IOException {
+        final Path relativePath = outputDirectory.resolve(path);
+        Files.createDirectories(relativePath.getParent());
+        return Files.write(relativePath, lines);
+    }
+
+    @NotNull
     public Path addFileFromResources(@NotNull final Path path, @NotNull final String resourcePath) throws IOException {
         final List<String> lines = FunctionalTestFiles.asListOfStrings(resourcePath);
         return addFile(path, lines);
