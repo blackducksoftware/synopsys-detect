@@ -20,25 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.string
+package com.synopsys.integration.configuration.property.types.string;
 
-import org.apache.commons.lang3.RandomStringUtils
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.RepeatedTest
-import org.junit.jupiter.api.Test
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
 class StringValueParserTest {
     @Test
-    fun parseValid() {
-        Assertions.assertEquals("any string should work", StringValueParser().parse("any string should work"))
+    public void parseValid() {
+        Assertions.assertEquals("any string should work", new StringValueParser().parse("any string should work"));
     }
 
     @RepeatedTest(10)
-    fun parseRandom() {
-        Assertions.assertDoesNotThrow {
-            val randomString = RandomStringUtils.random(20, true, true)
-            println("Testing with random string '$randomString'")
-            StringValueParser().parse(randomString)
-        }
+    public void parseRandom() {
+        Assertions.assertDoesNotThrow(() -> {
+            final String randomString = RandomStringUtils.random(20, true, true);
+            System.out.println("Testing with random string '$randomString'");
+            new StringValueParser().parse(randomString);
+        });
     }
 }
