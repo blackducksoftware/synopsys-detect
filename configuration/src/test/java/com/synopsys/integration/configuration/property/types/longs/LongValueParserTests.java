@@ -29,7 +29,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.synopsys.integration.configuration.parse.ValueParseException;
 
-class LongValueParserTests {
+public class LongValueParserTests {
     private final LongValueParser parser = new LongValueParser();
 
     @ParameterizedTest
