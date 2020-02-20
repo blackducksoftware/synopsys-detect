@@ -131,6 +131,7 @@ public class PackagistDetectableTest extends DetectableFunctionalTest {
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PACKAGIST, extraction.getCodeLocations().get(0).getDependencyGraph());
 
         graphAssert.hasRootSize(1);
+        graphAssert.hasRootDependency("clue/graph", "v0.9.0");
         graphAssert.hasParentChildRelationship("graphp/algorithms", "v0.8.1", "clue/graph", "v0.9.0");
     }
 }
