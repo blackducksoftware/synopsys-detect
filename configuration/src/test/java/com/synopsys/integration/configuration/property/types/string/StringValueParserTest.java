@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
-class StringValueParserTest {
+public class StringValueParserTest {
     @Test
     public void parseValid() {
         Assertions.assertEquals("any string should work", new StringValueParser().parse("any string should work"));

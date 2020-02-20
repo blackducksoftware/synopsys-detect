@@ -40,7 +40,7 @@ import com.synopsys.integration.configuration.property.base.ValuedProperty;
 import com.synopsys.integration.configuration.util.Bds;
 
 // Simple glue sanity tests. Theoretically if Config is well tested and Parser is well tested, these will pass so they are not exhaustive.
-class StringPropertiesTest {
+public class StringPropertiesTest {
     @Test
     public void testNullable() throws InvalidPropertyException {
         final NullableProperty<String> property = new NullableStringProperty("string.nullable");
