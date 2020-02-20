@@ -26,7 +26,7 @@ import com.synopsys.integration.configuration.property.PropertyTestHelpUtil
 import com.synopsys.integration.configuration.property.types.enums.EnumListProperty
 import com.synopsys.integration.configuration.property.types.enums.EnumProperty
 import com.synopsys.integration.configuration.property.types.enums.NullableEnumProperty
-import com.synopsys.integration.configuration.util.configOf
+import com.synopsys.integration.configuration.util.ConfigTestUtils.configOf
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.util.*

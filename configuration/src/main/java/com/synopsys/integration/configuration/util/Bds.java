@@ -23,8 +23,10 @@
 package com.synopsys.integration.configuration.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,6 +36,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 public class Bds<T> {
     private Stream<T> stream;
 
@@ -42,7 +46,7 @@ public class Bds<T> {
     }
 
     public <U extends Comparable<? super U>> Bds<T> sortedBy(
-        Function<? super T, ? extends U> keyExtractor) {
+        final Function<? super T, ? extends U> keyExtractor) {
         Objects.requireNonNull(keyExtractor);
         stream = stream.sorted(Comparator.comparing(keyExtractor));
         return this;
@@ -57,33 +61,53 @@ public class Bds<T> {
     }
 
     public Bds<T> filterNotNull() {
-        return new Bds<T>(stream.filter(it -> it != null));
+        return new Bds<>(stream.filter(Objects::nonNull));
     }
 
-    public <R> Bds<R> map(Function<? super T, ? extends R> mapper) {
+    public <R> Bds<R> map(final Function<? super T, ? extends R> mapper) {
         return new Bds<>(stream.map(mapper));
     }
 
-    public <K, U> Map<K, U> toMap(Function<? super T, ? extends K> keyMapper,
-        Function<? super T, ? extends U> valueMapper) {
+    public <K, U> Map<K, U> toMap(final Function<? super T, ? extends K> keyMapper,
+        final Function<? super T, ? extends U> valueMapper) {
         return stream.collect(Collectors.toMap(keyMapper, valueMapper));
     }
 
-    public static <K, U> Bds<Map.Entry<K, U>> of(Map<K, U> collection) {
+    @SafeVarargs
+    public static <K, U> Map<K, U> mapOf(final Pair<K, U>... elements) {
+        return mapOfEntries(elements);
+    }
+
+    @SafeVarargs
+    public static <K, U> Map<K, U> mapOfEntries(final Map.Entry<K, U>... elements) {
+        return Arrays.stream(elements).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public static <K, U> Bds<Map.Entry<K, U>> of(final Map<K, U> collection) {
         return new Bds<>(collection.entrySet().stream());
     }
 
-    public static <T> Bds<T> of(Collection<T> collection) {
+    public static <T> Bds<T> of(final Collection<T> collection) {
         return new Bds<>(collection.stream());
     }
 
-    public static <T> Bds<T> of(Iterable<T> iterable) {
+    @SafeVarargs
+    public static <T> Bds<T> of(final T... elements) {
+        return new Bds<>(Arrays.stream(elements));
+    }
+
+    public static <T> Bds<T> of(final Iterable<T> iterable) {
         return new Bds<>(StreamSupport.stream(iterable.spliterator(), false));
     }
 
-    public static <T> List<T> listOf(Iterable<T> iterable) {
-        List<T> result = new ArrayList<T>();
+    public static <T> List<T> listOf(final Iterable<T> iterable) {
+        final List<T> result = new ArrayList<>();
         iterable.forEach(result::add);
         return result;
+    }
+
+    @SafeVarargs
+    public static <T> Set<T> setOf(final T... elements) {
+        return new HashSet<>(Arrays.asList(elements));
     }
 }

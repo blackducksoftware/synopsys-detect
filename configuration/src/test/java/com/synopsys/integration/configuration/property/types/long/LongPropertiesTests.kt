@@ -26,7 +26,7 @@ import com.synopsys.integration.configuration.property.PropertyTestHelpUtil
 import com.synopsys.integration.configuration.property.types.longs.LongListProperty
 import com.synopsys.integration.configuration.property.types.longs.LongProperty
 import com.synopsys.integration.configuration.property.types.longs.NullableLongProperty
-import com.synopsys.integration.configuration.util.configOf
+import com.synopsys.integration.configuration.util.ConfigTestUtils.configOf
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.util.*

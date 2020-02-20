@@ -23,7 +23,7 @@
 package com.synopsys.integration.configuration.property.types.enumfilterable
 
 import com.synopsys.integration.configuration.property.PropertyTestHelpUtil
-import com.synopsys.integration.configuration.util.configOf
+import com.synopsys.integration.configuration.util.ConfigTestUtils.configOf
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
