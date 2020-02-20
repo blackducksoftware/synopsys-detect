@@ -107,6 +107,11 @@ public class Bds<T> {
     }
 
     @SafeVarargs
+    public static <T> List<T> listOf(final T... elements) {
+        return Arrays.asList(elements);
+    }
+
+    @SafeVarargs
     public static <T> Set<T> setOf(final T... elements) {
         return new HashSet<>(Arrays.asList(elements));
     }
