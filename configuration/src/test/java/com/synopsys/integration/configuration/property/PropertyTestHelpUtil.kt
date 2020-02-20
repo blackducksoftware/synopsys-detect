@@ -31,22 +31,40 @@ import org.junit.jupiter.api.Assertions
 /**
  * Ensure's the Property classes are providing necessary property descriptions for help doc.
  */
-class PropertyTestHelpUtil {
+public class PropertyTestHelpUtil {
     companion object {
         //#region Recommended Usage
 
-        fun assertAllHelpValid(property: NullableProperty<*>, expectedExampleValues: List<String>? = null) {
+        @JvmStatic
+        fun assertAllHelpValid(property: NullableProperty<*>) {
+            assertAllHelpValid(property, null)
+        }
+
+        @JvmStatic
+        fun assertAllHelpValid(property: NullableProperty<*>, expectedExampleValues: List<String>?) {
             assertValidTypeDescription(property)
             assertHasExampleValues(property, expectedExampleValues)
         }
 
-        fun assertAllHelpValid(property: ValuedProperty<*>, expectedExampleValues: List<String>? = null) {
+        @JvmStatic
+        fun assertAllHelpValid(property: ValuedProperty<*>) {
+            assertAllHelpValid(property, null)
+        }
+
+        @JvmStatic
+        fun assertAllHelpValid(property: ValuedProperty<*>, expectedExampleValues: List<String>?) {
             assertValidTypeDescription(property)
             assertHasDefaultDescription(property)
             assertHasExampleValues(property, expectedExampleValues)
         }
 
-        fun assertAllHelpValid(property: ValuedListProperty<*>, expectedExampleValues: List<String>? = null) {
+        @JvmStatic
+        fun assertAllHelpValid(property: ValuedListProperty<*>) {
+            assertAllHelpValid(property, null)
+        }
+
+        @JvmStatic
+        fun assertAllHelpValid(property: ValuedListProperty<*>, expectedExampleValues: List<String>?) {
             assertValidTypeDescription(property)
             assertHasDefaultDescription(property)
             assertHasExampleValues(property, expectedExampleValues)
@@ -59,27 +77,32 @@ class PropertyTestHelpUtil {
         private const val nullableTypeDescriptionPrefix = "Optional "
         private const val valuedTypeDescriptionPostfix = " List"
 
+        @JvmStatic
         fun assertValidTypeDescription(property: NullableProperty<*>) {
             assertHasTypeDescription(property)
             Assertions.assertTrue(property.describeType()!!.startsWith(nullableTypeDescriptionPrefix), "${property.javaClass.simpleName} is a ${NullableProperty::class.java.simpleName} so its type description should start with '$nullableTypeDescriptionPrefix'.")
         }
 
+        @JvmStatic
         fun assertValidTypeDescription(property: ValuedProperty<*>) {
             assertHasTypeDescription(property)
             Assertions.assertFalse(property.describeType()!!.startsWith(nullableTypeDescriptionPrefix), "${property.javaClass.simpleName} is a ${ValuedProperty::class.java.simpleName} so its type description should not start with '$nullableTypeDescriptionPrefix'.")
             Assertions.assertFalse(property.describeType()!!.endsWith(valuedTypeDescriptionPostfix), "${property.javaClass.simpleName} is a ${ValuedProperty::class.java.simpleName} so its type description should not start with '$valuedTypeDescriptionPostfix'.")
         }
 
+        @JvmStatic
         fun assertValidTypeDescription(property: ValuedListProperty<*>) {
             assertHasTypeDescription(property)
             Assertions.assertTrue(property.describeType()!!.endsWith(valuedTypeDescriptionPostfix), "${property.javaClass.simpleName} is a ${ValuedListProperty::class.java.simpleName} so its type description should end with '$valuedTypeDescriptionPostfix'.")
             Assertions.assertNotNull(property.describeType(), "${property.javaClass.simpleName} is a typed property such and should describe its type.")
         }
 
+        @JvmStatic
         private fun assertHasTypeDescription(property: TypedProperty<*>) {
             Assertions.assertNotNull(property.describeType(), "${property.javaClass.simpleName} is a typed property such and should describe its type.")
         }
 
+        @JvmStatic
         fun assertHasExampleValues(property: TypedProperty<*>, expectedExampleValues: List<String>?) {
             if (expectedExampleValues != null) {
                 Assertions.assertNotNull(property.listExampleValues(), "A ${property.describeType()} property has a limited number of values that should be described.")
@@ -87,6 +110,7 @@ class PropertyTestHelpUtil {
             }
         }
 
+        @JvmStatic
         fun assertHasDefaultDescription(property: ValuedProperty<*>) {
             Assertions.assertNotNull(property.describeDefault(), "${property.javaClass.simpleName} is a non-null typed property and should describe its default value.")
         }
