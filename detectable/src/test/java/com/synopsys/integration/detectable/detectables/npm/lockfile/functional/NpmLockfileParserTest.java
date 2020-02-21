@@ -48,7 +48,7 @@ public class NpmLockfileParserTest {
     }
 
 
-    /*  Are these <...>WithRecreatedJson tests important> */
+    /*  Are these <...>WithRecreatedJson tests important? */
 
     @Test
     @Disabled
@@ -78,17 +78,6 @@ public class NpmLockfileParserTest {
     public void parseShrinkwrapWithRecreatedJsonTest() {
         final String shrinkwrapText = FunctionalTestFiles.asString("/npm/npm-shrinkwrap.json");
         final NpmParseResult result = npmLockfileParser.parse(recreatePackageJsonFromLock(shrinkwrapText), shrinkwrapText, true);
-
-        Assertions.assertEquals("fec-builder", result.getProjectName());
-        Assertions.assertEquals("1.3.7", result.getProjectVersion());
-        GraphCompare.assertEqualsResource("/npm/shrinkwrapExpected_graph.json", result.getCodeLocation().getDependencyGraph());
-    }
-
-    @Test
-    @Disabled
-    public void parseShrinkwrapTest() {
-        final String shrinkwrapText = FunctionalTestFiles.asString("/npm/npm-shrinkwrap.json");
-        final NpmParseResult result = npmLockfileParser.parse(Optional.empty(), shrinkwrapText, true);
 
         Assertions.assertEquals("fec-builder", result.getProjectName());
         Assertions.assertEquals("1.3.7", result.getProjectVersion());
