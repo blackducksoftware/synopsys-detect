@@ -38,10 +38,10 @@ import org.skyscreamer.jsonassert.JSONParser;
 public class BdioCompareTests {
     @Test
     public void actualMissingTwoNodes() throws IOException, JSONException, BdioCompare.BdioCompareException {
-        //two-root has two nodes from the root, so when compared to empty bdio we should get 2 differences of the 2 missing nodes.
+        //two-root has two nodes from the root, so when compared to empty bdio we should get 4 differences of the 2 missing nodes and 2 missing relationships.
         final JSONArray expected = loadBdio("two-root-bdio");
         final JSONArray actual = loadBdio("empty-bdio");
-        Assertions.assertEquals(2, new BdioCompare().compare(expected, actual).size());
+        Assertions.assertEquals(4, new BdioCompare().compare(expected, actual).size());
     }
 
     @Test

@@ -26,6 +26,7 @@ import com.synopsys.integration.configuration.property.PropertyTestHelpUtil
 import com.synopsys.integration.configuration.util.configOf
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.util.*
 
 // Simple glue sanity tests. Theoretically if Config is well tested and Parser is well tested, these will pass so they are not exhaustive.
 class SoftEnumPropertiesTest {
@@ -39,7 +40,7 @@ class SoftEnumPropertiesTest {
     fun testNullableActualValue() {
         val property = NullableSoftEnumProperty("enum.nullable", Example::class.java)
         val config = configOf("enum.nullable" to "ANOTHER")
-        Assertions.assertEquals(ActualValue(Example.ANOTHER), config.getValue(property))
+        Assertions.assertEquals(Optional.of(SoftEnumValue.ofEnumValue(Example.ANOTHER)), config.getValue(property))
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD"))
     }
@@ -48,7 +49,7 @@ class SoftEnumPropertiesTest {
     fun testNullableStringValue() {
         val property = NullableSoftEnumProperty("enum.nullable", Example::class.java)
         val config = configOf("enum.nullable" to "ANOTHER ONE")
-        Assertions.assertEquals(StringValue<Example>("ANOTHER ONE"), config.getValue(property))
+        Assertions.assertEquals(Optional.of(SoftEnumValue.ofSoftValue<Example>("ANOTHER ONE")), config.getValue(property))
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD"))
     }
@@ -56,27 +57,27 @@ class SoftEnumPropertiesTest {
 
     @Test
     fun testValuedActualValue() {
-        val property = SoftEnumProperty("enum.valued", ActualValue(Example.ANOTHER), Example::class.java)
+        val property = SoftEnumProperty("enum.valued", SoftEnumValue.ofEnumValue(Example.ANOTHER), Example::class.java)
         val config = configOf("enum.valued" to "THIRD")
-        Assertions.assertEquals(ActualValue(Example.THIRD), config.getValue(property))
+        Assertions.assertEquals(SoftEnumValue.ofEnumValue(Example.THIRD), config.getValue(property))
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD"))
     }
 
     @Test
     fun testValuedStringValue() {
-        val property = SoftEnumProperty("enum.valued", ActualValue(Example.ANOTHER), Example::class.java)
+        val property = SoftEnumProperty("enum.valued", SoftEnumValue.ofEnumValue(Example.ANOTHER), Example::class.java)
         val config = configOf("enum.valued" to "THIRD ONE")
-        Assertions.assertEquals(StringValue<Example>("THIRD ONE"), config.getValue(property))
+        Assertions.assertEquals(SoftEnumValue.ofSoftValue<Example>("THIRD ONE"), config.getValue(property))
 
         PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD"))
     }
 
     @Test
     fun testList() {
-        val property = SoftEnumListProperty("enum.list", listOf(ActualValue(Example.THIRD)), Example::class.java)
+        val property = SoftEnumListProperty("enum.list", listOf(SoftEnumValue.ofEnumValue(Example.THIRD)), Example::class.java)
         val config = configOf("enum.list" to "ANOTHER,THING,test")
-        Assertions.assertEquals(listOf(ActualValue(Example.ANOTHER), ActualValue(Example.THING), StringValue<Example>("test")), config.getValue(property))
+        Assertions.assertEquals(listOf(SoftEnumValue.ofEnumValue(Example.ANOTHER), SoftEnumValue.ofEnumValue(Example.THING), SoftEnumValue.ofSoftValue<Example>("test")), config.getValue(property))
 
         PropertyTestHelpUtil.assertAllHelpValid(property)
     }

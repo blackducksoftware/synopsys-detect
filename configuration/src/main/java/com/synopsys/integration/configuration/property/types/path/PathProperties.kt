@@ -28,17 +28,14 @@ import com.synopsys.integration.configuration.property.base.ValuedListProperty
 import com.synopsys.integration.configuration.property.base.ValuedProperty
 
 class NullablePathProperty(key: String) : NullableProperty<PathValue>(key, PathValueParser()) {
-    override fun listExampleValues(): List<String>? = listOf("/nullable/example/path", "another/nullable/example/path")
     override fun describeType(): String? = "Optional Path"
 }
 
 class PathProperty(key: String, default: PathValue) : ValuedProperty<PathValue>(key, PathValueParser(), default) {
-    override fun listExampleValues(): List<String>? = listOf("/valued/example/path", "another/valued/example/path")
-    override fun describeDefault(): String? = default.toString()
+    override fun describeDefault(): String? = defaultValue.toString()
     override fun describeType(): String? = "Path"
 }
 
 class PathListProperty(key: String, default: List<PathValue>) : ValuedListProperty<PathValue>(key, ListValueParser(PathValueParser()), default) {
-    override fun listExampleValues(): List<String>? = listOf("/list/example/path", "example/path,/another/list/example/path")
     override fun describeType(): String? = "Path List"
 }

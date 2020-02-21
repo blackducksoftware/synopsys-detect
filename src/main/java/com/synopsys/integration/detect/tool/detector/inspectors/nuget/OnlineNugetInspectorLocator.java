@@ -43,7 +43,7 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
     public File locateDotnetInspector() throws DetectableException {
         try {
             final File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
-            return nugetInspectorInstaller.installDotNet(nugetDirectory, Optional.of(overrideVersion));
+            return nugetInspectorInstaller.installDotNet(nugetDirectory, Optional.ofNullable(overrideVersion));
         } catch (final Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }

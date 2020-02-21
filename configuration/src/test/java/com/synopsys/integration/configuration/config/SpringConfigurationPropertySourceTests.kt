@@ -24,9 +24,10 @@ package com.synopsys.integration.configuration.config
 
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty
 import com.synopsys.integration.configuration.source.SpringConfigurationPropertySource
-import org.junit.Test
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 import org.springframework.mock.env.MockEnvironment
+import java.util.*
 
 class SpringConfigurationPropertySourceTests {
     @Test
@@ -38,7 +39,7 @@ class SpringConfigurationPropertySourceTests {
         val config = PropertyConfiguration(sources)
 
         val property = NullableStringProperty("example.key")
-        Assertions.assertEquals("value", config.getValue(property))
-        Assertions.assertEquals("mockProperties", config.getPropertySource(property))
+        Assertions.assertEquals(Optional.of("value"), config.getValue(property))
+        Assertions.assertEquals(Optional.of("mockProperties"), config.getPropertySource(property))
     }
 }

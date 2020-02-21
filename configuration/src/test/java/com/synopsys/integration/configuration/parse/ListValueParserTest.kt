@@ -37,7 +37,7 @@ internal class ListValueParserTest {
     }
 
     class TestDefaultListValueParser(valueParser: ValueParser<String>) : ListValueParser<String>(valueParser)
-    class TestCustomListValueParser(valueParser: ValueParser<String>, vararg delimiters: String) : ListValueParser<String>(valueParser, *delimiters)
+    class TestCustomListValueParser(valueParser: ValueParser<String>, delimiter: String) : ListValueParser<String>(valueParser, delimiter)
 
     @Test
     fun parseDefault() {
@@ -48,9 +48,9 @@ internal class ListValueParserTest {
 
     @Test
     fun parseCustomDelimiters() {
-        val listValueParser = TestCustomListValueParser(TestValueParser(), " ", "|")
+        val listValueParser = TestCustomListValueParser(TestValueParser(), "|")
         val actualValues = listValueParser.parse("test this|parser|for real")
-        Assertions.assertEquals(listOf("test", "this", "parser", "for", "real"), actualValues)
+        Assertions.assertEquals(listOf("test this", "parser", "for real"), actualValues)
     }
 
     @Test

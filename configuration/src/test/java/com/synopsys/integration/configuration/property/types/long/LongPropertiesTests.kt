@@ -29,6 +29,7 @@ import com.synopsys.integration.configuration.property.types.longs.NullableLongP
 import com.synopsys.integration.configuration.util.configOf
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import java.util.*
 
 // Simple glue sanity tests. Theoretically if Config is well tested and Parser is well tested, these will pass so they are not exhaustive.
 class LongPropertiesTests {
@@ -36,7 +37,7 @@ class LongPropertiesTests {
     fun testNullable() {
         val property = NullableLongProperty("long.nullable")
         val config = configOf("long.nullable" to "2")
-        Assertions.assertEquals(2L, config.getValue(property))
+        Assertions.assertEquals(Optional.of(2L), config.getValue(property))
 
         PropertyTestHelpUtil.assertAllHelpValid(property)
     }

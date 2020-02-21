@@ -79,16 +79,20 @@ public class HelpJsonWriter {
 
         helpJsonOption.setPropertyName(property.getName());
         helpJsonOption.setPropertyKey(property.getKey());
-        helpJsonOption.setPropertyType(property.describeType());
+        helpJsonOption.setPropertyType(property.describeType() == null ? "None" : property.describeType());
         helpJsonOption.setAddedInVersion(property.getFromVersion());
         helpJsonOption.setDefaultValue(property.describeDefault());
 
         helpJsonOption.setGroup(property.getPropertyGroupInfo().getPrimaryGroup().getName());
-        helpJsonOption.setSuperGroup(property.getPropertyGroupInfo().getPrimaryGroup().getSuperGroup().getName());
+        String superGroupName = "";
+        if (property.getPropertyGroupInfo().getPrimaryGroup().getSuperGroup() != null) {
+            superGroupName = property.getPropertyGroupInfo().getPrimaryGroup().getSuperGroup().getName();
+        }
+        helpJsonOption.setSuperGroup(superGroupName);
         helpJsonOption.setAdditionalGroups(property.getPropertyGroupInfo().getAdditionalGroups().stream().map(Group::getName).collect(Collectors.toList()));
-        helpJsonOption.setCategory(property.getCategory().getName());
+        helpJsonOption.setCategory(property.getCategory() == null ? "" : property.getCategory().getName());
         helpJsonOption.setDescription(property.getPropertyHelpInfo().getShort());
-        helpJsonOption.setDetailedDescription(property.getPropertyHelpInfo().getLong());
+        helpJsonOption.setDetailedDescription(property.getPropertyHelpInfo().getLong() == null ? "" : property.getPropertyHelpInfo().getLong());
         helpJsonOption.setDeprecated(property.getPropertyDeprecationInfo() != null);
         if (property.getPropertyDeprecationInfo() != null) {
             helpJsonOption.setDeprecatedDescription(property.getPropertyDeprecationInfo().getDescription());
