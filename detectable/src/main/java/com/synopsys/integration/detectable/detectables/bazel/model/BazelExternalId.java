@@ -31,7 +31,7 @@ public class BazelExternalId extends Stringable {
 
     public static BazelExternalId fromBazelArtifactString(final String bazelArtifactString, final String separatorRegEx) {
         final String[] parts = bazelArtifactString.split(separatorRegEx);
-        return new BazelExternalId(parts[0], parts[1], parts[2]);
+        return new BazelExternalId(parts[0].replace("maven_coordinates=",""), parts[1], parts[2]);
     }
     private BazelExternalId(final String group, final String artifact, final String version) {
         this.group = group;

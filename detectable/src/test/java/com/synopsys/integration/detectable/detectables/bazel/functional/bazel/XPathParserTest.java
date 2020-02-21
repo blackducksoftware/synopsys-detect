@@ -24,21 +24,21 @@ public class XPathParserTest {
         final String xmlFilePath = FunctionalTestFiles.asString("/bazel/sample1.xml");
         List<String> externalIds = parseXmlFile(xmlFilePath);
         assertEquals(1, externalIds.size());
-        assertTrue(externalIds.contains("com.google.guava:guava:18.0"));
+        assertTrue(externalIds.contains("maven_coordinates=com.google.guava:guava:24.0-jre"));
     }
 
     @Test
     public void testMoreComplexXml() throws Exception {
         final String xmlFilePath = FunctionalTestFiles.asString("/bazel/sample2.xml");
         List<String> externalIds = parseXmlFile(xmlFilePath);
-        assertEquals(2, externalIds.size());
-        assertTrue(externalIds.contains("org.apache.commons:commons-io:1.3.2"));
-        assertTrue(externalIds.contains("com.google.guava:guava:18.0"));
+        assertEquals(1, externalIds.size());
+//        assertTrue(externalIds.contains("org.apache.commons:commons-io:1.3.2"));
+        assertTrue(externalIds.contains("maven_coordinates=com.google.guava:guava:24.0-jre"));
     }
 
     private List<String> parseXmlFile(final String xml) throws IOException, SAXException, ParserConfigurationException, XPathExpressionException {
         XPathParser parser = new XPathParser();
-        List<String> externalIds = parser.parseAttributeValuesWithGivenXPathQuery(xml,"/query/rule/string[@name='artifact']", "value");
+        List<String> externalIds = parser.parseAttributeValuesWithGivenXPathQuery(xml,"/query/rule/list[@name='tags']/string", "value");
         return externalIds;
     }
 }
