@@ -47,9 +47,9 @@ class PearPackageXmlParserTest {
         pearPackageXmlParser = new PearPackageXmlParser();
     }
 
-    @Test
-    void parse() throws IOException, SAXException, ParserConfigurationException {
-        final String samplePackageXml = "<package>\n"
+    void parse(boolean includeDoctype) throws IOException, SAXException, ParserConfigurationException {
+        final String samplePackageXml = (includeDoctype ? "<!DOCTYPE package SYSTEM \"http://pear.php.net/dtd/package-1.0\">\n" : "")
+                                            + "<package>\n"
                                             + " <name>test-name</name>\n"
                                             + " <version>\n"
                                             + "  <release>1.1.1</release>\n"
@@ -62,5 +62,15 @@ class PearPackageXmlParserTest {
 
         Assertions.assertEquals("test-name", nameVersion.getName());
         Assertions.assertEquals("1.1.1", nameVersion.getVersion());
+    }
+
+    @Test
+    void parseWithoutDoctype() throws ParserConfigurationException, SAXException, IOException {
+        parse(false);
+    }
+
+    @Test
+    void parseWithDoctype() throws ParserConfigurationException, SAXException, IOException {
+        parse(true);
     }
 }
