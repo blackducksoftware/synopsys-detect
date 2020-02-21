@@ -48,14 +48,17 @@ class PearPackageXmlParserTest {
     }
 
     void parse(boolean includeDoctype) throws IOException, SAXException, ParserConfigurationException {
-        final String samplePackageXml = (includeDoctype ? "<!DOCTYPE package SYSTEM \"http://pear.php.net/dtd/package-1.0\">\n" : "")
-                                            + "<package>\n"
-                                            + " <name>test-name</name>\n"
-                                            + " <version>\n"
-                                            + "  <release>1.1.1</release>\n"
-                                            + "  <api>1.0.0</api>\n"
-                                            + " </version>\n"
-                                            + "</package>";
+        String samplePackageXml = "<package>\n"
+                                      + " <name>test-name</name>\n"
+                                      + " <version>\n"
+                                      + "  <release>1.1.1</release>\n"
+                                      + "  <api>1.0.0</api>\n"
+                                      + " </version>\n"
+                                      + "</package>";
+
+        if (includeDoctype) {
+            samplePackageXml = "<!DOCTYPE package SYSTEM \"http://pear.php.net/dtd/package-1.0\">\n" + samplePackageXml;
+        }
 
         final InputStream inputStream = IOUtils.toInputStream(samplePackageXml, StandardCharsets.UTF_8);
         final NameVersion nameVersion = pearPackageXmlParser.parse(inputStream);
