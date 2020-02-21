@@ -61,6 +61,7 @@ public class GemlockDetectableTest extends DetectableFunctionalTest {
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.RUBYGEMS, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(2);
         graphAssert.hasRootDependency("cocoapods", "1.2.1");
+        graphAssert.hasRootDependency("cocoapods-keys", "2.0.0");
 
         graphAssert.hasDependency("RubyInline", "3.12.4");
         graphAssert.hasParentChildRelationship("RubyInline", "3.12.4", "ZenTest", "4.11.1");
