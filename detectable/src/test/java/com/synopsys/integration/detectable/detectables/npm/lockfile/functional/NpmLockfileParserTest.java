@@ -47,24 +47,15 @@ public class NpmLockfileParserTest {
         npmLockfileParser = new NpmLockfileParser(new GsonBuilder().setPrettyPrinting().create(), new ExternalIdFactory());
     }
 
+
+    /*  Are these <...>WithRecreatedJson tests important> */
+
     @Test
     @Disabled
     public void parseLockFileWithRecreatedJsonTest() {
         final String lockFileText = FunctionalTestFiles.asString("/npm/package-lock.json");
 
         final NpmParseResult result = npmLockfileParser.parse(recreatePackageJsonFromLock(lockFileText), lockFileText, true);
-
-        Assertions.assertEquals("knockout-tournament", result.getProjectName());
-        Assertions.assertEquals("1.0.0", result.getProjectVersion());
-        GraphCompare.assertEqualsResource("/npm/packageLockExpected_graph.json", result.getCodeLocation().getDependencyGraph());
-    }
-
-    @Test
-    @Disabled
-    public void parseLockFileTest() {
-        final String lockFileText = FunctionalTestFiles.asString("/npm/package-lock.json");
-
-        final NpmParseResult result = npmLockfileParser.parse(Optional.empty(), lockFileText, true);
 
         Assertions.assertEquals("knockout-tournament", result.getProjectName());
         Assertions.assertEquals("1.0.0", result.getProjectVersion());
