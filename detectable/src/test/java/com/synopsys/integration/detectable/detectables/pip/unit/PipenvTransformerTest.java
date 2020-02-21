@@ -112,6 +112,6 @@ public class PipenvTransformerTest {
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, graph);
         graphAssert.hasRootDependency("child", "childVersion");
-        graphAssert.noDependency("non-projectName", "non-projectVersion");
+        graphAssert.hasNoDependency("non-projectName", "non-projectVersion");
     }
 }

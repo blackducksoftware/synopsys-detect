@@ -22,8 +22,8 @@ ${option.detailedDescription!""}
 |Added|${option.addedInVersion}|
 |Type|${option.propertyType}|
 |Default Value|${option.defaultValue!"None"}|
-|Comma Seperated|${option.commaSeparatedList?then("Yes", "No")}|
-|Case Sensative|${option.caseSensitiveValues?then("Yes", "No")}|
+|Comma Separated|${option.commaSeparatedList?then("Yes", "No")}|
+|Case Sensitive|${option.caseSensitiveValues?then("Yes", "No")}|
 <#if option.hasAcceptableValues>
 |Acceptable Values|${option.acceptableValues?join(", ")}|
 <#else>
@@ -54,8 +54,8 @@ ${option.detailedDescription!""}
 |Added|${option.addedInVersion}|
 |Type|${option.propertyType}|
 |Default Value|${option.defaultValue!"None"}|
-|Comma Seperated|${option.commaSeparatedList?then("Yes", "No")}|
-|Case Sensative|${option.caseSensitiveValues?then("Yes", "No")}|
+|Comma Separated|${option.commaSeparatedList?then("Yes", "No")}|
+|Case Sensitive|${option.caseSensitiveValues?then("Yes", "No")}|
 <#if option.hasAcceptableValues>
 |Acceptable Values|${option.acceptableValues?join(", ")}|
 <#else>
@@ -89,8 +89,8 @@ ${option.detailedDescription!""}
 |Added|${option.addedInVersion}|
 |Type|${option.propertyType}|
 |Default Value|${option.defaultValue!"None"}|
-|Comma Seperated|${option.commaSeparatedList?then("Yes", "No")}|
-|Case Sensative|${option.caseSensitiveValues?then("Yes", "No")}|
+|Comma Separated|${option.commaSeparatedList?then("Yes", "No")}|
+|Case Sensitive|${option.caseSensitiveValues?then("Yes", "No")}|
 <#if option.hasAcceptableValues>
 |Acceptable Values|${option.acceptableValues?join(", ")}|
 <#else>

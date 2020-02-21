@@ -4,19 +4,19 @@
     "spdx:name": "BlackDuckCoPilot/example-rubygems-travis/master/linux-rubygems rubygems/bom",
     "creationInfo": {
       "spdx:creator": [
-        "Tool: Detect-6.0.0-SNAPSHOT",
-        "Tool: IntegrationBdio-18.1.0"
+        "Tool: Detect-6.2.0-SNAPSHOT",
+        "Tool: IntegrationBdio-19.0.0"
       ],
-      "spdx:created": "2019-10-11T17:07:04.525Z"
+      "spdx:created": "2020-02-10T18:48:52.244Z"
     },
-    "@id": "uuid:336f14ad-1b16-4ef8-af1c-561b0bf32373",
+    "@id": "uuid:63cd9b61-7ea9-4757-86c7-b38030679253",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "BlackDuckCoPilot/example-rubygems-travis",
     "revision": "master",
-    "@id": "http:detect/linux_rubygems",
+    "@id": "http:detect/linux-rubygems",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "detect",
@@ -31,31 +31,131 @@
     },
     "relationship": [
       {
-        "related": "http:rubygems/http/3_0_0",
+        "related": "http:rubygems/rake/12.3.3",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:rubygems/zip/2_0_2",
+        "related": "http:rubygems/rack/1.6.11",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:rubygems/rack/1_6_11",
+        "related": "http:rubygems/m2h/0.2.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:rubygems/rake/12_3_3",
+        "related": "http:rubygems/zip/2.0.2",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:rubygems/m2h/0_2_0",
+        "related": "http:rubygems/http/3.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
+    "name": "rake",
+    "revision": "12.3.3",
+    "@id": "http:rubygems/rake/12.3.3",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "rubygems",
+      "externalId": "rake/12.3.3",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "rubygems",
+          "separator": "/"
+        },
+        "name": "rake",
+        "version": "12.3.3"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "rack",
+    "revision": "1.6.11",
+    "@id": "http:rubygems/rack/1.6.11",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "rubygems",
+      "externalId": "rack/1.6.11",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "rubygems",
+          "separator": "/"
+        },
+        "name": "rack",
+        "version": "1.6.11"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "m2h",
+    "revision": "0.2.0",
+    "@id": "http:rubygems/m2h/0.2.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "rubygems",
+      "externalId": "m2h/0.2.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "rubygems",
+          "separator": "/"
+        },
+        "name": "m2h",
+        "version": "0.2.0"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:rubygems/redcarpet/3.5.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "redcarpet",
+    "revision": "3.5.0",
+    "@id": "http:rubygems/redcarpet/3.5.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "rubygems",
+      "externalId": "redcarpet/3.5.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "rubygems",
+          "separator": "/"
+        },
+        "name": "redcarpet",
+        "version": "3.5.0"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "zip",
+    "revision": "2.0.2",
+    "@id": "http:rubygems/zip/2.0.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "rubygems",
+      "externalId": "zip/2.0.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "rubygems",
+          "separator": "/"
+        },
+        "name": "zip",
+        "version": "2.0.2"
+      }
+    },
+    "relationship": []
+  },
+  {
     "name": "http",
     "revision": "3.0.0",
-    "@id": "http:rubygems/http/3_0_0",
+    "@id": "http:rubygems/http/3.0.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "rubygems",
@@ -71,27 +171,89 @@
     },
     "relationship": [
       {
-        "related": "http:rubygems/http_cookie/1_0_3",
+        "related": "http:rubygems/addressable/2.6.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:rubygems/http_form_data/2_1_1",
+        "related": "http:rubygems/http_parser.rb/0.6.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:rubygems/http_parser_rb/0_6_0",
+        "related": "http:rubygems/http-cookie/1.0.3",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:rubygems/addressable/2_6_0",
+        "related": "http:rubygems/http-form_data/2.1.1",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
+    "name": "addressable",
+    "revision": "2.6.0",
+    "@id": "http:rubygems/addressable/2.6.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "rubygems",
+      "externalId": "addressable/2.6.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "rubygems",
+          "separator": "/"
+        },
+        "name": "addressable",
+        "version": "2.6.0"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:rubygems/public_suffix/2.0.5",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "public_suffix",
+    "revision": "2.0.5",
+    "@id": "http:rubygems/public_suffix/2.0.5",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "rubygems",
+      "externalId": "public_suffix/2.0.5",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "rubygems",
+          "separator": "/"
+        },
+        "name": "public_suffix",
+        "version": "2.0.5"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "http_parser.rb",
+    "revision": "0.6.0",
+    "@id": "http:rubygems/http_parser.rb/0.6.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "rubygems",
+      "externalId": "http_parser.rb/0.6.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "rubygems",
+          "separator": "/"
+        },
+        "name": "http_parser.rb",
+        "version": "0.6.0"
+      }
+    },
+    "relationship": []
+  },
+  {
     "name": "http-cookie",
     "revision": "1.0.3",
-    "@id": "http:rubygems/http_cookie/1_0_3",
+    "@id": "http:rubygems/http-cookie/1.0.3",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "rubygems",
@@ -107,7 +269,7 @@
     },
     "relationship": [
       {
-        "related": "http:rubygems/domain_name/0_5_20190701",
+        "related": "http:rubygems/domain_name/0.5.20190701",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -115,7 +277,7 @@
   {
     "name": "domain_name",
     "revision": "0.5.20190701",
-    "@id": "http:rubygems/domain_name/0_5_20190701",
+    "@id": "http:rubygems/domain_name/0.5.20190701",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "rubygems",
@@ -131,7 +293,7 @@
     },
     "relationship": [
       {
-        "related": "http:rubygems/unf/0_1_4",
+        "related": "http:rubygems/unf/0.1.4",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -139,7 +301,7 @@
   {
     "name": "unf",
     "revision": "0.1.4",
-    "@id": "http:rubygems/unf/0_1_4",
+    "@id": "http:rubygems/unf/0.1.4",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "rubygems",
@@ -155,7 +317,7 @@
     },
     "relationship": [
       {
-        "related": "http:rubygems/unf_ext/0_0_7_6",
+        "related": "http:rubygems/unf_ext/0.0.7.6",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -163,7 +325,7 @@
   {
     "name": "unf_ext",
     "revision": "0.0.7.6",
-    "@id": "http:rubygems/unf_ext/0_0_7_6",
+    "@id": "http:rubygems/unf_ext/0.0.7.6",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "rubygems",
@@ -182,7 +344,7 @@
   {
     "name": "http-form_data",
     "revision": "2.1.1",
-    "@id": "http:rubygems/http_form_data/2_1_1",
+    "@id": "http:rubygems/http-form_data/2.1.1",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "rubygems",
@@ -194,168 +356,6 @@
         },
         "name": "http-form_data",
         "version": "2.1.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "http_parser.rb",
-    "revision": "0.6.0",
-    "@id": "http:rubygems/http_parser_rb/0_6_0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "rubygems",
-      "externalId": "http_parser.rb/0.6.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "rubygems",
-          "separator": "/"
-        },
-        "name": "http_parser.rb",
-        "version": "0.6.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "addressable",
-    "revision": "2.6.0",
-    "@id": "http:rubygems/addressable/2_6_0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "rubygems",
-      "externalId": "addressable/2.6.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "rubygems",
-          "separator": "/"
-        },
-        "name": "addressable",
-        "version": "2.6.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:rubygems/public_suffix/2_0_5",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "public_suffix",
-    "revision": "2.0.5",
-    "@id": "http:rubygems/public_suffix/2_0_5",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "rubygems",
-      "externalId": "public_suffix/2.0.5",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "rubygems",
-          "separator": "/"
-        },
-        "name": "public_suffix",
-        "version": "2.0.5"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "zip",
-    "revision": "2.0.2",
-    "@id": "http:rubygems/zip/2_0_2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "rubygems",
-      "externalId": "zip/2.0.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "rubygems",
-          "separator": "/"
-        },
-        "name": "zip",
-        "version": "2.0.2"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "rack",
-    "revision": "1.6.11",
-    "@id": "http:rubygems/rack/1_6_11",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "rubygems",
-      "externalId": "rack/1.6.11",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "rubygems",
-          "separator": "/"
-        },
-        "name": "rack",
-        "version": "1.6.11"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "rake",
-    "revision": "12.3.3",
-    "@id": "http:rubygems/rake/12_3_3",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "rubygems",
-      "externalId": "rake/12.3.3",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "rubygems",
-          "separator": "/"
-        },
-        "name": "rake",
-        "version": "12.3.3"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "m2h",
-    "revision": "0.2.0",
-    "@id": "http:rubygems/m2h/0_2_0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "rubygems",
-      "externalId": "m2h/0.2.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "rubygems",
-          "separator": "/"
-        },
-        "name": "m2h",
-        "version": "0.2.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:rubygems/redcarpet/3_5_0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "redcarpet",
-    "revision": "3.5.0",
-    "@id": "http:rubygems/redcarpet/3_5_0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "rubygems",
-      "externalId": "redcarpet/3.5.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "rubygems",
-          "separator": "/"
-        },
-        "name": "redcarpet",
-        "version": "3.5.0"
       }
     },
     "relationship": []
