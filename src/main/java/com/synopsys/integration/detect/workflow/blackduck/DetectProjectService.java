@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -24,11 +24,8 @@ package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.EnumUtils;
@@ -37,13 +34,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.core.BlackDuckView;
+import com.synopsys.integration.blackduck.api.generated.enumeration.LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionPhaseType;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.api.generated.view.TagView;
-import com.synopsys.integration.blackduck.api.generated.view.VersionBomComponentView;
+import com.synopsys.integration.blackduck.api.manual.throwaway.generated.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectBomService;
@@ -111,7 +108,8 @@ public class DetectProjectService {
         return projectVersionWrapper;
     }
 
-    private void mapToParentProjectVersion(final BlackDuckService blackDuckService, final ProjectService projectService, final ProjectBomService projectBomService, final String parentProjectName, final String parentVersionName, final ProjectVersionWrapper projectVersionWrapper)
+    private void mapToParentProjectVersion(final BlackDuckService blackDuckService, final ProjectService projectService, final ProjectBomService projectBomService, final String parentProjectName, final String parentVersionName,
+        final ProjectVersionWrapper projectVersionWrapper)
         throws DetectUserFriendlyException {
         if (StringUtils.isNotBlank(parentProjectName) || StringUtils.isNotBlank(parentVersionName)) {
             logger.debug("Will attempt to add this project to a parent.");
@@ -126,11 +124,11 @@ public class DetectProjectService {
                     ProjectVersionView parentProjectVersionView = parentWrapper.get().getProjectVersionView();
                     Request.Builder requestBuilder = new Request.Builder();
                     RequestFactory.addBlackDuckFilter(requestBuilder, BlackDuckRequestFilter.createFilterWithSingleValue("bomComponentSource", "custom_project"));
-                    List<VersionBomComponentView> components = blackDuckService.getAllResponses(parentProjectVersionView, ProjectVersionView.COMPONENTS_LINK_RESPONSE, requestBuilder);
-                    Optional<VersionBomComponentView> existingProjectComponent = components.stream()
-                                                                                     .filter(component -> component.getComponentName().equals(projectName))
-                                                                                     .filter(component -> component.getComponentVersionName().equals(projectVersionName))
-                                                                                     .findFirst();
+                    List<ProjectVersionComponentView> components = blackDuckService.getAllResponses(parentProjectVersionView, ProjectVersionView.COMPONENTS_LINK_RESPONSE, requestBuilder);
+                    Optional<ProjectVersionComponentView> existingProjectComponent = components.stream()
+                                                                                         .filter(component -> component.getComponentName().equals(projectName))
+                                                                                         .filter(component -> component.getComponentVersionName().equals(projectVersionName))
+                                                                                         .findFirst();
                     if (existingProjectComponent.isPresent()) {
                         logger.debug("This project already exists on the parent so it will not be added to the parent again.");
                     } else {
@@ -146,7 +144,7 @@ public class DetectProjectService {
 
     }
 
-    private void addUserGroupsToProject(final ProjectUsersService projectUsersService, final ProjectVersionWrapper projectVersionWrapper, final String[] groupsToAddToProject) throws IntegrationException {
+    private void addUserGroupsToProject(final ProjectUsersService projectUsersService, final ProjectVersionWrapper projectVersionWrapper, final List<String> groupsToAddToProject) throws IntegrationException {
         if (groupsToAddToProject == null) {
             return;
         }
@@ -158,11 +156,11 @@ public class DetectProjectService {
         }
     }
 
-    private void addTagsToProject(final TagService tagService, final ProjectVersionWrapper projectVersionWrapper, final String[] tags) throws IntegrationException {
+    private void addTagsToProject(final TagService tagService, final ProjectVersionWrapper projectVersionWrapper, final List<String> tags) throws IntegrationException {
         if (tags == null) {
             return;
         }
-        final List<String> validTags = Arrays.stream(tags).filter(StringUtils::isNotBlank).collect(Collectors.toList());
+        final List<String> validTags = tags.stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
         if (validTags.size() > 0) {
             final List<TagView> currentTags = tagService.getAllTags(projectVersionWrapper.getProjectView());
             for (final String tag : validTags) {
@@ -185,11 +183,8 @@ public class DetectProjectService {
         // TODO: Handle a boolean property not being set in detect configuration - ie need to determine if this property actually exists in the ConfigurableEnvironment - just omit this one?
         projectSyncModel.setProjectLevelAdjustments(detectProjectServiceOptions.isProjectLevelAdjustments());
 
-        final Optional<ProjectVersionPhaseType> phase = tryGetEnumValue(ProjectVersionPhaseType.class, detectProjectServiceOptions.getProjectVersionPhase());
-        phase.ifPresent(projectSyncModel::setPhase);
-
-        final Optional<ProjectVersionDistributionType> distribution = tryGetEnumValue(ProjectVersionDistributionType.class, detectProjectServiceOptions.getProjectVersionDistribution());
-        distribution.ifPresent(projectSyncModel::setDistribution);
+        Optional.ofNullable(detectProjectServiceOptions.getProjectVersionPhase()).ifPresent(projectSyncModel::setPhase);
+        Optional.ofNullable(detectProjectServiceOptions.getProjectVersionDistribution()).ifPresent(projectSyncModel::setDistribution);
 
         final Integer projectTier = detectProjectServiceOptions.getProjectTier();
         if (null != projectTier && projectTier >= 1 && projectTier <= 5) {
@@ -206,7 +201,7 @@ public class DetectProjectService {
             projectSyncModel.setReleaseComments(releaseComments);
         }
 
-        final List<ProjectCloneCategoriesType> cloneCategories = convertClonePropertyToEnum(detectProjectServiceOptions.getCloneCategories());
+        final List<ProjectCloneCategoriesType> cloneCategories = detectProjectServiceOptions.getCloneCategories();
         if (!cloneCategories.isEmpty()) {
             projectSyncModel.setCloneCategories(cloneCategories);
         }
@@ -223,25 +218,6 @@ public class DetectProjectService {
         }
 
         return projectSyncModel;
-    }
-
-    public static <E extends Enum<E>> Optional<E> tryGetEnumValue(final Class<E> enumClass, final String value) {
-        final String enumName = StringUtils.trimToEmpty(value).toUpperCase();
-        try {
-            return Optional.of(Enum.valueOf(enumClass, enumName));
-        } catch (final IllegalArgumentException ex) {
-            return Optional.empty();
-        }
-    }
-
-    private List<ProjectCloneCategoriesType> convertClonePropertyToEnum(final String[] cloneCategories) {
-        final List<ProjectCloneCategoriesType> categories = Arrays
-                                                                .stream(cloneCategories)
-                                                                .filter(cloneCategoryValue -> EnumUtils.isValidEnum(ProjectCloneCategoriesType.class, cloneCategoryValue))
-                                                                .map(ProjectCloneCategoriesType::valueOf)
-                                                                .collect(Collectors.toList());
-        logger.debug("Found clone categories:" + categories.stream().map(Enum::toString).collect(Collectors.joining(",")));
-        return categories;
     }
 
     public Optional<String> findCloneUrl(final String projectName) throws DetectUserFriendlyException {

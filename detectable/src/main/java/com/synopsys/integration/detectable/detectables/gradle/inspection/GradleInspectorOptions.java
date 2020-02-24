@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.gradle.inspection;
 
+import java.util.Optional;
+
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
@@ -36,8 +38,8 @@ public class GradleInspectorOptions {
         this.proxyInfo = proxyInfo;
     }
 
-    public String getGradleBuildCommand() {
-        return gradleBuildCommand;
+    public Optional<String> getGradleBuildCommand() {
+        return Optional.ofNullable(gradleBuildCommand);
     }
 
     public GradleInspectorScriptOptions getGradleInspectorScriptOptions() {

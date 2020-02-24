@@ -1,19 +1,119 @@
-backports.functools-lru-cache==1.5
-cycler==0.10.0
-decorator==4.4.0
-imageio==2.5.0
-joblib==0.13.2
-lime==0.1.1.33
-matplotlib==2.1.0
-networkx==2.3
-numpy==1.16.4
-Pillow==6.1.0
-pyparsing==2.4.0
-python-dateutil==2.8.0
-pytz==2019.1
-PyWavelets==1.0.3
-scikit-image==0.15.0
-scikit-learn==0.21.2
-scipy==1.3.0
-six==1.12.0
-subprocess32==3.5.4
+[
+    {
+        "key": "dj-database-url",
+        "package_name": "dj-database-url",
+        "installed_version": "0.5.0",
+        "required_version": "0.5.0",
+        "dependencies": []
+    },
+    {
+        "key": "django-configurations",
+        "package_name": "django-configurations",
+        "installed_version": "2.1",
+        "required_version": "2.1",
+        "dependencies": []
+    },
+    {
+        "key": "django-debug-toolbar",
+        "package_name": "django-debug-toolbar",
+        "installed_version": "2.0",
+        "required_version": "2.0",
+        "dependencies": [
+            {
+                "key": "django",
+                "package_name": "Django",
+                "installed_version": "2.2.7",
+                "required_version": ">=1.11",
+                "dependencies": [
+                    {
+                        "key": "pytz",
+                        "package_name": "pytz",
+                        "installed_version": "2019.3",
+                        "required_version": "Any",
+                        "dependencies": []
+                    },
+                    {
+                        "key": "sqlparse",
+                        "package_name": "sqlparse",
+                        "installed_version": "0.3.0",
+                        "required_version": "Any",
+                        "dependencies": []
+                    }
+                ]
+            },
+            {
+                "key": "sqlparse",
+                "package_name": "sqlparse",
+                "installed_version": "0.3.0",
+                "required_version": ">=0.2.0",
+                "dependencies": []
+            }
+        ]
+    },
+    {
+        "key": "django-extensions",
+        "package_name": "django-extensions",
+        "installed_version": "2.2.5",
+        "required_version": "2.2.5",
+        "dependencies": [
+            {
+                "key": "six",
+                "package_name": "six",
+                "installed_version": "1.13.0",
+                "required_version": ">=1.2",
+                "dependencies": []
+            }
+        ]
+    },
+    {
+        "key": "gunicorn",
+        "package_name": "gunicorn",
+        "installed_version": "20.0.0",
+        "required_version": "20.0.0",
+        "dependencies": [
+            {
+                "key": "setuptools",
+                "package_name": "setuptools",
+                "installed_version": "45.0.0",
+                "required_version": ">=3.0",
+                "dependencies": []
+            }
+        ]
+    },
+    {
+        "key": "pip",
+        "package_name": "pip",
+        "installed_version": "19.3.1",
+        "required_version": "19.3.1",
+        "dependencies": []
+    },
+    {
+        "key": "psycopg2-binary",
+        "package_name": "psycopg2-binary",
+        "installed_version": "2.8.4",
+        "required_version": "2.8.4",
+        "dependencies": []
+    },
+    {
+        "key": "werkzeug",
+        "package_name": "Werkzeug",
+        "installed_version": "0.16.0",
+        "required_version": "0.16.0",
+        "dependencies": []
+    },
+    {
+        "key": "wheel",
+        "package_name": "wheel",
+        "installed_version": "0.33.6",
+        "required_version": "0.33.6",
+        "dependencies": []
+    },
+    {
+        "key": "whitenoise",
+        "package_name": "whitenoise",
+        "installed_version": "4.1.4",
+        "required_version": "4.1.4",
+        "dependencies": []
+    }
+]
+

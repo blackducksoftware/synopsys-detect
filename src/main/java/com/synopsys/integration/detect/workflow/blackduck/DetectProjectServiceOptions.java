@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,28 +22,35 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck;
 
+import java.util.List;
+
+import com.synopsys.integration.blackduck.api.generated.enumeration.LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
+import com.synopsys.integration.blackduck.api.manual.throwaway.generated.enumeration.ProjectVersionPhaseType;
+
 public class DetectProjectServiceOptions {
-    private final String projectVersionPhase;
-    private final String projectVersionDistribution;
+    private final ProjectVersionPhaseType projectVersionPhase;
+    private final LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType projectVersionDistribution;
     private final Integer projectTier;
     private final String projectDescription;
     private final String projectVersionNotes;
-    private final String[] cloneCategories;
+    private final List<ProjectCloneCategoriesType> cloneCategories;
     private final Boolean projectLevelAdjustments;
     private final Boolean forceProjectVersionUpdate;
     private final String cloneVersionName;
     private final String projectVersionNickname;
     private final String applicationId;
-    private final String[] tags;
-    private final String[] groups;
+    private final List<String> tags;
+    private final List<String> groups;
     private final String parentProjectName;
     private final String parentProjectVersion;
     private final Boolean cloneLatestProjectVersion;
     private final CustomFieldDocument customFields;
 
-    public DetectProjectServiceOptions(final String projectVersionPhase, final String projectVersionDistribution, final Integer projectTier, final String projectDescription, final String projectVersionNotes,
-        final String[] cloneCategories, final Boolean projectLevelAdjustments, final Boolean forceProjectVersionUpdate, final String cloneVersionName, final String projectVersionNickname, final String applicationId,
-        final String[] tags, final String[] groups, final String parentProjectName, final String parentProjectVersion, final Boolean cloneLatestProjectVersion, final CustomFieldDocument customFields) {
+    public DetectProjectServiceOptions(final ProjectVersionPhaseType projectVersionPhase, final LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType projectVersionDistribution, final Integer projectTier,
+        final String projectDescription, final String projectVersionNotes,
+        final List<ProjectCloneCategoriesType> cloneCategories, final Boolean projectLevelAdjustments, final Boolean forceProjectVersionUpdate, final String cloneVersionName, final String projectVersionNickname, final String applicationId,
+        final List<String> tags, final List<String> groups, final String parentProjectName, final String parentProjectVersion, final Boolean cloneLatestProjectVersion, final CustomFieldDocument customFields) {
         this.projectVersionPhase = projectVersionPhase;
         this.projectVersionDistribution = projectVersionDistribution;
         this.projectTier = projectTier;
@@ -63,11 +70,11 @@ public class DetectProjectServiceOptions {
         this.customFields = customFields;
     }
 
-    public String getProjectVersionPhase() {
+    public ProjectVersionPhaseType getProjectVersionPhase() {
         return projectVersionPhase;
     }
 
-    public String getProjectVersionDistribution() {
+    public LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType getProjectVersionDistribution() {
         return projectVersionDistribution;
     }
 
@@ -83,7 +90,7 @@ public class DetectProjectServiceOptions {
         return projectVersionNotes;
     }
 
-    public String[] getCloneCategories() {
+    public List<ProjectCloneCategoriesType> getCloneCategories() {
         return cloneCategories;
     }
 
@@ -107,11 +114,11 @@ public class DetectProjectServiceOptions {
         return applicationId;
     }
 
-    public String[] getTags() {
+    public List<String> getTags() {
         return tags;
     }
 
-    public String[] getGroups() {
+    public List<String> getGroups() {
         return groups;
     }
 

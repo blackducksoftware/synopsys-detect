@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -51,9 +51,9 @@ public class PipenvTransformer {
         for (final PipenvGraphEntry entry : pipenvGraph.getEntries()) {
             final Dependency entryDependency = nameVersionToDependency(entry.getName(), entry.getVersion(), pipFreeze);
             final List<Dependency> children = addDependenciesToGraph(entry.getChildren(), dependencyGraph, pipFreeze);
-            if (matchesProject(entryDependency, projectName, projectVersionName)) { //the project appears as an entry, we don't want the project to be a dependency of itself
+            if (matchesProject(entryDependency, projectName, projectVersionName)) { // The project appears as an entry, we don't want the project to be a dependency of itself.
                 dependencyGraph.addChildrenToRoot(children);
-            } else if (!includeOnlyProjectTree) { //only add non-project matches if we are not project tree only
+            } else if (!includeOnlyProjectTree) { // Only add non-project matches if we are not project tree only.
                 dependencyGraph.addChildToRoot(entryDependency);
                 dependencyGraph.addParentWithChildren(entryDependency, children);
             }
@@ -81,7 +81,7 @@ public class PipenvTransformer {
 
     private String findFrozenName(final String name, final PipFreeze pipFreeze) {
         return pipFreeze.getEntries().stream()
-                   .filter(it -> it.getName().toLowerCase().equals(name.toLowerCase()))
+                   .filter(it -> it.getName().equalsIgnoreCase(name))
                    .map(PipFreezeEntry::getName)
                    .findFirst()
                    .orElse(name);
@@ -89,7 +89,7 @@ public class PipenvTransformer {
 
     private String findFrozenVersion(final String name, final String unfrozenVersion, final PipFreeze pipFreeze) {
         return pipFreeze.getEntries().stream()
-                   .filter(it -> it.getName().toLowerCase().equals(name.toLowerCase()))
+                   .filter(it -> it.getName().equalsIgnoreCase(name))
                    .map(PipFreezeEntry::getVersion)
                    .findFirst()
                    .orElse(unfrozenVersion);

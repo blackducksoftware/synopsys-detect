@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -44,15 +44,13 @@ public class NpmCliExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
     private final NpmCliParser npmCliParser;
-    private final NpmCliExtractorOptions npmCliExtractorOptions;
 
-    public NpmCliExtractor(final ExecutableRunner executableRunner, final NpmCliParser npmCliParser, final NpmCliExtractorOptions npmCliExtractorOptions) {
+    public NpmCliExtractor(final ExecutableRunner executableRunner, final NpmCliParser npmCliParser) {
         this.executableRunner = executableRunner;
         this.npmCliParser = npmCliParser;
-        this.npmCliExtractorOptions = npmCliExtractorOptions;
     }
 
-    public Extraction extract(final File directory, final File npmExe) {
+    public Extraction extract(final File directory, final File npmExe, final NpmCliExtractorOptions npmCliExtractorOptions) {//TODO: Extractor should not use DetectableOptions
 
         final boolean includeDevDeps = npmCliExtractorOptions.shouldIncludeDevDependencies();
         final List<String> exeArgs = new ArrayList<>();
@@ -62,10 +60,9 @@ public class NpmCliExtractor {
             exeArgs.add("-prod");
         }
 
-        final String additionalArguments = npmCliExtractorOptions.getNpmArguments();
-        if (StringUtils.isNotBlank(additionalArguments)) {
-            exeArgs.addAll(Arrays.asList(additionalArguments.split(" ")));
-        }
+        npmCliExtractorOptions.getNpmArguments()
+            .map(arg -> arg.split(" "))
+            .ifPresent(additionalArguments -> exeArgs.addAll(Arrays.asList(additionalArguments)));
 
         final ExecutableOutput npmLsOutput;
         try {

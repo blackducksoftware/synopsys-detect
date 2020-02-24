@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -23,11 +23,11 @@
 package com.synopsys.integration.detectable.detectables.git.parsing;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Extraction;
@@ -51,9 +51,12 @@ public class GitParseExtractor {
     }
 
     public final Extraction extract(final File gitConfigFile, final File gitHeadFile) {
-        try (final InputStream gitConfigInputStream = new FileInputStream(gitConfigFile); final InputStream headFileInputStream = new FileInputStream(gitHeadFile)) {
-            final String gitHead = gitFileParser.parseGitHead(headFileInputStream);
-            final List<GitConfigElement> gitConfigElements = gitFileParser.parseGitConfig(gitConfigInputStream);
+        try {
+            final String headFileContent = FileUtils.readFileToString(gitHeadFile, StandardCharsets.UTF_8);
+            final String gitHead = gitFileParser.parseGitHead(headFileContent);
+
+            final List<String> configFileContent = FileUtils.readLines(gitConfigFile, StandardCharsets.UTF_8);
+            final List<GitConfigElement> gitConfigElements = gitFileParser.parseGitConfig(configFileContent);
 
             final NameVersion projectNameVersion = gitFileTransformer.transformGitConfigElements(gitConfigElements, gitHead);
 

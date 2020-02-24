@@ -1,7 +1,7 @@
 /**
  * buildSrc
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -20,14 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package com.synopsys.integration.detect.docs
 
 import com.google.gson.Gson
+import com.synopsys.integration.detect.docs.content.Terms
 import com.synopsys.integration.detect.docs.copied.HelpJsonData
 import com.synopsys.integration.detect.docs.copied.HelpJsonExitCode
 import com.synopsys.integration.detect.docs.copied.HelpJsonOption
-import com.synopsys.integration.detect.docs.content.Terms
 import com.synopsys.integration.detect.docs.markdown.MarkdownOutputFormat
 import freemarker.template.Configuration
 import freemarker.template.Template
@@ -43,7 +42,7 @@ open class GenerateDocsTask : DefaultTask() {
         val file = File("synopsys-detect-${project.version}-help.json")
         val helpJson: HelpJsonData = Gson().fromJson(file.reader(), HelpJsonData::class.java)
 
-        val outputDir = project.file("docs/generated");
+        val outputDir = project.file("docs/generated")
         val troubleshootingDir = File(outputDir, "advanced/troubleshooting")
         outputDir.deleteRecursively()
         troubleshootingDir.mkdirs()
@@ -97,11 +96,11 @@ open class GenerateDocsTask : DefaultTask() {
         val outputDir = File(baseOutputDir, "components")
         val build = helpJson.buildDetectors
                 .map { detector -> Detector(detector.detectorType, detector.detectorName, detector.detectableLanguage, detector.detectableForge, detector.detectableRequirementsMarkdown) }
-                .sortedWith(compareBy<Detector>{it.detectorType}.thenBy{it.detectorName})
+                .sortedWith(compareBy<Detector> { it.detectorType }.thenBy { it.detectorName })
 
         val buildless = helpJson.buildlessDetectors
                 .map { detector -> Detector(detector.detectorType, detector.detectorName, detector.detectableLanguage, detector.detectableForge, detector.detectableRequirementsMarkdown) }
-                .sortedWith(compareBy<Detector>{it.detectorType}.thenBy{it.detectorName})
+                .sortedWith(compareBy<Detector> { it.detectorType }.thenBy { it.detectorName })
 
         createFromFreemarker(templateProvider, outputDir, "detectors", DetectorsPage(buildless, build))
     }
@@ -124,8 +123,8 @@ open class GenerateDocsTask : DefaultTask() {
             val superGroupName = superGroups[group.key] ?: error("Missing super group: ${group.key}");
             val groupLocation = groupLocations[group.key] ?: error("Missing group location: ${group.key}")
 
-            advanced.forEach{property -> property.location += "-advanced"};
-            deprecated.forEach{property -> property.location += "-deprecated"};
+            advanced.forEach { property -> property.location += "-advanced" };
+            deprecated.forEach { property -> property.location += "-deprecated" };
 
             SplitGroup(group.key, superGroupName, groupLocation, simple, advanced, deprecated)
         }
@@ -141,7 +140,12 @@ open class GenerateDocsTask : DefaultTask() {
                 .filter { it.simple.isNotEmpty() }
                 .map { SimplePropertyTableGroup(it.groupName, groupLocations[it.groupName] ?: error("Missing group location: ${it.groupName}"), it.simple) }
 
+        val deprecatedPropertyTableData = splitGroupOptions
+                .filter { it.deprecated.isNotEmpty() }
+                .map { DeprecatedPropertyTableGroup(it.groupName, groupLocations[it.groupName] ?: error("Missing group location: ${it.groupName}"), it.deprecated) }
+
         createFromFreemarker(templateProvider, propertiesFolder, "basic-properties", SimplePropertyTablePage(simplePropertyTableData))
+        createFromFreemarker(templateProvider, propertiesFolder, "deprecated-properties", DeprecatedPropertyTablePage(deprecatedPropertyTableData))
         createFromFreemarker(templateProvider, propertiesFolder, "all-properties", AdvancedPropertyTablePage(splitGroupOptions))
     }
 
@@ -149,10 +153,10 @@ open class GenerateDocsTask : DefaultTask() {
     //TODO: Add a new object to the helpJson which is a super group lookup so that the super group lookup is not just embedded in the object and then we don't have to do this at all.
     //TODO: Add the default "Configuration" to the help json instead of blank and having this populate.
     private fun createSuperGroupLookup(helpJson: HelpJsonData): HashMap<String, String> {
-        val lookup = HashMap<String, String>();
+        val lookup = HashMap<String, String>()
         helpJson.options.forEach { option ->
             val defaultSuperGroup = "Configuration"
-            val superGroup = if (StringUtils.isBlank(option.superGroup)) defaultSuperGroup else option.superGroup?:defaultSuperGroup
+            val superGroup = if (StringUtils.isBlank(option.superGroup)) defaultSuperGroup else option.superGroup ?: defaultSuperGroup
             if (lookup.containsKey(option.group) && lookup[option.group] != superGroup) {
                 throw RuntimeException("The created detect help JSON had a group '${option.group}' whose super group '${superGroup}' did not match a different options super group in the same group '${lookup[option.group]}'.")
             } else if (!lookup.containsKey(option.group)) {
@@ -177,7 +181,7 @@ class TemplateProvider(templateDirectory: File, projectVersion: String) {
     }
 
     fun getTemplate(templateName: String): Template {
-        val template =  configuration.getTemplate(templateName)
+        val template = configuration.getTemplate(templateName)
         return template;
     }
 }
@@ -185,10 +189,12 @@ class TemplateProvider(templateDirectory: File, projectVersion: String) {
 data class IndexPage(val version: String) {}
 data class ExitCodePage(val exitCodes: List<HelpJsonExitCode>) {}
 data class DetectorsPage(val buildless: List<Detector>, val build: List<Detector>) {}
-data class Detector(val detectorType: String, val detectorName:String, val detectableLanguage:String, val detectableForge:String, val detectableRequirementsMarkdown:String) {}
+data class Detector(val detectorType: String, val detectorName: String, val detectableLanguage: String, val detectableForge: String, val detectableRequirementsMarkdown: String) {}
 
 data class SimplePropertyTablePage(val groups: List<SimplePropertyTableGroup>) {}
 data class SimplePropertyTableGroup(val groupName: String, val location: String, val options: List<HelpJsonOption>) {}
+data class DeprecatedPropertyTablePage(val groups: List<DeprecatedPropertyTableGroup>) {}
+data class DeprecatedPropertyTableGroup(val groupName: String, val location: String, val options: List<HelpJsonOption>) {}
 data class AdvancedPropertyTablePage(val groups: List<SplitGroup>) {}
 data class SplitGroup(val groupName: String, val superGroup: String, val location: String, val simple: List<HelpJsonOption>, val advanced: List<HelpJsonOption>, val deprecated: List<HelpJsonOption>) {}
 

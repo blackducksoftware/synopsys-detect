@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,20 +22,24 @@
  */
 package com.synopsys.integration.detectable.detectables.pip;
 
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
+
 public class PipInspectorDetectableOptions {
     private final String pipProjectName;
-    private final String[] requirementsFilePaths;
+    private final List<Path> requirementsFilePaths;
 
-    public PipInspectorDetectableOptions(final String pipProjectName, final String[] requirementsFilePaths) {
+    public PipInspectorDetectableOptions(final String pipProjectName, final List<Path> requirementsFilePaths) {
         this.pipProjectName = pipProjectName;
         this.requirementsFilePaths = requirementsFilePaths;
     }
 
-    public String getPipProjectName() {
-        return pipProjectName;
+    public Optional<String> getPipProjectName() {
+        return Optional.ofNullable(pipProjectName);
     }
 
-    public String[] getRequirementsFilePaths() {
+    public List<Path> getRequirementsFilePaths() {
         return requirementsFilePaths;
     }
 }

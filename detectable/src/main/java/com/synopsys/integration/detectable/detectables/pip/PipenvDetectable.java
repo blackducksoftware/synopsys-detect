@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -96,7 +96,9 @@ public class PipenvDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return pipenvExtractor.extract(environment.getDirectory(), pythonExe, pipenvExe, setupFile, pipenvDetectableOptions.getPipProjectName(), pipenvDetectableOptions.getPipProjectVersionName(), pipenvDetectableOptions.isPipProjectTreeOnly());
+        //TODO: Handle null better.
+        return pipenvExtractor.extract(environment.getDirectory(), pythonExe, pipenvExe, setupFile, pipenvDetectableOptions.getPipProjectName().orElse(""), pipenvDetectableOptions.getPipProjectVersionName().orElse(""),
+            pipenvDetectableOptions.isPipProjectTreeOnly());
     }
 
 }

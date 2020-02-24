@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -23,32 +23,25 @@
 package com.synopsys.integration.detect.tool.detector.inspectors;
 
 import java.io.IOException;
-import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class GradleInspectorInstaller {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private ArtifactResolver artifactResolver;
+    private final ArtifactResolver artifactResolver;
 
     public GradleInspectorInstaller(final ArtifactResolver artifactResolver) {
         this.artifactResolver = artifactResolver;
     }
 
-    public Optional<String> findVersion(final String suppliedGradleInspectorVersion) {
+    public String findVersion() throws DetectableException {
         try {
-            return Optional.of(artifactResolver.resolveArtifactVersion(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.GRADLE_INSPECTOR_REPO, ArtifactoryConstants.GRADLE_INSPECTOR_PROPERTY, suppliedGradleInspectorVersion));
-        } catch (final IntegrationException | IOException | DetectUserFriendlyException e) {
-            logger.debug("Failed to fetch Gradle inspector version from Artifactory", e);
+            return artifactResolver.resolveArtifactVersion(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.GRADLE_INSPECTOR_REPO, ArtifactoryConstants.GRADLE_INSPECTOR_PROPERTY);
+        } catch (final IntegrationException | IOException e) {
+            throw new DetectableException("Unable to resolve the gradle inspector version from Artifactory!", e);
         }
-
-        return Optional.empty();
     }
 }

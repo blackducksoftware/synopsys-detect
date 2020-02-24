@@ -1,3 +1,25 @@
+/**
+ * detectable
+ *
+ * Copyright (c) 2020 Synopsys, Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.synopsys.integration.detectable.detectables.docker.unit;
 
 import static junit.framework.TestCase.assertTrue;
@@ -15,7 +37,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.google.gson.Gson;
@@ -179,18 +200,16 @@ public class DockerExtractorTest {
     }
 
     private DockerExtractor getMockDockerExtractor(ExecutableRunner executableRunner, FileFinder fileFinder) {
-        final DockerProperties dockerProperties = Mockito.mock(DockerProperties.class);
-
         final BdioTransformer bdioTransformer = Mockito.mock(BdioTransformer.class);
         final ExternalIdFactory externalIdFactory = Mockito.mock(ExternalIdFactory.class);
         final Gson gson = new Gson();
 
-        return new DockerExtractor(fileFinder, dockerProperties, executableRunner, bdioTransformer, externalIdFactory, gson);
+        return new DockerExtractor(fileFinder, executableRunner, bdioTransformer, externalIdFactory, gson);
     }
 
     private Extraction extract(final String image, final String imageId, final String tar,
-            File returnedContainerFileSystemFile,
-            File returnedSquashedImageFile,
+        File returnedContainerFileSystemFile,
+        File returnedSquashedImageFile,
         final ExecutableRunner executableRunner) {
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
         final DockerExtractor dockerExtractor = getMockDockerExtractor(executableRunner, fileFinder);
@@ -205,7 +224,7 @@ public class DockerExtractorTest {
         Mockito.when(fileFinder.findFile(outputDirectory, DockerExtractor.SQUASHED_IMAGE_FILENAME_PATTERN)).thenReturn(returnedSquashedImageFile);
         Mockito.when(dockerInspectorInfo.getDockerInspectorJar()).thenReturn(new File("fake/test/dockerinspector.jar"));
 
-        return dockerExtractor.extract(directory, outputDirectory, bashExe, javaExe, image, imageId, tar, dockerInspectorInfo);
+        return dockerExtractor.extract(directory, outputDirectory, bashExe, javaExe, image, imageId, tar, dockerInspectorInfo, Mockito.mock(DockerProperties.class));
     }
 
 }

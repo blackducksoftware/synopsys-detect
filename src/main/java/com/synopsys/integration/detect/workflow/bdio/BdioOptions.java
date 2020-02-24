@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -23,13 +23,19 @@
 package com.synopsys.integration.detect.workflow.bdio;
 
 public class BdioOptions {
-    private final String bdioAggregateName;
+    private final String projectCodeLocationSuffix;
+    private final String projectCodeLocationPrefix;
 
-    public BdioOptions(final String bdioAggregateName) {
-        this.bdioAggregateName = bdioAggregateName;
+    public BdioOptions(final String projectCodeLocationPrefix, String projectCodeLocationSuffix) {
+        this.projectCodeLocationSuffix = projectCodeLocationSuffix;
+        this.projectCodeLocationPrefix = projectCodeLocationPrefix;
     }
 
-    public String getBdioAggregateName() {
-        return bdioAggregateName;
+    public String getProjectCodeLocationSuffix() {
+        return projectCodeLocationSuffix;
+    }
+
+    public String getProjectCodeLocationPrefix() {
+        return projectCodeLocationPrefix;
     }
 }

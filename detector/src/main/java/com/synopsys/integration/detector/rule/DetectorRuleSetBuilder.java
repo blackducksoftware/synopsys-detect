@@ -1,7 +1,7 @@
 /**
  * detector
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -39,8 +39,8 @@ public class DetectorRuleSetBuilder {
     private final List<DetectorRuleYieldBuilder> yieldBuilders = new ArrayList<>();
     private final List<DetectorRuleFallbackBuilder> fallbackBuilders = new ArrayList<>();
 
-    public <T extends Detectable> DetectorRuleBuilder addDetector(final DetectorType type, final String name, Class<T> detectableClass, final DetectableCreatable detectableCreatable) {
-        final DetectorRuleBuilder ruleBuilder = new DetectorRuleBuilder(name, type, detectableClass, detectableCreatable);
+    public <T extends Detectable> DetectorRuleBuilder addDetector(final DetectorType type, final String name, Class<T> detectableClass, final DetectableCreatable<T> detectableCreatable) {
+        final DetectorRuleBuilder ruleBuilder = new DetectorRuleBuilder<T>(name, type, detectableClass, detectableCreatable);
         ruleBuilder.setDetectorRuleSetBuilder(this);
         return ruleBuilder;
     }
@@ -71,10 +71,10 @@ public class DetectorRuleSetBuilder {
 
         while (orderedRules.size() < rules.size() && atLeastOneRuleAdded) {
             final List<DetectorRule> satisfiedRules = rules.stream()
-                                                    .filter(rule -> !orderedRules.contains(rule))
-                                                    .filter(rule -> yieldSatisfied(rule, orderedRules, yieldsToRules))
-                                                    .filter(rule -> fallbackSatisfied(rule, orderedRules, fallbackToRules))
-                                                    .collect(Collectors.toList());
+                                                          .filter(rule -> !orderedRules.contains(rule))
+                                                          .filter(rule -> yieldSatisfied(rule, orderedRules, yieldsToRules))
+                                                          .filter(rule -> fallbackSatisfied(rule, orderedRules, fallbackToRules))
+                                                          .collect(Collectors.toList());
 
             atLeastOneRuleAdded = satisfiedRules.size() > 0;
             orderedRules.addAll(satisfiedRules);

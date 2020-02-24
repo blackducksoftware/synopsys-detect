@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -113,9 +113,10 @@ public class DockerDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        final String image = dockerDetectableOptions.getSuppliedDockerImage();
-        final String imageId = dockerDetectableOptions.getSuppliedDockerImageId();
-        final String tar = dockerDetectableOptions.getSuppliedDockerTar();
-        return dockerExtractor.extract(environment.getDirectory(), extractionEnvironment.getOutputDirectory(), bashExe, javaExe, image, imageId, tar, dockerInspectorInfo);
+        final String image = dockerDetectableOptions.getSuppliedDockerImage().orElse("");
+        final String imageId = dockerDetectableOptions.getSuppliedDockerImageId().orElse("");
+        final String tar = dockerDetectableOptions.getSuppliedDockerTar().orElse("");
+        return dockerExtractor.extract(environment.getDirectory(), extractionEnvironment.getOutputDirectory(), bashExe, javaExe, image, imageId, tar, dockerInspectorInfo,
+            new DockerProperties(dockerDetectableOptions)); //TODO, doesn't feel right to construct properties here. -jp
     }
 }

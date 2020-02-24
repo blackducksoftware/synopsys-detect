@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -40,7 +40,6 @@ import com.synopsys.integration.bdio.model.dependencyid.NameDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectableOptions;
 import com.synopsys.integration.detectable.detectables.packagist.model.PackagistPackage;
 import com.synopsys.integration.detectable.detectables.packagist.model.PackagistParseResult;
 import com.synopsys.integration.util.NameVersion;
@@ -49,22 +48,20 @@ public class PackagistParser {
     private final Logger logger = LoggerFactory.getLogger(PackagistParser.class);
 
     private final ExternalIdFactory externalIdFactory;
-    private final ComposerLockDetectableOptions composerLockDetectableOptions;
 
-    public PackagistParser(final ExternalIdFactory externalIdFactory, final ComposerLockDetectableOptions composerLockDetectableOptions) {
+    public PackagistParser(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
-        this.composerLockDetectableOptions = composerLockDetectableOptions;
     }
 
-    public PackagistParseResult getDependencyGraphFromProject(final String composerJsonText, final String composerLockText) throws MissingExternalIdException {
+    public PackagistParseResult getDependencyGraphFromProject(final String composerJsonText, final String composerLockText, boolean includeDevDependencies) throws MissingExternalIdException {
         final LazyExternalIdDependencyGraphBuilder builder = new LazyExternalIdDependencyGraphBuilder();
 
         final JsonObject composerJsonObject = new JsonParser().parse(composerJsonText).getAsJsonObject();
         final NameVersion projectNameVersion = parseNameVersionFromJson(composerJsonObject);
 
         final JsonObject composerLockObject = new JsonParser().parse(composerLockText).getAsJsonObject();
-        final List<PackagistPackage> models = convertJsonToModel(composerLockObject, composerLockDetectableOptions.shouldIncludeDevDependencies());
-        final List<NameVersion> rootPackages = parseDependencies(composerJsonObject, composerLockDetectableOptions.shouldIncludeDevDependencies());
+        final List<PackagistPackage> models = convertJsonToModel(composerLockObject, includeDevDependencies);
+        final List<NameVersion> rootPackages = parseDependencies(composerJsonObject, includeDevDependencies);
 
         models.forEach(it -> {
             final ExternalId id = externalIdFactory.createNameVersionExternalId(Forge.PACKAGIST, it.getNameVersion().getName(), it.getNameVersion().getVersion());

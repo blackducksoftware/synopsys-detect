@@ -6,12 +6,13 @@ import com.synopsys.integration.blackduck.service.BlackDuckService
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory
 import com.synopsys.integration.blackduck.service.ProjectService
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper
+import com.synopsys.integration.detect.battery.UpdateBatteryTask
 import com.synopsys.integration.log.PrintStreamIntLogger
 
 buildscript {
     ext {
-        springBootVersion = '2.1.5.RELEASE'
-        blackDuckCommonVersion = '45.0.5'
+        springBootVersion = '2.2.4.RELEASE'
+        blackDuckCommonVersion = '46.0.0'
         polarisCommonVersion = '0.13.2'
         junitPlatformDefaultTestTags = "integration, performance, battery"
     }
@@ -21,9 +22,9 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.blackducksoftware.integration:common-gradle-plugin:0.0.+'
+        classpath 'com.synopsys.integration:common-gradle-plugin:1.1.1'
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-        classpath "com.blackducksoftware.integration:blackduck-common:${blackDuckCommonVersion}"
+        classpath "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
         classpath "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
     }
 }
@@ -33,9 +34,9 @@ plugins {
 }
 
 group = 'com.synopsys.integration'
-version = '6.1.0-SNAPSHOT'
+version = '6.2.0-SNAPSHOT'
 
-apply plugin: 'com.blackducksoftware.integration.solution'
+apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
 apply from: 'artifactory-properties.gradle'
 apply from: 'docs.gradle'
@@ -55,17 +56,20 @@ allprojects {
     dependencies {
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
         implementation "org.jetbrains.kotlin:kotlin-reflect"
-        implementation "com.blackducksoftware.integration:blackduck-common:${blackDuckCommonVersion}"
+        implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
         implementation 'com.paypal.digraph:digraph-parser:1.0'
         implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0'
         implementation 'com.fasterxml.jackson.core:jackson-core:2.10.0'
+
+        testImplementation "org.mockito:mockito-core:2.+"
+        testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
     }
 }
 
 subprojects {
     group = rootProject.group
     version = rootProject.version
-    apply plugin: 'com.blackducksoftware.integration.simple'
+    apply plugin: 'com.synopsys.integration.simple'
 
     license {
         header rootProject.file('LICENSE')
@@ -100,6 +104,7 @@ test {
 }
 
 dependencies {
+    implementation project(':configuration')
     implementation project(":detect-configuration")
     implementation project(":detectable")
     implementation project(":detector")
@@ -117,7 +122,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+    testImplementation project(":configuration").sourceSets.test.output
+
 }
 
 compileKotlin {
@@ -137,6 +146,8 @@ tasks['testBattery'].doFirst {
     environment 'BATTERY_TESTS_PATH', batteryPath.getCanonicalPath()
     environment 'BATTERY_TESTS_JAVA_PATH', org.gradle.internal.jvm.Jvm.current().javaExecutable.getCanonicalPath()
 }
+
+task updateBattery(type: UpdateBatteryTask) {}
 
 task runDetect(type: JavaExec) {
     dependsOn build
@@ -194,7 +205,7 @@ task createAirGapZip(type: JavaExec) {
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
-    args = ["--detect.output.path=${buildDir}/libs/", "--detect.gradle.inspector.version=0.7.1", '-z'] // TODO: Remove gradle inspector version prior to release
+    args = ["--detect.output.path=${buildDir}/libs/", '-z']
     standardOutput = new ByteArrayOutputStream()
     doLast {
         createAirGapZip.ext.airGapPath = parseAirGapZipPath(standardOutput)
@@ -237,6 +248,15 @@ task publishAirGapZipWithoutDocker() {
         exec {
             commandLine 'curl', '--insecure', '-u', "${project.ext.artifactoryDeployerUsername}:${project.ext.artifactoryDeployerPassword}", '-X', 'PUT',
                     "${project.ext.deployArtifactoryUrl}/${project.ext.artifactoryRepo}/com/synopsys/integration/${project.name}/${version}/${airGapZipName}", '-T', "${airGapZipLocation}", '-f'
+        }
+    }
+}
+
+task signJar() {
+    dependsOn build
+    doLast {
+        exec {
+            commandLine 'jarsigner', '-tsa', 'http://timestamp.globalsign.com/scripts/timestamp.dll', '-storetype', 'pkcs12', '-storepass', "${System.env.JARSIGNER_KEYSTORE_PASS}", '-keystore', "${System.env.JARSIGNER_KEYSTORE_PATH}", "${createArtifactName()}", "${System.env.JARSIGNER_CERT_ALIAS}"
         }
     }
 }

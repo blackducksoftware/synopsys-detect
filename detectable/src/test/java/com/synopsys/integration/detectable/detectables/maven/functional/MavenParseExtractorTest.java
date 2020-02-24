@@ -1,3 +1,25 @@
+/**
+ * detectable
+ *
+ * Copyright (c) 2020 Synopsys, Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.synopsys.integration.detectable.detectables.maven.functional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,8 +68,8 @@ public class MavenParseExtractorTest {
     @Test
     public void testParsingPomFile() throws Exception {
         final File pomInputStream = FunctionalTestFiles.asFile("/maven/hub-teamcity-pom.xml");
-        final MavenParseExtractor pomXmlParser = new MavenParseExtractor(new ExternalIdFactory(), SAXParserFactory.newInstance().newSAXParser(), new MavenParseOptions(false));
-        final Extraction extraction = pomXmlParser.extract(pomInputStream);
+        final MavenParseExtractor pomXmlParser = new MavenParseExtractor(new ExternalIdFactory(), SAXParserFactory.newInstance().newSAXParser());
+        final Extraction extraction = pomXmlParser.extract(pomInputStream, new MavenParseOptions(false));
         final DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
 
         final Set<String> externalIds = dependencyGraph.getRootDependencies().stream().map(dependency -> dependency.getExternalId().createExternalId()).collect(Collectors.toSet());
@@ -57,8 +79,8 @@ public class MavenParseExtractorTest {
     @Test
     public void testIncludingPluginDependencies() throws Exception {
         final File pomInputStream = FunctionalTestFiles.asFile("/maven/hub-teamcity-pom.xml");
-        final MavenParseExtractor pomXmlParser = new MavenParseExtractor(new ExternalIdFactory(), SAXParserFactory.newInstance().newSAXParser(), new MavenParseOptions(true));
-        final Extraction extraction = pomXmlParser.extract(pomInputStream);
+        final MavenParseExtractor pomXmlParser = new MavenParseExtractor(new ExternalIdFactory(), SAXParserFactory.newInstance().newSAXParser());
+        final Extraction extraction = pomXmlParser.extract(pomInputStream, new MavenParseOptions(true));
         final DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
 
         final Set<String> externalIds = dependencyGraph.getRootDependencies().stream().map(dependency -> dependency.getExternalId().createExternalId()).collect(Collectors.toSet());

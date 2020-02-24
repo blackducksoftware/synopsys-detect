@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -31,8 +31,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.help.DetectOption;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -40,7 +40,7 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 public class DiagnosticSystem {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final List<DetectOption> detectOptions;
+    private final PropertyConfiguration propertyConfiguration;
     private DiagnosticReportHandler diagnosticReportHandler;
     private DiagnosticLogSystem diagnosticLogSystem;
     private DiagnosticExecutableCapture diagnosticExecutableCapture;
@@ -50,8 +50,8 @@ public class DiagnosticSystem {
     private final DirectoryManager directoryManager;
     private final EventSystem eventSystem;
 
-    public DiagnosticSystem(final boolean isExtendedMode, final List<DetectOption> detectOptions, final DetectRun detectRun, final DetectInfo detectInfo, final DirectoryManager directoryManager, final EventSystem eventSystem) {
-        this.detectOptions = detectOptions;
+    public DiagnosticSystem(final boolean isExtendedMode, final PropertyConfiguration propertyConfiguration, final DetectRun detectRun, final DetectInfo detectInfo, final DirectoryManager directoryManager, final EventSystem eventSystem) {
+        this.propertyConfiguration = propertyConfiguration;
         this.detectRun = detectRun;
         this.detectInfo = detectInfo;
         this.directoryManager = directoryManager;
@@ -86,7 +86,7 @@ public class DiagnosticSystem {
 
         logger.info("Creating configuration diagnostics reports.");
 
-        diagnosticReportHandler.configurationsReport(detectInfo, detectOptions);
+        diagnosticReportHandler.configurationsReport(detectInfo, propertyConfiguration);
 
         logger.info("Diagnostics is ready.");
     }

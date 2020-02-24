@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -70,7 +70,6 @@ public class DockerExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final FileFinder fileFinder;
-    private final DockerProperties dockerProperties;
     private final ExecutableRunner executableRunner;
     private final BdioTransformer bdioTransformer;
     private final ExternalIdFactory externalIdFactory;
@@ -78,16 +77,16 @@ public class DockerExtractor {
 
     private ImageIdentifierType imageIdentifierType;
 
-    public DockerExtractor(final FileFinder fileFinder, final DockerProperties dockerProperties, final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson) {
+    public DockerExtractor(final FileFinder fileFinder, final ExecutableRunner executableRunner, final BdioTransformer bdioTransformer, final ExternalIdFactory externalIdFactory, final Gson gson) {
         this.fileFinder = fileFinder;
-        this.dockerProperties = dockerProperties;
         this.executableRunner = executableRunner;
         this.bdioTransformer = bdioTransformer;
         this.externalIdFactory = externalIdFactory;
         this.gson = gson;
     }
 
-    public Extraction extract(final File directory, final File outputDirectory, final File bashExe, final File javaExe, final String image, final String imageId, final String tar, final DockerInspectorInfo dockerInspectorInfo) {
+    public Extraction extract(final File directory, final File outputDirectory, final File bashExe, final File javaExe, final String image, final String imageId, final String tar, final DockerInspectorInfo dockerInspectorInfo,
+        DockerProperties dockerProperties) {
         try {
             String imageArgument = null;
             String imagePiece = null;
@@ -109,7 +108,7 @@ public class DockerExtractor {
             if (StringUtils.isBlank(imageArgument) || StringUtils.isBlank(imagePiece)) {
                 return new Extraction.Builder().failure("No docker image found.").build();
             } else {
-                return executeDocker(outputDirectory, imageArgument, imagePiece, tar, directory, javaExe, bashExe, dockerInspectorInfo);
+                return executeDocker(outputDirectory, imageArgument, imagePiece, tar, directory, javaExe, bashExe, dockerInspectorInfo, dockerProperties);
             }
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
@@ -134,7 +133,7 @@ public class DockerExtractor {
     }
 
     private Extraction executeDocker(final File outputDirectory, final String imageArgument, final String suppliedImagePiece, final String dockerTarFilePath, final File directory, final File javaExe, final File bashExe,
-        final DockerInspectorInfo dockerInspectorInfo)
+        final DockerInspectorInfo dockerInspectorInfo, DockerProperties dockerProperties)
         throws IOException, ExecutableRunnerException {
 
         final File dockerPropertiesFile = new File(outputDirectory, "application.properties");

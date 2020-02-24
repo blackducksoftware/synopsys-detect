@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -85,23 +85,23 @@ public class BlackDuckPostActions {
                 final ReportService reportService = blackDuckServicesFactory.createReportService(timeoutInMillisec);
                 if (blackDuckPostOptions.shouldGenerateRiskReport()) {
                     logger.info("Creating risk report pdf");
-                    final File reportDirectory = new File(blackDuckPostOptions.getRiskReportPdfPath());
+                    final File reportDirectory = blackDuckPostOptions.getRiskReportPdfPath().toFile();
 
                     if (!reportDirectory.exists() && !reportDirectory.mkdirs()) {
-                        logger.warn(String.format("Failed to create risk report pdf directory: %s", blackDuckPostOptions.getRiskReportPdfPath()));
+                        logger.warn(String.format("Failed to create risk report pdf directory: %s", blackDuckPostOptions.getRiskReportPdfPath().toString()));
                     }
 
-                    DetectFontLoader detectFontLoader = new DetectFontLoader();
+                    final DetectFontLoader detectFontLoader = new DetectFontLoader();
                     final File createdPdf = reportService.createReportPdfFile(reportDirectory, projectView, projectVersionView, detectFontLoader::loadFont, detectFontLoader::loadBoldFont);
                     logger.info(String.format("Created risk report pdf: %s", createdPdf.getCanonicalPath()));
                 }
 
                 if (blackDuckPostOptions.shouldGenerateNoticesReport()) {
                     logger.info("Creating notices report");
-                    final File noticesDirectory = new File(blackDuckPostOptions.getNoticesReportPath());
+                    final File noticesDirectory = blackDuckPostOptions.getNoticesReportPath().toFile();
 
                     if (!noticesDirectory.exists() && !noticesDirectory.mkdirs()) {
-                        logger.warn(String.format("Failed to create notices directory at %s", blackDuckPostOptions.getNoticesReportPath()));
+                        logger.warn(String.format("Failed to create notices directory at %s", blackDuckPostOptions.getNoticesReportPath().toString()));
                     }
 
                     final File noticesFile = reportService.createNoticesReportFile(noticesDirectory, projectView, projectVersionView);

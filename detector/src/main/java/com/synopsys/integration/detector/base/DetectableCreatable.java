@@ -1,7 +1,7 @@
 /**
  * detector
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -26,6 +26,6 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 
 @FunctionalInterface
-public interface DetectableCreatable {
-    Detectable createDetectable(DetectableEnvironment environment);
+public interface DetectableCreatable<T extends Detectable> {
+    T createDetectable(DetectableEnvironment environment);
 }

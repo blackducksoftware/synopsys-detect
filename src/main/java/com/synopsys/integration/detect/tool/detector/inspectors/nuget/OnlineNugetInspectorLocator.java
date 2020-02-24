@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -43,7 +43,7 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
     public File locateDotnetInspector() throws DetectableException {
         try {
             final File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
-            return nugetInspectorInstaller.installDotNet(nugetDirectory, Optional.of(overrideVersion));
+            return nugetInspectorInstaller.installDotNet(nugetDirectory, Optional.ofNullable(overrideVersion));
         } catch (final Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }

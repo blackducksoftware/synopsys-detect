@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -40,10 +40,10 @@ public class PearPackageXmlParser {
     public NameVersion parse(final InputStream packageXmlInputStream)
         throws ParserConfigurationException, SAXException, IOException {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setAttribute("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         final DocumentBuilder builder = factory.newDocumentBuilder();
 
         final NameVersion nameVersion = new NameVersion();
-
         final Document packageXml = builder.parse(packageXmlInputStream);
         final Node packageNode = XmlUtil.getNode("package", packageXml);
         nameVersion.setName(XmlUtil.getNode("name", packageNode).getTextContent());

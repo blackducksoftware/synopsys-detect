@@ -1,7 +1,7 @@
 /**
  * detect-configuration
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,27 +22,19 @@
  */
 package com.synopsys.integration.detect;
 
-public enum DetectMajorVersion {
-    ONE(1),
-    TWO(2),
-    THREE(3),
-    FOUR(4),
-    FIVE(5),
-    SIX(6),
-    SEVEN(7),
-    EIGHT(8);
+import com.synopsys.integration.configuration.util.ProductMajorVersion;
 
-    private int value = 0;
+public class DetectMajorVersion extends ProductMajorVersion {
+    public static DetectMajorVersion ONE = new DetectMajorVersion(1);
+    public static DetectMajorVersion TWO = new DetectMajorVersion(2);
+    public static DetectMajorVersion THREE = new DetectMajorVersion(3);
+    public static DetectMajorVersion FOUR = new DetectMajorVersion(4);
+    public static DetectMajorVersion FIVE = new DetectMajorVersion(5);
+    public static DetectMajorVersion SIX = new DetectMajorVersion(6);
+    public static DetectMajorVersion SEVEN = new DetectMajorVersion(7);
+    public static DetectMajorVersion EIGHT = new DetectMajorVersion(8);
 
-    DetectMajorVersion(final int value) {
-        this.value = value;
-    }
-
-    public int getIntValue() {
-        return value;
-    }
-
-    public String getDisplayValue() {
-        return Integer.toString(value) + ".0.0";
+    public DetectMajorVersion(final Integer intValue) {
+        super(intValue);
     }
 }

@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.pip;
 
+import java.util.Optional;
+
 public class PipenvDetectableOptions {
     private final String pipProjectName;
     private final String pipProjectVersionName;
@@ -33,12 +35,12 @@ public class PipenvDetectableOptions {
         this.pipProjectTreeOnly = pipProjectTreeOnly;
     }
 
-    public String getPipProjectName() {
-        return pipProjectName;
+    public Optional<String> getPipProjectName() {
+        return Optional.ofNullable(pipProjectName);
     }
 
-    public String getPipProjectVersionName() {
-        return pipProjectVersionName;
+    public Optional<String> getPipProjectVersionName() {
+        return Optional.ofNullable(pipProjectVersionName);
     }
 
     public boolean isPipProjectTreeOnly() {

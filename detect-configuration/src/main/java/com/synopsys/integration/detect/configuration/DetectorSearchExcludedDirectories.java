@@ -1,7 +1,7 @@
 /**
  * detect-configuration
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -32,11 +32,9 @@ public enum DetectorSearchExcludedDirectories {
     PACKAGES("packages"),
     TARGET("target");
 
-    public static final String DIRECTORY_NAMES = "bin, build, .git, .gradle, node_modules, out, packages, target";
-
     private final String directoryName;
 
-    private DetectorSearchExcludedDirectories(final String directoryName) {
+    DetectorSearchExcludedDirectories(final String directoryName) {
         this.directoryName = directoryName;
     }
 

@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.npm.cli;
 
+import java.util.Optional;
+
 public class NpmCliExtractorOptions {
     private final boolean includeDevDependencies;
     private final String npmArguments;
@@ -35,7 +37,7 @@ public class NpmCliExtractorOptions {
         return includeDevDependencies;
     }
 
-    public String getNpmArguments() {
-        return npmArguments;
+    public Optional<String> getNpmArguments() {
+        return Optional.ofNullable(npmArguments);
     }
 }

@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,31 +22,29 @@
  */
 package com.synopsys.integration.detect.util.filter;
 
-import java.util.HashSet;
 import java.util.Set;
-import java.util.StringTokenizer;
 
-import org.apache.commons.lang3.StringUtils;
+import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
-public class DetectOverrideableFilter implements DetectFilter {
-    private final Set<String> excludedSet;
-    private final Set<String> includedSet;
-
+public class DetectOverrideableFilter extends ExcludedIncludedWildcardFilter implements DetectFilter {
     public DetectOverrideableFilter(final String toExclude, final String toInclude) {
-        excludedSet = createSetFromString(toExclude);
-        includedSet = createSetFromString(toInclude);
+        super(toExclude, toInclude);
     }
 
     @Override
-    public boolean shouldInclude(final String itemName) {
-        if (excludedSet.contains("ALL"))
-            return false;
-
-        if (!excludedSet.contains("NONE") && excludedSet.contains(itemName)) {
-            return false;
+    public boolean willExclude(final String itemName) {
+        if (excludedSet.contains("ALL")) {
+            return true;
+        } else if (!excludedSet.contains("NONE") && excludedSet.contains(itemName)) {
+            return true;
+        } else {
+            return super.willExclude(itemName);
         }
+    }
 
-        if (includedSet.size() > 0) {
+    @Override
+    public boolean willInclude(final String itemName) {
+        if (!includedSet.isEmpty()) {
             if (includedSet.contains("ALL")) {
                 return true;
             } else if (includedSet.contains("NONE")) {
@@ -56,19 +54,11 @@ public class DetectOverrideableFilter implements DetectFilter {
             }
         }
 
-        return true;
+        return super.willInclude(itemName);
     }
 
+    // TODO - edit ExcludedIncludedFilter to have getters for includedSet, excludedSet
     public Set<String> getIncludedSet() {
         return includedSet;
-    }
-
-    private Set<String> createSetFromString(final String s) {
-        final Set<String> set = new HashSet<>();
-        final StringTokenizer stringTokenizer = new StringTokenizer(StringUtils.trimToEmpty(s), ",");
-        while (stringTokenizer.hasMoreTokens()) {
-            set.add(StringUtils.trimToEmpty(stringTokenizer.nextToken()));
-        }
-        return set;
     }
 }

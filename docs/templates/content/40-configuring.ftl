@@ -24,7 +24,7 @@ characters ("_"). For example:
 ```
 
 On Windows, the environment variable name can either be the original property
-name, or the property name converted to uppercase, with period characters (".") converted to underscore
+name, or the property name converted to uppercase with period characters (".") converted to underscore
 characters ("_"). For example:
 ```
     $Env:DETECT_PROJECT_NAME = MyProject
@@ -34,7 +34,7 @@ characters ("_"). For example:
 ## Using a configuration file
 
 Another commonly-used method of configuring ${solution_name} is to provide a configuration file. The configuration file
-can be a Java Properties (.properties) file, or a YAML (.yml) file.
+can be a Java properties (.properties) file, or a YAML (.yml) file.
 
 The most common location for a configuration file is in a file named application.properties or application.yml
 in the current working directory, or a ./config subdirectory.
@@ -57,8 +57,8 @@ you want when you run ${solution_name}.
 ### Creating a profile
 
 To define a set of properties for a profile, create a configuration file named *application-{profilename}.properties*
-or *application-{profilename}.yml* (in the current working directory, or in a subdirectory named *config*).
-Populate it with property assignments as described above.
+or *application-{profilename}.yml* in the current working directory, or in a subdirectory named *config*.
+Populate it with property assignments as previously described.
 
 ### Selecting a profile on the command line
 
@@ -77,28 +77,27 @@ ${solution_name} reads property values using
 [Spring Boot's externalized configuration mechanism](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config),
 which provides capabilities beyond those described on this page.
 
-The most common methods used to pass a property value to ${solution_name} are listed below. A method with lower number in Spring Boot's order of precedence will
-override a method with a higher number.
+The most common methods used to pass a property value to ${solution_name} are listed as follows. A method with lower number in Spring Boot's order of precedence overrides a method with a higher number.
 
-* Using a command line argument (#4 in Spring Boot's order of precedence)
+* Using a command line argument (#4 in Spring Boot's order of precedence):
 ````
     --blackduck.url=https://blackduck.yourdomain.com
 ````
-* Using one environment variable per property (#10 in Spring Boot's order of precedence)
+* Using one environment variable per property (#10 in Spring Boot's order of precedence):
 ````
     export BLACKDUCK_URL=https://blackduck.yourdomain.com
 ````
-* Using property assignments in a .properties configuration file (#14 in Spring Boot's order of precedence)
+* Using property assignments in a .properties configuration file (#14 in Spring Boot's order of precedence):
 ````
     blackduck.url=https://blackduck.yourdomain.com
     blackduck.api.token=yourtokenvalue
 ````
-* Using property assignments in a .yml configuration file (also #14 in Spring Boot's order of precedence, but .properties takes precedence over .yml)
+* Using property assignments in a .yml configuration file (also #14 in Spring Boot's order of precedence, but .properties takes precedence over .yml):
 ````
     blackduck.url: https://blackduck.yourdomain.com
     blackduck.api.token: yourtokenvalue
 ````
-* Using the SPRING_APPLICATION_JSON environment variable with a set of properties set using JSON format (#5 in Spring Boot's order of precedence)
+* Using the SPRING_APPLICATION_JSON environment variable with a set of properties set using JSON format (#5 in Spring Boot's order of precedence):
 ````
     export SPRING_APPLICATION_JSON='{"blackduck.url":"https://blackduck.yourdomain.com","blackduck.api.token":"yourgeneratedtoken"}'
 ````
@@ -112,11 +111,11 @@ You can provide sensitive values such as credentials to ${solution_name} using a
 mechanisms provided by [Spring Boot](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config),
 including:
 
-* On the command line (for example: --blackduck.password={your password})
-* As an environment variable value (for example: export BLACKDUCK_PASSWORD={your password})
-* In a configration (.properties) file (for example: ./application.properties)
+* On the command line; for example, --blackduck.password={your password}.
+* As an environment variable value; for example, export BLACKDUCK_PASSWORD={your password}.
+* In a configration (.properties) file; for example, ./application.properties.
 
 Values provided on the command line may be visible to other users that can view process details.
-Setting sensitive value using environment variables is usually considered more secure.
-Connecting to another system (e.g. ${blackduck_product_name} or ${polaris_product_name}) using an access token (also called an API token)
-is usually considered more secure than connecting using username and password. 
+Setting sensitive values using environment variables is usually considered more secure.
+Connecting to another system; for example, ${blackduck_product_name} or ${polaris_product_name}) using an access token (also called an API token)
+is usually considered more secure than connecting using a username and password. 

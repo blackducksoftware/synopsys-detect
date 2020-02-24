@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,26 +22,29 @@
  */
 package com.synopsys.integration.detect.workflow.airgap;
 
-public class AirGapOptions {
-    private String dockerInspectorPathOverride;
-    private String gradleInspectorPathOverride;
-    private String nugetInspectorPathOverride;
+import java.nio.file.Path;
+import java.util.Optional;
 
-    public AirGapOptions(final String dockerInspectorPathOverride, final String gradleInspectorPathOverride, final String nugetInspectorPathOverride) {
+public class AirGapOptions {
+    private final Path dockerInspectorPathOverride;
+    private final Path gradleInspectorPathOverride;
+    private final Path nugetInspectorPathOverride;
+
+    public AirGapOptions(final Path dockerInspectorPathOverride, final Path gradleInspectorPathOverride, final Path nugetInspectorPathOverride) {
         this.dockerInspectorPathOverride = dockerInspectorPathOverride;
         this.gradleInspectorPathOverride = gradleInspectorPathOverride;
         this.nugetInspectorPathOverride = nugetInspectorPathOverride;
     }
 
-    public String getDockerInspectorPathOverride() {
-        return dockerInspectorPathOverride;
+    public Optional<Path> getDockerInspectorPathOverride() {
+        return Optional.ofNullable(dockerInspectorPathOverride);
     }
 
-    public String getGradleInspectorPathOverride() {
-        return gradleInspectorPathOverride;
+    public Optional<Path> getGradleInspectorPathOverride() {
+        return Optional.ofNullable(gradleInspectorPathOverride);
     }
 
-    public String getNugetInspectorPathOverride() {
-        return nugetInspectorPathOverride;
+    public Optional<Path> getNugetInspectorPathOverride() {
+        return Optional.ofNullable(nugetInspectorPathOverride);
     }
 }

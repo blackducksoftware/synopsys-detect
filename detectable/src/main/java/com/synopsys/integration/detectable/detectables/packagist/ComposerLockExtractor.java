@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -41,7 +41,7 @@ public class ComposerLockExtractor {
         this.packagistParser = packagistParser;
     }
 
-    public Extraction extract(final File composerJson, final File composerLock) {
+    public Extraction extract(final File composerJson, final File composerLock, boolean includeDevDependencies) {
         try {
             final String composerJsonText = FileUtils.readFileToString(composerJson, StandardCharsets.UTF_8);
             final String composerLockText = FileUtils.readFileToString(composerLock, StandardCharsets.UTF_8);
@@ -49,7 +49,7 @@ public class ComposerLockExtractor {
             logger.debug(composerJsonText);
             logger.debug(composerLockText);
 
-            final PackagistParseResult result = packagistParser.getDependencyGraphFromProject(composerJsonText, composerLockText);
+            final PackagistParseResult result = packagistParser.getDependencyGraphFromProject(composerJsonText, composerLockText, includeDevDependencies);
 
             return new Extraction.Builder()
                        .success(result.getCodeLocation())

@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -44,14 +44,16 @@ public class CondaCliDetectable extends Detectable {
     private final FileFinder fileFinder;
     private CondaResolver condaResolver;
     private final CondaCliExtractor condaExtractor;
+    private CondaCliDetectableOptions condaCliDetectableOptions;
 
     private File condaExe;
 
-    public CondaCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final CondaResolver condaResolver, final CondaCliExtractor condaExtractor) {
+    public CondaCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final CondaResolver condaResolver, final CondaCliExtractor condaExtractor, CondaCliDetectableOptions condaCliDetectableOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.condaResolver = condaResolver;
         this.condaExtractor = condaExtractor;
+        this.condaCliDetectableOptions = condaCliDetectableOptions;
     }
 
     @Override
@@ -77,7 +79,7 @@ public class CondaCliDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return condaExtractor.extract(environment.getDirectory(), condaExe, extractionEnvironment.getOutputDirectory());
+        return condaExtractor.extract(environment.getDirectory(), condaExe, extractionEnvironment.getOutputDirectory(), condaCliDetectableOptions.getCondaEnvironmentName().orElse(""));
     }
 
 }

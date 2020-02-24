@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -39,29 +39,24 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 public class MavenCliExtractor {
     private final ExecutableRunner executableRunner;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
-    private final MavenCliExtractorOptions mavenCliExtractorOptions;
 
-    public MavenCliExtractor(final ExecutableRunner executableRunner, final MavenCodeLocationPackager mavenCodeLocationPackager, final MavenCliExtractorOptions mavenCliExtractorOptions) {
+    public MavenCliExtractor(final ExecutableRunner executableRunner, final MavenCodeLocationPackager mavenCodeLocationPackager) {
         this.executableRunner = executableRunner;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
-        this.mavenCliExtractorOptions = mavenCliExtractorOptions;
     }
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
-    public Extraction extract(final File directory, final File mavenExe) {
+    public Extraction extract(final File directory, final File mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) {
         try {
-            String mavenCommand = mavenCliExtractorOptions.getMavenBuildCommand();
-            if (StringUtils.isNotBlank(mavenCommand)) {
-                mavenCommand = mavenCommand.replace("dependency:tree", "");
-
-                if (StringUtils.isNotBlank(mavenCommand)) {
-                    mavenCommand = mavenCommand.trim();
-                }
-            }
+            String[] mavenCommand = mavenCliExtractorOptions.getMavenBuildCommand()
+                                        .map(cmd -> cmd.replace("dependency:tree", ""))
+                                        .map(String::trim)
+                                        .map(cmd -> cmd.split(" "))
+                                        .orElse(null);
 
             final List<String> arguments = new ArrayList<>();
-            if (StringUtils.isNotBlank(mavenCommand)) {
-                arguments.addAll(Arrays.asList(mavenCommand.split(" ")));
+            if (mavenCommand != null) {
+                arguments.addAll(Arrays.asList(mavenCommand));
             }
             arguments.add("dependency:tree");
             arguments.add("-T1"); // Force maven to use a single thread to ensure the tree output is in the correct order.
@@ -69,10 +64,11 @@ public class MavenCliExtractor {
             final ExecutableOutput mvnOutput = executableRunner.execute(directory, mavenExe, arguments);
 
             if (mvnOutput.getReturnCode() == 0) {
-                final String excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes();
-                final String includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes();
-                final String excludedModules = mavenCliExtractorOptions.getMavenExcludedModules();
-                final String includedModules = mavenCliExtractorOptions.getMavenIncludedModules();
+                // TODO: Improve null handling.
+                final String excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes().orElse(null);
+                final String includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes().orElse(null);
+                final String excludedModules = mavenCliExtractorOptions.getMavenExcludedModules().orElse(null);
+                final String includedModules = mavenCliExtractorOptions.getMavenIncludedModules().orElse(null);
                 final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(), excludedScopes, includedScopes, excludedModules, includedModules);
 
                 final List<CodeLocation> codeLocations = mavenResults.stream()

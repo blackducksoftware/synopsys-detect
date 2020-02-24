@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,20 +22,22 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck;
 
-import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
-
+import java.nio.file.Path;
 import java.util.List;
 
+import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
+
 public class BlackDuckPostOptions {
-    private boolean waitForResults;
+    private final boolean waitForResults;
 
-    private boolean generateRiskReport;
-    private boolean generateNoticesReport;
-    private String riskReportPdfPath;
-    private String noticesReportPath;
-    private List<PolicySeverityType> severitiesToFailPolicyCheck;
+    private final boolean generateRiskReport;
+    private final boolean generateNoticesReport;
+    private final Path riskReportPdfPath;
+    private final Path noticesReportPath;
+    private final List<PolicySeverityType> severitiesToFailPolicyCheck;
 
-    public BlackDuckPostOptions(boolean waitForResults, boolean generateRiskReport, boolean generateNoticesReport, String riskReportPdfPath, String noticesReportPath, List<PolicySeverityType> severitiesToFailPolicyCheck) {
+    public BlackDuckPostOptions(final boolean waitForResults, final boolean generateRiskReport, final boolean generateNoticesReport, final Path riskReportPdfPath, final Path noticesReportPath,
+        final List<PolicySeverityType> severitiesToFailPolicyCheck) {
         this.waitForResults = waitForResults;
         this.generateRiskReport = generateRiskReport;
         this.generateNoticesReport = generateNoticesReport;
@@ -64,11 +66,11 @@ public class BlackDuckPostOptions {
         return severitiesToFailPolicyCheck.size() > 0;
     }
 
-    public String getRiskReportPdfPath() {
+    public Path getRiskReportPdfPath() {
         return riskReportPdfPath;
     }
 
-    public String getNoticesReportPath() {
+    public Path getNoticesReportPath() {
         return noticesReportPath;
     }
 

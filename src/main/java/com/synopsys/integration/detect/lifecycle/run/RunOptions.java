@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,6 +22,12 @@
  */
 package com.synopsys.integration.detect.lifecycle.run;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.antlr.v4.runtime.misc.Nullable;
+
+import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 
@@ -29,11 +35,11 @@ public class RunOptions {
     private final boolean unmapCodeLocations;
     private final String aggregateName;
     private final AggregateMode aggregateMode;
-    private final String preferredTools;
+    private final List<DetectTool> preferredTools;
     private final DetectToolFilter detectToolFilter;
     private final boolean useBdio2;
 
-    public RunOptions(final boolean unmapCodeLocations, final String aggregateName, final AggregateMode aggregateMode, final String preferredTools, final DetectToolFilter detectToolFilter, final boolean useBdio2) {
+    public RunOptions(final boolean unmapCodeLocations, @Nullable final String aggregateName, final AggregateMode aggregateMode, final List<DetectTool> preferredTools, final DetectToolFilter detectToolFilter, final boolean useBdio2) {
         this.unmapCodeLocations = unmapCodeLocations;
         this.aggregateName = aggregateName;
         this.aggregateMode = aggregateMode;
@@ -46,15 +52,15 @@ public class RunOptions {
         return unmapCodeLocations;
     }
 
-    public String getAggregateName() {
-        return aggregateName;
+    public Optional<String> getAggregateName() {
+        return Optional.ofNullable(aggregateName);
     }
 
     public AggregateMode getAggregateMode() {
         return aggregateMode;
     }
 
-    public String getPreferredTools() {
+    public List<DetectTool> getPreferredTools() {
         return preferredTools;
     }
 

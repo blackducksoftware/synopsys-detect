@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,11 +22,10 @@
  */
 package com.synopsys.integration.detect.tool.detector;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,30 +50,12 @@ public class RequiredDetectorChecker {
         private final Set<DetectorType> missingDetectors;
     }
 
-    public RequiredDetectorResult checkForMissingDetectors(final String requiredDetectorsString, final Set<DetectorType> applicableDetectors) {
-        final Set<DetectorType> required = parseRequiredDetectors(requiredDetectorsString);
-
-        final Set<DetectorType> missingDetectors = required.stream()
+    public RequiredDetectorResult checkForMissingDetectors(final List<DetectorType> requiredDetectorsString, final Set<DetectorType> applicableDetectors) {
+        final Set<DetectorType> missingDetectors = requiredDetectorsString.stream()
                                                        .filter(it -> !applicableDetectors.contains(it))
                                                        .collect(Collectors.toSet());
 
         return new RequiredDetectorResult(missingDetectors);
     }
 
-    private Set<DetectorType> parseRequiredDetectors(final String rawRequiredTypeString) {
-        final Set<DetectorType> required = new HashSet<>();
-        final String[] rawRequiredTypes = rawRequiredTypeString.split(",");
-        for (final String rawType : rawRequiredTypes) {
-            if (StringUtils.isBlank(rawType))
-                continue;
-
-            try {
-                final DetectorType type = DetectorType.valueOf(rawType.toUpperCase());
-                required.add(type);
-            } catch (final IllegalArgumentException e) {
-                logger.error("Unable to parse detector type: " + rawType);
-            }
-        }
-        return required;
-    }
 }

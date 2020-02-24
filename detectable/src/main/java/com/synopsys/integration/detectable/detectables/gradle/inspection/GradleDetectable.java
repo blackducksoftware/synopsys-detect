@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -95,6 +95,7 @@ public class GradleDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleInspectorOptions.getGradleBuildCommand(), gradleInspectorOptions.getproxyInfo(), gradleInspector, extractionEnvironment.getOutputDirectory());
+        String gradleCommand = gradleInspectorOptions.getGradleBuildCommand().orElse(""); // TODO: Nullable.
+        return gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleCommand, gradleInspectorOptions.getproxyInfo(), gradleInspector, extractionEnvironment.getOutputDirectory());
     }
 }

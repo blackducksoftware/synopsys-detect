@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,16 +22,20 @@
  */
 package com.synopsys.integration.detect.tool.binaryscanner;
 
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
+
+import org.antlr.v4.runtime.misc.Nullable;
 
 public class BinaryScanOptions {
-    private final String singleTargetFilePath;
+    private final Path singleTargetFilePath;
     private final List<String> multipleTargetFileNamePatterns;
 
     private final String codeLocationPrefix;
     private final String codeLocationSuffix;
 
-    public BinaryScanOptions(final String singleTargetFilePath, final List<String> multipleTargetFileNamePatterns, final String codeLocationPrefix, final String codeLocationSuffix) {
+    public BinaryScanOptions(@Nullable final Path singleTargetFilePath, final List<String> multipleTargetFileNamePatterns, final String codeLocationPrefix, final String codeLocationSuffix) {
         this.singleTargetFilePath = singleTargetFilePath;
         this.multipleTargetFileNamePatterns = multipleTargetFileNamePatterns;
         this.codeLocationPrefix = codeLocationPrefix;
@@ -42,8 +46,8 @@ public class BinaryScanOptions {
         return multipleTargetFileNamePatterns;
     }
 
-    public String getSingleTargetFilePath() {
-        return singleTargetFilePath;
+    public Optional<Path> getSingleTargetFilePath() {
+        return Optional.ofNullable(singleTargetFilePath);
     }
 
     public String getCodeLocationPrefix() {

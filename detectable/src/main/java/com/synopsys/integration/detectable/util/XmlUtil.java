@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -28,6 +28,8 @@ import java.util.List;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.sun.org.apache.xerces.internal.dom.DeferredDocumentTypeImpl;
+
 public class XmlUtil {
     public static Node getNode(final String key, final Node parentNode) {
         return getNodeList(key, parentNode).get(0);
@@ -39,7 +41,15 @@ public class XmlUtil {
         for (int i = 0; i < childNodes.getLength(); i++) {
             final Node childNode = childNodes.item(i);
             if (childNode.getNodeName().equals(key)) {
-                nodes.add(childNode);
+                // ignore node generated from DOCTYPE declaration
+                if (childNode instanceof DeferredDocumentTypeImpl) {
+                    Node nextSibling = childNode.getNextSibling();
+                    if (nextSibling.getNodeName().equals(key)) {
+                        nodes.add(nextSibling);
+                    }
+                } else {
+                    nodes.add(childNode);
+                }
             }
         }
         return nodes;

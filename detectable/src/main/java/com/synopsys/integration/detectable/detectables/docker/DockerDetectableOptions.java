@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,9 +22,11 @@
  */
 package com.synopsys.integration.detectable.detectables.docker;
 
+import java.nio.file.Path;
 import java.util.Map;
+import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
+import com.synopsys.integration.log.LogLevel;
 
 public class DockerDetectableOptions {
 
@@ -32,14 +34,14 @@ public class DockerDetectableOptions {
     private final String suppliedDockerImage;
     private final String suppliedDockerImageId;
     private final String suppliedDockerTar;
-    private final String dockerInspectorLoggingLevel;
+    private final LogLevel dockerInspectorLoggingLevel;
     private final String dockerInspectorVersion;
     private final Map<String, String> additionalDockerProperties;
-    private final String dockerInspectorPath;
+    private final Path dockerInspectorPath;
     private final String dockerPlatformTopLayerId;
 
-    public DockerDetectableOptions(final boolean dockerPathRequired, final String suppliedDockerImage, final String suppliedDockerImageId, final String suppliedDockerTar, final String dockerInspectorLoggingLevel, final String dockerInspectorVersion,
-        final Map<String, String> additionalDockerProperties, final String dockerInspectorPath, final String dockerPlatformTopLayerId) {
+    public DockerDetectableOptions(final boolean dockerPathRequired, final String suppliedDockerImage, final String suppliedDockerImageId, final String suppliedDockerTar, final LogLevel dockerInspectorLoggingLevel,
+        final String dockerInspectorVersion, final Map<String, String> additionalDockerProperties, final Path dockerInspectorPath, final String dockerPlatformTopLayerId) {
         this.dockerPathRequired = dockerPathRequired;
         this.suppliedDockerImage = suppliedDockerImage;
         this.suppliedDockerImageId = suppliedDockerImageId;
@@ -55,39 +57,39 @@ public class DockerDetectableOptions {
         return dockerPathRequired;
     }
 
-    public String getSuppliedDockerImage() {
-        return suppliedDockerImage;
+    public Optional<String> getSuppliedDockerImage() {
+        return Optional.ofNullable(suppliedDockerImage);
     }
 
-    public String getSuppliedDockerImageId() {
-        return suppliedDockerImageId;
+    public Optional<String> getSuppliedDockerImageId() {
+        return Optional.ofNullable(suppliedDockerImageId);
     }
 
-    public String getSuppliedDockerTar() {
-        return suppliedDockerTar;
+    public Optional<String> getSuppliedDockerTar() {
+        return Optional.ofNullable(suppliedDockerTar);
     }
 
     public boolean hasDockerImageOrTar() {
-        return StringUtils.isNotBlank(getSuppliedDockerImage()) || StringUtils.isNotBlank(getSuppliedDockerTar()) || StringUtils.isNotBlank(getSuppliedDockerImageId());
+        return getSuppliedDockerImage().isPresent() || getSuppliedDockerTar().isPresent() || getSuppliedDockerImageId().isPresent();
     }
 
-    public String getDockerInspectorLoggingLevel() {
+    public LogLevel getDockerInspectorLoggingLevel() {
         return dockerInspectorLoggingLevel;
     }
 
-    public String getDockerInspectorVersion() {
-        return dockerInspectorVersion;
+    public Optional<String> getDockerInspectorVersion() {
+        return Optional.ofNullable(dockerInspectorVersion);
     }
 
     public Map<String, String> getAdditionalDockerProperties() {
         return additionalDockerProperties;
     }
 
-    public String getDockerInspectorPath() {
-        return dockerInspectorPath;
+    public Optional<Path> getDockerInspectorPath() {
+        return Optional.ofNullable(dockerInspectorPath);
     }
 
-    public String getDockerPlatformTopLayerId() {
-        return dockerPlatformTopLayerId;
+    public Optional<String> getDockerPlatformTopLayerId() {
+        return Optional.ofNullable(dockerPlatformTopLayerId);
     }
 }

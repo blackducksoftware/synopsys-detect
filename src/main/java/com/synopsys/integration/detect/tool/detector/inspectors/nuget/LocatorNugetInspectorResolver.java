@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -48,14 +49,14 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
     private final DetectInfo detectInfo;
     private final FileFinder fileFinder;
     private final String nugetInspectorName;
-    private final String[] packagesRepoUrl;
+    private final List<String> packagesRepoUrl;
 
     private boolean hasResolvedInspector;
     private NugetInspector resolvedNugetInspector;
     private final NugetInspectorLocator nugetInspectorLocator;
 
     public LocatorNugetInspectorResolver(final DetectExecutableResolver executableResolver, final ExecutableRunner executableRunner, final DetectInfo detectInfo,
-        final FileFinder fileFinder, final String nugetInspectorName, final String[] packagesRepoUrl, final NugetInspectorLocator nugetInspectorLocator) {
+        final FileFinder fileFinder, final String nugetInspectorName, final List<String> packagesRepoUrl, final NugetInspectorLocator nugetInspectorLocator) {
         this.executableResolver = executableResolver;
         this.executableRunner = executableRunner;
         this.detectInfo = detectInfo;
@@ -149,7 +150,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         }
 
         //if customers have overridden the repo url's and include a v2 api, we must use the old nuget inspector (exe inspector) until 5.0.0 of detect.
-        //TODO: Remove in 6.0.0
+        //TODO: Remove in 7.0.0
         for (final String source : packagesRepoUrl) {
             if (source.contains("v2")) {
                 logger.warn("You are using Version 2 of the Nuget Api. Please update to version 3. Support for 2 is deprecated.");

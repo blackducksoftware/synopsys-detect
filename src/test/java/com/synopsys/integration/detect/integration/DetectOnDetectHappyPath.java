@@ -1,16 +1,30 @@
+/**
+ * synopsys-detect
+ *
+ * Copyright (c) 2020 Synopsys, Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.synopsys.integration.detect.integration;
 
-import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
-import com.synopsys.integration.blackduck.api.generated.view.VersionBomComponentView;
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
-import com.synopsys.integration.detect.Application;
-import com.synopsys.integration.exception.IntegrationException;
-import org.apache.commons.lang3.StringUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import static java.nio.file.Files.lines;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,9 +34,18 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.nio.file.Files.lines;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
+import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.detect.Application;
+import com.synopsys.integration.exception.IntegrationException;
 
 @Tag("integration")
 public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
@@ -40,16 +63,16 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
         if (null != projectToDelete) {
             try {
                 blackDuckService.delete(projectToDelete);
-            } catch (IntegrationException e) {
+            } catch (final IntegrationException e) {
                 e.printStackTrace();
             }
         }
 
         if (null != codeLocationsToDelete) {
-            for (CodeLocationView toDelete : codeLocationsToDelete) {
+            for (final CodeLocationView toDelete : codeLocationsToDelete) {
                 try {
                     blackDuckService.delete(toDelete);
-                } catch (IntegrationException e) {
+                } catch (final IntegrationException e) {
                     e.printStackTrace();
                 }
             }
@@ -58,35 +81,35 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
 
     @Test
     public void testBomCreatedInBlackDuck() throws Exception {
-        Path buildGradle = Paths.get("build.gradle");
-        Optional<String> versionLine = lines(buildGradle).map(String::trim).filter(line -> line.startsWith("version")).findFirst();
-        String version = StringUtils.substringBetween(versionLine.get(), "'");
+        final Path buildGradle = Paths.get("build.gradle");
+        final Optional<String> versionLine = lines(buildGradle).map(String::trim).filter(line -> line.startsWith("version")).findFirst();
+        final String version = StringUtils.substringBetween(versionLine.get(), "'");
 
-        List<String> codeLocationNameSuffixesToCheck = new ArrayList<>();
+        final List<String> codeLocationNameSuffixesToCheck = new ArrayList<>();
         codeLocationNameSuffixesToCheck.add(SIGNATURE_SCAN_CODE_LOCATION_SUFFIX);
         codeLocationNameSuffixesToCheck.add(String.format(DETECTABLE_CODE_LOCATION_SUFFIX, version));
         codeLocationNameSuffixesToCheck.add(String.format(SYNOPSYS_DETECT_CODE_LOCATION_SUFFIX, version));
         codeLocationNameSuffixesToCheck.add(String.format(DETECT_CONFIGURATION_CODE_LOCATION_SUFFIX, version));
         codeLocationNameSuffixesToCheck.add(String.format(DETECTOR_CODE_LOCATION_SUFFIX, version));
 
-        String projectName = "synopsys-detect-junit";
-        String projectVersionName = "happy-path";
-        ProjectVersionWrapper projectVersionWrapper = assertProjectVersionReady(projectName, projectVersionName);
+        final String projectName = "synopsys-detect-junit";
+        final String projectVersionName = "happy-path";
+        final ProjectVersionWrapper projectVersionWrapper = assertProjectVersionReady(projectName, projectVersionName);
         projectToDelete = projectVersionWrapper.getProjectView();
 
-        List<String> detectArgs = getInitialArgs(projectName, projectVersionName);
+        final List<String> detectArgs = getInitialArgs(projectName, projectVersionName);
         detectArgs.add("--detect.wait.for.results=true");
-        Application.main(detectArgs.toArray(new String[detectArgs.size()]));
+        Application.main(detectArgs.toArray(new String[0]));
 
         codeLocationsToDelete = blackDuckService.getAllResponses(projectVersionWrapper.getProjectVersionView(), ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
-        Set<String> createdCodeLocationNames = codeLocationsToDelete.stream().map(CodeLocationView::getName).collect(Collectors.toSet());
-        createdCodeLocationNames.stream().forEach(System.out::println);
-        codeLocationNameSuffixesToCheck.stream().forEach(System.out::println);
+        final Set<String> createdCodeLocationNames = codeLocationsToDelete.stream().map(CodeLocationView::getName).collect(Collectors.toSet());
+        createdCodeLocationNames.forEach(System.out::println);
+        codeLocationNameSuffixesToCheck.forEach(System.out::println);
 
         assertEquals(codeLocationNameSuffixesToCheck.size(), createdCodeLocationNames.size());
         int matches = 0;
-        for (String suffix : codeLocationNameSuffixesToCheck) {
-            for (String codeLocationName : createdCodeLocationNames) {
+        for (final String suffix : codeLocationNameSuffixesToCheck) {
+            for (final String codeLocationName : createdCodeLocationNames) {
                 if (codeLocationName.endsWith(suffix)) {
                     matches++;
                 }
@@ -94,9 +117,9 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
         }
         assertEquals(codeLocationNameSuffixesToCheck.size(), matches);
 
-        List<VersionBomComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(projectVersionWrapper.getProjectVersionView());
+        List<ProjectVersionComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(projectVersionWrapper.getProjectVersionView());
         // We used to look for blackduck-common, but we adopt new versions faster than KB can pick them up
-        Optional<VersionBomComponentView> blackDuckCommonComponent = bomComponents.stream().filter(versionBomComponentView -> "jackson-core".equals(versionBomComponentView.getComponentName())).findFirst();
+        Optional<ProjectVersionComponentView> blackDuckCommonComponent = bomComponents.stream().filter(ProjectVersionComponentView -> "jackson-core".equals(ProjectVersionComponentView.getComponentName())).findFirst();
         assertTrue(blackDuckCommonComponent.isPresent());
     }
 

@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -33,7 +33,7 @@ import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class ExitCodeUtility {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private static final String BLACKDUCK_ERROR_MESSAGE = "An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Detect documentation: https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect";
+    private static final String BLACKDUCK_ERROR_MESSAGE = "An unrecoverable error occurred - most likely this is due to your environment and/or configuration. Please double check the Detect documentation: https://detect.synopsys.com/doc/";
 
     public ExitCodeType getExitCodeFromExceptionDetails(final Exception e) {
         final ExitCodeType exceptionExitCodeType;

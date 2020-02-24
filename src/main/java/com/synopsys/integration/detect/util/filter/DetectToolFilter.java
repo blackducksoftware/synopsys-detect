@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -25,14 +25,15 @@ package com.synopsys.integration.detect.util.filter;
 import java.util.Optional;
 
 import com.synopsys.integration.detect.DetectTool;
+import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
 
 public class DetectToolFilter {
-    private final DetectFilter excludedIncludedFilter;
+    private final ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter;
     private final Optional<Boolean> deprecatedSigScanDisabled;
     private final Optional<Boolean> deprecatedPolarisEnabled;
 
-    public DetectToolFilter(final String excludedTools, final String includedTools, final Optional<Boolean> deprecatedSigScanDisabled, final Optional<Boolean> deprecatedPolarisEnabled) {
-        this.excludedIncludedFilter = new DetectOverrideableFilter(excludedTools, includedTools);
+    public DetectToolFilter(ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter, final Optional<Boolean> deprecatedSigScanDisabled, final Optional<Boolean> deprecatedPolarisEnabled) {
+        this.excludedIncludedFilter = excludedIncludedFilter;
 
         this.deprecatedSigScanDisabled = deprecatedSigScanDisabled;
         this.deprecatedPolarisEnabled = deprecatedPolarisEnabled;
@@ -46,6 +47,6 @@ public class DetectToolFilter {
             return deprecatedPolarisEnabled.get();
         }
 
-        return excludedIncludedFilter.shouldInclude(detectTool.name());
+        return excludedIncludedFilter.shouldInclude(detectTool);
     }
 }

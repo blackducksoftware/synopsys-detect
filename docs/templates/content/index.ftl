@@ -2,6 +2,8 @@
 
 *${solution_name} ${program_version}*
 
+If the list of help topics is not visible to the left, try increasing the width of your browser window.
+
 Options for navigating this help content:
 
 1. Use the top-level topic list in the left sidebar to navigate to a topic. Topics followed by a down-facing arrow can be expanded to reveal subtopics. On each page that contains multiple sections, a table of contents for the page will appear on the right sidebar.

@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -64,7 +64,7 @@ public class BitbakeDetectable extends Detectable {
             return new FileNotFoundDetectableResult(bitbakeDetectableOptions.getBuildEnvName());
         }
 
-        if (bitbakeDetectableOptions.getPackageNames() == null || bitbakeDetectableOptions.getPackageNames().length == 0) {
+        if (bitbakeDetectableOptions.getPackageNames() == null || bitbakeDetectableOptions.getPackageNames().size() == 0) {
             return new PropertyInsufficientDetectableResult();
         }
 

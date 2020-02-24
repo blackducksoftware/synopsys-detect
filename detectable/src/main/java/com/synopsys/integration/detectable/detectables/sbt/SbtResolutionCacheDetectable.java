@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -40,11 +40,14 @@ public class SbtResolutionCacheDetectable extends Detectable {
 
     private final FileFinder fileFinder;
     private final SbtResolutionCacheExtractor sbtResolutionCacheExtractor;
+    private final SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions;
 
-    public SbtResolutionCacheDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SbtResolutionCacheExtractor sbtResolutionCacheExtractor) {
+    public SbtResolutionCacheDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SbtResolutionCacheExtractor sbtResolutionCacheExtractor,
+        SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.sbtResolutionCacheExtractor = sbtResolutionCacheExtractor;
+        this.sbtResolutionCacheDetectableOptions = sbtResolutionCacheDetectableOptions;
     }
 
     @Override
@@ -65,7 +68,7 @@ public class SbtResolutionCacheDetectable extends Detectable {
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         // TODO: This extractor probably is due for a re-write
-        return sbtResolutionCacheExtractor.extract(environment.getDirectory());
+        return sbtResolutionCacheExtractor.extract(environment.getDirectory(), sbtResolutionCacheDetectableOptions);
     }
 
 }

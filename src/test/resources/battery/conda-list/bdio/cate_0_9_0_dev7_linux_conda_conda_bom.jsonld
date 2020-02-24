@@ -4,19 +4,19 @@
     "spdx:name": "cate/0.9.0.dev7/linux-conda conda/bom",
     "creationInfo": {
       "spdx:creator": [
-        "Tool: Detect-6.0.0-SNAPSHOT",
-        "Tool: IntegrationBdio-18.2.10"
+        "Tool: Detect-6.2.0-SNAPSHOT",
+        "Tool: IntegrationBdio-19.0.0"
       ],
-      "spdx:created": "2019-10-04T20:45:06.734Z"
+      "spdx:created": "2020-02-10T18:47:53.710Z"
     },
-    "@id": "uuid:38c3faa3-1f3b-4e63-a886-44a9f75aae6a",
+    "@id": "uuid:9af262a8-0220-4b83-aeb9-a647177841e1",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "cate",
     "revision": "0.9.0.dev7",
-    "@id": "http:detect/linux_conda",
+    "@id": "http:detect/linux-conda",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "detect",
@@ -31,151 +31,151 @@
     },
     "relationship": [
       {
-        "related": "http:anaconda/readline/6_2_2_linux_64",
+        "related": "http:anaconda/readline/6.2-2-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/pip/9_0_1_py36_1_linux_64",
+        "related": "http:anaconda/pip/9.0.1-py36_1-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/pyopenssl/17_0_0_py36_0_linux_64",
+        "related": "http:anaconda/pyopenssl/17.0.0-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/sqlite/3_13_0_0_linux_64",
+        "related": "http:anaconda/sqlite/3.13.0-0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/conda_build/3_0_15_py36h6663850_0_linux_64",
+        "related": "http:anaconda/conda-build/3.0.15-py36h6663850_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/pkginfo/1_4_1_py36_0_linux_64",
+        "related": "http:anaconda/pkginfo/1.4.1-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/pycparser/2_17_py36_0_linux_64",
+        "related": "http:anaconda/pycparser/2.17-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/pyparsing/2_1_4_py36_0_linux_64",
+        "related": "http:anaconda/pyparsing/2.1.4-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/cryptography/1_8_1_py36_0_linux_64",
+        "related": "http:anaconda/cryptography/1.8.1-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/packaging/16_8_py36_0_linux_64",
+        "related": "http:anaconda/packaging/16.8-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/yaml/0_1_6_0_linux_64",
+        "related": "http:anaconda/yaml/0.1.6-0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/tk/8_5_18_0_linux_64",
+        "related": "http:anaconda/tk/8.5.18-0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/conda_env/2_6_0_0_linux_64",
+        "related": "http:anaconda/conda-env/2.6.0-0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/jinja2/2_9_6_py36_0_linux_64",
+        "related": "http:anaconda/jinja2/2.9.6-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/cffi/1_10_0_py36_0_linux_64",
+        "related": "http:anaconda/cffi/1.10.0-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/python/3_6_1_2_linux_64",
+        "related": "http:anaconda/python/3.6.1-2-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/ruamel_yaml/0_11_14_py36_1_linux_64",
+        "related": "http:anaconda/ruamel_yaml/0.11.14-py36_1-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/setuptools/27_2_0_py36_0_linux_64",
+        "related": "http:anaconda/setuptools/27.2.0-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/glob2/0_5_py36_0_linux_64",
+        "related": "http:anaconda/glob2/0.5-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/asn1crypto/0_22_0_py36_0_linux_64",
+        "related": "http:anaconda/asn1crypto/0.22.0-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/patchelf/0_9_0_linux_64",
+        "related": "http:anaconda/patchelf/0.9-0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/markupsafe/1_0_py36_0_linux_64",
+        "related": "http:anaconda/markupsafe/1.0-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/libffi/3_2_1_1_linux_64",
+        "related": "http:anaconda/libffi/3.2.1-1-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/zlib/1_2_8_3_linux_64",
+        "related": "http:anaconda/zlib/1.2.8-3-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/xz/5_2_2_1_linux_64",
+        "related": "http:anaconda/xz/5.2.2-1-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/beautifulsoup4/4_6_0_py36_0_linux_64",
+        "related": "http:anaconda/beautifulsoup4/4.6.0-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/idna/2_5_py36_0_linux_64",
+        "related": "http:anaconda/idna/2.5-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/conda_verify/2_0_0_py36_0_linux_64",
+        "related": "http:anaconda/conda-verify/2.0.0-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/pycosat/0_6_2_py36_0_linux_64",
+        "related": "http:anaconda/pycosat/0.6.2-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/pyyaml/3_12_py36_0_linux_64",
+        "related": "http:anaconda/pyyaml/3.12-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/wheel/0_29_0_py36_0_linux_64",
+        "related": "http:anaconda/wheel/0.29.0-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/conda/4_3_25_py36_0_linux_64",
+        "related": "http:anaconda/conda/4.3.25-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/openssl/1_0_2l_0_linux_64",
+        "related": "http:anaconda/openssl/1.0.2l-0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/chardet/3_0_4_py36_0_linux_64",
+        "related": "http:anaconda/chardet/3.0.4-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/six/1_10_0_py36_0_linux_64",
+        "related": "http:anaconda/six/1.10.0-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/filelock/2_0_7_py36_0_linux_64",
+        "related": "http:anaconda/filelock/2.0.7-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:anaconda/requests/2_14_2_py36_0_linux_64",
+        "related": "http:anaconda/requests/2.14.2-py36_0-linux-64",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -183,7 +183,7 @@
   {
     "name": "readline",
     "revision": "6.2-2-linux-64",
-    "@id": "http:anaconda/readline/6_2_2_linux_64",
+    "@id": "http:anaconda/readline/6.2-2-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -202,7 +202,7 @@
   {
     "name": "pip",
     "revision": "9.0.1-py36_1-linux-64",
-    "@id": "http:anaconda/pip/9_0_1_py36_1_linux_64",
+    "@id": "http:anaconda/pip/9.0.1-py36_1-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -221,7 +221,7 @@
   {
     "name": "pyopenssl",
     "revision": "17.0.0-py36_0-linux-64",
-    "@id": "http:anaconda/pyopenssl/17_0_0_py36_0_linux_64",
+    "@id": "http:anaconda/pyopenssl/17.0.0-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -240,7 +240,7 @@
   {
     "name": "sqlite",
     "revision": "3.13.0-0-linux-64",
-    "@id": "http:anaconda/sqlite/3_13_0_0_linux_64",
+    "@id": "http:anaconda/sqlite/3.13.0-0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -259,7 +259,7 @@
   {
     "name": "conda-build",
     "revision": "3.0.15-py36h6663850_0-linux-64",
-    "@id": "http:anaconda/conda_build/3_0_15_py36h6663850_0_linux_64",
+    "@id": "http:anaconda/conda-build/3.0.15-py36h6663850_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -278,7 +278,7 @@
   {
     "name": "pkginfo",
     "revision": "1.4.1-py36_0-linux-64",
-    "@id": "http:anaconda/pkginfo/1_4_1_py36_0_linux_64",
+    "@id": "http:anaconda/pkginfo/1.4.1-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -297,7 +297,7 @@
   {
     "name": "pycparser",
     "revision": "2.17-py36_0-linux-64",
-    "@id": "http:anaconda/pycparser/2_17_py36_0_linux_64",
+    "@id": "http:anaconda/pycparser/2.17-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -316,7 +316,7 @@
   {
     "name": "pyparsing",
     "revision": "2.1.4-py36_0-linux-64",
-    "@id": "http:anaconda/pyparsing/2_1_4_py36_0_linux_64",
+    "@id": "http:anaconda/pyparsing/2.1.4-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -335,7 +335,7 @@
   {
     "name": "cryptography",
     "revision": "1.8.1-py36_0-linux-64",
-    "@id": "http:anaconda/cryptography/1_8_1_py36_0_linux_64",
+    "@id": "http:anaconda/cryptography/1.8.1-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -354,7 +354,7 @@
   {
     "name": "packaging",
     "revision": "16.8-py36_0-linux-64",
-    "@id": "http:anaconda/packaging/16_8_py36_0_linux_64",
+    "@id": "http:anaconda/packaging/16.8-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -373,7 +373,7 @@
   {
     "name": "yaml",
     "revision": "0.1.6-0-linux-64",
-    "@id": "http:anaconda/yaml/0_1_6_0_linux_64",
+    "@id": "http:anaconda/yaml/0.1.6-0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -392,7 +392,7 @@
   {
     "name": "tk",
     "revision": "8.5.18-0-linux-64",
-    "@id": "http:anaconda/tk/8_5_18_0_linux_64",
+    "@id": "http:anaconda/tk/8.5.18-0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -411,7 +411,7 @@
   {
     "name": "conda-env",
     "revision": "2.6.0-0-linux-64",
-    "@id": "http:anaconda/conda_env/2_6_0_0_linux_64",
+    "@id": "http:anaconda/conda-env/2.6.0-0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -430,7 +430,7 @@
   {
     "name": "jinja2",
     "revision": "2.9.6-py36_0-linux-64",
-    "@id": "http:anaconda/jinja2/2_9_6_py36_0_linux_64",
+    "@id": "http:anaconda/jinja2/2.9.6-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -449,7 +449,7 @@
   {
     "name": "cffi",
     "revision": "1.10.0-py36_0-linux-64",
-    "@id": "http:anaconda/cffi/1_10_0_py36_0_linux_64",
+    "@id": "http:anaconda/cffi/1.10.0-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -468,7 +468,7 @@
   {
     "name": "python",
     "revision": "3.6.1-2-linux-64",
-    "@id": "http:anaconda/python/3_6_1_2_linux_64",
+    "@id": "http:anaconda/python/3.6.1-2-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -487,7 +487,7 @@
   {
     "name": "ruamel_yaml",
     "revision": "0.11.14-py36_1-linux-64",
-    "@id": "http:anaconda/ruamel_yaml/0_11_14_py36_1_linux_64",
+    "@id": "http:anaconda/ruamel_yaml/0.11.14-py36_1-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -506,7 +506,7 @@
   {
     "name": "setuptools",
     "revision": "27.2.0-py36_0-linux-64",
-    "@id": "http:anaconda/setuptools/27_2_0_py36_0_linux_64",
+    "@id": "http:anaconda/setuptools/27.2.0-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -525,7 +525,7 @@
   {
     "name": "glob2",
     "revision": "0.5-py36_0-linux-64",
-    "@id": "http:anaconda/glob2/0_5_py36_0_linux_64",
+    "@id": "http:anaconda/glob2/0.5-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -544,7 +544,7 @@
   {
     "name": "asn1crypto",
     "revision": "0.22.0-py36_0-linux-64",
-    "@id": "http:anaconda/asn1crypto/0_22_0_py36_0_linux_64",
+    "@id": "http:anaconda/asn1crypto/0.22.0-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -563,7 +563,7 @@
   {
     "name": "patchelf",
     "revision": "0.9-0-linux-64",
-    "@id": "http:anaconda/patchelf/0_9_0_linux_64",
+    "@id": "http:anaconda/patchelf/0.9-0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -582,7 +582,7 @@
   {
     "name": "markupsafe",
     "revision": "1.0-py36_0-linux-64",
-    "@id": "http:anaconda/markupsafe/1_0_py36_0_linux_64",
+    "@id": "http:anaconda/markupsafe/1.0-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -601,7 +601,7 @@
   {
     "name": "libffi",
     "revision": "3.2.1-1-linux-64",
-    "@id": "http:anaconda/libffi/3_2_1_1_linux_64",
+    "@id": "http:anaconda/libffi/3.2.1-1-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -620,7 +620,7 @@
   {
     "name": "zlib",
     "revision": "1.2.8-3-linux-64",
-    "@id": "http:anaconda/zlib/1_2_8_3_linux_64",
+    "@id": "http:anaconda/zlib/1.2.8-3-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -639,7 +639,7 @@
   {
     "name": "xz",
     "revision": "5.2.2-1-linux-64",
-    "@id": "http:anaconda/xz/5_2_2_1_linux_64",
+    "@id": "http:anaconda/xz/5.2.2-1-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -658,7 +658,7 @@
   {
     "name": "beautifulsoup4",
     "revision": "4.6.0-py36_0-linux-64",
-    "@id": "http:anaconda/beautifulsoup4/4_6_0_py36_0_linux_64",
+    "@id": "http:anaconda/beautifulsoup4/4.6.0-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -677,7 +677,7 @@
   {
     "name": "idna",
     "revision": "2.5-py36_0-linux-64",
-    "@id": "http:anaconda/idna/2_5_py36_0_linux_64",
+    "@id": "http:anaconda/idna/2.5-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -696,7 +696,7 @@
   {
     "name": "conda-verify",
     "revision": "2.0.0-py36_0-linux-64",
-    "@id": "http:anaconda/conda_verify/2_0_0_py36_0_linux_64",
+    "@id": "http:anaconda/conda-verify/2.0.0-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -715,7 +715,7 @@
   {
     "name": "pycosat",
     "revision": "0.6.2-py36_0-linux-64",
-    "@id": "http:anaconda/pycosat/0_6_2_py36_0_linux_64",
+    "@id": "http:anaconda/pycosat/0.6.2-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -734,7 +734,7 @@
   {
     "name": "pyyaml",
     "revision": "3.12-py36_0-linux-64",
-    "@id": "http:anaconda/pyyaml/3_12_py36_0_linux_64",
+    "@id": "http:anaconda/pyyaml/3.12-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -753,7 +753,7 @@
   {
     "name": "wheel",
     "revision": "0.29.0-py36_0-linux-64",
-    "@id": "http:anaconda/wheel/0_29_0_py36_0_linux_64",
+    "@id": "http:anaconda/wheel/0.29.0-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -772,7 +772,7 @@
   {
     "name": "conda",
     "revision": "4.3.25-py36_0-linux-64",
-    "@id": "http:anaconda/conda/4_3_25_py36_0_linux_64",
+    "@id": "http:anaconda/conda/4.3.25-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -791,7 +791,7 @@
   {
     "name": "openssl",
     "revision": "1.0.2l-0-linux-64",
-    "@id": "http:anaconda/openssl/1_0_2l_0_linux_64",
+    "@id": "http:anaconda/openssl/1.0.2l-0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -810,7 +810,7 @@
   {
     "name": "chardet",
     "revision": "3.0.4-py36_0-linux-64",
-    "@id": "http:anaconda/chardet/3_0_4_py36_0_linux_64",
+    "@id": "http:anaconda/chardet/3.0.4-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -829,7 +829,7 @@
   {
     "name": "six",
     "revision": "1.10.0-py36_0-linux-64",
-    "@id": "http:anaconda/six/1_10_0_py36_0_linux_64",
+    "@id": "http:anaconda/six/1.10.0-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -848,7 +848,7 @@
   {
     "name": "filelock",
     "revision": "2.0.7-py36_0-linux-64",
-    "@id": "http:anaconda/filelock/2_0_7_py36_0_linux_64",
+    "@id": "http:anaconda/filelock/2.0.7-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",
@@ -867,7 +867,7 @@
   {
     "name": "requests",
     "revision": "2.14.2-py36_0-linux-64",
-    "@id": "http:anaconda/requests/2_14_2_py36_0_linux_64",
+    "@id": "http:anaconda/requests/2.14.2-py36_0-linux-64",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "anaconda",

@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -44,7 +44,7 @@ public class PearPackageDependenciesParser {
             if (!started) {
                 started = line.startsWith(START_TOKEN);
                 continue;
-            } else if (StringUtils.isBlank(line) || line.startsWith("Required")) {
+            } else if (StringUtils.isBlank(line) || line.startsWith("Required") || line.startsWith("REQUIRED")) {
                 continue;
             }
 

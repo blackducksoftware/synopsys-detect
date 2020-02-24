@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -61,19 +61,17 @@ public class SbtResolutionCacheExtractor {
 
     private final FileFinder fileFinder;
     private final ExternalIdFactory externalIdFactory;
-    private final SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions;
 
-    public SbtResolutionCacheExtractor(final FileFinder fileFinder, final ExternalIdFactory externalIdFactory,
-        final SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions) {
+    public SbtResolutionCacheExtractor(final FileFinder fileFinder, final ExternalIdFactory externalIdFactory) {
         this.fileFinder = fileFinder;
         this.externalIdFactory = externalIdFactory;
-        this.sbtResolutionCacheDetectableOptions = sbtResolutionCacheDetectableOptions;
     }
 
-    public Extraction extract(final File directory) {
+    public Extraction extract(final File directory, SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions) { //TODO: Extractor should not use DetectableOptions
         try {
-            final String included = sbtResolutionCacheDetectableOptions.getIncludedConfigurations();
-            final String excluded = sbtResolutionCacheDetectableOptions.getExcludedConfigurations();
+            // TODO: Handle null better.
+            final String included = sbtResolutionCacheDetectableOptions.getIncludedConfigurations().orElse("");
+            final String excluded = sbtResolutionCacheDetectableOptions.getExcludedConfigurations().orElse("");
             final int depth = sbtResolutionCacheDetectableOptions.getReportDepth();
 
             final SbtProject project = extractProject(directory, depth, included, excluded);

@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -72,7 +72,7 @@ public class PipInspectorTreeParser {
             }
 
             final Dependency currentDependency = parseDependencyFromLine(trimmedLine, sourcePath);
-            final int lineLevel = getLineLevel(trimmedLine);
+            final int lineLevel = getLineLevel(line);
             try {
                 history.clearDependenciesDeeperThan(lineLevel);
             } catch (final IllegalStateException e) {
@@ -102,15 +102,15 @@ public class PipInspectorTreeParser {
 
     private void parseErrorsFromLine(final String trimmedLine) {
         if (trimmedLine.startsWith(UNKNOWN_REQUIREMENTS_PREFIX)) {
-            logger.error("Pip inspector could not find requirements file @ " + trimmedLine.substring(UNKNOWN_REQUIREMENTS_PREFIX.length()));
+            logger.error(String.format("Pip inspector could not find requirements file @ %s", trimmedLine.substring(UNKNOWN_REQUIREMENTS_PREFIX.length())));
         }
 
         if (trimmedLine.startsWith(UNPARSEABLE_REQUIREMENTS_PREFIX)) {
-            logger.error("Pip inspector could not parse requirements file @ " + trimmedLine.substring(UNPARSEABLE_REQUIREMENTS_PREFIX.length()));
+            logger.error(String.format("Pip inspector could not parse requirements file @ %s", trimmedLine.substring(UNPARSEABLE_REQUIREMENTS_PREFIX.length())));
         }
 
         if (trimmedLine.startsWith(UNKNOWN_PACKAGE_PREFIX)) {
-            logger.error("Pip inspector could not resolve the package: " + trimmedLine.substring(UNKNOWN_PACKAGE_PREFIX.length()));
+            logger.error(String.format("Pip inspector could not resolve the package: %s", trimmedLine.substring(UNKNOWN_PACKAGE_PREFIX.length())));
         }
     }
 
@@ -132,6 +132,7 @@ public class PipInspectorTreeParser {
         return new Dependency(name, version, externalId);
     }
 
+    // TODO: This should be more strict. Currently successfully parses a graph with an indentation of three spaces instead of 4.
     private int getLineLevel(final String line) {
         int level = 0;
         String tmpLine = line;

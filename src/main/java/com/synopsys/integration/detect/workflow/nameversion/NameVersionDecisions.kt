@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,13 +22,11 @@
  */
 package com.synopsys.integration.detect.workflow.nameversion
 
-import com.synopsys.integration.detect.configuration.DetectProperty
-import java.util.Optional
-
-import org.slf4j.Logger
-
-import com.synopsys.integration.util.NameVersion
+import com.synopsys.integration.detect.configuration.DetectProperties
 import com.synopsys.integration.detector.base.DetectorType
+import com.synopsys.integration.util.NameVersion
+import org.slf4j.Logger
+import java.util.*
 
 abstract class NameVersionDecision(val chosenNameVersion: Optional<NameVersion> = Optional.empty()) {
     abstract fun printDescription(logger: Logger)
@@ -41,7 +39,7 @@ class ArbitraryNameVersionDecision(chosenNameVersion: Optional<NameVersion>, pri
         for (projectNamePossibility in otherDetectors) {
             logger.info("\t${projectNamePossibility.detectorType}: ${projectNamePossibility.nameVersion.name}, ${projectNamePossibility.nameVersion.version}")
         }
-        logger.info("Chose to use ${chosenDetector.detectorType} at depth ${chosenDetector.depth} for project name and version. Override with " + DetectProperty.DETECT_PROJECT_DETECTOR.propertyKey + ".")
+        logger.info("Chose to use ${chosenDetector.detectorType} at depth ${chosenDetector.depth} for project name and version. Override with " + DetectProperties.DETECT_PROJECT_DETECTOR.key + ".")
     }
 }
 

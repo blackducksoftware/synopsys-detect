@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -47,7 +47,7 @@ public class BazelWorkspace {
             workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
         } catch (IOException e) {
             logger.debug(String.format("Unable to parse dependency rule from %s: %s", workspaceFile.getAbsolutePath(), e.getMessage()));
-            return WorkspaceRule.UNKNOWN;
+            return WorkspaceRule.UNSPECIFIED;
         }
         final WorkspaceRule dependencyRule = parseDependencyRuleFromWorkspaceFileLines(workspaceFileLines);
         return dependencyRule;
@@ -65,6 +65,6 @@ public class BazelWorkspace {
             }
         }
         logger.debug("Unable to derive dependency rule from WORKSPACE file");
-        return WorkspaceRule.UNKNOWN;
+        return WorkspaceRule.UNSPECIFIED;
     }
 }

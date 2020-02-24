@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -34,7 +34,6 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
-import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 
 public class YarnTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -44,14 +43,14 @@ public class YarnTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(final PackageJson packageJson, final YarnLock yarnLock, final YarnLockOptions yarnLockOptions) throws MissingExternalIdException {
+    public DependencyGraph transform(final PackageJson packageJson, final YarnLock yarnLock, boolean productionOnly) throws MissingExternalIdException {
         final LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
         for (final Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
             graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
         }
 
-        if (!yarnLockOptions.useProductionOnly()) {
+        if (!productionOnly) {
             for (final Map.Entry<String, String> packageDependency : packageJson.devDependencies.entrySet()) {
                 graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
             }
@@ -63,7 +62,7 @@ public class YarnTransformer {
                 graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
                 for (final YarnLockDependency dependency : entry.getDependencies()) {
                     final StringDependencyId stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());
-                    if ((yarnLockOptions.useProductionOnly() && !dependency.isOptional()) || (!yarnLockOptions.useProductionOnly())) {
+                    if (!productionOnly || !dependency.isOptional()) {
                         graphBuilder.addChildWithParent(stringDependencyId, id);
                     } else {
                         logger.debug(String.format("Eluding optional dependency: %s", stringDependencyId.getValue()));

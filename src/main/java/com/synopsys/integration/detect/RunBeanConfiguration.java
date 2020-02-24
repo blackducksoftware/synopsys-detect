@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2019 Synopsys, Inc.
+ * Copyright (c) 2020 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,6 +22,9 @@
  */
 package com.synopsys.integration.detect;
 
+import java.io.File;
+import java.util.Optional;
+
 import javax.xml.parsers.DocumentBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,17 +36,25 @@ import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.detect.configuration.ConnectionManager;
-import com.synopsys.integration.detect.configuration.DetectConfiguration;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
-import com.synopsys.integration.detect.configuration.DetectProperty;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
-import com.synopsys.integration.detect.configuration.PropertyAuthority;
 import com.synopsys.integration.detect.tool.detector.DetectExecutableRunner;
-import com.synopsys.integration.detect.tool.detector.DetectFileFinder;
+import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.LocalPipInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.AirgapNugetInspectorLocator;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.LocatorNugetInspectorResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorLocator;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.OnlineNugetInspectorLocator;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScanner;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
@@ -63,7 +74,12 @@ import com.synopsys.integration.detectable.detectable.executable.impl.SimpleLoca
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
+import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
+import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
+import com.synopsys.integration.detectable.factory.DetectableFactory;
 
 import freemarker.template.Configuration;
 
@@ -74,7 +90,9 @@ public class RunBeanConfiguration {
     @Autowired
     public DetectInfo detectInfo;
     @Autowired
-    public DetectConfiguration detectConfiguration;
+    public PropertyConfiguration detectConfiguration;
+    @Autowired
+    public DetectConfigurationFactory detectConfigurationFactory;
     @Autowired
     public DirectoryManager directoryManager;
     @Autowired
@@ -93,24 +111,19 @@ public class RunBeanConfiguration {
         return new ExternalIdFactory();
     }
 
-    // This is not a bean!
-    public FileFinder simpleFileFinder() {
+    @Bean
+    public FileFinder fileFinder() {
         return new SimpleFileFinder();
     }
 
     @Bean
-    public FileFinder fileFinder() {
-        return new DetectFileFinder(detectConfiguration.getStringArrayProperty(DetectProperty.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES, PropertyAuthority.NONE));
-    }
-
-    @Bean
-    public ConnectionManager connectionManager() {
-        return new ConnectionManager(detectConfiguration);
+    public ConnectionFactory connectionFactory() {
+        return new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
     }
 
     @Bean
     public ArtifactResolver artifactResolver() {
-        return new ArtifactResolver(connectionManager(), gson);
+        return new ArtifactResolver(connectionFactory(), gson);
     }
 
     @Bean
@@ -119,13 +132,8 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public DetectConfigurationFactory detectConfigurationFactory() {
-        return new DetectConfigurationFactory(detectConfiguration);
-    }
-
-    @Bean
     public CodeLocationNameGenerator codeLocationNameService() {
-        final String codeLocationNameOverride = detectConfiguration.getProperty(DetectProperty.DETECT_CODE_LOCATION_NAME, PropertyAuthority.NONE);
+        final String codeLocationNameOverride = detectConfiguration.getValueOrEmpty(DetectProperties.Companion.getDETECT_CODE_LOCATION_NAME()).orElse(null);
         return new CodeLocationNameGenerator(codeLocationNameOverride);
     }
 
@@ -136,12 +144,12 @@ public class RunBeanConfiguration {
 
     @Bean
     public BdioCodeLocationCreator detectCodeLocationManager() {
-        return new BdioCodeLocationCreator(codeLocationNameManager(), detectConfiguration, directoryManager, eventSystem);
+        return new BdioCodeLocationCreator(codeLocationNameManager(), directoryManager, eventSystem);
     }
 
     @Bean
     public AirGapInspectorPaths airGapManager() {
-        final AirGapOptions airGapOptions = detectConfigurationFactory().createAirGapOptions();
+        final AirGapOptions airGapOptions = detectConfigurationFactory.createAirGapOptions();
         return new AirGapInspectorPaths(airGapPathFinder(), airGapOptions);
     }
 
@@ -157,7 +165,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public SimpleExecutableFinder simpleExecutableFinder() {
-        return SimpleExecutableFinder.forCurrentOperatingSystem(simpleFileFinder());
+        return SimpleExecutableFinder.forCurrentOperatingSystem(fileFinder());
     }
 
     @Bean
@@ -177,18 +185,61 @@ public class RunBeanConfiguration {
 
     @Bean
     public DetectExecutableResolver detectExecutableResolver() {
-        return new DetectExecutableResolver(simpleExecutableResolver(), detectConfiguration);
+        return new DetectExecutableResolver(simpleExecutableResolver(), detectConfigurationFactory.createExecutablePaths());
     }
 
+    //#region Detectables
     @Bean
     public DockerInspectorResolver dockerInspectorResolver() {
         final DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver());
-        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), simpleFileFinder(), dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
+        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fileFinder(), dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
     }
+
+    @Bean()
+    public GradleInspectorResolver gradleInspectorResolver() {
+        final GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver());
+        return new ArtifactoryGradleInspectorResolver(gradleInspectorInstaller, configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapManager(), directoryManager);
+    }
+
+    @Bean()
+    public NugetInspectorResolver nugetInspectorResolver() {
+        final NugetLocatorOptions installerOptions = detectableOptionFactory.createNugetInstallerOptions();
+        final NugetInspectorLocator locator;
+        final Optional<File> nugetAirGapPath = airGapManager().getNugetInspectorAirGapFile();
+        if (nugetAirGapPath.isPresent()) {
+            locator = new AirgapNugetInspectorLocator(airGapManager());
+        } else {
+            final NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactResolver());
+            locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion().orElse(null));
+        }
+        return new LocatorNugetInspectorResolver(detectExecutableResolver(), executableRunner(), detectInfo, fileFinder(), installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator);
+    }
+
+    @Bean()
+    public PipInspectorResolver pipInspectorResolver() {
+        return new LocalPipInspectorResolver(directoryManager);
+    }
+
+    @Bean()
+    public GradleInspectorScriptCreator gradleInspectorScriptCreator() {
+        return new GradleInspectorScriptCreator(configuration);
+    }
+
+    @Bean()
+    public DetectableFactory detectableFactory() {
+        return new DetectableFactory(fileFinder(), executableRunner(), externalIdFactory(), gson);
+    }
+
+    @Bean()
+    public DetectDetectableFactory detectDetectableFactory() {
+        return new DetectDetectableFactory(detectableFactory(), detectableOptionFactory, detectExecutableResolver(), dockerInspectorResolver(), gradleInspectorResolver(), nugetInspectorResolver(), pipInspectorResolver());
+    }
+
+    //#endregion Detectables
 
     @Lazy
     @Bean()
     public BlackDuckSignatureScanner blackDuckSignatureScanner(final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, final ScanBatchRunner scanBatchRunner, final BlackDuckServerConfig blackDuckServerConfig) {
-        return new BlackDuckSignatureScanner(directoryManager, simpleFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, blackDuckServerConfig);
+        return new BlackDuckSignatureScanner(directoryManager, fileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, blackDuckServerConfig, scanBatchRunner);
     }
 }
