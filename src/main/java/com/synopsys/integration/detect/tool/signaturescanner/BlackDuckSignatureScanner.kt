@@ -191,7 +191,7 @@ class BlackDuckSignatureScanner(
         scanJobBuilder.dryRun(signatureScannerOptions.dryRun)
         scanJobBuilder.cleanupOutput(false)
 
-        if (signatureScannerOptions.uploadSource && signatureScannerOptions.snippetMatching == null && signatureScannerOptions.licenseSearch == null) {
+        if (signatureScannerOptions.uploadSource && signatureScannerOptions.snippetMatching == null && !signatureScannerOptions.licenseSearch) {
             throw DetectUserFriendlyException("You must enable snippet matching using " + DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING.key + " in order to use upload source.",
                     ExitCodeType.FAILURE_CONFIGURATION)
         }
@@ -206,6 +206,9 @@ class BlackDuckSignatureScanner(
 
         val licenseSearch = signatureScannerOptions.licenseSearch
         scanJobBuilder.licenseSearch(licenseSearch)
+
+        val individualFileMatching = signatureScannerOptions.individualFileMatching
+        scanJobBuilder.individualFileMatching(individualFileMatching?.name)
 
         val sourcePath = directoryManager.sourceDirectory
         val prefix = signatureScannerOptions.codeLocationPrefix

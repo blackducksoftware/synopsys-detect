@@ -314,6 +314,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val dryRun = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN)
         val uploadSource = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE)
         val licenseSearch = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH);
+        val individualFileMatching = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING)
         val codeLocationPrefix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX).orElse(null)
         val codeLocationSuffix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX).orElse(null)
         val additionalArguments = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS).orElse(null)
@@ -347,7 +348,8 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
                 codeLocationSuffix = codeLocationSuffix,
                 additionalArguments = additionalArguments,
                 maxDepth = maxDepth,
-                licenseSearch = licenseSearch
+                licenseSearch = licenseSearch,
+                individualFileMatching = individualFileMatching
         )
     }
 
