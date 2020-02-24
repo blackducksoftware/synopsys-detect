@@ -253,9 +253,9 @@ class DetectProperties {
             setCategory(DetectCategory.Advanced)
         }
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH = BooleanProperty("detect.blackduck.signature.scanner.license.search", false).apply {
-            info("Signature Scanner License Search", "6.2.0")
-            help("When set to true, user will be able to scan and discover license names in Black Duck")
-            groups(DetectGroup.SignatureScanner)
+            setInfo("Signature Scanner License Search", "6.2.0")
+            setHelp("When set to true, user will be able to scan and discover license names in Black Duck")
+            setGroups(DetectGroup.SignatureScanner)
         }
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH = NullablePathProperty("detect.blackduck.signature.scanner.local.path").apply {
             setInfo("Signature Scanner Local Path", "4.2.0")
