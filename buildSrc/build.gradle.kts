@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven ( url = "https://plugins.gradle.org/m2/" )
+        maven(url = "https://plugins.gradle.org/m2/")
     }
     dependencies {
         "classpath"(group = "com.blackducksoftware.integration", name = "common-gradle-plugin", version = "0.0.+")
@@ -17,7 +17,7 @@ apply(plugin = "com.blackducksoftware.integration.simple")
 
 repositories {
     mavenCentral()
-    maven (url = "https://plugins.gradle.org/m2/")
+    maven(url = "https://plugins.gradle.org/m2/")
 }
 
 dependencies {
@@ -26,4 +26,5 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("commons-io:commons-io:2.6")
     implementation("org.apache.commons:commons-lang3:3.0")
+    implementation("com.blackducksoftware.integration:integration-common:17.1.0")
 }
