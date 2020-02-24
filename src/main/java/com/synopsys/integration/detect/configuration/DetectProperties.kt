@@ -47,8 +47,8 @@ import com.synopsys.integration.configuration.property.types.string.StringProper
 import com.synopsys.integration.detect.DetectMajorVersion
 import com.synopsys.integration.detect.DetectTool
 import com.synopsys.integration.detect.configuration.enums.DefaultVersionNameScheme
-import com.synopsys.integration.detect.configuration.enums.ExtendedSnippetMode
 import com.synopsys.integration.detect.configuration.enums.IndividualFileMatchMode
+import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule
 import com.synopsys.integration.detector.base.DetectorType
