@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.tool.signaturescanner
 
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
+import com.synopsys.integration.detect.configuration.enums.IndividualFileMatchMode
 import java.nio.file.Path
 
 class BlackDuckSignatureScannerOptions(
@@ -41,6 +42,6 @@ class BlackDuckSignatureScannerOptions(
         val codeLocationSuffix: String?,
         val additionalArguments: String?,
         val maxDepth: Int,
-        val individualFileMatching: String?,
+        val individualFileMatching: IndividualFileMatchMode?,
         val licenseSearch: Boolean
 )

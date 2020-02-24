@@ -238,7 +238,7 @@ class DetectProperties {
         }
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING = EnumProperty("detect.blackduck.signature.scanner.individual.file.matching", IndividualFileMatchMode.NONE, IndividualFileMatchMode::class.java).apply {
             setInfo("Individual File Matching", "6.2.0")
-            setHelp("Users may set this property to SOURCE, BINARY, ALL, or NONE, to indicate what types of files they want to match")
+            setHelp("Users may set this property to indicate what types of files they want to match")
             setGroups(DetectGroup.SignatureScanner)
         }
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL = NullableStringProperty("detect.blackduck.signature.scanner.host.url").apply {
