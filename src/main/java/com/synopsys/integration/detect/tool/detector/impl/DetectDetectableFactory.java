@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.tool.detector.impl;
 
+import com.synopsys.integration.detect.configuration.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
@@ -75,10 +76,11 @@ public class DetectDetectableFactory {
     private final GradleInspectorResolver gradleInspectorResolver;
     private final NugetInspectorResolver nugetInspectorResolver;
     private final PipInspectorResolver pipInspectorResolver;
+    private final ConnectionDetails connectionDetails;
 
     public DetectDetectableFactory(final DetectableFactory detectableFactory, final DetectableOptionFactory detectableOptionFactory, final DetectExecutableResolver detectExecutableResolver,
         final DockerInspectorResolver dockerInspectorResolver, final GradleInspectorResolver gradleInspectorResolver, final NugetInspectorResolver nugetInspectorResolver,
-        final PipInspectorResolver pipInspectorResolver) {
+        final PipInspectorResolver pipInspectorResolver, final ConnectionDetails connectionDetails) {
         this.detectableFactory = detectableFactory;
         this.detectableOptionFactory = detectableOptionFactory;
         this.detectExecutableResolver = detectExecutableResolver;
@@ -86,6 +88,7 @@ public class DetectDetectableFactory {
         this.gradleInspectorResolver = gradleInspectorResolver;
         this.nugetInspectorResolver = nugetInspectorResolver;
         this.pipInspectorResolver = pipInspectorResolver;
+        this.connectionDetails = connectionDetails;
     }
 
     public DockerDetectable createDockerDetectable(final DetectableEnvironment environment) {
@@ -149,7 +152,7 @@ public class DetectDetectableFactory {
     }
 
     public GradleDetectable createGradleDetectable(final DetectableEnvironment environment) {
-        return detectableFactory.createGradleDetectable(environment, detectableOptionFactory.createGradleInspectorOptions(), gradleInspectorResolver, detectExecutableResolver);
+        return detectableFactory.createGradleDetectable(environment, detectableOptionFactory.createGradleInspectorOptions(), gradleInspectorResolver, detectExecutableResolver, connectionDetails.getProxyInformation());
     }
 
     public GradleParseDetectable createGradleParseDetectable(final DetectableEnvironment environment) {

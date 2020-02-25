@@ -265,7 +265,7 @@ public class DetectBoot {
     private void printHelpJsonDocument(final List<Property> properties, final DetectInfo detectInfo, final Gson gson) {
         final DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
         // TODO: Is there a better way to build a fake set of rules?
-        final DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null);
+        final DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null, null);
         final DetectorRuleSet build = ruleFactory.createRules(mockFactory, false);
         final DetectorRuleSet buildless = ruleFactory.createRules(mockFactory, true);
         final List<HelpJsonDetector> buildDetectors = build.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, build)).collect(Collectors.toList());

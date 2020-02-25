@@ -232,7 +232,8 @@ public class RunBeanConfiguration {
 
     @Bean()
     public DetectDetectableFactory detectDetectableFactory() {
-        return new DetectDetectableFactory(detectableFactory(), detectableOptionFactory, detectExecutableResolver(), dockerInspectorResolver(), gradleInspectorResolver(), nugetInspectorResolver(), pipInspectorResolver());
+        return new DetectDetectableFactory(detectableFactory(), detectableOptionFactory, detectExecutableResolver(), dockerInspectorResolver(), gradleInspectorResolver(), nugetInspectorResolver(), pipInspectorResolver(),
+            detectConfigurationFactory.createConnectionDetails());
     }
 
     //#endregion Detectables

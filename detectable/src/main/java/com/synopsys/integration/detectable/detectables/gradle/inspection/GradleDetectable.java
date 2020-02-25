@@ -38,6 +38,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 @DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle or build.gradle.kts.<br/><br/>Executable: gradlew or gradle.")
 public class GradleDetectable extends Detectable {
@@ -49,18 +50,20 @@ public class GradleDetectable extends Detectable {
     private final GradleInspectorResolver gradleInspectorResolver;
     private final GradleInspectorExtractor gradleInspectorExtractor;
     private final GradleInspectorOptions gradleInspectorOptions;
+    private final ProxyInfo proxyInfo;
 
     private File gradleExe;
     private File gradleInspector;
 
     public GradleDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GradleResolver gradleResolver, final GradleInspectorResolver gradleInspectorResolver,
-        final GradleInspectorExtractor gradleInspectorExtractor, final GradleInspectorOptions gradleInspectorOptions) {
+        final GradleInspectorExtractor gradleInspectorExtractor, final GradleInspectorOptions gradleInspectorOptions, final ProxyInfo proxyInfo) {
         super(environment);
         this.fileFinder = fileFinder;
         this.gradleResolver = gradleResolver;
         this.gradleInspectorResolver = gradleInspectorResolver;
         this.gradleInspectorExtractor = gradleInspectorExtractor;
         this.gradleInspectorOptions = gradleInspectorOptions;
+        this.proxyInfo = proxyInfo;
     }
 
     @Override
@@ -96,6 +99,6 @@ public class GradleDetectable extends Detectable {
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
         String gradleCommand = gradleInspectorOptions.getGradleBuildCommand().orElse(""); // TODO: Nullable.
-        return gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleCommand, gradleInspectorOptions.getproxyInfo(), gradleInspector, extractionEnvironment.getOutputDirectory());
+        return gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleCommand, proxyInfo, gradleInspector, extractionEnvironment.getOutputDirectory());
     }
 }

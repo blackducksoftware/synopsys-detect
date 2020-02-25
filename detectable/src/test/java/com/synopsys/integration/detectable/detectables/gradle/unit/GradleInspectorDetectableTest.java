@@ -35,6 +35,7 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleI
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
 import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
 import com.synopsys.integration.detectable.util.MockFileFinder;
+import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 public class GradleInspectorDetectableTest {
     @Test
@@ -44,11 +45,12 @@ public class GradleInspectorDetectableTest {
         final GradleInspectorResolver gradleInspectorResolver = null;
         final GradleInspectorExtractor gradleInspectorExtractor = null;
         final GradleInspectorOptions gradleInspectorOptions = null;
+        final ProxyInfo proxyInfo = null;
 
         final DetectableEnvironment environment = MockDetectableEnvironment.empty();
         final FileFinder fileFinder = MockFileFinder.withFileNamed("build.gradle");
 
-        final GradleDetectable detectable = new GradleDetectable(environment, fileFinder, gradleResolver, gradleInspectorResolver, gradleInspectorExtractor, gradleInspectorOptions);
+        final GradleDetectable detectable = new GradleDetectable(environment, fileFinder, gradleResolver, gradleInspectorResolver, gradleInspectorExtractor, gradleInspectorOptions, proxyInfo);
 
         assertTrue(detectable.applicable().getPassed());
     }

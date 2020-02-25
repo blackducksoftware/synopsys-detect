@@ -194,6 +194,7 @@ import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
+import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 /*
  Entry point for creating detectables using most
@@ -279,8 +280,10 @@ public class DetectableFactory {
         return new GoGradleDetectable(environment, fileFinder, goGradleExtractor());
     }
 
-    public GradleDetectable createGradleDetectable(final DetectableEnvironment environment, final GradleInspectorOptions gradleInspectorOptions, final GradleInspectorResolver gradleInspectorResolver, final GradleResolver gradleResolver) {
-        return new GradleDetectable(environment, fileFinder, gradleResolver, gradleInspectorResolver, gradleInspectorExtractor(), gradleInspectorOptions);
+    public GradleDetectable createGradleDetectable(final DetectableEnvironment environment, final GradleInspectorOptions gradleInspectorOptions, final GradleInspectorResolver gradleInspectorResolver, final GradleResolver gradleResolver,
+        final
+        ProxyInfo proxyInfo) {
+        return new GradleDetectable(environment, fileFinder, gradleResolver, gradleInspectorResolver, gradleInspectorExtractor(), gradleInspectorOptions, proxyInfo);
     }
 
     public GradleParseDetectable createGradleParseDetectable(final DetectableEnvironment environment) {
@@ -339,7 +342,8 @@ public class DetectableFactory {
         return new PipenvDetectable(environment, pipenvDetectableOptions, fileFinder, pythonResolver, pipenvResolver, pipenvExtractor());
     }
 
-    public PipInspectorDetectable createPipInspectorDetectable(final DetectableEnvironment environment, final PipInspectorDetectableOptions pipInspectorDetectableOptions, final PipInspectorResolver pipInspectorResolver, final PythonResolver pythonResolver,
+    public PipInspectorDetectable createPipInspectorDetectable(final DetectableEnvironment environment, final PipInspectorDetectableOptions pipInspectorDetectableOptions, final PipInspectorResolver pipInspectorResolver,
+        final PythonResolver pythonResolver,
         final PipResolver pipResolver) {
         return new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor(), pipInspectorDetectableOptions);
     }
