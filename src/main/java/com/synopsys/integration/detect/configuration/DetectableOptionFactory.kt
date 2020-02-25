@@ -48,11 +48,12 @@ import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptio
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectableOptions
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions
+import com.synopsys.integration.rest.proxy.ProxyInfo
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import java.util.*
 
-class DetectableOptionFactory(private val detectConfiguration: PropertyConfiguration, private val diagnosticSystemOptional: Optional<DiagnosticSystem>, private val pathResolver: PathResolver) {
+class DetectableOptionFactory(private val detectConfiguration: PropertyConfiguration, private val diagnosticSystemOptional: Optional<DiagnosticSystem>, private val pathResolver: PathResolver, private val proxyInfo: ProxyInfo) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     fun createBazelDetectableOptions(): BazelDetectableOptions {
@@ -116,9 +117,6 @@ class DetectableOptionFactory(private val detectConfiguration: PropertyConfigura
             logger.warn("Using a custom gradle repository will not be supported in the future.")
             customRepository = configuredGradleInspectorRepositoryUrl
         }
-
-        val detectConfigurationFactory = DetectConfigurationFactory(detectConfiguration, pathResolver)
-        val proxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo()
 
         val onlineInspectorVersion = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION).orElse(null)
         val scriptOptions = GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion)

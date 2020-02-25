@@ -131,7 +131,7 @@ public class DetectBoot {
         this.detectBootFactory = detectBootFactory;
     }
 
-    public DetectBootResult boot(final DetectRun detectRun, final String[] sourceArgs, final ConfigurableEnvironment environment, final EventSystem eventSystem, final DetectContext detectContext) {
+    public DetectBootResult boot(final DetectRun detectRun, final String[] sourceArgs, final ConfigurableEnvironment environment, final EventSystem eventSystem, final DetectContext detectContext) throws DetectUserFriendlyException {
         final Gson gson = detectBootFactory.createGson();
         final ObjectMapper objectMapper = detectBootFactory.createObjectMapper();
         final DocumentBuilder xml = detectBootFactory.createXmlDocumentBuilder();
@@ -191,7 +191,7 @@ public class DetectBoot {
         final DirectoryManager directoryManager = new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
         final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectConfiguration, detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
-        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver);
+        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectConfigurationFactory.createBlackDuckProxyInfo());
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
@@ -265,7 +265,7 @@ public class DetectBoot {
     private void printHelpJsonDocument(final List<Property> properties, final DetectInfo detectInfo, final Gson gson) {
         final DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
         // TODO: Is there a better way to build a fake set of rules?
-        final DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null, null);
+        final DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null);
         final DetectorRuleSet build = ruleFactory.createRules(mockFactory, false);
         final DetectorRuleSet buildless = ruleFactory.createRules(mockFactory, true);
         final List<HelpJsonDetector> buildDetectors = build.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, build)).collect(Collectors.toList());

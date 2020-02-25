@@ -194,7 +194,6 @@ import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
-import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 /*
  Entry point for creating detectables using most
@@ -280,10 +279,8 @@ public class DetectableFactory {
         return new GoGradleDetectable(environment, fileFinder, goGradleExtractor());
     }
 
-    public GradleDetectable createGradleDetectable(final DetectableEnvironment environment, final GradleInspectorOptions gradleInspectorOptions, final GradleInspectorResolver gradleInspectorResolver, final GradleResolver gradleResolver,
-        final
-        ProxyInfo proxyInfo) {
-        return new GradleDetectable(environment, fileFinder, gradleResolver, gradleInspectorResolver, gradleInspectorExtractor(), gradleInspectorOptions, proxyInfo);
+    public GradleDetectable createGradleDetectable(final DetectableEnvironment environment, final GradleInspectorOptions gradleInspectorOptions, final GradleInspectorResolver gradleInspectorResolver, final GradleResolver gradleResolver) {
+        return new GradleDetectable(environment, fileFinder, gradleResolver, gradleInspectorResolver, gradleInspectorExtractor(), gradleInspectorOptions);
     }
 
     public GradleParseDetectable createGradleParseDetectable(final DetectableEnvironment environment) {
