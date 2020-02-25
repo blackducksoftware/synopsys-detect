@@ -991,6 +991,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#individual-file-matching-advanced" class="md-nav__link">
+    Individual File Matching (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#signature-scanner-license-search-advanced" class="md-nav__link">
     Signature Scanner License Search (Advanced)
   </a>
@@ -1477,6 +1484,13 @@
         <li class="md-nav__item">
   <a href="#signature-scanner-host-url-advanced" class="md-nav__link">
     Signature Scanner Host URL (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#individual-file-matching-advanced" class="md-nav__link">
+    Individual File Matching (Advanced)
   </a>
   
 </li>
@@ -2000,6 +2014,49 @@
 </tr>
 </tbody>
 </table>
+<h2 id="individual-file-matching-advanced">Individual File Matching (Advanced)</h2>
+<pre><code>--detect.blackduck.signature.scanner.individual.file.matching=NONE,ALL,BINARY,SOURCE 
+</code></pre>
+
+<p>Users may set this property to indicate what types of files they want to match</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>IndividualFileMatchMode</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>NONE</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>NONE, ALL, BINARY, SOURCE</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
 <h2 id="signature-scanner-license-search-advanced">Signature Scanner License Search (Advanced)</h2>
 <pre><code>--detect.blackduck.signature.scanner.license.search=false
 </code></pre>
@@ -2238,7 +2295,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue@ffa96578</td>
+<td>com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue@be8b5607</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
