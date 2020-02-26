@@ -36,6 +36,7 @@ import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.Common;
 import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
@@ -45,10 +46,6 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 
 public class UpdateArtifactoryPropertiesTask extends DefaultTask {
     private static final String LATEST_PROPERTY_KEY = "DETECT_LATEST";
-    private static final String ARTIFACTORY_USERNAME_PROPERTY_KEY = "artifactoryDeployerUsername";
-    private static final String ARTIFACTORY_PASSWORD_PROPERTY_KEY = "artifactoryDeployerPassword";
-    private static final String ARTIFACTORY_URL_PROPERTY_KEY = "deployArtifactoryUrl";
-    private static final String ARTIFACTORY_REPO_PROPERTY_KEY = "artifactoryRepo";
 
     private final IntLogger logger = new Slf4jIntLogger(getLogger());
     private final Gson gson = new Gson();
@@ -66,26 +63,27 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
             try {
                 logger.alwaysLog("For a release build, an update of artifactory properties will be attempted.");
 
-                final String majorVersion = projectVersion.split("\\.")[0];
-                final String majorVersionPropertyKey = String.format("%s_%s", LATEST_PROPERTY_KEY, majorVersion);
-
                 // TODO: Should we throw if we can't get the properties?
-                final String artifactoryDeployerUsername = getExtensionProperty(ARTIFACTORY_USERNAME_PROPERTY_KEY).orElse(null);
-                final String artifactoryDeployerPassword = getExtensionProperty(ARTIFACTORY_PASSWORD_PROPERTY_KEY).orElse(null);
-                final String artifactoryDeploymentUrl = getExtensionProperty(ARTIFACTORY_URL_PROPERTY_KEY)
+                final String artifactoryDeployerUsername = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_DEPLOYER_USERNAME).orElse(null);
+                final String artifactoryDeployerPassword = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_DEPLOYER_PASSWORD).orElse(null);
+                final String artifactoryDeploymentUrl = getExtensionProperty(Common.PROPERTY_DEPLOY_ARTIFACTORY_URL)
                                                             .map(Object::toString)
                                                             .map(url -> StringUtils.stripEnd(url, "/"))
                                                             .orElse(null);
-                final String deploymentRepositoryKey = getExtensionProperty(ARTIFACTORY_REPO_PROPERTY_KEY).orElse(null);
+                final String deploymentRepositoryKey = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_REPO).orElse(null);
+                final String artifactoryRepo = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_REPO).map(Object::toString).orElse(null);
 
                 final String artifactoryCredentials = String.format("%s:%s", artifactoryDeployerUsername, artifactoryDeployerPassword);
                 final List<String> defaultCurlArgs = Arrays.asList("--silent", "--insecure", "--user", artifactoryCredentials, "--header", "Content-Type: application/json");
 
-                final Optional<ArtifactSearchResultElement> currentArtifact = findCurrentArtifact(defaultCurlArgs, artifactoryDeploymentUrl);
+                final Optional<ArtifactSearchResultElement> currentArtifact = findCurrentArtifact(defaultCurlArgs, artifactoryDeploymentUrl, artifactoryRepo);
 
                 if (currentArtifact.isPresent()) {
                     // TODO: Don't use download uri. Derive it from https://www.jfrog.com/confluence/display/JFROG/Artifactory+REST+API#ArtifactoryRESTAPI-ScheduledReplicationStatus. See IDETECT-1847.
+                    final String majorVersion = projectVersion.split("\\.")[0];
+                    final String majorVersionPropertyKey = String.format("%s_%s", LATEST_PROPERTY_KEY, majorVersion);
                     final String downloadUri = currentArtifact.get().getDownloadUri();
+
                     setArtifactoryProperty(defaultCurlArgs, artifactoryDeploymentUrl, deploymentRepositoryKey, LATEST_PROPERTY_KEY, downloadUri);
                     setArtifactoryProperty(defaultCurlArgs, artifactoryDeploymentUrl, deploymentRepositoryKey, majorVersionPropertyKey, downloadUri);
                 } else {
@@ -102,13 +100,12 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
         return Optional.ofNullable(project.findProperty(propertyName)).map(Object::toString);
     }
 
-    private Optional<ArtifactSearchResultElement> findCurrentArtifact(final List<String> defaultCurlArgs, final String artifactoryDeploymentUrl) {
+    private Optional<ArtifactSearchResultElement> findCurrentArtifact(final List<String> defaultCurlArgs, final String artifactoryDeploymentUrl, final String artifactoryRepo) {
         final String projectName = project.getName();
         final String projectVersion = project.getVersion().toString();
-        try {
-            final String artifactoryRepo = getExtensionProperty(ARTIFACTORY_REPO_PROPERTY_KEY).map(Object::toString).orElse(null);
-            final String url = String.format("%s/api/search/artifact?name=%s-%s.jar&repos=%s", artifactoryDeploymentUrl, projectName, projectVersion, artifactoryRepo);
 
+        try {
+            final String url = String.format("%s/api/search/artifact?name=%s-%s.jar&repos=%s", artifactoryDeploymentUrl, projectName, projectVersion, artifactoryRepo);
             final ArtifactSearchResult artifactSearchResult = getArtifactoryItems(url, defaultCurlArgs);
 
             if (artifactSearchResult.getResults() == null) {
