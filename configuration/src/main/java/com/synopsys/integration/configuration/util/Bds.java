@@ -30,8 +30,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -64,8 +66,21 @@ public class Bds<T> {
         return new Bds<>(stream.filter(Objects::nonNull));
     }
 
+    public Bds<T> filter(Predicate<? super T> predicate) {
+        return new Bds<>(stream.filter(predicate));
+    }
+
     public <R> Bds<R> map(final Function<? super T, ? extends R> mapper) {
         return new Bds<>(stream.map(mapper));
+    }
+
+    public <R> Bds<R> flatMapStream(Function<? super T, ? extends Stream<? extends R>> mapper) {
+        return new Bds<>(stream.flatMap(mapper));
+    }
+
+    public <R> Bds<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper) {
+        Function<? super T, ? extends Stream<? extends R>> streamMapper = value -> mapper.apply(value).stream();
+        return new Bds<>(stream.flatMap(streamMapper));
     }
 
     public <K, U> Map<K, U> toMap(final Function<? super T, ? extends K> keyMapper,
@@ -89,6 +104,10 @@ public class Bds<T> {
 
     public static <T> Bds<T> of(final Collection<T> collection) {
         return new Bds<>(collection.stream());
+    }
+
+    public static <T> Bds<T> of(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") final Optional<T> optional) {
+        return optional.map(Bds::of).orElseGet(Bds::of);
     }
 
     @SafeVarargs
