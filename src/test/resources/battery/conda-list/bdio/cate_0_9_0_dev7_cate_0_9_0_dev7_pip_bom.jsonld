@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "cate/0.9.0.dev7/cate/0.9.0.dev7 pip/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:47:53.743Z"
-    },
-    "@id": "uuid:9ad205a0-7639-45d6-ab06-b8af986d0d67",
     "@type": "BillOfMaterials",
     "relationship": []
   },

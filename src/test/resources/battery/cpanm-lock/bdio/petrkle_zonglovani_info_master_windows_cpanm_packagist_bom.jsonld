@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "petrkle/zonglovani.info/master/windows-cpanm packagist/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:47:57.298Z"
-    },
-    "@id": "uuid:ec2b8875-ecc9-4add-95e9-efbb0bec4f8b",
     "@type": "BillOfMaterials",
     "relationship": []
   },

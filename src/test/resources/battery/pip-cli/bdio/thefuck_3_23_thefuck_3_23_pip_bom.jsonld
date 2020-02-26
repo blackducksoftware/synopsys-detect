@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "thefuck/3.23/thefuck/3.23 pip/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:48:45.459Z"
-    },
-    "@id": "uuid:08d0db1a-04e9-4d0a-831e-849a2aca574e",
     "@type": "BillOfMaterials",
     "relationship": []
   },

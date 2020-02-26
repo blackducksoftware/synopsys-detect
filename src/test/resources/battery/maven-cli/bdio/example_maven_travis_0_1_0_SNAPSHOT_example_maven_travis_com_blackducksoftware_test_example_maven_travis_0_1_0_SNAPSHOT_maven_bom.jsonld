@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "example-maven-travis/0.1.0-SNAPSHOT/example-maven-travis/com.blackducksoftware.test/example-maven-travis/0.1.0-SNAPSHOT maven/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:48:24.875Z"
-    },
-    "@id": "uuid:4ff6e212-53b7-4d5a-a060-e9c78b4a7572",
     "@type": "BillOfMaterials",
     "relationship": []
   },

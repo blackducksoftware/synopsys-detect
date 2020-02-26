@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "linux-gradle/0.1/com.blackducksoftware.test/linux-gradle/0.1 gradle/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:48:13.968Z"
-    },
-    "@id": "uuid:d02995a9-973b-4d5f-9cb5-da2bd9e4fec6",
     "@type": "BillOfMaterials",
     "relationship": []
   },

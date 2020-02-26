@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "HTTP/1.4.1/HTTP/1.4.1 pear/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:48:36.880Z"
-    },
-    "@id": "uuid:9a0f5167-c1bb-4931-b70a-feb6704d960e",
     "@type": "BillOfMaterials",
     "relationship": []
   },

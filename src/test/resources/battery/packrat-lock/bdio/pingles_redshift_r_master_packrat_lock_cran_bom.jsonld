@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "pingles/redshift-r/master/packrat-lock cran/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:48:32.538Z"
-    },
-    "@id": "uuid:ea58a412-c882-45bb-ae73-17d32bfabdd6",
     "@type": "BillOfMaterials",
     "relationship": []
   },
