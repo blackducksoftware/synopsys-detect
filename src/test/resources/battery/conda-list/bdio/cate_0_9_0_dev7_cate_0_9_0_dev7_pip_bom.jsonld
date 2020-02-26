@@ -139,45 +139,12 @@
         "version": "1.0.0"
       }
     },
-    "relationship": []
-  },
-  {
-    "name": "xarray",
-    "revision": "0.10.2",
-    "@id": "http:pypi/xarray/0.10.2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "xarray/0.10.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "xarray",
-        "version": "0.10.2"
+    "relationship": [
+      {
+        "related": "http:pypi/numpy/1.14.2",
+        "relationshipType": "DYNAMIC_LINK"
       }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pandas",
-    "revision": "0.22.0",
-    "@id": "http:pypi/pandas/0.22.0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "pandas/0.22.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "pandas",
-        "version": "0.22.0"
-      }
-    },
-    "relationship": []
+    ]
   },
   {
     "name": "numpy",
@@ -197,6 +164,58 @@
       }
     },
     "relationship": []
+  },
+  {
+    "name": "xarray",
+    "revision": "0.10.2",
+    "@id": "http:pypi/xarray/0.10.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "xarray/0.10.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "xarray",
+        "version": "0.10.2"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/pandas/0.22.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/numpy/1.14.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "pandas",
+    "revision": "0.22.0",
+    "@id": "http:pypi/pandas/0.22.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "pandas/0.22.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "pandas",
+        "version": "0.22.0"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/numpy/1.14.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   },
   {
     "name": "Pillow",
@@ -234,7 +253,12 @@
         "version": "0.16.0"
       }
     },
-    "relationship": []
+    "relationship": [
+      {
+        "related": "http:pypi/pyproj/1.9.5.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   },
   {
     "name": "tornado",
