@@ -41,9 +41,15 @@ public class ExtendedEnumValueParserTests {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "unknown", "Thing ", " THING", "tHiNg", "fourth" })
+    @ValueSource(strings = { "unknown", "Thing ", " THING" })
     public void unknownValues(final String value) {
         Assertions.assertThrows(ValueParseException.class, () -> new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse(value));
+    }
+
+    @Test
+    public void parsesLowercaseEnumValue() throws ValueParseException {
+        Assertions.assertEquals(ExtendedEnumValue.ofBaseValue(Example.THING).getBaseValue(), new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse("tHiNg").getBaseValue());
+        Assertions.assertEquals(ExtendedEnumValue.ofBaseValue(Example.ANOTHER).getBaseValue(), new ExtendedEnumValueParser<>(ExampleExtended.class, Example.class).parse("another").getBaseValue());
     }
 
     @Test
