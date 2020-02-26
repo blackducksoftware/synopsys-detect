@@ -63,15 +63,11 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
             try {
                 logger.alwaysLog("For a release build, an update of artifactory properties will be attempted.");
 
-                // TODO: Should we throw if we can't get the properties?
-                final String artifactoryDeployerUsername = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_DEPLOYER_USERNAME).orElse(null);
-                final String artifactoryDeployerPassword = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_DEPLOYER_PASSWORD).orElse(null);
-                final String artifactoryDeploymentUrl = getExtensionProperty(Common.PROPERTY_DEPLOY_ARTIFACTORY_URL)
-                                                            .map(Object::toString)
-                                                            .map(url -> StringUtils.stripEnd(url, "/"))
-                                                            .orElse(null);
-                final String deploymentRepositoryKey = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_REPO).orElse(null);
-                final String artifactoryRepo = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_REPO).map(Object::toString).orElse(null);
+                final String artifactoryDeployerUsername = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_DEPLOYER_USERNAME);
+                final String artifactoryDeployerPassword = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_DEPLOYER_PASSWORD);
+                final String artifactoryDeploymentUrl = getExtensionProperty(Common.PROPERTY_DEPLOY_ARTIFACTORY_URL);
+                final String deploymentRepositoryKey = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_REPO);
+                final String artifactoryRepo = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_REPO);
 
                 final String artifactoryCredentials = String.format("%s:%s", artifactoryDeployerUsername, artifactoryDeployerPassword);
                 final List<String> defaultCurlArgs = Arrays.asList("--silent", "--insecure", "--user", artifactoryCredentials, "--header", "Content-Type: application/json");
@@ -96,8 +92,10 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
         }
     }
 
-    private Optional<String> getExtensionProperty(final String propertyName) {
-        return Optional.ofNullable(project.findProperty(propertyName)).map(Object::toString);
+    private String getExtensionProperty(final String propertyName) {
+        return Optional.ofNullable(project.findProperty(propertyName))
+                   .map(Object::toString)
+                   .orElseThrow(() -> new IllegalArgumentException(String.format("Missing Gradle extension property '%s' which is required to set Artifactory properties.", propertyName)));
     }
 
     private Optional<ArtifactSearchResultElement> findCurrentArtifact(final List<String> defaultCurlArgs, final String artifactoryDeploymentUrl, final String artifactoryRepo) {
