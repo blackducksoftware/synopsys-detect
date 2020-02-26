@@ -17,13 +17,14 @@ buildscript {
         polarisCommonVersion = '0.13.2'
         junitPlatformDefaultTestTags = "integration, performance, battery"
     }
+
     repositories {
         mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
     }
 
     dependencies {
-        classpath 'com.synopsys.integration:common-gradle-plugin:1.1.1'
+        classpath 'com.synopsys.integration:common-gradle-plugin:1.2.3'
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
         classpath "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
@@ -39,7 +40,6 @@ version = '6.2.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
-apply from: 'artifactory-properties.gradle'
 apply from: 'docs.gradle'
 
 def createArtifactName() {

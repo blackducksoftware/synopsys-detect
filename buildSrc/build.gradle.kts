@@ -4,7 +4,7 @@ buildscript {
         maven(url = "https://plugins.gradle.org/m2/")
     }
     dependencies {
-        "classpath"(group = "com.blackducksoftware.integration", name = "common-gradle-plugin", version = "0.0.+")
+        "classpath"(group = "com.synopsys.integration", name = "common-gradle-plugin", version = "1.2.3")
     }
 }
 
@@ -13,7 +13,7 @@ plugins {
 }
 
 version = "1.0.0-SNAPSHOT"
-apply(plugin = "com.blackducksoftware.integration.simple")
+apply(plugin = "com.synopsys.integration.simple")
 
 repositories {
     mavenCentral()
@@ -27,4 +27,5 @@ dependencies {
     implementation("commons-io:commons-io:2.6")
     implementation("org.apache.commons:commons-lang3:3.0")
     implementation("com.blackducksoftware.integration:integration-common:17.1.0")
+    implementation("com.synopsys.integration:common-gradle-plugin:1.2.3")
 }
