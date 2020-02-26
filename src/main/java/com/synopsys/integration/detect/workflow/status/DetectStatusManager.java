@@ -28,6 +28,7 @@ import java.util.List;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.log.IntLogger;
 
 public class DetectStatusManager {

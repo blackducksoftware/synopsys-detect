@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * buildSrc
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,17 +20,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.status;
+package com.synopsys.integration.detect.artifactory;
 
-public class BlackDuckBomDetectResult implements DetectResult {
-    private final String projectComponentsLink;
+import java.util.List;
 
-    public BlackDuckBomDetectResult(final String projectComponentsLink) {
-        this.projectComponentsLink = projectComponentsLink;
+import com.google.gson.annotations.SerializedName;
+
+public class ArtifactSearchResult {
+    @SerializedName("results")
+    private final List<ArtifactSearchResultElement> results;
+
+    public ArtifactSearchResult(final List<ArtifactSearchResultElement> results) {
+        this.results = results;
     }
 
-    @Override
-    public String getResultMessage() {
-        return String.format("Black Duck Project BOM: %s", projectComponentsLink);
+    public List<ArtifactSearchResultElement> getResults() {
+        return results;
     }
 }
