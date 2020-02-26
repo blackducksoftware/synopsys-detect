@@ -155,7 +155,7 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
         command.addAll(curlArgs);
         final Executable executable = new Executable(workingDirectory, new HashMap<>(), command);
 
-        final ProcessBuilderRunner processBuilderRunner = new ProcessBuilderRunner();
+        final ProcessBuilderRunner processBuilderRunner = new ProcessBuilderRunner(logger);
         return processBuilderRunner.execute(executable);
     }
 }
