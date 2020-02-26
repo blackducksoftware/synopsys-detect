@@ -249,10 +249,7 @@ public class DetectBoot {
         detectContext.registerBean(detectableOptionFactory);
         detectContext.registerBean(detectConfigurationFactory);
 
-        detectContext.registerBean(detectInfo);
         detectContext.registerBean(directoryManager);
-
-        detectContext.registerBean(gson);
         detectContext.registerBean(objectMapper);
         detectContext.registerBean(xml);
         detectContext.registerBean(configuration);
