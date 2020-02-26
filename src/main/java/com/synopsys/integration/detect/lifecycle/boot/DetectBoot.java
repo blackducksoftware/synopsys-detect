@@ -53,7 +53,6 @@ import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.configuration.source.SpringConfigurationPropertySource;
 import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.RunBeanConfiguration;
 import com.synopsys.integration.detect.configuration.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.ConnectionFactory;
@@ -132,12 +131,12 @@ public class DetectBoot {
     }
 
     public DetectBootResult boot(final DetectRun detectRun, final String[] sourceArgs, final ConfigurableEnvironment environment, final EventSystem eventSystem, final DetectContext detectContext) {
-        final Gson gson = detectBootFactory.createGson();
         final ObjectMapper objectMapper = detectBootFactory.createObjectMapper();
         final DocumentBuilder xml = detectBootFactory.createXmlDocumentBuilder();
         final Configuration configuration = detectBootFactory.createConfiguration();
 
-        final DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
+        DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
+        Gson gson = detectContext.getBean(Gson.class);
 
         List<PropertySource> propertySources;
         try {

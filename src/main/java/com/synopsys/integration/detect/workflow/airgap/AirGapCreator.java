@@ -40,6 +40,7 @@ import com.synopsys.integration.detect.util.filter.DetectFilter;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
+import com.synopsys.integration.detect.workflow.result.AirGapDetectResult;
 
 public class AirGapCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -108,7 +109,7 @@ public class AirGapCreator {
             logger.info("Successfully created air gap zip: " + result);
             logger.info(ReportConstants.RUN_SEPARATOR);
 
-            eventSystem.publishEvent(Event.ResultProduced, () -> "Detect Air Gap Zip: " + result);
+            eventSystem.publishEvent(Event.ResultProduced, new AirGapDetectResult(result));
             return target;
         } catch (final IOException e) {
             throw new DetectUserFriendlyException("Failed to create detect air gap zip.", e, ExitCodeType.FAILURE_UNKNOWN_ERROR);

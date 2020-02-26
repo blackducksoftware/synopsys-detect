@@ -20,8 +20,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.status;
+package com.synopsys.integration.detect.workflow.result;
 
-public interface DetectResult {
-    String getResultMessage();
+public class AirGapDetectResult implements DetectResult {
+    private final String airGapFolder;
+
+    public AirGapDetectResult(final String airGapFolder) {
+        this.airGapFolder = airGapFolder;
+    }
+
+    @Override
+    public String getResultLocation() {
+        return airGapFolder;
+    }
+
+    @Override
+    public String getResultMessage() {
+        return String.format("Detect Air Gap Zip: %s", airGapFolder);
+    }
 }

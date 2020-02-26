@@ -62,7 +62,8 @@ public class DirectoryManager {
         RELEVANT("relevant"),
         REPORT("reports"),
         SCAN("scan"),
-        SHARED("shared");
+        SHARED("shared"),
+        STATUS("status");
 
         private final String directoryName;
 
@@ -182,6 +183,10 @@ public class DirectoryManager {
 
     public File getLogOutputDirectory() {
         return getRunDirectory(RunDirectory.LOG);
+    }
+
+    public File getStatusOutputDirectory() {
+        return getRunDirectory(RunDirectory.STATUS);
     }
 
     public File getExecutableOutputDirectory() {
