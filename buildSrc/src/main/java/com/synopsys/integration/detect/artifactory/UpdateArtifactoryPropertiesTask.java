@@ -66,14 +66,13 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
                 final String artifactoryDeployerUsername = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_DEPLOYER_USERNAME);
                 final String artifactoryDeployerPassword = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_DEPLOYER_PASSWORD);
                 final String artifactoryDeploymentUrl = getExtensionProperty(Common.PROPERTY_DEPLOY_ARTIFACTORY_URL);
-                final String deploymentRepositoryKey = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_REPO);
-                final String artifactoryRepo = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_REPO);
+                final String artifactoryRepository = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_REPO);
                 final String artifactoryDownloadUrl = getExtensionProperty(Common.PROPERTY_DOWNLOAD_ARTIFACTORY_URL);
 
                 final String artifactoryCredentials = String.format("%s:%s", artifactoryDeployerUsername, artifactoryDeployerPassword);
                 final List<String> defaultCurlArgs = Arrays.asList("--silent", "--insecure", "--user", artifactoryCredentials, "--header", "Content-Type: application/json");
 
-                final Optional<ArtifactSearchResultElement> currentArtifact = findCurrentArtifact(defaultCurlArgs, artifactoryDeploymentUrl, artifactoryRepo);
+                final Optional<ArtifactSearchResultElement> currentArtifact = findCurrentArtifact(defaultCurlArgs, artifactoryDeploymentUrl, artifactoryRepository);
 
                 if (currentArtifact.isPresent()) {
                     final String majorVersion = projectVersion.split("\\.")[0];
@@ -81,8 +80,8 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
                     final String downloadUri = currentArtifact.get().getDownloadUri();
                     final String updatedDownloadUri = downloadUri.replace(artifactoryDeploymentUrl, artifactoryDownloadUrl);
 
-                    setArtifactoryProperty(defaultCurlArgs, artifactoryDeploymentUrl, deploymentRepositoryKey, LATEST_PROPERTY_KEY, updatedDownloadUri);
-                    setArtifactoryProperty(defaultCurlArgs, artifactoryDeploymentUrl, deploymentRepositoryKey, majorVersionPropertyKey, updatedDownloadUri);
+                    setArtifactoryProperty(defaultCurlArgs, artifactoryDeploymentUrl, artifactoryRepository, LATEST_PROPERTY_KEY, updatedDownloadUri);
+                    setArtifactoryProperty(defaultCurlArgs, artifactoryDeploymentUrl, artifactoryRepository, majorVersionPropertyKey, updatedDownloadUri);
                 } else {
                     logger.alwaysLog(String.format("Artifactory properties won't be updated since %s-%s was not found.", project.getName(), projectVersion));
                 }
