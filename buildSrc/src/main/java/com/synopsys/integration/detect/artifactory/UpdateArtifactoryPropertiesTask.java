@@ -68,6 +68,7 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
                 final String artifactoryDeploymentUrl = getExtensionProperty(Common.PROPERTY_DEPLOY_ARTIFACTORY_URL);
                 final String deploymentRepositoryKey = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_REPO);
                 final String artifactoryRepo = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_REPO);
+                final String artifactoryDownloadUrl = getExtensionProperty(Common.PROPERTY_DOWNLOAD_ARTIFACTORY_URL);
 
                 final String artifactoryCredentials = String.format("%s:%s", artifactoryDeployerUsername, artifactoryDeployerPassword);
                 final List<String> defaultCurlArgs = Arrays.asList("--silent", "--insecure", "--user", artifactoryCredentials, "--header", "Content-Type: application/json");
@@ -75,13 +76,13 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
                 final Optional<ArtifactSearchResultElement> currentArtifact = findCurrentArtifact(defaultCurlArgs, artifactoryDeploymentUrl, artifactoryRepo);
 
                 if (currentArtifact.isPresent()) {
-                    // TODO: Don't use download uri. Derive it from https://www.jfrog.com/confluence/display/JFROG/Artifactory+REST+API#ArtifactoryRESTAPI-ScheduledReplicationStatus. See IDETECT-1847.
                     final String majorVersion = projectVersion.split("\\.")[0];
                     final String majorVersionPropertyKey = String.format("%s_%s", LATEST_PROPERTY_KEY, majorVersion);
                     final String downloadUri = currentArtifact.get().getDownloadUri();
+                    final String updatedDownloadUri = downloadUri.replace(artifactoryDeploymentUrl, artifactoryDownloadUrl);
 
-                    setArtifactoryProperty(defaultCurlArgs, artifactoryDeploymentUrl, deploymentRepositoryKey, LATEST_PROPERTY_KEY, downloadUri);
-                    setArtifactoryProperty(defaultCurlArgs, artifactoryDeploymentUrl, deploymentRepositoryKey, majorVersionPropertyKey, downloadUri);
+                    setArtifactoryProperty(defaultCurlArgs, artifactoryDeploymentUrl, deploymentRepositoryKey, LATEST_PROPERTY_KEY, updatedDownloadUri);
+                    setArtifactoryProperty(defaultCurlArgs, artifactoryDeploymentUrl, deploymentRepositoryKey, majorVersionPropertyKey, updatedDownloadUri);
                 } else {
                     logger.alwaysLog(String.format("Artifactory properties won't be updated since %s-%s was not found.", project.getName(), projectVersion));
                 }
