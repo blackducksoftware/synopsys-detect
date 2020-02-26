@@ -48,13 +48,12 @@ import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptio
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectableOptions
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions
-import com.synopsys.integration.rest.credentials.CredentialsBuilder
-import com.synopsys.integration.rest.proxy.ProxyInfoBuilder
+import com.synopsys.integration.rest.proxy.ProxyInfo
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
 import java.util.*
 
-class DetectableOptionFactory(private val detectConfiguration: PropertyConfiguration, private val diagnosticSystemOptional: Optional<DiagnosticSystem>, private val pathResolver: PathResolver) {
+class DetectableOptionFactory(private val detectConfiguration: PropertyConfiguration, private val diagnosticSystemOptional: Optional<DiagnosticSystem>, private val pathResolver: PathResolver, private val proxyInfo: ProxyInfo) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     fun createBazelDetectableOptions(): BazelDetectableOptions {
@@ -119,26 +118,10 @@ class DetectableOptionFactory(private val detectConfiguration: PropertyConfigura
             customRepository = configuredGradleInspectorRepositoryUrl
         }
 
-        //Get proxy information
-        val proxyHost = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_HOST)
-        val proxyPort = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_PORT)
-        val proxyUsername = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_USERNAME)
-        val proxyPassword = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_PASSWORD)
-        val proxyCredentials = CredentialsBuilder()
-        proxyCredentials.setUsernameAndPassword(proxyUsername.get(), proxyPassword.get())
-        val proxyNtmlDomain = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_NTLM_DOMAIN)
-        val proxyNtmlWorkspace = detectConfiguration.getValue(DetectProperties.BLACKDUCK_PROXY_NTLM_WORKSTATION)
-        val proxyInfo = ProxyInfoBuilder()
-        proxyInfo.setHost(proxyHost.get())
-        proxyInfo.setPort(proxyPort.get().toInt())
-        proxyInfo.setCredentials(proxyCredentials.build())
-        proxyInfo.setNtlmDomain(proxyNtmlDomain.get())
-        proxyInfo.setNtlmWorkstation(proxyNtmlWorkspace.get())
-
         val onlineInspectorVersion = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION).orElse(null)
         val scriptOptions = GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion)
         val gradleBuildCommand = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_BUILD_COMMAND).orElse(null)
-        return GradleInspectorOptions(gradleBuildCommand, scriptOptions, proxyInfo.build())
+        return GradleInspectorOptions(gradleBuildCommand, scriptOptions, proxyInfo)
     }
 
     fun createMavenCliOptions(): MavenCliExtractorOptions {

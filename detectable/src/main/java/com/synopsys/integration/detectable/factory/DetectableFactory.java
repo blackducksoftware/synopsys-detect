@@ -339,7 +339,8 @@ public class DetectableFactory {
         return new PipenvDetectable(environment, pipenvDetectableOptions, fileFinder, pythonResolver, pipenvResolver, pipenvExtractor());
     }
 
-    public PipInspectorDetectable createPipInspectorDetectable(final DetectableEnvironment environment, final PipInspectorDetectableOptions pipInspectorDetectableOptions, final PipInspectorResolver pipInspectorResolver, final PythonResolver pythonResolver,
+    public PipInspectorDetectable createPipInspectorDetectable(final DetectableEnvironment environment, final PipInspectorDetectableOptions pipInspectorDetectableOptions, final PipInspectorResolver pipInspectorResolver,
+        final PythonResolver pythonResolver,
         final PipResolver pipResolver) {
         return new PipInspectorDetectable(environment, fileFinder, pythonResolver, pipResolver, pipInspectorResolver, pipInspectorExtractor(), pipInspectorDetectableOptions);
     }

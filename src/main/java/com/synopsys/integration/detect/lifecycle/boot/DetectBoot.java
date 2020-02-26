@@ -118,6 +118,7 @@ import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSyst
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
+import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 import freemarker.template.Configuration;
 
@@ -190,8 +191,6 @@ public class DetectBoot {
         final DirectoryManager directoryManager = new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
         final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectConfiguration, detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
-        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver);
-
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
         if (detectArgumentState.isGenerateAirGapZip()) {
@@ -231,6 +230,14 @@ public class DetectBoot {
             return DetectBootResult.exit(detectConfiguration, directoryManager, diagnosticSystem);
         }
 
+        ProxyInfo detectableProxyInfo;
+        try {
+            detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
+        } catch (final DetectUserFriendlyException e) {
+            return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
+        }
+
+        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo);
         final DetectorProfiler profiler = new DetectorProfiler(eventSystem);
 
         //Finished, populate the detect context
