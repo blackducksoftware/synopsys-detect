@@ -132,6 +132,7 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
         return gson.fromJson(executableOutput.getStandardOutput(), ArtifactSearchResult.class);
     }
 
+    // TODO: Don't use curl. Lets make an HttpClient and do it proper.
     private ExecutableOutput setArtifactoryProperty(final List<String> defaultCurlArgs, final String artifactoryDeploymentUrl, final String deploymentRepositoryKey, final String propertyKey, final String propertyValue)
         throws ExecutableRunnerException {
 
