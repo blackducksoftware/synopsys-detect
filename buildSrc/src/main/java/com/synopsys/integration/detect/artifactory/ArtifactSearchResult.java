@@ -1,5 +1,5 @@
 /**
- * configuration
+ * buildSrc
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,27 +20,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.path
+package com.synopsys.integration.detect.artifactory;
 
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
-import java.nio.file.Path
-import java.nio.file.Paths
+import java.util.List;
 
-internal class PathValueTest {
-    private class TestPathResolver : PathResolver {
-        override fun resolvePath(filePath: String): Path {
-            return Paths.get(filePath)
-        }
+import com.google.gson.annotations.SerializedName;
+
+public class ArtifactSearchResult {
+    @SerializedName("results")
+    private final List<ArtifactSearchResultElement> results;
+
+    public ArtifactSearchResult(final List<ArtifactSearchResultElement> results) {
+        this.results = results;
     }
 
-    @Test
-    fun resolvePathTest() {
-        Assertions.assertEquals(Paths.get("/test"), PathValue("/test").resolvePath(TestPathResolver()))
-    }
-
-    @Test
-    fun toStringTest() {
-        Assertions.assertEquals("/test/toString", PathValue("/test/toString").toString())
+    public List<ArtifactSearchResultElement> getResults() {
+        return results;
     }
 }

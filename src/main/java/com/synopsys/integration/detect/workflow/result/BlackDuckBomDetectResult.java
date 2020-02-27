@@ -20,13 +20,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.status;
+package com.synopsys.integration.detect.workflow.result;
 
 public class BlackDuckBomDetectResult implements DetectResult {
     private final String projectComponentsLink;
 
     public BlackDuckBomDetectResult(final String projectComponentsLink) {
         this.projectComponentsLink = projectComponentsLink;
+    }
+
+    @Override
+    public String getResultLocation() {
+        return projectComponentsLink;
     }
 
     @Override

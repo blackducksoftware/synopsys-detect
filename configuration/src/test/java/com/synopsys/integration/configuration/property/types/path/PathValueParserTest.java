@@ -20,32 +20,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.integer
+package com.synopsys.integration.configuration.property.types.path;
 
-import com.synopsys.integration.configuration.parse.ValueParseException
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-class IntegerValueParserTests {
+import com.synopsys.integration.configuration.parse.ValueParseException;
+
+public class PathValueParserTest {
     @ParameterizedTest
-    @ValueSource(strings = ["unknown", "Nan", "", " 1", "9223372036854775807"])
-    fun parseUnknownThrows(value: String) {
-        Assertions.assertThrows(ValueParseException::class.java) {
-            IntegerValueParser().parse(value)
-        }
+    @ValueSource(strings = { "", " ", "     " })
+    public void parseEmpty(final String value) {
+        Assertions.assertThrows(ValueParseException.class, () -> new PathValueParser().parse(value));
     }
 
     @Test
-    fun parseInt() {
-        fun assert(expected: Int, value: String) {
-            Assertions.assertEquals(expected, IntegerValueParser().parse(value))
-        }
-
-        assert(-1, "-1")
-        assert(1, "1")
-        assert(Integer.MAX_VALUE, "2147483647")
-        assert(Integer.MIN_VALUE, "-2147483648")
+    public void parseValid() throws ValueParseException {
+        Assertions.assertEquals(new PathValue("/valid/path"), new PathValueParser().parse("/valid/path"));
     }
 }

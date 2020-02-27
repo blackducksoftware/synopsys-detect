@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "jpadilla/django-project-template/master/ pip/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:48:40.987Z"
-    },
-    "@id": "uuid:f8dbbce2-d6f2-4b8e-90ca-21e04041a646",
     "@type": "BillOfMaterials",
     "relationship": []
   },

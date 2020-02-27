@@ -20,25 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.path
+package com.synopsys.integration.configuration.property.types.string;
 
-import com.synopsys.integration.configuration.parse.ValueParseException
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
+import org.apache.commons.lang3.RandomStringUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
-class PathValueParserTest {
-    @ParameterizedTest
-    @ValueSource(strings = ["", " ", "     "])
-    fun parseEmpty(value: String) {
-        Assertions.assertThrows(ValueParseException::class.java) {
-            PathValueParser().parse(value)
-        }
+public class StringValueParserTest {
+    @Test
+    public void parseValid() {
+        Assertions.assertEquals("any string should work", new StringValueParser().parse("any string should work"));
     }
 
-    @Test
-    fun parseValid() {
-        Assertions.assertEquals(PathValue("/valid/path"), PathValueParser().parse("/valid/path"))
+    @RepeatedTest(10)
+    public void parseRandom() {
+        Assertions.assertDoesNotThrow(() -> {
+            final String randomString = RandomStringUtils.random(20, true, true);
+            System.out.println("Testing with random string '$randomString'");
+            new StringValueParser().parse(randomString);
+        });
     }
 }

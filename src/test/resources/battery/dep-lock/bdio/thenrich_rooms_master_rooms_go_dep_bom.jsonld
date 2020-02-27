@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "thenrich/rooms/master/rooms go_dep/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:48:04.428Z"
-    },
-    "@id": "uuid:76f978c9-63dd-4abd-8b6b-753db719b6d2",
     "@type": "BillOfMaterials",
     "relationship": []
   },

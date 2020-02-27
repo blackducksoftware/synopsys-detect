@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "aura/sql/Default Detect Version/linux-composer packagist/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:47:48.679Z"
-    },
-    "@id": "uuid:5c72d5a0-59f6-4b65-af8e-6572d04d6f5d",
     "@type": "BillOfMaterials",
     "relationship": []
   },

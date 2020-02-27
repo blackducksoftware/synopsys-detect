@@ -67,7 +67,7 @@ public class SpringConfigurationPropertySource implements PropertySource {
                             new UnknownSpringConfigurationException("Unknown underlying spring configuration source. We may be unable to determine where a property originated. Likely a new property source type should be tested against."));
                     }
                 }
-            } else if (RandomValuePropertySource.class.isAssignableFrom(it.getClass())) {
+            } else if (RandomValuePropertySource.class.isAssignableFrom(it.getUnderlyingSource().getClass())) {
                 //We know an underlying random source can't be iterated but we don't care. It can't give a list of known keys.
                 return null;
             } else {

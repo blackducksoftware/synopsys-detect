@@ -1,5 +1,5 @@
 /**
- * configuration
+ * synopsys-detect
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,25 +20,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.string
+package com.synopsys.integration.detect.workflow.report.output;
 
-import org.apache.commons.lang3.RandomStringUtils
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.RepeatedTest
-import org.junit.jupiter.api.Test
+import java.util.ArrayList;
+import java.util.List;
 
-class StringValueParserTest {
-    @Test
-    fun parseValid() {
-        Assertions.assertEquals("any string should work", StringValueParser().parse("any string should work"))
-    }
+public class FormattedOutput {
+    public String formatVersion = "";
+    public String detectVersion = "";
+    public List<FormattedDetectorOutput> detectors = new ArrayList<>();
 
-    @RepeatedTest(10)
-    fun parseRandom() {
-        Assertions.assertDoesNotThrow {
-            val randomString = RandomStringUtils.random(20, true, true)
-            println("Testing with random string '$randomString'")
-            StringValueParser().parse(randomString)
-        }
-    }
+    public List<FormattedStatusOutput> status = new ArrayList<>();
+    public List<FormattedIssueOutput> issues = new ArrayList<>();
+    public List<FormattedResultOutput> results = new ArrayList<>();
 }
+

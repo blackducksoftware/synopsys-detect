@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "django-debug-toolbar/2.0/django-debug-toolbar/2.0 pip/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:48:48.962Z"
-    },
-    "@id": "uuid:43c55b84-e9ed-4dec-98a1-3c60ed5aa888",
     "@type": "BillOfMaterials",
     "relationship": []
   },

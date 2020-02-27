@@ -147,16 +147,18 @@ public class BdioCompare {
         throw new BdioCompareException("Something went wrong comparing BDIO. Could not find component id in actual or expected: " + actual);
     }
 
-    BdioDocument parse(JSONArray json) {
+    BdioDocument parse(JSONArray json) { // TODO: Don't even both with the first node.
         BdioDocument document = new BdioDocument();
         for (int i = 0; i < json.length(); i++) {
             try {
                 JSONObject component = json.getJSONObject(i);
                 String name = component.optString("name");
                 String revision = component.optString("revision");
-                String id = component.getString("@id");
-                Assertions.assertTrue(StringUtils.isNotBlank(id));
-
+                String id = "";
+                if (i != 0) { //Only allow the first node (@BillOfMaterials) to have an empty or missing @id.
+                    id = component.getString("@id");
+                    Assertions.assertTrue(StringUtils.isNotBlank(id));
+                }
                 List<String> related = new ArrayList<>();
                 JSONArray relatedJson = component.getJSONArray("relationship");
                 for (int r = 0; r < relatedJson.length(); r++) {

@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "BlackDuckCoPilot/example-rubygems-travis/master/linux-rubygems rubygems/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:48:52.244Z"
-    },
-    "@id": "uuid:63cd9b61-7ea9-4757-86c7-b38030679253",
     "@type": "BillOfMaterials",
     "relationship": []
   },

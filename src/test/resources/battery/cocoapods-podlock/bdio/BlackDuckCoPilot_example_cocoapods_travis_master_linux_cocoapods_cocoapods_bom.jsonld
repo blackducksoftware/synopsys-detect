@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "BlackDuckCoPilot/example-cocoapods-travis/master/linux-cocoapods cocoapods/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:47:45.241Z"
-    },
-    "@id": "uuid:1289b46f-4ab4-459a-a091-ed7db998d5a3",
     "@type": "BillOfMaterials",
     "relationship": []
   },

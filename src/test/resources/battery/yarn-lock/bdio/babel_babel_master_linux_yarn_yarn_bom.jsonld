@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "babel/babel/master/linux-yarn yarn/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:49:00.217Z"
-    },
-    "@id": "uuid:88dc94f8-8c5d-4352-bcf2-2945d7de58c4",
     "@type": "BillOfMaterials",
     "relationship": []
   },

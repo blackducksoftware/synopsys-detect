@@ -20,8 +20,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.status;
+package com.synopsys.integration.detect.configuration.enums
 
-public interface DetectResult {
-    String getResultMessage();
+enum class IndividualFileMatchMode {
+    NONE,
+    ALL,
+    BINARY,
+    SOURCE
 }

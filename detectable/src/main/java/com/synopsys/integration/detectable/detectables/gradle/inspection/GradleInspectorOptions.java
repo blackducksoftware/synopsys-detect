@@ -25,14 +25,17 @@ package com.synopsys.integration.detectable.detectables.gradle.inspection;
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions;
+import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 public class GradleInspectorOptions {
     private final String gradleBuildCommand;
     private final GradleInspectorScriptOptions gradleInspectorScriptOptions;
+    private final ProxyInfo proxyInfo;
 
-    public GradleInspectorOptions(final String gradleBuildCommand, final GradleInspectorScriptOptions gradleInspectorScriptOptions) {
+    public GradleInspectorOptions(final String gradleBuildCommand, final GradleInspectorScriptOptions gradleInspectorScriptOptions, final ProxyInfo proxyInfo) {
         this.gradleBuildCommand = gradleBuildCommand;
         this.gradleInspectorScriptOptions = gradleInspectorScriptOptions;
+        this.proxyInfo = proxyInfo;
     }
 
     public Optional<String> getGradleBuildCommand() {
@@ -41,5 +44,9 @@ public class GradleInspectorOptions {
 
     public GradleInspectorScriptOptions getGradleInspectorScriptOptions() {
         return gradleInspectorScriptOptions;
+    }
+
+    public ProxyInfo getproxyInfo() {
+        return proxyInfo;
     }
 }
