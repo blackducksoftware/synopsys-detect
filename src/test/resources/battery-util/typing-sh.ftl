@@ -1,3 +1,5 @@
+#!/bin/bash
+
 INDEX=`cat ${dataFile}`
 
 <#list files as file>
