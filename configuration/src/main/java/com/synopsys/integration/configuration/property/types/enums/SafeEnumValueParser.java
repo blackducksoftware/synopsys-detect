@@ -36,6 +36,6 @@ public class SafeEnumValueParser<T extends Enum<T>> {
 
     @NotNull
     public Optional<T> parse(@NotNull String value) {
-        return Optional.ofNullable(EnumUtils.getEnum(enumClass, value));
+        return Optional.ofNullable(EnumUtils.getEnumIgnoreCase(enumClass, value));
     }
 }

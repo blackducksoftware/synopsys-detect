@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "dwCheckApi/2.0.0.0/dwCheckApi.Common/dwCheckApi.Common.csproj/dwCheckApi/2.0.0.0 nuget/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:47:41.599Z"
-    },
-    "@id": "uuid:b4123318-a450-4c28-94c2-3b3a06fbb6f7",
     "@type": "BillOfMaterials",
     "relationship": []
   },

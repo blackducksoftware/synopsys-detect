@@ -35,11 +35,17 @@ class FilterableEnumValueParserTests {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = ["unknown", "Thing ", " THING", "tHiNg", "fourth"])
+    @ValueSource(strings = ["unknown", "Thing ", " THING", "fourth"])
     fun unknownValues(value: String) {
         Assertions.assertThrows(ValueParseException::class.java) {
             FilterableEnumValueParser(Example::class.java).parse(value)
         }
+    }
+
+    @Test
+    fun parsesLowercaseEnumValue() {
+        Assertions.assertEquals(FilterableEnumValue.value(Example.THING), FilterableEnumValueParser(Example::class.java).parse("tHiNg"))
+        Assertions.assertEquals(FilterableEnumValue.value(Example.ANOTHER), FilterableEnumValueParser(Example::class.java).parse("another"))
     }
 
     @Test

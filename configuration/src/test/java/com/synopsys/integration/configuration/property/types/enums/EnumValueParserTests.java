@@ -39,7 +39,7 @@ public class EnumValueParserTests {
     private final EnumValueParser<Example> parser = new EnumValueParser<>(Example.class);
 
     @ParameterizedTest
-    @ValueSource(strings = { "unknown", "Thing ", " THING", "tHiNg" })
+    @ValueSource(strings = { "unknown", "Thing ", " THING" })
     public void unknownValues(final String value) {
         Assertions.assertThrows(ValueParseException.class, () -> parser.parse(value));
     }
@@ -50,4 +50,11 @@ public class EnumValueParserTests {
         Assertions.assertEquals(Example.ANOTHER, parser.parse("ANOTHER"));
         Assertions.assertEquals(Example.THIRD, parser.parse("THIRD"));
     }
+
+    @Test
+    public void parsesLowercaseEnumValue() throws ValueParseException {
+        Assertions.assertEquals(Example.THING, parser.parse("tHiNg"));
+        Assertions.assertEquals(Example.THING, parser.parse("thing"));
+    }
+
 }

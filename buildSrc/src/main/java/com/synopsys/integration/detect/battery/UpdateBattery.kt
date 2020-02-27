@@ -22,7 +22,8 @@
  */
 package com.synopsys.integration.detect.battery
 
-import org.apache.commons.io.FileUtils
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonParser
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -58,13 +59,12 @@ open class UpdateBatteryTask : DefaultTask() {
 
                         //println(actualBdioFile.toString() + ":" + actualBdioFile.exists())
 
-                        println();
-                        println(line);
-                        try {
-                            FileUtils.copyFile(actualBdioFile, bdioFile)
-                        } catch (e: Exception) {
-                            println("An Exception Occurred!")
-                        }
+                        val json = JsonParser.parseString(actualBdioFile.readText()).asJsonArray;
+                        val headerElement = json.get(0).asJsonObject;
+                        headerElement.remove("@id");
+                        headerElement.remove("creationInfo");
+                        val gson = GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX").setPrettyPrinting().create()
+                        bdioFile.writeText(gson.toJson(json));
 
                         println("COPIED FROM: $actualBdioFile")
                         println("COPIED TO  : $bdioFile")

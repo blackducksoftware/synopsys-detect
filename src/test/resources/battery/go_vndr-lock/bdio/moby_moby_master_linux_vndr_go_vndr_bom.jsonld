@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "moby/moby/master/linux-vndr go_vndr/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:48:00.818Z"
-    },
-    "@id": "uuid:ea281870-4958-4c17-b94a-d4e8dcffaba1",
     "@type": "BillOfMaterials",
     "relationship": []
   },

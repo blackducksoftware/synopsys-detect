@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "sbt-bintray/0.5.1+10-04ed5f84/org.foundweekends/sbt-bintray/0.5.1+10-04ed5f84 sbt/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:48:56.556Z"
-    },
-    "@id": "uuid:2a3718fc-d063-4ca9-977b-46b0b15448ca",
     "@type": "BillOfMaterials",
     "relationship": []
   },

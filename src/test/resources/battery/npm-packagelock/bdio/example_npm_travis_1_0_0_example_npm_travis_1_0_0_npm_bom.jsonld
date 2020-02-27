@@ -2,14 +2,6 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "example-npm-travis/1.0.0/example-npm-travis/1.0.0 npm/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-19.0.0"
-      ],
-      "spdx:created": "2020-02-10T18:48:29.169Z"
-    },
-    "@id": "uuid:d4734c44-5937-4bc7-9a0a-395dc4ab38b7",
     "@type": "BillOfMaterials",
     "relationship": []
   },
