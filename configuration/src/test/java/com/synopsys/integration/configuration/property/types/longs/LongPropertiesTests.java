@@ -65,6 +65,6 @@ public class LongPropertiesTests {
         final PropertyConfiguration config = configOf(Pair.of("long.list", "2,3"));
         Assertions.assertEquals(Bds.listOf(2L, 3L), config.getValue(property));
 
-        PropertyTestHelpUtil.assertAllHelpValid(property);
+        PropertyTestHelpUtil.assertAllListHelpValid(property);
     }
 }

@@ -66,6 +66,6 @@ class BooleanPropertiesTests {
         final PropertyConfiguration config = configOf(Pair.of("boolean.list", "true, true"));
         Assertions.assertEquals(Bds.listOf(true, true), config.getValue(property));
 
-        PropertyTestHelpUtil.assertAllHelpValid(property);
+        PropertyTestHelpUtil.assertAllListHelpValid(property);
     }
 }

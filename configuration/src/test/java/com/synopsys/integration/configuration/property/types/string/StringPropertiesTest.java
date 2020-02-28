@@ -65,6 +65,6 @@ public class StringPropertiesTest {
         final PropertyConfiguration config = configOf(Pair.of("string.list", "1,2,3,abc"));
         Assertions.assertEquals(Bds.listOf("1", "2", "3", "abc"), config.getValue(property));
 
-        PropertyTestHelpUtil.assertAllHelpValid(property);
+        PropertyTestHelpUtil.assertAllListHelpValid(property);
     }
 }

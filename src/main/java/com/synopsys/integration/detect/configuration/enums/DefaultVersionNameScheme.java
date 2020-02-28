@@ -20,8 +20,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.configuration.enums
+package com.synopsys.integration.detect.configuration.enums;
 
-enum class ExtendedPolicySeverityType {
-    NONE
+public enum DefaultVersionNameScheme {
+    TIMESTAMP,
+    DEFAULT
 }

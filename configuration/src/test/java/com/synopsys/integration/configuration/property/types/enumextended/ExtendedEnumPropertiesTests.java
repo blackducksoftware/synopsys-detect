@@ -79,6 +79,6 @@ public class ExtendedEnumPropertiesTests {
         final List<ExtendedEnumValue<ExampleExtension, Example>> value = config.getValue(property);
         Assertions.assertEquals(Bds.listOf(ExtendedEnumValue.ofBaseValue(Example.THIRD), ExtendedEnumValue.ofExtendedValue(ExampleExtension.NONE)), value);
 
-        PropertyTestHelpUtil.assertAllHelpValid(property, Bds.listOf("THING", "ANOTHER", "THIRD", "NONE"));
+        PropertyTestHelpUtil.assertAllListHelpValid(property, Bds.listOf("THING", "ANOTHER", "THIRD", "NONE"));
     }
 }

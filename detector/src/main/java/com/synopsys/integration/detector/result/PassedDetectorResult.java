@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detector
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,9 +20,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.configuration.enums
+package com.synopsys.integration.detector.result;
 
-enum class DefaultVersionNameScheme {
-    TIMESTAMP,
-    DEFAULT
+import org.jetbrains.annotations.NotNull;
+
+public class PassedDetectorResult extends DetectorResult {
+    public PassedDetectorResult() {
+        this("Passed.");
+    }
+
+    public PassedDetectorResult(@NotNull final String description) {
+        super(true, description);
+    }
 }
