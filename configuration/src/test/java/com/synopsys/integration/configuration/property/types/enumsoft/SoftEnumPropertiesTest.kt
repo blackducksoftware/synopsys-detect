@@ -42,7 +42,7 @@ class SoftEnumPropertiesTest {
         val config = configOf("enum.nullable" to "ANOTHER")
         Assertions.assertEquals(Optional.of(SoftEnumValue.ofEnumValue(Example.ANOTHER)), config.getValue(property))
 
-        PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD"))
+        PropertyTestHelpUtil.assertAllHelpValid(property, listOf("THING", "ANOTHER", "THIRD"))
     }
 
     @Test
@@ -51,7 +51,7 @@ class SoftEnumPropertiesTest {
         val config = configOf("enum.nullable" to "ANOTHER ONE")
         Assertions.assertEquals(Optional.of(SoftEnumValue.ofSoftValue<Example>("ANOTHER ONE")), config.getValue(property))
 
-        PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD"))
+        PropertyTestHelpUtil.assertAllHelpValid(property, listOf("THING", "ANOTHER", "THIRD"))
     }
 
 
@@ -61,7 +61,7 @@ class SoftEnumPropertiesTest {
         val config = configOf("enum.valued" to "THIRD")
         Assertions.assertEquals(SoftEnumValue.ofEnumValue(Example.THIRD), config.getValue(property))
 
-        PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD"))
+        PropertyTestHelpUtil.assertAllHelpValid(property, listOf("THING", "ANOTHER", "THIRD"))
     }
 
     @Test
@@ -70,7 +70,7 @@ class SoftEnumPropertiesTest {
         val config = configOf("enum.valued" to "THIRD ONE")
         Assertions.assertEquals(SoftEnumValue.ofSoftValue<Example>("THIRD ONE"), config.getValue(property))
 
-        PropertyTestHelpUtil.assertAllHelpValid(property, expectedExampleValues = listOf("THING", "ANOTHER", "THIRD"))
+        PropertyTestHelpUtil.assertAllHelpValid(property, listOf("THING", "ANOTHER", "THIRD"))
     }
 
     @Test
@@ -79,6 +79,6 @@ class SoftEnumPropertiesTest {
         val config = configOf("enum.list" to "ANOTHER,THING,test")
         Assertions.assertEquals(listOf(SoftEnumValue.ofEnumValue(Example.ANOTHER), SoftEnumValue.ofEnumValue(Example.THING), SoftEnumValue.ofSoftValue<Example>("test")), config.getValue(property))
 
-        PropertyTestHelpUtil.assertAllHelpValid(property)
+        PropertyTestHelpUtil.assertAllListHelpValid(property)
     }
 }

@@ -65,6 +65,6 @@ public class PathPropertiesTest {
         final PropertyConfiguration config = configOf(Pair.of("path.list", "/new/path,/other/new/path"));
         Assertions.assertEquals(Bds.listOf(new PathValue("/new/path"), new PathValue("/other/new/path")), config.getValue(property));
 
-        PropertyTestHelpUtil.assertAllHelpValid(property);
+        PropertyTestHelpUtil.assertAllListHelpValid(property);
     }
 }

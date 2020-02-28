@@ -65,6 +65,6 @@ public class IntegerPropertiesTests {
         final PropertyConfiguration config = configOf(Pair.of("integer.list", "2,3"));
         Assertions.assertEquals(Bds.listOf(2, 3), config.getValue(property));
 
-        PropertyTestHelpUtil.assertAllHelpValid(property);
+        PropertyTestHelpUtil.assertAllListHelpValid(property);
     }
 }
