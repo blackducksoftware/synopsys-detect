@@ -38,7 +38,7 @@ import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetect
 import com.synopsys.integration.detectable.detectable.result.GoDepRunInitEnsureDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(language = "Golang", forge = "GitHub", requirementsMarkdown = "Files: Gopkg.lock or Gpkg.toml.")
+@DetectableInfo(language = "Golang", forge = "GitHub", requirementsMarkdown = "File: Gopkg.lock.")
 public class GoDepLockDetectable extends Detectable {
     public static final String GOPKG_LOCK_FILENAME = "Gopkg.lock";
     public static final String GOFILE_FILENAME_PATTERN = "Gopkg.toml";

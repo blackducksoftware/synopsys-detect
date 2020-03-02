@@ -2,56 +2,59 @@
 
 ${solution_name} has four detectors for GoLang:
 
-* [GoDepLock detector](#godeplockdetector)
-* [GoDepCli detector](#godepclidetector)
-* [GoVendor detector](#govendordetector)
-* [GoVndr detector](#govndrdetector)
+* [Go Lock (GO_DEP) detector](#godeplockdetector)
+* [Go Gradle (GO_GRADLE) detector](#godepclidetector)
+* [Go Mod Cli (GO_MOD) detector](#gomodclidetector)
+* [Go Vendor (GO_VENDOR) detector](#govendordetector)
+* [Go Vndr (GO_VNDR) detector](#govndrdetector)
 
 <a name="godeplockdetector"></a>
-# GoDepLock detector
+## Go Lock (GO_DEP) detector
 
-The GoDepLock detector discovers dependencies of GoLang projects.
+The Go Lock (GO_DEP) detector:
 
-The GoDepLock detector attempts to run on your project if a Gopkg.lock file is found in your source directory.
-
-The GoDepLock detector does not rely on external executables; for example, go, dep, and others.
-
-The GoDepCli detector parses Gopkg.lock for dependencies.
+* discovers dependencies of GoLang projects.
+* attempts to run on your project if a Gopkg.lock file is found in your source directory.
+* does not rely on external executables; for example, go, dep, and others.
+* parses Gopkg.lock for dependencies.
 
 <a name="godepclidetector"></a>
-# The GoDepCli detector
+## The Go Gradle (GO_GRADLE) detector
 
-The GoDepCli detector discovers dependencies of go language (GoLang) projects.
+The Go Gradle (GO_GRADLE) detector:
 
-The GoDepCli detector attempts to run on your project if files are found in your source directory with extension "go" ("*.go").
+* discovers dependencies of go language (GoLang) projects.
+* attempts to run on your project if a gogradle.lock file is found in your source directory.
+* does not rely on external executables; for example, go, dep, and others.
+* parses gogradle.lock for dependencies.
 
-The GoDepCli detector requires *go* and *dep* executables:
-* ${solution_name} looks for go on $PATH.
-* ${solution_name} looks for dep in your source directory.
+<a name="gomodclidetector"></a>
+## The Go Mod Cli (GO_MOD) detector
 
-The GoDepCli detector looks in your source directory for a Gopkg.lock file. If it does not exist, it runs dep commands to create it. Then the GoDepCli detector parses Gopkg.lock for dependencies.
+The Go Mod Cli (GO_MOD) detector:
+
+* discovers dependencies of go language (GoLang) projects.
+* attempts to run on your project if a go.mod file is found in your source directory.
+* requires that the *go* executable is on the PATH.
+* runs *go list -m* and *go mod graph*, and parses the output of both to discover dependencies.
 
 <a name="govendordetector"></a>
-# The GoVendor detector
+## The Go Vendor (GO_VENDOR) detector
 
-The GoVendor detector discovers dependencies of go language (GoLang) projects.
+The Go Vendor (GO_VENDOR) detector:
 
-The GoVendor detector attempts to run on your project if the file vendor/vendor.json is found in your source directory.
-
-The GoVendor detector does not rely on external executables; for example, go, dep, and others.
-
-The GoVendor detector parses vendor/vendor.json for dependencies.
-
-
+* discovers dependencies of go language (GoLang) projects.
+* attempts to run on your project if the file vendor/vendor.json is found in your source directory.
+* does not rely on external executables; for example, go, dep, and others.
+* parses vendor/vendor.json for dependencies.
 
 <a name="govndrdetector"></a>
-# The GoVndr detector
+## The Go Vndr (GO_VNDR) detector
 
-The GoVndr detector discovers dependencies of go language (GoLang) projects.
+The Go Vndr (GO_VNDR) detector:
 
-The GoVndr detector attempts to run on your project if the file vendor.conf is found in your source directory.
-
-The GoVndr detector does not rely on external executables; for example, go, dep, and others.
-
-The GoVndr detector parses vendor.conf for dependencies.
+* discovers dependencies of go language (GoLang) projects.
+* attempts to run on your project if the file vendor.conf is found in your source directory.
+* does not rely on external executables; for example, go, dep, and others.
+* parses vendor.conf for dependencies.
 
