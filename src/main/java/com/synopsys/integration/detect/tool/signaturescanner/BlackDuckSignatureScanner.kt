@@ -57,7 +57,7 @@ class BlackDuckSignatureScanner(
         private val codeLocationNameManager: CodeLocationNameManager,
         private val signatureScannerOptions: BlackDuckSignatureScannerOptions,
         private val eventSystem: EventSystem,
-        private val blackDuckServerConfig: BlackDuckServerConfig, //When OFFLINE, this should be NULL. No other changes required for offline (in this class).
+        private val blackDuckServerConfig: BlackDuckServerConfig?, //When OFFLINE, this should be NULL. No other changes required for offline (in this class).
         private val scanJobManager: ScanBatchRunner
 ) {
 
