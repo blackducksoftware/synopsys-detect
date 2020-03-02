@@ -10,14 +10,14 @@ ${solution_name} has two detectors for Python:
 
 The Pip detector discovers dependencies of Python projects.
 
-The Pip detector attempts to run on your project if either a setup.py file is found, or a requirements.txt file is provided using the --detect.pip.requirements.path property.
+The Pip detector attempts to run on your project if either a setup.py file is found, or a requirements.txt file is provided using the (--detect.pip.requirements.path)[/properties/Detectors/pip/#pip-requirements-path-advanced] property.
 
 The Pip detector also requires Python and pip executables:
 
 * ${solution_name} looks for python (or python3 if the python3 property is set to true) on $PATH. You can override this by setting the python path property.
 * ${solution_name} looks for pip (or pip3 if the python3 property is set to true) on $PATH.
 
-The Pip detector runs the [pip-inspector.py script](https://github.com/blackducksoftware/synopsys-detect/blob/master/src/main/resources/pip-inspector.py), which uses Python/pip libararies to query the pip cache for the project, which may or may not be a virtual environment, for dependency information:
+The Pip detector runs the [pip-inspector.py script](https://github.com/blackducksoftware/synopsys-detect/blob/master/src/main/resources/pip-inspector.py), which uses Python/pip libraries to query the pip cache for the project, which may or may not be a virtual environment, for dependency information:
 
 1. pip-inspector.py queries for the project dependencies by project name which can be discovered using setup.py, or provided using the detect.pip.project.name property, using the [pkg_resources library](https://setuptools.readthedocs.io/en/latest/pkg_resources.html). If your project is installed into the pip cache, this discovers dependencies specified in setup.py.
 1. If a requirements.txt file is provided, pip-inspector.py uses the Python API called parse_requirements to query the requirements.txt file for possible additional dependencies, and uses the pkg_resources library to query for the details of each. The parse_requirements API is unstable, leading to the decision to deprecate this detector.
@@ -56,6 +56,6 @@ The Pipenv detector also requires Python and Pipenv executables:
 * ${solution_name} looks for python (or python3 if the python3 property is set to true) on $PATH. You can override this by setting the python path property.
 * ${solution_name} looks for pipenv on $PATH.
 
-The Pipenv detector runs `pipenv run pip freeze` and `pipenv graph --bare` and derives dependency information from the output. The dependency hierarchy is derived from the output of `pipenv graph --bare`. The output of `pipenv run pip freeze` is used to improve the accuracy of dependency versions.
+The Pipenv detector runs `pipenv run pip freeze` and `pipenv graph --bare --json-tree` and derives dependency information from the output. The dependency hierarchy is derived from the output of `pipenv graph --bare --json-tree`. The output of `pipenv run pip freeze` is used to improve the accuracy of dependency versions.
 
-To troubleshoot of the Pipenv detector, start by running `pipenv graph --bare`, and making sure that the output looks correct since this is the basis from which ${solution_name} constructs the BDIO. If the output of `pipenv graph --bare` does not look correct, make sure the packages (dependencies) are installed into the Pipenv virtual environment (`pipenv install`).
+To troubleshoot of the Pipenv detector, start by running `pipenv graph --bare --json-tree`, and making sure that the output looks correct since this is the basis from which ${solution_name} constructs the BDIO. If the output of `pipenv graph --bare --json-tree` does not look correct, make sure the packages (dependencies) are installed into the Pipenv virtual environment (`pipenv install`).
