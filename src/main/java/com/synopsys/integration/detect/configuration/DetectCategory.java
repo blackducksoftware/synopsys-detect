@@ -1,5 +1,5 @@
 /**
- * configuration
+ * synopsys-detect
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,15 +20,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.util;
+package com.synopsys.integration.detect.configuration;
 
-import java.util.Optional;
+import com.synopsys.integration.configuration.util.Category;
 
-import org.antlr.v4.runtime.misc.NotNull;
+public class DetectCategory extends Category {
+    public static final DetectCategory Advanced = new DetectCategory("advanced");
+    public static final DetectCategory Simple = new DetectCategory("simple");
 
-public interface Group {
-    @NotNull
-    String getName();
-
-    Optional<Group> getSuperGroup();
+    protected DetectCategory(final String name) {
+        super(name);
+    }
 }

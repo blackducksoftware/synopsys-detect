@@ -136,8 +136,8 @@ public class DetectBoot {
         final DocumentBuilder xml = detectBootFactory.createXmlDocumentBuilder();
         final Configuration configuration = detectBootFactory.createConfiguration();
 
-        DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
-        Gson gson = detectContext.getBean(Gson.class);
+        final DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
+        final Gson gson = detectContext.getBean(Gson.class);
 
         List<PropertySource> propertySources;
         try {
@@ -230,7 +230,7 @@ public class DetectBoot {
             return DetectBootResult.exit(detectConfiguration, directoryManager, diagnosticSystem);
         }
 
-        ProxyInfo detectableProxyInfo;
+        final ProxyInfo detectableProxyInfo;
         try {
             detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
         } catch (final DetectUserFriendlyException e) {
@@ -262,7 +262,7 @@ public class DetectBoot {
 
     private void printAppropriateHelp(final List<Property> properties, final DetectArgumentState detectArgumentState) {
         final HelpPrinter helpPrinter = new HelpPrinter();
-        helpPrinter.printAppropriateHelpMessage(System.out, properties, DetectGroup.Companion.values(), DetectGroup.Companion.getBlackduckServer(), detectArgumentState);
+        helpPrinter.printAppropriateHelpMessage(System.out, properties, Arrays.asList(DetectGroup.values()), DetectGroup.BLACKDUCK_SERVER, detectArgumentState);
     }
 
     private void printHelpJsonDocument(final List<Property> properties, final DetectInfo detectInfo, final Gson gson) {
