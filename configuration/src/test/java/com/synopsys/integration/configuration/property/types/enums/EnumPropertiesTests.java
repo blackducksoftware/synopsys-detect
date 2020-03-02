@@ -73,6 +73,6 @@ public class EnumPropertiesTests {
         final PropertyConfiguration config = configOf(Pair.of("enum.list", "ANOTHER,THING"));
         Assertions.assertEquals(Bds.listOf(Example.ANOTHER, Example.THING), config.getValue(property));
 
-        PropertyTestHelpUtil.assertAllHelpValid(property);
+        PropertyTestHelpUtil.assertAllListHelpValid(property);
     }
 }

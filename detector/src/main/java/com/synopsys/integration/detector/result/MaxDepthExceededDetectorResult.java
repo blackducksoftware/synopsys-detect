@@ -1,5 +1,5 @@
 /**
- * detectable
+ * detector
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,17 +20,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.util
+package com.synopsys.integration.detector.result;
 
-import org.apache.commons.io.IOUtils
-import java.io.InputStream
-import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
-
-class TestExtensionFunctions {
-    companion object {
-        fun String.toInputStream(encoding: Charset = StandardCharsets.UTF_8): InputStream {
-            return IOUtils.toInputStream(this, encoding)
-        }
+public class MaxDepthExceededDetectorResult extends FailedDetectorResult {
+    public MaxDepthExceededDetectorResult(final int depth, final int maxDepth) {
+        super(String.format("Max depth of %d exceeded by %d", maxDepth, depth));
     }
 }
