@@ -20,8 +20,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.signaturescanner.enums
+package com.synopsys.integration.detect.tool.signaturescanner.enums;
 
-enum class ExtendedSnippetMode {
+public enum ExtendedSnippetMode {
     NONE
 }

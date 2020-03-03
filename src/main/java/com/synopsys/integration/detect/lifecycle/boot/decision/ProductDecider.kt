@@ -73,7 +73,7 @@ class ProductDecider(private val detectConfigurationFactory: DetectConfiguration
         } else if (signatureScannerHostUrl != null) {
             logger.info("A Black Duck signature scanner url was provided, which requires Black Duck offline mode.")
             return BlackDuckDecision.runOffline()
-        } else if (signatureScannerOfflineLocalPath != null) {
+        } else if (signatureScannerOfflineLocalPath.isPresent) {
             logger.info("A local Black Duck signature scanner path was provided, which requires Black Duck offline mode.")
             return BlackDuckDecision.runOffline()
         } else if (blackDuckUrl.isPresent) {

@@ -333,23 +333,23 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
 
 
         return BlackDuckSignatureScannerOptions(
-                signatureScannerPaths = signatureScannerPaths,
-                exclusionNamePatterns = exclusionNamePatterns,
-                exclusionPatterns = exclusionPatterns,
-                offlineLocalScannerInstallPath = offlineLocalScannerInstallPath,
-                onlineLocalScannerInstallPath = onlineLocalScannerInstallPath,
-                userProvidedScannerInstallUrl = userProvidedScannerInstallUrl,
-                scanMemory = scanMemory,
-                parallelProcessors = findParallelProcessors(),
-                dryRun = dryRun,
-                snippetMatching = findSnippetMatching(),
-                uploadSource = uploadSource,
-                codeLocationPrefix = codeLocationPrefix,
-                codeLocationSuffix = codeLocationSuffix,
-                additionalArguments = additionalArguments,
-                maxDepth = maxDepth,
-                licenseSearch = licenseSearch,
-                individualFileMatching = individualFileMatching
+                signatureScannerPaths,
+                exclusionPatterns,
+                exclusionNamePatterns,
+                offlineLocalScannerInstallPath,
+                onlineLocalScannerInstallPath,
+                userProvidedScannerInstallUrl,
+                scanMemory,
+                findParallelProcessors(),
+                dryRun,
+                findSnippetMatching(),
+                uploadSource,
+                codeLocationPrefix,
+                codeLocationSuffix,
+                additionalArguments,
+                maxDepth,
+                individualFileMatching,
+                licenseSearch
         )
     }
 
