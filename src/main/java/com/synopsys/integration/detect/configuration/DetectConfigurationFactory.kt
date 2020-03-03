@@ -376,24 +376,24 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
 
     fun createExecutablePaths(): DetectExecutableOptions {
         return DetectExecutableOptions(
-                bashUserPath = detectConfiguration.getValue(DetectProperties.DETECT_BASH_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                bazelUserPath = detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                condaUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CONDA_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                cpanUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CPAN_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                cpanmUserPath = detectConfiguration.getValue(DetectProperties.DETECT_CPANM_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                gradleUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                mavenUserPath = detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                npmUserPath = detectConfiguration.getValue(DetectProperties.DETECT_NPM_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                pearUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PEAR_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                pipenvUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PIPENV_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                pythonUserPath = detectConfiguration.getValue(DetectProperties.DETECT_PYTHON_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                rebarUserPath = detectConfiguration.getValue(DetectProperties.DETECT_HEX_REBAR3_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                javaUserPath = detectConfiguration.getValue(DetectProperties.DETECT_JAVA_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                dockerUserPath = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                dotnetUserPath = detectConfiguration.getValue(DetectProperties.DETECT_DOTNET_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                gitUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GIT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                goUserPath = detectConfiguration.getValue(DetectProperties.DETECT_GO_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                swiftUserPath = detectConfiguration.getValue(DetectProperties.DETECT_SWIFT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
+                detectConfiguration.getValue(DetectProperties.DETECT_BASH_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_CONDA_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_CPAN_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_CPANM_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_MAVEN_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_NPM_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_PEAR_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_PIPENV_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_PYTHON_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_HEX_REBAR3_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_JAVA_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_DOTNET_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_GIT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_GO_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_SWIFT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
         )
     }
 }
