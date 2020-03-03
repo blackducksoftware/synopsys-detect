@@ -44,6 +44,12 @@ public class NpmLockDetectableTest extends DetectableFunctionalTest {
             "               \"balanced-match\": \"1.0.0\",",
             "               \"concat-map\": \"0.0.1\"",
             "           }",
+            "       },",
+            "       \"concat-map\": {",
+            "           \"version\": \"0.0.1\",",
+            "           \"resolved\": \"https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz\",",
+            "           \"integrity\": \"sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=\",",
+            "           \"dev\": true",
             "       }",
             "   }",
             "}"
@@ -62,9 +68,10 @@ public class NpmLockDetectableTest extends DetectableFunctionalTest {
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, extraction.getCodeLocations().get(0).getDependencyGraph());
 
-        graphAssert.hasRootSize(2);
+        graphAssert.hasRootSize(3);
         graphAssert.hasRootDependency("brace-expansion", "1.1.8");
         graphAssert.hasRootDependency("balanced-match", "1.0.0");
+        graphAssert.hasRootDependency("concat-map", "0.0.1");
         graphAssert.hasParentChildRelationship("brace-expansion", "1.1.8", "balanced-match", "1.0.0");
     }
 
