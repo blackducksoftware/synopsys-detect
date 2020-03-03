@@ -281,8 +281,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#version-610" class="md-nav__link">
-    Version 6.1.0
+  <a href="#version-620" class="md-nav__link">
+    Version 6.2.0
   </a>
   
     <nav class="md-nav">
@@ -315,7 +315,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#version-610_1" class="md-nav__link">
+  <a href="#version-610" class="md-nav__link">
     Version 6.1.0
   </a>
   
@@ -1633,8 +1633,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#version-610" class="md-nav__link">
-    Version 6.1.0
+  <a href="#version-620" class="md-nav__link">
+    Version 6.2.0
   </a>
   
     <nav class="md-nav">
@@ -1667,7 +1667,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#version-610_1" class="md-nav__link">
+  <a href="#version-610" class="md-nav__link">
     Version 6.1.0
   </a>
   
@@ -2071,20 +2071,27 @@
                 
                 
                 <h1 id="release-notes">Release notes</h1>
-<h2 id="version-610">Version 6.1.0</h2>
+<h2 id="version-620">Version 6.2.0</h2>
 <h3 id="new-features">New features</h3>
 <ul>
-<li>The Synopsys Detect .jar file is now signed, enabling <a href="../advanced/verifying/">code verification</a> by users.</li>
+<li>The Synopsys Detect .jar file is now signed, enabling <a href="/advanced/verifying.md">code verification</a> by users.</li>
+<li><a href="/advanced/language-and-package-managers/gradle/#running-the-gradle-inspector-with-a-proxy">Simple proxy information</a> will be forwarded to the Gradle Inspector.</li>
 </ul>
 <h3 id="changed-features">Changed features</h3>
 <ul>
-<li>TBD</li>
+<li>The <a href="/advanced/language-and-package-managers/python/#pipenv-detector">PipEnv Detector</a> now parses a json representation of the depenedency tree.</li>
 </ul>
 <h3 id="resolved-issues">Resolved issues</h3>
 <ul>
-<li>TBD</li>
+<li>Resolved an issue where the download URL for Synopsys Detect was being set to an internal URL upon release.</li>
+<li>Resolved an issue where all transitive dependencies found by the <a href="/advanced/language-and-package-managers/python/#the-pip-detector">Pip inspector</a> were being reported as direct dependencies.</li>
+<li>Resolved an issue where using pip version 20+ with the <a href="/advanced/language-and-package-managers/python/#the-pip-detector">Pip inspector</a> caused a failure to import a dependency. <a href="https://github.com/blackducksoftware/synopsys-detect/pull/107">GitHub PR</a></li>
+<li>Resolved the following vulnerabilities:<ul>
+<li>org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)</li>
 </ul>
-<h2 id="version-610_1">Version 6.1.0</h2>
+</li>
+</ul>
+<h2 id="version-610">Version 6.1.0</h2>
 <h3 id="new-features_1">New features</h3>
 <ul>
 <li>Added the property <a href="../properties/Configuration/paths/#bdio-2-enabled">detect.bdio2.enabled</a>.</li>
