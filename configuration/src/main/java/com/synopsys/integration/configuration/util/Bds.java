@@ -66,7 +66,7 @@ public class Bds<T> {
         return new Bds<>(stream.filter(Objects::nonNull));
     }
 
-    public Bds<T> filter(Predicate<? super T> predicate) {
+    public Bds<T> filter(final Predicate<? super T> predicate) {
         return new Bds<>(stream.filter(predicate));
     }
 
@@ -74,18 +74,33 @@ public class Bds<T> {
         return new Bds<>(stream.map(mapper));
     }
 
-    public <R> Bds<R> flatMapStream(Function<? super T, ? extends Stream<? extends R>> mapper) {
+    public <R> Bds<R> flatMapStream(final Function<? super T, ? extends Stream<? extends R>> mapper) {
         return new Bds<>(stream.flatMap(mapper));
     }
 
-    public <R> Bds<R> flatMap(Function<? super T, ? extends Collection<? extends R>> mapper) {
-        Function<? super T, ? extends Stream<? extends R>> streamMapper = value -> mapper.apply(value).stream();
+    public <R> Bds<R> flatMap(final Function<? super T, ? extends Collection<? extends R>> mapper) {
+        final Function<? super T, ? extends Stream<? extends R>> streamMapper = value -> mapper.apply(value).stream();
         return new Bds<>(stream.flatMap(streamMapper));
     }
 
     public <K, U> Map<K, U> toMap(final Function<? super T, ? extends K> keyMapper,
         final Function<? super T, ? extends U> valueMapper) {
         return stream.collect(Collectors.toMap(keyMapper, valueMapper));
+    }
+
+    /**
+     * Returns the first Optional that isPresent.
+     */
+    // TODO: Move to new Bdo (BlackDuckOptional vs BlackDuckStream)?
+    @SafeVarargs
+    public static <T> Optional<T> or(final Optional<T>... values) {
+        for (final Optional<T> value : values) {
+            if (value.isPresent()) {
+                return value;
+            }
+        }
+
+        return Optional.empty();
     }
 
     @SafeVarargs
