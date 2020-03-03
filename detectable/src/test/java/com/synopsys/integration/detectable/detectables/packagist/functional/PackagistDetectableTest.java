@@ -54,9 +54,6 @@ public class PackagistDetectableTest extends DetectableFunctionalTest {
             "           \"version\": \"v0.9.0\",",
             "           \"require\": {",
             "               \"php\": \">=5.3.0\"",
-            "           },",
-            "           \"require-dev\": {",
-            "               \"phpunit/phpunit\": \"~4.0\"",
             "           }",
             "       },",
             "       {",
@@ -65,11 +62,15 @@ public class PackagistDetectableTest extends DetectableFunctionalTest {
             "           \"require\": {",
             "               \"clue/graph\": \"~0.9.0|~0.8.0\",",
             "               \"php\": \">=5.3\"",
-            "           },",
-            "           \"require-dev\": {",
-            "               \"psr/log\": \"~1.0\",",
-            "               \"symfony/event-dispatcher\": \"~2.1\",",
-            "               \"symfony/phpunit-bridge\": \"~2.7\"",
+            "           }",
+            "       },",
+            "       {",
+            "           \"name\": \"graphp/graphviz\",",
+            "           \"version\": \"v0.2.1\",",
+            "           \"require\": {",
+            "               \"clue/graph\": \"~0.9.0|~0.8.0\",",
+            "               \"graphp/algorithms\": \"~0.8.0\",",
+            "               \"php\": \">=5.3.0\"",
             "           }",
             "       }",
             "   ],",
@@ -86,8 +87,6 @@ public class PackagistDetectableTest extends DetectableFunctionalTest {
             "   \"require\": {",
             "       \"php\": \"^5.3.6 || ^7.0\",",
             "       \"clue/graph\": \"^0.9.0\",",
-            "       \"jms/composer-deps-analyzer\": \"0.1.*\",",
-            "       \"symfony/console\": \"^2.1 || ^3.0\",",
             "       \"graphp/graphviz\": \"^0.2.0\"",
             "   }",
             "}"
@@ -106,8 +105,11 @@ public class PackagistDetectableTest extends DetectableFunctionalTest {
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PACKAGIST, extraction.getCodeLocations().get(0).getDependencyGraph());
 
-        graphAssert.hasRootSize(1);
+        graphAssert.hasRootSize(2);
         graphAssert.hasRootDependency("clue/graph", "v0.9.0");
+        graphAssert.hasRootDependency("graphp/graphviz", "v0.2.1");
         graphAssert.hasParentChildRelationship("graphp/algorithms", "v0.8.1", "clue/graph", "v0.9.0");
+        graphAssert.hasParentChildRelationship("graphp/graphviz", "v0.2.1", "graphp/algorithms", "v0.8.1");
+        graphAssert.hasParentChildRelationship("graphp/graphviz", "v0.2.1", "clue/graph", "v0.9.0");
     }
 }
