@@ -4,9 +4,12 @@
 ### New features
 * The ${solution_name} .jar file is now signed, enabling [code verification](/advanced/verifying.md) by users.
 * [Simple proxy information](/advanced/language-and-package-managers/gradle/#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
+* Detect now creates a status file describing the results of the run which includes things like [issues, results and status codes.](advanced/status-file.md)
+* Property configuration table includes where property was resolved.
 
 ### Changed features
 * The [PipEnv Detector](/advanced/language-and-package-managers/python/#pipenv-detector) now parses a json representation of the dependency tree.
+* Powershell download speed increased.
 
 ### Resolved issues
 * Resolved an issue where the download URL for ${solution_name} was being set to an internal URL upon release.
