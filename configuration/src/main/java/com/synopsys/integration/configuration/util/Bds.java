@@ -40,6 +40,7 @@ import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+// TODO: Test this class.
 public class Bds<T> {
     private Stream<T> stream;
 
