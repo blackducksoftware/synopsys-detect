@@ -149,8 +149,8 @@ public class BlackDuckSignatureScannerOptions {
         return Optional.ofNullable(onlineLocalScannerInstallPath);
     }
 
-    public String getUserProvidedScannerInstallUrl() {
-        return userProvidedScannerInstallUrl;
+    public Optional<String> getUserProvidedScannerInstallUrl() {
+        return Optional.ofNullable(userProvidedScannerInstallUrl);
     }
 
     public IndividualFileMatchMode getIndividualFileMatching() {

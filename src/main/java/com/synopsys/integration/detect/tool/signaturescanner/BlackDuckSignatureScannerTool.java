@@ -29,7 +29,6 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,14 +84,15 @@ public class BlackDuckSignatureScannerTool {
         final ScanBatchRunnerFactory scanBatchRunnerFactory = new ScanBatchRunnerFactory(intEnvironmentVariables, executorService);
         final ScanBatchRunner scanBatchRunner;
         File installDirectory = directoryManager.getPermanentDirectory();
-        if (blackDuckServerConfig.isPresent() && StringUtils.isBlank(signatureScannerOptions.getUserProvidedScannerInstallUrl()) && !localScannerInstallPath.isPresent()) {
+        if (blackDuckServerConfig.isPresent() && !signatureScannerOptions.getUserProvidedScannerInstallUrl().isPresent() && !localScannerInstallPath.isPresent()) {
             logger.debug("Signature scanner will use the Black Duck server to download/update the scanner - this is the most likely situation.");
             scanBatchRunner = scanBatchRunnerFactory.withInstall(blackDuckServerConfig.get());
         } else {
-            if (StringUtils.isNotBlank(signatureScannerOptions.getUserProvidedScannerInstallUrl())) {
+            if (signatureScannerOptions.getUserProvidedScannerInstallUrl().isPresent()) {
                 logger.debug("Signature scanner will use the provided url to download/update the scanner.");
-                final IntHttpClient restConnection = connectionFactory.createConnection(signatureScannerOptions.getUserProvidedScannerInstallUrl(), new SilentIntLogger()); //TODO: Should this be silent?
-                scanBatchRunner = scanBatchRunnerFactory.withUserProvidedUrl(signatureScannerOptions.getUserProvidedScannerInstallUrl(), restConnection);
+                String providedUrl = signatureScannerOptions.getUserProvidedScannerInstallUrl().get();
+                final IntHttpClient restConnection = connectionFactory.createConnection(providedUrl, new SilentIntLogger()); //TODO: Should this be silent?
+                scanBatchRunner = scanBatchRunnerFactory.withUserProvidedUrl(providedUrl, restConnection);
             } else {
                 logger.debug("Signature scanner either given an existing path for the scanner or is offline - either way, we won't attempt to manage the install.");
                 if (localScannerInstallPath.isPresent()) {
