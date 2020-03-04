@@ -71,7 +71,7 @@ class BlackDuckSignatureScannerTool(private val signatureScannerOptions: BlackDu
         val scanBatchRunnerFactory = ScanBatchRunnerFactory(intEnvironmentVariables, executorService)
         val scanBatchRunner: ScanBatchRunner
         var installDirectory = directoryManager.permanentDirectory
-        if (blackDuckServerConfig.isPresent && signatureScannerOptions.userProvidedScannerInstallUrl != null && localScannerInstallPath != null) {
+        if (blackDuckServerConfig.isPresent && signatureScannerOptions.userProvidedScannerInstallUrl == null && localScannerInstallPath == null) {
             logger.debug("Signature scanner will use the Black Duck server to download/update the scanner - this is the most likely situation.")
             scanBatchRunner = scanBatchRunnerFactory.withInstall(blackDuckServerConfig.get())
         } else {
