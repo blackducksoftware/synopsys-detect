@@ -25,7 +25,6 @@ package com.synopsys.integration.detect;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.util.Optional;
-import java.util.function.Function;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -40,6 +39,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.util.Bdo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
@@ -172,12 +172,13 @@ public class Application implements ApplicationRunner {
         try {
             logger.debug("Detect shutdown begin.");
             final ShutdownManager shutdownManager = new ShutdownManager();
+            Bdo<DetectBootResult> detectBootResult = Bdo.of(detectBootResultOptional);
             shutdownManager.shutdown(
-                ifPresentMap(detectBootResultOptional, DetectBootResult::getProductRunData),
-                ifPresentMap(detectBootResultOptional, DetectBootResult::getAirGapZip),
-                ifPresentMap(detectBootResultOptional, DetectBootResult::getDetectConfiguration),
-                ifPresentMap(detectBootResultOptional, DetectBootResult::getDirectoryManager),
-                ifPresentMap(detectBootResultOptional, DetectBootResult::getDiagnosticSystem));
+                detectBootResult.flatMap(DetectBootResult::getProductRunData).toOptional(),
+                detectBootResult.flatMap(DetectBootResult::getAirGapZip).toOptional(),
+                detectBootResult.flatMap(DetectBootResult::getDetectConfiguration).toOptional(),
+                detectBootResult.flatMap(DetectBootResult::getDirectoryManager).toOptional(),
+                detectBootResult.flatMap(DetectBootResult::getDiagnosticSystem).toOptional());
             logger.debug("Detect shutdown completed.");
         } catch (final Exception e) {
             logger.error("Detect shutdown failed.");
@@ -216,14 +217,6 @@ public class Application implements ApplicationRunner {
             System.exit(finalExitCode.getExitCode());
         } else {
             logger.info(String.format("Would normally exit(%s) but it is overridden.", finalExitCode.getExitCode()));
-        }
-    }
-
-    private static <T, U> Optional<U> ifPresentMap(final Optional<T> optional, final Function<T, Optional<U>> operator) {
-        if (optional.isPresent()) {
-            return operator.apply(optional.get());
-        } else {
-            return Optional.empty();
         }
     }
 }

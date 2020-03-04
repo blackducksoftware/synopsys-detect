@@ -88,21 +88,6 @@ public class Bds<T> {
         return stream.collect(Collectors.toMap(keyMapper, valueMapper));
     }
 
-    /**
-     * Returns the first Optional that isPresent.
-     */
-    // TODO: Move to new Bdo (BlackDuckOptional vs BlackDuckStream)?
-    @SafeVarargs
-    public static <T> Optional<T> or(final Optional<T>... values) {
-        for (final Optional<T> value : values) {
-            if (value.isPresent()) {
-                return value;
-            }
-        }
-
-        return Optional.empty();
-    }
-
     @SafeVarargs
     public static <K, U> Map<K, U> mapOf(final Pair<K, U>... elements) {
         return mapOfEntries(elements);
