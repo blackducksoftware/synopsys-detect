@@ -28,7 +28,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.misc.Nullable;
 import org.springframework.util.Assert;
 
-import com.synopsys.integration.configuration.util.Bds;
+import com.synopsys.integration.configuration.util.Bdo;
 
 public class ExtendedEnumValue<E extends Enum<E>, B extends Enum<B>> {
     @Nullable
@@ -91,9 +91,8 @@ public class ExtendedEnumValue<E extends Enum<E>, B extends Enum<B>> {
 
     @Override
     public String toString() {
-        return Bds.or(
-            getBaseValue().map(Enum::name),
-            getExtendedValue().map(Enum::name)
-        ).orElseThrow(() -> new IllegalStateException("Extended enum values should be created with a default value."));
+        return Bdo.of(getBaseValue().map(Enum::name))
+                   .or(getExtendedValue().map(Enum::name))
+                   .orElseThrow(() -> new IllegalStateException("Extended enum values should be created with a default value."));
     }
 }
