@@ -40,6 +40,7 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
+import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.util.NameVersion;
 
 public class GradleInspectorExtractor {
@@ -60,7 +61,7 @@ public class GradleInspectorExtractor {
         this.gradleRootMetadataParser = gradleRootMetadataParser;
     }
 
-    public Extraction extract(final File directory, final File gradleExe, String gradleCommand, final File gradleInspector, final File outputDirectory) {
+    public Extraction extract(final File directory, final File gradleExe, String gradleCommand, final ProxyInfo proxyInfo, final File gradleInspector, final File outputDirectory) {
         try {
 
             final List<String> arguments = new ArrayList<>();
@@ -72,6 +73,13 @@ public class GradleInspectorExtractor {
             arguments.add(String.format("--init-script=%s", gradleInspector));
             arguments.add(String.format("-DGRADLEEXTRACTIONDIR=%s", outputDirectory.getCanonicalPath()));
             arguments.add("--info");
+
+            if (proxyInfo.getHost().isPresent()) {
+                arguments.add("--Dhttps.proxyHost=" + proxyInfo.getHost());
+            }
+            if (proxyInfo.getPort() != 0) {
+                arguments.add("--Dhttps.proxyPort=" + proxyInfo.getPort());
+            }
 
             final ExecutableOutput output = executableRunner.execute(directory, gradleExe, arguments);
 

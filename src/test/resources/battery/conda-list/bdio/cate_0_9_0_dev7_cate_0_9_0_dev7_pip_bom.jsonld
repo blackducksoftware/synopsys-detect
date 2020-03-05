@@ -2,21 +2,13 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "cate/0.9.0.dev7/cate/0.9.0.dev7 pip/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.0.0-SNAPSHOT",
-        "Tool: IntegrationBdio-18.2.10"
-      ],
-      "spdx:created": "2019-10-04T20:45:06.777Z"
-    },
-    "@id": "uuid:9f96cdb8-e123-4c83-9670-eb433a825b67",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "cate",
     "revision": "0.9.0.dev7",
-    "@id": "http:pypi/cate/0_9_0_dev7",
+    "@id": "http:pypi/cate/0.9.0.dev7",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
@@ -32,43 +24,43 @@
     },
     "relationship": [
       {
-        "related": "http:pypi/psutil/5_4_3",
+        "related": "http:pypi/psutil/5.4.3",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/pyproj/1_9_5_1",
+        "related": "http:pypi/pyproj/1.9.5.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/Shapely/1_6_4_post1",
+        "related": "http:pypi/Shapely/1.6.4.post1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/scipy/1_0_0",
+        "related": "http:pypi/scipy/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/xarray/0_10_2",
+        "related": "http:pypi/xarray/0.10.2",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/pandas/0_22_0",
+        "related": "http:pypi/pandas/0.22.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/numpy/1_14_2",
+        "related": "http:pypi/numpy/1.14.2",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/Pillow/5_0_0",
+        "related": "http:pypi/Pillow/5.0.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/OWSLib/0_16_0",
+        "related": "http:pypi/OWSLib/0.16.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/tornado/5_0_1",
+        "related": "http:pypi/tornado/5.0.1",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -76,7 +68,7 @@
   {
     "name": "psutil",
     "revision": "5.4.3",
-    "@id": "http:pypi/psutil/5_4_3",
+    "@id": "http:pypi/psutil/5.4.3",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
@@ -95,7 +87,7 @@
   {
     "name": "pyproj",
     "revision": "1.9.5.1",
-    "@id": "http:pypi/pyproj/1_9_5_1",
+    "@id": "http:pypi/pyproj/1.9.5.1",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
@@ -114,7 +106,7 @@
   {
     "name": "Shapely",
     "revision": "1.6.4.post1",
-    "@id": "http:pypi/Shapely/1_6_4_post1",
+    "@id": "http:pypi/Shapely/1.6.4.post1",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
@@ -133,7 +125,7 @@
   {
     "name": "scipy",
     "revision": "1.0.0",
-    "@id": "http:pypi/scipy/1_0_0",
+    "@id": "http:pypi/scipy/1.0.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
@@ -147,50 +139,17 @@
         "version": "1.0.0"
       }
     },
-    "relationship": []
-  },
-  {
-    "name": "xarray",
-    "revision": "0.10.2",
-    "@id": "http:pypi/xarray/0_10_2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "xarray/0.10.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "xarray",
-        "version": "0.10.2"
+    "relationship": [
+      {
+        "related": "http:pypi/numpy/1.14.2",
+        "relationshipType": "DYNAMIC_LINK"
       }
-    },
-    "relationship": []
-  },
-  {
-    "name": "pandas",
-    "revision": "0.22.0",
-    "@id": "http:pypi/pandas/0_22_0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "pypi",
-      "externalId": "pandas/0.22.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "pypi",
-          "separator": "/"
-        },
-        "name": "pandas",
-        "version": "0.22.0"
-      }
-    },
-    "relationship": []
+    ]
   },
   {
     "name": "numpy",
     "revision": "1.14.2",
-    "@id": "http:pypi/numpy/1_14_2",
+    "@id": "http:pypi/numpy/1.14.2",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
@@ -207,9 +166,61 @@
     "relationship": []
   },
   {
+    "name": "xarray",
+    "revision": "0.10.2",
+    "@id": "http:pypi/xarray/0.10.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "xarray/0.10.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "xarray",
+        "version": "0.10.2"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/pandas/0.22.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:pypi/numpy/1.14.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "pandas",
+    "revision": "0.22.0",
+    "@id": "http:pypi/pandas/0.22.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "pypi",
+      "externalId": "pandas/0.22.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "pypi",
+          "separator": "/"
+        },
+        "name": "pandas",
+        "version": "0.22.0"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:pypi/numpy/1.14.2",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
     "name": "Pillow",
     "revision": "5.0.0",
-    "@id": "http:pypi/Pillow/5_0_0",
+    "@id": "http:pypi/Pillow/5.0.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
@@ -228,7 +239,7 @@
   {
     "name": "OWSLib",
     "revision": "0.16.0",
-    "@id": "http:pypi/OWSLib/0_16_0",
+    "@id": "http:pypi/OWSLib/0.16.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
@@ -242,12 +253,17 @@
         "version": "0.16.0"
       }
     },
-    "relationship": []
+    "relationship": [
+      {
+        "related": "http:pypi/pyproj/1.9.5.1",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   },
   {
     "name": "tornado",
     "revision": "5.0.1",
-    "@id": "http:pypi/tornado/5_0_1",
+    "@id": "http:pypi/tornado/5.0.1",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",

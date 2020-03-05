@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.log.IntLogger;
 
 public class DetectStatusLogger {

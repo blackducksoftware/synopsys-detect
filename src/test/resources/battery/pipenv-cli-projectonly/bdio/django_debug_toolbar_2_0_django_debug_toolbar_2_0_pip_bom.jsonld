@@ -2,21 +2,13 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "django-debug-toolbar/2.0/django-debug-toolbar/2.0 pip/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.2.0-SNAPSHOT",
-        "Tool: IntegrationBdio-18.3.4"
-      ],
-      "spdx:created": "2020-01-14T15:48:37.914Z"
-    },
-    "@id": "uuid:0c200e0d-50c3-4e92-bc8a-cf2447128512",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "django-debug-toolbar",
     "revision": "2.0",
-    "@id": "http:pypi/django_debug_toolbar/2_0",
+    "@id": "http:pypi/django-debug-toolbar/2.0",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
@@ -32,11 +24,11 @@
     },
     "relationship": [
       {
-        "related": "http:pypi/sqlparse/0_3_0",
+        "related": "http:pypi/sqlparse/0.3.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/Django/2_2_7",
+        "related": "http:pypi/Django/2.2.7",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -44,7 +36,7 @@
   {
     "name": "sqlparse",
     "revision": "0.3.0",
-    "@id": "http:pypi/sqlparse/0_3_0",
+    "@id": "http:pypi/sqlparse/0.3.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
@@ -63,7 +55,7 @@
   {
     "name": "Django",
     "revision": "2.2.7",
-    "@id": "http:pypi/Django/2_2_7",
+    "@id": "http:pypi/Django/2.2.7",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",
@@ -79,11 +71,11 @@
     },
     "relationship": [
       {
-        "related": "http:pypi/sqlparse/0_3_0",
+        "related": "http:pypi/sqlparse/0.3.0",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:pypi/pytz/2019_3",
+        "related": "http:pypi/pytz/2019.3",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -91,7 +83,7 @@
   {
     "name": "pytz",
     "revision": "2019.3",
-    "@id": "http:pypi/pytz/2019_3",
+    "@id": "http:pypi/pytz/2019.3",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "pypi",

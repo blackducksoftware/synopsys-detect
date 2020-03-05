@@ -6,22 +6,25 @@ import com.synopsys.integration.blackduck.service.BlackDuckService
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory
 import com.synopsys.integration.blackduck.service.ProjectService
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper
+import com.synopsys.integration.detect.artifactory.UpdateArtifactoryPropertiesTask
+import com.synopsys.integration.detect.battery.UpdateBatteryTask
 import com.synopsys.integration.log.PrintStreamIntLogger
 
 buildscript {
     ext {
         springBootVersion = '2.2.4.RELEASE'
-        blackDuckCommonVersion = '45.1.1'
+        blackDuckCommonVersion = '46.0.0'
         polarisCommonVersion = '0.13.2'
         junitPlatformDefaultTestTags = "integration, performance, battery"
     }
+
     repositories {
         mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
     }
 
     dependencies {
-        classpath 'com.synopsys.integration:common-gradle-plugin:1.1.1'
+        classpath 'com.synopsys.integration:common-gradle-plugin:1.2.3'
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
         classpath "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
@@ -33,11 +36,10 @@ plugins {
 }
 
 group = 'com.synopsys.integration'
-version = '6.2.0-SNAPSHOT'
+version = '6.3.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
-apply from: 'artifactory-properties.gradle'
 apply from: 'docs.gradle'
 
 def createArtifactName() {
@@ -144,6 +146,11 @@ tasks['testBattery'].doFirst {
     environment 'BATTERY_TESTS_DETECT_JAR_PATH', createArtifactName()
     environment 'BATTERY_TESTS_PATH', batteryPath.getCanonicalPath()
     environment 'BATTERY_TESTS_JAVA_PATH', org.gradle.internal.jvm.Jvm.current().javaExecutable.getCanonicalPath()
+}
+
+task updateBattery(type: UpdateBatteryTask) {}
+task updateArtifactoryProperties(type: UpdateArtifactoryPropertiesTask) {
+    dependsOn artifactoryPublish
 }
 
 task runDetect(type: JavaExec) {

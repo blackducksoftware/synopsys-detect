@@ -21,6 +21,11 @@ The Gradle inspector detector runs `gradlew dependencies` to get a list of the p
 
 It consumes the output of `gradlew dependencies` with the help of a Gradle script (`init-detect.gradle`), which it usually downloads automatically. The file init-detect.gradle has a dependency DependencyGatherer that comes from https://github.com/blackducksoftware/integration-gradle-inspector. Filtering (including/excluding projects and configurations) is performed by this Gradle/Groovy code on the output of the `gradlew dependencies` command.
 
+<a name="gradleinspectorwithproxy"></a>
+###Running the Gradle inspector with a proxy
+${solution_name} will pass along supplied [proxy host](/properties/Configuration/proxy/#proxy-host-advanced) and [proxy port](/properties/Configuration/proxy/#proxy-port-advanced) properties to the Gradle daemon if applicable.
+<a name="gradleinspectorwithproxy"></a>
+
 <a name="gradleparsedetector"></a>
 # Gradle parse detector
 

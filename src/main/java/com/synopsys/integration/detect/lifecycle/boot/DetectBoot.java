@@ -52,9 +52,7 @@ import com.synopsys.integration.configuration.property.types.path.TildeInPathRes
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.configuration.source.SpringConfigurationPropertySource;
-import com.synopsys.integration.configuration.source.UnknownSpringConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.DetectInfoUtility;
 import com.synopsys.integration.detect.RunBeanConfiguration;
 import com.synopsys.integration.detect.configuration.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.ConnectionFactory;
@@ -120,6 +118,7 @@ import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSyst
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
+import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 import freemarker.template.Configuration;
 
@@ -133,19 +132,19 @@ public class DetectBoot {
     }
 
     public DetectBootResult boot(final DetectRun detectRun, final String[] sourceArgs, final ConfigurableEnvironment environment, final EventSystem eventSystem, final DetectContext detectContext) {
-        final Gson gson = detectBootFactory.createGson();
         final ObjectMapper objectMapper = detectBootFactory.createObjectMapper();
         final DocumentBuilder xml = detectBootFactory.createXmlDocumentBuilder();
         final Configuration configuration = detectBootFactory.createConfiguration();
 
-        final DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
+        final DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
+        final Gson gson = detectContext.getBean(Gson.class);
 
         List<PropertySource> propertySources;
         try {
-            propertySources = new ArrayList<>(SpringConfigurationPropertySource.Companion.fromConfigurableEnvironment(environment, false));
-        } catch (final UnknownSpringConfiguration e) {
+            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, false));
+        } catch (final RuntimeException e) {
             logger.error("An unknown property source was found, detect will still continue.", e);
-            propertySources = new ArrayList<>(SpringConfigurationPropertySource.Companion.fromConfigurableEnvironmentSafely(environment));
+            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, true));
         }
 
         final DetectArgumentState detectArgumentState = parseDetectArgumentState(sourceArgs);
@@ -192,8 +191,6 @@ public class DetectBoot {
         final DirectoryManager directoryManager = new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
         final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectConfiguration, detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
 
-        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver);
-
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
         if (detectArgumentState.isGenerateAirGapZip()) {
@@ -233,6 +230,14 @@ public class DetectBoot {
             return DetectBootResult.exit(detectConfiguration, directoryManager, diagnosticSystem);
         }
 
+        final ProxyInfo detectableProxyInfo;
+        try {
+            detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
+        } catch (final DetectUserFriendlyException e) {
+            return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
+        }
+
+        final DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo);
         final DetectorProfiler profiler = new DetectorProfiler(eventSystem);
 
         //Finished, populate the detect context
@@ -244,10 +249,7 @@ public class DetectBoot {
         detectContext.registerBean(detectableOptionFactory);
         detectContext.registerBean(detectConfigurationFactory);
 
-        detectContext.registerBean(detectInfo);
         detectContext.registerBean(directoryManager);
-
-        detectContext.registerBean(gson);
         detectContext.registerBean(objectMapper);
         detectContext.registerBean(xml);
         detectContext.registerBean(configuration);
@@ -260,7 +262,7 @@ public class DetectBoot {
 
     private void printAppropriateHelp(final List<Property> properties, final DetectArgumentState detectArgumentState) {
         final HelpPrinter helpPrinter = new HelpPrinter();
-        helpPrinter.printAppropriateHelpMessage(System.out, properties, DetectGroup.Companion.values(), DetectGroup.Companion.getBlackduckServer(), detectArgumentState);
+        helpPrinter.printAppropriateHelpMessage(System.out, properties, Arrays.asList(DetectGroup.values()), DetectGroup.BLACKDUCK_SERVER, detectArgumentState);
     }
 
     private void printHelpJsonDocument(final List<Property> properties, final DetectInfo detectInfo, final Gson gson) {
@@ -422,7 +424,7 @@ public class DetectBoot {
         final DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
 
         final AirGapCreator airGapCreator = new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
-        final String gradleInspectorVersion = detectConfiguration.getValueOrNull(DetectProperties.Companion.getDETECT_GRADLE_INSPECTOR_VERSION());
+        final String gradleInspectorVersion = detectConfiguration.getValueOrEmpty(DetectProperties.Companion.getDETECT_GRADLE_INSPECTOR_VERSION()).orElse(null);
         return airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix, gradleInspectorVersion);
     }
 }

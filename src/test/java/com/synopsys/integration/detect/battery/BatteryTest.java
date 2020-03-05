@@ -311,7 +311,7 @@ public final class BatteryTest {
     }
 
     private void checkEnvironment() {
-        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get("BATTERY_TESTS_PATH")));
+        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get("BATTERY_TESTS_PATH")), "The environment variable BATTERY_TESTS_PATH must be set.");
 
         batteryDirectory = new File(System.getenv("BATTERY_TESTS_PATH"));
         if (!batteryDirectory.exists()) {
@@ -378,7 +378,10 @@ public final class BatteryTest {
             final List<File> actualByName = Arrays.stream(bdio).sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
             final List<File> expectedByName = Arrays.stream(expectedBdioFiles).sorted(Comparator.comparing(File::getName)).collect(Collectors.toList());
 
+            int issueCount = 0;
             for (int i = 0; i < expectedByName.size(); i++) {
+                logger.info("***BDIO BATTERY TEST|" + testName + "|" + resourcePrefix + "|" + expectedByName.get(i).getName() + "***");
+
                 final File expected = expectedByName.get(i);
                 final File actual = actualByName.get(i);
                 Assertions.assertEquals(expected.getName(), actual.getName(), "Bdio file names did not match when sorted.");
@@ -401,8 +404,10 @@ public final class BatteryTest {
                     issues.forEach(issue -> logger.error(issue.getIssue()));
                     logger.error("=================");
                 }
-                Assertions.assertEquals(0, issues.size(), "The BDIO comparison failed, one or more issues were found, please check the logs.");
+                issueCount += issues.size();
             }
+            Assertions.assertEquals(0, issueCount, "The BDIO comparison failed, one or more issues were found, please check the logs.");
+
         } else {
             Assertions.assertEquals(0, bdio.length, "No bdio resources were asserted but detect created bdio files. Add resource bdio assertion or add a new type of assertion.");
         }

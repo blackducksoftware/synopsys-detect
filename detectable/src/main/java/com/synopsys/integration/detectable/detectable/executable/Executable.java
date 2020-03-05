@@ -78,6 +78,10 @@ public class Executable {
         return StringUtils.join(arguments, ' ');
     }
 
+    public File getWorkingDirectory() {
+        return workingDirectory;
+    }
+
     public List<String> getCommand() {
         return command;
     }
@@ -97,5 +101,29 @@ public class Executable {
                 environment.put(keyString, valueString);
             }
         }
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        final Executable that = (Executable) o;
+
+        if (!getWorkingDirectory().equals(that.getWorkingDirectory()))
+            return false;
+        if (!environmentVariables.equals(that.environmentVariables))
+            return false;
+        return getCommand().equals(that.getCommand());
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getWorkingDirectory().hashCode();
+        result = 31 * result + environmentVariables.hashCode();
+        result = 31 * result + getCommand().hashCode();
+        return result;
     }
 }

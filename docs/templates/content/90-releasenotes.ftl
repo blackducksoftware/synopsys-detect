@@ -1,14 +1,22 @@
 # Release notes
 
-## Version 6.1.0
+## Version 6.2.0
 ### New features
-* The ${solution_name} .jar file is now signed, enabling [code verification](advanced/verifying.md) by users.
+* The ${solution_name} .jar file is now signed, enabling [code verification](/advanced/verifying.md) by users.
+* [Simple proxy information](/advanced/language-and-package-managers/gradle/#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
+* Detect now creates a status file describing the results of the run which includes things like [issues, results and status codes.](advanced/status-file.md)
+* Property configuration table includes where property was resolved.
 
 ### Changed features
-* TBD
+* The [PipEnv Detector](/advanced/language-and-package-managers/python/#pipenv-detector) now parses a json representation of the dependency tree.
+* Powershell download speed increased.
 
 ### Resolved issues
-* TBD
+* Resolved an issue where the download URL for ${solution_name} was being set to an internal URL upon release.
+* Resolved an issue where all transitive dependencies found by the [Pip inspector](/advanced/language-and-package-managers/python/#the-pip-detector) were being reported as direct dependencies.
+* Resolved an issue where using pip version 20+ with the [Pip inspector](/advanced/language-and-package-managers/python/#the-pip-detector) caused a failure to import a dependency. [GitHub PR](https://github.com/blackducksoftware/synopsys-detect/pull/107)
+* Resolved the following vulnerabilities:
+    * org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
 
 ## Version 6.1.0
 ### New features

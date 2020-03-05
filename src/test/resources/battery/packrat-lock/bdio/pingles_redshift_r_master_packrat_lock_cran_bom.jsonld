@@ -2,21 +2,13 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "pingles/redshift-r/master/packrat-lock cran/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.0.0-SNAPSHOT",
-        "Tool: IntegrationBdio-18.1.0"
-      ],
-      "spdx:created": "2019-10-11T13:47:46.641Z"
-    },
-    "@id": "uuid:2b009a5e-cff3-4204-8f81-d662ee0545d8",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "pingles/redshift-r",
     "revision": "master",
-    "@id": "http:detect/packrat_lock",
+    "@id": "http:detect/packrat-lock",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "detect",
@@ -31,19 +23,19 @@
     },
     "relationship": [
       {
-        "related": "http:cran/RJDBC/0_2_7_1",
+        "related": "http:cran/RJDBC/0.2-7.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:cran/DBI/1_0_0",
+        "related": "http:cran/rJava/0.9-11",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:cran/rJava/0_9_11",
+        "related": "http:cran/packrat/0.4.8-1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:cran/packrat/0_4_8_1",
+        "related": "http:cran/DBI/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -51,7 +43,7 @@
   {
     "name": "RJDBC",
     "revision": "0.2-7.1",
-    "@id": "http:cran/RJDBC/0_2_7_1",
+    "@id": "http:cran/RJDBC/0.2-7.1",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "cran",
@@ -67,38 +59,19 @@
     },
     "relationship": [
       {
-        "related": "http:cran/DBI/1_0_0",
+        "related": "http:cran/rJava/0.9-11",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:cran/rJava/0_9_11",
+        "related": "http:cran/DBI/1.0.0",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "DBI",
-    "revision": "1.0.0",
-    "@id": "http:cran/DBI/1_0_0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "cran",
-      "externalId": "DBI/1.0.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "cran",
-          "separator": "/"
-        },
-        "name": "DBI",
-        "version": "1.0.0"
-      }
-    },
-    "relationship": []
-  },
-  {
     "name": "rJava",
     "revision": "0.9-11",
-    "@id": "http:cran/rJava/0_9_11",
+    "@id": "http:cran/rJava/0.9-11",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "cran",
@@ -115,9 +88,28 @@
     "relationship": []
   },
   {
+    "name": "DBI",
+    "revision": "1.0.0",
+    "@id": "http:cran/DBI/1.0.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "cran",
+      "externalId": "DBI/1.0.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "cran",
+          "separator": "/"
+        },
+        "name": "DBI",
+        "version": "1.0.0"
+      }
+    },
+    "relationship": []
+  },
+  {
     "name": "packrat",
     "revision": "0.4.8-1",
-    "@id": "http:cran/packrat/0_4_8_1",
+    "@id": "http:cran/packrat/0.4.8-1",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "cran",

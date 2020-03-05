@@ -2,21 +2,13 @@
   {
     "specVersion": "1.1.0",
     "spdx:name": "sbt-bintray/0.5.1+10-04ed5f84/org.foundweekends/sbt-bintray/0.5.1+10-04ed5f84 sbt/bom",
-    "creationInfo": {
-      "spdx:creator": [
-        "Tool: Detect-6.0.0-SNAPSHOT",
-        "Tool: IntegrationBdio-18.1.0"
-      ],
-      "spdx:created": "2019-10-11T17:15:24.119Z"
-    },
-    "@id": "uuid:2cfd2eee-6e1c-471c-9555-e4401b15fc60",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
     "name": "sbt-bintray",
     "revision": "0.5.1+10-04ed5f84",
-    "@id": "http:maven/org_foundweekends/sbt_bintray/0_5_1_10_04ed5f84",
+    "@id": "http:maven/org.foundweekends/sbt-bintray/0.5.1%2B10-04ed5f84",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
@@ -33,64 +25,130 @@
     },
     "relationship": [
       {
-        "related": "http:maven/org_scala_sbt/sbt/0_13_16",
+        "related": "http:maven/org.scala-sbt/scripted-sbt/0.13.16",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
+        "related": "http:maven/org.foundweekends/bintry_2.10/0.5.1",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_foundweekends/bintry_2_10/0_5_1",
+        "related": "http:maven/org.scala-sbt/sbt-launch/0.13.16",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_scala_sbt/sbt_launch/0_13_16",
+        "related": "http:maven/org.scala-lang/scala-compiler/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_scala_lang/scala_compiler/2_10_6",
+        "related": "http:maven/org.slf4j/slf4j-nop/1.7.7",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_scala_sbt/scripted_sbt/0_13_16",
+        "related": "http:maven/org.scala-sbt/sbt/0.13.16",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_slf4j/slf4j_nop/1_7_7",
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "sbt",
+    "name": "scripted-sbt",
     "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/sbt/0_13_16",
+    "@id": "http:maven/org.scala-sbt/scripted-sbt/0.13.16",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:sbt:0.13.16",
+      "externalId": "org.scala-sbt:scripted-sbt:0.13.16",
       "externalIdMetaData": {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
         "group": "org.scala-sbt",
-        "name": "sbt",
+        "name": "scripted-sbt",
         "version": "0.13.16"
       }
     },
     "relationship": [
       {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_scala_sbt/main/0_13_16",
+        "related": "http:maven/org.scala-sbt/interface/0.13.16",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_scala_sbt/compiler_interface/0_13_16",
+        "related": "http:maven/org.scala-sbt/process/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/scripted-framework/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/logging/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "io",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/io/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:io:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "io",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/control/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "control",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/control/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:control:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "control",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -98,7 +156,7 @@
   {
     "name": "scala-library",
     "revision": "2.10.6",
-    "@id": "http:maven/org_scala_lang/scala_library/2_10_6",
+    "@id": "http:maven/org.scala-lang/scala-library/2.10.6",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
@@ -116,255 +174,9 @@
     "relationship": []
   },
   {
-    "name": "main",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/main/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:main:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "main",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_sbt/launcher_interface/1_0_1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/run/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/process/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/actions/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/ivy/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/interface/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/main_settings/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/command/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/logging/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/logic/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "launcher-interface",
-    "revision": "1.0.1",
-    "@id": "http:maven/org_scala_sbt/launcher_interface/1_0_1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:launcher-interface:1.0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "launcher-interface",
-        "version": "1.0.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "run",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/run/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:run:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "run",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/process/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/logging/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/classpath/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "process",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/process/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:process:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "process",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "io",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/io/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:io:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "io",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/control/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "control",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/control/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:control:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "control",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "logging",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/logging/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:logging:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "logging",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/process/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/interface/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/jline/jline/2_14_4",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
     "name": "interface",
     "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/interface/0_13_16",
+    "@id": "http:maven/org.scala-sbt/interface/0.13.16",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
@@ -381,7 +193,102 @@
     },
     "relationship": [
       {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "process",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/process/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:process:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "process",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "scripted-framework",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/scripted-framework/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:scripted-framework:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "scripted-framework",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/process/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "logging",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/logging/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:logging:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "logging",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/interface/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/process/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/jline/jline/2.14.4",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -389,7 +296,7 @@
   {
     "name": "jline",
     "revision": "2.14.4",
-    "@id": "http:maven/jline/jline/2_14_4",
+    "@id": "http:maven/jline/jline/2.14.4",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
@@ -407,814 +314,67 @@
     "relationship": []
   },
   {
-    "name": "classpath",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/classpath/0_13_16",
+    "name": "bintry_2.10",
+    "revision": "0.5.1",
+    "@id": "http:maven/org.foundweekends/bintry_2.10/0.5.1",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:classpath:0.13.16",
+      "externalId": "org.foundweekends:bintry_2.10:0.5.1",
       "externalIdMetaData": {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
-        "group": "org.scala-sbt",
-        "name": "classpath",
-        "version": "0.13.16"
+        "group": "org.foundweekends",
+        "name": "bintry_2.10",
+        "version": "0.5.1"
       }
     },
     "relationship": [
       {
-        "related": "http:maven/org_scala_sbt/launcher_interface/1_0_1",
+        "related": "http:maven/net.databinder.dispatch/dispatch-json4s-native_2.10/0.11.2",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_compiler/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/interface/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "scala-compiler",
-    "revision": "2.10.6",
-    "@id": "http:maven/org_scala_lang/scala_compiler/2_10_6",
+    "name": "dispatch-json4s-native_2.10",
+    "revision": "0.11.2",
+    "@id": "http:maven/net.databinder.dispatch/dispatch-json4s-native_2.10/0.11.2",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
-      "externalId": "org.scala-lang:scala-compiler:2.10.6",
+      "externalId": "net.databinder.dispatch:dispatch-json4s-native_2.10:0.11.2",
       "externalIdMetaData": {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
-        "group": "org.scala-lang",
-        "name": "scala-compiler",
-        "version": "2.10.6"
+        "group": "net.databinder.dispatch",
+        "name": "dispatch-json4s-native_2.10",
+        "version": "0.11.2"
       }
     },
     "relationship": [
       {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
+        "related": "http:maven/org.json4s/json4s-core_2.10/3.2.10",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_scala_lang/jline/2_10_6",
+        "related": "http:maven/org.json4s/json4s-native_2.10/3.2.10",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_scala_lang/scala_reflect/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "jline",
-    "revision": "2.10.6",
-    "@id": "http:maven/org_scala_lang/jline/2_10_6",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-lang:jline:2.10.6",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-lang",
-        "name": "jline",
-        "version": "2.10.6"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_fusesource_jansi/jansi/1_4",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "jansi",
-    "revision": "1.4",
-    "@id": "http:maven/org_fusesource_jansi/jansi/1_4",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.fusesource.jansi:jansi:1.4",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.fusesource.jansi",
-        "name": "jansi",
-        "version": "1.4"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "scala-reflect",
-    "revision": "2.10.6",
-    "@id": "http:maven/org_scala_lang/scala_reflect/2_10_6",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-lang:scala-reflect:2.10.6",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-lang",
-        "name": "scala-reflect",
-        "version": "2.10.6"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "actions",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/actions/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:actions:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "actions",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_sbt/compiler_integration/0_13_16",
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_scala_sbt/compiler_ivy_integration/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/ivy/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/interface/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/testing/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/tasks/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/logging/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/relation/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/task_system/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/run/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/process/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/api/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/completion/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/tracking/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/classpath/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "compiler-integration",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/compiler_integration/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:compiler-integration:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "compiler-integration",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_sbt/persist/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/compile/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/incremental_compiler/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/api/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/classfile/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "persist",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/persist/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:persist:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "persist",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/incremental_compiler/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/api/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_tools_sbinary/sbinary_2_10/0_4_2",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "incremental-compiler",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/incremental_compiler/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:incremental-compiler:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "incremental-compiler",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/api/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/logging/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/classpath/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/relation/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "api",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/api/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:api:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "api",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/interface/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/classfile/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "classfile",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/classfile/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:classfile:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "classfile",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/interface/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/logging/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "relation",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/relation/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:relation:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "relation",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/process/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/interface/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "sbinary_2.10",
-    "revision": "0.4.2",
-    "@id": "http:maven/org_scala_tools_sbinary/sbinary_2_10/0_4_2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-tools.sbinary:sbinary_2.10:0.4.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-tools.sbinary",
-        "name": "sbinary_2.10",
-        "version": "0.4.2"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "compile",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/compile/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:compile:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "compile",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_sbt/launcher_interface/1_0_1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/interface/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/api/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/classfile/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/logging/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/classpath/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "compiler-ivy-integration",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/compiler_ivy_integration/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:compiler-ivy-integration:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "compiler-ivy-integration",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/compile/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/ivy/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "ivy",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/ivy/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:ivy:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "ivy",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_sbt/launcher_interface/1_0_1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/collections/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/cross/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/serialization_2_10/0_1_2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/interface/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt_ivy/ivy/2_3_0_sbt_48dd0744422128446aee9ac31aa356ee203cc9f4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/logging/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/com_jcraft/jsch/0_1_50",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_reflect/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "collections",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/collections/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:collections:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "collections",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "cross",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/cross/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:cross:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "cross",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "serialization_2.10",
-    "revision": "0.1.2",
-    "@id": "http:maven/org_scala_sbt/serialization_2_10/0_1_2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:serialization_2.10:0.1.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "serialization_2.10",
-        "version": "0.1.2"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_spire_math/json4s_support_2_10/0_6_0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_json4s/json4s_core_2_10/3_2_10",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_spire_math/jawn_parser_2_10/0_6_0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang_modules/scala_pickling_2_10/0_10_1",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "json4s-support_2.10",
-    "revision": "0.6.0",
-    "@id": "http:maven/org_spire_math/json4s_support_2_10/0_6_0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.spire-math:json4s-support_2.10:0.6.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.spire-math",
-        "name": "json4s-support_2.10",
-        "version": "0.6.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_spire_math/jawn_parser_2_10/0_6_0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_json4s/json4s_ast_2_10/3_2_10",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "jawn-parser_2.10",
-    "revision": "0.6.0",
-    "@id": "http:maven/org_spire_math/jawn_parser_2_10/0_6_0",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.spire-math:jawn-parser_2.10:0.6.0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.spire-math",
-        "name": "jawn-parser_2.10",
-        "version": "0.6.0"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "json4s-ast_2.10",
-    "revision": "3.2.10",
-    "@id": "http:maven/org_json4s/json4s_ast_2_10/3_2_10",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.json4s:json4s-ast_2.10:3.2.10",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.json4s",
-        "name": "json4s-ast_2.10",
-        "version": "3.2.10"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
+        "related": "http:maven/net.databinder.dispatch/dispatch-core_2.10/0.11.2",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -1222,7 +382,7 @@
   {
     "name": "json4s-core_2.10",
     "revision": "3.2.10",
-    "@id": "http:maven/org_json4s/json4s_core_2_10/3_2_10",
+    "@id": "http:maven/org.json4s/json4s-core_2.10/3.2.10",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
@@ -1239,19 +399,19 @@
     },
     "relationship": [
       {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
+        "related": "http:maven/com.thoughtworks.paranamer/paranamer/2.6",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/com_thoughtworks_paranamer/paranamer/2_6",
+        "related": "http:maven/org.scala-lang/scalap/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_scala_lang/scalap/2_10_6",
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_json4s/json4s_ast_2_10/3_2_10",
+        "related": "http:maven/org.json4s/json4s-ast_2.10/3.2.10",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -1259,7 +419,7 @@
   {
     "name": "paranamer",
     "revision": "2.6",
-    "@id": "http:maven/com_thoughtworks_paranamer/paranamer/2_6",
+    "@id": "http:maven/com.thoughtworks.paranamer/paranamer/2.6",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
@@ -1279,7 +439,7 @@
   {
     "name": "scalap",
     "revision": "2.10.6",
-    "@id": "http:maven/org_scala_lang/scalap/2_10_6",
+    "@id": "http:maven/org.scala-lang/scalap/2.10.6",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
@@ -1296,723 +456,164 @@
     },
     "relationship": [
       {
-        "related": "http:maven/org_scala_lang/scala_compiler/2_10_6",
+        "related": "http:maven/org.scala-lang/scala-compiler/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "scala-pickling_2.10",
-    "revision": "0.10.1",
-    "@id": "http:maven/org_scala_lang_modules/scala_pickling_2_10/0_10_1",
+    "name": "scala-compiler",
+    "revision": "2.10.6",
+    "@id": "http:maven/org.scala-lang/scala-compiler/2.10.6",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
-      "externalId": "org.scala-lang.modules:scala-pickling_2.10:0.10.1",
+      "externalId": "org.scala-lang:scala-compiler:2.10.6",
       "externalIdMetaData": {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
-        "group": "org.scala-lang.modules",
-        "name": "scala-pickling_2.10",
-        "version": "0.10.1"
+        "group": "org.scala-lang",
+        "name": "scala-compiler",
+        "version": "2.10.6"
       }
     },
     "relationship": [
       {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
+        "related": "http:maven/org.scala-lang/jline/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_scala_lang/scala_compiler/2_10_6",
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_scalamacros/quasiquotes_2_10/2_0_1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_reflect/2_10_6",
+        "related": "http:maven/org.scala-lang/scala-reflect/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "quasiquotes_2.10",
-    "revision": "2.0.1",
-    "@id": "http:maven/org_scalamacros/quasiquotes_2_10/2_0_1",
+    "name": "jline",
+    "revision": "2.10.6",
+    "@id": "http:maven/org.scala-lang/jline/2.10.6",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
-      "externalId": "org.scalamacros:quasiquotes_2.10:2.0.1",
+      "externalId": "org.scala-lang:jline:2.10.6",
       "externalIdMetaData": {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
-        "group": "org.scalamacros",
-        "name": "quasiquotes_2.10",
-        "version": "2.0.1"
+        "group": "org.scala-lang",
+        "name": "jline",
+        "version": "2.10.6"
       }
     },
     "relationship": [
       {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_reflect/2_10_6",
+        "related": "http:maven/org.fusesource.jansi/jansi/1.4",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "ivy",
-    "revision": "2.3.0-sbt-48dd0744422128446aee9ac31aa356ee203cc9f4",
-    "@id": "http:maven/org_scala_sbt_ivy/ivy/2_3_0_sbt_48dd0744422128446aee9ac31aa356ee203cc9f4",
+    "name": "jansi",
+    "revision": "1.4",
+    "@id": "http:maven/org.fusesource.jansi/jansi/1.4",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt.ivy:ivy:2.3.0-sbt-48dd0744422128446aee9ac31aa356ee203cc9f4",
+      "externalId": "org.fusesource.jansi:jansi:1.4",
       "externalIdMetaData": {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
-        "group": "org.scala-sbt.ivy",
-        "name": "ivy",
-        "version": "2.3.0-sbt-48dd0744422128446aee9ac31aa356ee203cc9f4"
+        "group": "org.fusesource.jansi",
+        "name": "jansi",
+        "version": "1.4"
       }
     },
     "relationship": []
   },
   {
-    "name": "jsch",
-    "revision": "0.1.50",
-    "@id": "http:maven/com_jcraft/jsch/0_1_50",
+    "name": "scala-reflect",
+    "revision": "2.10.6",
+    "@id": "http:maven/org.scala-lang/scala-reflect/2.10.6",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
-      "externalId": "com.jcraft:jsch:0.1.50",
+      "externalId": "org.scala-lang:scala-reflect:2.10.6",
       "externalIdMetaData": {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
-        "group": "com.jcraft",
-        "name": "jsch",
-        "version": "0.1.50"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "testing",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/testing/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:testing:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "testing",
-        "version": "0.13.16"
+        "group": "org.scala-lang",
+        "name": "scala-reflect",
+        "version": "2.10.6"
       }
     },
     "relationship": [
       {
-        "related": "http:maven/org_scala_sbt/launcher_interface/1_0_1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/test_interface/1_0",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/logging/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/classpath/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/test_agent/0_13_16",
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "test-interface",
-    "revision": "1.0",
-    "@id": "http:maven/org_scala_sbt/test_interface/1_0",
+    "name": "json4s-ast_2.10",
+    "revision": "3.2.10",
+    "@id": "http:maven/org.json4s/json4s-ast_2.10/3.2.10",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:test-interface:1.0",
+      "externalId": "org.json4s:json4s-ast_2.10:3.2.10",
       "externalIdMetaData": {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
-        "group": "org.scala-sbt",
-        "name": "test-interface",
-        "version": "1.0"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "test-agent",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/test_agent/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:test-agent:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "test-agent",
-        "version": "0.13.16"
+        "group": "org.json4s",
+        "name": "json4s-ast_2.10",
+        "version": "3.2.10"
       }
     },
     "relationship": [
       {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/test_interface/1_0",
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "tasks",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/tasks/0_13_16",
+    "name": "json4s-native_2.10",
+    "revision": "3.2.10",
+    "@id": "http:maven/org.json4s/json4s-native_2.10/3.2.10",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:tasks:0.13.16",
+      "externalId": "org.json4s:json4s-native_2.10:3.2.10",
       "externalIdMetaData": {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
-        "group": "org.scala-sbt",
-        "name": "tasks",
-        "version": "0.13.16"
+        "group": "org.json4s",
+        "name": "json4s-native_2.10",
+        "version": "3.2.10"
       }
     },
     "relationship": [
       {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
+        "related": "http:maven/org.json4s/json4s-core_2.10/3.2.10",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_scala_sbt/collections/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/control/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "task-system",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/task_system/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:task-system:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "task-system",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/collections/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/process/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/tasks/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/logging/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "completion",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/completion/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:completion:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "completion",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/collections/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/control/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/jline/jline/2_14_4",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "tracking",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/tracking/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:tracking:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "tracking",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/cache/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "cache",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/cache/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:cache:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "cache",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/collections/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/serialization_2_10/0_1_2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_reflect/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_tools_sbinary/sbinary_2_10/0_4_2",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "main-settings",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/main_settings/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:main-settings:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "main-settings",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_sbt/apply_macro/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/ivy/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/interface/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/logging/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/relation/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/task_system/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/process/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/completion/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/command/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/classpath/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_tools_sbinary/sbinary_2_10/0_4_2",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "apply-macro",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/apply_macro/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:apply-macro:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "apply-macro",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/collections/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_compiler/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "command",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/command/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:command:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "command",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_sbt/launcher_interface/1_0_1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/template_resolver/0_1",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/cross/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/ivy/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/interface/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/completion/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/logging/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/classpath/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "template-resolver",
-    "revision": "0.1",
-    "@id": "http:maven/org_scala_sbt/template_resolver/0_1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:template-resolver:0.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "template-resolver",
-        "version": "0.1"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "logic",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/logic/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:logic:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "logic",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/collections/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/relation/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "compiler-interface",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/compiler_interface/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:compiler-interface:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "compiler-interface",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/interface/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "bintry_2.10",
-    "revision": "0.5.1",
-    "@id": "http:maven/org_foundweekends/bintry_2_10/0_5_1",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.foundweekends:bintry_2.10:0.5.1",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.foundweekends",
-        "name": "bintry_2.10",
-        "version": "0.5.1"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/net_databinder_dispatch/dispatch_json4s_native_2_10/0_11_2",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "dispatch-json4s-native_2.10",
-    "revision": "0.11.2",
-    "@id": "http:maven/net_databinder_dispatch/dispatch_json4s_native_2_10/0_11_2",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "net.databinder.dispatch:dispatch-json4s-native_2.10:0.11.2",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "net.databinder.dispatch",
-        "name": "dispatch-json4s-native_2.10",
-        "version": "0.11.2"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/net_databinder_dispatch/dispatch_core_2_10/0_11_2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_json4s/json4s_native_2_10/3_2_10",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_json4s/json4s_core_2_10/3_2_10",
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -2020,7 +621,7 @@
   {
     "name": "dispatch-core_2.10",
     "revision": "0.11.2",
-    "@id": "http:maven/net_databinder_dispatch/dispatch_core_2_10/0_11_2",
+    "@id": "http:maven/net.databinder.dispatch/dispatch-core_2.10/0.11.2",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
@@ -2037,11 +638,11 @@
     },
     "relationship": [
       {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
+        "related": "http:maven/com.ning/async-http-client/1.8.10",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/com_ning/async_http_client/1_8_10",
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -2049,7 +650,7 @@
   {
     "name": "async-http-client",
     "revision": "1.8.10",
-    "@id": "http:maven/com_ning/async_http_client/1_8_10",
+    "@id": "http:maven/com.ning/async-http-client/1.8.10",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
@@ -2066,23 +667,43 @@
     },
     "relationship": [
       {
-        "related": "http:maven/io_netty/netty/3_9_2_Final",
+        "related": "http:maven/org.slf4j/slf4j-api/1.7.7",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_slf4j/slf4j_api/1_7_7",
+        "related": "http:maven/io.netty/netty/3.9.2.Final",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:maven/org_slf4j/slf4j_api/1_7_5",
+        "related": "http:maven/org.slf4j/slf4j-api/1.7.5",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
+    "name": "slf4j-api",
+    "revision": "1.7.7",
+    "@id": "http:maven/org.slf4j/slf4j-api/1.7.7",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.slf4j:slf4j-api:1.7.7",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.slf4j",
+        "name": "slf4j-api",
+        "version": "1.7.7"
+      }
+    },
+    "relationship": []
+  },
+  {
     "name": "netty",
     "revision": "3.9.2.Final",
-    "@id": "http:maven/io_netty/netty/3_9_2_Final",
+    "@id": "http:maven/io.netty/netty/3.9.2.Final",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
@@ -2101,28 +722,8 @@
   },
   {
     "name": "slf4j-api",
-    "revision": "1.7.7",
-    "@id": "http:maven/org_slf4j/slf4j_api/1_7_7",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.slf4j:slf4j-api:1.7.7",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.slf4j",
-        "name": "slf4j-api",
-        "version": "1.7.7"
-      }
-    },
-    "relationship": []
-  },
-  {
-    "name": "slf4j-api",
     "revision": "1.7.5",
-    "@id": "http:maven/org_slf4j/slf4j_api/1_7_5",
+    "@id": "http:maven/org.slf4j/slf4j-api/1.7.5",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
@@ -2140,38 +741,9 @@
     "relationship": []
   },
   {
-    "name": "json4s-native_2.10",
-    "revision": "3.2.10",
-    "@id": "http:maven/org_json4s/json4s_native_2_10/3_2_10",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.json4s:json4s-native_2.10:3.2.10",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.json4s",
-        "name": "json4s-native_2.10",
-        "version": "3.2.10"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_json4s/json4s_core_2_10/3_2_10",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
     "name": "sbt-launch",
     "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/sbt_launch/0_13_16",
+    "@id": "http:maven/org.scala-sbt/sbt-launch/0.13.16",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
@@ -2189,87 +761,9 @@
     "relationship": []
   },
   {
-    "name": "scripted-sbt",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/scripted_sbt/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:scripted-sbt:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "scripted-sbt",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_sbt/scripted_framework/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/process/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/interface/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/logging/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
-    "name": "scripted-framework",
-    "revision": "0.13.16",
-    "@id": "http:maven/org_scala_sbt/scripted_framework/0_13_16",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "maven",
-      "externalId": "org.scala-sbt:scripted-framework:0.13.16",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "maven",
-          "separator": ":"
-        },
-        "group": "org.scala-sbt",
-        "name": "scripted-framework",
-        "version": "0.13.16"
-      }
-    },
-    "relationship": [
-      {
-        "related": "http:maven/org_scala_lang/scala_library/2_10_6",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/process/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:maven/org_scala_sbt/io/0_13_16",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
-  },
-  {
     "name": "slf4j-nop",
     "revision": "1.7.7",
-    "@id": "http:maven/org_slf4j/slf4j_nop/1_7_7",
+    "@id": "http:maven/org.slf4j/slf4j-nop/1.7.7",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "maven",
@@ -2286,7 +780,1505 @@
     },
     "relationship": [
       {
-        "related": "http:maven/org_slf4j/slf4j_api/1_7_7",
+        "related": "http:maven/org.slf4j/slf4j-api/1.7.7",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "sbt",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/sbt/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:sbt:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "sbt",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/main/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/compiler-interface/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "main",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/main/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:main:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "main",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/interface/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/main-settings/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/ivy/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/process/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/actions/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/launcher-interface/1.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/run/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/command/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/logging/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/logic/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "main-settings",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/main-settings/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:main-settings:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "main-settings",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-tools.sbinary/sbinary_2.10/0.4.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/interface/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/process/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/completion/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/command/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/classpath/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/ivy/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/task-system/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/apply-macro/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/relation/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/logging/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "sbinary_2.10",
+    "revision": "0.4.2",
+    "@id": "http:maven/org.scala-tools.sbinary/sbinary_2.10/0.4.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-tools.sbinary:sbinary_2.10:0.4.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-tools.sbinary",
+        "name": "sbinary_2.10",
+        "version": "0.4.2"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "completion",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/completion/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:completion:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "completion",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/control/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/collections/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/jline/jline/2.14.4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "collections",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/collections/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:collections:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "collections",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "command",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/command/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:command:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "command",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/interface/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/ivy/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/completion/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/cross/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/launcher-interface/1.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/template-resolver/0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/logging/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/classpath/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "ivy",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/ivy/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:ivy:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "ivy",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/interface/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt.ivy/ivy/2.3.0-sbt-48dd0744422128446aee9ac31aa356ee203cc9f4",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/serialization_2.10/0.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/cross/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/launcher-interface/1.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/collections/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/com.jcraft/jsch/0.1.50",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/logging/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-reflect/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "ivy",
+    "revision": "2.3.0-sbt-48dd0744422128446aee9ac31aa356ee203cc9f4",
+    "@id": "http:maven/org.scala-sbt.ivy/ivy/2.3.0-sbt-48dd0744422128446aee9ac31aa356ee203cc9f4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt.ivy:ivy:2.3.0-sbt-48dd0744422128446aee9ac31aa356ee203cc9f4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt.ivy",
+        "name": "ivy",
+        "version": "2.3.0-sbt-48dd0744422128446aee9ac31aa356ee203cc9f4"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "serialization_2.10",
+    "revision": "0.1.2",
+    "@id": "http:maven/org.scala-sbt/serialization_2.10/0.1.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:serialization_2.10:0.1.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "serialization_2.10",
+        "version": "0.1.2"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.spire-math/jawn-parser_2.10/0.6.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.json4s/json4s-core_2.10/3.2.10",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.spire-math/json4s-support_2.10/0.6.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang.modules/scala-pickling_2.10/0.10.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "jawn-parser_2.10",
+    "revision": "0.6.0",
+    "@id": "http:maven/org.spire-math/jawn-parser_2.10/0.6.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.spire-math:jawn-parser_2.10:0.6.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.spire-math",
+        "name": "jawn-parser_2.10",
+        "version": "0.6.0"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "json4s-support_2.10",
+    "revision": "0.6.0",
+    "@id": "http:maven/org.spire-math/json4s-support_2.10/0.6.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.spire-math:json4s-support_2.10:0.6.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.spire-math",
+        "name": "json4s-support_2.10",
+        "version": "0.6.0"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.spire-math/jawn-parser_2.10/0.6.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.json4s/json4s-ast_2.10/3.2.10",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "scala-pickling_2.10",
+    "revision": "0.10.1",
+    "@id": "http:maven/org.scala-lang.modules/scala-pickling_2.10/0.10.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-lang.modules:scala-pickling_2.10:0.10.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-lang.modules",
+        "name": "scala-pickling_2.10",
+        "version": "0.10.1"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scalamacros/quasiquotes_2.10/2.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-compiler/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-reflect/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "quasiquotes_2.10",
+    "revision": "2.0.1",
+    "@id": "http:maven/org.scalamacros/quasiquotes_2.10/2.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scalamacros:quasiquotes_2.10:2.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scalamacros",
+        "name": "quasiquotes_2.10",
+        "version": "2.0.1"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-reflect/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "cross",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/cross/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:cross:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "cross",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "launcher-interface",
+    "revision": "1.0.1",
+    "@id": "http:maven/org.scala-sbt/launcher-interface/1.0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:launcher-interface:1.0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "launcher-interface",
+        "version": "1.0.1"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "jsch",
+    "revision": "0.1.50",
+    "@id": "http:maven/com.jcraft/jsch/0.1.50",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "com.jcraft:jsch:0.1.50",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "com.jcraft",
+        "name": "jsch",
+        "version": "0.1.50"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "template-resolver",
+    "revision": "0.1",
+    "@id": "http:maven/org.scala-sbt/template-resolver/0.1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:template-resolver:0.1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "template-resolver",
+        "version": "0.1"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "classpath",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/classpath/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:classpath:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "classpath",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/interface/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-compiler/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/launcher-interface/1.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "task-system",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/task-system/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:task-system:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "task-system",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/process/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/collections/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/tasks/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/logging/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "tasks",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/tasks/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:tasks:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "tasks",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/control/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/collections/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "apply-macro",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/apply-macro/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:apply-macro:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "apply-macro",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-lang/scala-compiler/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/collections/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "relation",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/relation/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:relation:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "relation",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/interface/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/process/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "actions",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/actions/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:actions:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "actions",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/api/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/interface/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/testing/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/tracking/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/process/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/completion/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/compiler-integration/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/compiler-ivy-integration/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/run/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/classpath/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/ivy/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/task-system/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/relation/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/tasks/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/logging/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "api",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/api/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:api:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "api",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/classfile/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/interface/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "classfile",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/classfile/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:classfile:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "classfile",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/interface/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/logging/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "testing",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/testing/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:testing:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "testing",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/launcher-interface/1.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/test-agent/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/test-interface/1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/logging/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/classpath/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "test-agent",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/test-agent/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:test-agent:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "test-agent",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/test-interface/1.0",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "test-interface",
+    "revision": "1.0",
+    "@id": "http:maven/org.scala-sbt/test-interface/1.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:test-interface:1.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "test-interface",
+        "version": "1.0"
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "tracking",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/tracking/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:tracking:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "tracking",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/cache/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "cache",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/cache/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:cache:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "cache",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-tools.sbinary/sbinary_2.10/0.4.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/serialization_2.10/0.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/collections/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-reflect/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "compiler-integration",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/compiler-integration/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:compiler-integration:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "compiler-integration",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/api/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/classfile/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/incremental-compiler/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/compile/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/persist/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "incremental-compiler",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/incremental-compiler/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:incremental-compiler:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "incremental-compiler",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/api/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/relation/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/logging/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/classpath/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "compile",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/compile/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:compile:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "compile",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/api/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/classfile/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/interface/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/launcher-interface/1.0.1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/logging/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/classpath/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "persist",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/persist/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:persist:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "persist",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-tools.sbinary/sbinary_2.10/0.4.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/api/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/incremental-compiler/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "compiler-ivy-integration",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/compiler-ivy-integration/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:compiler-ivy-integration:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "compiler-ivy-integration",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/ivy/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/compile/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "run",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/run/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:run:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "run",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/io/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/process/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/logging/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/classpath/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "logic",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/logic/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:logic:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "logic",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/collections/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-sbt/relation/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "compiler-interface",
+    "revision": "0.13.16",
+    "@id": "http:maven/org.scala-sbt/compiler-interface/0.13.16",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "maven",
+      "externalId": "org.scala-sbt:compiler-interface:0.13.16",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "maven",
+          "separator": ":"
+        },
+        "group": "org.scala-sbt",
+        "name": "compiler-interface",
+        "version": "0.13.16"
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:maven/org.scala-sbt/interface/0.13.16",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:maven/org.scala-lang/scala-library/2.10.6",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]

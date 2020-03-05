@@ -22,9 +22,11 @@
  */
 package com.synopsys.integration.detect;
 
+import java.io.File;
+import java.nio.charset.Charset;
 import java.util.Optional;
-import java.util.function.Function;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +36,10 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.core.env.ConfigurableEnvironment;
 
+import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.util.Bdo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
@@ -50,7 +55,9 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.report.ReportManager;
+import com.synopsys.integration.detect.workflow.report.output.FormattedOutputManager;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.DetectStatusManager;
@@ -87,11 +94,17 @@ public class Application implements ApplicationRunner {
         final ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
 
         final ReportManager reportManager = ReportManager.createDefault(eventSystem);
+        final FormattedOutputManager formattedOutputManager = new FormattedOutputManager(eventSystem);
 
         //Before boot even begins, we create a new Spring context for Detect to work within.
         logger.debug("Initializing detect.");
         final DetectRun detectRun = DetectRun.createDefault();
         final DetectContext detectContext = new DetectContext(detectRun);
+
+        final Gson gson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create();
+        final DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
+        detectContext.registerBean(gson);
+        detectContext.registerBean(detectInfo);
 
         Optional<DetectBootResult> detectBootResultOptional = Optional.empty();
         boolean printOutput = true;
@@ -138,15 +151,34 @@ public class Application implements ApplicationRunner {
             }
         }
 
+        //Create status output file.
+        try {
+            if (detectBootResultOptional.isPresent() && detectBootResultOptional.get().getDirectoryManager().isPresent()) {
+                DirectoryManager directoryManager = detectBootResultOptional.get().getDirectoryManager().get();
+
+                File statusFile = new File(directoryManager.getStatusOutputDirectory(), "status.json");
+                logger.info(String.format("Creating status file: %s", statusFile.toString()));
+
+                String json = gson.toJson(formattedOutputManager.createFormattedOutput(detectInfo));
+                FileUtils.writeStringToFile(statusFile, json, Charset.defaultCharset());
+            } else {
+                logger.info("Will not create status file, detect did not boot.");
+            }
+        } catch (Exception e) {
+            logger.warn("There was a problem writing the status output file. The detect run was not affected.");
+            logger.debug("The problem creating the status file was: ", e);
+        }
+
         try {
             logger.debug("Detect shutdown begin.");
             final ShutdownManager shutdownManager = new ShutdownManager();
+            Bdo<DetectBootResult> detectBootResult = Bdo.of(detectBootResultOptional);
             shutdownManager.shutdown(
-                ifPresentMap(detectBootResultOptional, DetectBootResult::getProductRunData),
-                ifPresentMap(detectBootResultOptional, DetectBootResult::getAirGapZip),
-                ifPresentMap(detectBootResultOptional, DetectBootResult::getDetectConfiguration),
-                ifPresentMap(detectBootResultOptional, DetectBootResult::getDirectoryManager),
-                ifPresentMap(detectBootResultOptional, DetectBootResult::getDiagnosticSystem));
+                detectBootResult.flatMap(DetectBootResult::getProductRunData).toOptional(),
+                detectBootResult.flatMap(DetectBootResult::getAirGapZip).toOptional(),
+                detectBootResult.flatMap(DetectBootResult::getDetectConfiguration).toOptional(),
+                detectBootResult.flatMap(DetectBootResult::getDirectoryManager).toOptional(),
+                detectBootResult.flatMap(DetectBootResult::getDiagnosticSystem).toOptional());
             logger.debug("Detect shutdown completed.");
         } catch (final Exception e) {
             logger.error("Detect shutdown failed.");
@@ -185,14 +217,6 @@ public class Application implements ApplicationRunner {
             System.exit(finalExitCode.getExitCode());
         } else {
             logger.info(String.format("Would normally exit(%s) but it is overridden.", finalExitCode.getExitCode()));
-        }
-    }
-
-    private static <T, U> Optional<U> ifPresentMap(final Optional<T> optional, final Function<T, Optional<U>> operator) {
-        if (optional.isPresent()) {
-            return operator.apply(optional.get());
-        } else {
-            return Optional.empty();
         }
     }
 }

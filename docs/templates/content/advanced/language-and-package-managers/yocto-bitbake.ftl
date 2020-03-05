@@ -5,7 +5,7 @@ The BitBake detector discovers dependencies of custom Linux distribution project
 The BitBake detector attempts to run on your project if all of the following are true:
 
 1. A build environment init script (typically *oe-init-build-env*) is found in the source directory.
-2. You provide at least one package name using the BitBake package names property.
+2. You provide at least one package name (target image name) using the BitBake package names property. ${solution_name} will not run the Bitbake detector if this property is not set.
 
 The BitBake detector attempts to source the *oe-init-build-env* file on your behalf.
 
@@ -22,6 +22,12 @@ It also uses `bitbake-layers show-recipes` to gather layer information.
 Symptom: Error in log similar to 'ERROR: Nothing PROVIDES {package}'
 
 Problem: ${solution_name} does not support the Yocto version. ${solution_name} requires Yocto versions 2.0 to 2.7. Yocto 3.0 is currently not supported while we investigate possible solutions.
+
+### No components in ${blackduck_product_name} BOM
+
+Symptom: Empty ${blackduck_product_name} BOM.
+
+Problem: If you are using Yocto 3.0 or greater, ${solution_name} will fail to extract dependencies because files used by ${solution_name} are no longer generated in Yocto 3.0.
 
 ### Missing components for projects using the Yocto Package Revision Service
 
