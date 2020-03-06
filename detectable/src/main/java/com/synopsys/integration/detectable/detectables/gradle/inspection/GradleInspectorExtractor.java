@@ -75,10 +75,10 @@ public class GradleInspectorExtractor {
             arguments.add("--info");
 
             if (proxyInfo.getHost().isPresent()) {
-                arguments.add("--Dhttps.proxyHost=" + proxyInfo.getHost());
+                arguments.add("-Dhttps.proxyHost=" + proxyInfo.getHost().get());
             }
             if (proxyInfo.getPort() != 0) {
-                arguments.add("--Dhttps.proxyPort=" + proxyInfo.getPort());
+                arguments.add("-Dhttps.proxyPort=" + proxyInfo.getPort());
             }
 
             final ExecutableOutput output = executableRunner.execute(directory, gradleExe, arguments);
