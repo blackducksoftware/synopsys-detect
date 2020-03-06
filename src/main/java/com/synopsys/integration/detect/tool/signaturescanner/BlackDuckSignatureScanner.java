@@ -40,6 +40,7 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanTarget;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.enums.IndividualFileMatchMode;
@@ -208,14 +209,14 @@ public class BlackDuckSignatureScanner {
         scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());
         scanJobBuilder.cleanupOutput(false);
 
-        if (signatureScannerOptions.getUploadSource() && signatureScannerOptions.getSnippetMatching() == null && !signatureScannerOptions.getLicenseSearch()) {
+        final Optional<SnippetMatching> snippetMatching = signatureScannerOptions.getSnippetMatching();
+        if (signatureScannerOptions.getUploadSource() && !snippetMatching.isPresent() && !signatureScannerOptions.getLicenseSearch()) {
             throw new DetectUserFriendlyException("You must enable snippet matching using " + DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING().getName() + " in order to use upload source.",
                 ExitCodeType.FAILURE_CONFIGURATION);
         }
-        scanJobBuilder.uploadSource(signatureScannerOptions.getSnippetMatching(), signatureScannerOptions.getUploadSource());
+        scanJobBuilder.uploadSource(snippetMatching.get(), signatureScannerOptions.getUploadSource());
 
-        final String additionalArguments = signatureScannerOptions.getAdditionalArguments();
-        scanJobBuilder.additionalScanArguments(additionalArguments);
+        signatureScannerOptions.getAdditionalArguments().ifPresent(scanJobBuilder::additionalScanArguments);
 
         final String projectName = projectNameVersion.getName();
         final String projectVersionName = projectNameVersion.getVersion();
@@ -228,8 +229,8 @@ public class BlackDuckSignatureScanner {
         scanJobBuilder.individualFileMatching(individualFileMatching.name());
 
         final File sourcePath = directoryManager.getSourceDirectory();
-        final String prefix = signatureScannerOptions.getCodeLocationPrefix();
-        final String suffix = signatureScannerOptions.getCodeLocationSuffix();
+        final String prefix = signatureScannerOptions.getCodeLocationPrefix().orElse(null);
+        final String suffix = signatureScannerOptions.getCodeLocationSuffix().orElse(null);
 
         for (final SignatureScanPath scanPath : signatureScanPaths) {
             final String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, scanPath.getTargetPath(), dockerTarFile, projectName, projectVersionName, prefix, suffix);

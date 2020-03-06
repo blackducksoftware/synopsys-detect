@@ -36,8 +36,11 @@ public class BlackDuckSignatureScannerOptions {
     private final List<String> exclusionPatterns;
     private final List<String> exclusionNamePatterns;
 
+    @Nullable
     private final Path offlineLocalScannerInstallPath;
+    @Nullable
     private final Path onlineLocalScannerInstallPath;
+    @Nullable
     private final String userProvidedScannerInstallUrl;
 
     private final Integer scanMemory;
@@ -47,11 +50,15 @@ public class BlackDuckSignatureScannerOptions {
     @Nullable //Just to note that if you do not want snippet matching, this should be null.
     private final SnippetMatching snippetMatching;
 
-    private final Boolean uploadSource;
+    private final boolean uploadSource;
+    @Nullable
     private final String codeLocationPrefix;
+    @Nullable
     private final String codeLocationSuffix;
+    @Nullable
     private final String additionalArguments;
     private final Integer maxDepth;
+    @Nullable
     private final IndividualFileMatchMode individualFileMatching;
     private final Boolean licenseSearch;
 
@@ -59,17 +66,17 @@ public class BlackDuckSignatureScannerOptions {
         final List<Path> signatureScannerPaths,
         final List<String> exclusionPatterns,
         final List<String> exclusionNamePatterns,
-        final Path offlineLocalScannerInstallPath,
-        final Path onlineLocalScannerInstallPath,
-        final String userProvidedScannerInstallUrl,
+        @Nullable final Path offlineLocalScannerInstallPath,
+        @Nullable final Path onlineLocalScannerInstallPath,
+        @Nullable final String userProvidedScannerInstallUrl,
         final Integer scanMemory,
         final Integer parallelProcessors,
         final Boolean dryRun,
-        final SnippetMatching snippetMatching,
-        final Boolean uploadSource,
-        final String codeLocationPrefix,
-        final String codeLocationSuffix,
-        final String additionalArguments,
+        @Nullable final SnippetMatching snippetMatching,
+        @Nullable final Boolean uploadSource,
+        @Nullable final String codeLocationPrefix,
+        @Nullable final String codeLocationSuffix,
+        @Nullable final String additionalArguments,
         final Integer maxDepth,
         final IndividualFileMatchMode individualFileMatching,
         final Boolean licenseSearch) {
@@ -117,24 +124,24 @@ public class BlackDuckSignatureScannerOptions {
         return dryRun;
     }
 
-    public SnippetMatching getSnippetMatching() {
-        return snippetMatching;
+    public Optional<SnippetMatching> getSnippetMatching() {
+        return Optional.ofNullable(snippetMatching);
     }
 
     public Boolean getUploadSource() {
         return uploadSource;
     }
 
-    public String getCodeLocationPrefix() {
-        return codeLocationPrefix;
+    public Optional<String> getCodeLocationPrefix() {
+        return Optional.ofNullable(codeLocationPrefix);
     }
 
-    public String getCodeLocationSuffix() {
-        return codeLocationSuffix;
+    public Optional<String> getCodeLocationSuffix() {
+        return Optional.ofNullable(codeLocationSuffix);
     }
 
-    public String getAdditionalArguments() {
-        return additionalArguments;
+    public Optional<String> getAdditionalArguments() {
+        return Optional.ofNullable(additionalArguments);
     }
 
     public Integer getMaxDepth() {
