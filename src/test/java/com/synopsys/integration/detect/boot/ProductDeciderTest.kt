@@ -26,9 +26,9 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import com.synopsys.integration.detect.DetectTool
-import com.synopsys.integration.detect.configuration.BlackDuckConnectionDetails
-import com.synopsys.integration.detect.configuration.ConnectionDetails
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory
+import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails
+import com.synopsys.integration.detect.configuration.connection.ConnectionDetails
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions
 import com.synopsys.integration.detect.util.filter.DetectToolFilter

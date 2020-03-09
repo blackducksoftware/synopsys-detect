@@ -29,6 +29,8 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils
 import com.synopsys.integration.configuration.property.types.path.PathResolver
 import com.synopsys.integration.detect.PropertyConfigUtils
+import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails
+import com.synopsys.integration.detect.configuration.connection.ConnectionDetails
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException
 import com.synopsys.integration.detect.exitcode.ExitCodeType
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions
