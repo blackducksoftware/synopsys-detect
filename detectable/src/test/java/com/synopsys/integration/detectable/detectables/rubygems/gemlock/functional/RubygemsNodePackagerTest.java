@@ -22,53 +22,60 @@
  */
 package com.synopsys.integration.detectable.detectables.rubygems.gemlock.functional;
 
+import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Disabled;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.parse.GemlockParser;
-import com.synopsys.integration.detectable.util.FunctionalTestFiles;
-import com.synopsys.integration.detectable.util.GraphCompare;
-import com.synopsys.integration.detectable.util.graph.GraphAssert;
+import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 @FunctionalTest
 public class RubygemsNodePackagerTest {
     private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
     @Test
-    @Disabled
-    void packagerTest() throws MissingExternalIdException {
-        final List<String> actualText = FunctionalTestFiles.asListOfStrings("/rubygems/Gemfile.lock");
-        final GemlockParser rubygemsNodePackager = new GemlockParser(new ExternalIdFactory());
-        final DependencyGraph projects = rubygemsNodePackager.parseProjectDependencies(actualText);
-        Assertions.assertEquals(8, projects.getRootDependencies().size());
-
-        GraphCompare.assertEqualsResource("/rubygems/expectedPackager_graph.json", projects);
-    }
-
-    @Test
     void findsAllVersions() throws MissingExternalIdException {
         //Finds all versions of the package not just the first matching architecture.
-        final List<String> actualText = FunctionalTestFiles.asListOfStrings("/rubygems/Gemfile-rails.lock");
+        final List<String> actualText = Arrays.asList(
+            "GEM",
+            "  remote: https://rubygems.org/",
+            "  specs:",
+            "    nokogiri (1.8.2)",
+            "      mini_portile2 (~> 2.3.0)",
+            "    nokogiri (1.8.2-java)",
+            "    nokogiri (1.8.2-x86-mingw32)",
+            "    nokoparent (3.1.0)",
+            "      nokogiri (~> 1.8)",
+            "",
+            "PLATFORMS",
+            "  java",
+            "  ruby",
+            "  x86-mingw32",
+            "",
+            "DEPENDENCIES",
+            "  nokoparent (>= 1)",
+            "  nokogiri (>= 1.8.1)"
+        );
         final GemlockParser rubygemsNodePackager = new GemlockParser(new ExternalIdFactory());
         final DependencyGraph graph = rubygemsNodePackager.parseProjectDependencies(actualText);
 
-        final GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, graph);
-        graphAssert.hasNoDependency(createExternalId("nokogiri", ""));
-        graphAssert.hasDependency(createExternalId("nokogiri", "1.8.2"));
-        graphAssert.hasDependency(createExternalId("nokogiri", "1.8.2-java"));
-        graphAssert.hasDependency(createExternalId("nokogiri", "1.8.2-x86-mingw32"));
+        final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.RUBYGEMS, graph);
+
+        graphAssert.hasRootSize(2);
+        graphAssert.hasRootDependency("nokoparent", "3.1.0");
+        graphAssert.hasRootDependency("nokogiri", "1.8.2");
+        graphAssert.hasNoDependency("nokogiri", "");
+        graphAssert.hasDependency("nokogiri", "1.8.2");
+        graphAssert.hasDependency("nokogiri", "1.8.2-java");
+        graphAssert.hasDependency("nokogiri", "1.8.2-x86-mingw32");
+        graphAssert.hasParentChildRelationship("nokoparent", "3.1.0", "nokogiri", "1.8.2");
+        graphAssert.hasParentChildRelationship("nokogiri", "1.8.2", "mini_portile2", "");
     }
 
-    private ExternalId createExternalId(final String name, final String version) {
-        return externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, name, version);
-    }
 }
