@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.pear.functional;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -31,7 +29,6 @@ import java.util.HashMap;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
@@ -39,35 +36,14 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
-import com.synopsys.integration.detectable.detectables.pear.PearCliExtractor;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
-import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
-import com.synopsys.integration.detectable.util.MockFileFinder;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class PearCliDetectableTest extends DetectableFunctionalTest {
-    public static final String PACKAGE_XML_FILENAME = "package.xml";
 
     public PearCliDetectableTest() throws IOException {
         super("pear");
-    }
-
-    @Test
-    public void testApplicable() {
-
-        final PearResolver pearResolver = null;
-        final PearCliExtractor pearCliExtractor = null;
-        final PearCliDetectableOptions pearCliDetectableOptions = null;
-
-        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
-        final FileFinder fileFinder = MockFileFinder.withFileNamed(PACKAGE_XML_FILENAME);
-
-        final PearCliDetectable detectable = new PearCliDetectable(environment, fileFinder, pearResolver, pearCliExtractor, pearCliDetectableOptions);
-
-        assertTrue(detectable.applicable().getPassed());
     }
 
     @Override
