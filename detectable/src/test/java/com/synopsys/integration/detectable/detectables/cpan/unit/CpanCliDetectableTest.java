@@ -71,10 +71,9 @@ public class CpanCliDetectableTest extends DetectableFunctionalTest {
         addFile("Makefile.PL");
 
         ExecutableOutput cpanListOutput = createStandardOutput(
-            "AnyEvent\t7.14",
-            "Clone\t0.39",
-            "DateTime\t1.43",
-            "DBI\t1.636"
+            "ExtUtils::MakeMaker\t7.24",
+            "perl\t5.1",
+            "Test::More\t1.3"
         );
         addExecutableOutputToOutputDirectory(cpanListOutput, "cpan", "-l");
 
@@ -113,7 +112,10 @@ public class CpanCliDetectableTest extends DetectableFunctionalTest {
         Assertions.assertNotEquals(0, extraction.getCodeLocations().size());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CPAN, extraction.getCodeLocations().get(0).getDependencyGraph());
-        graphAssert.hasRootSize(0);
+        graphAssert.hasRootSize(3);
+        graphAssert.hasRootDependency("Test-More", "1.3");
+        graphAssert.hasRootDependency("ExtUtils-MakeMaker", "7.24");
+        graphAssert.hasRootDependency("perl", "5.1");
 
     }
 }
