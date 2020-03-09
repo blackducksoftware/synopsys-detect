@@ -47,7 +47,15 @@ public class SwiftDetectableTest extends DetectableFunctionalTest {
             "           \"url\": \"https://github.com/apple/example-package-playingcard.git\",",
             "           \"version\": \"3.0.5\",",
             "           \"path\": \"/Users/jakem/bazelWorkspace/sleuthifer/swift/example-package-deckofplayingcards/.build/checkouts/example-package-playingcard\",",
-            "           \"dependencies\": []",
+            "           \"dependencies\": [",
+            "               {",
+            "                   \"name\": \"GenericLibrary\",",
+            "                   \"url\": \"https://github.com/apple/example-package-genericLibrary.git\",",
+            "                   \"version\": \"1.0.1\",",
+            "                   \"path\": \"/Users/jakem/bazelWorkspace/sleuthifer/swift/example-package-deckofplayingcards/.build/checkouts/example-package-genericLibrary\",",
+            "                   \"dependencies\": []",
+            "               }",
+            "           ]",
             "       }",
             "   ]",
             "}"
@@ -74,5 +82,6 @@ public class SwiftDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasRootSize(2);
         graphAssert.hasRootDependency("FisherYates", "2.0.5");
         graphAssert.hasRootDependency("PlayingCard", "3.0.5");
+        graphAssert.hasParentChildRelationship("PlayingCard", "3.0.5", "GenericLibrary", "1.0.1");
     }
 }
