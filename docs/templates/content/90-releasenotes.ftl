@@ -17,6 +17,8 @@
 * Resolved an issue where using pip version 20+ with the [Pip inspector](/advanced/language-and-package-managers/python/#the-pip-detector) caused a failure to import a dependency. [GitHub PR](https://github.com/blackducksoftware/synopsys-detect/pull/107)
 * Resolved the following vulnerabilities:
     * org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
+* Resolved an issue where ${solution_name} had the potential to fail on projects that utilized Yarn workspaces.
+    * Note: Yarn workspaces are not currently supported. See [yarn workspace support](/advanced/language-and-package-managers/yarn/#yarn-workspace-support).
 
 ## Version 6.1.0
 ### New features
