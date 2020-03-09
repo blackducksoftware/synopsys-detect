@@ -20,16 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.cpan.unit;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
+package com.synopsys.integration.detectable.detectables.cpan.functional;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
@@ -38,32 +35,12 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
-import com.synopsys.integration.detectable.detectables.cpan.CpanCliExtractor;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
-import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
-import com.synopsys.integration.detectable.util.MockFileFinder;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class CpanCliDetectableTest extends DetectableFunctionalTest {
     public CpanCliDetectableTest() throws IOException {
         super("cpan");
-    }
-
-    @Test
-    public void testApplicable() {
-
-        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
-        final FileFinder fileFinder = MockFileFinder.withFileNamed("Makefile.PL");
-
-        final CpanResolver cpanResolver = null;
-        final CpanmResolver cpanmResolver = null;
-        final CpanCliExtractor cpanCliExtractor = null;
-
-        final CpanCliDetectable detectable = new CpanCliDetectable(environment, fileFinder, cpanResolver, cpanmResolver, cpanCliExtractor);
-
-        assertTrue(detectable.applicable().getPassed());
     }
 
     @Override
