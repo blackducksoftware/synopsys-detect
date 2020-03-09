@@ -22,8 +22,8 @@
  */
 package com.synopsys.integration.detect.configuration
 
-import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
 import com.synopsys.integration.blackduck.api.generated.enumeration.LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType
+import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType
 import com.synopsys.integration.blackduck.api.manual.throwaway.generated.enumeration.ProjectVersionPhaseType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
@@ -723,7 +723,7 @@ class DetectProperties {
             setHelp("Path of the swift executable.")
             setGroups(DetectGroup.Paths, DetectGroup.Global)
         }
-        val DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES = FilterableEnumListProperty("detect.policy.check.fail.on.severities", FilterableEnumUtils.noneList(), PolicySeverityType::class.java).apply {
+        val DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES = FilterableEnumListProperty("detect.policy.check.fail.on.severities", FilterableEnumUtils.noneList(), PolicyRuleSeverityType::class.java).apply {
             setInfo("Fail on Policy Violation Severities", "3.0.0")
             setHelp("A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE.")
             setGroups(DetectGroup.Project, DetectGroup.Global, DetectGroup.ProjectSetting, DetectGroup.Policy)

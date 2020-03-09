@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detect.configuration
 
-import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder
 import com.synopsys.integration.configuration.config.PropertyConfiguration
@@ -360,7 +359,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val riskReportPdfPath = detectConfiguration.getValue(DetectProperties.DETECT_RISK_REPORT_PDF_PATH).resolvePath(pathResolver)
         val noticesReportPath = detectConfiguration.getValue(DetectProperties.DETECT_NOTICES_REPORT_PATH).resolvePath(pathResolver)
         val policySeverities = detectConfiguration.getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)
-        val severitiesToFailPolicyCheck = FilterableEnumUtils.populatedValues(policySeverities, PolicySeverityType::class.java);
+        val severitiesToFailPolicyCheck = FilterableEnumUtils.populatedValues(policySeverities, PolicyRuleSeverityType::class.java);
 
         return BlackDuckPostOptions(waitForResults, runRiskReport, runNoticesReport, riskReportPdfPath, noticesReportPath, severitiesToFailPolicyCheck)
     }
