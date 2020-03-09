@@ -544,7 +544,7 @@ class DetectProperties {
         val DETECT_GRADLE_PATH = NullablePathProperty("detect.gradle.path").apply {
             setInfo("Gradle Executable", "3.0.0")
             setHelp("The path to the Gradle executable (gradle or gradlew).", "If set, Detect will use the given Gradle executable instead of searching for one.")
-            setGroups(DetectGroup.GRADLE)
+            setGroups(DetectGroup.GRADLE, DetectGroup.GLOBAL)
         }
         val DETECT_HEX_REBAR3_PATH = NullablePathProperty("detect.hex.rebar3.path").apply {
             setInfo("Rebar3 Executable", "3.0.0")
