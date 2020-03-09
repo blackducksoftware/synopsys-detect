@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.npm.lockfile.functional;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -35,42 +37,42 @@ public class NpmOutputParserTest {
     @Test
     public void npmCliDependencyFinder() {
         final NpmCliParser parser = new NpmCliParser(new ExternalIdFactory());
-        final String testIn =
-            "{" + "\n" +
-                "   \"name\": \"node-js\"," + "\n" +
-                "   \"version\": \"0.2.0\"," + "\n" +
-                "   \"dependencies\": {" + "\n" +
-                "       \"upper-case\": {" + "\n" +
-                "       \"version\": \"1.1.3\"," + "\n" +
-                "       \"from\": \"upper-case@latest\"," + "\n" +
-                "       \"resolved\": \"https://registry.npmjs.org/upper-case/-/upper-case-1.1.3.tgz\"" + "\n" +
-                "       }," + "\n" +
-                "       \"xml2js\": {" + "\n" +
-                "           \"version\": \"0.4.17\"," + "\n" +
-                "           \"from\": \"xml2js@latest\"," + "\n" +
-                "           \"resolved\": \"https://registry.npmjs.org/xml2js/-/xml2js-0.4.17.tgz\"," + "\n" +
-                "            \"dependencies\": {" + "\n" +
-                "               \"sax\": {" + "\n" +
-                "                   \"version\": \"1.2.2\"," + "\n" +
-                "                   \"from\": \"sax@>=0.6.0\"," + "\n" +
-                "                   \"resolved\": \"https://registry.npmjs.org/sax/-/sax-1.2.2.tgz\"" + "\n" +
-                "               }," + "\n" +
-                "               \"xmlbuilder\": {" + "\n" +
-                "                   \"version\": \"4.2.1\"," + "\n" +
-                "                   \"from\": \"xmlbuilder@>=4.1.0 <5.0.0\"," + "\n" +
-                "                   \"resolved\": \"https://registry.npmjs.org/xmlbuilder/-/xmlbuilder-4.2.1.tgz\"," + "\n" +
-                "                   \"dependencies\": {" + "\n" +
-                "                       \"lodash\": {" + "\n" +
-                "                           \"version\": \"4.17.4\"," + "\n" +
-                "                           \"from\": \"lodash@>=4.0.0 <5.0.0\"," + "\n" +
-                "                           \"resolved\": \"https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz\"" + "\n" +
-                "                       }" + "\n" +
-                "                   }" + "\n" +
-                "               }" + "\n" +
-                "           }" + "\n" +
-                "       }" + "\n" +
-                "   }" + "\n" +
-                "}";
+        final String testIn = String.join(System.lineSeparator(), Arrays.asList(
+            "{",
+            "   \"name\": \"node-js\",",
+            "   \"version\": \"0.2.0\",",
+            "   \"dependencies\": {",
+            "       \"upper-case\": {",
+            "       \"version\": \"1.1.3\",",
+            "       \"from\": \"upper-case@latest\",",
+            "       \"resolved\": \"https://registry.npmjs.org/upper-case/-/upper-case-1.1.3.tgz\"",
+            "       },",
+            "       \"xml2js\": {",
+            "           \"version\": \"0.4.17\",",
+            "           \"from\": \"xml2js@latest\",",
+            "           \"resolved\": \"https://registry.npmjs.org/xml2js/-/xml2js-0.4.17.tgz\",",
+            "            \"dependencies\": {",
+            "               \"sax\": {",
+            "                   \"version\": \"1.2.2\",",
+            "                   \"from\": \"sax@>=0.6.0\",",
+            "                   \"resolved\": \"https://registry.npmjs.org/sax/-/sax-1.2.2.tgz\"",
+            "               },",
+            "               \"xmlbuilder\": {",
+            "                   \"version\": \"4.2.1\",",
+            "                   \"from\": \"xmlbuilder@>=4.1.0 <5.0.0\",",
+            "                   \"resolved\": \"https://registry.npmjs.org/xmlbuilder/-/xmlbuilder-4.2.1.tgz\",",
+            "                   \"dependencies\": {",
+            "                       \"lodash\": {",
+            "                           \"version\": \"4.17.4\",",
+            "                           \"from\": \"lodash@>=4.0.0 <5.0.0\",",
+            "                           \"resolved\": \"https://registry.npmjs.org/lodash/-/lodash-4.17.4.tgz\"",
+            "                       }",
+            "                   }",
+            "               }",
+            "           }",
+            "       }",
+            "   }",
+            "}"));
         final NpmParseResult result = parser.convertNpmJsonFileToCodeLocation(testIn);
 
         Assertions.assertEquals("node-js", result.getProjectName());
