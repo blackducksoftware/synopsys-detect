@@ -29,6 +29,10 @@ public class SwiftDetectableTest extends DetectableFunctionalTest {
         addFile(Paths.get("Package.swift"));
 
         ExecutableOutput rootSwiftPackage = createStandardOutput(
+            "Fetching https://github.com/apple/example-package-fisheryates.git",
+            "Completed resolution in 1.03s",
+            "Cloning https://github.com/apple/example-package-fisheryates.git",
+            "Resolving https://github.com/apple/example-package-fisheryates.git at 2.0.5",
             "{",
             "   \"name\": \"DeckOfPlayingCards\",",
             "   \"url\": \"/Users/jakem/bazelWorkspace/sleuthifer/swift/example-package-deckofplayingcards\",",
