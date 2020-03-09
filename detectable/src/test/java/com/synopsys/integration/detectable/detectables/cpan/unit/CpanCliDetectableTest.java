@@ -76,7 +76,7 @@ public class CpanCliDetectableTest extends DetectableFunctionalTest {
             "DateTime\t1.43",
             "DBI\t1.636"
         );
-        addExecutableOutput(cpanListOutput, "cpan", "-l");
+        addExecutableOutputToOutputDirectory(cpanListOutput, "cpan", "-l");
 
         ExecutableOutput cpanmShowDepsOutput = createStandardOutput(
             "--> Working on .",
@@ -86,7 +86,7 @@ public class CpanCliDetectableTest extends DetectableFunctionalTest {
             "perl~5.008001",
             "ExtUtils::MakeMaker"
         );
-        addExecutableOutput(cpanmShowDepsOutput, "cpanm", "--showdeps", ".");
+        addExecutableOutputToOutputDirectory(cpanmShowDepsOutput, "cpanm", "--showdeps", ".");
     }
 
     @NotNull

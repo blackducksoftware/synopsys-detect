@@ -167,6 +167,14 @@ public abstract class DetectableFunctionalTest {
         executableRunner.addExecutableOutput(executable, executableOutput);
     }
 
+    public void addExecutableOutputToOutputDirectory(@NotNull final ExecutableOutput executableOutput, @NotNull final String... command) { addExecutableOutputToOutputDirectory(executableOutput, new HashMap<>(), command); }
+
+    public void addExecutableOutputToOutputDirectory(@NotNull final ExecutableOutput executableOutput, @NotNull final Map<String, String> environment, @NotNull final String... command) {
+        final List<String> commandList = Arrays.asList(command);
+        final Executable executable = new Executable(outputDirectory.toFile(), environment, commandList);
+        executableRunner.addExecutableOutput(executable, executableOutput);
+    }
+
     @NotNull
     public ExecutableOutput createStandardOutput(final String... outputLines) {
         final String output = String.join(System.lineSeparator(), outputLines);
