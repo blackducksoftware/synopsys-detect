@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.configuration
 
+import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder
 import com.synopsys.integration.configuration.config.PropertyConfiguration
