@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pear.unit.functional;
+package com.synopsys.integration.detectable.detectables.pear.functional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -127,7 +127,7 @@ public class PearCliDetectableTest extends DetectableFunctionalTest {
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PEAR, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(2);
-        graphAssert.hasDependency("PHP", "7.1.0");
+        graphAssert.hasRootDependency("PHP", "7.1.0");
         graphAssert.hasRootDependency("PearInstaller", "1.10.1");
 
     }
