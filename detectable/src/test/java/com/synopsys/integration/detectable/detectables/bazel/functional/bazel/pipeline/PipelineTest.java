@@ -41,7 +41,7 @@ import com.synopsys.integration.exception.IntegrationException;
 
 public class PipelineTest {
     private static final List<String> STANDARD_BAZEL_COMMAND_ARGS = Arrays.asList("cquery", "--noimplicit_deps", "kind(j.*import, deps(/:testTarget))", "--output", "build");
-    private static final String cqueryOutput = "# /root/.cache/bazel/_bazel_root/896e039de1e50d7e2de0b14a9acf4028/external/exclusion_testing/BUILD:41:1\n"
+    private static final String CQUERY_OUTPUT_SIMPLE = "# /root/.cache/bazel/_bazel_root/896e039de1e50d7e2de0b14a9acf4028/external/exclusion_testing/BUILD:41:1\n"
                                                    + "jvm_import(\n"
                                                    + "  name = \"com_google_guava_guava\",\n"
                                                    + "  tags = [\"maven_coordinates=com.google.guava:guava:27.0-jre\"], \n"
@@ -104,7 +104,7 @@ public class PipelineTest {
                                                    + "  deps = [],\n"
                                                    + ")\n";
 
-    private static final String cqueryOutputMixed = "java_import(\n"
+    private static final String CQUERY_OUTPUT_MIXED_TAGS = "java_import(\n"
                                                         + "  name = \"sso-adminsdk\",\n"
                                                         + "  tags = [\"__SOME_OTHER_TAG__\"],\n"
                                                         + "  generator_name = \"sso-adminsdk\",\n"
@@ -134,7 +134,7 @@ public class PipelineTest {
                                                         + "  neverlink = True,\n"
                                                         + ")";
 
-    private static final String cqueryOutputMixedReversedOrder = "java_import(\n"
+    private static final String CQUERY_OUTPUT_MIXED_TAGS_REVERSED_ORDER = "java_import(\n"
                                                                      + "  name = \"thing-common-client\",\n"
                                                                      + "  tags = [\"maven_coordinates=com.company.thing:thing-common-client:2.100.0\", \"__SOME_OTHER_TAG__\"],\n"
                                                                      + "  generator_name = \"thing-common-client\",\n"
@@ -148,7 +148,7 @@ public class PipelineTest {
     public void testMavenInstall() throws IntegrationException {
         final List<String> userProvidedCqueryAdditionalOptions = null;
 
-        final List<String> results = doTest(STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, cqueryOutput);
+        final List<String> results = doTest(STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, CQUERY_OUTPUT_SIMPLE);
         assertEquals(8, results.size());
         assertEquals("com.google.guava:guava:27.0-jre", results.get(0));
         assertEquals("com.google.code.findbugs:jsr305:3.0.2", results.get(7));
@@ -158,7 +158,7 @@ public class PipelineTest {
     public void testMavenInstallMixedTags() throws IntegrationException {
         final List<String> userProvidedCqueryAdditionalOptions = null;
 
-        final List<String> results = doTest(STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, cqueryOutputMixed);
+        final List<String> results = doTest(STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, CQUERY_OUTPUT_MIXED_TAGS);
         assertEquals(2, results.size());
         assertEquals("com.company.thing:thing-common-client:2.100.0", results.get(0));
         assertEquals("javax.servlet:javax.servlet-api:3.0.1", results.get(1));
@@ -168,7 +168,7 @@ public class PipelineTest {
     public void testMavenInstallMixedTagsReversedOrder() throws IntegrationException {
         final List<String> userProvidedCqueryAdditionalOptions = null;
 
-        final List<String> results = doTest(STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, cqueryOutputMixedReversedOrder);
+        final List<String> results = doTest(STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, CQUERY_OUTPUT_MIXED_TAGS_REVERSED_ORDER);
         assertEquals(1, results.size());
         assertEquals("com.company.thing:thing-common-client:2.100.0", results.get(0));
     }
@@ -178,7 +178,7 @@ public class PipelineTest {
         final List<String> userProvidedCqueryAdditionalOptions = Arrays.asList("--option1=a", "--option2=b");
         final List<String> expectedBazelCommandArgs = Arrays.asList("cquery", "--noimplicit_deps", "--option1=a", "--option2=b", "kind(j.*import, deps(/:testTarget))", "--output", "build");
 
-        List<String> results = doTest(expectedBazelCommandArgs, userProvidedCqueryAdditionalOptions, cqueryOutput);
+        List<String> results = doTest(expectedBazelCommandArgs, userProvidedCqueryAdditionalOptions, CQUERY_OUTPUT_SIMPLE);
         assertEquals(8, results.size());
         assertEquals("com.google.guava:guava:27.0-jre", results.get(0));
         assertEquals("com.google.code.findbugs:jsr305:3.0.2", results.get(7));

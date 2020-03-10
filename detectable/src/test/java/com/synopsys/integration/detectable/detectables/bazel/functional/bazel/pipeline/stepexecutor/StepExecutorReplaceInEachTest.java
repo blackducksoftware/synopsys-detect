@@ -35,8 +35,6 @@ import com.synopsys.integration.exception.IntegrationException;
 
 public class StepExecutorReplaceInEachTest {
 
-    // The first set of tests uses the input we originally expected
-
     @Test
     public void testRemoveLeadingAtSign() throws IntegrationException {
         final List<String> input = Arrays.asList("@org_apache_commons_commons_io//jar:jar", "@com_google_guava_guava//jar:jar");
@@ -79,8 +77,6 @@ public class StepExecutorReplaceInEachTest {
         assertEquals(1, output.size());
         assertEquals("com.google.guava:guava:27.0-jre", output.get(0));
     }
-
-    // The next set of tests uses more complex input
 
     @Test
     public void testRemoveLeadingAtSignMixedTags() throws IntegrationException {
