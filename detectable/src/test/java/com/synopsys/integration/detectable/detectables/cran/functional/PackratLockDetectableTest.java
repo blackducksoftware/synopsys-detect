@@ -43,6 +43,7 @@ public class PackratLockDetectableTest extends DetectableFunctionalTest {
     @Override
     protected void setup() throws IOException {
         addFile(Paths.get("packrat.lock"),
+            "This is a bogus line",
             "PackratFormat: 1.4",
             "PackratVersion: 0.4.9.3",
             "RVersion: 3.5.1",
