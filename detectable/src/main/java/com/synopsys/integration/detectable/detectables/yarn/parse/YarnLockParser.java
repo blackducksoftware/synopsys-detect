@@ -91,14 +91,13 @@ public class YarnLockParser {
         return StringUtils.removeStart(StringUtils.removeEnd(s.trim(), "\""), "\"");
     }
 
-    private List<YarnLockEntryId> getFuzzyIdsFromLine(final String s) {
+    public List<YarnLockEntryId> getFuzzyIdsFromLine(final String s) {
         final List<YarnLockEntryId> ids = new ArrayList<>();
         final String[] lines = s.split(",");
         for (final String line : lines) {
             final String cleanedLine = removeWrappingQuotes(StringUtils.removeEnd(line.trim(), ":"));
-            final int last = cleanedLine.trim().lastIndexOf('@');
-            final String name = cleanedLine.substring(0, last);
-            final String version = cleanedLine.substring(last + 1);
+            final String name = StringUtils.substringBefore(cleanedLine, "@");
+            final String version = StringUtils.substringAfter(cleanedLine, "@");
             ids.add(new YarnLockEntryId(name, version));
         }
         return ids;
