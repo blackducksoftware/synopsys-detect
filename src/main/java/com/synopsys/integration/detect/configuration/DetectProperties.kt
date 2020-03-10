@@ -22,8 +22,8 @@
  */
 package com.synopsys.integration.detect.configuration
 
-import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
 import com.synopsys.integration.blackduck.api.generated.enumeration.LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType
+import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType
 import com.synopsys.integration.blackduck.api.manual.throwaway.generated.enumeration.ProjectVersionPhaseType
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
@@ -41,6 +41,8 @@ import com.synopsys.integration.configuration.property.types.integer.NullableInt
 import com.synopsys.integration.configuration.property.types.longs.LongProperty
 import com.synopsys.integration.configuration.property.types.path.NullablePathProperty
 import com.synopsys.integration.configuration.property.types.path.PathListProperty
+import com.synopsys.integration.configuration.property.types.path.PathProperty
+import com.synopsys.integration.configuration.property.types.path.PathValue
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty
 import com.synopsys.integration.configuration.property.types.string.StringListProperty
 import com.synopsys.integration.configuration.property.types.string.StringProperty
@@ -344,9 +346,9 @@ class DetectProperties {
             setHelp("The path to the cpanm executable.")
             setGroups(DetectGroup.CPAN, DetectGroup.GLOBAL)
         }
-        val DETECT_DEFAULT_PROJECT_VERSION_SCHEME = EnumProperty("detect.default.project.version.scheme", DefaultVersionNameScheme.DEFAULT, DefaultVersionNameScheme::class.java).apply {
+        val DETECT_DEFAULT_PROJECT_VERSION_SCHEME = EnumProperty("detect.default.project.version.scheme", DefaultVersionNameScheme.TEXT, DefaultVersionNameScheme::class.java).apply {
             setInfo("Default Project Version Name Scheme", "3.0.0")
-            setHelp("The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'.")
+            setHelp("The scheme to use when the package managers can not determine a version. See detailed help for more information.")
             setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
             setCategory(DetectCategory.Advanced)
         }
@@ -605,7 +607,7 @@ class DetectProperties {
             setHelp("When set to true, a Black Duck notices report in text form will be created in your source directory.")
             setGroups(DetectGroup.REPORT, DetectGroup.GLOBAL)
         }
-        val DETECT_NOTICES_REPORT_PATH = NullablePathProperty("detect.notices.report.path").apply {
+        val DETECT_NOTICES_REPORT_PATH = PathProperty("detect.notices.report.path", PathValue(".")).apply {
             setInfo("Notices Report Path", "3.0.0")
             setHelp("The output directory for notices report. Default is the source directory.")
             setGroups(DetectGroup.REPORT, DetectGroup.GLOBAL, DetectGroup.REPORT_SETTING)
@@ -721,7 +723,7 @@ class DetectProperties {
             setHelp("Path of the swift executable.")
             setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
         }
-        val DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES = FilterableEnumListProperty("detect.policy.check.fail.on.severities", FilterableEnumUtils.noneList(), PolicySeverityType::class.java).apply {
+        val DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES = FilterableEnumListProperty("detect.policy.check.fail.on.severities", FilterableEnumUtils.noneList(), PolicyRuleSeverityType::class.java).apply {
             setInfo("Fail on Policy Violation Severities", "3.0.0")
             setHelp("A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE.")
             setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL, DetectGroup.PROJECT_SETTING, DetectGroup.POLICY)
@@ -887,7 +889,7 @@ class DetectProperties {
             setHelp("When set to true, a Black Duck risk report in PDF form will be created.")
             setGroups(DetectGroup.REPORT, DetectGroup.GLOBAL, DetectGroup.REPORT_SETTING)
         }
-        val DETECT_RISK_REPORT_PDF_PATH = NullablePathProperty("detect.risk.report.pdf.path").apply {
+        val DETECT_RISK_REPORT_PDF_PATH = PathProperty("detect.risk.report.pdf.path", PathValue(".")).apply {
             setInfo("Risk Report Output Path", "3.0.0")
             setHelp("The output directory for risk report in PDF. Default is the source directory.")
             setGroups(DetectGroup.REPORT, DetectGroup.GLOBAL)
