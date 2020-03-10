@@ -20,6 +20,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.phonehome
+package com.synopsys.integration.detect.workflow.phonehome;
 
-data class PhoneHomeOptions(val passthrough: Map<String, String>) {}
+import java.util.Map;
+
+public class PhoneHomeOptions {
+    private final Map<String, String> passthrough;
+
+    public PhoneHomeOptions(Map<String, String> passthrough) {
+        this.passthrough = passthrough;
+    }
+
+    public Map<String, String> getPassthrough() {
+        return passthrough;
+    }
+}
