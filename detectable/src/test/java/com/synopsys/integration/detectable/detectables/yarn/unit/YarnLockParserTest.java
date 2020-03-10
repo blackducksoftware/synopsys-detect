@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.annotations.UnitTest;
@@ -115,6 +116,17 @@ public class YarnLockParserTest {
         final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
         assertEntry(yarnLock, "cssstyle", ">= 0.2.37 < 0.3.0", "0.2.37", new YarnLockDependency("cssom", "0.3.x", false));
+    }
+
+    @Test
+    void testParserHandlesMissingSymbol() {
+        YarnLockParser yarnLockParser = new YarnLockParser();
+        List<YarnLockEntryId> ids = yarnLockParser.getFuzzyIdsFromLine("example, example@1");
+        Assertions.assertEquals(2, ids.size());
+        Assertions.assertEquals(ids.get(0).getName(), "example");
+        Assertions.assertEquals(ids.get(0).getVersion(), "");
+        Assertions.assertEquals(ids.get(1).getName(), "example");
+        Assertions.assertEquals(ids.get(1).getVersion(), "1");
     }
 
     void assertEntry(final YarnLock yarnLock, final String idName, final String idVersion, final String resolvedVersion, final YarnLockDependency... dependencies) {
