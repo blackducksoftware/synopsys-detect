@@ -22,14 +22,11 @@
  */
 package com.synopsys.integration.detectable.detectables.conda.functional;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
@@ -38,32 +35,14 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
-import com.synopsys.integration.detectable.detectables.conda.CondaCliExtractor;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
-import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
-import com.synopsys.integration.detectable.util.MockFileFinder;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class CondaCliDetectableTest extends DetectableFunctionalTest {
 
     public CondaCliDetectableTest() throws IOException {
         super("conda");
-    }
-
-    @Test
-    public void testApplicable() {
-
-        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
-        final FileFinder fileFinder = MockFileFinder.withFileNamed("environment.yml");
-
-        final CondaResolver condaResolver = null;
-        final CondaCliExtractor condaExtractor = null;
-        final CondaCliDetectable detectable = new CondaCliDetectable(environment, fileFinder, condaResolver, condaExtractor, new CondaCliDetectableOptions("example"));
-
-        assertTrue(detectable.applicable().getPassed());
     }
 
     @Override
