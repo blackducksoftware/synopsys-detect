@@ -22,27 +22,86 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.unit;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.io.IOException;
+import java.nio.file.Paths;
 
-import org.junit.jupiter.api.Test;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Assertions;
 
+import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
-import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
-import com.synopsys.integration.detectable.util.MockDetectableEnvironment;
-import com.synopsys.integration.detectable.util.MockFileFinder;
+import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
+import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
-public class YarnLockDetectableTest {
-    @Test
-    public void testApplicable() {
-        final YarnLockExtractor yarnLockExtractor = null;
+public class YarnLockDetectableTest extends DetectableFunctionalTest {
 
-        final DetectableEnvironment environment = MockDetectableEnvironment.empty();
-        final FileFinder fileFinder = MockFileFinder.withFilesNamed("yarn.lock", "package.json");
+    public YarnLockDetectableTest() throws IOException {
+        super("yarn");
+    }
 
-        final YarnLockDetectable detectable = new YarnLockDetectable(environment, fileFinder, yarnLockExtractor, false);
+    @Override
+    protected void setup() throws IOException {
+        addFile(Paths.get("yarn.lock"),
+            "\"@cogizmo/cogizmo@^0.5.5\":",
+            "   version \"0.5.5\"",
+            "   resolved \"https://registry.yarnpkg.com/cogizmo-0.5.5\"",
+            "   integrity sha512-a9gxpmdXtZEInkCSHUJDLHZVBgb1QS0jhss4cPP93EW7s+uC5bikET2twEF3KV+7rDblJcmNvTR7VJejqd2C2g==",
+            "   dependencies:",
+            "       \"name1\" \"version1\"",
+            "       \"name2\" \"version2\"",
+            "",
+            "\"@name1\":",
+            "   version \"version1\"",
+            "   resolved \"https://registry.yarnpkg.com/name1-version1\"",
+            "   integrity sha512-a9gxpmdXtZEInkCSHUJDLHZVBgb1QS0jhss4cPP93EW7s+uC5bikET2twEF3KV+7rDblJcmNvTR7VJejqd2C2g==",
+            "   dependencies:",
+            "",
+            "\"@name2\":",
+            "   version \"version2\"",
+            "   resolved \"https://registry.yarnpkg.com/name2-version2\"",
+            "   integrity sha512-a9gxpmdXtZEInkCSHUJDLHZVBgb1QS0jhss4cPP93EW7s+uC5bikET2twEF3KV+7rDblJcmNvTR7VJejqd2C2g==",
+            "   dependencies:"
+        );
 
-        assertTrue(detectable.applicable().getPassed());
+        addFile(Paths.get("package.json"),
+            "{",
+            "   \"name\": \"@cogizmo/cogizmo\",",
+            "   \"version\": \"0.5.5\",",
+            "   \"dependencies\": {",
+            "   \"name1\": \"version1\",",
+            "   \"name2\": \"version2\"",
+            "   }",
+            "}"
+            /*
+            "   },",
+            "   {",
+            "       \"name\": \"@name1\",",
+            "       \"version\": \"version1\",",
+            "       \"dependencies\": {}",
+            "   },",
+            "   {",
+            "       \"name\": \"@name2\",",
+            "       \"version\": \"version2\",",
+            "       \"dependencies\": {}",
+            "   }",
+            "}"
+
+             */
+        );
+    }
+
+    @NotNull
+    @Override
+    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
+        return detectableFactory.createYarnLockDetectable(detectableEnvironment, false);
+    }
+
+    @Override
+    public void assertExtraction(@NotNull final Extraction extraction) {
+        Assertions.assertNotEquals(0, extraction.getCodeLocations().size());
+
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, extraction.getCodeLocations().get(0).getDependencyGraph());
     }
 }
