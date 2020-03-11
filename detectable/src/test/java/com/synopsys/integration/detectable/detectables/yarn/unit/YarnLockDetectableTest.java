@@ -48,21 +48,21 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
             "   version \"0.5.5\"",
             "   resolved \"https://registry.yarnpkg.com/cogizmo-0.5.5\"",
             "   integrity sha512-a9gxpmdXtZEInkCSHUJDLHZVBgb1QS0jhss4cPP93EW7s+uC5bikET2twEF3KV+7rDblJcmNvTR7VJejqd2C2g==",
-            "   dependencies:",
-            "       \"name1\" \"version1\"",
-            "       \"name2\" \"version2\"",
+            "   optionalDependencies:",
+            "     \"name1\" \"version1\"",
+            "     \"name2\" \"version2\"",
             "",
-            "\"@name1\":",
+            "\"@name1/name1\":",
             "   version \"version1\"",
             "   resolved \"https://registry.yarnpkg.com/name1-version1\"",
             "   integrity sha512-a9gxpmdXtZEInkCSHUJDLHZVBgb1QS0jhss4cPP93EW7s+uC5bikET2twEF3KV+7rDblJcmNvTR7VJejqd2C2g==",
-            "   dependencies:",
+            "   optionalDependencies:",
             "",
-            "\"@name2\":",
+            "\"@name2/name2\":",
             "   version \"version2\"",
             "   resolved \"https://registry.yarnpkg.com/name2-version2\"",
             "   integrity sha512-a9gxpmdXtZEInkCSHUJDLHZVBgb1QS0jhss4cPP93EW7s+uC5bikET2twEF3KV+7rDblJcmNvTR7VJejqd2C2g==",
-            "   dependencies:"
+            "   optionalDependencies:"
         );
 
         addFile(Paths.get("package.json"),
@@ -74,21 +74,6 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
             "   \"name2\": \"version2\"",
             "   }",
             "}"
-            /*
-            "   },",
-            "   {",
-            "       \"name\": \"@name1\",",
-            "       \"version\": \"version1\",",
-            "       \"dependencies\": {}",
-            "   },",
-            "   {",
-            "       \"name\": \"@name2\",",
-            "       \"version\": \"version2\",",
-            "       \"dependencies\": {}",
-            "   }",
-            "}"
-
-             */
         );
     }
 
