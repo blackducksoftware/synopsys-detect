@@ -1278,22 +1278,9 @@ Synopsys Detect by invoking the Synopsys Detect .jar file directly (as opposed t
 <h2 id="code-signature-verification">Code signature verification</h2>
 <p>Code signature verification is the most secure method available for verifying Synopsys Detect code. This method relies on Java tools.</p>
 <p>It involves verifying the Synopsys Detect .jar file that you download from <a href="https://sig-repo.synopsys.com">https://sig-repo.synopsys.com</a>
-using a public key certificate that you download from https://detect.synopsys.com (which maps to github.com).
-In the event that either one has been tampered with, verification will fail.</p>
-<p>To verify the Synopsys Detect .jar, you need to obtain the public key certificate:</p>
-<pre><code>curl -O https://detect.synopsys.com/jar_verification.crt
-</code></pre>
-<p>Once you have the public key certificate (the jar_verification.crt file), import it into a keystore. You can create a new keystore (which is a file),
-or import the certificate into an existing keystore. If the keystore into which you import the certificate does not exist, it will be created and you
-will be prompted to supply a password for the new keystore. If the keystore does exist, you will be prompted for its password as you import the certificate
-to it.</p>
-<pre><code>keytool -import -alias "blackduck digicert" -file jar_verification.crt -keystore {your keystore file}
-</code></pre>
-<p>The Common Name (CN) field in the certificate will be "Black Duck Software, Inc.". We recommend you check this to be sure you are
-not importing a different certificate into your keystore, but the integrity of the code verification process does not depend on you verifying
-the contents of the certificate (the next step will do that).</p>
-<p>Finally, verify that the code signature in your Synopsys Detect .jar file matches this certificate:</p>
-<pre><code>jarsigner -verify {your Synopsys Detect .jar file} -keystore {your keystore file}
+using the Java <em>jarsigner</em> tool. In the event that the .jar has been tampered with, verification will fail.</p>
+<p>To verify the Synopsys Detect .jar:</p>
+<pre><code>jarsigner -verify {your Synopsys Detect .jar file}
 </code></pre>
 <p>The output should be <code>jar verified.</code> (with no warnings).</p>
 <h2 id="checksum-verification">Checksum verification</h2>
