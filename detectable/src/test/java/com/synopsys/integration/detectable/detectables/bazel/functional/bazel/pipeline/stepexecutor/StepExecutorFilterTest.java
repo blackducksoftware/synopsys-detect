@@ -37,8 +37,8 @@ public class StepExecutorFilterTest {
 
     private static final String NAME_LINE = "  name = \"com_google_code_findbugs_jsr305\",";
     private static final String TAGS_LINE_MAVEN_COORDINATES = "  tags = [\"maven_coordinates=com.google.code.findbugs:jsr305:3.0.2\"],";
-    private static final String TAGS_LINE_OTHER = "  tags = [\"__JAVA_RULES_MIGRATION_DO_NOT_USE_WILL_BREAK__\"],";
-    private static final String TAGS_LINE_MIXED = "  tags = [\"__JAVA_RULES_MIGRATION_DO_NOT_USE_WILL_BREAK__\", \"maven_coordinates=com.vmware.vapi:vapi-common-client:2.100.0\"],";
+    private static final String TAGS_LINE_OTHER = "  tags = [\"__SOME_OTHER_TAG__\"],";
+    private static final String TAGS_LINE_MIXED = "  tags = [\"__SOME_OTHER_TAG__\", \"maven_coordinates=com.company.thing:thing-common-client:2.100.0\"],";
 
     @Test
     public void testMavenCoordinateOnly() throws IntegrationException {
