@@ -71,6 +71,10 @@ public class Bds<T> {
         return new Bds<>(stream.filter(predicate));
     }
 
+    public Bds<T> filterNot(final Predicate<? super T> predicate) {
+        return new Bds<>(stream.filter(predicate.negate()));
+    }
+
     public <R> Bds<R> map(final Function<? super T, ? extends R> mapper) {
         return new Bds<>(stream.map(mapper));
     }
@@ -82,6 +86,14 @@ public class Bds<T> {
     public <R> Bds<R> flatMap(final Function<? super T, ? extends Collection<? extends R>> mapper) {
         final Function<? super T, ? extends Stream<? extends R>> streamMapper = value -> mapper.apply(value).stream();
         return new Bds<>(stream.flatMap(streamMapper));
+    }
+
+    public Optional<T> minBy(final Comparator<? super T> comparator) {
+        return stream.min(comparator);
+    }
+
+    public <R> Map<R, List<T>> groupBy(final Function<? super T, ? extends R> classifier) {
+        return stream.collect(Collectors.groupingBy(classifier));
     }
 
     public <K, U> Map<K, U> toMap(final Function<? super T, ? extends K> keyMapper,
