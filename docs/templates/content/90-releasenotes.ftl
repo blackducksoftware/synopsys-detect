@@ -19,6 +19,7 @@
     * org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
 * Resolved an issue where ${solution_name} had the potential to fail on projects that utilized Yarn workspaces.
     * Note: Yarn workspaces are not currently supported. See [yarn workspace support](/advanced/language-and-package-managers/yarn/#yarn-workspace-support).
+* Fixed an issue in the Bazel Detector that caused it to fail for the maven_install rule when the tags field contained multiple tags with a mixture of formats.
 
 ## Version 6.1.0
 ### New features
