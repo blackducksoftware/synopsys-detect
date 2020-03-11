@@ -6,6 +6,11 @@
 * [Simple proxy information](/advanced/language-and-package-managers/gradle/#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
 * Detect now creates a status file describing the results of the run which includes things like [issues, results and status codes.](advanced/status-file.md)
 * Property configuration table includes where property was resolved.
+* Added the property [detect.blackduck.signature.scanner.license.search](properties/Configuration/signature scanner.md#signature-scanner-license-search-advanced).
+* Added the property [detect.blackduck.signature.scanner.individual.file.matching](properties/Configuration/signature scanner.md#individual-file-matching-advanced).
+* If an executable returns a nonzero exit code, Detect will now log output automatically.
+* Added page for [decrecated properties](../properties/deprecated-properties/) in help.
+* Detect-generated risk reports now feature Synopsys logo and branding.
 
 ### Changed features
 * The [PipEnv Detector](/advanced/language-and-package-managers/python/#pipenv-detector) now parses a json representation of the dependency tree.
@@ -16,9 +21,10 @@
 * Resolved an issue where all transitive dependencies found by the [Pip inspector](/advanced/language-and-package-managers/python/#the-pip-detector) were being reported as direct dependencies.
 * Resolved an issue where using pip version 20+ with the [Pip inspector](/advanced/language-and-package-managers/python/#the-pip-detector) caused a failure to import a dependency. [GitHub PR](https://github.com/blackducksoftware/synopsys-detect/pull/107)
 * Resolved the following vulnerabilities:
-    * org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
+* org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
 * Resolved an issue where ${solution_name} had the potential to fail on projects that utilized Yarn workspaces.
-    * Note: Yarn workspaces are not currently supported. See [yarn workspace support](/advanced/language-and-package-managers/yarn/#yarn-workspace-support).
+* Note: Yarn workspaces are not currently supported. See [yarn workspace support](/advanced/language-and-package-managers/yarn/#yarn-workspace-support).
+* When parsing package.xml files, Detect will no longer raise a SAXParseException when the file contains a doctype declaration, and will continue parsing the rest of the file.
 
 ## Version 6.1.0
 ### New features
@@ -76,12 +82,12 @@
 * Enhanced placement and formatting of deprecation logs.
 * Added support for Java version 11.
 * The following properties are removed in Detect version 6.0.0:
-    * detect.go.dep.path
-    * detect.npm.node.path
-    * detect.perl.path
-    * detect.go.run.dep.init
-    * detect.maven.scope
-    * detect.bazel.advanced.rules.path
+* detect.go.dep.path
+* detect.npm.node.path
+* detect.perl.path
+* detect.go.run.dep.init
+* detect.maven.scope
+* detect.bazel.advanced.rules.path
 
 ### Resolved issues
 
