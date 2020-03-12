@@ -90,7 +90,7 @@ public class DetectorNameVersionHandler {
         } else if (uniqueDetectorsAtLowestDepth.size() > 1) {
             return decideProjectNameVersionArbitrarily(lowestDepth);
         } else {
-            return new com.synopsys.integration.detect.workflow.nameversion.decision.UniqueDetectorNotFoundDecision();
+            return new UniqueDetectorNotFoundDecision();
         }
     }
 
