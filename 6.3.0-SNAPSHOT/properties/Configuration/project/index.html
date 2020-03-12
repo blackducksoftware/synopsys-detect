@@ -1967,10 +1967,10 @@
 </tbody>
 </table>
 <h2 id="default-project-version-name-scheme-advanced">Default Project Version Name Scheme (Advanced)</h2>
-<pre><code>--detect.default.project.version.scheme=TIMESTAMP,DEFAULT 
+<pre><code>--detect.default.project.version.scheme=TIMESTAMP,DEFAULT,TEXT 
 </code></pre>
 
-<p>The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'.</p>
+<p>The scheme to use when the package managers can not determine a version. See detailed help for more information.</p>
 <table>
 <thead>
 <tr>
@@ -1989,7 +1989,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>DEFAULT</td>
+<td>TEXT</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2001,7 +2001,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>TIMESTAMP, DEFAULT</td>
+<td>TIMESTAMP, DEFAULT, TEXT</td>
 </tr>
 <tr>
 <td>Strict</td>
@@ -2182,7 +2182,7 @@
 </tbody>
 </table>
 <h2 id="fail-on-policy-violation-severities-advanced">Fail on Policy Violation Severities (Advanced)</h2>
-<pre><code>--detect.policy.check.fail.on.severities=ALL,NONE,BLOCKER,CRITICAL,MAJOR,MINOR,TRIVIAL,UNSPECIFIED 
+<pre><code>--detect.policy.check.fail.on.severities=ALL,NONE,UNSPECIFIED,TRIVIAL,MINOR,MAJOR,CRITICAL,BLOCKER 
 </code></pre>
 
 <p>A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE.</p>
@@ -2200,7 +2200,7 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>PolicySeverityType List</td>
+<td>PolicyRuleSeverityType List</td>
 </tr>
 <tr>
 <td>Default Value</td>
@@ -2216,7 +2216,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>ALL, NONE, BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL, UNSPECIFIED</td>
+<td>ALL, NONE, UNSPECIFIED, TRIVIAL, MINOR, MAJOR, CRITICAL, BLOCKER</td>
 </tr>
 <tr>
 <td>Strict</td>

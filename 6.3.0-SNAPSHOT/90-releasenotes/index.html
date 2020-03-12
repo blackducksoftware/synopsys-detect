@@ -2086,10 +2086,15 @@
 <h2 id="version-620">Version 6.2.0</h2>
 <h3 id="new-features">New features</h3>
 <ul>
-<li>The Synopsys Detect .jar file is now signed, enabling <a href="/advanced/verifying.md">code verification</a> by users.</li>
+<li>The Synopsys Detect .jar file is now signed, enabling <a href="/advanced/verifying/">code verification</a> by users.</li>
 <li><a href="/advanced/language-and-package-managers/gradle/#running-the-gradle-inspector-with-a-proxy">Simple proxy information</a> will be forwarded to the Gradle Inspector.</li>
 <li>Detect now creates a status file describing the results of the run which includes things like <a href="../advanced/status-file/">issues, results and status codes.</a></li>
 <li>Property configuration table includes where property was resolved.</li>
+<li>Added the property <a href="../properties/Configuration/signature scanner/#signature-scanner-license-search-advanced">detect.blackduck.signature.scanner.license.search</a>.</li>
+<li>Added the property <a href="../properties/Configuration/signature scanner/#individual-file-matching-advanced">detect.blackduck.signature.scanner.individual.file.matching</a>.</li>
+<li>If an executable returns a nonzero exit code, Detect will now log output automatically.</li>
+<li>Added page for <a href="../properties/deprecated-properties/">decrecated properties</a> in help.</li>
+<li>Detect-generated risk reports now feature Synopsys logo and branding.</li>
 </ul>
 <h3 id="changed-features">Changed features</h3>
 <ul>
@@ -2105,6 +2110,13 @@
 <li>org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)</li>
 </ul>
 </li>
+<li>Resolved an issue where Synopsys Detect had the potential to fail on projects that utilized Yarn workspaces.<ul>
+<li>Note: Yarn workspaces are not currently supported. See <a href="/advanced/language-and-package-managers/yarn/#yarn-workspace-support">yarn workspace support</a>.</li>
+</ul>
+</li>
+<li>When parsing package.xml files, Detect will no longer raise a SAXParseException when the file contains a doctype declaration, and will continue parsing the rest of the file.</li>
+<li>Resolved an issue in the Bazel Detector that caused it to fail for the maven_install rule when the tags field contained multiple tags with a mixture of formats.</li>
+<li>Resolved an issue that could cause generation of an invalid Black Duck Input/Output (BDIO) file when component the only difference between two component names/versions are non-alphanumeric characters.</li>
 </ul>
 <h2 id="version-610">Version 6.1.0</h2>
 <h3 id="new-features_1">New features</h3>
@@ -2165,15 +2177,13 @@
 <li>Scripts no longer fail if the Artifactory server is unavailable.</li>
 <li>Enhanced placement and formatting of deprecation logs.</li>
 <li>Added support for Java version 11.</li>
-<li>The following properties are removed in Detect version 6.0.0:<ul>
+<li>The following properties are removed in Detect version 6.0.0:</li>
 <li>detect.go.dep.path</li>
 <li>detect.npm.node.path</li>
 <li>detect.perl.path</li>
 <li>detect.go.run.dep.init</li>
 <li>detect.maven.scope</li>
 <li>detect.bazel.advanced.rules.path</li>
-</ul>
-</li>
 </ul>
 <h3 id="resolved-issues_2">Resolved issues</h3>
 <ul>

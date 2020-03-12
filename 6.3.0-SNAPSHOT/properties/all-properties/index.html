@@ -1709,7 +1709,7 @@
 </tr>
 <tr>
 <td><a href="../Configuration/project#default-project-version-name-scheme-advanced">detect.default.project.version.scheme</a> <br /> (Advanced)</td>
-<td>default: DEFAULT <br /><br />  Acceptable Values: TIMESTAMP, DEFAULT <br /><br />Default Project Version Name Scheme: The scheme to use when the package managers can not determine a version, either 'text' or 'timestamp'. <br /><br /></td>
+<td>default: TEXT <br /><br />  Acceptable Values: TIMESTAMP, DEFAULT, TEXT <br /><br />Default Project Version Name Scheme: The scheme to use when the package managers can not determine a version. See detailed help for more information. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/project#default-project-version-name-text-advanced">detect.default.project.version.text</a> <br /> (Advanced)</td>
@@ -1729,7 +1729,7 @@
 </tr>
 <tr>
 <td><a href="../Configuration/project#fail-on-policy-violation-severities-advanced">detect.policy.check.fail.on.severities</a> <br /> (Advanced)</td>
-<td>default: NONE <br /><br />  Acceptable Values: ALL, NONE, BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL, UNSPECIFIED <br /><br />Fail on Policy Violation Severities: A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE. <br /><br /></td>
+<td>default: NONE <br /><br />  Acceptable Values: ALL, NONE, UNSPECIFIED, TRIVIAL, MINOR, MAJOR, CRITICAL, BLOCKER <br /><br />Fail on Policy Violation Severities: A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/project#application-id-advanced">detect.project.application.id</a> <br /> (Advanced)</td>
@@ -2161,7 +2161,7 @@
 </tr>
 <tr>
 <td><a href="../Configuration/report#notices-report-path-advanced">detect.notices.report.path</a> <br /> (Advanced)</td>
-<td>Notices Report Path: The output directory for notices report. Default is the source directory. <br /><br /></td>
+<td>default: . <br /><br /> Notices Report Path: The output directory for notices report. Default is the source directory. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../Configuration/report#generate-risk-report-(pdf)-advanced">detect.risk.report.pdf</a> <br /> (Advanced)</td>
@@ -2169,7 +2169,7 @@
 </tr>
 <tr>
 <td><a href="../Configuration/report#risk-report-output-path-advanced">detect.risk.report.pdf.path</a> <br /> (Advanced)</td>
-<td>Risk Report Output Path: The output directory for risk report in PDF. Default is the source directory. <br /><br /></td>
+<td>default: . <br /><br /> Risk Report Output Path: The output directory for risk report in PDF. Default is the source directory. <br /><br /></td>
 </tr>
 </tbody>
 </table>
