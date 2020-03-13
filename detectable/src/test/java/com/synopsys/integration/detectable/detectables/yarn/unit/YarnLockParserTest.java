@@ -121,12 +121,21 @@ public class YarnLockParserTest {
     @Test
     void testParserHandlesMissingSymbol() {
         YarnLockParser yarnLockParser = new YarnLockParser();
-        List<YarnLockEntryId> ids = yarnLockParser.getFuzzyIdsFromLine("example, example@1");
+        List<YarnLockEntryId> ids = yarnLockParser.parseMultipleEntryLine("example, example@1");
         Assertions.assertEquals(2, ids.size());
         Assertions.assertEquals(ids.get(0).getName(), "example");
         Assertions.assertEquals(ids.get(0).getVersion(), "");
         Assertions.assertEquals(ids.get(1).getName(), "example");
         Assertions.assertEquals(ids.get(1).getVersion(), "1");
+    }
+
+    @Test
+    void handlesSymbolInName() {
+        YarnLockParser yarnLockParser = new YarnLockParser();
+        List<YarnLockEntryId> ids = yarnLockParser.parseMultipleEntryLine("@example");
+        Assertions.assertEquals(1, ids.size());
+        Assertions.assertEquals(ids.get(0).getName(), "@example");
+        Assertions.assertEquals(ids.get(0).getVersion(), "");
     }
 
     void assertEntry(final YarnLock yarnLock, final String idName, final String idVersion, final String resolvedVersion, final YarnLockDependency... dependencies) {

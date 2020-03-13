@@ -57,7 +57,7 @@ public class YarnLockParser {
                 } else {
                     started = true;
                 }
-                ids = getFuzzyIdsFromLine(line);
+                ids = parseMultipleEntryLine(line);
             } else if (level == 1 && trimmedLine.startsWith(VERSION_PREFIX)) {
                 resolvedVersion = getVersionFromLine(trimmedLine);
             } else if (level == 1 && trimmedLine.startsWith(OPTIONAL_DEPENDENCIES_TOKEN)) {
@@ -91,16 +91,28 @@ public class YarnLockParser {
         return StringUtils.removeStart(StringUtils.removeEnd(s.trim(), "\""), "\"");
     }
 
-    public List<YarnLockEntryId> getFuzzyIdsFromLine(final String s) {
+    //Takes a line of the form "entry \"entry\" entry:"
+    public List<YarnLockEntryId> parseMultipleEntryLine(final String line) {
         final List<YarnLockEntryId> ids = new ArrayList<>();
-        final String[] lines = s.split(",");
-        for (final String line : lines) {
-            final String cleanedLine = removeWrappingQuotes(StringUtils.removeEnd(line.trim(), ":"));
-            final String name = StringUtils.substringBefore(cleanedLine, "@");
-            final String version = StringUtils.substringAfter(cleanedLine, "@");
-            ids.add(new YarnLockEntryId(name, version));
+        final String[] entries = line.split(",");
+        for (final String entryRaw : entries) {
+            final String entryNoColon = StringUtils.removeEnd(entryRaw.trim(), ":");
+            final String entryNoColonOrQuotes = removeWrappingQuotes(entryNoColon);
+            YarnLockEntryId entry = parseSingleEntry(entryNoColonOrQuotes);
+            ids.add(entry);
         }
         return ids;
+    }
+
+    //Takes an entry of format "name@version" or "@name@version" where name has an @ symbol.
+    public YarnLockEntryId parseSingleEntry(String entry) {
+        if (StringUtils.countMatches(entry, "@") == 1 && entry.startsWith("@")) {
+            return new YarnLockEntryId(entry, "");
+        } else {
+            final String name = StringUtils.substringBeforeLast(entry, "@");
+            final String version = StringUtils.substringAfterLast(entry, "@");
+            return new YarnLockEntryId(name, version);
+        }
     }
 
     private String getVersionFromLine(final String line) {
