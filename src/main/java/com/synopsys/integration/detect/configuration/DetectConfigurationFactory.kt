@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.configuration
 
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder
 import com.synopsys.integration.configuration.config.PropertyConfiguration
@@ -110,6 +111,17 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
 
         if (snippetMatching.extendedValue.isPresent) {
             return deprecatedSnippetMatching
+        }
+
+        return null
+    }
+
+    @Nullable
+    fun findIndividualFileMatching(): IndividualFileMatching? {
+        val individualFileMatching = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING)
+
+        if (individualFileMatching.baseValue.isPresent) {
+            return individualFileMatching.baseValue.get()
         }
 
         return null
@@ -350,7 +362,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
                 codeLocationSuffix,
                 additionalArguments,
                 maxDepth,
-                individualFileMatching,
+                findIndividualFileMatching(),
                 licenseSearch
         )
     }
