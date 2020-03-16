@@ -13,7 +13,7 @@ import com.synopsys.integration.log.PrintStreamIntLogger
 buildscript {
     ext {
         springBootVersion = '2.2.4.RELEASE'
-        blackDuckCommonVersion = '46.0.0'
+        blackDuckCommonVersion = '47.0.1'
         polarisCommonVersion = '0.13.2'
         junitPlatformDefaultTestTags = "integration, performance, battery"
     }
@@ -36,7 +36,7 @@ plugins {
 }
 
 group = 'com.synopsys.integration'
-version = '6.2.0-SIGQA5-SNAPSHOT'
+version = '6.2.0-SIGQA7-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'

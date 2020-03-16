@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicySummaryStatusType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionPolicyStatusView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
@@ -50,7 +50,7 @@ public class PolicyChecker {
         this.eventSystem = eventSystem;
     }
 
-    public void checkPolicy(final List<PolicySeverityType> policySeverities, final ProjectBomService projectBomService, final ProjectVersionView projectVersionView) throws IntegrationException {
+    public void checkPolicy(final List<PolicyRuleSeverityType> policySeverities, final ProjectBomService projectBomService, final ProjectVersionView projectVersionView) throws IntegrationException {
         final Optional<PolicyStatusDescription> optionalPolicyStatusDescription = getPolicyStatus(projectBomService, projectVersionView);
         if (optionalPolicyStatusDescription.isPresent()) {
             PolicyStatusDescription policyStatusDescription = optionalPolicyStatusDescription.get();
@@ -86,8 +86,8 @@ public class PolicyChecker {
         return Optional.of(policyStatusDescription);
     }
 
-    private boolean arePolicySeveritiesViolated(final PolicyStatusDescription policyStatusDescription, final List<PolicySeverityType> policySeverities) {
-        for (final PolicySeverityType policySeverity : policySeverities) {
+    private boolean arePolicySeveritiesViolated(final PolicyStatusDescription policyStatusDescription, final List<PolicyRuleSeverityType> policySeverities) {
+        for (final PolicyRuleSeverityType policySeverity : policySeverities) {
             final int severityCount = policyStatusDescription.getCountOfSeverity(policySeverity);
             if (severityCount > 0) {
                 return true;

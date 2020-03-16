@@ -22,10 +22,11 @@
  */
 package com.synopsys.integration.detect.configuration
 
-import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
 import com.synopsys.integration.blackduck.api.generated.enumeration.LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType
+import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType
 import com.synopsys.integration.blackduck.api.manual.throwaway.generated.enumeration.ProjectVersionPhaseType
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
 import com.synopsys.integration.configuration.property.Property
 import com.synopsys.integration.configuration.property.base.PassthroughProperty
@@ -47,7 +48,7 @@ import com.synopsys.integration.configuration.property.types.string.StringProper
 import com.synopsys.integration.detect.DetectMajorVersion
 import com.synopsys.integration.detect.DetectTool
 import com.synopsys.integration.detect.configuration.enums.DefaultVersionNameScheme
-import com.synopsys.integration.detect.configuration.enums.IndividualFileMatchMode
+import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule
@@ -236,7 +237,7 @@ class DetectProperties {
             setHelp("A comma-separated list of values to be used with the Signature Scanner --exclude flag.", "Each pattern provided is passed to the signature scanner (Black Duck scan CLI) as a value for an --exclude option. The signature scanner requires that these exclusion patterns start and end with a forward slash (/) and may not contain double asterisks (**). These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude from signature scanning. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns=/blackduck-common/, --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-*/'. Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.")
             setGroups(DetectGroup.SignatureScanner, DetectGroup.SourceScan)
         }
-        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING = EnumProperty("detect.blackduck.signature.scanner.individual.file.matching", IndividualFileMatchMode.NONE, IndividualFileMatchMode::class.java).apply {
+        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING = ExtendedEnumProperty("detect.blackduck.signature.scanner.individual.file.matching", ExtendedEnumValue.ofExtendedValue(ExtendedIndividualFileMatchingMode.NONE), ExtendedIndividualFileMatchingMode::class.java, IndividualFileMatching::class.java).apply {
             setInfo("Individual File Matching", "6.2.0")
             setHelp("Users may set this property to indicate what types of files they want to match")
             setGroups(DetectGroup.SignatureScanner)
@@ -721,7 +722,7 @@ class DetectProperties {
             setHelp("Path of the swift executable.")
             setGroups(DetectGroup.Paths, DetectGroup.Global)
         }
-        val DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES = FilterableEnumListProperty("detect.policy.check.fail.on.severities", FilterableEnumUtils.noneList(), PolicySeverityType::class.java).apply {
+        val DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES = FilterableEnumListProperty("detect.policy.check.fail.on.severities", FilterableEnumUtils.noneList(), PolicyRuleSeverityType::class.java).apply {
             setInfo("Fail on Policy Violation Severities", "3.0.0")
             setHelp("A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE.")
             setGroups(DetectGroup.Project, DetectGroup.Global, DetectGroup.ProjectSetting, DetectGroup.Policy)
