@@ -44,34 +44,23 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
     @Override
     protected void setup() throws IOException {
         addFile(Paths.get("yarn.lock"),
-            "\"@cogizmo/cogizmo@^0.5.5\":",
-            "   version \"0.5.5\"",
-            "   resolved \"https://registry.yarnpkg.com/cogizmo-0.5.5\"",
-            "   integrity sha512-a9gxpmdXtZEInkCSHUJDLHZVBgb1QS0jhss4cPP93EW7s+uC5bikET2twEF3KV+7rDblJcmNvTR7VJejqd2C2g==",
-            "   optionalDependencies:",
-            "     \"name1\" \"version1\"",
-            "     \"name2\" \"version2\"",
+            "async@2.5.0:",
+            "   version \"2.5.0\"",
+            "   dependencies:",
+            "     lodash \"4.1.0\"",
             "",
-            "\"@name1/name1\":",
-            "   version \"version1\"",
-            "   resolved \"https://registry.yarnpkg.com/name1-version1\"",
-            "   integrity sha512-a9gxpmdXtZEInkCSHUJDLHZVBgb1QS0jhss4cPP93EW7s+uC5bikET2twEF3KV+7rDblJcmNvTR7VJejqd2C2g==",
-            "   optionalDependencies:",
-            "",
-            "\"@name2/name2\":",
-            "   version \"version2\"",
-            "   resolved \"https://registry.yarnpkg.com/name2-version2\"",
-            "   integrity sha512-a9gxpmdXtZEInkCSHUJDLHZVBgb1QS0jhss4cPP93EW7s+uC5bikET2twEF3KV+7rDblJcmNvTR7VJejqd2C2g==",
-            "   optionalDependencies:"
+            "lodash@4.1.0:",
+            "   version \"4.1.0\""
         );
 
         addFile(Paths.get("package.json"),
             "{",
-            "   \"name\": \"@cogizmo/cogizmo\",",
-            "   \"version\": \"0.5.5\",",
-            "   \"dependencies\": {",
-            "   \"name1\": \"version1\",",
-            "   \"name2\": \"version2\"",
+            "   \"name\": \"babel\",",
+            "   \"private\": true,",
+            "   \"license\": \"MIT\",",
+            "   \"dependencies\": { ",
+            "       \"async\": \"2.5.0\",",
+            "       \"lodash\": \"4.1.0\"",
             "   }",
             "}"
         );
@@ -80,7 +69,7 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createYarnLockDetectable(detectableEnvironment, false);
+        return detectableFactory.createYarnLockDetectable(detectableEnvironment, true);
     }
 
     @Override
@@ -88,5 +77,9 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
         Assertions.assertNotEquals(0, extraction.getCodeLocations().size());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, extraction.getCodeLocations().get(0).getDependencyGraph());
+        graphAssert.hasRootSize(2);
+        graphAssert.hasRootDependency("async", "2.5.0");
+        graphAssert.hasRootDependency("lodash", "4.1.0");
+        graphAssert.hasParentChildRelationship("async", "2.5.0", "lodash", "4.1.0");
     }
 }
