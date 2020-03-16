@@ -20,9 +20,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.nameversion
+package com.synopsys.integration.detect.workflow.phonehome;
 
-import com.synopsys.integration.detector.base.DetectorType
-import com.synopsys.integration.util.NameVersion
+import java.util.Map;
 
-class DetectorProjectInfoMetadata(val detectorType: DetectorType, val depth: Int)
+public class PhoneHomeOptions {
+    private final Map<String, String> passthrough;
+
+    public PhoneHomeOptions(Map<String, String> passthrough) {
+        this.passthrough = passthrough;
+    }
+
+    public Map<String, String> getPassthrough() {
+        return passthrough;
+    }
+}

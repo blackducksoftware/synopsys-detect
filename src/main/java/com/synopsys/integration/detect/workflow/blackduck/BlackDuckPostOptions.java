@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.workflow.blackduck;
 import java.nio.file.Path;
 import java.util.List;
 
-import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 
 public class BlackDuckPostOptions {
     private final boolean waitForResults;
@@ -34,10 +34,10 @@ public class BlackDuckPostOptions {
     private final boolean generateNoticesReport;
     private final Path riskReportPdfPath;
     private final Path noticesReportPath;
-    private final List<PolicySeverityType> severitiesToFailPolicyCheck;
+    private final List<PolicyRuleSeverityType> severitiesToFailPolicyCheck;
 
     public BlackDuckPostOptions(final boolean waitForResults, final boolean generateRiskReport, final boolean generateNoticesReport, final Path riskReportPdfPath, final Path noticesReportPath,
-        final List<PolicySeverityType> severitiesToFailPolicyCheck) {
+        final List<PolicyRuleSeverityType> severitiesToFailPolicyCheck) {
         this.waitForResults = waitForResults;
         this.generateRiskReport = generateRiskReport;
         this.generateNoticesReport = generateNoticesReport;
@@ -74,7 +74,7 @@ public class BlackDuckPostOptions {
         return noticesReportPath;
     }
 
-    public List<PolicySeverityType> getSeveritiesToFailPolicyCheck() {
+    public List<PolicyRuleSeverityType> getSeveritiesToFailPolicyCheck() {
         return severitiesToFailPolicyCheck;
     }
 

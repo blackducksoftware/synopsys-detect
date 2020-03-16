@@ -45,8 +45,8 @@ import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentP
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
-import com.synopsys.integration.detect.workflow.nameversion.NameVersionDecision;
 import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
+import com.synopsys.integration.detect.workflow.nameversion.decision.NameVersionDecision;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detector.base.DetectorEvaluation;

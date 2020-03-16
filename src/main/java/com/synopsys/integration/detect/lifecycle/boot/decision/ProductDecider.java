@@ -42,26 +42,20 @@ import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
 public class ProductDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final DetectConfigurationFactory detectConfigurationFactory;
-
-    public ProductDecision decide(final File userHome, final DetectToolFilter detectToolFilter) {
-        return new ProductDecision(determineBlackDuck(), determinePolaris(userHome, detectToolFilter));
+    public ProductDecision decide(DetectConfigurationFactory detectConfigurationFactory, final File userHome, final DetectToolFilter detectToolFilter) {
+        BlackDuckConnectionDetails blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
+        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
+        return new ProductDecision(determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions), determinePolaris(detectConfigurationFactory, userHome, detectToolFilter));
     }
 
-    public ProductDecider(final DetectConfigurationFactory detectConfigurationFactory) {
-        this.detectConfigurationFactory = detectConfigurationFactory;
-    }
-
-    private PolarisDecision determinePolaris(final File userHome, final DetectToolFilter detectToolFilter) {
+    public PolarisDecision determinePolaris(DetectConfigurationFactory detectConfigurationFactory, final File userHome, final DetectToolFilter detectToolFilter) {
         if (!detectToolFilter.shouldInclude(DetectTool.POLARIS)) {
             logger.debug("Polaris will NOT run because it is excluded.");
             return PolarisDecision.skip();
         }
         final PolarisServerConfigBuilder polarisServerConfigBuilder = detectConfigurationFactory.createPolarisServerConfigBuilder(userHome);
         final BuilderStatus builderStatus = polarisServerConfigBuilder.validateAndGetBuilderStatus();
-        final boolean polarisCanRun = builderStatus.isValid();
-
-        if (!polarisCanRun) {
+        if (!builderStatus.isValid()) {
             final String polarisUrl = polarisServerConfigBuilder.getUrl();
             if (StringUtils.isBlank(polarisUrl)) {
                 logger.debug("Polaris will NOT run: The Polaris url must be provided.");
@@ -75,11 +69,9 @@ public class ProductDecider {
         }
     }
 
-    private BlackDuckDecision determineBlackDuck() {
-        final BlackDuckConnectionDetails blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
+    public BlackDuckDecision determineBlackDuck(BlackDuckConnectionDetails blackDuckConnectionDetails, BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions) {
         final boolean offline = blackDuckConnectionDetails.getOffline();
         final Optional<String> blackDuckUrl = blackDuckConnectionDetails.getBlackDuckUrl();
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
         Optional<String> signatureScannerHostUrl = blackDuckSignatureScannerOptions.getUserProvidedScannerInstallUrl();
         Optional<Path> signatureScannerOfflineLocalPath = blackDuckSignatureScannerOptions.getOfflineLocalScannerInstallPath();
         if (offline) {

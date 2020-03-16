@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -31,9 +32,12 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
 import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.util.NameVersion;
 
 public class YarnTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -43,25 +47,30 @@ public class YarnTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(final PackageJson packageJson, final YarnLock yarnLock, boolean productionOnly) throws MissingExternalIdException {
+    public DependencyGraph transform(final PackageJson packageJson, final YarnLock yarnLock, final boolean productionOnly) throws MissingExternalIdException {
+        final Map<DependencyId, NameVersion> fallbackInfo = new HashMap<>();
         final LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
         for (final Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
-            graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
+            graphBuilder.addChildToRoot(createAndCacheDependencyId(fallbackInfo, packageDependency.getKey(), packageDependency.getValue()));
         }
 
         if (!productionOnly) {
             for (final Map.Entry<String, String> packageDependency : packageJson.devDependencies.entrySet()) {
-                graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
+                graphBuilder.addChildToRoot(createAndCacheDependencyId(fallbackInfo, packageDependency.getKey(), packageDependency.getValue()));
             }
         }
 
         for (final YarnLockEntry entry : yarnLock.getEntries()) {
             for (final YarnLockEntryId entryId : entry.getIds()) {
-                final StringDependencyId id = new StringDependencyId(entryId.getName() + "@" + entryId.getVersion());
-                graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
+                final DependencyId id = createAndCacheDependencyId(fallbackInfo, entryId.getName(), entryId.getVersion());
+                fallbackInfo.put(id, new NameVersion(entryId.getName(), entryId.getVersion()));
+
+                final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion());
+                graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), externalId);
+
                 for (final YarnLockDependency dependency : entry.getDependencies()) {
-                    final StringDependencyId stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());
+                    final StringDependencyId stringDependencyId = createAndCacheDependencyId(fallbackInfo, dependency.getName(), dependency.getVersion());
                     if (!productionOnly || !dependency.isOptional()) {
                         graphBuilder.addChildWithParent(stringDependencyId, id);
                     } else {
@@ -70,6 +79,24 @@ public class YarnTransformer {
                 }
             }
         }
-        return graphBuilder.build();
+
+        return graphBuilder.build((dependencyId, lazyDependencyInfo) -> {
+            if (fallbackInfo.containsKey(dependencyId)) {
+                final NameVersion fallback = fallbackInfo.get(dependencyId);
+                final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, fallback.getName(), fallback.getVersion());
+                logger.warn(String.format("Missing dependency definition for \"%s@%s\". Will attempt to use \"%s\" as an external id.", fallback.getName(), fallback.getVersion(), externalId.createExternalId()));
+
+                return externalId;
+            } else {
+                throw new MissingExternalIdException(dependencyId);
+            }
+        });
+    }
+
+    private StringDependencyId createAndCacheDependencyId(final Map<DependencyId, NameVersion> fallbackInfo, final String name, final String version) {
+        final StringDependencyId id = new StringDependencyId(name + "@" + version);
+        fallbackInfo.put(id, new NameVersion(name, version));
+
+        return id;
     }
 }
