@@ -38,12 +38,12 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchBuilder;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanTarget;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.enums.IndividualFileMatchMode;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -225,8 +225,8 @@ public class BlackDuckSignatureScanner {
         final Boolean licenseSearch = signatureScannerOptions.getLicenseSearch();
         scanJobBuilder.licenseSearch(licenseSearch);
 
-        final IndividualFileMatchMode individualFileMatching = signatureScannerOptions.getIndividualFileMatching();
-        scanJobBuilder.individualFileMatching(individualFileMatching.name());
+        final IndividualFileMatching individualFileMatching = signatureScannerOptions.getIndividualFileMatching();
+        scanJobBuilder.individualFileMatching(individualFileMatching);
 
         final File sourcePath = directoryManager.getSourceDirectory();
         final String prefix = signatureScannerOptions.getCodeLocationPrefix().orElse(null);

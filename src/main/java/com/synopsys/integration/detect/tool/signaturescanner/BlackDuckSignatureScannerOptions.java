@@ -28,8 +28,8 @@ import java.util.Optional;
 
 import org.antlr.v4.runtime.misc.Nullable;
 
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
-import com.synopsys.integration.detect.configuration.enums.IndividualFileMatchMode;
 
 public class BlackDuckSignatureScannerOptions {
     private final List<Path> signatureScannerPaths;
@@ -59,7 +59,7 @@ public class BlackDuckSignatureScannerOptions {
     private final String additionalArguments;
     private final Integer maxDepth;
     @Nullable
-    private final IndividualFileMatchMode individualFileMatching;
+    private final IndividualFileMatching individualFileMatching;
     private final Boolean licenseSearch;
 
     public BlackDuckSignatureScannerOptions(
@@ -78,7 +78,7 @@ public class BlackDuckSignatureScannerOptions {
         @Nullable final String codeLocationSuffix,
         @Nullable final String additionalArguments,
         final Integer maxDepth,
-        final IndividualFileMatchMode individualFileMatching,
+        final IndividualFileMatching individualFileMatching,
         final Boolean licenseSearch) {
 
         this.signatureScannerPaths = signatureScannerPaths;
@@ -160,7 +160,7 @@ public class BlackDuckSignatureScannerOptions {
         return Optional.ofNullable(userProvidedScannerInstallUrl);
     }
 
-    public IndividualFileMatchMode getIndividualFileMatching() {
+    public IndividualFileMatching getIndividualFileMatching() {
         return individualFileMatching;
     }
 
