@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn.unit;
+package com.synopsys.integration.detectable.detectables.yarn.functional;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -44,13 +44,13 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
     @Override
     protected void setup() throws IOException {
         addFile(Paths.get("yarn.lock"),
-            "async@2.5.0:",
+            "async@^2.1.2:",
             "   version \"2.5.0\"",
             "   dependencies:",
-            "     lodash \"4.1.0\"",
+            "     lodash \"4.17.4\"",
             "",
-            "lodash@4.1.0:",
-            "   version \"4.1.0\""
+            "lodash@^4.1.0:",
+            "   version \"4.17.4\""
         );
 
         addFile(Paths.get("package.json"),
@@ -60,7 +60,7 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
             "   \"license\": \"MIT\",",
             "   \"dependencies\": { ",
             "       \"async\": \"2.5.0\",",
-            "       \"lodash\": \"4.1.0\"",
+            "       \"lodash\": \"4.17.4\"",
             "   }",
             "}"
         );
@@ -79,7 +79,7 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(2);
         graphAssert.hasRootDependency("async", "2.5.0");
-        graphAssert.hasRootDependency("lodash", "4.1.0");
-        graphAssert.hasParentChildRelationship("async", "2.5.0", "lodash", "4.1.0");
+        graphAssert.hasRootDependency("lodash", "4.17.4");
+        graphAssert.hasParentChildRelationship("async", "2.5.0", "lodash", "4.17.4");
     }
 }
