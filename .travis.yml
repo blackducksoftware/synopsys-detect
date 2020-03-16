@@ -9,6 +9,9 @@ install: true
 ### only trusty has oraclejdk8 reliably
 dist: trusty
 
+git:
+  depth: false
+
 addons:
   sonarcloud:
     organization: "black-duck-software"

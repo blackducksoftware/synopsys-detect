@@ -20,13 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.nameversion
+package com.synopsys.integration.detect.workflow.nameversion.decision;
 
-import com.synopsys.integration.detector.base.DetectorType
-import com.synopsys.integration.util.NameVersion
+import org.slf4j.Logger;
 
-class DetectorProjectInfo(val detectorType: DetectorType, val depth: Int, val nameVersion: NameVersion) {
-    constructor(metadata: DetectorProjectInfoMetadata, nameVersion: NameVersion) : this(metadata.detectorType, metadata.depth, nameVersion)
+public class UniqueDetectorNotFoundDecision extends NameVersionDecision {
+    @Override
+    public void printDescription(final Logger logger) {
+        logger.debug("No unique detector was found. Project info could not be found in a detector.");
+    }
 }
-
-
