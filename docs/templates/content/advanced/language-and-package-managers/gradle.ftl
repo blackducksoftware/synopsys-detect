@@ -23,7 +23,7 @@ It consumes the output of `gradlew dependencies` with the help of a Gradle scrip
 
 <a name="gradleinspectorwithproxy"></a>
 ###Running the Gradle inspector with a proxy
-${solution_name} will pass along supplied [proxy host](/properties/Configuration/proxy/#proxy-host-advanced) and [proxy port](/properties/Configuration/proxy/#proxy-port-advanced) properties to the Gradle daemon if applicable.
+${solution_name} will pass along supplied [proxy host](/properties/configuration/proxy/#proxy-host-advanced) and [proxy port](/properties/configuration/proxy/#proxy-port-advanced) properties to the Gradle daemon if applicable.
 <a name="gradleinspectorwithproxy"></a>
 
 <a name="gradleparsedetector"></a>
