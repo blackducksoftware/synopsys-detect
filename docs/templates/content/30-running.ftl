@@ -4,14 +4,14 @@
 
 ### Build mode
 
-In [build mode](/components/detectors/#build-detectors-versus-buildless-detectors), which is the default,
+In [build mode](components/detectors.md#build-detectors-versus-buildless-detectors), which is the default,
 ${solution_name} should be executed as a post-build step in the build environment of the project.
 Building your project prior to running ${solution_name} is often required for the detector to run successfully,
 and helps ensure that the build artifacts are available for signature scanning.
 
 ### Buildless mode
 
-In [buildless mode](/components/detectors/#build-detectors-versus-buildless-detectors),
+In [buildless mode](components/detectors.md#build-detectors-versus-buildless-detectors),
 ${solution_name} makes its best effort to discover dependencies without the benefit of
 build artifacts or build tools. In buildless mode, there is no requirement that ${solution_name} must run as a post-build step.
 Results from buildless mode may be less accurate than results from build mode.
@@ -19,7 +19,7 @@ Results from buildless mode may be less accurate than results from build mode.
 ## Choosing the working directory
 
 You can run ${solution_name} from any directory. If you are not running ${solution_name} from the project directory,
-provide the project directory using the [source path property](/properties/configuration/paths/#source-path-advanced). When that property is not set,
+provide the project directory using the [source path property](properties/Configuration/paths.md#source-path). When that property is not set,
 ${solution_name} assumes the current working directory is the project directory.
 
 ## Choosing a run method (script or .jar)
@@ -47,7 +47,7 @@ Several aspects of script functionality can be configured, including:
 * The download location.
 * Where to find Java.
 
-Information on how to configure the scripts is in [Shell script configuration](/advanced/script-configuration/).
+Information on how to configure the scripts is in [Shell script configuration](advanced/script-configuration.md).
 
 #### Linux or Mac (Bash)
 
@@ -115,8 +115,8 @@ You can use the ${solution_name} Bash script (${bash_script_name}) to download t
 
 ## Including and excluding tools and detectors
 
-[Properties](/properties/all-properties/) provide a variety of options for configuring ${solution_name} behavior. One of the
-most fundamental ways to modify ${solution_name} is by including and excluding [tools](/components/tools/) and [detectors](/components/detectors/).
+[Properties](properties/all-properties.md) provide a variety of options for configuring ${solution_name} behavior. One of the
+most fundamental ways to modify ${solution_name} is by including and excluding [tools](components/tools.md) and [detectors](components/detectors.md).
 
 ### Tools
 
@@ -132,9 +132,9 @@ To exclude specific tools, use:
 
 Exclusions take precedence over inclusions.
 
-Refer to [Tools](/components/tools/) for the list of tool names.
+Refer to [Tools](components/tools.md) for the list of tool names.
 
-Refer to [Properties](/properties/all-properties/) for details.
+Refer to [Properties](properties/all-properties.md) for details.
 
 ### Detectors
 
@@ -150,9 +150,9 @@ To exclude specific detectors, use:
 
 Exclusions take precedence over inclusions.
 
-Refer to [Detectors](/components/detectors/) for the list of detector names.
+Refer to [Detectors](components/detectors.md) for the list of detector names.
 
-Refer to [Properties](/properties/all-properties/) for details.
+Refer to [Properties](properties/all-properties.md) for details.
 
 ## Running with ${blackduck_product_name}
 
@@ -163,27 +163,27 @@ ${solution_name} can be used with ${blackduck_product_name} to perform Software 
 When ${blackduck_product_name} connection details are provided, ${solution_name} executes
 the following by default:
 
-* The [detector tool](/components/detectors/), which runs the appropriate package manager-specific detector; the Maven detector
+* The [detector tool](components/detectors.md), which runs the appropriate package manager-specific detector; the Maven detector
 for Maven projects, the Gradle detector for Gradle projects, and so forth.
-* The [${blackduck_signature_scanner_name}](/properties/configuration/signature scanner/), which performs a ${blackduck_signature_scan_act} on the
+* The [${blackduck_signature_scanner_name}](properties/Configuration/signature scanner.md), which performs a ${blackduck_signature_scan_act} on the
 project directory.
 
 ${solution_name} can be configured to perform additional tasks, including the following:
 
-* Enable any of the supported snippet matching modes in the [${blackduck_signature_scanner_name}](/properties/configuration/signature scanner/).
-* Run the [${blackduck_binary_scanner_name}](/properties/configuration/signature scanner/#binary-scan-target) on a given binary files.
-* Run the ${dockerinspector_name} on a given [Docker image](/advanced/language-and-package-managers/docker-images/).
-* Generate a [report](/properties/configuration/report/).
-* Fail on [policy violation](/properties/configuration/project/#fail-on-policy-violation-severities).
+* Enable any of the supported snippet matching modes in the [${blackduck_signature_scanner_name}](properties/Configuration/signature scanner.md).
+* Run the [${blackduck_binary_scanner_name}](properties/Configuration/signature scanner.md#binary-scan-target) on a given binary files.
+* Run the ${dockerinspector_name} on a given [Docker image](advanced/language-and-package-managers/docker-images.md).
+* Generate a [report](properties/Configuration/report.md).
+* Fail on [policy violation](properties/Configuration/project.md#fail-on-policy-violation-severities).
 
-Refer to [${blackduck_product_name} Server properties](/properties/configuration/blackduck server/)
-and [${blackduck_signature_scanner_name} properties](/properties/configuration/signature scanner/) for details.
+Refer to [${blackduck_product_name} Server properties](properties/Configuration/blackduck server.md)
+and [${blackduck_signature_scanner_name} properties](properties/Configuration/signature scanner.md) for details.
 
 ### Offline mode
 
 If you do not have a ${blackduck_product_name} instance, or if your network is down, you can still run ${solution_name} in offline mode.
 In offline mode, ${solution_name} creates the BDIO content and the dry run ${blackduck_signature_scan_act} output files without attempting to upload them to ${blackduck_product_name}.
-You can run ${solution_name} in offline mode using the [offline mode property](/properties/configuration/blackduck server/#offline-mode).
+You can run ${solution_name} in offline mode using the [offline mode property](properties/Configuration/blackduck server.md#offline-mode).
 
 ### BDIO format
 
@@ -193,7 +193,7 @@ Versions of Black Duck prior to 2018.12.4 accept only BDIO 1. Black Duck version
 accept either BDIO 1 or BDIO 2.
 By default, ${solution_name} produces BDIO 1 files.
 
-Use the [BDIO2 enabled property](/properties/configuration/paths/#bdio-2-enabled-advanced) to select BDIO 2 format.
+Use the [BDIO2 enabled property](properties/Configuration/paths.md#bdio-2-enabled) to select BDIO 2 format.
 
 ## Running with ${polaris_product_name}
 
@@ -207,4 +207,4 @@ for Maven projects, the Gradle detector for Gradle projects, and so forth.
 * The ${polaris_product_name} tool, which runs the ${polaris_product_name} CLI on the
 project directory.
 
-Refer to [Properties](/properties/configuration/polaris/) for details.
+Refer to [Properties](properties/Configuration/polaris.md) for details.

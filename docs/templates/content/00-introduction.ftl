@@ -9,7 +9,7 @@ ${solution_name} makes it easier to set up and scan code bases for a variety of 
 ${solution_name} leverages multi-factor discovery techniques to scan software projects and directories.
 ${solution_name} runs on Windows, Linux, and MacOS. It is available through GitHub, under a permissive
 Apache license and does not require pre-installation or configuration.
-For more information, refer to [Requirements](/10-requirements/).
+For more information, refer to [Requirements](10-requirements.md).
 
 ${solution_name} can be used either for ${blackduck_product_name} SCA (open source software detection), or for Coverity on Polaris SAST (static code) analysis, or both simultaneously.
 Although ${solution_name} can support large projects, care should be taken to ensure that scans are performed to optimize platform performance and produce manageable and meaningful results.
@@ -48,12 +48,12 @@ can connect to any external systems needed for the run, and creates any required
 
 ### Run phase
 
-During the run phase, ${solution_name} processes an ordered list of [tools](/components/tools/), invoking all that apply.
+During the run phase, ${solution_name} processes an ordered list of [tools](components/tools.md), invoking all that apply.
 Tool applicability depends on how ${solution_name} is configured; in other words, the property values you set.
 The detector tool runs by default. The ${blackduck_signature_scanner_name} tool runs by default when ${blackduck_product_name} connection
 details are provided.
 
-The detector tool invokes all applicable [detectors](/components/detectors/).
+The detector tool invokes all applicable [detectors](components/detectors.md).
 Detector applicability depends on what ${solution_name} finds in your project. For example, if ${solution_name}
 finds a pom.xml file, it runs the Maven detector. If it finds Gradle files, it runs the Gradle detector.
 
@@ -74,4 +74,4 @@ During the cleanup phase, ${solution_name} removes temporary files and directori
 ## Controlling ${solution_name} processing
 
 For more information on controlling the tools and detectors executed by ${solution_name}, refer to
-[Including/excluding tools/detectors](/30-running/#including-and-excluding-tools-and-detectors).
+[Including/excluding tools/detectors](30-running.md#including-and-excluding-tools-and-detectors).

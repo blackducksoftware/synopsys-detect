@@ -6,8 +6,8 @@
 * [Simple proxy information](/advanced/language-and-package-managers/gradle/#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
 * Detect now creates a status file describing the results of the run which includes things like [issues, results and status codes.](/advanced/status-file/)
 * Property configuration table includes where property was resolved.
-* Added the property [detect.blackduck.signature.scanner.license.search](/properties/configuration/signature scanner/#signature-scanner-license-search-advanced).
-* Added the property [detect.blackduck.signature.scanner.individual.file.matching](/properties/configuration/signature scanner/#individual-file-matching-advanced).
+* Added the property [detect.blackduck.signature.scanner.license.search](/properties/Configuration/signature scanner/#signature-scanner-license-search-advanced).
+* Added the property [detect.blackduck.signature.scanner.individual.file.matching](/properties/Configuration/signature scanner/#individual-file-matching-advanced).
 * If an executable returns a nonzero exit code, Detect will now log output automatically.
 * Added page for [decrecated properties](/properties/deprecated-properties/) in help.
 * Detect-generated risk reports now feature Synopsys logo and branding.
@@ -30,17 +30,17 @@
 
 ## Version 6.1.0
 ### New features
-* Added the property [detect.bdio2.enabled](/properties/configuration/paths/#bdio-2-enabled).
-* Added the property [detect.pip.only.project.tree](/properties/detectors/pip/#pip-include-only-project-tree).
-* Added the property [detect.bitbake.search.depth](/properties/detectors/bitbake/#bitbake-search-depth).
-* Added the property [detect.bazel.cquery.options](/properties/detectors/bazel/#bazel-cquery-additional-options).
-* Added the property [detect.docker.image.id](/properties/detectors/docker/#docker-image-id).
-* Added the property [detect.docker.platform.top.layer.id](/properties/detectors/docker/#platform-top-layer-id-advanced).
-* Added the property [detect.bom.aggregate.remediation.mode](/properties/configuration/project/#bdio-aggregate-remediation-mode-advanced)
+* Added the property [detect.bdio2.enabled](properties/Configuration/paths.md#bdio-2-enabled).
+* Added the property [detect.pip.only.project.tree](properties/Detectors/pip.md#pip-include-only-project-tree).
+* Added the property [detect.bitbake.search.depth](properties/Detectors/bitbake.md#bitbake-search-depth).
+* Added the property [detect.bazel.cquery.options](properties/Detectors/bazel.md#bazel-cquery-additional-options).
+* Added the property [detect.docker.image.id](properties/Detectors/docker.md#docker-image-id).
+* Added the property [detect.docker.platform.top.layer.id](properties/Detectors/docker.md#platform-top-layer-id-advanced).
+* Added the property [detect.bom.aggregate.remediation.mode](properties/Configuration/project.md#bdio-aggregate-remediation-mode-advanced)
 
 ### Changed features
 * Deprecated all ${polaris_product_name}-related properties.
-* Added [wildcard support](/advanced/includeexcludewildcards/) for several include/exclude list properties.
+* Added [wildcard support](advanced/includeexcludewildcards.md) for several include/exclude list properties.
 * Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command. Since the yarn command is no longer executed, the detect.yarn.path property has been removed.
 * Improved match accuracy for Bitbake projects by improving external ID generation for dependencies referenced using Git protocols, and dependencies referenced with an epoch and/or revision.
 * Improved the reliability of the Bitbake detector by generating recipe-depends.dot and package-depends.dot files the source directory, instead of a temporary directory.

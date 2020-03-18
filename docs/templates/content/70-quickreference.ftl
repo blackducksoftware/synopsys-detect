@@ -1,8 +1,8 @@
 # Quick reference
 
 ## Quick Links
-* [All Properties](/properties/all-properties/)
-* [Exit Codes](/advanced/troubleshooting/exit-codes/)
+* [All Properties](properties/all-properties.md)
+* [Exit Codes](advanced/troubleshooting/exit-codes.md)
 
 ## ${solution_name} Modes
 
