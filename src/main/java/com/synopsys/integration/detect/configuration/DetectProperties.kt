@@ -345,7 +345,7 @@ class DetectProperties {
             setHelp("The path to the cpanm executable.")
             setGroups(DetectGroup.CPAN, DetectGroup.GLOBAL)
         }
-        val DETECT_DEFAULT_PROJECT_VERSION_SCHEME = EnumProperty("detect.default.project.version.scheme", DefaultVersionNameScheme.TEXT, DefaultVersionNameScheme::class.java).apply {
+        val DETECT_DEFAULT_PROJECT_VERSION_SCHEME = EnumProperty("detect.default.project.version.scheme", DefaultVersionNameScheme.DEFAULT, DefaultVersionNameScheme::class.java).apply {
             setInfo("Default Project Version Name Scheme", "3.0.0")
             setHelp("The scheme to use when the package managers can not determine a version. See detailed help for more information.")
             setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
