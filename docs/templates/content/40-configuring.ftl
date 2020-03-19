@@ -4,7 +4,7 @@ ${solution_name} is configured by assigning values to properties.
 
 ## On the command line
 
-One method for configuring ${solution_name} is by setting [${solution_name} property values](/properties/all-properties/) on the command line.
+One method for configuring ${solution_name} is by setting [${solution_name} property values](../properties/all-properties/) on the command line.
 When setting a property value on the command line, prefix the property name with two hyphens ("--"). For example,
 to set property *detect.project.value*:
 ```

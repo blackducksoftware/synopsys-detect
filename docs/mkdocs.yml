@@ -13,3 +13,6 @@ site_name: Synopsys Detect
 theme:
   name: 'material'
 docs_dir: 'generated'
+markdown_extensions:
+  - toc:
+      permalink: "#"
