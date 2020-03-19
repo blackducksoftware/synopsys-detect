@@ -1344,7 +1344,7 @@ Synopsys Detect makes it easier to set up and scan code bases for a variety of l
 Synopsys Detect leverages multi-factor discovery techniques to scan software projects and directories.
 Synopsys Detect runs on Windows, Linux, and MacOS. It is available through GitHub, under a permissive
 Apache license and does not require pre-installation or configuration.
-For more information, refer to <a href="../10-requirements/">Requirements</a>.</p>
+For more information, refer to <a href="/10-requirements/">Requirements</a>.</p>
 <p>Synopsys Detect can be used either for Black Duck SCA (open source software detection), or for Coverity on Polaris SAST (static code) analysis, or both simultaneously.
 Although Synopsys Detect can support large projects, care should be taken to ensure that scans are performed to optimize platform performance and produce manageable and meaningful results.
 For applications containing multiple sub-projects, it may be advantageous to scan sub-projects separately and combine results as a project of projects, or other techniques.</p>
@@ -1375,11 +1375,11 @@ to build the Bill Of Materials (BOM) for the project/version.</li>
 <p>During the initialization phase, Synopsys Detect performs verification checks on the user-provided configration, checks to see if it
 can connect to any external systems needed for the run, and creates any required directories.</p>
 <h3 id="run-phase">Run phase</h3>
-<p>During the run phase, Synopsys Detect processes an ordered list of <a href="../components/tools/">tools</a>, invoking all that apply.
+<p>During the run phase, Synopsys Detect processes an ordered list of <a href="/components/tools/">tools</a>, invoking all that apply.
 Tool applicability depends on how Synopsys Detect is configured; in other words, the property values you set.
 The detector tool runs by default. The Black Duck signature scanner tool runs by default when Black Duck connection
 details are provided.</p>
-<p>The detector tool invokes all applicable <a href="../components/detectors/">detectors</a>.
+<p>The detector tool invokes all applicable <a href="/components/detectors/">detectors</a>.
 Detector applicability depends on what Synopsys Detect finds in your project. For example, if Synopsys Detect
 finds a pom.xml file, it runs the Maven detector. If it finds Gradle files, it runs the Gradle detector.</p>
 <p>In the typical run previously described, two tools are applied: the detector tool which ran the Maven detector,
@@ -1393,7 +1393,7 @@ the Maven detector and the Black Duck signature scanner.</p>
 <p>During the cleanup phase, Synopsys Detect removes temporary files and directories before exiting.</p>
 <h2 id="controlling-synopsys-detect-processing">Controlling Synopsys Detect processing</h2>
 <p>For more information on controlling the tools and detectors executed by Synopsys Detect, refer to
-<a href="../30-running/#including-and-excluding-tools-and-detectors">Including/excluding tools/detectors</a>.</p>
+<a href="/30-running/#including-and-excluding-tools-and-detectors">Including/excluding tools/detectors</a>.</p>
                 
                   
                 

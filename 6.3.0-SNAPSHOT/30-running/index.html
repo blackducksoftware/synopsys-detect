@@ -1583,18 +1583,18 @@
                 <h1 id="downloading-and-running">Downloading and running</h1>
 <h2 id="positioning-synopsys-detect-in-the-build-process">Positioning Synopsys Detect in the build process</h2>
 <h3 id="build-mode">Build mode</h3>
-<p>In <a href="../components/detectors/#build-detectors-versus-buildless-detectors">build mode</a>, which is the default,
+<p>In <a href="/components/detectors/#build-detectors-versus-buildless-detectors">build mode</a>, which is the default,
 Synopsys Detect should be executed as a post-build step in the build environment of the project.
 Building your project prior to running Synopsys Detect is often required for the detector to run successfully,
 and helps ensure that the build artifacts are available for signature scanning.</p>
 <h3 id="buildless-mode">Buildless mode</h3>
-<p>In <a href="../components/detectors/#build-detectors-versus-buildless-detectors">buildless mode</a>,
+<p>In <a href="/components/detectors/#build-detectors-versus-buildless-detectors">buildless mode</a>,
 Synopsys Detect makes its best effort to discover dependencies without the benefit of
 build artifacts or build tools. In buildless mode, there is no requirement that Synopsys Detect must run as a post-build step.
 Results from buildless mode may be less accurate than results from build mode.</p>
 <h2 id="choosing-the-working-directory">Choosing the working directory</h2>
 <p>You can run Synopsys Detect from any directory. If you are not running Synopsys Detect from the project directory,
-provide the project directory using the <a href="../properties/Configuration/paths/#source-path">source path property</a>. When that property is not set,
+provide the project directory using the <a href="/properties/configuration/paths/#source-path-advanced">source path property</a>. When that property is not set,
 Synopsys Detect assumes the current working directory is the project directory.</p>
 <h2 id="choosing-a-run-method-script-or-jar">Choosing a run method (script or .jar)</h2>
 <p>There are two ways to run Synopsys Detect:</p>
@@ -1617,7 +1617,7 @@ Several aspects of script functionality can be configured, including:</p>
 <li>The download location.</li>
 <li>Where to find Java.</li>
 </ul>
-<p>Information on how to configure the scripts is in <a href="../advanced/script-configuration/">Shell script configuration</a>.</p>
+<p>Information on how to configure the scripts is in <a href="/advanced/script-configuration/">Shell script configuration</a>.</p>
 <h4 id="linux-or-mac-bash">Linux or Mac (Bash)</h4>
 <p>To download and run the latest version of Synopsys Detect in a single command:</p>
 <pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
@@ -1665,8 +1665,8 @@ java -jar synopsys-detect-5.6.2.jar
 ./detect.sh
 </code></pre>
 <h2 id="including-and-excluding-tools-and-detectors">Including and excluding tools and detectors</h2>
-<p><a href="../properties/all-properties/">Properties</a> provide a variety of options for configuring Synopsys Detect behavior. One of the
-most fundamental ways to modify Synopsys Detect is by including and excluding <a href="../components/tools/">tools</a> and <a href="../components/detectors/">detectors</a>.</p>
+<p><a href="/properties/all-properties/">Properties</a> provide a variety of options for configuring Synopsys Detect behavior. One of the
+most fundamental ways to modify Synopsys Detect is by including and excluding <a href="/components/tools/">tools</a> and <a href="/components/detectors/">detectors</a>.</p>
 <h3 id="tools">Tools</h3>
 <p>By default, all tools are eligible to run; the set of tools that actually run
 depends on the properties you set.
@@ -1677,8 +1677,8 @@ To limit the eligible tools to a given list, use:</p>
 <pre><code>--detect.tools.excluded={comma-separated list of tool names, all uppercase}
 </code></pre>
 <p>Exclusions take precedence over inclusions.</p>
-<p>Refer to <a href="../components/tools/">Tools</a> for the list of tool names.</p>
-<p>Refer to <a href="../properties/all-properties/">Properties</a> for details.</p>
+<p>Refer to <a href="/components/tools/">Tools</a> for the list of tool names.</p>
+<p>Refer to <a href="/properties/all-properties/">Properties</a> for details.</p>
 <h3 id="detectors">Detectors</h3>
 <p>By default, all detectors are eligible to run.  The set of detectors that actually
 run depends on the files existing in your project directory.
@@ -1689,40 +1689,40 @@ To limit the eligible detectors to a given list, use:</p>
 <pre><code>--detect.excluded.detector.types={comma-separated list of detector names}
 </code></pre>
 <p>Exclusions take precedence over inclusions.</p>
-<p>Refer to <a href="../components/detectors/">Detectors</a> for the list of detector names.</p>
-<p>Refer to <a href="../properties/all-properties/">Properties</a> for details.</p>
+<p>Refer to <a href="/components/detectors/">Detectors</a> for the list of detector names.</p>
+<p>Refer to <a href="/properties/all-properties/">Properties</a> for details.</p>
 <h2 id="running-with-black-duck">Running with Black Duck</h2>
 <p>Synopsys Detect can be used with Black Duck to perform Software Composition Analysis (SCA).</p>
 <h3 id="overview">Overview</h3>
 <p>When Black Duck connection details are provided, Synopsys Detect executes
 the following by default:</p>
 <ul>
-<li>The <a href="../components/detectors/">detector tool</a>, which runs the appropriate package manager-specific detector; the Maven detector
+<li>The <a href="/components/detectors/">detector tool</a>, which runs the appropriate package manager-specific detector; the Maven detector
 for Maven projects, the Gradle detector for Gradle projects, and so forth.</li>
-<li>The <a href="../properties/Configuration/signature scanner/">Black Duck signature scanner</a>, which performs a Black Duck signature scan on the
+<li>The <a href="/properties/configuration/signature scanner/">Black Duck signature scanner</a>, which performs a Black Duck signature scan on the
 project directory.</li>
 </ul>
 <p>Synopsys Detect can be configured to perform additional tasks, including the following:</p>
 <ul>
-<li>Enable any of the supported snippet matching modes in the <a href="../properties/Configuration/signature scanner/">Black Duck signature scanner</a>.</li>
-<li>Run the <a href="../properties/Configuration/signature scanner/#binary-scan-target">Black Duck binary scanner</a> on a given binary files.</li>
-<li>Run the Black Duck Docker Inspector on a given <a href="../advanced/language-and-package-managers/docker-images/">Docker image</a>.</li>
-<li>Generate a <a href="../properties/Configuration/report/">report</a>.</li>
-<li>Fail on <a href="../properties/Configuration/project/#fail-on-policy-violation-severities">policy violation</a>.</li>
+<li>Enable any of the supported snippet matching modes in the <a href="/properties/configuration/signature scanner/">Black Duck signature scanner</a>.</li>
+<li>Run the <a href="/properties/configuration/signature scanner/#binary-scan-target">Black Duck binary scanner</a> on a given binary files.</li>
+<li>Run the Black Duck Docker Inspector on a given <a href="/advanced/language-and-package-managers/docker-images/">Docker image</a>.</li>
+<li>Generate a <a href="/properties/configuration/report/">report</a>.</li>
+<li>Fail on <a href="/properties/configuration/project/#fail-on-policy-violation-severities">policy violation</a>.</li>
 </ul>
-<p>Refer to <a href="../properties/Configuration/blackduck server/">Black Duck Server properties</a>
-and <a href="../properties/Configuration/signature scanner/">Black Duck signature scanner properties</a> for details.</p>
+<p>Refer to <a href="/properties/configuration/blackduck server/">Black Duck Server properties</a>
+and <a href="/properties/configuration/signature scanner/">Black Duck signature scanner properties</a> for details.</p>
 <h3 id="offline-mode">Offline mode</h3>
 <p>If you do not have a Black Duck instance, or if your network is down, you can still run Synopsys Detect in offline mode.
 In offline mode, Synopsys Detect creates the BDIO content and the dry run Black Duck signature scan output files without attempting to upload them to Black Duck.
-You can run Synopsys Detect in offline mode using the <a href="../properties/Configuration/blackduck server/#offline-mode">offline mode property</a>.</p>
+You can run Synopsys Detect in offline mode using the <a href="/properties/configuration/blackduck server/#offline-mode">offline mode property</a>.</p>
 <h3 id="bdio-format">BDIO format</h3>
 <p>Synopsys Detect produces dependency information for Black Duck in Black Duck Input Output (BDIO) format files.
 Synopsys Detect can produce BDIO files in two formats: BDIO version 1, or BDIO version 2.
 Versions of Black Duck prior to 2018.12.4 accept only BDIO 1. Black Duck versions 2018.12.4 and higher
 accept either BDIO 1 or BDIO 2.
 By default, Synopsys Detect produces BDIO 1 files.</p>
-<p>Use the <a href="../properties/Configuration/paths/#bdio-2-enabled">BDIO2 enabled property</a> to select BDIO 2 format.</p>
+<p>Use the <a href="/properties/configuration/paths/#bdio-2-enabled-advanced">BDIO2 enabled property</a> to select BDIO 2 format.</p>
 <h2 id="running-with-polaris">Running with Polaris</h2>
 <p>Synopsys Detect can be used with Polaris to perform Static Application Security Testing (SAST).</p>
 <p>When Polaris connection details are provided, Synopsys Detect executes
@@ -1733,7 +1733,7 @@ for Maven projects, the Gradle detector for Gradle projects, and so forth.</li>
 <li>The Polaris tool, which runs the Polaris CLI on the
 project directory.</li>
 </ul>
-<p>Refer to <a href="../properties/Configuration/polaris/">Properties</a> for details.</p>
+<p>Refer to <a href="/properties/configuration/polaris/">Properties</a> for details.</p>
                 
                   
                 

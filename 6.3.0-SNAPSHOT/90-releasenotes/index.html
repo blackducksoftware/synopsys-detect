@@ -2088,12 +2088,12 @@
 <ul>
 <li>The Synopsys Detect .jar file is now signed, enabling <a href="/advanced/verifying/">code verification</a> by users.</li>
 <li><a href="/advanced/language-and-package-managers/gradle/#running-the-gradle-inspector-with-a-proxy">Simple proxy information</a> will be forwarded to the Gradle Inspector.</li>
-<li>Detect now creates a status file describing the results of the run which includes things like <a href="../advanced/status-file/">issues, results and status codes.</a></li>
+<li>Detect now creates a status file describing the results of the run which includes things like <a href="/advanced/status-file/">issues, results and status codes.</a></li>
 <li>Property configuration table includes where property was resolved.</li>
-<li>Added the property <a href="../properties/Configuration/signature scanner/#signature-scanner-license-search-advanced">detect.blackduck.signature.scanner.license.search</a>.</li>
-<li>Added the property <a href="../properties/Configuration/signature scanner/#individual-file-matching-advanced">detect.blackduck.signature.scanner.individual.file.matching</a>.</li>
+<li>Added the property <a href="/properties/configuration/signature scanner/#signature-scanner-license-search-advanced">detect.blackduck.signature.scanner.license.search</a>.</li>
+<li>Added the property <a href="/properties/configuration/signature scanner/#individual-file-matching-advanced">detect.blackduck.signature.scanner.individual.file.matching</a>.</li>
 <li>If an executable returns a nonzero exit code, Detect will now log output automatically.</li>
-<li>Added page for <a href="../properties/deprecated-properties/">decrecated properties</a> in help.</li>
+<li>Added page for <a href="/properties/deprecated-properties/">decrecated properties</a> in help.</li>
 <li>Detect-generated risk reports now feature Synopsys logo and branding.</li>
 </ul>
 <h3 id="changed-features">Changed features</h3>
@@ -2103,36 +2103,36 @@
 </ul>
 <h3 id="resolved-issues">Resolved issues</h3>
 <ul>
-<li>Resolved an issue where the download URL for Synopsys Detect was being set to an internal URL upon release.</li>
-<li>Resolved an issue where all transitive dependencies found by the <a href="/advanced/language-and-package-managers/python/#the-pip-detector">Pip inspector</a> were being reported as direct dependencies.</li>
-<li>Resolved an issue where using pip version 20+ with the <a href="/advanced/language-and-package-managers/python/#the-pip-detector">Pip inspector</a> caused a failure to import a dependency. <a href="https://github.com/blackducksoftware/synopsys-detect/pull/107">GitHub PR</a></li>
-<li>Resolved the following vulnerabilities:<ul>
+<li>Resolved an issue where the download URL for Synopsys Detect was being set to an internal URL upon release (IDETECT-1847).</li>
+<li>Resolved an issue where all transitive dependencies found by the <a href="/advanced/language-and-package-managers/python/#the-pip-detector">Pip inspector</a> were being reported as direct dependencies (IDETECT-1893).</li>
+<li>Resolved an issue where using pip version 20+ with the <a href="/advanced/language-and-package-managers/python/#the-pip-detector">Pip inspector</a> caused a failure to import a dependency. <a href="https://github.com/blackducksoftware/synopsys-detect/pull/107">GitHub PR</a> (IDETECT-1868)</li>
+<li>Resolved the following vulnerabilities (IDETECT-1872):<ul>
 <li>org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)</li>
 </ul>
 </li>
-<li>Resolved an issue where Synopsys Detect had the potential to fail on projects that utilized Yarn workspaces.<ul>
+<li>Resolved an issue where Synopsys Detect had the potential to fail on projects that utilized Yarn workspaces (IDETECT-1916).<ul>
 <li>Note: Yarn workspaces are not currently supported. See <a href="/advanced/language-and-package-managers/yarn/#yarn-workspace-support">yarn workspace support</a>.</li>
 </ul>
 </li>
-<li>When parsing package.xml files, Detect will no longer raise a SAXParseException when the file contains a doctype declaration, and will continue parsing the rest of the file.</li>
-<li>Resolved an issue in the Bazel Detector that caused it to fail for the maven_install rule when the tags field contained multiple tags with a mixture of formats.</li>
-<li>Resolved an issue that could cause generation of an invalid Black Duck Input/Output (BDIO) file when component the only difference between two component names/versions are non-alphanumeric characters.</li>
+<li>Resolved an issue in the Bazel Detector that caused it to fail for the maven_install rule when the tags field contained multiple tags with a mixture of formats (IDETECT-1925).</li>
+<li>When parsing package.xml files, Detect will no longer raise a SAXParseException when the file contains a doctype declaration, and will continue parsing the rest of the file (IDETECT-1866).</li>
+<li>Resolved an issue that could cause generation of an invalid Black Duck Input/Output (BDIO) file when the only differences between two component names/versions are non-alphanumeric characters (IDETECT-1856).</li>
 </ul>
 <h2 id="version-610">Version 6.1.0</h2>
 <h3 id="new-features_1">New features</h3>
 <ul>
-<li>Added the property <a href="../properties/Configuration/paths/#bdio-2-enabled">detect.bdio2.enabled</a>.</li>
-<li>Added the property <a href="../properties/Detectors/pip/#pip-include-only-project-tree">detect.pip.only.project.tree</a>.</li>
-<li>Added the property <a href="../properties/Detectors/bitbake/#bitbake-search-depth">detect.bitbake.search.depth</a>.</li>
-<li>Added the property <a href="../properties/Detectors/bazel/#bazel-cquery-additional-options">detect.bazel.cquery.options</a>.</li>
-<li>Added the property <a href="../properties/Detectors/docker/#docker-image-id">detect.docker.image.id</a>.</li>
-<li>Added the property <a href="../properties/Detectors/docker/#platform-top-layer-id-advanced">detect.docker.platform.top.layer.id</a>.</li>
-<li>Added the property <a href="../properties/Configuration/project/#bdio-aggregate-remediation-mode-advanced">detect.bom.aggregate.remediation.mode</a></li>
+<li>Added the property <a href="/properties/configuration/paths/#bdio-2-enabled">detect.bdio2.enabled</a>.</li>
+<li>Added the property <a href="/properties/detectors/pip/#pip-include-only-project-tree">detect.pip.only.project.tree</a>.</li>
+<li>Added the property <a href="/properties/detectors/bitbake/#bitbake-search-depth">detect.bitbake.search.depth</a>.</li>
+<li>Added the property <a href="/properties/detectors/bazel/#bazel-cquery-additional-options">detect.bazel.cquery.options</a>.</li>
+<li>Added the property <a href="/properties/detectors/docker/#docker-image-id">detect.docker.image.id</a>.</li>
+<li>Added the property <a href="/properties/detectors/docker/#platform-top-layer-id-advanced">detect.docker.platform.top.layer.id</a>.</li>
+<li>Added the property <a href="/properties/configuration/project/#bdio-aggregate-remediation-mode-advanced">detect.bom.aggregate.remediation.mode</a></li>
 </ul>
 <h3 id="changed-features_1">Changed features</h3>
 <ul>
 <li>Deprecated all Polaris-related properties.</li>
-<li>Added <a href="../advanced/includeexcludewildcards/">wildcard support</a> for several include/exclude list properties.</li>
+<li>Added <a href="/advanced/includeexcludewildcards/">wildcard support</a> for several include/exclude list properties.</li>
 <li>Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command. Since the yarn command is no longer executed, the detect.yarn.path property has been removed.</li>
 <li>Improved match accuracy for Bitbake projects by improving external ID generation for dependencies referenced using Git protocols, and dependencies referenced with an epoch and/or revision.</li>
 <li>Improved the reliability of the Bitbake detector by generating recipe-depends.dot and package-depends.dot files the source directory, instead of a temporary directory.</li>
