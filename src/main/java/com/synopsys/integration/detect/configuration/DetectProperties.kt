@@ -1405,6 +1405,16 @@ class DetectProperties {
         //#region Accessor for all properties
         val properties = values()
 
+        //Workaround for help. Need to have a category set but we are not using a builder and help doesn't have proper access.
+        // TODO - make better - jp
+        init {
+            properties.forEach {
+                if (it.getCategory() == null) {
+                    it.setCategory(DetectCategory.Simple);
+                }
+            }
+        }
+
         private fun values(): List<Property> {
             val clazz = DetectProperties::class
             val companionClass = clazz.companionObject!!
