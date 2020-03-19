@@ -63,7 +63,10 @@ class BlackDuckConfigFactory(private val blackDuckConnectionDetails: BlackDuckCo
 
         blackDuckServerConfigBuilder.setProperties(blackDuckConnectionDetails.blackduckProperties.entries)
 
-        if (blackDuckConnectionDetails.getBlackDuckUrl().isPresent && ProxyUtil.shouldIgnoreUrl(blackDuckConnectionDetails.getBlackDuckUrl().get(), connectionDetails.ignoredProxyHostPatterns, logger)) {
+        val shouldIgnore = blackDuckConnectionDetails.getBlackDuckUrl().map { blackduckUrl -> ProxyUtil.shouldIgnoreUrl(blackduckUrl, connectionDetails.ignoredProxyHostPatterns, logger) }
+        if (shouldIgnore.isPresent && shouldIgnore.get()) {
+            blackDuckServerConfigBuilder.proxyInfo = ProxyInfo.NO_PROXY_INFO
+        } else {
             blackDuckServerConfigBuilder.proxyInfo = connectionDetails.proxyInformation
         }
 
