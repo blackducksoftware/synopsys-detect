@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
@@ -199,7 +200,7 @@ public class GenerateDocsTask extends DefaultTask {
 
         final List<SimplePropertyTableGroup> simplePropertyTableData = new ArrayList<>();
         for (final SplitGroup splitGroupOption : splitGroupOptions) {
-            if (!splitGroupOption.getSimple().isEmpty()) {
+            if (splitGroupOption.getSimple().isEmpty()) {
                 continue;
             }
 
@@ -241,7 +242,13 @@ public class GenerateDocsTask extends DefaultTask {
 
         helpJson.getOptions().forEach(option -> {
             final String defaultSuperGroup = "Configuration";
-            final String superGroup = option.getSuperGroup().orElse(defaultSuperGroup);
+            final String rawSuperGroup = option.getSuperGroup().orElse("");
+            final String superGroup;
+            if (StringUtils.isBlank(rawSuperGroup)) {
+                superGroup = defaultSuperGroup;
+            } else {
+                superGroup = rawSuperGroup;
+            }
 
             if (lookup.containsKey(option.getGroup()) && !superGroup.equals(lookup.get(option.getGroup()))) {
                 throw new RuntimeException(String.format("The created detect help JSON had a key '%s' whose super key '%s' did not match a different options super key in the same key '%s'.",
