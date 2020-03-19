@@ -22,38 +22,95 @@
  */
 package com.synopsys.integration.detectable.detectables.maven.unit;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Assertions;
 
+import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractor;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
-import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
+import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
+import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
-public class MavenPomDetectableTest {
+public class MavenPomDetectableTest extends DetectableFunctionalTest {
     private static final String POM_FILENAME = "pom.xml";
 
-    @Test
-    public void testApplicable() {
+    public MavenPomDetectableTest() throws IOException {
+        super("mavenpom");
+    }
 
-        final MavenResolver mavenResolver = null;
-        final MavenCliExtractor mavenCliExtractor = null;
+    @Override
+    protected void setup() throws IOException {
+        addFile(Paths.get("pom.xml"));
 
-        final DetectableEnvironment environment = Mockito.mock(DetectableEnvironment.class);
-        final FileFinder fileFinder = Mockito.mock(FileFinder.class);
+        ExecutableOutput mavenDependencyTreeOutput = createStandardOutput(
+            "7275 [main] [INFO] --- maven-dependency-plugin:2.10:tree (default-cli) @ hub-teamcity-common ---",
+            "7450 [main] [INFO] com.blackducksoftware.integration:hub-teamcity-common:jar:3.2.0-SNAPSHOT",
+            "7509 [main] [INFO] +- com.blackducksoftware.integration:hub-common:jar:13.1.2:compile",
+            "7560 [main] [INFO] |  +- com.blackducksoftware.integration:hub-common-rest:jar:2.1.3:compile",
+            "7638 [main] [INFO] |  |  +- com.blackducksoftware.integration:integration-common:jar:6.0.2:compile",
+            "9623 [main] [INFO] +- junit:junit:jar:4.12:test",
+            "9868 [main] [INFO] |  \\- org.hamcrest:hamcrest-core:jar:1.3:test",
+            "10331 [main] [INFO] +- org.powermock:powermock-api-mockito:jar:1.6.6:test",
+            "10424 [main] [INFO] |  +- org.mockito:mockito-core:jar:1.10.19:test",
+            "10849 [main] [INFO] |  \\- org.powermock:powermock-api-mockito-common:jar:1.6.6:test",
+            "11063 [main] [INFO] |     \\- org.powermock:powermock-api-support:jar:1.6.6:test"
 
-        final File dir = new File(".");
-        Mockito.when(environment.getDirectory()).thenReturn(dir);
-        Mockito.when(fileFinder.findFile(dir, POM_FILENAME)).thenReturn(new File(POM_FILENAME));
+        );
+        addExecutableOutput(mavenDependencyTreeOutput, "maven", "test", "dependency:tree", "-T1");
+    }
 
-        final MavenPomDetectable detectable = new MavenPomDetectable(environment, fileFinder, mavenResolver, mavenCliExtractor, new MavenCliExtractorOptions("", "", "", "", ""));
+    @NotNull
+    @Override
+    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
+        class MavenPomResolverTest implements MavenResolver {
 
-        assertTrue(detectable.applicable().getPassed());
+            @Override
+            public File resolveMaven(final DetectableEnvironment environment) throws DetectableException {
+                return new File("maven");
+            }
+        }
+        return detectableFactory.createMavenPomDetectable(detectableEnvironment, new MavenPomResolverTest(), new MavenCliExtractorOptions("test", "", "", "", ""));
+    }
+
+    @Override
+    public void assertExtraction(@NotNull final Extraction extraction) {
+        Assertions.assertNotEquals(0, extraction.getCodeLocations().size(), "A code location should have been generated.");
+
+        final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.MAVEN, extraction.getCodeLocations().get(0).getDependencyGraph());
+        graphAssert.hasRootSize(3);
+
+        // ExternalIdFactory sets group for Maven external Ids
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        ExternalId junit = externalIdFactory.createMavenExternalId("junit", "junit", "4.12");
+        ExternalId powermockApiMockito = externalIdFactory.createMavenExternalId("org.powermock", "powermock-api-mockito", "1.6.6");
+        ExternalId hubCommon = externalIdFactory.createMavenExternalId("com.blackducksoftware.integration", "hub-common", "13.1.2");
+        ExternalId powermockApiMockitoCommon = externalIdFactory.createMavenExternalId("org.powermock", "powermock-api-mockito-common", "1.6.6");
+        ExternalId powermockApiSupport = externalIdFactory.createMavenExternalId("org.powermock", "powermock-api-support", "1.6.6");
+        ExternalId hamcrestCore = externalIdFactory.createMavenExternalId("org.hamcrest", "hamcrest-core", "1.3");
+        ExternalId hubCommonRest = externalIdFactory.createMavenExternalId("com.blackducksoftware.integration", "hub-common-rest", "2.1.3");
+        ExternalId mockitoCore = externalIdFactory.createMavenExternalId("org.mockito", "mockito-core", "1.10.19");
+        ExternalId integrationCommon = externalIdFactory.createMavenExternalId("com.blackducksoftware.integration", "integration-common", "6.0.2");
+
+        graphAssert.hasRootDependency(junit);
+        graphAssert.hasRootDependency(powermockApiMockito);
+        graphAssert.hasRootDependency(hubCommon);
+
+        graphAssert.hasParentChildRelationship(powermockApiMockitoCommon, powermockApiSupport);
+        graphAssert.hasParentChildRelationship(junit, hamcrestCore);
+        graphAssert.hasParentChildRelationship(powermockApiMockito, powermockApiMockitoCommon);
+        graphAssert.hasParentChildRelationship(powermockApiMockito, mockitoCore);
+        graphAssert.hasParentChildRelationship(hubCommonRest, integrationCommon);
+        graphAssert.hasParentChildRelationship(hubCommon, hubCommonRest);
     }
 }
