@@ -20,22 +20,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.docs.copied
+package com.synopsys.integration.detect.docs.pages;
 
-import java.util.ArrayList
+import java.util.List;
 
-//Copied from detect-configuration
-class HelpJsonDetector {
-    var detectableLanguage = ""
-    var detectableRequirementsMarkdown = ""
-    var detectableForge = ""
-    var detectorType = ""
-    var detectorName = ""
-    var detectorDescriptiveName = ""
-    var maxDepth = 0
-    var nestable = false
-    var nestInvisible = false
+import com.synopsys.integration.detect.docs.model.DeprecatedPropertyTableGroup;
 
-    var yieldsTo: List<String> = ArrayList()
-    var fallbackTo = ""
+public class DeprecatedPropertyTablePage {
+    private final List<DeprecatedPropertyTableGroup> groups;
+
+    public DeprecatedPropertyTablePage(final List<DeprecatedPropertyTableGroup> groups) {
+        this.groups = groups;
+    }
+
+    public List<DeprecatedPropertyTableGroup> getGroups() {
+        return groups;
+    }
 }

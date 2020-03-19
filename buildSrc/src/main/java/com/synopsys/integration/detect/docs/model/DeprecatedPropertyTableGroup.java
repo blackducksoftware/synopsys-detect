@@ -20,27 +20,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.docs.markdown
+package com.synopsys.integration.detect.docs.model;
 
-import org.apache.commons.lang3.StringUtils
+import java.util.List;
 
-//Escapes using a backslash all supported characters in a markdown text literal based on: https://daringfireball.net/projects/markdown/syntax#backslash
-class MarkdownEscapeUtils {
-    companion object {
-        private val characters: List<String>;
+import com.synopsys.integration.detect.docs.copied.HelpJsonOption;
 
-        init {
-            characters = "\\`*_{}[]()#+-.!".toCharArray()
-                    .map { c -> c.toString() }
-                    .toList()
-        }
+public class DeprecatedPropertyTableGroup {
+    private final String groupName;
+    private final String location;
+    private final List<HelpJsonOption> options;
 
-        fun escape(text: String) : String {
-            var cleanedText = text;
-            for (c in characters) {
-                cleanedText = StringUtils.replace(cleanedText, c, "\\" + c);
-            }
-            return cleanedText;
-        }
+    public DeprecatedPropertyTableGroup(final String groupName, final String location, final List<HelpJsonOption> options) {
+        this.groupName = groupName;
+        this.location = location;
+        this.options = options;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public List<HelpJsonOption> getOptions() {
+        return options;
     }
 }

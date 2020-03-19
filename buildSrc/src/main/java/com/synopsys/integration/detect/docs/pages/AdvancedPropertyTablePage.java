@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * buildSrc
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,34 +20,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.help.json;
+package com.synopsys.integration.detect.docs.pages;
 
-public class HelpJsonExitCode {
-    private String exitCodeKey = "";
-    private String exitCodeDescription = "";
-    private Integer exitCodeValue = 0;
+import java.util.List;
 
-    public Integer getExitCodeValue() {
-        return exitCodeValue;
+import com.synopsys.integration.detect.docs.model.SplitGroup;
+
+public class AdvancedPropertyTablePage {
+    private final List<SplitGroup> groups;
+
+    public AdvancedPropertyTablePage(final List<SplitGroup> groups) {
+        this.groups = groups;
     }
 
-    public void setExitCodeValue(final Integer exitCodeValue) {
-        this.exitCodeValue = exitCodeValue;
-    }
-
-    public String getExitCodeKey() {
-        return exitCodeKey;
-    }
-
-    public void setExitCodeKey(final String exitCodeKey) {
-        this.exitCodeKey = exitCodeKey;
-    }
-
-    public String getExitCodeDescription() {
-        return exitCodeDescription;
-    }
-
-    public void setExitCodeDescription(final String exitCodeDescription) {
-        this.exitCodeDescription = exitCodeDescription;
+    public List<SplitGroup> getGroups() {
+        return groups;
     }
 }

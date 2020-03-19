@@ -20,14 +20,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.docs.copied
+package com.synopsys.integration.detect.docs.pages;
 
-import java.util.ArrayList
+public class IndexPage {
+    private final String version;
 
-//Copied from detect-configuration
-class HelpJsonData {
-    val exitCodes: List<HelpJsonExitCode> = ArrayList()
-    var buildDetectors: List<HelpJsonDetector> = ArrayList()
-    var buildlessDetectors: List<HelpJsonDetector> = ArrayList()
-    val options: List<HelpJsonOption> = ArrayList()
+    public IndexPage(final String version) {
+        this.version = version;
+    }
+
+    public String getVersion() {
+        return version;
+    }
 }

@@ -20,33 +20,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.docs.copied
-
-import java.util.ArrayList
+package com.synopsys.integration.detect.docs.copied;
 
 //Copied from detect-configuration
-class HelpJsonOption {
-    var propertyName = ""
-    var propertyKey = ""
-    var propertyType = ""
-    var defaultValue: String? = ""
-    var addedInVersion = ""
-    var category = ""
-    var group = ""
-    var superGroup:String? = ""
-    var additionalGroups: List<String> = ArrayList()
-    var description = ""
-    var detailedDescription = ""
-    var deprecated = false
-    var deprecatedDescription = ""
-    var deprecatedFailInVersion = ""
-    var deprecatedRemoveInVersion = ""
-    var strictValues = false
-    var caseSensitiveValues = false
-    var hasAcceptableValues = false
-    var isCommaSeparatedList = false
-    var acceptableValues: List<String> = ArrayList()
+public class HelpJsonExitCode {
+    private String exitCodeKey = "";
+    private String exitCodeDescription = "";
+    private Integer exitCodeValue = 0;
 
-    //This is added for use in the markdown, it does not actually exist on the object.
-    var location = ""
+    public Integer getExitCodeValue() {
+        return exitCodeValue;
+    }
+
+    public void setExitCodeValue(final Integer exitCodeValue) {
+        this.exitCodeValue = exitCodeValue;
+    }
+
+    public String getExitCodeKey() {
+        return exitCodeKey;
+    }
+
+    public void setExitCodeKey(final String exitCodeKey) {
+        this.exitCodeKey = exitCodeKey;
+    }
+
+    public String getExitCodeDescription() {
+        return exitCodeDescription;
+    }
+
+    public void setExitCodeDescription(final String exitCodeDescription) {
+        this.exitCodeDescription = exitCodeDescription;
+    }
 }

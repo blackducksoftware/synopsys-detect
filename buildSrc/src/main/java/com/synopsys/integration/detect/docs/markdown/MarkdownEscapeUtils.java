@@ -20,13 +20,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.docs.markdown
+package com.synopsys.integration.detect.docs.markdown;
 
-import freemarker.core.CommonMarkupOutputFormat
-import freemarker.core.CommonTemplateMarkupOutputModel
+import org.apache.commons.lang3.StringUtils;
 
-class MarkdownOutputModel(plainTextContent: String?, markupContent: String?) : CommonTemplateMarkupOutputModel<MarkdownOutputModel>(plainTextContent, markupContent) {
-    override fun getOutputFormat(): CommonMarkupOutputFormat<MarkdownOutputModel> {
-        return MarkdownOutputFormat.INSTANCE;
+// Escapes using a backslash all supported characters in a markdown text literal based on: https://daringfireball.net/projects/markdown/syntax#backslash
+class MarkdownEscapeUtils {
+    private MarkdownEscapeUtils() { }
+
+    private static final char[] characters = "\\`*_{}[]()#+-.!".toCharArray();
+
+    public static String escape(final String text) {
+        String cleanedText = text;
+        for (final char character : characters) {
+            cleanedText = StringUtils.replace(cleanedText, String.valueOf(character), "\\" + character);
+        }
+        return cleanedText;
     }
 }

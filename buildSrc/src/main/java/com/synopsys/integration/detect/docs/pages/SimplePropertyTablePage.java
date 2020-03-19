@@ -20,11 +20,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.docs.copied
+package com.synopsys.integration.detect.docs.pages;
 
-//Copied from detect-configuration
-class HelpJsonExitCode {
-    var exitCodeKey = ""
-    var exitCodeDescription = ""
-    var exitCodeValue = 0
+import java.util.List;
+
+import com.synopsys.integration.detect.docs.model.SimplePropertyTableGroup;
+
+public class SimplePropertyTablePage {
+    public final List<SimplePropertyTableGroup> groups;
+
+    public SimplePropertyTablePage(final List<SimplePropertyTableGroup> groups) {
+        this.groups = groups;
+    }
+
+    public List<SimplePropertyTableGroup> getGroups() {
+        return groups;
+    }
 }

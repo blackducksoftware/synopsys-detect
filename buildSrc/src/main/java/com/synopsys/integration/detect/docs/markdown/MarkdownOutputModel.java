@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * buildSrc
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,34 +20,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.help.json;
+package com.synopsys.integration.detect.docs.markdown;
 
-public class HelpJsonExitCode {
-    private String exitCodeKey = "";
-    private String exitCodeDescription = "";
-    private Integer exitCodeValue = 0;
+import org.jetbrains.annotations.NotNull;
 
-    public Integer getExitCodeValue() {
-        return exitCodeValue;
+import freemarker.core.CommonMarkupOutputFormat;
+import freemarker.core.CommonTemplateMarkupOutputModel;
+
+class MarkdownOutputModel extends CommonTemplateMarkupOutputModel<MarkdownOutputModel> {
+    /**
+     * A least one of the parameters must be non-{@code null}!
+     */
+    protected MarkdownOutputModel(@NotNull final String plainTextContent, @NotNull final String markupContent) {
+        super(plainTextContent, markupContent);
     }
 
-    public void setExitCodeValue(final Integer exitCodeValue) {
-        this.exitCodeValue = exitCodeValue;
-    }
-
-    public String getExitCodeKey() {
-        return exitCodeKey;
-    }
-
-    public void setExitCodeKey(final String exitCodeKey) {
-        this.exitCodeKey = exitCodeKey;
-    }
-
-    public String getExitCodeDescription() {
-        return exitCodeDescription;
-    }
-
-    public void setExitCodeDescription(final String exitCodeDescription) {
-        this.exitCodeDescription = exitCodeDescription;
+    @Override
+    public CommonMarkupOutputFormat<MarkdownOutputModel> getOutputFormat() {
+        return MarkdownOutputFormat.INSTANCE;
     }
 }

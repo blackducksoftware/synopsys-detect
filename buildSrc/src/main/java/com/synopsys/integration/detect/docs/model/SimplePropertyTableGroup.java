@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * buildSrc
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,34 +20,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.help.json;
+package com.synopsys.integration.detect.docs.model;
 
-public class HelpJsonExitCode {
-    private String exitCodeKey = "";
-    private String exitCodeDescription = "";
-    private Integer exitCodeValue = 0;
+import java.util.List;
 
-    public Integer getExitCodeValue() {
-        return exitCodeValue;
+import com.synopsys.integration.detect.docs.copied.HelpJsonOption;
+
+public class SimplePropertyTableGroup {
+    private final String groupName;
+    private final String location;
+    private final List<HelpJsonOption> options;
+
+    public SimplePropertyTableGroup(final String groupName, final String location, final List<HelpJsonOption> options) {
+        this.groupName = groupName;
+        this.location = location;
+        this.options = options;
     }
 
-    public void setExitCodeValue(final Integer exitCodeValue) {
-        this.exitCodeValue = exitCodeValue;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public String getExitCodeKey() {
-        return exitCodeKey;
+    public String getLocation() {
+        return location;
     }
 
-    public void setExitCodeKey(final String exitCodeKey) {
-        this.exitCodeKey = exitCodeKey;
-    }
-
-    public String getExitCodeDescription() {
-        return exitCodeDescription;
-    }
-
-    public void setExitCodeDescription(final String exitCodeDescription) {
-        this.exitCodeDescription = exitCodeDescription;
+    public List<HelpJsonOption> getOptions() {
+        return options;
     }
 }
