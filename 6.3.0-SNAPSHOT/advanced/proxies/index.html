@@ -1284,7 +1284,7 @@
               
                 
                 
-                <h1 id="running-behind-a-proxy">Running behind a proxy</h1>
+                <h1 id="running-behind-a-proxy">Running behind a proxy<a class="headerlink" href="#running-behind-a-proxy" title="Permanent link">#</a></h1>
 <p>When running behind a proxy:</p>
 <ol>
 <li>The script (detect.sh or detect.ps1) requires proxy details to do a version
@@ -1292,7 +1292,7 @@ check on, and/or download the Synopsys Detect .jar file.</li>
 <li>Synopsys Detect; in other words, the code in the .jar file, requires proxy details to download inspectors and
 connect to Black Duck and Polaris.</li>
 </ol>
-<h2 id="providing-proxy-details-to-synopsys-detect">Providing proxy details to Synopsys Detect</h2>
+<h2 id="providing-proxy-details-to-synopsys-detect">Providing proxy details to Synopsys Detect<a class="headerlink" href="#providing-proxy-details-to-synopsys-detect" title="Permanent link">#</a></h2>
 <p>Synopsys Detect looks for proxy details in the properties whose names start with blackduck.proxy,
 including:</p>
 <ul>
@@ -1301,8 +1301,8 @@ including:</p>
 <li>blackduck.proxy.username (proxy username)</li>
 <li>blackduck.proxy.password (proxy password)</li>
 </ul>
-<p>Refer to <a href="/properties/configuration/proxy/">properties</a> for more information.</p>
-<h2 id="providing-proxy-details-to-detectsh">Providing proxy details to detect.sh</h2>
+<p>Refer to <a href="../../properties/configuration/proxy/">properties</a> for more information.</p>
+<h2 id="providing-proxy-details-to-detectsh">Providing proxy details to detect.sh<a class="headerlink" href="#providing-proxy-details-to-detectsh" title="Permanent link">#</a></h2>
 <p>The curl commands executed by detect.sh to do a version check on, and/or download the Synopsys Detect
 .jar file, require additional command line options when run behind a proxy. For more information
 on curl options, refer to the <a href="https://curl.haxx.se/docs/manpage.html">curl documentation</a>.</p>
@@ -1314,7 +1314,7 @@ detect.sh. For example:</p>
 </code></pre>
 <p>When using detect.sh to execute Synopsys Detect you must set proxy properties
 for Synopsys Detect as previously described.</p>
-<h2 id="providing-proxy-details-to-detectps1">Providing proxy details to detect.ps1</h2>
+<h2 id="providing-proxy-details-to-detectps1">Providing proxy details to detect.ps1<a class="headerlink" href="#providing-proxy-details-to-detectps1" title="Permanent link">#</a></h2>
 <p>detect.ps1 derives proxy details from environment variables
 whose names match the Synopsys Detect proxy property names.
 Configuring detect.ps1 for your proxy involves

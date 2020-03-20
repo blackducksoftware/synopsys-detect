@@ -1079,8 +1079,29 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#maven-build-command-advanced" class="md-nav__link">
-    Maven Build Command (Advanced)
+  <a href="#maven-build-command" class="md-nav__link">
+    Maven Build Command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependency-scope-excluded" class="md-nav__link">
+    Dependency Scope Excluded
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependency-scope-included" class="md-nav__link">
+    Dependency Scope Included
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maven-executable" class="md-nav__link">
+    Maven Executable
   </a>
   
 </li>
@@ -1093,13 +1114,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-excluded-advanced" class="md-nav__link">
-    Dependency Scope Excluded (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#maven-modules-included-advanced" class="md-nav__link">
     Maven Modules Included (Advanced)
   </a>
@@ -1107,22 +1121,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-included-advanced" class="md-nav__link">
-    Dependency Scope Included (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#maven-include-plugins-advanced" class="md-nav__link">
     Maven Include Plugins (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#maven-executable-advanced" class="md-nav__link">
-    Maven Executable (Advanced)
   </a>
   
 </li>
@@ -1284,8 +1284,29 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#maven-build-command-advanced" class="md-nav__link">
-    Maven Build Command (Advanced)
+  <a href="#maven-build-command" class="md-nav__link">
+    Maven Build Command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependency-scope-excluded" class="md-nav__link">
+    Dependency Scope Excluded
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dependency-scope-included" class="md-nav__link">
+    Dependency Scope Included
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maven-executable" class="md-nav__link">
+    Maven Executable
   </a>
   
 </li>
@@ -1298,13 +1319,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-excluded-advanced" class="md-nav__link">
-    Dependency Scope Excluded (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#maven-modules-included-advanced" class="md-nav__link">
     Maven Modules Included (Advanced)
   </a>
@@ -1312,22 +1326,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-included-advanced" class="md-nav__link">
-    Dependency Scope Included (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#maven-include-plugins-advanced" class="md-nav__link">
     Maven Include Plugins (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#maven-executable-advanced" class="md-nav__link">
-    Maven Executable (Advanced)
   </a>
   
 </li>
@@ -1356,9 +1356,9 @@
               
                 
                 
-                <h1 id="maven">maven</h1>
-<h2 id="maven-build-command-advanced">Maven Build Command (Advanced)</h2>
-<pre><code>--detect.maven.build.command
+                <h1 id="maven">maven<a class="headerlink" href="#maven" title="Permanent link">#</a></h1>
+<h2 id="maven-build-command">Maven Build Command<a class="headerlink" href="#maven-build-command" title="Permanent link">#</a></h2>
+<pre><code>--detect.maven.build.command=Optional.empty
 </code></pre>
 
 <p>Maven command line arguments to add to the mvn/mvnw command line.</p>
@@ -1381,7 +1381,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional.empty</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1401,52 +1401,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="maven-modules-excluded-advanced">Maven Modules Excluded (Advanced)</h2>
-<pre><code>--detect.maven.excluded.modules
-</code></pre>
-
-<p>A comma-separated list of Maven modules (sub-projects) to exclude.</p>
-<p>As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="dependency-scope-excluded-advanced">Dependency Scope Excluded (Advanced)</h2>
-<pre><code>--detect.maven.excluded.scopes
+<h2 id="dependency-scope-excluded">Dependency Scope Excluded<a class="headerlink" href="#dependency-scope-excluded" title="Permanent link">#</a></h2>
+<pre><code>--detect.maven.excluded.scopes=Optional.empty
 </code></pre>
 
 <p>A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).</p>
@@ -1469,7 +1425,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional.empty</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1489,52 +1445,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="maven-modules-included-advanced">Maven Modules Included (Advanced)</h2>
-<pre><code>--detect.maven.included.modules
-</code></pre>
-
-<p>A comma-separated list of Maven modules (sub-projects) to include.</p>
-<p>As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="dependency-scope-included-advanced">Dependency Scope Included (Advanced)</h2>
-<pre><code>--detect.maven.included.scopes
+<h2 id="dependency-scope-included">Dependency Scope Included<a class="headerlink" href="#dependency-scope-included" title="Permanent link">#</a></h2>
+<pre><code>--detect.maven.included.scopes=Optional.empty
 </code></pre>
 
 <p>A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).</p>
@@ -1557,7 +1469,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional.empty</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1577,51 +1489,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="maven-include-plugins-advanced">Maven Include Plugins (Advanced)</h2>
-<pre><code>--detect.maven.include.plugins=false
-</code></pre>
-
-<p>Whether or not detect will include the plugins section when parsing a pom.xml.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>5.6.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>false</td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="maven-executable-advanced">Maven Executable (Advanced)</h2>
-<pre><code>--detect.maven.path
+<h2 id="maven-executable">Maven Executable<a class="headerlink" href="#maven-executable" title="Permanent link">#</a></h2>
+<pre><code>--detect.maven.path=Optional.empty
 </code></pre>
 
 <p>The path to the Maven executable (mvn or mvnw).</p>
@@ -1644,7 +1513,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional.empty</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1664,8 +1533,139 @@
 </tr>
 </tbody>
 </table>
-<h2 id="dependency-scope-included-deprecated">Dependency Scope Included (Deprecated)</h2>
-<pre><code>--detect.maven.scope
+<h2 id="maven-modules-excluded-advanced">Maven Modules Excluded (Advanced)<a class="headerlink" href="#maven-modules-excluded-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.maven.excluded.modules=Optional.empty
+</code></pre>
+
+<p>A comma-separated list of Maven modules (sub-projects) to exclude.</p>
+<p>As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>Optional.empty</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="maven-modules-included-advanced">Maven Modules Included (Advanced)<a class="headerlink" href="#maven-modules-included-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.maven.included.modules=Optional.empty
+</code></pre>
+
+<p>A comma-separated list of Maven modules (sub-projects) to include.</p>
+<p>As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>Optional.empty</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="maven-include-plugins-advanced">Maven Include Plugins (Advanced)<a class="headerlink" href="#maven-include-plugins-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.maven.include.plugins=Optional[false]
+</code></pre>
+
+<p>Whether or not detect will include the plugins section when parsing a pom.xml.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>5.6.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>Optional[false]</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="dependency-scope-included-deprecated">Dependency Scope Included (Deprecated)<a class="headerlink" href="#dependency-scope-included-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.maven.scope=Optional.empty
 </code></pre>
 
 <p>The name of a Maven scope. Output will be limited to dependencies with this scope.</p>
@@ -1689,7 +1689,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional.empty</td>
 </tr>
 <tr>
 <td>Comma Separated</td>

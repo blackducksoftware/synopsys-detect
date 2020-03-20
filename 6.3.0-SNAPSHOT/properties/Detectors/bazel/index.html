@@ -983,29 +983,29 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bazel-cquery-additional-options-advanced" class="md-nav__link">
-    Bazel cquery additional options (Advanced)
+  <a href="#bazel-cquery-additional-options" class="md-nav__link">
+    Bazel cquery additional options
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-workspace-external-dependency-rule-advanced" class="md-nav__link">
-    Bazel workspace external dependency rule (Advanced)
+  <a href="#bazel-workspace-external-dependency-rule" class="md-nav__link">
+    Bazel workspace external dependency rule
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-executable-advanced" class="md-nav__link">
-    Bazel Executable (Advanced)
+  <a href="#bazel-executable" class="md-nav__link">
+    Bazel Executable
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-target-advanced" class="md-nav__link">
-    Bazel Target (Advanced)
+  <a href="#bazel-target" class="md-nav__link">
+    Bazel Target
   </a>
   
 </li>
@@ -1256,29 +1256,29 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bazel-cquery-additional-options-advanced" class="md-nav__link">
-    Bazel cquery additional options (Advanced)
+  <a href="#bazel-cquery-additional-options" class="md-nav__link">
+    Bazel cquery additional options
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-workspace-external-dependency-rule-advanced" class="md-nav__link">
-    Bazel workspace external dependency rule (Advanced)
+  <a href="#bazel-workspace-external-dependency-rule" class="md-nav__link">
+    Bazel workspace external dependency rule
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-executable-advanced" class="md-nav__link">
-    Bazel Executable (Advanced)
+  <a href="#bazel-executable" class="md-nav__link">
+    Bazel Executable
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bazel-target-advanced" class="md-nav__link">
-    Bazel Target (Advanced)
+  <a href="#bazel-target" class="md-nav__link">
+    Bazel Target
   </a>
   
 </li>
@@ -1300,9 +1300,9 @@
               
                 
                 
-                <h1 id="bazel">bazel</h1>
-<h2 id="bazel-cquery-additional-options-advanced">Bazel cquery additional options (Advanced)</h2>
-<pre><code>--detect.bazel.cquery.options
+                <h1 id="bazel">bazel<a class="headerlink" href="#bazel" title="Permanent link">#</a></h1>
+<h2 id="bazel-cquery-additional-options">Bazel cquery additional options<a class="headerlink" href="#bazel-cquery-additional-options" title="Permanent link">#</a></h2>
+<pre><code>--detect.bazel.cquery.options=Optional[]
 </code></pre>
 
 <p>A comma-separated list of additional options to pass to the bazel cquery command.</p>
@@ -1324,7 +1324,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional[]</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1344,7 +1344,7 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bazel-workspace-external-dependency-rule-advanced">Bazel workspace external dependency rule (Advanced)</h2>
+<h2 id="bazel-workspace-external-dependency-rule">Bazel workspace external dependency rule<a class="headerlink" href="#bazel-workspace-external-dependency-rule" title="Permanent link">#</a></h2>
 <pre><code>--detect.bazel.dependency.type=MAVEN_JAR,MAVEN_INSTALL,UNSPECIFIED 
 </code></pre>
 
@@ -1367,7 +1367,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>UNSPECIFIED</td>
+<td>Optional[UNSPECIFIED]</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1387,8 +1387,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bazel-executable-advanced">Bazel Executable (Advanced)</h2>
-<pre><code>--detect.bazel.path
+<h2 id="bazel-executable">Bazel Executable<a class="headerlink" href="#bazel-executable" title="Permanent link">#</a></h2>
+<pre><code>--detect.bazel.path=Optional.empty
 </code></pre>
 
 <p>The path to the Bazel executable.</p>
@@ -1410,7 +1410,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional.empty</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1430,8 +1430,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bazel-target-advanced">Bazel Target (Advanced)</h2>
-<pre><code>--detect.bazel.target
+<h2 id="bazel-target">Bazel Target<a class="headerlink" href="#bazel-target" title="Permanent link">#</a></h2>
+<pre><code>--detect.bazel.target=Optional.empty
 </code></pre>
 
 <p>The Bazel target (for example, //foo:foolib) for which dependencies are collected. For Detect to run Bazel, this property must be set.</p>
@@ -1453,7 +1453,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional.empty</td>
 </tr>
 <tr>
 <td>Comma Separated</td>

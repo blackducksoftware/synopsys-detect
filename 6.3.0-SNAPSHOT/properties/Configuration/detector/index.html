@@ -839,6 +839,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#required-detect-types" class="md-nav__link">
+    Required Detect Types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#detector-types-excluded-advanced" class="md-nav__link">
     Detector Types Excluded (Advanced)
   </a>
@@ -848,13 +855,6 @@
         <li class="md-nav__item">
   <a href="#detector-types-included-advanced" class="md-nav__link">
     Detector Types Included (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#required-detect-types-advanced" class="md-nav__link">
-    Required Detect Types (Advanced)
   </a>
   
 </li>
@@ -1270,6 +1270,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#required-detect-types" class="md-nav__link">
+    Required Detect Types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#detector-types-excluded-advanced" class="md-nav__link">
     Detector Types Excluded (Advanced)
   </a>
@@ -1279,13 +1286,6 @@
         <li class="md-nav__item">
   <a href="#detector-types-included-advanced" class="md-nav__link">
     Detector Types Included (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#required-detect-types-advanced" class="md-nav__link">
-    Required Detect Types (Advanced)
   </a>
   
 </li>
@@ -1328,96 +1328,8 @@
               
                 
                 
-                <h1 id="detector">detector</h1>
-<h2 id="detector-types-excluded-advanced">Detector Types Excluded (Advanced)</h2>
-<pre><code>--detect.excluded.detector.types=ALL,NONE,BITBAKE,COCOAPODS,CONDA,CPAN,CRAN,GIT,GO_MOD,GO_DEP,GO_VNDR,GO_VENDOR,GO_GRADLE,GRADLE,HEX,MAVEN,NPM,NUGET,PACKAGIST,PEAR,PIP,RUBYGEMS,SBT,SWIFT,YARN,CLANG 
-</code></pre>
-
-<p>By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify "ALL". Exclusion rules always win.</p>
-<p>If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>DetectorType List</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>ALL, NONE, BITBAKE, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>Yes</td>
-</tr>
-</tbody>
-</table>
-<h2 id="detector-types-included-advanced">Detector Types Included (Advanced)</h2>
-<pre><code>--detect.included.detector.types=ALL,NONE,BITBAKE,COCOAPODS,CONDA,CPAN,CRAN,GIT,GO_MOD,GO_DEP,GO_VNDR,GO_VENDOR,GO_GRADLE,GRADLE,HEX,MAVEN,NPM,NUGET,PACKAGIST,PEAR,PIP,RUBYGEMS,SBT,SWIFT,YARN,CLANG 
-</code></pre>
-
-<p>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.</p>
-<p>If you want to limit Detect to a subset of its detectors, use this property to specify that subset.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>DetectorType List</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>ALL, NONE, BITBAKE, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>Yes</td>
-</tr>
-</tbody>
-</table>
-<h2 id="required-detect-types-advanced">Required Detect Types (Advanced)</h2>
+                <h1 id="detector">detector<a class="headerlink" href="#detector" title="Permanent link">#</a></h1>
+<h2 id="required-detect-types">Required Detect Types<a class="headerlink" href="#required-detect-types" title="Permanent link">#</a></h2>
 <pre><code>--detect.required.detector.types=BITBAKE,COCOAPODS,CONDA,CPAN,CRAN,GIT,GO_MOD,GO_DEP,GO_VNDR,GO_VENDOR,GO_GRADLE,GRADLE,HEX,MAVEN,NPM,NUGET,PACKAGIST,PEAR,PIP,RUBYGEMS,SBT,SWIFT,YARN,CLANG 
 </code></pre>
 
@@ -1441,7 +1353,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional[]</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1461,8 +1373,96 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-excluded-bom-tool-types-deprecated">Detect Excluded Bom Tool Types (Deprecated)</h2>
-<pre><code>--detect.excluded.bom.tool.types
+<h2 id="detector-types-excluded-advanced">Detector Types Excluded (Advanced)<a class="headerlink" href="#detector-types-excluded-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.excluded.detector.types=ALL,NONE,BITBAKE,COCOAPODS,CONDA,CPAN,CRAN,GIT,GO_MOD,GO_DEP,GO_VNDR,GO_VENDOR,GO_GRADLE,GRADLE,HEX,MAVEN,NPM,NUGET,PACKAGIST,PEAR,PIP,RUBYGEMS,SBT,SWIFT,YARN,CLANG 
+</code></pre>
+
+<p>By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify "ALL". Exclusion rules always win.</p>
+<p>If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>DetectorType List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>Optional[]</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>ALL, NONE, BITBAKE, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detector-types-included-advanced">Detector Types Included (Advanced)<a class="headerlink" href="#detector-types-included-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.included.detector.types=ALL,NONE,BITBAKE,COCOAPODS,CONDA,CPAN,CRAN,GIT,GO_MOD,GO_DEP,GO_VNDR,GO_VENDOR,GO_GRADLE,GRADLE,HEX,MAVEN,NPM,NUGET,PACKAGIST,PEAR,PIP,RUBYGEMS,SBT,SWIFT,YARN,CLANG 
+</code></pre>
+
+<p>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.</p>
+<p>If you want to limit Detect to a subset of its detectors, use this property to specify that subset.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>DetectorType List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>Optional[]</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>ALL, NONE, BITBAKE, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-excluded-bom-tool-types-deprecated">Detect Excluded Bom Tool Types (Deprecated)<a class="headerlink" href="#detect-excluded-bom-tool-types-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.excluded.bom.tool.types=Optional.empty
 </code></pre>
 
 <p>By default, all tools will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all tools, specify "ALL". Exclusion rules always win.</p>
@@ -1485,7 +1485,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional.empty</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1505,8 +1505,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-included-bom-tool-types-deprecated">Detect Included Bom Tool Types (Deprecated)</h2>
-<pre><code>--detect.included.bom.tool.types
+<h2 id="detect-included-bom-tool-types-deprecated">Detect Included Bom Tool Types (Deprecated)<a class="headerlink" href="#detect-included-bom-tool-types-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.included.bom.tool.types=Optional.empty
 </code></pre>
 
 <p>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.</p>
@@ -1529,7 +1529,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional.empty</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1549,8 +1549,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-required-bom-tool-types-deprecated">Detect Required Bom Tool Types (Deprecated)</h2>
-<pre><code>--detect.required.bom.tool.types
+<h2 id="detect-required-bom-tool-types-deprecated">Detect Required Bom Tool Types (Deprecated)<a class="headerlink" href="#detect-required-bom-tool-types-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.required.bom.tool.types=Optional.empty
 </code></pre>
 
 <p>If set, Detect will fail if it does not find the bom tool types supplied here.</p>
@@ -1573,7 +1573,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional.empty</td>
 </tr>
 <tr>
 <td>Comma Separated</td>

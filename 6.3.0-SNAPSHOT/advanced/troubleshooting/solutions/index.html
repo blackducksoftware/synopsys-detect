@@ -1638,11 +1638,11 @@
               
                 
                 
-                <h1 id="solutions-to-common-problems">Solutions to common problems</h1>
-<h2 id="detect_source-was-not-set-or-computed-correctly">DETECT_SOURCE was not set or computed correctly</h2>
-<h3 id="symptom">Symptom</h3>
+                <h1 id="solutions-to-common-problems">Solutions to common problems<a class="headerlink" href="#solutions-to-common-problems" title="Permanent link">#</a></h1>
+<h2 id="detect_source-was-not-set-or-computed-correctly">DETECT_SOURCE was not set or computed correctly<a class="headerlink" href="#detect_source-was-not-set-or-computed-correctly" title="Permanent link">#</a></h2>
+<h3 id="symptom">Symptom<a class="headerlink" href="#symptom" title="Permanent link">#</a></h3>
 <p>detect.sh fails with: DETECT_SOURCE was not set or computed correctly, please check your configuration and environment.</p>
-<h3 id="possible-cause">Possible cause</h3>
+<h3 id="possible-cause">Possible cause<a class="headerlink" href="#possible-cause" title="Permanent link">#</a></h3>
 <p>detect.sh is trying to execute this command:</p>
 <pre><code>curl --silent --header \&quot;X-Result-Detail: info\&quot; https://sig-repo.synopsys.com/api/storage/bds-integrations-release/com/synopsys/integration/synopsys-detect?properties=DETECT_LATEST
 </code></pre>
@@ -1660,58 +1660,58 @@
 <pre><code>DETECT_SOURCE was not set or computed correctly, please check your configuration and environment.
 </code></pre>
 
-<h3 id="solution">Solution</h3>
+<h3 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">#</a></h3>
 <p>If the curl command described above does not successfully return a value for property DETECT_LATEST, you must determine why, and make the changes necessary so that curl command works.</p>
-<h2 id="synopsys-detect-succeeds-but-the-results-are-incomplete-because-package-managers-or-sub-projects-were-overlooked">Synopsys Detect succeeds, but the results are incomplete because package managers or sub-projects were overlooked</h2>
-<h3 id="symptom_1">Symptom</h3>
+<h2 id="synopsys-detect-succeeds-but-the-results-are-incomplete-because-package-managers-or-sub-projects-were-overlooked">Synopsys Detect succeeds, but the results are incomplete because package managers or sub-projects were overlooked<a class="headerlink" href="#synopsys-detect-succeeds-but-the-results-are-incomplete-because-package-managers-or-sub-projects-were-overlooked" title="Permanent link">#</a></h2>
+<h3 id="symptom_1">Symptom<a class="headerlink" href="#symptom_1" title="Permanent link">#</a></h3>
 <p>In this scenario, everything succeeds, but many or all components are missed. Examining the log shows that
 package managers were not recognized and/or sub-projects were overlooked.</p>
-<h3 id="possible-cause_1">Possible cause</h3>
+<h3 id="possible-cause_1">Possible cause<a class="headerlink" href="#possible-cause_1" title="Permanent link">#</a></h3>
 <p>The detector search depth needs to be increased. The default value (0) limits the search for package manager files to the project directory. If project manager files
 are located in subdirectories and/or there are sub-projects, this depth should be increased to enable Synopsys Detect to find the relevant files, so it
 will run the appropriate detector(s).</p>
-<p>See <a href="/properties/configuration/paths/#detector-search-depth">detector search depth</a> for more details.</p>
-<h2 id="docker-inspector-error-fails-after-logging-the-black-duck-url-must-be-specified">Docker Inspector error fails after logging: "The Black Duck url must be specified"</h2>
-<h3 id="symptom_2">Symptom</h3>
+<p>See <a href="../../../properties/configuration/paths/#detector-search-depth/">detector search depth</a> for more details.</p>
+<h2 id="docker-inspector-error-fails-after-logging-the-black-duck-url-must-be-specified">Docker Inspector error fails after logging: "The Black Duck url must be specified"<a class="headerlink" href="#docker-inspector-error-fails-after-logging-the-black-duck-url-must-be-specified" title="Permanent link">#</a></h2>
+<h3 id="symptom_2">Symptom<a class="headerlink" href="#symptom_2" title="Permanent link">#</a></h3>
 <p>When running a version of Synopsys Detect prior to Synopsys Detect version 5.6.0, the Synopsys Detect Status block reports DOCKER: FAILURE, and the following error appears in the Docker Inspector log:
 Docker Inspector error: Error inspecting image: The Black Duck url must be specified. Either an API token or a username/password must be specified.</p>
-<h3 id="possible-cause_2">Possible cause</h3>
+<h3 id="possible-cause_2">Possible cause<a class="headerlink" href="#possible-cause_2" title="Permanent link">#</a></h3>
 <p>Synopsys Detect 5.5.1 and earlier have a bug that prevent them from working with Docker Inspector 8.2.0 and newer. The fix is in Synopsys Detect 5.6.0.</p>
-<h3 id="solution_1">Solution</h3>
+<h3 id="solution_1">Solution<a class="headerlink" href="#solution_1" title="Permanent link">#</a></h3>
 <p>There are two possible solutions:
 1. Upgrade to Synopsys Detect 5.6.0 or newer, or:
 1. Configure Synopsys Detect to use Docker Inspector 8.1.6 with the argument: --detect.docker.inspector.version=8.1.6</p>
-<h2 id="synopsys-detect-fails-and-a-trace-log-shows-an-http-response-from-black-duck-of-402-payment-required-or-502-bad-gateway">Synopsys Detect fails and a TRACE log shows an HTTP response from Black Duck of "402 Payment Required" or "502 Bad Gateway"</h2>
-<h3 id="symptom_3">Symptom</h3>
+<h2 id="synopsys-detect-fails-and-a-trace-log-shows-an-http-response-from-black-duck-of-402-payment-required-or-502-bad-gateway">Synopsys Detect fails and a TRACE log shows an HTTP response from Black Duck of "402 Payment Required" or "502 Bad Gateway"<a class="headerlink" href="#synopsys-detect-fails-and-a-trace-log-shows-an-http-response-from-black-duck-of-402-payment-required-or-502-bad-gateway" title="Permanent link">#</a></h2>
+<h3 id="symptom_3">Symptom<a class="headerlink" href="#symptom_3" title="Permanent link">#</a></h3>
 <p>Synopsys Detect fails, and a TRACE log contains "402 Payment Required" or "502 Bad Gateway".</p>
-<h3 id="possible-cause_3">Possible cause</h3>
+<h3 id="possible-cause_3">Possible cause<a class="headerlink" href="#possible-cause_3" title="Permanent link">#</a></h3>
 <p>Black Duck does not have a required feature (notifications, binary analysis, etc.) enabled.</p>
-<h3 id="solution_2">Solution</h3>
+<h3 id="solution_2">Solution<a class="headerlink" href="#solution_2" title="Permanent link">#</a></h3>
 <p>Enable the required feature on the Black Duck server.</p>
-<h2 id="unexpected-behavior-running-synopsys-detect-on-a-project-that-uses-spring-boot">Unexpected behavior running Synopsys Detect on a project that uses Spring Boot</h2>
-<h3 id="symptom_4">Symptom</h3>
+<h2 id="unexpected-behavior-running-synopsys-detect-on-a-project-that-uses-spring-boot">Unexpected behavior running Synopsys Detect on a project that uses Spring Boot<a class="headerlink" href="#unexpected-behavior-running-synopsys-detect-on-a-project-that-uses-spring-boot" title="Permanent link">#</a></h2>
+<h3 id="symptom_4">Symptom<a class="headerlink" href="#symptom_4" title="Permanent link">#</a></h3>
 <p>Unexpected behavior, and/or unexpected property values shown in the log.</p>
-<h3 id="possible-cause_4">Possible cause</h3>
+<h3 id="possible-cause_4">Possible cause<a class="headerlink" href="#possible-cause_4" title="Permanent link">#</a></h3>
 <p>If your source directory contains Spring Framework configuration files named application.properties, application.yml,
 or application.xml that are written for any application other than Synopsys Detect, you should not run Synopsys Detect from your source directory.</p>
-<h3 id="solution_3">Solution</h3>
+<h3 id="solution_3">Solution<a class="headerlink" href="#solution_3" title="Permanent link">#</a></h3>
 <p>To prevent Synopsys Detect from reading those files, run Synopsys Detect from a different directory. Use the following property to point to your source directory.</p>
 <pre><code>--detect.source.path={project directory path}
 </code></pre>
 
-<h2 id="pkix-error-connecting-to-black-duck">PKIX error connecting to Black Duck</h2>
-<h3 id="symptom_5">Symptom</h3>
+<h2 id="pkix-error-connecting-to-black-duck">PKIX error connecting to Black Duck<a class="headerlink" href="#pkix-error-connecting-to-black-duck" title="Permanent link">#</a></h2>
+<h3 id="symptom_5">Symptom<a class="headerlink" href="#symptom_5" title="Permanent link">#</a></h3>
 <p>Exception: Could not communicate with Black Duck: Could not perform the authorization request: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target</p>
-<h3 id="possible-cause_5">Possible cause</h3>
+<h3 id="possible-cause_5">Possible cause<a class="headerlink" href="#possible-cause_5" title="Permanent link">#</a></h3>
 <p>The Black Duck server certificate is not in Java's keystore.</p>
-<h3 id="solution_4">Solution</h3>
+<h3 id="solution_4">Solution<a class="headerlink" href="#solution_4" title="Permanent link">#</a></h3>
 <ol>
 <li>Acquire the certificate file for your Black Duck server.</li>
 <li>Determine which <em>java</em> executable is being used to run Synopsys Detect. If you run detect.sh or detect.sh, that is either $JAVA_HOME/bin/java (the default) or the first <em>java</em> found on your $PATH.</li>
 <li>Determine the Java home directory for that <em>java</em> executable.</li>
 <li>Run <a href="https://docs.oracle.com/en/java/javase/11/tools/keytool.html">keytool</a> to install the Black Duck server certificate into the keystore in that Java home directory.</li>
 </ol>
-<p>Although not recommended, it is possible to disable the certificate check with the <a href="/properties/configuration/blackduck server/#trust-all-ssl-certificates-advanced">trust cert property</a>.</p>
+<p>Although not recommended, it is possible to disable the certificate check with the <a href="../../properties/configuration/blackduck server/#trust-all-ssl-certificates-advanced">trust cert property</a>.</p>
                 
                   
                 

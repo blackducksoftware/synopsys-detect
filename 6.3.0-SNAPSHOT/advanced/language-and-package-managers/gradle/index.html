@@ -1213,14 +1213,14 @@
               
                 
                 
-                <h1 id="gradle-support">Gradle support</h1>
+                <h1 id="gradle-support">Gradle support<a class="headerlink" href="#gradle-support" title="Permanent link">#</a></h1>
 <p>Synopsys Detect has two detectors for Gradle:</p>
 <ul>
 <li><a href="#gradleinspectordetector">Gradle inspector detector</a></li>
 <li><a href="#gradleparsedetector">Gradle parse detector</a></li>
 </ul>
 <p><a name="gradleinspectordetector"></a></p>
-<h1 id="gradle-inspector-detector">Gradle inspector detector</h1>
+<h1 id="gradle-inspector-detector">Gradle inspector detector<a class="headerlink" href="#gradle-inspector-detector" title="Permanent link">#</a></h1>
 <p>The Gradle inspector detector discovers dependencies of Gradle projects.</p>
 <p>The Gradle inspector detector attempts to run on your project if it finds a build.gradle file in the source directory (top level).</p>
 <p>The Gradle inspector detector also requires either gradlew or gradle:</p>
@@ -1231,11 +1231,11 @@
 <p>The Gradle inspector detector runs <code>gradlew dependencies</code> to get a list of the project's dependencies, and then parses the output.</p>
 <p>It consumes the output of <code>gradlew dependencies</code> with the help of a Gradle script (<code>init-detect.gradle</code>), which it usually downloads automatically. The file init-detect.gradle has a dependency DependencyGatherer that comes from https://github.com/blackducksoftware/integration-gradle-inspector. Filtering (including/excluding projects and configurations) is performed by this Gradle/Groovy code on the output of the <code>gradlew dependencies</code> command.</p>
 <p><a name="gradleinspectorwithproxy"></a></p>
-<h3 id="running-the-gradle-inspector-with-a-proxy">Running the Gradle inspector with a proxy</h3>
-<p>Synopsys Detect will pass along supplied <a href="/properties/configuration/proxy/#proxy-host-advanced">proxy host</a> and <a href="/properties/configuration/proxy/#proxy-port-advanced">proxy port</a> properties to the Gradle daemon if applicable.
+<h3 id="running-the-gradle-inspector-with-a-proxy">Running the Gradle inspector with a proxy<a class="headerlink" href="#running-the-gradle-inspector-with-a-proxy" title="Permanent link">#</a></h3>
+<p>Synopsys Detect will pass along supplied <a href="../../../properties/configuration/proxy/#proxy-host-advanced">proxy host</a> and <a href="../../../properties/configuration/proxy/#proxy-port-advanced">proxy port</a> properties to the Gradle daemon if applicable.
 <a name="gradleinspectorwithproxy"></a></p>
 <p><a name="gradleparsedetector"></a></p>
-<h1 id="gradle-parse-detector">Gradle parse detector</h1>
+<h1 id="gradle-parse-detector">Gradle parse detector<a class="headerlink" href="#gradle-parse-detector" title="Permanent link">#</a></h1>
 <p>TBD</p>
                 
                   

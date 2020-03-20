@@ -1298,10 +1298,10 @@
               
                 
                 
-                <h1 id="status-file">Status File</h1>
+                <h1 id="status-file">Status File<a class="headerlink" href="#status-file" title="Permanent link">#</a></h1>
 <p>As of detect 6.2.0 an output status file is created in the run folder with the name "status.json" and is meant to summarize the detect run in a machine readable format.</p>
 <p>The file includes status codes, issues encountered and results produced. As additional processes consume this file, additional information will be added. The format is intended to evolve over time.</p>
-<h2 id="body">Body</h2>
+<h2 id="body">Body<a class="headerlink" href="#body" title="Permanent link">#</a></h2>
 <pre><code>{
     &quot;formatVersion&quot;: The version of the status file format. Will change as new features are introduced.
     &quot;detectVersion&quot;: The version of detect that created the status file.
@@ -1312,7 +1312,7 @@
 }
 </code></pre>
 
-<h2 id="detector">Detector</h2>
+<h2 id="detector">Detector<a class="headerlink" href="#detector" title="Permanent link">#</a></h2>
 <pre><code>{
     &quot;folder&quot;: The folder the detector applied to.
     &quot;detectorType&quot;: The normalized detector type such as &quot;GIT&quot;.
@@ -1333,14 +1333,14 @@
 }
 </code></pre>
 
-<h2 id="status">Status</h2>
+<h2 id="status">Status<a class="headerlink" href="#status" title="Permanent link">#</a></h2>
 <pre><code>{
     &quot;key&quot;: The normalized key this status element describes such as &quot;GIT&quot;.
     &quot;status&quot;: &quot;SUCCESS&quot; or &quot;FAILURE&quot;
 }
 </code></pre>
 
-<h2 id="results">Results</h2>
+<h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">#</a></h2>
 <pre><code>{
     &quot;type&quot;: A key describing the type of issue, currently &quot;EXCEPTION&quot;, &quot;DEPRECATION&quot; or &quot;DETECTOR&quot;.
     &quot;messages&quot;: A list of a strings describing the issue.

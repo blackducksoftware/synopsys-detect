@@ -1256,7 +1256,7 @@
               
                 
                 
-                <h1 id="project-and-version-naming">Project and version naming</h1>
+                <h1 id="project-and-version-naming">Project and version naming<a class="headerlink" href="#project-and-version-naming" title="Permanent link">#</a></h1>
 <p>The project and version names of the project to which Synopsys Detect writes results are, by default, derived from the project on which Synopsys Detect is run.  The mechanism Synopsys Detect uses to determine the project and version names depends on project type. If Synopsys Detect cannot determine the project and version names, then Synopsys Detect uses the project directory name as the project name, and the value "Default Detect Version" as the version name.</p>
 <p>You can use the following properties to override the project and version names:</p>
 <pre><code>--detect.project.name=PROJECT-NAME
@@ -1268,10 +1268,10 @@
 </code></pre>
 
 <p>You can use the following property to customize the timestamp format:</p>
-<pre><code>--detect.default.project.version.timeformat=’yyyy-MM-dd:HH:mm:ss.SSS’
+<pre><code>--detect.default.project.version.timeformat='yyyy-MM-dd:HH:mm:ss.SSS'
 </code></pre>
 
-<h2 id="project-and-version-naming-for-git-projects">Project and version naming for Git projects</h2>
+<h2 id="project-and-version-naming-for-git-projects">Project and version naming for Git projects<a class="headerlink" href="#project-and-version-naming-for-git-projects" title="Permanent link">#</a></h2>
 <p>If no package manager provides project and version names, you have not provided the project and version names through properties, and the project uses Git, Synopsys Detect attempts to use Git to determine project information.
 Project information is extracted from the remote URL for the current branch. The version is the current branch name.  This is performed by the Git detector. If you do not want Synopsys Detect to use Git data, you can omit the Git detector using the following property:</p>
 <pre><code>--detect.excluded.detector.types=GIT

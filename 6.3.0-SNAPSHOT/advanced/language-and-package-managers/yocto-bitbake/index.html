@@ -1312,7 +1312,7 @@
               
                 
                 
-                <h1 id="yocto-bitbake">Yocto (BitBake)</h1>
+                <h1 id="yocto-bitbake">Yocto (BitBake)<a class="headerlink" href="#yocto-bitbake" title="Permanent link">#</a></h1>
 <p>The BitBake detector discovers dependencies of custom Linux distribution projects built using Yocto versions 2.0 to 2.7. Yocto 3.0 is currently not supported while we investigate possible solutions.</p>
 <p>The BitBake detector attempts to run on your project if all of the following are true:</p>
 <ol>
@@ -1324,14 +1324,14 @@
 <p>The BitBake detector does the following for each provided recipe name: The detector sources the build environment setup script and executes
 <code>bitbake -g {package-name}</code> to generate a dependency file <em>recipe-depends.dot</em> that it parses for dependency information.
 It also uses <code>bitbake-layers show-recipes</code> to gather layer information.</p>
-<h2 id="troubleshooting-tips">Troubleshooting Tips</h2>
-<h3 id="unsupported-yocto-version">Unsupported Yocto version</h3>
+<h2 id="troubleshooting-tips">Troubleshooting Tips<a class="headerlink" href="#troubleshooting-tips" title="Permanent link">#</a></h2>
+<h3 id="unsupported-yocto-version">Unsupported Yocto version<a class="headerlink" href="#unsupported-yocto-version" title="Permanent link">#</a></h3>
 <p>Symptom: Error in log similar to 'ERROR: Nothing PROVIDES {package}'</p>
 <p>Problem: Synopsys Detect does not support the Yocto version. Synopsys Detect requires Yocto versions 2.0 to 2.7. Yocto 3.0 is currently not supported while we investigate possible solutions.</p>
-<h3 id="no-components-in-black-duck-bom">No components in Black Duck BOM</h3>
+<h3 id="no-components-in-black-duck-bom">No components in Black Duck BOM<a class="headerlink" href="#no-components-in-black-duck-bom" title="Permanent link">#</a></h3>
 <p>Symptom: Empty Black Duck BOM.</p>
 <p>Problem: If you are using Yocto 3.0 or greater, Synopsys Detect will fail to extract dependencies because files used by Synopsys Detect are no longer generated in Yocto 3.0.</p>
-<h3 id="missing-components-for-projects-using-the-yocto-package-revision-service">Missing components for projects using the Yocto Package Revision Service</h3>
+<h3 id="missing-components-for-projects-using-the-yocto-package-revision-service">Missing components for projects using the Yocto Package Revision Service<a class="headerlink" href="#missing-components-for-projects-using-the-yocto-package-revision-service" title="Permanent link">#</a></h3>
 <p>Symptom: Components are missing from the Black Duck BOM.</p>
 <p>Problem: The Yocto Package Revision Service can increment a package revision to a value not present in the Black Duck Knowledge Base, causing
 a package to fail to match.</p>

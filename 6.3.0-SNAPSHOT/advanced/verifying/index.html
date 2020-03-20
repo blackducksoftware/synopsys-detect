@@ -1270,12 +1270,12 @@
               
                 
                 
-                <h1 id="synopsys-detect-code-verification">Synopsys Detect code verification</h1>
+                <h1 id="synopsys-detect-code-verification">Synopsys Detect code verification<a class="headerlink" href="#synopsys-detect-code-verification" title="Permanent link">#</a></h1>
 <p>Two methods are available to verify that the Synopsys Detect code you run has not been tampered with since it was built by Synopsys:
 code signature verification and checksum verification.
 Both methods apply to the Synopsys Detect .jar file, and only offer protection when you run
 Synopsys Detect by invoking the Synopsys Detect .jar file directly (as opposed to invoking detect.sh or detect.ps1).</p>
-<h2 id="code-signature-verification">Code signature verification</h2>
+<h2 id="code-signature-verification">Code signature verification<a class="headerlink" href="#code-signature-verification" title="Permanent link">#</a></h2>
 <p>Code signature verification is the most secure method available for verifying Synopsys Detect code. This method relies on Java tools.</p>
 <p>It involves verifying the Synopsys Detect .jar file that you download from <a href="https://sig-repo.synopsys.com">https://sig-repo.synopsys.com</a>
 using the Java <em>jarsigner</em> tool. In the event that the .jar has been tampered with, verification will fail.</p>
@@ -1283,7 +1283,7 @@ using the Java <em>jarsigner</em> tool. In the event that the .jar has been tamp
 <pre><code>jarsigner -verify {your Synopsys Detect .jar file}
 </code></pre>
 <p>The output should be <code>jar verified.</code> (with no warnings).</p>
-<h2 id="checksum-verification">Checksum verification</h2>
+<h2 id="checksum-verification">Checksum verification<a class="headerlink" href="#checksum-verification" title="Permanent link">#</a></h2>
 <p>Checksum verification provides less protection against tampering than code signature verification provices because
 in the unlikely scenario the <a href="binary_repo_url_base">binary repository</a> has been compromised, an attacker could alter
 both the .jar and the checksum. But checksum verification does provide some degree of protection

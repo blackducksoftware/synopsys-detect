@@ -1055,8 +1055,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gradle-build-command-advanced" class="md-nav__link">
-    Gradle Build Command (Advanced)
+  <a href="#gradle-build-command" class="md-nav__link">
+    Gradle Build Command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gradle-executable" class="md-nav__link">
+    Gradle Executable
   </a>
   
 </li>
@@ -1099,13 +1106,6 @@
         <li class="md-nav__item">
   <a href="#gradle-inspector-version-advanced" class="md-nav__link">
     Gradle Inspector Version (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#gradle-executable-advanced" class="md-nav__link">
-    Gradle Executable (Advanced)
   </a>
   
 </li>
@@ -1291,8 +1291,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gradle-build-command-advanced" class="md-nav__link">
-    Gradle Build Command (Advanced)
+  <a href="#gradle-build-command" class="md-nav__link">
+    Gradle Build Command
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gradle-executable" class="md-nav__link">
+    Gradle Executable
   </a>
   
 </li>
@@ -1340,13 +1347,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gradle-executable-advanced" class="md-nav__link">
-    Gradle Executable (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#detect-gradle-inspector-repository-url-deprecated" class="md-nav__link">
     Detect Gradle Inspector Repository Url (Deprecated)
   </a>
@@ -1370,9 +1370,9 @@
               
                 
                 
-                <h1 id="gradle">gradle</h1>
-<h2 id="gradle-build-command-advanced">Gradle Build Command (Advanced)</h2>
-<pre><code>--detect.gradle.build.command
+                <h1 id="gradle">gradle<a class="headerlink" href="#gradle" title="Permanent link">#</a></h1>
+<h2 id="gradle-build-command">Gradle Build Command<a class="headerlink" href="#gradle-build-command" title="Permanent link">#</a></h2>
+<pre><code>--detect.gradle.build.command=Optional.empty
 </code></pre>
 
 <p>Gradle command line arguments to add to the mvn/mvnw command line.</p>
@@ -1395,7 +1395,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional.empty</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1415,272 +1415,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="gradle-exclude-configurations-advanced">Gradle Exclude Configurations (Advanced)</h2>
-<pre><code>--detect.gradle.excluded.configurations
-</code></pre>
-
-<p>A comma-separated list of Gradle configurations to exclude.</p>
-<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="gradle-exclude-projects-advanced">Gradle Exclude Projects (Advanced)</h2>
-<pre><code>--detect.gradle.excluded.projects
-</code></pre>
-
-<p>A comma-separated list of Gradle sub-projects to exclude.</p>
-<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="gradle-include-configurations-advanced">Gradle Include Configurations (Advanced)</h2>
-<pre><code>--detect.gradle.included.configurations
-</code></pre>
-
-<p>A comma-separated list of Gradle configurations to include.</p>
-<p>As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="gradle-include-projects-advanced">Gradle Include Projects (Advanced)</h2>
-<pre><code>--detect.gradle.included.projects
-</code></pre>
-
-<p>A comma-separated list of Gradle sub-projects to include.</p>
-<p>As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="gradle-inspector-airgap-path-advanced">Gradle Inspector AirGap Path (Advanced)</h2>
-<pre><code>--detect.gradle.inspector.air.gap.path
-</code></pre>
-
-<p>The path to the directory containing the air gap dependencies for the gradle inspector.</p>
-<p>Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional Path</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="gradle-inspector-version-advanced">Gradle Inspector Version (Advanced)</h2>
-<pre><code>--detect.gradle.inspector.version
-</code></pre>
-
-<p>The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.</p>
-<p>The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="gradle-executable-advanced">Gradle Executable (Advanced)</h2>
-<pre><code>--detect.gradle.path
+<h2 id="gradle-executable">Gradle Executable<a class="headerlink" href="#gradle-executable" title="Permanent link">#</a></h2>
+<pre><code>--detect.gradle.path=Optional.empty
 </code></pre>
 
 <p>The path to the Gradle executable (gradle or gradlew).</p>
@@ -1703,7 +1439,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional.empty</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1723,8 +1459,272 @@
 </tr>
 </tbody>
 </table>
-<h2 id="detect-gradle-inspector-repository-url-deprecated">Detect Gradle Inspector Repository Url (Deprecated)</h2>
-<pre><code>--detect.gradle.inspector.repository.url
+<h2 id="gradle-exclude-configurations-advanced">Gradle Exclude Configurations (Advanced)<a class="headerlink" href="#gradle-exclude-configurations-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.gradle.excluded.configurations=Optional.empty
+</code></pre>
+
+<p>A comma-separated list of Gradle configurations to exclude.</p>
+<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>Optional.empty</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="gradle-exclude-projects-advanced">Gradle Exclude Projects (Advanced)<a class="headerlink" href="#gradle-exclude-projects-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.gradle.excluded.projects=Optional.empty
+</code></pre>
+
+<p>A comma-separated list of Gradle sub-projects to exclude.</p>
+<p>As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>Optional.empty</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="gradle-include-configurations-advanced">Gradle Include Configurations (Advanced)<a class="headerlink" href="#gradle-include-configurations-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.gradle.included.configurations=Optional.empty
+</code></pre>
+
+<p>A comma-separated list of Gradle configurations to include.</p>
+<p>As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>Optional.empty</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="gradle-include-projects-advanced">Gradle Include Projects (Advanced)<a class="headerlink" href="#gradle-include-projects-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.gradle.included.projects=Optional.empty
+</code></pre>
+
+<p>A comma-separated list of Gradle sub-projects to include.</p>
+<p>As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>Optional.empty</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="gradle-inspector-airgap-path-advanced">Gradle Inspector AirGap Path (Advanced)<a class="headerlink" href="#gradle-inspector-airgap-path-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.gradle.inspector.air.gap.path=Optional.empty
+</code></pre>
+
+<p>The path to the directory containing the air gap dependencies for the gradle inspector.</p>
+<p>Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional Path</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>Optional.empty</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="gradle-inspector-version-advanced">Gradle Inspector Version (Advanced)<a class="headerlink" href="#gradle-inspector-version-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.gradle.inspector.version=Optional.empty
+</code></pre>
+
+<p>The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version.</p>
+<p>The Detect Gradle detector uses a separate program, the Gradle Inspector, to discover dependencies from Gradle projects. Detect automatically downloads the Gradle Inspector as needed. Use the property to use a specific version of the Gradle Inspector.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>Optional.empty</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-gradle-inspector-repository-url-deprecated">Detect Gradle Inspector Repository Url (Deprecated)<a class="headerlink" href="#detect-gradle-inspector-repository-url-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.gradle.inspector.repository.url=Optional.empty
 </code></pre>
 
 <p>The respository gradle should use to look for the gradle inspector dependencies.</p>
@@ -1747,7 +1747,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional.empty</td>
 </tr>
 <tr>
 <td>Comma Separated</td>

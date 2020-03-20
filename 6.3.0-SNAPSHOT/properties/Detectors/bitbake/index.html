@@ -995,29 +995,29 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bitbake-init-script-name-advanced" class="md-nav__link">
-    BitBake Init Script Name (Advanced)
+  <a href="#bitbake-init-script-name" class="md-nav__link">
+    BitBake Init Script Name
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-package-names-advanced" class="md-nav__link">
-    BitBake Package Names (Advanced)
+  <a href="#bitbake-package-names" class="md-nav__link">
+    BitBake Package Names
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-search-depth-advanced" class="md-nav__link">
-    BitBake Search Depth (Advanced)
+  <a href="#bitbake-search-depth" class="md-nav__link">
+    BitBake Search Depth
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-source-arguments-advanced" class="md-nav__link">
-    BitBake Source Arguments (Advanced)
+  <a href="#bitbake-source-arguments" class="md-nav__link">
+    BitBake Source Arguments
   </a>
   
 </li>
@@ -1263,29 +1263,29 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#bitbake-init-script-name-advanced" class="md-nav__link">
-    BitBake Init Script Name (Advanced)
+  <a href="#bitbake-init-script-name" class="md-nav__link">
+    BitBake Init Script Name
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-package-names-advanced" class="md-nav__link">
-    BitBake Package Names (Advanced)
+  <a href="#bitbake-package-names" class="md-nav__link">
+    BitBake Package Names
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-search-depth-advanced" class="md-nav__link">
-    BitBake Search Depth (Advanced)
+  <a href="#bitbake-search-depth" class="md-nav__link">
+    BitBake Search Depth
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#bitbake-source-arguments-advanced" class="md-nav__link">
-    BitBake Source Arguments (Advanced)
+  <a href="#bitbake-source-arguments" class="md-nav__link">
+    BitBake Source Arguments
   </a>
   
 </li>
@@ -1314,9 +1314,9 @@
               
                 
                 
-                <h1 id="bitbake">bitbake</h1>
-<h2 id="bitbake-init-script-name-advanced">BitBake Init Script Name (Advanced)</h2>
-<pre><code>--detect.bitbake.build.env.name=oe-init-build-env
+                <h1 id="bitbake">bitbake<a class="headerlink" href="#bitbake" title="Permanent link">#</a></h1>
+<h2 id="bitbake-init-script-name">BitBake Init Script Name<a class="headerlink" href="#bitbake-init-script-name" title="Permanent link">#</a></h2>
+<pre><code>--detect.bitbake.build.env.name=Optional[oe-init-build-env]
 </code></pre>
 
 <p>The name of the build environment init script.</p>
@@ -1338,7 +1338,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>oe-init-build-env</td>
+<td>Optional[oe-init-build-env]</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1358,8 +1358,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bitbake-package-names-advanced">BitBake Package Names (Advanced)</h2>
-<pre><code>--detect.bitbake.package.names
+<h2 id="bitbake-package-names">BitBake Package Names<a class="headerlink" href="#bitbake-package-names" title="Permanent link">#</a></h2>
+<pre><code>--detect.bitbake.package.names=Optional[]
 </code></pre>
 
 <p>A comma-separated list of package names from which dependencies are extracted.</p>
@@ -1381,7 +1381,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional[]</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1401,8 +1401,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bitbake-search-depth-advanced">BitBake Search Depth (Advanced)</h2>
-<pre><code>--detect.bitbake.search.depth=1
+<h2 id="bitbake-search-depth">BitBake Search Depth<a class="headerlink" href="#bitbake-search-depth" title="Permanent link">#</a></h2>
+<pre><code>--detect.bitbake.search.depth=Optional[1]
 </code></pre>
 
 <p>The depth at which Detect will search for the recipe-depends.dot or package-depends.dot files.</p>
@@ -1424,7 +1424,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>1</td>
+<td>Optional[1]</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1444,8 +1444,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="bitbake-source-arguments-advanced">BitBake Source Arguments (Advanced)</h2>
-<pre><code>--detect.bitbake.source.arguments
+<h2 id="bitbake-source-arguments">BitBake Source Arguments<a class="headerlink" href="#bitbake-source-arguments" title="Permanent link">#</a></h2>
+<pre><code>--detect.bitbake.source.arguments=Optional[]
 </code></pre>
 
 <p>A comma-separated list of arguments to supply when sourcing the build environment init script.</p>
@@ -1467,7 +1467,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td></td>
+<td>Optional[]</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1487,8 +1487,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="reference-implementation-deprecated">Reference implementation (Deprecated)</h2>
-<pre><code>--detect.bitbake.reference.impl=-poky-linux
+<h2 id="reference-implementation-deprecated">Reference implementation (Deprecated)<a class="headerlink" href="#reference-implementation-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.bitbake.reference.impl=Optional[-poky-linux]
 </code></pre>
 
 <p>The reference implementation of the Yocto project. These characters are stripped from the discovered target architecture.</p>
@@ -1511,7 +1511,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>-poky-linux</td>
+<td>Optional[-poky-linux]</td>
 </tr>
 <tr>
 <td>Comma Separated</td>

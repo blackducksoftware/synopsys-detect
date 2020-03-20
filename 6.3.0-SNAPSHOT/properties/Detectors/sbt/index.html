@@ -1175,6 +1175,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#sbt-report-search-depth" class="md-nav__link">
+    SBT Report Search Depth
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#sbt-configurations-excluded-advanced" class="md-nav__link">
     SBT Configurations Excluded (Advanced)
   </a>
@@ -1184,13 +1191,6 @@
         <li class="md-nav__item">
   <a href="#sbt-configurations-included-advanced" class="md-nav__link">
     SBT Configurations Included (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sbt-report-search-depth-advanced" class="md-nav__link">
-    SBT Report Search Depth (Advanced)
   </a>
   
 </li>
@@ -1249,6 +1249,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#sbt-report-search-depth" class="md-nav__link">
+    SBT Report Search Depth
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#sbt-configurations-excluded-advanced" class="md-nav__link">
     SBT Configurations Excluded (Advanced)
   </a>
@@ -1258,13 +1265,6 @@
         <li class="md-nav__item">
   <a href="#sbt-configurations-included-advanced" class="md-nav__link">
     SBT Configurations Included (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#sbt-report-search-depth-advanced" class="md-nav__link">
-    SBT Report Search Depth (Advanced)
   </a>
   
 </li>
@@ -1286,95 +1286,9 @@
               
                 
                 
-                <h1 id="sbt">sbt</h1>
-<h2 id="sbt-configurations-excluded-advanced">SBT Configurations Excluded (Advanced)</h2>
-<pre><code>--detect.sbt.excluded.configurations
-</code></pre>
-
-<p>The names of the sbt configurations to exclude.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="sbt-configurations-included-advanced">SBT Configurations Included (Advanced)</h2>
-<pre><code>--detect.sbt.included.configurations
-</code></pre>
-
-<p>The names of the sbt configurations to include.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="sbt-report-search-depth-advanced">SBT Report Search Depth (Advanced)</h2>
-<pre><code>--detect.sbt.report.search.depth=3
+                <h1 id="sbt">sbt<a class="headerlink" href="#sbt" title="Permanent link">#</a></h1>
+<h2 id="sbt-report-search-depth">SBT Report Search Depth<a class="headerlink" href="#sbt-report-search-depth" title="Permanent link">#</a></h2>
+<pre><code>--detect.sbt.report.search.depth=Optional[3]
 </code></pre>
 
 <p>Depth the sbt detector will use to search for report files.</p>
@@ -1396,7 +1310,93 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>3</td>
+<td>Optional[3]</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sbt-configurations-excluded-advanced">SBT Configurations Excluded (Advanced)<a class="headerlink" href="#sbt-configurations-excluded-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.sbt.excluded.configurations=Optional.empty
+</code></pre>
+
+<p>The names of the sbt configurations to exclude.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>Optional.empty</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sbt-configurations-included-advanced">SBT Configurations Included (Advanced)<a class="headerlink" href="#sbt-configurations-included-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.sbt.included.configurations=Optional.empty
+</code></pre>
+
+<p>The names of the sbt configurations to include.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>Optional.empty</td>
 </tr>
 <tr>
 <td>Comma Separated</td>

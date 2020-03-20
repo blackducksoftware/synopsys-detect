@@ -1312,22 +1312,22 @@
               
                 
                 
-                <h1 id="nuget-support">NuGet support</h1>
+                <h1 id="nuget-support">NuGet support<a class="headerlink" href="#nuget-support" title="Permanent link">#</a></h1>
 <p>The NuGet detectors can discover dependencies of NuGet projects.</p>
-<h2 id="overview">Overview</h2>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">#</a></h2>
 <p>There are two Nuget detectors: the NuGet solution detector, and the NuGet project detector. Each detector runs one of two available inspectors: the newer dotnet inspector, and the older classic, or exe, inspector.</p>
 <p>On non-Windows systems: Only the dotnet inspector is supported. A dotnet executable is required.</p>
 <p>On Windows systems: Both inspectors (dotnet and classic) are supported. A dotnet executable is not required. If no dotnet executable is found, Synopsys Detect runs the classic inspector.</p>
 <p>By default, Synopsys Detect looks for dotnet on $PATH. You can override this by setting the dotnet path property to point to your dotnet executable.</p>
 <p>The NuGet detectors do not work with mono.</p>
-<h3 id="dotnet-inspector">Dotnet inspector</h3>
+<h3 id="dotnet-inspector">Dotnet inspector<a class="headerlink" href="#dotnet-inspector" title="Permanent link">#</a></h3>
 <p>Source: https://github.com/blackducksoftware/blackduck-nuget-inspector</p>
 <p>Binary: https://repo.blackducksoftware.com:443/artifactory/bds-integrations-nuget-release/BlackduckNugetInspector</p>
 <p>Requires: .NET framework version 4.5</p>
-<h3 id="classic-inspector">Classic inspector</h3>
+<h3 id="classic-inspector">Classic inspector<a class="headerlink" href="#classic-inspector" title="Permanent link">#</a></h3>
 <p>Source: https://github.com/blackducksoftware/integration-nuget-inspector</p>
 <p>Binary: https://repo.blackducksoftware.com:443/artifactory/bds-integrations-nuget-release/IntegrationNugetInspector</p>
-<h2 id="operation">Operation</h2>
+<h2 id="operation">Operation<a class="headerlink" href="#operation" title="Permanent link">#</a></h2>
 <p>Each inspector (dotnet and classic) supports two detectors: NuGet solution detector, and NuGet project detector.</p>
 <p>The NuGet solution detector derives packages (dependencies) from solution (.sln) files.</p>
 <p>The Nuget project detector derives packages (dependencies) from project (.csproj, .fsproj, etc.) files. The supported project files are:</p>

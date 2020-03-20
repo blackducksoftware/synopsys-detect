@@ -1404,16 +1404,16 @@
               
                 
                 
-                <h1 id="configuring">Configuring</h1>
+                <h1 id="configuring">Configuring<a class="headerlink" href="#configuring" title="Permanent link">#</a></h1>
 <p>Synopsys Detect is configured by assigning values to properties.</p>
-<h2 id="on-the-command-line">On the command line</h2>
-<p>One method for configuring Synopsys Detect is by setting <a href="/properties/all-properties/">Synopsys Detect property values</a> on the command line.
+<h2 id="on-the-command-line">On the command line<a class="headerlink" href="#on-the-command-line" title="Permanent link">#</a></h2>
+<p>One method for configuring Synopsys Detect is by setting <a href="../properties/all-properties/">Synopsys Detect property values</a> on the command line.
 When setting a property value on the command line, prefix the property name with two hyphens ("--"). For example,
 to set property <em>detect.project.value</em>:</p>
 <pre><code>    bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --detect.project.name=MyProject
 </code></pre>
 
-<h2 id="using-environment-variables">Using environment variables</h2>
+<h2 id="using-environment-variables">Using environment variables<a class="headerlink" href="#using-environment-variables" title="Permanent link">#</a></h2>
 <p>Synopsys Detect properties can also be set using environment variables.</p>
 <p>On Linux, when setting a property value using an environment variable, the environment variable name
 is the property name converted to uppercase, with period characters (".") converted to underscore
@@ -1429,25 +1429,25 @@ characters ("_"). For example:</p>
     powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot;
 </code></pre>
 
-<h2 id="using-a-configuration-file">Using a configuration file</h2>
+<h2 id="using-a-configuration-file">Using a configuration file<a class="headerlink" href="#using-a-configuration-file" title="Permanent link">#</a></h2>
 <p>Another commonly-used method of configuring Synopsys Detect is to provide a configuration file. The configuration file
 can be a Java properties (.properties) file, or a YAML (.yml) file.</p>
 <p>The most common location for a configuration file is in a file named application.properties or application.yml
 in the current working directory, or a ./config subdirectory.</p>
-<h3 id="properties-file">Properties file</h3>
+<h3 id="properties-file">Properties file<a class="headerlink" href="#properties-file" title="Permanent link">#</a></h3>
 <p>When setting a property value in a .properties file, do not prefix the property name with hyphens, and adhere to Java .properties
 file syntax: <code>propertyName=propertyValue</code>, one per line.</p>
-<h3 id="yaml-file">YAML file</h3>
+<h3 id="yaml-file">YAML file<a class="headerlink" href="#yaml-file" title="Permanent link">#</a></h3>
 <p>When setting a property value in a .yml file, do not prefix the property name with hyphens,
 and adhere to YAML syntax for dictionaries: <code>propertyName: propertyValue</code>, one per line.</p>
-<h2 id="switching-between-multiple-profiles">Switching between multiple profiles</h2>
+<h2 id="switching-between-multiple-profiles">Switching between multiple profiles<a class="headerlink" href="#switching-between-multiple-profiles" title="Permanent link">#</a></h2>
 <p>A profile is, in effect, a set of pre-defined properties. You select the profile (property settings)
 you want when you run Synopsys Detect.</p>
-<h3 id="creating-a-profile">Creating a profile</h3>
+<h3 id="creating-a-profile">Creating a profile<a class="headerlink" href="#creating-a-profile" title="Permanent link">#</a></h3>
 <p>To define a set of properties for a profile, create a configuration file named <em>application-{profilename}.properties</em>
 or <em>application-{profilename}.yml</em> in the current working directory, or in a subdirectory named <em>config</em>.
 Populate it with property assignments as previously described.</p>
-<h3 id="selecting-a-profile-on-the-command-line">Selecting a profile on the command line</h3>
+<h3 id="selecting-a-profile-on-the-command-line">Selecting a profile on the command line<a class="headerlink" href="#selecting-a-profile-on-the-command-line" title="Permanent link">#</a></h3>
 <p>To select one or more profiles on the Synopsys Detect command line, assign the the comma-separated list of profiles
 to the Spring Boot property <em>spring.profiles.active</em>:</p>
 <pre><code>    bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --spring.profiles.active={profilename}
@@ -1455,7 +1455,7 @@ to the Spring Boot property <em>spring.profiles.active</em>:</p>
 
 <p>This capability is provided by Spring Boot. For more information, refer to
 <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-profiles">Spring Boot's profile mechanism</a>.</p>
-<h2 id="additional-configration-methods-and-details">Additional configration methods and details</h2>
+<h2 id="additional-configration-methods-and-details">Additional configration methods and details<a class="headerlink" href="#additional-configration-methods-and-details" title="Permanent link">#</a></h2>
 <p>Synopsys Detect reads property values using
 <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config">Spring Boot's externalized configuration mechanism</a>,
 which provides capabilities beyond those described on this page.</p>
@@ -1494,7 +1494,7 @@ which provides capabilities beyond those described on this page.</p>
 
 <p>Refer to the <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config">Spring Boot documentation</a>
 for more details and more sophisticated ways to set properties.</p>
-<h2 id="providing-sensitive-values-such-as-credentials">Providing sensitive values such as credentials</h2>
+<h2 id="providing-sensitive-values-such-as-credentials">Providing sensitive values such as credentials<a class="headerlink" href="#providing-sensitive-values-such-as-credentials" title="Permanent link">#</a></h2>
 <p>You can provide sensitive values such as credentials to Synopsys Detect using a variety of
 mechanisms provided by <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config">Spring Boot</a>,
 including:</p>

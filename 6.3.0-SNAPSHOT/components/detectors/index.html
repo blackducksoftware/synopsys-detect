@@ -1298,27 +1298,27 @@
               
                 
                 
-                <h1 id="detectors">Detectors</h1>
+                <h1 id="detectors">Detectors<a class="headerlink" href="#detectors" title="Permanent link">#</a></h1>
 <p>Synopsys Detect uses detectors to find and extract dependencies from all supported package managers.</p>
 <p>Each package manager ecosystem is assigned a detector type. Each detector type may have multiple methods used to extract dependencies.</p>
-<h2 id="detector-search">Detector Search</h2>
+<h2 id="detector-search">Detector Search<a class="headerlink" href="#detector-search" title="Permanent link">#</a></h2>
 <p>Detectors first check to see if they apply to your project by looking for hints such as files that exist in your project directory 
 or properties you have set.</p>
 <p>By default, detectors only search the project directory. In some cases, such as when your project contains sub-projects,
 or when package manager files reside in sub-directories, you may need to tell Synopsys Detect to search sub-directories
-by increasing the detector search depth. For more information, refer to <a href="/properties/configuration/paths/#detector-search-depth-advanced">detector search depth</a>.</p>
+by increasing the detector search depth. For more information, refer to <a href="../properties/configuration/paths/#detector-search-depth">detector search depth</a>.</p>
 <p>Detectors then check that your environment is extractable, meaning you have all the relevant executables such as NPM or a Gradle wrapper, and all relevant downloads are present or available, such as the Docker or NuGet inspector.</p>
 <p>Inspectors are used by detectors when the package manager requires an integration or embedded plugin to work. For example, Gradle uses an inspector as a plugin that executes a custom task. Most detectors do not require an inspector.</p>
 <p>Finally, detectors perform their extraction to find your dependencies. This may require, but is not limited to, running executables, performing builds, parsing files, and communicating with web services.</p>
-<h2 id="build-detectors-versus-buildless-detectors">Build detectors versus buildless detectors</h2>
+<h2 id="build-detectors-versus-buildless-detectors">Build detectors versus buildless detectors<a class="headerlink" href="#build-detectors-versus-buildless-detectors" title="Permanent link">#</a></h2>
 <p>The recommended way to run Synopsys Detect is as a post-build step, so that it has access to both build artifacts and the build tools (package managers and others) used to build the project.
 Synopsys Detect's build detectors work in this environment and produce the most accurate results. By default, Synopsys Detect runs build detectors.</p>
 <p>If you can't build your project, you may still be able to use Synopsys Detect's buildless detectors. The results from buildless detectors may not be as accurate as the results from
 build detectors, but buildless detectors can run without accessing the tools required to build the project. You can choose to run
-buildless detectors using the <a href="/properties/configuration/general/#buildless-mode">buildless mode property</a>.</p>
+buildless detectors using the <a href="../properties/configuration/general/#buildless-mode">buildless mode property</a>.</p>
 <p>The following tables show which detectors run in the default (build) mode, and which detectors run in buildless mode. There is some overlap across the two lists.</p>
-<h2 id="build-detectors">Build detectors</h2>
-<p>Build detectors run package manager commands; for example: <em>mvn dependency:tree</em>, and/or inspectors; for example, the <a href="/components/inspectors/#gradle-inspector">Gradle inspector</a> to derive dependency information. Inspectors
+<h2 id="build-detectors">Build detectors<a class="headerlink" href="#build-detectors" title="Permanent link">#</a></h2>
+<p>Build detectors run package manager commands; for example: <em>mvn dependency:tree</em>, and/or inspectors; for example, the <a href="../inspectors/#gradle-inspector">Gradle inspector</a> to derive dependency information. Inspectors
 act as extensions to Synopsys Detect, and are downloaded automatically if needed. The required commands as shown in the following table must be present and findable on your system. Synopsys Detect uses
 the system PATH to find commands. In some cases as an alternative to the system PATH, the location of a command can be provided through a property.</p>
 <table>
@@ -1544,7 +1544,7 @@ the system PATH to find commands. In some cases as an alternative to the system 
 </tr>
 </tbody>
 </table>
-<h2 id="buildless-detectors">Buildless detectors</h2>
+<h2 id="buildless-detectors">Buildless detectors<a class="headerlink" href="#buildless-detectors" title="Permanent link">#</a></h2>
 <p>Buildless detectors parse package manager files; for example, <em>pom.xml</em>, to derive dependency information.</p>
 <table>
 <thead>

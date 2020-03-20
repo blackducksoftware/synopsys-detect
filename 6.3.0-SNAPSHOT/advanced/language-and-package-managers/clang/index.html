@@ -1213,7 +1213,7 @@
               
                 
                 
-                <h1 id="cc-clang-support">C/C++ (Clang) support</h1>
+                <h1 id="cc-clang-support">C/C++ (Clang) support<a class="headerlink" href="#cc-clang-support" title="Permanent link">#</a></h1>
 <p>C/C++ (Clang) support is limited to Linux systems that support one of the following
 package manager commands: APK, DPKG, or RPM.</p>
 <p>For C/C++ projects on Linux systems that meet these requirements, Synopsys Detect can derive
@@ -1228,11 +1228,11 @@ when run with the following option:</p>
 </code></pre>
 <p>The Clang detector runs when it finds a compile_commands.json file
 in the project directory. If the compile_commands.json file resides in a sub-directory,
-adjust the <a href="/properties/configuration/paths/#detector-search-depth-advanced">detector search depth</a>
+adjust the <a href="../../properties/configuration/paths/#detector-search-depth">detector search depth</a>
 to enable Synopsys Detect to find it. If the compile_commands.json file
 resides in a normally excluded subdirectory (for example: ./build),
-you can turn off the <a href="/properties/configuration/paths/#detector-exclude-default-directories-advanced">default detector search exclusions</a>,
-or fine tune the <a href="/properties/configuration/paths/#detector-directory-patterns-exclusions-advanced">detector search directory exclusion patterns</a>.</p>
+you can turn off the <a href="../../properties/configuration/paths/#detector-exclude-default-directories-advanced">default detector search exclusions</a>,
+or fine tune the <a href="../../properties/configuration/paths/#detector-directory-patterns-exclusions-advanced">detector search directory exclusion patterns</a>.</p>
 <p>For each compile command in the compile_commands.json file, the Clang detector
 runs a version of the command that is modified to ensure that it does
 not overwrite build artifacts, and generate a list of include files used.
