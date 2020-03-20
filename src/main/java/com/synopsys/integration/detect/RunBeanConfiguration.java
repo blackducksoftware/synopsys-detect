@@ -23,7 +23,11 @@
 package com.synopsys.integration.detect;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -41,7 +45,9 @@ import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
+import com.synopsys.integration.detect.configuration.DetectorSearchExcludedDirectories;
 import com.synopsys.integration.detect.tool.detector.DetectExecutableRunner;
+import com.synopsys.integration.detect.tool.detector.DetectFileFinder;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
@@ -73,7 +79,6 @@ import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExec
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleLocalExecutableFinder;
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
@@ -113,7 +118,18 @@ public class RunBeanConfiguration {
 
     @Bean
     public FileFinder fileFinder() {
-        return new SimpleFileFinder();
+        // TODO: The logic here should be in DetectFileFinder
+        final List<String> userExcluded = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_FILES());
+        final boolean includeDefault = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS());
+
+        final List<String> excluded = new ArrayList<>(userExcluded);
+        if (includeDefault) {
+            final List<String> defaultExcluded = Arrays.stream(DetectorSearchExcludedDirectories.values())
+                                                     .map(DetectorSearchExcludedDirectories::getDirectoryName)
+                                                     .collect(Collectors.toList());
+            excluded.addAll(defaultExcluded);
+        }
+        return new DetectFileFinder(excluded);
     }
 
     @Bean
