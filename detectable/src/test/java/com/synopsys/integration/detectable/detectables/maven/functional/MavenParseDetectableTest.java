@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.maven.unit;
+package com.synopsys.integration.detectable.detectables.maven.functional;
 
 import java.io.IOException;
 import java.nio.file.Paths;
