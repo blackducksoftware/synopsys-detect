@@ -86,7 +86,7 @@ public class MavenParseDetectableTest extends DetectableFunctionalTest {
 
     @Override
     public void assertExtraction(@NotNull final Extraction extraction) {
-        Assertions.assertNotEquals(0, extraction.getCodeLocations().size(), "A code location should have been generated.");
+        Assertions.assertEquals(1, extraction.getCodeLocations().size(), "A code location should have been generated.");
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.MAVEN, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(2);
