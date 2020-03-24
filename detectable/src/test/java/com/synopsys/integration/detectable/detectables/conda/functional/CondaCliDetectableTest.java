@@ -107,7 +107,7 @@ public class CondaCliDetectableTest extends DetectableFunctionalTest {
 
     @Override
     public void assertExtraction(@NotNull final Extraction extraction) {
-        Assertions.assertNotEquals(0, extraction.getCodeLocations().size());
+        Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.ANACONDA, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(2);
