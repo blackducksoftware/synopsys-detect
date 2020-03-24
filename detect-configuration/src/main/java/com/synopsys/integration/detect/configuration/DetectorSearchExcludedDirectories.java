@@ -25,7 +25,6 @@ package com.synopsys.integration.detect.configuration;
 public enum DetectorSearchExcludedDirectories {
     BIN("bin"),
     BUILD("build"),
-    DOT_GIT(".git"),
     DOT_GRADLE(".gradle"),
     NODE_MODULES("node_modules"),
     OUT("out"),
