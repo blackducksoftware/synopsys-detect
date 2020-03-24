@@ -55,7 +55,7 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
 
     @Override
     public void assertExtraction(@NotNull final Extraction extraction) {
-        Assertions.assertNotEquals(0, extraction.getCodeLocations().size());
+        Assertions.assertEquals(2, extraction.getCodeLocations().size());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(2);
