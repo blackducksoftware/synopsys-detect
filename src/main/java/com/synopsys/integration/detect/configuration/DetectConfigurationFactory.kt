@@ -35,6 +35,7 @@ import com.synopsys.integration.detect.exitcode.ExitCodeType
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions
 import com.synopsys.integration.detect.lifecycle.run.RunOptions
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions
+import com.synopsys.integration.detect.tool.detector.DetectFileFinder
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFileFilter
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableOptions
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions
@@ -46,6 +47,7 @@ import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOp
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions
+import com.synopsys.integration.detectable.detectable.file.FileFinder
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions
 import com.synopsys.integration.detector.finder.DetectorFinderOptions
 import com.synopsys.integration.log.SilentIntLogger
@@ -241,23 +243,30 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         return AirGapOptions(dockerOverride, gradleOverride, nugetOverride)
     }
 
+    fun createFilteredFileFinder(sourcePath: Path): FileFinder {
+        return DetectFileFinder(createSearchOptions(sourcePath).fileFilter);
+    }
+
     fun createSearchOptions(sourcePath: Path): DetectorFinderOptions {
         //Normal settings
         val maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH)
 
         //File Filter
-        val excludedFiles = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES).toMutableList()
-        val excludedDirectories = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION)
-        val excludedDirectoryPatterns = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS)
-        val excludedDirectoryPaths = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS)
+        val userProvidedExcludedFiles = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES).toMutableList()
+        val userProvidedExcludedDirectories = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION)
+        val userProvidedExcludedDirectoryPatterns = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS)
+        val userProvidedExcludedDirectoryPaths = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS)
 
+        val excludedFiles = mutableListOf<String>();
+        excludedFiles.addAll(userProvidedExcludedFiles);
         if (detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS)) {
             val defaultExcluded = DetectorSearchExcludedDirectories.values()
                     .map { it.directoryName }
                     .toList()
             excludedFiles.addAll(defaultExcluded)
         }
-        val fileFilter = DetectDetectorFileFilter(sourcePath, excludedDirectories, excludedDirectoryPaths, excludedDirectoryPatterns)
+
+        val fileFilter = DetectDetectorFileFilter(sourcePath, excludedFiles, userProvidedExcludedDirectories, userProvidedExcludedDirectoryPaths, userProvidedExcludedDirectoryPatterns)
 
         return DetectorFinderOptions(fileFilter, maxDepth)
     }
