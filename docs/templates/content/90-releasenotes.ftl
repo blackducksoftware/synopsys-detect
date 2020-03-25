@@ -23,7 +23,7 @@
 * Resolved the following vulnerabilities (IDETECT-1872):
     * org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
 * Resolved an issue where ${solution_name} had the potential to fail on projects that utilized Yarn workspaces (IDETECT-1916).
-    * Note: Yarn workspaces are not currently supported. See [yarn workspace support](../advanced/language-and-package-managers/yarn/#yarn-workspace-support).
+* Note: Yarn workspaces are not currently supported. See [yarn workspace support](../advanced/language-and-package-managers/yarn/#yarn-workspace-support).
 * Resolved an issue in the Bazel Detector that caused it to fail for the maven_install rule when the tags field contained multiple tags with a mixture of formats (IDETECT-1925).
 * When parsing package.xml files, Detect will no longer raise a SAXParseException when the file contains a doctype declaration, and will continue parsing the rest of the file (IDETECT-1866).
 * Resolved an issue that could cause generation of an invalid Black Duck Input/Output (BDIO) file when the only differences between two component names/versions are non-alphanumeric characters (IDETECT-1856).
@@ -31,11 +31,11 @@
 ## Version 6.1.0
 ### New features
 * Added the property [detect.bdio2.enabled](../properties/configuration/paths/#bdio-2-enabled).
-* Added the property [detect.pip.only.project.tree](../properties/Detectors/pip/#pip-include-only-project-tree).
-* Added the property [detect.bitbake.search.depth](../properties/Detectors/bitbake/#bitbake-search-depth).
-* Added the property [detect.bazel.cquery.options](../properties/Detectors/bazel/#bazel-cquery-additional-options).
-* Added the property [detect.docker.image.id](../properties/Detectors/docker/#docker-image-id).
-* Added the property [detect.docker.platform.top.layer.id](../properties/Detectors/docker/#platform-top-layer-id-advanced).
+* Added the property [detect.pip.only.project.tree](../properties/detectors/pip/#pip-include-only-project-tree).
+* Added the property [detect.bitbake.search.depth](../properties/detectors/bitbake/#bitbake-search-depth).
+* Added the property [detect.bazel.cquery.options](../properties/detectors/bazel/#bazel-cquery-additional-options).
+* Added the property [detect.docker.image.id](../properties/detectors/docker/#docker-image-id).
+* Added the property [detect.docker.platform.top.layer.id](../properties/detectors/docker/#platform-top-layer-id-advanced).
 * Added the property [detect.bom.aggregate.remediation.mode](../properties/configuration/project/#bdio-aggregate-remediation-mode-advanced)
 
 ### Changed features
