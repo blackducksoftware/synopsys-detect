@@ -24,21 +24,22 @@ package com.synopsys.integration.detect.tool.detector;
 
 import java.io.File;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
+import com.synopsys.integration.configuration.util.Bds;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 
 public class DetectFileFinder extends SimpleFileFinder {
-    private final List<String> excludedFileNames;
+    private final Predicate<File> fileFilter;
 
-    public DetectFileFinder(final List<String> excludedFileNames) {
-        this.excludedFileNames = excludedFileNames;
+    public DetectFileFinder(final Predicate<File> fileFilter) {
+        this.fileFilter = fileFilter;
     }
 
     @Override
     public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, final boolean findInsideMatchingDirectories) {
-        return super.findFiles(directoryToSearch, filenamePatterns, depth, findInsideMatchingDirectories).stream()
-                   .filter(file -> !excludedFileNames.contains(file.getName()))
-                   .collect(Collectors.toList());
+        return Bds.of(super.findFiles(directoryToSearch, filenamePatterns, depth, findInsideMatchingDirectories))
+                   .filter(fileFilter)
+                   .toList();
     }
 }

@@ -32,12 +32,15 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 public class DetectDetectorFileFilter implements Predicate<File> {
     private final Path sourcePath;
+    private final List<String> excludedFiles;
     private final List<String> excludedDirectories;
     private final List<String> excludedDirectoryPaths;
     private final WildcardFileFilter fileFilter;
 
-    public DetectDetectorFileFilter(final Path sourcePath, final List<String> excludedDirectories, final List<String> excludedDirectoryPaths, final List<String> excludedDirectoryNamePatterns) {
+    public DetectDetectorFileFilter(final Path sourcePath, final List<String> excludedFiles, final List<String> excludedDirectories, final List<String> excludedDirectoryPaths,
+        final List<String> excludedDirectoryNamePatterns) {
         this.sourcePath = sourcePath;
+        this.excludedFiles = excludedFiles;
         this.excludedDirectories = excludedDirectories;
         this.excludedDirectoryPaths = excludedDirectoryPaths;
         fileFilter = new WildcardFileFilter(excludedDirectoryNamePatterns);
@@ -49,6 +52,10 @@ public class DetectDetectorFileFilter implements Predicate<File> {
     }
 
     public boolean isExcluded(final File file) {
+        if (excludedFiles.contains(file.getName())) {
+            return true;
+        }
+
         for (final String excludedDirectory : excludedDirectories) {
             if (FilenameUtils.wildcardMatchOnSystem(file.getName(), excludedDirectory)) {
                 return true;
