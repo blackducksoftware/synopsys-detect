@@ -81,7 +81,7 @@ open class GenerateDocsTask : DefaultTask() {
     }
 
     private fun createFromFreemarker(templateProvider: TemplateProvider, outputDir: File, templateName: String, data: Any) {
-        createFromFreemarker(templateProvider, "$templateName.ftl", File(outputDir, "$templateName.md"), data);
+        createFromFreemarker(templateProvider, "$templateName.ftl", File(outputDir, "$templateName.md"), data)
     }
 
     private fun createFromFreemarker(templateProvider: TemplateProvider, templateRelativePath: String, to: File, data: Any) {
@@ -106,7 +106,7 @@ open class GenerateDocsTask : DefaultTask() {
     }
 
     private fun handleProperties(templateProvider: TemplateProvider, outputDir: File, helpJson: HelpJsonData) {
-        val superGroups = createSuperGroupLookup(helpJson);
+        val superGroups = createSuperGroupLookup(helpJson)
         val groupLocations = superGroups.entries.associate { it.key to it.value + "/" + it.key } //ex: superGroup/group
 
         //Updating the location on all the json options so that a new object with only 1 new property did not have to be created (and then populated) from the existing.
@@ -120,18 +120,18 @@ open class GenerateDocsTask : DefaultTask() {
             val deprecated = group.value.filter { it.deprecated }
             val simple = group.value.filter { !deprecated.contains(it) && it.category == "simple" }
             val advanced = group.value.filter { !simple.contains(it) && !deprecated.contains(it) }
-            val superGroupName = superGroups[group.key] ?: error("Missing super group: ${group.key}");
+            val superGroupName = superGroups[group.key] ?: error("Missing super group: ${group.key}")
             val groupLocation = groupLocations[group.key] ?: error("Missing group location: ${group.key}")
 
-            advanced.forEach { property -> property.location += "-advanced" };
-            deprecated.forEach { property -> property.location += "-deprecated" };
+            advanced.forEach { property -> property.location += "-advanced" }
+            deprecated.forEach { property -> property.location += "-deprecated" }
 
             SplitGroup(group.key, superGroupName, groupLocation, simple, advanced, deprecated)
         }
 
         val propertiesFolder = File(outputDir, "properties")
         splitGroupOptions.forEach { group ->
-            val superGroupFolder = File(propertiesFolder, group.superGroup)
+            val superGroupFolder = File(propertiesFolder, group.superGroup.toLowerCase())
             val targetMarkdown = File(superGroupFolder, "${group.groupName}.md")
             createFromFreemarker(templateProvider, "property-group.ftl", targetMarkdown, group)
         }
@@ -163,17 +163,17 @@ open class GenerateDocsTask : DefaultTask() {
                 lookup[option.group] = superGroup
             }
         }
-        return lookup;
+        return lookup
     }
 }
 
 class TemplateProvider(templateDirectory: File, projectVersion: String) {
-    private val configuration: Configuration = Configuration(Configuration.VERSION_2_3_26);
+    private val configuration: Configuration = Configuration(Configuration.VERSION_2_3_26)
 
     init {
         configuration.setDirectoryForTemplateLoading(templateDirectory)
         configuration.defaultEncoding = "UTF-8"
-        configuration.registeredCustomOutputFormats = listOf(MarkdownOutputFormat.INSTANCE);
+        configuration.registeredCustomOutputFormats = listOf(MarkdownOutputFormat.INSTANCE)
 
         val terms = Terms()
         terms.termMap.put("program_version", projectVersion)
@@ -182,19 +182,19 @@ class TemplateProvider(templateDirectory: File, projectVersion: String) {
 
     fun getTemplate(templateName: String): Template {
         val template = configuration.getTemplate(templateName)
-        return template;
+        return template
     }
 }
 
-data class IndexPage(val version: String) {}
-data class ExitCodePage(val exitCodes: List<HelpJsonExitCode>) {}
-data class DetectorsPage(val buildless: List<Detector>, val build: List<Detector>) {}
-data class Detector(val detectorType: String, val detectorName: String, val detectableLanguage: String, val detectableForge: String, val detectableRequirementsMarkdown: String) {}
+data class IndexPage(val version: String)
+data class ExitCodePage(val exitCodes: List<HelpJsonExitCode>)
+data class DetectorsPage(val buildless: List<Detector>, val build: List<Detector>)
+data class Detector(val detectorType: String, val detectorName: String, val detectableLanguage: String, val detectableForge: String, val detectableRequirementsMarkdown: String)
 
-data class SimplePropertyTablePage(val groups: List<SimplePropertyTableGroup>) {}
-data class SimplePropertyTableGroup(val groupName: String, val location: String, val options: List<HelpJsonOption>) {}
-data class DeprecatedPropertyTablePage(val groups: List<DeprecatedPropertyTableGroup>) {}
-data class DeprecatedPropertyTableGroup(val groupName: String, val location: String, val options: List<HelpJsonOption>) {}
-data class AdvancedPropertyTablePage(val groups: List<SplitGroup>) {}
-data class SplitGroup(val groupName: String, val superGroup: String, val location: String, val simple: List<HelpJsonOption>, val advanced: List<HelpJsonOption>, val deprecated: List<HelpJsonOption>) {}
+data class SimplePropertyTablePage(val groups: List<SimplePropertyTableGroup>)
+data class SimplePropertyTableGroup(val groupName: String, val location: String, val options: List<HelpJsonOption>)
+data class DeprecatedPropertyTablePage(val groups: List<DeprecatedPropertyTableGroup>)
+data class DeprecatedPropertyTableGroup(val groupName: String, val location: String, val options: List<HelpJsonOption>)
+data class AdvancedPropertyTablePage(val groups: List<SplitGroup>)
+data class SplitGroup(val groupName: String, val superGroup: String, val location: String, val simple: List<HelpJsonOption>, val advanced: List<HelpJsonOption>, val deprecated: List<HelpJsonOption>)
 
