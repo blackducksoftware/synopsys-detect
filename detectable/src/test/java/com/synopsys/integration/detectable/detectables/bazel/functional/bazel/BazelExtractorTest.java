@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -139,6 +141,8 @@ public class BazelExtractorTest {
 
     @Test
     public void testMavenInstall() throws ExecutableRunnerException, IntegrationException {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+
         final BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
         final BazelVariableSubstitutor bazelVariableSubstitutor = Mockito.mock(BazelVariableSubstitutor.class);
         final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor);
