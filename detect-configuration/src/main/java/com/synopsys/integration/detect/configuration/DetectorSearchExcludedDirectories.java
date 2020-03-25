@@ -29,6 +29,7 @@ public enum DetectorSearchExcludedDirectories {
     NODE_MODULES("node_modules"),
     OUT("out"),
     PACKAGES("packages"),
+    GIT(".git"),
     TARGET("target");
 
     private final String directoryName;

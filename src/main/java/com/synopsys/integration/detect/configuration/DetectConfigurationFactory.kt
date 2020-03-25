@@ -244,7 +244,8 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
     }
 
     fun createFilteredFileFinder(sourcePath: Path): FileFinder {
-        return DetectFileFinder(createSearchOptions(sourcePath).fileFilter);
+        val userProvidedExcludedFiles = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES).toMutableList()
+        return DetectFileFinder(userProvidedExcludedFiles);
     }
 
     fun createSearchOptions(sourcePath: Path): DetectorFinderOptions {
@@ -252,21 +253,20 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH)
 
         //File Filter
-        val userProvidedExcludedFiles = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES).toMutableList()
         val userProvidedExcludedDirectories = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION)
-        val userProvidedExcludedDirectoryPatterns = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS)
-        val userProvidedExcludedDirectoryPaths = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS)
+        val excludedDirectoryPatterns = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS)
+        val excludedDirectoryPaths = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS)
 
-        val excludedFiles = mutableListOf<String>();
-        excludedFiles.addAll(userProvidedExcludedFiles);
+        val excludedDirectories = mutableListOf<String>();
+        excludedDirectories.addAll(userProvidedExcludedDirectories);
         if (detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS)) {
             val defaultExcluded = DetectorSearchExcludedDirectories.values()
                     .map { it.directoryName }
                     .toList()
-            excludedFiles.addAll(defaultExcluded)
+            excludedDirectories.addAll(defaultExcluded)
         }
 
-        val fileFilter = DetectDetectorFileFilter(sourcePath, excludedFiles, userProvidedExcludedDirectories, userProvidedExcludedDirectoryPaths, userProvidedExcludedDirectoryPatterns)
+        val fileFilter = DetectDetectorFileFilter(sourcePath, excludedDirectories, excludedDirectoryPaths, excludedDirectoryPatterns)
 
         return DetectorFinderOptions(fileFilter, maxDepth)
     }
