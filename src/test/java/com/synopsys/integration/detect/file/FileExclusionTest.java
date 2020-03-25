@@ -66,22 +66,4 @@ public class FileExclusionTest {
         FileFinder finder = fileFinderFromProperty(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_FILES(), firstFileDotTxt);
         Assert.assertEquals(3, finder.findFiles(sourceFile, "*", 2).size());
     }
-
-    @Test
-    public void testFolderExcluded() throws IOException {
-        FileFinder finder = fileFinderFromProperty(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION(), folder);
-        Assert.assertEquals(3, finder.findFiles(sourceFile, "*", 2).size());
-    }
-
-    @Test
-    public void testFolderExcludedWithPattern() throws IOException {
-        FileFinder finder = fileFinderFromProperty(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS(), folder.substring(0, 3) + "*");
-        Assert.assertEquals(3, finder.findFiles(sourceFile, "*", 2).size());
-    }
-
-    @Test
-    public void testFolderExcludedWithPath() throws IOException {
-        FileFinder finder = fileFinderFromProperty(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_PATHS(), folder);
-        Assert.assertEquals(3, finder.findFiles(sourceFile, "*", 2).size());
-    }
 }
