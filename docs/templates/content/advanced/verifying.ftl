@@ -14,14 +14,14 @@ using the Java *jarsigner* tool. In the event that the .jar has been tampered wi
 
 To verify the ${solution_name} .jar:
 
-    jarsigner -verify {your ${solution_name} .jar file}
+jarsigner -verify {your ${solution_name} .jar file}
 
 The output should be `jar verified.` (with no warnings).
 
 ## Checksum verification
 
 Checksum verification provides less protection against tampering than code signature verification provices because
-in the unlikely scenario the [binary repository](binary_repo_url_base) has been compromised, an attacker could alter
+in the unlikely scenario the [binary repository](${binary_repo_url_base}) has been compromised, an attacker could alter
 both the .jar and the checksum. But checksum verification does provide some degree of protection
 against other attack scenarios.
 

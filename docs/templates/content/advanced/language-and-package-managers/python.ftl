@@ -10,7 +10,7 @@ ${solution_name} has two detectors for Python:
 
 The Pip detector discovers dependencies of Python projects.
 
-The Pip detector attempts to run on your project if either a setup.py file is found, or a requirements.txt file is provided using the [--detect.pip.requirements.path](../..Z/properties/detectors/pip/#pip-requirements-path-advanced) property.
+The Pip detector attempts to run on your project if either a setup.py file is found, or a requirements.txt file is provided using the [--detect.pip.requirements.path](../../properties/detectors/pip/#pip-requirements-path-advanced) property.
 
 The Pip detector also requires Python and pip executables:
 
