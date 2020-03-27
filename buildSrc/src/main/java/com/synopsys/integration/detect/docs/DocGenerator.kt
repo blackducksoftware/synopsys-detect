@@ -105,9 +105,10 @@ open class GenerateDocsTask : DefaultTask() {
         createFromFreemarker(templateProvider, outputDir, "detectors", DetectorsPage(buildless, build))
     }
 
+    //
     private fun handleProperties(templateProvider: TemplateProvider, outputDir: File, helpJson: HelpJsonData) {
         val superGroups = createSuperGroupLookup(helpJson)
-        val groupLocations = superGroups.entries.associate { it.key to it.value + "/" + it.key } //ex: superGroup/group
+        val groupLocations = superGroups.entries.associate { it.key to (it.value + "/" + it.key).toLowerCase() } //ex: superGroup/group
 
         //Updating the location on all the json options so that a new object with only 1 new property did not have to be created (and then populated) from the existing.
         helpJson.options.forEach {
@@ -121,7 +122,7 @@ open class GenerateDocsTask : DefaultTask() {
             val simple = group.value.filter { !deprecated.contains(it) && (StringUtils.isBlank(it.category) || it.category == "simple") }
             val advanced = group.value.filter { !simple.contains(it) && !deprecated.contains(it) }
             val superGroupName = superGroups[group.key] ?: error("Missing super group: ${group.key}")
-            val groupLocation = groupLocations[group.key]?.toLowerCase() ?: error("Missing group location: ${group.key}")
+            val groupLocation = groupLocations[group.key] ?: error("Missing group location: ${group.key}")
 
             advanced.forEach { property -> property.location += "-advanced" }
             deprecated.forEach { property -> property.location += "-deprecated" }
