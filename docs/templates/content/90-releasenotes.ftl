@@ -5,10 +5,10 @@
 * The ${solution_name} .jar file is now signed, enabling [code verification](../advanced/verifying/) by users.
 * [Simple proxy information](../advanced/language-and-package-managers/gradle/#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
 * Detect now creates a status file describing the results of the run which includes things like [issues, results and status codes.](../advanced/status-file/)
-* Property configuration table includes where property was resolved.
+* The property configuration table in the log now includes the origin of the property's value.
 * Added the property [detect.blackduck.signature.scanner.license.search](../properties/configuration/signature scanner/#signature-scanner-license-search-advanced).
 * Added the property [detect.blackduck.signature.scanner.individual.file.matching](../properties/configuration/signature scanner/#individual-file-matching-advanced).
-* If an executable returns a nonzero exit code, Detect will now log output automatically.
+* If an executable returns a nonzero exit code, Detect will now log the executable output automatically.
 * Added page for [decrecated properties](../properties/deprecated-properties/) in help.
 * Detect-generated risk reports now feature Synopsys logo and branding.
 
