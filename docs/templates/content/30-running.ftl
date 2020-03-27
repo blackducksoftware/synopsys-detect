@@ -193,7 +193,7 @@ Versions of Black Duck prior to 2018.12.4 accept only BDIO 1. Black Duck version
 accept either BDIO 1 or BDIO 2.
 By default, ${solution_name} produces BDIO 1 files.
 
-Use the [BDIO2 enabled property](../properties/configuration/paths/#bdio-2-enabled-advanced) to select BDIO 2 format.
+Use the [BDIO2 enabled property](../properties/configuration/paths/#bdio-2-enabled) to select BDIO 2 format.
 
 ## Running with ${polaris_product_name}
 

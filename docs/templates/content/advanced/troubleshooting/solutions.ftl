@@ -43,7 +43,7 @@ The detector search depth needs to be increased. The default value (0) limits th
 are located in subdirectories and/or there are sub-projects, this depth should be increased to enable ${solution_name} to find the relevant files, so it
 will run the appropriate detector(s).
 
-See [detector search depth](../../../properties/configuration/paths/#detector-search-depth-advanced) for more details.
+See [detector search depth](../../../properties/configuration/paths/#detector-search-depth) for more details.
 
 ## Docker Inspector error fails after logging: "The ${blackduck_product_name} url must be specified"
 
