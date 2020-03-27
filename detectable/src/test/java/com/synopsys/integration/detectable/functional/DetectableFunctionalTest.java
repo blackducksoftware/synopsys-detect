@@ -158,12 +158,20 @@ public abstract class DetectableFunctionalTest {
     }
 
     public void addExecutableOutput(@NotNull final ExecutableOutput executableOutput, @NotNull final String... command) {
-        addExecutableOutput(executableOutput, new HashMap<>(), command);
+        addExecutableOutput(getSourceDirectory(), executableOutput, command);
+    }
+
+    public void addExecutableOutput(@NotNull Path workingDirectory, @NotNull final ExecutableOutput executableOutput, @NotNull final String... command) {
+        addExecutableOutput(workingDirectory, executableOutput, new HashMap<>(), command);
     }
 
     public void addExecutableOutput(@NotNull final ExecutableOutput executableOutput, @NotNull final Map<String, String> environment, @NotNull final String... command) {
+        addExecutableOutput(getSourceDirectory(), executableOutput, environment, command);
+    }
+
+    public void addExecutableOutput(@NotNull Path workingDirectory, @NotNull final ExecutableOutput executableOutput, @NotNull final Map<String, String> environment, @NotNull final String... command) {
         final List<String> commandList = Arrays.asList(command);
-        final Executable executable = new Executable(sourceDirectory.toFile(), environment, commandList);
+        final Executable executable = new Executable(workingDirectory.toFile(), environment, commandList);
         executableRunner.addExecutableOutput(executable, executableOutput);
     }
 
@@ -171,6 +179,16 @@ public abstract class DetectableFunctionalTest {
     public ExecutableOutput createStandardOutput(final String... outputLines) {
         final String output = String.join(System.lineSeparator(), outputLines);
         return new ExecutableOutput("executable", 0, output, "");
+    }
+
+    @NotNull
+    public Path getSourceDirectory() {
+        return sourceDirectory;
+    }
+
+    @NotNull
+    public Path getOutputDirectory() {
+        return outputDirectory;
     }
 
     protected abstract void setup() throws IOException;
