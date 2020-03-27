@@ -118,7 +118,7 @@ open class GenerateDocsTask : DefaultTask() {
         val groupedOptions = helpJson.options.groupBy { it -> it.group }
         val splitGroupOptions = groupedOptions.map { group ->
             val deprecated = group.value.filter { it.deprecated }
-            val simple = group.value.filter { !deprecated.contains(it) && it.category == "simple" }
+            val simple = group.value.filter { !deprecated.contains(it) && (StringUtils.isBlank(it.category) || it.category == "simple") }
             val advanced = group.value.filter { !simple.contains(it) && !deprecated.contains(it) }
             val superGroupName = superGroups[group.key] ?: error("Missing super group: ${group.key}")
             val groupLocation = groupLocations[group.key] ?: error("Missing group location: ${group.key}")
