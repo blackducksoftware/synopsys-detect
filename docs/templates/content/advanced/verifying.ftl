@@ -14,7 +14,7 @@ using the Java *jarsigner* tool. In the event that the .jar has been tampered wi
 
 To verify the ${solution_name} .jar:
 
-jarsigner -verify {your ${solution_name} .jar file}
+jarsigner -verify -strict {your ${solution_name} .jar file}
 
 The output should be `jar verified.` (with no warnings).
 
