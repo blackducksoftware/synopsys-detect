@@ -34,6 +34,7 @@ import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFile
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 
 public class GraphParserTransformer {
+    //TODO - edit this to parse task-depends.dot
     public BitbakeGraph transform(final GraphParser graphParser, final BitbakeFileType bitbakeFileType) {
         final BitbakeGraph bitbakeGraph = new BitbakeGraph();
 
