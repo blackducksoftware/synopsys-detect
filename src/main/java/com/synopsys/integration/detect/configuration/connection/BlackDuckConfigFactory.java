@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.configuration.connection;
 
+import java.util.Optional;
 import java.util.concurrent.Executors;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
@@ -31,33 +32,40 @@ import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.util.ProxyUtil;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.SilentIntLogger;
+import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 public class BlackDuckConfigFactory {
-    private BlackDuckConnectionDetails blackDuckConnectionDetails;
+    private final BlackDuckConnectionDetails blackDuckConnectionDetails;
 
     public BlackDuckConfigFactory(final BlackDuckConnectionDetails blackDuckConnectionDetails) {
         this.blackDuckConnectionDetails = blackDuckConnectionDetails;
     }
 
-    public BlackDuckServerConfig createServerConfig(IntLogger logger) throws DetectUserFriendlyException {
-        if (logger == null) {
+    public BlackDuckServerConfig createServerConfig(final IntLogger intLogger) throws DetectUserFriendlyException {
+        final IntLogger logger;
+        if (intLogger == null) {
             logger = new SilentIntLogger();
+        } else {
+            logger = intLogger;
         }
-        ConnectionDetails connectionDetails = blackDuckConnectionDetails.getConnectionDetails();
+        final ConnectionDetails connectionDetails = blackDuckConnectionDetails.getConnectionDetails();
 
-        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = new BlackDuckServerConfigBuilder()
-                                                                        .setExecutorService(Executors.newFixedThreadPool(blackDuckConnectionDetails.getParallelProcessors()))
-                                                                        .setLogger(logger);
+        final BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = new BlackDuckServerConfigBuilder()
+                                                                              .setExecutorService(Executors.newFixedThreadPool(blackDuckConnectionDetails.getParallelProcessors()))
+                                                                              .setLogger(logger);
 
         blackDuckServerConfigBuilder.setProperties(blackDuckConnectionDetails.getBlackduckProperties().entrySet());
 
-        if (blackDuckConnectionDetails.getBlackDuckUrl().isPresent() && ProxyUtil.shouldIgnoreUrl(blackDuckConnectionDetails.getBlackDuckUrl().get(), connectionDetails.getIgnoredProxyHostPatterns(), logger)) {
+        final Optional<Boolean> shouldIgnore = blackDuckConnectionDetails.getBlackDuckUrl().map(blackduckUrl -> ProxyUtil.shouldIgnoreUrl(blackduckUrl, connectionDetails.getIgnoredProxyHostPatterns(), logger));
+        if (shouldIgnore.isPresent() && Boolean.TRUE.equals(shouldIgnore.get())) {
+            blackDuckServerConfigBuilder.setProxyInfo(ProxyInfo.NO_PROXY_INFO);
+        } else {
             blackDuckServerConfigBuilder.setProxyInfo(connectionDetails.getProxyInformation());
         }
 
         try {
             return blackDuckServerConfigBuilder.build();
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             throw new DetectUserFriendlyException("Failed to configure Black Duck server connection: " + e.getMessage(), e, ExitCodeType.FAILURE_CONFIGURATION);
         }
     }
