@@ -1,5 +1,9 @@
 # Release notes
 
+## Version 6.2.1
+### Resolved issues
+* Fixed issue where and exception would be thrown when generating a risk report if the user did not set the risk report output path explicitly. (IDETECT-1960)
+
 ## Version 6.2.0
 ### New features
 * The ${solution_name} .jar file is now signed, enabling [code verification](../advanced/verifying/) by users.
@@ -21,7 +25,7 @@
 * Resolved an issue where all transitive dependencies found by the [Pip inspector](../advanced/language-and-package-managers/python/#the-pip-detector) were being reported as direct dependencies (IDETECT-1893).
 * Resolved an issue where using pip version 20+ with the [Pip inspector](../advanced/language-and-package-managers/python/#the-pip-detector) caused a failure to import a dependency. [GitHub PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868)
 * Resolved the following vulnerabilities (IDETECT-1872):
-    * org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
+* org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
 * Resolved an issue where ${solution_name} had the potential to fail on projects that utilized Yarn workspaces (IDETECT-1916).
 * Note: Yarn workspaces are not currently supported. See [yarn workspace support](../advanced/language-and-package-managers/yarn/#yarn-workspace-support).
 * Resolved an issue in the Bazel Detector that caused it to fail for the maven_install rule when the tags field contained multiple tags with a mixture of formats (IDETECT-1925).
