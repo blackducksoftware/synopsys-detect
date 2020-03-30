@@ -55,7 +55,7 @@ public class CompileCommandParser {
         final List<String> commandList = parseCommandString(commandString, optionOverrides);
         return commandList;
     }
-    
+
     public List<String> parseCommandString(final String commandString, final Map<String, String> optionOverrides) {
         logger.trace(String.format("origCompileCommand         : %s", commandString));
         final String quotesRemovedCompileCommand = escapeQuotedWhitespace(commandString);
