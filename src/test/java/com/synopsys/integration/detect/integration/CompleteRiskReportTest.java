@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +44,16 @@ import com.synopsys.integration.detect.Application;
 @Tag("integration")
 public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
     @Test
-    public void testRiskReportIsPopulated() throws Exception {
+    public void testRiskReportWithoutPath() throws Exception {
+        testRiskReportIsPopulated(false);
+    }
+
+    @Test
+    public void testRiskReportWithPath() throws Exception {
+        testRiskReportIsPopulated(true);
+    }
+
+    public void testRiskReportIsPopulated(boolean includePath) throws Exception {
         final Path tempReportDirectoryPath = Files.createTempDirectory("junit_report");
         final File tempReportDirectory = tempReportDirectoryPath.toFile();
 
@@ -67,7 +77,9 @@ public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
 
         final List<String> detectArgs = getInitialArgs(projectName, projectVersionName);
         detectArgs.add("--detect.risk.report.pdf=true");
-        detectArgs.add("--detect.risk.report.pdf.path=" + tempReportDirectory.toString());
+        if (includePath) {
+            detectArgs.add("--detect.risk.report.pdf.path=" + tempReportDirectory.toString());
+        }
         Application.main(detectArgs.toArray(new String[0]));
 
         pdfFiles = getPdfFiles(tempReportDirectory);
