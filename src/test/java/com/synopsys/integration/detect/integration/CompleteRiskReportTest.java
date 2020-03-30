@@ -1,8 +1,8 @@
 /**
  * synopsys-detect
- *
+ * <p>
  * Copyright (c) 2020 Synopsys, Inc.
- *
+ * <p>
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
@@ -10,9 +10,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License. You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -22,24 +22,22 @@
  */
 package com.synopsys.integration.detect.integration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.detect.Application;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
-import com.synopsys.integration.detect.Application;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("integration")
 public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
@@ -53,36 +51,40 @@ public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
         testRiskReportIsPopulated(true);
     }
 
-    public void testRiskReportIsPopulated(boolean includePath) throws Exception {
+    public void testRiskReportIsPopulated(final boolean includePath) throws Exception {
         final Path tempReportDirectoryPath = Files.createTempDirectory("junit_report");
-        final File tempReportDirectory = tempReportDirectoryPath.toFile();
+        final File reportDirectory;
+        if (includePath) {
+            reportDirectory = tempReportDirectoryPath.toFile();
+        } else {
+            reportDirectory = new File(".");
+        }
 
         final String projectName = "synopsys-detect-junit";
         final String projectVersionName = "risk-report";
         final ProjectVersionWrapper projectVersionWrapper = assertProjectVersionReady(projectName, projectVersionName);
-
-        List<File> pdfFiles = getPdfFiles(tempReportDirectory);
+        List<File> pdfFiles = getPdfFiles(reportDirectory);
         assertEquals(0, pdfFiles.size());
-
-        reportService.createReportPdfFile(tempReportDirectory, projectVersionWrapper.getProjectView(), projectVersionWrapper.getProjectVersionView());
-        pdfFiles = getPdfFiles(tempReportDirectory);
+        reportService.createReportPdfFile(reportDirectory, projectVersionWrapper.getProjectView(), projectVersionWrapper.getProjectVersionView());
+        pdfFiles = getPdfFiles(reportDirectory);
         assertEquals(1, pdfFiles.size());
-
         final long initialFileLength = pdfFiles.get(0).length();
         assertTrue(initialFileLength > 0);
         FileUtils.deleteQuietly(pdfFiles.get(0));
-
-        pdfFiles = getPdfFiles(tempReportDirectory);
+        pdfFiles = getPdfFiles(reportDirectory);
         assertEquals(0, pdfFiles.size());
 
         final List<String> detectArgs = getInitialArgs(projectName, projectVersionName);
         detectArgs.add("--detect.risk.report.pdf=true");
         if (includePath) {
-            detectArgs.add("--detect.risk.report.pdf.path=" + tempReportDirectory.toString());
+            detectArgs.add("--detect.risk.report.pdf.path=" + reportDirectory.toString());
         }
+
+        detectArgs.add("--detect.tools=DETECTOR");
+        detectArgs.forEach(System.out::println);
         Application.main(detectArgs.toArray(new String[0]));
 
-        pdfFiles = getPdfFiles(tempReportDirectory);
+        pdfFiles = getPdfFiles(reportDirectory);
         assertEquals(1, pdfFiles.size());
         final long postLength = pdfFiles.get(0).length();
         assertTrue(postLength > initialFileLength);
@@ -92,8 +94,8 @@ public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
         final File[] files = directory.listFiles();
         if (files != null) {
             return Arrays.stream(files)
-                       .filter(file -> file.getName().endsWith(".pdf"))
-                       .collect(Collectors.toList());
+                    .filter(file -> file.getName().endsWith(".pdf"))
+                    .collect(Collectors.toList());
         } else {
             return Collections.emptyList();
         }
