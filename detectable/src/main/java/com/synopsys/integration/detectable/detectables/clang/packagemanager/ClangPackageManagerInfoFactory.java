@@ -25,6 +25,9 @@ package com.synopsys.integration.detectable.detectables.clang.packagemanager;
 import com.synopsys.integration.bdio.model.Forge;
 
 public class ClangPackageManagerInfoFactory {
+
+    private static final String VERSION_FLAG = "--version";
+
     public static ClangPackageManagerInfoFactory standardFactory() {
         return new ClangPackageManagerInfoFactory();
     }
@@ -34,7 +37,7 @@ public class ClangPackageManagerInfoFactory {
         rpm.setName("rpm");
         rpm.setCmd("rpm");
         rpm.setForge(Forge.CENTOS, Forge.FEDORA, Forge.REDHAT);
-        rpm.setPresenceCheckArguments("--version");
+        rpm.setPresenceCheckArguments(VERSION_FLAG);
         rpm.setPresenceCheckExpectedText("RPM version");
         rpm.setGetOwnerArguments("-qf", "--queryformat=\\{ epoch: \\\"%{E}\\\", name: \\\"%{N}\\\", version: \\\"%{V}-%{R}\\\", arch: \\\"%{ARCH}\\\" \\}");
         return rpm.build();
@@ -45,7 +48,7 @@ public class ClangPackageManagerInfoFactory {
         dpkg.setName("dpkg");
         dpkg.setCmd("dpkg");
         dpkg.setForge(Forge.UBUNTU, Forge.DEBIAN);
-        dpkg.setPresenceCheckArguments("--version");
+        dpkg.setPresenceCheckArguments(VERSION_FLAG);
         dpkg.setPresenceCheckExpectedText("package management program version");
         dpkg.setGetOwnerArguments("-S");
         dpkg.setPackageInfoArguments("-s");
@@ -57,7 +60,7 @@ public class ClangPackageManagerInfoFactory {
         apk.setName("apk");
         apk.setCmd("apk");
         apk.setForge(Forge.ALPINE);
-        apk.setPresenceCheckArguments("--version");
+        apk.setPresenceCheckArguments(VERSION_FLAG);
         apk.setPresenceCheckExpectedText("apk-tools ");
         apk.setGetOwnerArguments("info", "--who-owns");
         apk.setArchitectureArguments("info", "--print-arch");
