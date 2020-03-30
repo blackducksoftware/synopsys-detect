@@ -19,7 +19,7 @@ Results from buildless mode may be less accurate than results from build mode.
 ## Choosing the working directory
 
 You can run ${solution_name} from any directory. If you are not running ${solution_name} from the project directory,
-provide the project directory using the [source path property](../properties/configuration/paths/#source-path). When that property is not set,
+provide the project directory using the [source path property](../properties/configuration/paths/#source-path-advanced). When that property is not set,
 ${solution_name} assumes the current working directory is the project directory.
 
 ## Choosing a run method (script or .jar)
@@ -174,7 +174,7 @@ ${solution_name} can be configured to perform additional tasks, including the fo
 * Run the [${blackduck_binary_scanner_name}](../properties/configuration/signature scanner/#binary-scan-target) on a given binary files.
 * Run the ${dockerinspector_name} on a given [Docker image](../advanced/language-and-package-managers/docker-images/).
 * Generate a [report](../properties/configuration/report/).
-* Fail on [policy violation](../properties/configuration/project/#fail-on-policy-violation-severities).
+* Fail on [policy violation](../properties/configuration/project/#fail-on-policy-violation-severities-advanced).
 
 Refer to [${blackduck_product_name} Server properties](../properties/configuration/blackduck server/)
 and [${blackduck_signature_scanner_name} properties](../properties/configuration/signature scanner/) for details.
@@ -183,7 +183,7 @@ and [${blackduck_signature_scanner_name} properties](../properties/configuration
 
 If you do not have a ${blackduck_product_name} instance, or if your network is down, you can still run ${solution_name} in offline mode.
 In offline mode, ${solution_name} creates the BDIO content and the dry run ${blackduck_signature_scan_act} output files without attempting to upload them to ${blackduck_product_name}.
-You can run ${solution_name} in offline mode using the [offline mode property](../properties/configuration/blackduck server/#offline-mode).
+You can run ${solution_name} in offline mode using the [offline mode property](../properties/configuration/blackduck server/#offline-mode-advanced).
 
 ### BDIO format
 

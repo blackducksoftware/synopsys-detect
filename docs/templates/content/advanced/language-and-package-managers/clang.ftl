@@ -13,15 +13,15 @@ There are multiple C/C++ build tools that are capable of generating a JSON compi
 For example, some versions of CMake generate a JSON compilation database
 when run with the following option:
 
-    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+-DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
 The Clang detector runs when it finds a compile_commands.json file
 in the project directory. If the compile_commands.json file resides in a sub-directory,
-adjust the [detector search depth](../../properties/configuration/paths/#detector-search-depth)
+adjust the [detector search depth](../../../properties/configuration/paths/#detector-search-depth)
 to enable ${solution_name} to find it. If the compile_commands.json file
 resides in a normally excluded subdirectory (for example: ./build),
-you can turn off the [default detector search exclusions](../../properties/configuration/paths/#detector-exclude-default-directories-advanced),
-or fine tune the [detector search directory exclusion patterns](../../properties/configuration/paths/#detector-directory-patterns-exclusions-advanced).
+you can turn off the [default detector search exclusions](../../../properties/configuration/paths/#detector-exclude-default-directories-advanced),
+or fine tune the [detector search directory exclusion patterns](../../../properties/configuration/paths/#detector-directory-patterns-exclusions-advanced).
 
 For each compile command in the compile_commands.json file, the Clang detector
 runs a version of the command that is modified to ensure that it does

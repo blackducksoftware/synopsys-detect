@@ -1,14 +1,18 @@
 # Release notes
 
+## Version 6.2.1
+### Resolved issues
+* Fixed issue where and exception would be thrown when generating a risk report if the user did not set the risk report output path explicitly. (IDETECT-1960)
+
 ## Version 6.2.0
 ### New features
 * The ${solution_name} .jar file is now signed, enabling [code verification](../advanced/verifying/) by users.
 * [Simple proxy information](../advanced/language-and-package-managers/gradle/#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
 * Detect now creates a status file describing the results of the run which includes things like [issues, results and status codes.](../advanced/status-file/)
-* Property configuration table includes where property was resolved.
+* The property configuration table in the log now includes the origin of the property's value.
 * Added the property [detect.blackduck.signature.scanner.license.search](../properties/configuration/signature scanner/#signature-scanner-license-search-advanced).
 * Added the property [detect.blackduck.signature.scanner.individual.file.matching](../properties/configuration/signature scanner/#individual-file-matching-advanced).
-* If an executable returns a nonzero exit code, Detect will now log output automatically.
+* If an executable returns a nonzero exit code, Detect will now log the executable output automatically.
 * Added page for [decrecated properties](../properties/deprecated-properties/) in help.
 * Detect-generated risk reports now feature Synopsys logo and branding.
 
@@ -21,9 +25,9 @@
 * Resolved an issue where all transitive dependencies found by the [Pip inspector](../advanced/language-and-package-managers/python/#the-pip-detector) were being reported as direct dependencies (IDETECT-1893).
 * Resolved an issue where using pip version 20+ with the [Pip inspector](../advanced/language-and-package-managers/python/#the-pip-detector) caused a failure to import a dependency. [GitHub PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868)
 * Resolved the following vulnerabilities (IDETECT-1872):
-    * org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
+* org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
 * Resolved an issue where ${solution_name} had the potential to fail on projects that utilized Yarn workspaces (IDETECT-1916).
-    * Note: Yarn workspaces are not currently supported. See [yarn workspace support](../advanced/language-and-package-managers/yarn/#yarn-workspace-support).
+* Note: Yarn workspaces are not currently supported. See [yarn workspace support](../advanced/language-and-package-managers/yarn/#yarn-workspace-support).
 * Resolved an issue in the Bazel Detector that caused it to fail for the maven_install rule when the tags field contained multiple tags with a mixture of formats (IDETECT-1925).
 * When parsing package.xml files, Detect will no longer raise a SAXParseException when the file contains a doctype declaration, and will continue parsing the rest of the file (IDETECT-1866).
 * Resolved an issue that could cause generation of an invalid Black Duck Input/Output (BDIO) file when the only differences between two component names/versions are non-alphanumeric characters (IDETECT-1856).
@@ -31,11 +35,11 @@
 ## Version 6.1.0
 ### New features
 * Added the property [detect.bdio2.enabled](../properties/configuration/paths/#bdio-2-enabled).
-* Added the property [detect.pip.only.project.tree](../properties/Detectors/pip/#pip-include-only-project-tree).
-* Added the property [detect.bitbake.search.depth](../properties/Detectors/bitbake/#bitbake-search-depth).
-* Added the property [detect.bazel.cquery.options](../properties/Detectors/bazel/#bazel-cquery-additional-options).
-* Added the property [detect.docker.image.id](../properties/Detectors/docker/#docker-image-id).
-* Added the property [detect.docker.platform.top.layer.id](../properties/Detectors/docker/#platform-top-layer-id-advanced).
+* Added the property [detect.pip.only.project.tree](../properties/detectors/pip/#pip-include-only-project-tree).
+* Added the property [detect.bitbake.search.depth](../properties/detectors/bitbake/#bitbake-search-depth).
+* Added the property [detect.bazel.cquery.options](../properties/detectors/bazel/#bazel-cquery-additional-options).
+* Added the property [detect.docker.image.id](../properties/detectors/docker/#docker-image-id).
+* Added the property [detect.docker.platform.top.layer.id](../properties/detectors/docker/#platform-top-layer-id-advanced).
 * Added the property [detect.bom.aggregate.remediation.mode](../properties/configuration/project/#bdio-aggregate-remediation-mode-advanced)
 
 ### Changed features

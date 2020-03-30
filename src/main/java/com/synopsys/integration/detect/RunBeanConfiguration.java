@@ -112,8 +112,14 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public FileFinder fileFinder() {
+    public FileFinder fullFileFinder() {
         return new SimpleFileFinder();
+    }
+
+    //Be mindful of using this file finder, it filters based on detector exclusions, it's VERY DIFFERENT from the FULL file finder above.
+    @Bean
+    public FileFinder filteredFileFinder() {
+        return detectConfigurationFactory.createFilteredFileFinder(directoryManager.getSourceDirectory().toPath());
     }
 
     @Bean
@@ -165,7 +171,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public SimpleExecutableFinder simpleExecutableFinder() {
-        return SimpleExecutableFinder.forCurrentOperatingSystem(fileFinder());
+        return SimpleExecutableFinder.forCurrentOperatingSystem(fullFileFinder());
     }
 
     @Bean
@@ -192,7 +198,7 @@ public class RunBeanConfiguration {
     @Bean
     public DockerInspectorResolver dockerInspectorResolver() {
         final DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver());
-        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fileFinder(), dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
+        return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fullFileFinder(), dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
     }
 
     @Bean()
@@ -212,7 +218,7 @@ public class RunBeanConfiguration {
             final NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactResolver());
             locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion().orElse(null));
         }
-        return new LocatorNugetInspectorResolver(detectExecutableResolver(), executableRunner(), detectInfo, fileFinder(), installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator);
+        return new LocatorNugetInspectorResolver(detectExecutableResolver(), executableRunner(), detectInfo, fullFileFinder(), installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator);
     }
 
     @Bean()
@@ -227,7 +233,7 @@ public class RunBeanConfiguration {
 
     @Bean()
     public DetectableFactory detectableFactory() {
-        return new DetectableFactory(fileFinder(), executableRunner(), externalIdFactory(), gson);
+        return new DetectableFactory(filteredFileFinder(), executableRunner(), externalIdFactory(), gson);
     }
 
     @Bean()
@@ -240,6 +246,6 @@ public class RunBeanConfiguration {
     @Lazy
     @Bean()
     public BlackDuckSignatureScanner blackDuckSignatureScanner(final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, final ScanBatchRunner scanBatchRunner, final BlackDuckServerConfig blackDuckServerConfig) {
-        return new BlackDuckSignatureScanner(directoryManager, fileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, blackDuckServerConfig);
+        return new BlackDuckSignatureScanner(directoryManager, fullFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, blackDuckServerConfig, scanBatchRunner, blackDuckServerConfig);
     }
 }
