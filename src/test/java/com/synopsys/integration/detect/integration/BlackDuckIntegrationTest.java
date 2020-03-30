@@ -37,7 +37,6 @@ import org.junit.jupiter.api.BeforeAll;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.api.generated.view.VersionBomComponentView;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
@@ -80,6 +79,7 @@ public abstract class BlackDuckIntegrationTest {
         blackDuckServerConfigBuilder.setUrl(System.getenv().get(TEST_BLACKDUCK_URL_KEY));
         blackDuckServerConfigBuilder.setUsername(System.getenv().get(TEST_BLACKDUCK_USERNAME_KEY));
         blackDuckServerConfigBuilder.setPassword(System.getenv().get(TEST_BLACKDUCK_PASSWORD_KEY));
+        blackDuckServerConfigBuilder.setTrustCert(true);
         blackDuckServerConfigBuilder.setTimeoutInSeconds(5 * 60);
 
         blackDuckServicesFactory = blackDuckServerConfigBuilder.build().createBlackDuckServicesFactory(logger);
