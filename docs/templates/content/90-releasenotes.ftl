@@ -2,45 +2,45 @@
 
 ## Version 6.2.0
 ### New features
-* The ${solution_name} .jar file is now signed, enabling [code verification](/advanced/verifying/) by users.
-* [Simple proxy information](/advanced/language-and-package-managers/gradle/#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
-* Detect now creates a status file describing the results of the run which includes things like [issues, results and status codes.](/advanced/status-file/)
+* The ${solution_name} .jar file is now signed, enabling [code verification](../advanced/verifying/) by users.
+* [Simple proxy information](../advanced/language-and-package-managers/gradle/#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
+* Detect now creates a status file describing the results of the run which includes things like [issues, results and status codes.](../advanced/status-file/)
 * Property configuration table includes where property was resolved.
-* Added the property [detect.blackduck.signature.scanner.license.search](/properties/configuration/signature scanner/#signature-scanner-license-search-advanced).
-* Added the property [detect.blackduck.signature.scanner.individual.file.matching](/properties/configuration/signature scanner/#individual-file-matching-advanced).
+* Added the property [detect.blackduck.signature.scanner.license.search](../properties/configuration/signature scanner/#signature-scanner-license-search-advanced).
+* Added the property [detect.blackduck.signature.scanner.individual.file.matching](../properties/configuration/signature scanner/#individual-file-matching-advanced).
 * If an executable returns a nonzero exit code, Detect will now log output automatically.
-* Added page for [decrecated properties](/properties/deprecated-properties/) in help.
+* Added page for [decrecated properties](../properties/deprecated-properties/) in help.
 * Detect-generated risk reports now feature Synopsys logo and branding.
 
 ### Changed features
-* The [PipEnv Detector](/advanced/language-and-package-managers/python/#pipenv-detector) now parses a json representation of the dependency tree.
+* The [PipEnv Detector](../advanced/language-and-package-managers/python/#pipenv-detector) now parses a json representation of the dependency tree.
 * Powershell download speed increased.
 
 ### Resolved issues
 * Resolved an issue where the download URL for ${solution_name} was being set to an internal URL upon release (IDETECT-1847).
-* Resolved an issue where all transitive dependencies found by the [Pip inspector](/advanced/language-and-package-managers/python/#the-pip-detector) were being reported as direct dependencies (IDETECT-1893).
-* Resolved an issue where using pip version 20+ with the [Pip inspector](/advanced/language-and-package-managers/python/#the-pip-detector) caused a failure to import a dependency. [GitHub PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868)
+* Resolved an issue where all transitive dependencies found by the [Pip inspector](../advanced/language-and-package-managers/python/#the-pip-detector) were being reported as direct dependencies (IDETECT-1893).
+* Resolved an issue where using pip version 20+ with the [Pip inspector](../advanced/language-and-package-managers/python/#the-pip-detector) caused a failure to import a dependency. [GitHub PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868)
 * Resolved the following vulnerabilities (IDETECT-1872):
     * org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
 * Resolved an issue where ${solution_name} had the potential to fail on projects that utilized Yarn workspaces (IDETECT-1916).
-    * Note: Yarn workspaces are not currently supported. See [yarn workspace support](/advanced/language-and-package-managers/yarn/#yarn-workspace-support).
+    * Note: Yarn workspaces are not currently supported. See [yarn workspace support](../advanced/language-and-package-managers/yarn/#yarn-workspace-support).
 * Resolved an issue in the Bazel Detector that caused it to fail for the maven_install rule when the tags field contained multiple tags with a mixture of formats (IDETECT-1925).
 * When parsing package.xml files, Detect will no longer raise a SAXParseException when the file contains a doctype declaration, and will continue parsing the rest of the file (IDETECT-1866).
 * Resolved an issue that could cause generation of an invalid Black Duck Input/Output (BDIO) file when the only differences between two component names/versions are non-alphanumeric characters (IDETECT-1856).
 
 ## Version 6.1.0
 ### New features
-* Added the property [detect.bdio2.enabled](/properties/configuration/paths/#bdio-2-enabled).
-* Added the property [detect.pip.only.project.tree](/properties/detectors/pip/#pip-include-only-project-tree).
-* Added the property [detect.bitbake.search.depth](/properties/detectors/bitbake/#bitbake-search-depth).
-* Added the property [detect.bazel.cquery.options](/properties/detectors/bazel/#bazel-cquery-additional-options).
-* Added the property [detect.docker.image.id](/properties/detectors/docker/#docker-image-id).
-* Added the property [detect.docker.platform.top.layer.id](/properties/detectors/docker/#platform-top-layer-id-advanced).
-* Added the property [detect.bom.aggregate.remediation.mode](/properties/configuration/project/#bdio-aggregate-remediation-mode-advanced)
+* Added the property [detect.bdio2.enabled](../properties/configuration/paths/#bdio-2-enabled).
+* Added the property [detect.pip.only.project.tree](../properties/Detectors/pip/#pip-include-only-project-tree).
+* Added the property [detect.bitbake.search.depth](../properties/Detectors/bitbake/#bitbake-search-depth).
+* Added the property [detect.bazel.cquery.options](../properties/Detectors/bazel/#bazel-cquery-additional-options).
+* Added the property [detect.docker.image.id](../properties/Detectors/docker/#docker-image-id).
+* Added the property [detect.docker.platform.top.layer.id](../properties/Detectors/docker/#platform-top-layer-id-advanced).
+* Added the property [detect.bom.aggregate.remediation.mode](../properties/configuration/project/#bdio-aggregate-remediation-mode-advanced)
 
 ### Changed features
 * Deprecated all ${polaris_product_name}-related properties.
-* Added [wildcard support](/advanced/includeexcludewildcards/) for several include/exclude list properties.
+* Added [wildcard support](../advanced/includeexcludewildcards/) for several include/exclude list properties.
 * Improved the structure of the dependency information produced by the Yarn detector by changing its approach. It now parses dependency information from yarn.lock and package.json, instead of running the yarn command. Since the yarn command is no longer executed, the detect.yarn.path property has been removed.
 * Improved match accuracy for Bitbake projects by improving external ID generation for dependencies referenced using Git protocols, and dependencies referenced with an epoch and/or revision.
 * Improved the reliability of the Bitbake detector by generating recipe-depends.dot and package-depends.dot files the source directory, instead of a temporary directory.

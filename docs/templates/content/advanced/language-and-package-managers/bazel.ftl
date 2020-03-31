@@ -11,13 +11,13 @@ The Bazel tool also requires a bazel executable on $PATH.
 
 ${solution_name} attempts to determine the workspace dependency rule (*maven_jar* or *maven_install*) from the WORKSPACE file.
 In case it cannot, you can specify which rule you use with the Bazel dependency type property.
-Refer to [Properties](/properties/detectors/bazel/) for details.
+Refer to [Properties](../../properties/Detectors/bazel/) for details.
 
 ## Processing for the *maven_install* workspace rule
 
 The Bazel tool runs a bazel cquery on the given target to produce output from which it can parse artifact details such as group, artifact, and version for dependencies.
 
-The following is an example using commands similar to those that ${solution_name} runs, but from the command line of how ${solution_name}’s Bazel detector currently identifies components.
+The following is an example using commands similar to those that ${solution_name} runs, but from the command line of how ${solution_name}'s Bazel detector currently identifies components.
 ```
 $ bazel cquery --noimplicit_deps 'kind(j.*import, deps(//tests/integration:ArtifactExclusionsTest))' --output build 2>&1 | grep maven_coordinates
 tags = ["maven_coordinates=com.google.guava:guava:27.0-jre"],
@@ -36,7 +36,7 @@ Then, it parses the group/artifact/version details from the values of the maven_
 
 The Bazel tool runs a bazel query on the given target to get a list of jar dependencies. On each jar dependency, the Bazel tool runs another bazel query to get its artifact details: group, artifact, and version.
 
-The following is an example using the equivalent commands that ${solution_name} runs, but from the command line of how ${solution_name}’s Bazel detector currently identifies components.
+The following is an example using the equivalent commands that ${solution_name} runs, but from the command line of how ${solution_name}'s Bazel detector currently identifies components.
 First, it gets a list of dependencies:
 ```
 $ bazel query 'filter("@.*:jar", deps(//:ProjectRunner))'
