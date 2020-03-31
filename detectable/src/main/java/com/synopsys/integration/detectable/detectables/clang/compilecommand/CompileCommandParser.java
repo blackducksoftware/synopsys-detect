@@ -56,7 +56,6 @@ public class CompileCommandParser {
         return commandList;
     }
 
-    // This method will be used in future CMake support (in addition to CLang)
     public List<String> parseCommandString(final String commandString, final Map<String, String> optionOverrides) {
         logger.trace(String.format("origCompileCommand         : %s", commandString));
         final String quotesRemovedCompileCommand = escapeQuotedWhitespace(commandString);
@@ -90,7 +89,9 @@ public class CompileCommandParser {
     }
 
     private String restoreWhitespace(final String givenString) {
-        final String newString = givenString.replaceAll(ESCAPE_SEQUENCE_FOR_SPACE_CHAR, SPACE_CHAR_AS_STRING).replaceAll(ESCAPE_SEQUENCE_FOR_TAB_CHAR, TAB_CHAR_AS_STRING);
+        final String newString = givenString
+                                     .replace(ESCAPE_SEQUENCE_FOR_SPACE_CHAR, SPACE_CHAR_AS_STRING)
+                                     .replace(ESCAPE_SEQUENCE_FOR_TAB_CHAR, TAB_CHAR_AS_STRING);
         logger.trace(String.format("restoreWhitespace() changed %s to %s", givenString, newString));
         return newString;
     }
@@ -103,38 +104,74 @@ public class CompileCommandParser {
 
     private String escapeQuotedWhitespace(final String givenString) {
         final StringBuilder newString = new StringBuilder();
-        boolean lastCharWasEscapeChar = false;
-        boolean inQuotes = false;
-        boolean quoteTypeIsDouble = false;
+        final ParserState parserState = new ParserState();
         for (int i = 0; i < givenString.length(); i++) {
             final char c = givenString.charAt(i);
-            if (!inQuotes) {
-                if (!lastCharWasEscapeChar && (c == SINGLE_QUOTE_CHAR)) {
-                    inQuotes = true;
-                    quoteTypeIsDouble = false;
-                } else if (!lastCharWasEscapeChar && (c == DOUBLE_QUOTE_CHAR)) {
-                    inQuotes = true;
-                    quoteTypeIsDouble = true;
-                } else {
-                    newString.append(c);
-                }
+            if (parserState.isInQuotes()) {
+                processQuotedChar(parserState, c, newString);
             } else {
-                // Currently inside a quoted substring
-                if (!lastCharWasEscapeChar && (c == SINGLE_QUOTE_CHAR) && !quoteTypeIsDouble) {
-                    inQuotes = false;
-                } else if (!lastCharWasEscapeChar && (c == DOUBLE_QUOTE_CHAR) && quoteTypeIsDouble) {
-                    inQuotes = false;
-                } else if (c == SPACE_CHAR) {
-                    newString.append(ESCAPE_SEQUENCE_FOR_SPACE_CHAR);
-                } else if (c == TAB_CHAR) {
-                    newString.append(ESCAPE_SEQUENCE_FOR_TAB_CHAR);
-                } else {
-                    newString.append(c);
-                }
+                processNonQuotedChar(parserState, c, newString);
             }
-            lastCharWasEscapeChar = (c == ESCAPE_CHAR);
+            parserState.setLastCharWasEscapeChar(c == ESCAPE_CHAR);
         }
         logger.trace(String.format("escapeQuotedWhitespace() changed %s to %s", givenString, newString.toString()));
         return newString.toString();
+    }
+
+    private void processQuotedChar(final ParserState parserState, final char c, final StringBuilder newString) {
+        // Currently inside a quoted substring
+        if (!parserState.isLastCharEscapeChar() && (c == SINGLE_QUOTE_CHAR) && !parserState.isDoubleQuoteType()) {
+            parserState.setInQuotes(false);
+        } else if (!parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && parserState.isDoubleQuoteType()) {
+            parserState.setInQuotes(false);
+        } else if (c == SPACE_CHAR) {
+            newString.append(ESCAPE_SEQUENCE_FOR_SPACE_CHAR);
+        } else if (c == TAB_CHAR) {
+            newString.append(ESCAPE_SEQUENCE_FOR_TAB_CHAR);
+        } else {
+            newString.append(c);
+        }
+    }
+
+    private void processNonQuotedChar(final ParserState parserState, final char c, final StringBuilder newString) {
+        if (!parserState.isLastCharEscapeChar() && (c == SINGLE_QUOTE_CHAR)) {
+            parserState.setInQuotes(true);
+            parserState.setQuoteTypeIsDouble(false);
+        } else if (!parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR)) {
+            parserState.setInQuotes(true);
+            parserState.setQuoteTypeIsDouble(true);
+        } else {
+            newString.append(c);
+        }
+    }
+
+    private class ParserState {
+        private boolean lastCharWasEscapeChar = false;
+        private boolean inQuotes = false;
+        private boolean quoteTypeIsDouble = false;
+
+        public boolean isLastCharEscapeChar() {
+            return lastCharWasEscapeChar;
+        }
+
+        public boolean isInQuotes() {
+            return inQuotes;
+        }
+
+        public boolean isDoubleQuoteType() {
+            return quoteTypeIsDouble;
+        }
+
+        public void setLastCharWasEscapeChar(final boolean lastCharWasEscapeChar) {
+            this.lastCharWasEscapeChar = lastCharWasEscapeChar;
+        }
+
+        public void setInQuotes(final boolean inQuotes) {
+            this.inQuotes = inQuotes;
+        }
+
+        public void setQuoteTypeIsDouble(final boolean quoteTypeIsDouble) {
+            this.quoteTypeIsDouble = quoteTypeIsDouble;
+        }
     }
 }

@@ -28,8 +28,8 @@ public class BazelProjectNameGenerator {
         String projectName = bazelTarget
                                  .replaceAll("^//", "")
                                  .replaceAll("^:", "")
-                                 .replaceAll("/", "_")
-                                 .replaceAll(":", "_");
+                                 .replace("/", "_")
+                                 .replace(":", "_");
         return projectName;
     }
 }
