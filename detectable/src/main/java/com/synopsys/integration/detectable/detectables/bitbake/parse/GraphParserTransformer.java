@@ -34,27 +34,35 @@ import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFile
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 
 public class GraphParserTransformer {
-    //TODO - edit this to parse task-depends.dot
     public BitbakeGraph transform(final GraphParser graphParser, final BitbakeFileType bitbakeFileType) {
         final BitbakeGraph bitbakeGraph = new BitbakeGraph();
 
         for (final GraphNode graphNode : graphParser.getNodes().values()) {
-            final String name = getNameFromNode(graphNode);
+            final String name = getNameFromNode(graphNode, bitbakeFileType);
             final String version = getVersionFromNode(graphNode, bitbakeFileType).orElse(null);
-            bitbakeGraph.addNode(name, version);
+            if (version != null) {
+                bitbakeGraph.addNode(name, version);
+            }
         }
 
         for (final GraphEdge graphEdge : graphParser.getEdges().values()) {
-            final String parent = getNameFromNode(graphEdge.getNode1());
-            final String child = getNameFromNode(graphEdge.getNode2());
-            bitbakeGraph.addChild(parent, child);
+            final String parent = getNameFromNode(graphEdge.getNode1(), bitbakeFileType);
+            final String child = getNameFromNode(graphEdge.getNode2(), bitbakeFileType);
+            if (!parent.equals(child))
+                bitbakeGraph.addChild(parent, child);
         }
 
         return bitbakeGraph;
     }
 
-    private String getNameFromNode(final GraphNode graphNode) {
-        return graphNode.getId().replaceAll("\"", "");
+    private String getNameFromNode(final GraphNode graphNode, final BitbakeFileType bitbakeFileType) {
+        String nodeId = graphNode.getId();
+
+        if (bitbakeFileType.equals(BitbakeFileType.TASK_DEPENDS)) {
+            String[] nodeIdPieces = nodeId.split(".do_");
+            return nodeIdPieces[0].replaceAll("\"", "");
+        }
+        return nodeId.replaceAll("\"", "");
     }
 
     private Optional<String> getVersionFromNode(final GraphNode graphNode, final BitbakeFileType bitbakeFileType) {
@@ -74,7 +82,7 @@ public class GraphParserTransformer {
     }
 
     private String getVersionFromLabel(final String label, final BitbakeFileType bitbakeFileType) {
-        if (bitbakeFileType.equals(BitbakeFileType.RECIPE_DEPENDS)) {
+        if (bitbakeFileType.equals(BitbakeFileType.TASK_DEPENDS) || bitbakeFileType.equals(BitbakeFileType.RECIPE_DEPENDS)) {
             final String[] components = label.split("\\\\n:|\\\\n");
             return components[1];
         } else if (bitbakeFileType.equals(BitbakeFileType.PACKAGE_DEPENDS)) {
