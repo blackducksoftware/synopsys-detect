@@ -107,10 +107,10 @@ public class CompileCommandParser {
         final ParserState parserState = new ParserState();
         for (int i = 0; i < givenString.length(); i++) {
             final char c = givenString.charAt(i);
-            if (!parserState.isInQuotes()) {
-                processNonQuotedChar(parserState, c, newString);
-            } else {
+            if (parserState.isInQuotes()) {
                 processQuotedChar(parserState, c, newString);
+            } else {
+                processNonQuotedChar(parserState, c, newString);
             }
             parserState.setLastCharWasEscapeChar(c == ESCAPE_CHAR);
         }
@@ -120,9 +120,9 @@ public class CompileCommandParser {
 
     private void processQuotedChar(final ParserState parserState, final char c, final StringBuilder newString) {
         // Currently inside a quoted substring
-        if (!parserState.isLastCharWasEscapeChar() && (c == SINGLE_QUOTE_CHAR) && !parserState.isQuoteTypeIsDouble()) {
+        if (!parserState.isLastCharEscapeChar() && (c == SINGLE_QUOTE_CHAR) && !parserState.isDoubleQuoteType()) {
             parserState.setInQuotes(false);
-        } else if (!parserState.isLastCharWasEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && parserState.isQuoteTypeIsDouble()) {
+        } else if (!parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && parserState.isDoubleQuoteType()) {
             parserState.setInQuotes(false);
         } else if (c == SPACE_CHAR) {
             newString.append(ESCAPE_SEQUENCE_FOR_SPACE_CHAR);
@@ -134,10 +134,10 @@ public class CompileCommandParser {
     }
 
     private void processNonQuotedChar(final ParserState parserState, final char c, final StringBuilder newString) {
-        if (!parserState.isLastCharWasEscapeChar() && (c == SINGLE_QUOTE_CHAR)) {
+        if (!parserState.isLastCharEscapeChar() && (c == SINGLE_QUOTE_CHAR)) {
             parserState.setInQuotes(true);
             parserState.setQuoteTypeIsDouble(false);
-        } else if (!parserState.isLastCharWasEscapeChar() && (c == DOUBLE_QUOTE_CHAR)) {
+        } else if (!parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR)) {
             parserState.setInQuotes(true);
             parserState.setQuoteTypeIsDouble(true);
         } else {
@@ -150,7 +150,7 @@ public class CompileCommandParser {
         private boolean inQuotes = false;
         private boolean quoteTypeIsDouble = false;
 
-        public boolean isLastCharWasEscapeChar() {
+        public boolean isLastCharEscapeChar() {
             return lastCharWasEscapeChar;
         }
 
@@ -158,7 +158,7 @@ public class CompileCommandParser {
             return inQuotes;
         }
 
-        public boolean isQuoteTypeIsDouble() {
+        public boolean isDoubleQuoteType() {
             return quoteTypeIsDouble;
         }
 
