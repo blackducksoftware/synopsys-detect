@@ -153,7 +153,7 @@ public class GenerateDocsTask extends DefaultTask {
 
         // example: superGroup/key
         final Map<String, String> groupLocations = superGroups.entrySet().stream()
-                                                       .collect(Collectors.toMap(Map.Entry::getKey, it -> String.format("%s/%s", it.getValue(), it.getKey())));
+                                                       .collect(Collectors.toMap(Map.Entry::getKey, it -> String.format("%s/%s", it.getValue(), it.getKey()).toLowerCase()));
 
         // Updating the location on all the json options so that a new object with only 1 new property did not have to be created (and then populated) from the existing.
         for (final HelpJsonOption helpJsonOption : helpJson.getOptions()) {
@@ -173,7 +173,7 @@ public class GenerateDocsTask extends DefaultTask {
                                                         .collect(Collectors.toList());
 
             final List<HelpJsonOption> simple = group.getValue().stream()
-                                                    .filter(helpJsonObject -> !deprecated.contains(helpJsonObject) && "simple".equals(helpJsonObject.getCategory()))
+                                                    .filter(helpJsonObject -> !deprecated.contains(helpJsonObject) && (StringUtils.isBlank(helpJsonObject.getCategory()) || "simple".equals(helpJsonObject.getCategory())))
                                                     .collect(Collectors.toList());
 
             final List<HelpJsonOption> advanced = group.getValue().stream()
@@ -193,7 +193,7 @@ public class GenerateDocsTask extends DefaultTask {
 
         final File propertiesFolder = new File(outputDir, "properties");
         for (final SplitGroup group : splitGroupOptions) {
-            final File superGroupFolder = new File(propertiesFolder, group.getSuperGroup());
+            final File superGroupFolder = new File(propertiesFolder, group.getSuperGroup().toLowerCase());
             final File targetMarkdown = new File(superGroupFolder, group.getGroupName() + ".md");
             createFromFreemarker(templateProvider, "property-group.ftl", targetMarkdown, group);
         }
