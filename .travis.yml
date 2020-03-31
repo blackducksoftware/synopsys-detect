@@ -27,7 +27,7 @@ notifications:
       - starlabs@synopsys.com
 
 script:
-  - "./gradlew clean build jacocoTestReport coveralls sonarqube testBattery --stacktrace --info --debug --scan"
+  - "./gradlew clean build jacocoTestReport coveralls sonarqube testBattery --stacktrace --info --debug"
 
 after_success:
   - bash <(curl -s https://copilot.blackducksoftware.com/ci/travis/scripts/upload)
