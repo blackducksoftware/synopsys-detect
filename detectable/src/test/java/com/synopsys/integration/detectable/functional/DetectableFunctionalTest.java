@@ -36,6 +36,8 @@ import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -50,6 +52,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectables.bitbake.functional.BitbakeDetectableTest;
 import com.synopsys.integration.detectable.factory.DetectableFactory;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
@@ -90,12 +93,17 @@ public abstract class DetectableFunctionalTest {
 
     @Test
     public void run() throws IOException, DetectableException {
+        final Logger logger = LoggerFactory.getLogger(BitbakeDetectableTest.class);
+
         System.out.println(String.format("Function Test (%s) is using temp directory: %s", name, tempDirectory.toString()));
 
         setup();
 
         final DetectableEnvironment detectableEnvironment = new DetectableEnvironment(sourceDirectory.toFile());
         final Detectable detectable = create(detectableEnvironment);
+
+        logger.info("************* CREATED DETECTABLE ***********");
+
         final DetectableResult applicable = detectable.applicable();
         Assertions.assertTrue(applicable.getPassed(), String.format("Applicable should have passed but was: %s", applicable.toDescription()));
 
