@@ -76,7 +76,6 @@ public class BitbakeExtractor {
     public Extraction extract(final File sourceDirectory, final File buildEnvScript, final List<String> sourceArguments, final List<String> packageNames, final Integer searchDepth, final File bash) {
         final List<CodeLocation> codeLocations = new ArrayList<>();
 
-        final Logger logger = LoggerFactory.getLogger(BitbakeExtractor.class);
         logger.info("\n****************** ABOUT TO EXTRACT *****************");
 
         final BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash);
@@ -133,19 +132,31 @@ public class BitbakeExtractor {
     }
 
     private BitbakeGraph generateBitbakeGraph(final BitbakeSession bitbakeSession, final File sourceDirectory, final String packageName, final Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
+        logger.info("\n****************** ABOUT TO GET RESULT *****************");
         final BitbakeResult bitbakeResult = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, searchDepth).orElseThrow(() -> {
             final String filesSearchedFor = Arrays.stream(BitbakeFileType.values())
                                                 .map(BitbakeFileType::getFileName)
                                                 .collect(Collectors.joining(", "));
             return new IntegrationException(String.format("Failed to find any bitbake results. Looked for: %s", filesSearchedFor));
         });
+        logger.info("\n****************** GOT RESULT *****************");
 
         final File fileToParse = bitbakeResult.getFile();
         logger.trace(FileUtils.readFileToString(fileToParse, Charset.defaultCharset()));
+
+        logger.info("\n****************** GOT FILE *****************");
+
         final InputStream dependsFileInputStream = FileUtils.openInputStream(fileToParse);
+
+        logger.info("\n****************** GOT INPUT STREAM *****************");
+
         final GraphParser graphParser = new GraphParser(dependsFileInputStream);
 
+        logger.info("\n****************** GOT GRAPH PARSER *****************");
+
         final BitbakeFileType bitbakeFileType = bitbakeResult.getBitbakeFileType();
+
+        logger.info("\n****************** ABOUT TO TRANSFORM *****************");
         return graphParserTransformer.transform(graphParser, bitbakeFileType);
     }
 }
