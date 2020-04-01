@@ -38,7 +38,7 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
         ExecutableOutput bitbakeGOutput = createStandardOutput(
             ""
         );
-        addExecutableOutput(bitbakeGOutput, "bash", "-c", "source " + getSourceDirectory().toString() + "/oe-init-build-env; " + "bitbake " + "-g " + "core-image-minimal");
+        addExecutableOutput(bitbakeGOutput, "bash", "-c", "source /private" + getSourceDirectory().toString() + "/oe-init-build-env; " + "bitbake " + "-g " + "core-image-minimal");
 
         addFile(Paths.get("task-depends.dot"),
             "digraph depends {",
@@ -64,9 +64,7 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
             "base-passwd:",
             "  meta                 3.5.29"
         );
-        addExecutableOutput(bitbakeShowRecipesOutput, "bash", "-c", "source " + getSourceDirectory().toString() + "/oe-init-build-env; " + "bitbake-layers show-recipes");
-
-        logger.info("******************** END OF SETUP **************************");
+        addExecutableOutput(bitbakeShowRecipesOutput, "bash", "-c", "source /private" + getSourceDirectory().toString() + "/oe-init-build-env; " + "bitbake-layers show-recipes");
     }
 
     @NotNull
@@ -79,17 +77,11 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
                 return new File("bash");
             }
         }
-
-        logger.info("******************** ABOUT TO CREATE **************************");
-
         return detectableFactory.createBitbakeDetectable(detectableEnvironment, new BitbakeDetectableOptions("oe-init-build-env", new ArrayList<>(), Arrays.asList("core-image-minimal"), 0), new BashResolverTest());
     }
 
     @Override
     public void assertExtraction(@NotNull final Extraction extraction) {
-
-        logger.info("******************** ABOUT TO ASSERT **************************");
-
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, extraction.getCodeLocations().get(0).getDependencyGraph());
@@ -109,7 +101,5 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasParentChildRelationship(aclExternalId, attrExternalId);
         graphAssert.hasParentChildRelationship(attrExternalId, baseFilesExternalId);
         graphAssert.hasParentChildRelationship(attrExternalId, basePasswdExternalId);
-
-        logger.info("******************** END OF ASSERTIONS **************************");
     }
 }

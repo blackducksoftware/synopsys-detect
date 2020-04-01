@@ -26,22 +26,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectables.bitbake.functional.BitbakeDetectableTest;
 
 public class FunctionalExecutableRunner implements ExecutableRunner {
-    private static final Logger logger = LoggerFactory.getLogger(BitbakeDetectableTest.class);
-
     private final Map<Executable, ExecutableOutput> executableExecutableOutputMap = new HashMap<>();
 
     public void addExecutableOutput(@NotNull final Executable executable, @NotNull final ExecutableOutput executableOutput) {
@@ -65,34 +59,16 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
 
     @Override
     public ExecutableOutput execute(@NotNull final File workingDirectory, @NotNull final File exeFile, @NotNull final List<String> args) {
-        if (exeFile.getName().equals("bash")) {
-            logger.info(String.format("%n*********** RUNNING %s %s %s", exeFile.getName(), args.get(0), args.get(1)));
-        }
 
         final List<String> command = new ArrayList<>();
         command.add(exeFile.getPath());
         command.addAll(args);
-
-        if (exeFile.getName().equals("bash")) {
-            logger.info(String.format("%n*********** RUNNING %s ", command));
-        }
 
         return execute(new Executable(workingDirectory, new HashMap<>(), command));
     }
 
     @Override
     public ExecutableOutput execute(@NotNull final Executable executable) {
-        if (executable.getCommand().contains("-c")) {
-            logger.info("%n************* GETTING EXECUTABLE OUTPUT ****************");
-            logger.info(String.format("%n******* Executable: ********%n working dir- %s%n command- %s", executable.getWorkingDirectory().getName(), executable.getCommand().toString()));
-            Iterator iterator = executableExecutableOutputMap.keySet().iterator();
-            Executable mapExecutable = (Executable) iterator.next();
-            if (!mapExecutable.getCommand().get(2).endsWith("minimal")) {
-                mapExecutable = (Executable) iterator.next();
-            }
-            logger.info(String.format("%n******* Executable Map: *******%n numEntries- %d%n working dir- %s%n command- %s", executableExecutableOutputMap.size(), mapExecutable.getWorkingDirectory().getName(),
-                mapExecutable.getCommand().toString()));
-        }
         return executableExecutableOutputMap.get(executable);
     }
 }

@@ -66,23 +66,17 @@ public class BitbakeSession {
         throws ExecutableRunnerException, IOException {
 
         final String bitbakeCommand = "bitbake -g " + packageName;
-        logger.info(String.format("%n****************** ABOUT TO RUN %s *****************", bitbakeCommand));
         final ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
-        logger.info(String.format("%n ******** we got an executableOutput: %b *********", executableOutput != null));
         final int returnCode = executableOutput.getReturnCode();
-        logger.info("\n****************** BITBAKE G SUCCEEDED *****************");
 
         if (returnCode != 0) {
             logger.error(String.format("Executing command '%s' returned a non-zero exit code %s", bitbakeCommand, returnCode));
             return Optional.empty();
         }
 
-        logger.info("\n****************** ABOUT TO GET RESULT *****************");
         for (final BitbakeFileType bitbakeFileType : BitbakeFileType.values()) {
-            logger.info("\n****************** TRYING " + bitbakeFileType.toString() + " *****************");
             final Optional<BitbakeResult> bitbakeResult = getBitbakeResult(sourceDirectory, workingDirectory, bitbakeFileType, searchDepth);
             if (bitbakeResult.isPresent()) {
-                logger.info("\n****************** GOT RESULT *****************");
                 return bitbakeResult;
             }
         }
@@ -115,16 +109,15 @@ public class BitbakeSession {
 
     private ExecutableOutput runBitbake(final String bitbakeCommand) throws ExecutableRunnerException, IOException {
         try {
+            String test = buildEnvScript.getCanonicalPath();
+            logger.info(String.format("%n *********** buildEnvScript: %s", test));
             final StringBuilder sourceCommand = new StringBuilder("source " + buildEnvScript.getCanonicalPath());
-            logger.info(String.format("%n****************** SOURCE COMMAND: %s  *****************", sourceCommand));
             for (final String sourceArgument : sourceArguments) {
                 sourceCommand.append(" ");
                 sourceCommand.append(sourceArgument);
             }
-            logger.info("\n****************** ABOUT TO EXECUTE COMMAND *****************");
             return executableRunner.execute(workingDirectory, bashExecutable, "-c", sourceCommand.toString() + "; " + bitbakeCommand);
         } catch (final ExecutableRunnerException e) {
-            logger.error(String.format("Failed executing bitbake command. %s", bitbakeCommand));
             throw e;
         }
     }

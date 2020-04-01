@@ -76,40 +76,23 @@ public class BitbakeExtractor {
     public Extraction extract(final File sourceDirectory, final File buildEnvScript, final List<String> sourceArguments, final List<String> packageNames, final Integer searchDepth, final File bash) {
         final List<CodeLocation> codeLocations = new ArrayList<>();
 
-        logger.info("\n****************** ABOUT TO EXTRACT *****************");
-
         final BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash);
         for (final String packageName : packageNames) {
             try {
-                logger.info("\n****************** package: " + packageName + " *****************");
-
                 final BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, searchDepth);
-                logger.info("\n****************** GENERATED BITBAKEGRAPH *****************");
-
                 final List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
-                logger.info("\n****************** GOT BITBAKE RECIPES *****************");
-
                 final Map<String, String> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes);
-                logger.info("\n****************** MADE RECIPE-LAYERS MAP *****************");
 
                 final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeNameToLayersMap);
-                logger.info("\n****************** GENERATED DEPENDENCY GRAPH *****************");
-
                 final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
-                logger.info("\n****************** CREATED CODELOCATION *****************");
-
                 codeLocations.add(codeLocation);
-
-                logger.info("\n****************** ADDED CODELOCATION *****************");
 
             } catch (final IOException | IntegrationException | ExecutableRunnerException | NotImplementedException e) {
                 logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s'", packageName));
                 logger.debug(e.getMessage(), e);
             }
         }
-
-        logger.info("\n****************** LOOKED AT PACKAGES *****************");
 
         final Extraction extraction;
 
@@ -118,45 +101,30 @@ public class BitbakeExtractor {
                              .failure("No Code Locations were generated during extraction")
                              .build();
 
-            logger.info("\n****************** CREATED EXTRACTION *****************");
-
         } else {
             extraction = new Extraction.Builder()
                              .success(codeLocations)
                              .build();
-
-            logger.info("\n****************** CREATED EXTRACTION *****************");
         }
 
         return extraction;
     }
 
     private BitbakeGraph generateBitbakeGraph(final BitbakeSession bitbakeSession, final File sourceDirectory, final String packageName, final Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
-        logger.info("\n****************** ABOUT TO GET RESULT *****************");
         final BitbakeResult bitbakeResult = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, searchDepth).orElseThrow(() -> {
             final String filesSearchedFor = Arrays.stream(BitbakeFileType.values())
                                                 .map(BitbakeFileType::getFileName)
                                                 .collect(Collectors.joining(", "));
             return new IntegrationException(String.format("Failed to find any bitbake results. Looked for: %s", filesSearchedFor));
         });
-        logger.info("\n****************** GOT RESULT *****************");
 
         final File fileToParse = bitbakeResult.getFile();
         logger.trace(FileUtils.readFileToString(fileToParse, Charset.defaultCharset()));
 
-        logger.info("\n****************** GOT FILE *****************");
-
         final InputStream dependsFileInputStream = FileUtils.openInputStream(fileToParse);
-
-        logger.info("\n****************** GOT INPUT STREAM *****************");
-
         final GraphParser graphParser = new GraphParser(dependsFileInputStream);
 
-        logger.info("\n****************** GOT GRAPH PARSER *****************");
-
         final BitbakeFileType bitbakeFileType = bitbakeResult.getBitbakeFileType();
-
-        logger.info("\n****************** ABOUT TO TRANSFORM *****************");
         return graphParserTransformer.transform(graphParser, bitbakeFileType);
     }
 }
