@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -84,7 +85,11 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
         if (executable.getCommand().contains("-c")) {
             logger.info("%n************* GETTING EXECUTABLE OUTPUT ****************");
             logger.info(String.format("%n******* Executable: ********%n working dir- %s%n command- %s", executable.getWorkingDirectory().getName(), executable.getCommand().toString()));
-            Executable mapExecutable = executableExecutableOutputMap.keySet().iterator().next();
+            Iterator iterator = executableExecutableOutputMap.keySet().iterator();
+            Executable mapExecutable = (Executable) iterator.next();
+            if (!mapExecutable.getCommand().get(2).endsWith("minimal")) {
+                mapExecutable = (Executable) iterator.next();
+            }
             logger.info(String.format("%n******* Executable Map: *******%n numEntries- %d%n working dir- %s%n command- %s", executableExecutableOutputMap.size(), mapExecutable.getWorkingDirectory().getName(),
                 mapExecutable.getCommand().toString()));
         }

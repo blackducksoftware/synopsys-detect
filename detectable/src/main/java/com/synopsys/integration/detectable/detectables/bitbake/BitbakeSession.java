@@ -68,6 +68,7 @@ public class BitbakeSession {
         final String bitbakeCommand = "bitbake -g " + packageName;
         logger.info(String.format("%n****************** ABOUT TO RUN %s *****************", bitbakeCommand));
         final ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
+        logger.info(String.format("%n ******** we got an executableOutput: %b *********", executableOutput != null));
         final int returnCode = executableOutput.getReturnCode();
         logger.info("\n****************** BITBAKE G SUCCEEDED *****************");
 
