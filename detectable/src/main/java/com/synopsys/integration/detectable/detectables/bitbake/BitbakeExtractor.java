@@ -85,15 +85,24 @@ public class BitbakeExtractor {
                 logger.info("\n****************** package: " + packageName + " *****************");
 
                 final BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, searchDepth);
+                logger.info("\n****************** GENERATED BITBAKEGRAPH *****************");
+
                 final List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
+                logger.info("\n****************** GOT BITBAKE RECIPES *****************");
+
                 final Map<String, String> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes);
+                logger.info("\n****************** MADE RECIPE-LAYERS MAP *****************");
 
                 final DependencyGraph dependencyGraph = bitbakeGraphTransformer.transform(bitbakeGraph, recipeNameToLayersMap);
+                logger.info("\n****************** GENERATED DEPENDENCY GRAPH *****************");
+
                 final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
+
+                logger.info("\n****************** CREATED CODELOCATION *****************");
 
                 codeLocations.add(codeLocation);
 
-                logger.info("\n****************** CREATED CODELOCATION *****************");
+                logger.info("\n****************** ADDED CODELOCATION *****************");
 
             } catch (final IOException | IntegrationException | ExecutableRunnerException | NotImplementedException e) {
                 logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s'", packageName));
