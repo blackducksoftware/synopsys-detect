@@ -73,7 +73,7 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
         command.addAll(args);
 
         if (exeFile.getName().equals("bash")) {
-            logger.info(String.format("%n**************** RUNNING %s ***************", command));
+            logger.info(String.format("%n*********** RUNNING %s ", command));
         }
 
         return execute(new Executable(workingDirectory, new HashMap<>(), command));
@@ -81,8 +81,10 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
 
     @Override
     public ExecutableOutput execute(@NotNull final Executable executable) {
-        if (executable.getCommand().contains("bitbake")) {
+        if (executable.getCommand().contains("-c")) {
             logger.info("%n************* GETTING EXECUTABLE OUTPUT ****************");
+            logger.info(executable.toString());
+            logger.info(executableExecutableOutputMap.toString());
         }
         return executableExecutableOutputMap.get(executable);
     }
