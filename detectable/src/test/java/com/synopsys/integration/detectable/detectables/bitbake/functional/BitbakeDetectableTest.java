@@ -8,6 +8,8 @@ import java.util.Arrays;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -23,6 +25,8 @@ import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class BitbakeDetectableTest extends DetectableFunctionalTest {
+    private static final Logger logger = LoggerFactory.getLogger(BitbakeDetectableTest.class);
+
     public BitbakeDetectableTest() throws IOException {
         super("bitbake");
     }
@@ -61,6 +65,8 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
             "  meta                 3.5.29"
         );
         addExecutableOutput(bitbakeShowRecipesOutput, "bash", "-c", "source /private" + getSourceDirectory().toString() + "/oe-init-build-env; " + "bitbake-layers show-recipes");
+
+        logger.info("******************** END OF SETUP **************************");
     }
 
     @NotNull
@@ -73,11 +79,17 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
                 return new File("bash");
             }
         }
+
+        logger.info("******************** ABOUT TO CREATE **************************");
+
         return detectableFactory.createBitbakeDetectable(detectableEnvironment, new BitbakeDetectableOptions("oe-init-build-env", new ArrayList<>(), Arrays.asList("core-image-minimal"), 0), new BashResolverTest());
     }
 
     @Override
     public void assertExtraction(@NotNull final Extraction extraction) {
+
+        logger.info("******************** ABOUT TO ASSERT **************************");
+
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.YOCTO, extraction.getCodeLocations().get(0).getDependencyGraph());
@@ -97,5 +109,7 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasParentChildRelationship(aclExternalId, attrExternalId);
         graphAssert.hasParentChildRelationship(attrExternalId, baseFilesExternalId);
         graphAssert.hasParentChildRelationship(attrExternalId, basePasswdExternalId);
+
+        logger.info("******************** END OF ASSERTIONS **************************");
     }
 }
