@@ -64,11 +64,15 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
 
     @Override
     public ExecutableOutput execute(@NotNull final File workingDirectory, @NotNull final File exeFile, @NotNull final List<String> args) {
+        if (exeFile.getName().equals("bash")) {
+            logger.info(String.format("%n*********** RUNNING %s %s %s", exeFile.getName(), args.get(0), args.get(1)));
+        }
+
         final List<String> command = new ArrayList<>();
         command.add(exeFile.getPath());
         command.addAll(args);
 
-        if (exeFile.getName().equals("bash") && command.contains("bitbake")) {
+        if (exeFile.getName().equals("bash")) {
             logger.info(String.format("%n**************** RUNNING %s ***************", command));
         }
 
