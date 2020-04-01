@@ -38,12 +38,9 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchBuilder;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanTarget;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -209,21 +206,15 @@ public class BlackDuckSignatureScanner {
         scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());
         scanJobBuilder.cleanupOutput(false);
 
-        final Optional<SnippetMatching> snippetMatching = signatureScannerOptions.getSnippetMatching();
-        if (signatureScannerOptions.getUploadSource() && !snippetMatching.isPresent() && !signatureScannerOptions.getLicenseSearch()) { // TODO: I think this check needs to be verified - JM
-            throw new DetectUserFriendlyException("You must enable snippet matching using " + DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING().getName() + " in order to use upload source.",
-                ExitCodeType.FAILURE_CONFIGURATION);
-        }
-        scanJobBuilder.uploadSource(snippetMatching.get(), signatureScannerOptions.getUploadSource());
+        signatureScannerOptions.getSnippetMatching().ifPresent(scanJobBuilder::snippetMatching);
+        scanJobBuilder.uploadSource(signatureScannerOptions.getUploadSource());
+        scanJobBuilder.licenseSearch(signatureScannerOptions.getLicenseSearch());
 
         signatureScannerOptions.getAdditionalArguments().ifPresent(scanJobBuilder::additionalScanArguments);
 
         final String projectName = projectNameVersion.getName();
         final String projectVersionName = projectNameVersion.getVersion();
         scanJobBuilder.projectAndVersionNames(projectName, projectVersionName);
-
-        final Boolean licenseSearch = signatureScannerOptions.getLicenseSearch();
-        scanJobBuilder.licenseSearch(licenseSearch);
 
         signatureScannerOptions.getIndividualFileMatching()
             .ifPresent(scanJobBuilder::individualFileMatching);
