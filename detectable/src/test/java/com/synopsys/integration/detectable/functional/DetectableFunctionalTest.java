@@ -52,7 +52,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectables.bitbake.functional.BitbakeDetectableTest;
+import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.factory.DetectableFactory;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
@@ -93,7 +93,7 @@ public abstract class DetectableFunctionalTest {
 
     @Test
     public void run() throws IOException, DetectableException {
-        final Logger logger = LoggerFactory.getLogger(BitbakeDetectableTest.class);
+        final Logger logger = LoggerFactory.getLogger(DetectableFunctionalTest.class);
 
         System.out.println(String.format("Function Test (%s) is using temp directory: %s", name, tempDirectory.toString()));
 
@@ -102,16 +102,26 @@ public abstract class DetectableFunctionalTest {
         final DetectableEnvironment detectableEnvironment = new DetectableEnvironment(sourceDirectory.toFile());
         final Detectable detectable = create(detectableEnvironment);
 
-        logger.info("************* CREATED DETECTABLE ***********");
-
         final DetectableResult applicable = detectable.applicable();
         Assertions.assertTrue(applicable.getPassed(), String.format("Applicable should have passed but was: %s", applicable.toDescription()));
+
+        if (detectable instanceof BitbakeDetectable) {
+            logger.info("*************** APPLICABLE PASSED *****************");
+        }
 
         final DetectableResult extractable = detectable.extractable();
         Assertions.assertTrue(extractable.getPassed(), String.format("Extractable should have passed but was: %s", extractable.toDescription()));
 
+        if (detectable instanceof BitbakeDetectable) {
+            logger.info("*************** EXTRACTABLE PASSED *****************");
+        }
+
         final ExtractionEnvironment extractionEnvironment = new ExtractionEnvironment(outputDirectory.toFile());
         final Extraction extraction = detectable.extract(extractionEnvironment);
+
+        if (detectable instanceof BitbakeDetectable) {
+            logger.info("*************** RETRIEVED EXTRACTION *****************");
+        }
 
         assertExtraction(extraction);
 
