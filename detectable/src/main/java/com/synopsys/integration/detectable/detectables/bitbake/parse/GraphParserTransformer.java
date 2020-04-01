@@ -26,8 +26,6 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphNode;
@@ -36,38 +34,25 @@ import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFile
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 
 public class GraphParserTransformer {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     public BitbakeGraph transform(final GraphParser graphParser, final BitbakeFileType bitbakeFileType) {
         final BitbakeGraph bitbakeGraph = new BitbakeGraph();
 
-        logger.info("\n****************** LOOKING AT NODES *****************");
         for (final GraphNode graphNode : graphParser.getNodes().values()) {
             final String name = getNameFromNode(graphNode, bitbakeFileType);
-            logger.info("\n****************** GOT NODE NAME *****************");
-
             final String version = getVersionFromNode(graphNode, bitbakeFileType).orElse(null);
-            logger.info("\n****************** GOT NODE VERSION *****************");
             if (version != null) {
                 bitbakeGraph.addNode(name, version);
-                logger.info("\n****************** ADDED NODE *****************");
             }
         }
 
-        logger.info("\n****************** LOOKING AT EDGES *****************");
         for (final GraphEdge graphEdge : graphParser.getEdges().values()) {
             final String parent = getNameFromNode(graphEdge.getNode1(), bitbakeFileType);
-            logger.info("\n****************** GOT PARENT *****************");
             final String child = getNameFromNode(graphEdge.getNode2(), bitbakeFileType);
-            logger.info("\n****************** GOT CHILD *****************");
             if (!parent.equals(child)) {
                 bitbakeGraph.addChild(parent, child);
-                logger.info("\n****************** ADDED EDGE *****************");
             }
         }
 
-        logger.info("\n****************** RETURNING GRAPH *****************");
         return bitbakeGraph;
     }
 

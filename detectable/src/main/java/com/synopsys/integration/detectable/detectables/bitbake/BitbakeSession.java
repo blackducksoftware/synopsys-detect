@@ -64,18 +64,24 @@ public class BitbakeSession {
 
     public Optional<BitbakeResult> executeBitbakeForDependencies(final File sourceDirectory, final String packageName, final Integer searchDepth)
         throws ExecutableRunnerException, IOException {
+
+        logger.info("\n****************** ABOUT TO RUN BITBAKE G *****************");
         final String bitbakeCommand = "bitbake -g " + packageName;
         final ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
         final int returnCode = executableOutput.getReturnCode();
+        logger.info("\n****************** BITBAKE G SUCCEEDED *****************");
 
         if (returnCode != 0) {
             logger.error(String.format("Executing command '%s' returned a non-zero exit code %s", bitbakeCommand, returnCode));
             return Optional.empty();
         }
 
+        logger.info("\n****************** ABOUT TO GET RESULT *****************");
         for (final BitbakeFileType bitbakeFileType : BitbakeFileType.values()) {
+            logger.info("\n****************** TRYING " + bitbakeFileType.toString() + " *****************");
             final Optional<BitbakeResult> bitbakeResult = getBitbakeResult(sourceDirectory, workingDirectory, bitbakeFileType, searchDepth);
             if (bitbakeResult.isPresent()) {
+                logger.info("\n****************** GOT RESULT *****************");
                 return bitbakeResult;
             }
         }
