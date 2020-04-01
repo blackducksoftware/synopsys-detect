@@ -30,12 +30,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectables.bitbake.functional.BitbakeDetectableTest;
 
 public class FunctionalExecutableRunner implements ExecutableRunner {
+    private static final Logger logger = LoggerFactory.getLogger(BitbakeDetectableTest.class);
+
     private final Map<Executable, ExecutableOutput> executableExecutableOutputMap = new HashMap<>();
 
     public void addExecutableOutput(@NotNull final Executable executable, @NotNull final ExecutableOutput executableOutput) {
@@ -63,11 +68,18 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
         command.add(exeFile.getPath());
         command.addAll(args);
 
+        if (exeFile.getName().equals("bash") && command.contains("bitbake")) {
+            logger.info(String.format("%n**************** RUNNING %s ***************", command));
+        }
+
         return execute(new Executable(workingDirectory, new HashMap<>(), command));
     }
 
     @Override
     public ExecutableOutput execute(@NotNull final Executable executable) {
+        if (executable.getCommand().contains("bitbake")) {
+            logger.info("%n************* GETTING EXECUTABLE OUTPUT ****************");
+        }
         return executableExecutableOutputMap.get(executable);
     }
 }
