@@ -65,8 +65,8 @@ public class BitbakeSession {
     public Optional<BitbakeResult> executeBitbakeForDependencies(final File sourceDirectory, final String packageName, final Integer searchDepth)
         throws ExecutableRunnerException, IOException {
 
-        logger.info("\n****************** ABOUT TO RUN BITBAKE G *****************");
         final String bitbakeCommand = "bitbake -g " + packageName;
+        logger.info(String.format("%n****************** ABOUT TO RUN %s *****************", bitbakeCommand));
         final ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
         final int returnCode = executableOutput.getReturnCode();
         logger.info("\n****************** BITBAKE G SUCCEEDED *****************");
@@ -115,10 +115,12 @@ public class BitbakeSession {
     private ExecutableOutput runBitbake(final String bitbakeCommand) throws ExecutableRunnerException, IOException {
         try {
             final StringBuilder sourceCommand = new StringBuilder("source " + buildEnvScript.getCanonicalPath());
+            logger.info(String.format("%n****************** SOURCE COMMAND: %s  *****************", sourceCommand));
             for (final String sourceArgument : sourceArguments) {
                 sourceCommand.append(" ");
                 sourceCommand.append(sourceArgument);
             }
+            logger.info("\n****************** ABOUT TO EXECUTE COMMAND *****************");
             return executableRunner.execute(workingDirectory, bashExecutable, "-c", sourceCommand.toString() + "; " + bitbakeCommand);
         } catch (final ExecutableRunnerException e) {
             logger.error(String.format("Failed executing bitbake command. %s", bitbakeCommand));
