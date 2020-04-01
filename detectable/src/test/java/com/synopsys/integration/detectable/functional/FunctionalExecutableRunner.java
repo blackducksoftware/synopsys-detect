@@ -83,8 +83,10 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
     public ExecutableOutput execute(@NotNull final Executable executable) {
         if (executable.getCommand().contains("-c")) {
             logger.info("%n************* GETTING EXECUTABLE OUTPUT ****************");
-            logger.info(executable.toString());
-            logger.info(executableExecutableOutputMap.toString());
+            logger.info(String.format("%n******* Executable: ********%n working dir- %s%n command- %s", executable.getWorkingDirectory().getName(), executable.getCommand().toString()));
+            Executable mapExecutable = executableExecutableOutputMap.keySet().iterator().next();
+            logger.info(String.format("%n******* Executable Map: *******%n numEntries- %d%n working dir- %s%n command- %s", executableExecutableOutputMap.size(), mapExecutable.getWorkingDirectory().getName(),
+                mapExecutable.getCommand().toString()));
         }
         return executableExecutableOutputMap.get(executable);
     }
