@@ -106,21 +106,21 @@ public abstract class DetectableFunctionalTest {
         Assertions.assertTrue(applicable.getPassed(), String.format("Applicable should have passed but was: %s", applicable.toDescription()));
 
         if (detectable instanceof BitbakeDetectable) {
-            logger.info("*************** APPLICABLE PASSED *****************");
+            logger.info("\n*************** APPLICABLE PASSED *****************");
         }
 
         final DetectableResult extractable = detectable.extractable();
         Assertions.assertTrue(extractable.getPassed(), String.format("Extractable should have passed but was: %s", extractable.toDescription()));
 
         if (detectable instanceof BitbakeDetectable) {
-            logger.info("*************** EXTRACTABLE PASSED *****************");
+            logger.info("\n*************** EXTRACTABLE PASSED *****************");
         }
 
         final ExtractionEnvironment extractionEnvironment = new ExtractionEnvironment(outputDirectory.toFile());
         final Extraction extraction = detectable.extract(extractionEnvironment);
 
         if (detectable instanceof BitbakeDetectable) {
-            logger.info("*************** RETRIEVED EXTRACTION *****************");
+            logger.info("\n*************** RETRIEVED EXTRACTION *****************");
         }
 
         assertExtraction(extraction);

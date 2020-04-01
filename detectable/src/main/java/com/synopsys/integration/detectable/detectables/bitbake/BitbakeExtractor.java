@@ -75,9 +75,15 @@ public class BitbakeExtractor {
 
     public Extraction extract(final File sourceDirectory, final File buildEnvScript, final List<String> sourceArguments, final List<String> packageNames, final Integer searchDepth, final File bash) {
         final List<CodeLocation> codeLocations = new ArrayList<>();
+
+        final Logger logger = LoggerFactory.getLogger(BitbakeExtractor.class);
+        logger.info("\n****************** ABOUT TO EXTRACT *****************");
+
         final BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash);
         for (final String packageName : packageNames) {
             try {
+                logger.info("\n****************** package: " + packageName + " *****************");
+
                 final BitbakeGraph bitbakeGraph = generateBitbakeGraph(bitbakeSession, sourceDirectory, packageName, searchDepth);
                 final List<BitbakeRecipe> bitbakeRecipes = bitbakeSession.executeBitbakeForRecipeLayerCatalog();
                 final Map<String, String> recipeNameToLayersMap = bitbakeRecipesToLayerMap.convert(bitbakeRecipes);
@@ -86,11 +92,16 @@ public class BitbakeExtractor {
                 final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
                 codeLocations.add(codeLocation);
+
+                logger.info("\n****************** CREATED CODELOCATION *****************");
+
             } catch (final IOException | IntegrationException | ExecutableRunnerException | NotImplementedException e) {
                 logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s'", packageName));
                 logger.debug(e.getMessage(), e);
             }
         }
+
+        logger.info("\n****************** LOOKED AT PACKAGES *****************");
 
         final Extraction extraction;
 
@@ -98,10 +109,15 @@ public class BitbakeExtractor {
             extraction = new Extraction.Builder()
                              .failure("No Code Locations were generated during extraction")
                              .build();
+
+            logger.info("\n****************** CREATED EXTRACTION *****************");
+
         } else {
             extraction = new Extraction.Builder()
                              .success(codeLocations)
                              .build();
+
+            logger.info("\n****************** CREATED EXTRACTION *****************");
         }
 
         return extraction;
