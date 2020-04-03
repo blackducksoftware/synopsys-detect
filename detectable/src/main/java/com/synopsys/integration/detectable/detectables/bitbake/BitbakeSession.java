@@ -109,8 +109,6 @@ public class BitbakeSession {
 
     private ExecutableOutput runBitbake(final String bitbakeCommand) throws ExecutableRunnerException, IOException {
         try {
-            String test = buildEnvScript.getCanonicalPath();
-            logger.info(String.format("%n *********** buildEnvScript: %s", test));
             final StringBuilder sourceCommand = new StringBuilder("source " + buildEnvScript.getCanonicalPath());
             for (final String sourceArgument : sourceArguments) {
                 sourceCommand.append(" ");

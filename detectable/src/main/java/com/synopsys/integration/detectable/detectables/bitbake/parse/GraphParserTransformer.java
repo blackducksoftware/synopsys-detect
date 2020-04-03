@@ -24,7 +24,6 @@ package com.synopsys.integration.detectable.detectables.bitbake.parse;
 
 import java.util.Optional;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 
 import com.paypal.digraph.parser.GraphEdge;
@@ -57,13 +56,8 @@ public class GraphParserTransformer {
     }
 
     private String getNameFromNode(final GraphNode graphNode, final BitbakeFileType bitbakeFileType) {
-        String nodeId = graphNode.getId();
-
-        if (bitbakeFileType.equals(BitbakeFileType.TASK_DEPENDS)) {
-            String[] nodeIdPieces = nodeId.split(".do_");
-            return nodeIdPieces[0].replaceAll("\"", "");
-        }
-        return nodeId.replaceAll("\"", "");
+        String[] nodeIdPieces = graphNode.getId().split(".do_");
+        return nodeIdPieces[0].replaceAll("\"", "");
     }
 
     private Optional<String> getVersionFromNode(final GraphNode graphNode, final BitbakeFileType bitbakeFileType) {
@@ -83,19 +77,7 @@ public class GraphParserTransformer {
     }
 
     private String getVersionFromLabel(final String label, final BitbakeFileType bitbakeFileType) {
-        if (bitbakeFileType.equals(BitbakeFileType.TASK_DEPENDS) || bitbakeFileType.equals(BitbakeFileType.RECIPE_DEPENDS)) {
-            final String[] components = label.split("\\\\n:|\\\\n");
-            return components[1];
-        } else if (bitbakeFileType.equals(BitbakeFileType.PACKAGE_DEPENDS)) {
-            final String[] components = label.split(" |\\\\n");
-            final String version = components[1];
-            if (version.startsWith(":")) {
-                return version.substring(1);
-            } else {
-                return version;
-            }
-        } else {
-            throw new NotImplementedException(String.format("The %s does not support parsing of the '%s' file type.", this.getClass().getName(), bitbakeFileType.getFileName()));
-        }
+        final String[] components = label.split("\\\\n:|\\\\n");
+        return components[1];
     }
 }

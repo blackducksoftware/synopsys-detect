@@ -22,32 +22,11 @@
  */
 package com.synopsys.integration.detectable.detectables.bitbake.functional;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import com.paypal.digraph.parser.GraphParser;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
-import com.synopsys.integration.detectable.detectables.bitbake.BitbakeRecipesToLayerMapConverter;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
-import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
-import com.synopsys.integration.detectable.util.FunctionalTestFiles;
-import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 @FunctionalTest
 public class BitbakeDependencyGraphFunctionalTest {
+    /*
     @Test
     public void found176RootInOutput() {
         final GraphParserTransformer graphParserTransformer = new GraphParserTransformer();
@@ -131,4 +110,6 @@ public class BitbakeDependencyGraphFunctionalTest {
         graphAssert.hasParentChildRelationship(busybox, shadow);
         graphAssert.hasRootSize(2);
     }
+
+     */
 }

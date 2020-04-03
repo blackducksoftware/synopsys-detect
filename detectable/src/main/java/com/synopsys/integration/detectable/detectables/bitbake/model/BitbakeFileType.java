@@ -23,8 +23,6 @@
 package com.synopsys.integration.detectable.detectables.bitbake.model;
 
 public enum BitbakeFileType {
-    RECIPE_DEPENDS("recipe-depends.dot"),
-    PACKAGE_DEPENDS("package-depends.dot"),
     TASK_DEPENDS("task-depends.dot");
 
     private final String fileName;
