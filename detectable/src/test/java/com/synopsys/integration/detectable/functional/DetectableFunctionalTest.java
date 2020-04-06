@@ -91,7 +91,7 @@ public abstract class DetectableFunctionalTest {
     @Test
     public void run() throws IOException, DetectableException {
 
-        System.out.println(String.format("Function Test (%s) is using temp directory: %s", name, tempDirectory.toString()));
+        System.out.println(String.format("Function Test (%s) is using temp directory: %s", name, tempDirectory.toAbsolutePath().toString()));
 
         setup();
 
@@ -163,7 +163,7 @@ public abstract class DetectableFunctionalTest {
         addExecutableOutput(getSourceDirectory(), executableOutput, command);
     }
 
-    public void addExecutableOutput(@NotNull Path workingDirectory, @NotNull final ExecutableOutput executableOutput, @NotNull final String... command) {
+    public void addExecutableOutput(@NotNull final Path workingDirectory, @NotNull final ExecutableOutput executableOutput, @NotNull final String... command) {
         addExecutableOutput(workingDirectory, executableOutput, new HashMap<>(), command);
     }
 
@@ -171,7 +171,7 @@ public abstract class DetectableFunctionalTest {
         addExecutableOutput(getSourceDirectory(), executableOutput, environment, command);
     }
 
-    public void addExecutableOutput(@NotNull Path workingDirectory, @NotNull final ExecutableOutput executableOutput, @NotNull final Map<String, String> environment, @NotNull final String... command) {
+    public void addExecutableOutput(@NotNull final Path workingDirectory, @NotNull final ExecutableOutput executableOutput, @NotNull final Map<String, String> environment, @NotNull final String... command) {
         final List<String> commandList = Arrays.asList(command);
         final Executable executable = new Executable(workingDirectory.toFile(), environment, commandList);
         executableRunner.addExecutableOutput(executable, executableOutput);
