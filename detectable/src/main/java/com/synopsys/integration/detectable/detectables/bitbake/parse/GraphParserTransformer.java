@@ -29,24 +29,23 @@ import org.apache.commons.lang3.StringUtils;
 import com.paypal.digraph.parser.GraphEdge;
 import com.paypal.digraph.parser.GraphNode;
 import com.paypal.digraph.parser.GraphParser;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 
 public class GraphParserTransformer {
-    public BitbakeGraph transform(final GraphParser graphParser, final BitbakeFileType bitbakeFileType) {
+    public BitbakeGraph transform(final GraphParser graphParser) {
         final BitbakeGraph bitbakeGraph = new BitbakeGraph();
 
         for (final GraphNode graphNode : graphParser.getNodes().values()) {
-            final String name = getNameFromNode(graphNode, bitbakeFileType);
-            final String version = getVersionFromNode(graphNode, bitbakeFileType).orElse(null);
+            final String name = getNameFromNode(graphNode);
+            final String version = getVersionFromNode(graphNode).orElse(null);
             if (version != null) {
                 bitbakeGraph.addNode(name, version);
             }
         }
 
         for (final GraphEdge graphEdge : graphParser.getEdges().values()) {
-            final String parent = getNameFromNode(graphEdge.getNode1(), bitbakeFileType);
-            final String child = getNameFromNode(graphEdge.getNode2(), bitbakeFileType);
+            final String parent = getNameFromNode(graphEdge.getNode1());
+            final String child = getNameFromNode(graphEdge.getNode2());
             if (!parent.equals(child)) {
                 bitbakeGraph.addChild(parent, child);
             }
@@ -55,14 +54,14 @@ public class GraphParserTransformer {
         return bitbakeGraph;
     }
 
-    private String getNameFromNode(final GraphNode graphNode, final BitbakeFileType bitbakeFileType) {
+    private String getNameFromNode(final GraphNode graphNode) {
         String[] nodeIdPieces = graphNode.getId().split(".do_");
         return nodeIdPieces[0].replaceAll("\"", "");
     }
 
-    private Optional<String> getVersionFromNode(final GraphNode graphNode, final BitbakeFileType bitbakeFileType) {
+    private Optional<String> getVersionFromNode(final GraphNode graphNode) {
         final Optional<String> attribute = getLabelAttribute(graphNode);
-        return attribute.map((String label) -> getVersionFromLabel(label, bitbakeFileType));
+        return attribute.map((String label) -> getVersionFromLabel(label));
     }
 
     private Optional<String> getLabelAttribute(final GraphNode graphNode) {
@@ -76,7 +75,7 @@ public class GraphParserTransformer {
         return result;
     }
 
-    private String getVersionFromLabel(final String label, final BitbakeFileType bitbakeFileType) {
+    private String getVersionFromLabel(final String label) {
         final String[] components = label.split("\\\\n:|\\\\n");
         return components[1];
     }

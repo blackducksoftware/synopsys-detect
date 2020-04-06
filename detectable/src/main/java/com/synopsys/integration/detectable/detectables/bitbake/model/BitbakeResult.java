@@ -25,16 +25,10 @@ package com.synopsys.integration.detectable.detectables.bitbake.model;
 import java.io.File;
 
 public class BitbakeResult {
-    private final BitbakeFileType bitbakeFileType;
     private final File file;
 
-    public BitbakeResult(final BitbakeFileType bitbakeFileType, final File file) {
-        this.bitbakeFileType = bitbakeFileType;
+    public BitbakeResult(final File file) {
         this.file = file;
-    }
-
-    public BitbakeFileType getBitbakeFileType() {
-        return bitbakeFileType;
     }
 
     public File getFile() {

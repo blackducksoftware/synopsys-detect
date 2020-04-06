@@ -124,7 +124,6 @@ public class BitbakeExtractor {
         final InputStream dependsFileInputStream = FileUtils.openInputStream(fileToParse);
         final GraphParser graphParser = new GraphParser(dependsFileInputStream);
 
-        final BitbakeFileType bitbakeFileType = bitbakeResult.getBitbakeFileType();
-        return graphParserTransformer.transform(graphParser, bitbakeFileType);
+        return graphParserTransformer.transform(graphParser);
     }
 }

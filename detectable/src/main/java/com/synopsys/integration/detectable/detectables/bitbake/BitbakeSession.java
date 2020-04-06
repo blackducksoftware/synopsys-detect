@@ -93,7 +93,7 @@ public class BitbakeSession {
             }
         }
 
-        return Optional.of(new BitbakeResult(bitbakeFileType, file));
+        return Optional.of(new BitbakeResult(file));
 
     }
 
