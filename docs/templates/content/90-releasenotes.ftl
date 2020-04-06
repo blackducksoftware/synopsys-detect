@@ -4,7 +4,7 @@
 ### New features
 
 ### Changed features
-* User's are now allowed to upload source when only license search is provided (IDETECT-1894).
+* Users are now allowed to [upload source](../properties/configuration/signature scanner/#upload-source-mode) when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is provided (IDETECT-1894).
 
 ### Resolved issues
 
