@@ -84,7 +84,12 @@ public class BlackDuckSignatureScanner {
 
         final ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
         scanJobBuilder.fromBlackDuckServerConfig(blackDuckServerConfig);//when offline, we must still call this with 'null' as a workaround for library issues, so offline scanner must be created with this set to null.
-        final ScanBatch scanJob = scanJobBuilder.build();
+        final ScanBatch scanJob;
+        try {
+            scanJob = scanJobBuilder.build();
+        } catch (final IllegalArgumentException e) {
+            throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_CONFIGURATION);
+        }
 
         final List<ScanCommandOutput> scanCommandOutputs = new ArrayList<>();
         final ScanBatchOutput scanJobOutput = scanJobManager.executeScans(scanJob);
