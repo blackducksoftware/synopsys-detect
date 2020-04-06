@@ -55,13 +55,13 @@ public class GraphParserTransformer {
     }
 
     private String getNameFromNode(final GraphNode graphNode) {
-        String[] nodeIdPieces = graphNode.getId().split(".do_");
+        final String[] nodeIdPieces = graphNode.getId().split(".do_");
         return nodeIdPieces[0].replaceAll("\"", "");
     }
 
     private Optional<String> getVersionFromNode(final GraphNode graphNode) {
         final Optional<String> attribute = getLabelAttribute(graphNode);
-        return attribute.map((String label) -> getVersionFromLabel(label));
+        return attribute.map(this::getVersionFromLabel);
     }
 
     private Optional<String> getLabelAttribute(final GraphNode graphNode) {

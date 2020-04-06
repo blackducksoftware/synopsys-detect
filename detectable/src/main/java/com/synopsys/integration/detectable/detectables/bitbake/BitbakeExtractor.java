@@ -108,7 +108,7 @@ public class BitbakeExtractor {
 
     private BitbakeGraph generateBitbakeGraph(final BitbakeSession bitbakeSession, final File sourceDirectory, final String packageName, final Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
         final File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, searchDepth)
-                                         .orElseThrow(() -> new IntegrationException(String.format("Failed to find file \"task-depends.dot\".")));
+                                         .orElseThrow(() -> new IntegrationException("Failed to find file \"task-depends.dot\"."));
 
         logger.trace(FileUtils.readFileToString(taskDependsFile, Charset.defaultCharset()));
 
