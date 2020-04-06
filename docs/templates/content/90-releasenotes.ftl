@@ -1,5 +1,14 @@
 # Release notes
 
+## Version 6.3.0
+### New features
+
+### Changed features
+* User's are now allowed to upload source when only license search is provided (IDETECT-1894).
+
+### Resolved issues
+
+
 ## Version 6.2.1
 ### Resolved issues
 * Fixed an issue where an exception would be thrown when generating a risk report if the user did not set the risk report output path explicitly. (IDETECT-1960)
