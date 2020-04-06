@@ -25,6 +25,7 @@ package com.synopsys.integration.detectable.detectables.gradle.functional;
 import java.io.File;
 import java.util.Optional;
 
+import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -61,7 +62,7 @@ public class GradleReportParserFunctionalTest {
 
         try {
             JSONAssert.assertEquals(FunctionalTestFiles.asString("/gradle/dependencyGraph-expected.json"), actual, false);
-        } catch (final org.json.JSONException e) {
+        } catch (final JSONException e) {
             throw new RuntimeException(e);
         }
     }

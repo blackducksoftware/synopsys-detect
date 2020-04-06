@@ -35,16 +35,19 @@ import org.springframework.boot.context.properties.source.InvalidConfigurationPr
 import org.springframework.boot.context.properties.source.IterableConfigurationPropertySource;
 import org.springframework.boot.env.RandomValuePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.ConfigurablePropertyResolver;
 
 import com.synopsys.integration.configuration.util.Bds;
 
 public class SpringConfigurationPropertySource implements PropertySource {
     private String name;
     private IterableConfigurationPropertySource propertySource;
+    private final ConfigurablePropertyResolver configurablePropertyResolver;
 
-    public SpringConfigurationPropertySource(final String name, final IterableConfigurationPropertySource propertySource) {
+    public SpringConfigurationPropertySource(final String name, final IterableConfigurationPropertySource propertySource, ConfigurablePropertyResolver configurablePropertyResolver) {
         this.name = name;
         this.propertySource = propertySource;
+        this.configurablePropertyResolver = configurablePropertyResolver;
     }
 
     public static List<SpringConfigurationPropertySource> fromConfigurableEnvironment(ConfigurableEnvironment configurableEnvironment) {
@@ -58,7 +61,7 @@ public class SpringConfigurationPropertySource implements PropertySource {
                 Object underlying = it.getUnderlyingSource();
                 if (org.springframework.core.env.PropertySource.class.isAssignableFrom(underlying.getClass())) {
                     org.springframework.core.env.PropertySource springSource = (org.springframework.core.env.PropertySource) underlying;
-                    return new SpringConfigurationPropertySource(springSource.getName(), (IterableConfigurationPropertySource) it);
+                    return new SpringConfigurationPropertySource(springSource.getName(), (IterableConfigurationPropertySource) it, configurableEnvironment);
                 } else {
                     if (ignoreUnknown) {
                         return null;
@@ -107,8 +110,16 @@ public class SpringConfigurationPropertySource implements PropertySource {
     }
 
     @Override
+    //Spring resolves configuration properties using a configurable property resolver (resolves --prop=${VAR} replaces VAR from an environment variable of the same name.)
+    //The value provided from the configurable property itself or the property source is not resolved, so we have to get the final value from a resolver.
+    //Theoretically, this resolver should be bound to the property source, but this current method at least gets the final resolved value. - jp
     public String getValue(final String key) {
-        return toConfigurationProperty(key).map(ConfigurationProperty::getValue).map(Object::toString).orElse(null);
+        return toConfigurationProperty(key)
+                   .map(ConfigurationProperty::getName)
+                   .map(ConfigurationPropertyName::toString)
+                   .map(configurablePropertyResolver::getProperty)
+                   .map(Object::toString)
+                   .orElse(null);
     }
 
     @Override
