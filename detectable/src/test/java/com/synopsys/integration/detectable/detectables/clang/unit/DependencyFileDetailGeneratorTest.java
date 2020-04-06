@@ -23,7 +23,6 @@
 package com.synopsys.integration.detectable.detectables.clang.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -89,9 +88,7 @@ public class DependencyFileDetailGeneratorTest {
             assertEquals(String.format("testPackageArch%c", indexChar), dependency.getExternalId().getArchitecture());
 
             assertEquals(forge, dependency.getExternalId().getForge().getName());
-            assertNull(dependency.getExternalId().getGroup());
             assertEquals(String.format("testPackageName%c", indexChar), dependency.getExternalId().getName());
-            assertNull(dependency.getExternalId().getPath());
             assertEquals(String.format("testPackageVersion%c", indexChar), dependency.getExternalId().getVersion());
         }
     }
