@@ -27,10 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
@@ -44,7 +42,6 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
@@ -110,17 +107,12 @@ public class BitbakeExtractor {
     }
 
     private BitbakeGraph generateBitbakeGraph(final BitbakeSession bitbakeSession, final File sourceDirectory, final String packageName, final Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
-        final File bitbakeResult = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, searchDepth).orElseThrow(() -> {
-            final String filesSearchedFor = Arrays.stream(BitbakeFileType.values())
-                                                .map(BitbakeFileType::getFileName)
-                                                .collect(Collectors.joining(", "));
-            return new IntegrationException(String.format("Failed to find any bitbake results. Looked for: %s", filesSearchedFor));
-        });
+        final File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, searchDepth)
+                                         .orElseThrow(() -> new IntegrationException(String.format("Failed to find file \"task-depends.dot\".")));
 
-        final File fileToParse = bitbakeResult;
-        logger.trace(FileUtils.readFileToString(fileToParse, Charset.defaultCharset()));
+        logger.trace(FileUtils.readFileToString(taskDependsFile, Charset.defaultCharset()));
 
-        final InputStream dependsFileInputStream = FileUtils.openInputStream(fileToParse);
+        final InputStream dependsFileInputStream = FileUtils.openInputStream(taskDependsFile);
         final GraphParser graphParser = new GraphParser(dependsFileInputStream);
 
         return graphParserTransformer.transform(graphParser);
