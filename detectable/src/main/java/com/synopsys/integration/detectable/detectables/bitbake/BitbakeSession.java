@@ -39,7 +39,7 @@ import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeReci
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BitbakeSession {
-    private final static String TASK_DEPENDS_FILE_NAME = "task-depends.dot";
+    private static final String TASK_DEPENDS_FILE_NAME = "task-depends.dot";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
