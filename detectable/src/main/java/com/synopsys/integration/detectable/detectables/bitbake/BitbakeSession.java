@@ -36,7 +36,6 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeResult;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -62,7 +61,7 @@ public class BitbakeSession {
         this.bashExecutable = bashExecutable;
     }
 
-    public Optional<BitbakeResult> executeBitbakeForDependencies(final File sourceDirectory, final String packageName, final Integer searchDepth)
+    public Optional<File> executeBitbakeForDependencies(final File sourceDirectory, final String packageName, final Integer searchDepth)
         throws ExecutableRunnerException, IOException {
 
         final String bitbakeCommand = "bitbake -g " + packageName;
@@ -75,7 +74,7 @@ public class BitbakeSession {
         }
 
         for (final BitbakeFileType bitbakeFileType : BitbakeFileType.values()) {
-            final Optional<BitbakeResult> bitbakeResult = getBitbakeResult(sourceDirectory, workingDirectory, bitbakeFileType, searchDepth);
+            final Optional<File> bitbakeResult = getBitbakeResult(sourceDirectory, workingDirectory, bitbakeFileType, searchDepth);
             if (bitbakeResult.isPresent()) {
                 return bitbakeResult;
             }
@@ -84,7 +83,7 @@ public class BitbakeSession {
         return Optional.empty();
     }
 
-    private Optional<BitbakeResult> getBitbakeResult(final File sourceDirectory, final File outputDirectory, final BitbakeFileType bitbakeFileType, final Integer searchDepth) {
+    private Optional<File> getBitbakeResult(final File sourceDirectory, final File outputDirectory, final BitbakeFileType bitbakeFileType, final Integer searchDepth) {
         File file = fileFinder.findFile(outputDirectory, bitbakeFileType.getFileName(), searchDepth);
         if (file == null) {
             file = fileFinder.findFile(sourceDirectory, bitbakeFileType.getFileName(), searchDepth);
@@ -93,7 +92,7 @@ public class BitbakeSession {
             }
         }
 
-        return Optional.of(new BitbakeResult(file));
+        return Optional.of(file);
 
     }
 

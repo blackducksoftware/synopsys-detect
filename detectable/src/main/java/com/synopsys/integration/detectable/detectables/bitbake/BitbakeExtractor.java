@@ -47,7 +47,6 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeResult;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
@@ -111,14 +110,14 @@ public class BitbakeExtractor {
     }
 
     private BitbakeGraph generateBitbakeGraph(final BitbakeSession bitbakeSession, final File sourceDirectory, final String packageName, final Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
-        final BitbakeResult bitbakeResult = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, searchDepth).orElseThrow(() -> {
+        final File bitbakeResult = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, searchDepth).orElseThrow(() -> {
             final String filesSearchedFor = Arrays.stream(BitbakeFileType.values())
                                                 .map(BitbakeFileType::getFileName)
                                                 .collect(Collectors.joining(", "));
             return new IntegrationException(String.format("Failed to find any bitbake results. Looked for: %s", filesSearchedFor));
         });
 
-        final File fileToParse = bitbakeResult.getFile();
+        final File fileToParse = bitbakeResult;
         logger.trace(FileUtils.readFileToString(fileToParse, Charset.defaultCharset()));
 
         final InputStream dependsFileInputStream = FileUtils.openInputStream(fileToParse);
