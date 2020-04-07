@@ -187,7 +187,7 @@ public final class BatteryTest {
         properties.put(DetectProperties.Companion.getDETECT_OUTPUT_PATH(), outputDirectory.getCanonicalPath());
         properties.put(DetectProperties.Companion.getDETECT_BDIO_OUTPUT_PATH(), bdioDirectory.getCanonicalPath());
         properties.put(DetectProperties.Companion.getDETECT_CLEANUP(), "false");
-        properties.put(DetectProperties.Companion.getLOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION(), "DEBUG");
+        properties.put(DetectProperties.Companion.getLOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION(), "INFO"); // Leave at INFO for Travis. Long logs cause build to fail.
         properties.put(DetectProperties.Companion.getDETECT_SOURCE_PATH(), sourceDirectory.getCanonicalPath());
         for (final Map.Entry<Property, String> entry : properties.entrySet()) {
             detectArguments.add("--" + entry.getKey().getKey() + "=" + entry.getValue());
