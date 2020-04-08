@@ -84,7 +84,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
             detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PARALLEL_PROCESSORS) -> detectConfiguration.getValue(DetectProperties.DETECT_PARALLEL_PROCESSORS)
             detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS) -> detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS)
             detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS) -> detectConfiguration.getValue(DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS)
-            else -> null
+            else -> detectConfiguration.getValue(DetectProperties.DETECT_PARALLEL_PROCESSORS)
         }
 
         return if (provided != null && provided > 0) {

@@ -4,10 +4,10 @@
 ### New features
 
 ### Changed features
-* Users are now allowed to [upload source](../properties/configuration/signature scanner/#upload-source-mode) when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is provided (IDETECT-1894).
+* Users are now allowed to [upload source](../properties/configuration/signature scanner/#upload-source-mode) when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is provided. (IDETECT-1894)
 
 ### Resolved issues
-
+* Resolved an issue where the default value for [parallel processors](../properties/configuration/general/#detect-parallel-processors-advanced) was not be honored. Available runtime processor count was being used. (IDETECT-1970).
 
 ## Version 6.2.1
 ### Resolved issues
