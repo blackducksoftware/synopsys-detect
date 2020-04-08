@@ -64,8 +64,8 @@ public class BitbakeDetectable extends Detectable {
             return new FileNotFoundDetectableResult(bitbakeDetectableOptions.getBuildEnvName());
         }
 
-        if (bitbakeDetectableOptions.getPackageNames() == null || bitbakeDetectableOptions.getPackageNames().size() == 0) {
-            return new PropertyInsufficientDetectableResult();
+        if (bitbakeDetectableOptions.getPackageNames() == null || bitbakeDetectableOptions.getPackageNames().isEmpty()) {
+            return new PropertyInsufficientDetectableResult("Bitbake requires that at least one package name is provided.");
         }
 
         return new PassedDetectableResult();

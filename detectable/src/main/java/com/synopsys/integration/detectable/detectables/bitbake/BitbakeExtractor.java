@@ -27,10 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.NotImplementedException;
@@ -44,10 +42,8 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeResult;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
@@ -75,6 +71,7 @@ public class BitbakeExtractor {
 
     public Extraction extract(final File sourceDirectory, final File buildEnvScript, final List<String> sourceArguments, final List<String> packageNames, final Integer searchDepth, final File bash) {
         final List<CodeLocation> codeLocations = new ArrayList<>();
+
         final BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, bitbakeRecipesParser, sourceDirectory, buildEnvScript, sourceArguments, bash);
         for (final String packageName : packageNames) {
             try {
@@ -86,6 +83,7 @@ public class BitbakeExtractor {
                 final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
                 codeLocations.add(codeLocation);
+
             } catch (final IOException | IntegrationException | ExecutableRunnerException | NotImplementedException e) {
                 logger.error(String.format("Failed to extract a Code Location while running Bitbake against package '%s'", packageName));
                 logger.debug(e.getMessage(), e);
@@ -98,6 +96,7 @@ public class BitbakeExtractor {
             extraction = new Extraction.Builder()
                              .failure("No Code Locations were generated during extraction")
                              .build();
+
         } else {
             extraction = new Extraction.Builder()
                              .success(codeLocations)
@@ -108,19 +107,14 @@ public class BitbakeExtractor {
     }
 
     private BitbakeGraph generateBitbakeGraph(final BitbakeSession bitbakeSession, final File sourceDirectory, final String packageName, final Integer searchDepth) throws ExecutableRunnerException, IOException, IntegrationException {
-        final BitbakeResult bitbakeResult = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, searchDepth).orElseThrow(() -> {
-            final String filesSearchedFor = Arrays.stream(BitbakeFileType.values())
-                                                .map(BitbakeFileType::getFileName)
-                                                .collect(Collectors.joining(", "));
-            return new IntegrationException(String.format("Failed to find any bitbake results. Looked for: %s", filesSearchedFor));
-        });
+        final File taskDependsFile = bitbakeSession.executeBitbakeForDependencies(sourceDirectory, packageName, searchDepth)
+                                         .orElseThrow(() -> new IntegrationException("Failed to find file \"task-depends.dot\"."));
 
-        final File fileToParse = bitbakeResult.getFile();
-        logger.trace(FileUtils.readFileToString(fileToParse, Charset.defaultCharset()));
-        final InputStream dependsFileInputStream = FileUtils.openInputStream(fileToParse);
+        logger.trace(FileUtils.readFileToString(taskDependsFile, Charset.defaultCharset()));
+
+        final InputStream dependsFileInputStream = FileUtils.openInputStream(taskDependsFile);
         final GraphParser graphParser = new GraphParser(dependsFileInputStream);
 
-        final BitbakeFileType bitbakeFileType = bitbakeResult.getBitbakeFileType();
-        return graphParserTransformer.transform(graphParser, bitbakeFileType);
+        return graphParserTransformer.transform(graphParser);
     }
 }

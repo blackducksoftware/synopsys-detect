@@ -59,6 +59,7 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
 
     @Override
     public ExecutableOutput execute(@NotNull final File workingDirectory, @NotNull final File exeFile, @NotNull final List<String> args) {
+
         final List<String> command = new ArrayList<>();
         command.add(exeFile.getPath());
         command.addAll(args);
@@ -68,6 +69,39 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
 
     @Override
     public ExecutableOutput execute(@NotNull final Executable executable) {
-        return executableExecutableOutputMap.get(executable);
+        final ExecutableOutput executableOutput = executableExecutableOutputMap.get(executable);
+        if (executableOutput == null) {
+            final StringBuilder errorMessage = new StringBuilder("Missing mocked executable output for:")
+                                                   .append(System.lineSeparator())
+                                                   .append(executable.getMaskedExecutableDescription())
+                                                   .append(System.lineSeparator());
+
+            errorMessage.append("Executable Output Map Contents:").append(System.lineSeparator());
+            executableExecutableOutputMap.forEach((key, value) -> {
+                errorMessage.append("--------------------------------").append(System.lineSeparator());
+
+                errorMessage.append("Key: ")
+                    .append(System.lineSeparator())
+                    .append(key.getMaskedExecutableDescription())
+                    .append(System.lineSeparator());
+                errorMessage.append("Standard Output: ")
+                    .append(System.lineSeparator())
+                    .append(value.getStandardOutput())
+                    .append(System.lineSeparator());
+                errorMessage.append("Error Output: ")
+                    .append(System.lineSeparator())
+                    .append(value.getErrorOutput())
+                    .append(System.lineSeparator());
+                errorMessage.append("Return Code: ")
+                    .append(System.lineSeparator())
+                    .append(value.getReturnCode())
+                    .append(System.lineSeparator());
+                errorMessage.append(System.lineSeparator());
+            });
+
+            throw new RuntimeException(errorMessage.toString());
+        }
+
+        return executableOutput;
     }
 }

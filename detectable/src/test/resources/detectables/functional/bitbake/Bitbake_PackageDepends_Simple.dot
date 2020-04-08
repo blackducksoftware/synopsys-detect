@@ -1,5 +1,0 @@
-digraph depends {
-    "busybox" [label = "busybox :1.23.2-r0\n/home/bit/poky/meta/recipes-core/busybox/busybox_1.23.2.bb"]
-    "busybox" -> "shadow-native"
-    "shadow-native" [label = "shadow-native :4.2.1-r0\nvirtual:native:/home/bit/poky/meta/recipes-extended/shadow/shadow_4.2.1.bb"]
-}
