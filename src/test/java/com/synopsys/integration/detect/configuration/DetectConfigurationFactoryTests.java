@@ -23,12 +23,14 @@
 package com.synopsys.integration.detect.configuration;
 
 import static com.synopsys.integration.detect.configuration.DetectConfigurationFactoryTestUtils.factoryOf;
+import static com.synopsys.integration.detect.configuration.DetectConfigurationFactoryTestUtils.spyFactoryOf;
 
 import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.configuration.util.Bdo;
@@ -57,10 +59,11 @@ public class DetectConfigurationFactoryTests {
     @Test
     public void parallelProcessorsDefaultsToOne() {
         // Using the property default is the safe choice. See IDETECT-1970 - JM
-        final DetectConfigurationFactory factory = factoryOf();
+        final DetectConfigurationFactory factory = spyFactoryOf();
         final Integer defaultValue = DetectProperties.Companion.getDETECT_PARALLEL_PROCESSORS().getDefaultValue();
 
         Assertions.assertEquals(defaultValue.intValue(), factory.findParallelProcessors());
+        Mockito.verifyNoInteractions(factory);
     }
 
     @Test
