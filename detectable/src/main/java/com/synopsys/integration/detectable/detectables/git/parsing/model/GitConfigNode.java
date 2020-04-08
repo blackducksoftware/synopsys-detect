@@ -25,30 +25,33 @@ package com.synopsys.integration.detectable.detectables.git.parsing.model;
 import java.util.Map;
 import java.util.Optional;
 
-public class GitConfigElement {
-    private final String elementType;
+import org.jetbrains.annotations.Nullable;
+
+public class GitConfigNode {
+    private final String type;
+    @Nullable
     private final String name;
     private final Map<String, String> properties;
 
-    public GitConfigElement(final String elementType, final String name, final Map<String, String> properties) {
-        this.elementType = elementType;
+    public GitConfigNode(final String type, final Map<String, String> properties) {
+        this(type, null, properties);
+    }
+
+    public GitConfigNode(final String type, @Nullable final String name, final Map<String, String> properties) {
+        this.type = type;
         this.name = name;
         this.properties = properties;
     }
 
-    public String getElementType() {
-        return elementType;
+    public String getType() {
+        return type;
     }
 
     public Optional<String> getName() {
         return Optional.ofNullable(name);
     }
 
-    public String getProperty(final String propertyKey) {
-        return properties.get(propertyKey);
-    }
-
-    public boolean containsKey(final String key) {
-        return properties.containsKey(key);
+    public Optional<String> getProperty(final String propertyKey) {
+        return Optional.ofNullable(properties.get(propertyKey));
     }
 }

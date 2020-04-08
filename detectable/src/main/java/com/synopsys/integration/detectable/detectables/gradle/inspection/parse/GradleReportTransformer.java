@@ -41,7 +41,7 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.model.G
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleReport;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleTreeNode;
 
-//An example transformGitConfigElements that uses our "Dependency History" class and is closer to the original Gradle implementation
+//An example transform that uses our "Dependency History" class and is closer to the original Gradle implementation
 public class GradleReportTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;

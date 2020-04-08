@@ -31,9 +31,10 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigElement;
+import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfig;
+import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigNode;
+import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigExtractor;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
-import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileTransformer;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -43,11 +44,11 @@ public class GitParseExtractor {
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
     private final GitFileParser gitFileParser;
-    private final GitFileTransformer gitFileTransformer;
+    private final GitConfigExtractor gitConfigExtractor;
 
-    public GitParseExtractor(final GitFileParser gitFileParser, final GitFileTransformer gitFileTransformer) {
+    public GitParseExtractor(final GitFileParser gitFileParser, final GitConfigExtractor gitConfigExtractor) {
         this.gitFileParser = gitFileParser;
-        this.gitFileTransformer = gitFileTransformer;
+        this.gitConfigExtractor = gitConfigExtractor;
     }
 
     public final Extraction extract(final File gitConfigFile, final File gitHeadFile) {
@@ -56,9 +57,10 @@ public class GitParseExtractor {
             final String gitHead = gitFileParser.parseGitHead(headFileContent);
 
             final List<String> configFileContent = FileUtils.readLines(gitConfigFile, StandardCharsets.UTF_8);
-            final List<GitConfigElement> gitConfigElements = gitFileParser.parseGitConfig(configFileContent);
+            final List<GitConfigNode> gitConfigNodes = gitFileParser.parseGitConfig(configFileContent);
+            final GitConfig gitConfig = GitConfig.fromGitConfigNodes(gitConfigNodes);
 
-            final NameVersion projectNameVersion = gitFileTransformer.transformGitConfigElements(gitConfigElements, gitHead);
+            final NameVersion projectNameVersion = gitConfigExtractor.extractProjectInfo(gitConfig, gitHead);
 
             return new Extraction.Builder()
                        .success()

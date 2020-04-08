@@ -23,17 +23,18 @@
 package com.synopsys.integration.detectable.detectables.git.unit;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
-import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigElement;
-import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileTransformer;
+import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfig;
+import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigBranch;
+import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigRemote;
+import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigExtractor;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -41,60 +42,40 @@ class GitFileTransformerTest {
 
     @Test
     void transform() throws MalformedURLException, IntegrationException {
-        final Map<String, String> remoteProperties = new HashMap<>();
-        remoteProperties.put("url", "https://github.com/blackducksoftware/blackduck-artifactory.git");
-        remoteProperties.put("fetch", "+refs/heads/*:refs/remotes/origin/");
-        final GitConfigElement remote = new GitConfigElement("remote", "origin", remoteProperties);
+        final GitConfigRemote gitConfigRemote = new GitConfigRemote("origin", "https://github.com/blackducksoftware/blackduck-artifactory.git", "+refs/heads/*:refs/remotes/origin/");
+        final GitConfigBranch gitConfigBranch = new GitConfigBranch("master", "origin", "refs/heads/master");
+        final GitConfigBranch badBranch = new GitConfigBranch("bad-branch", "origin", "refs/heads/bad-branch");
+        final List<GitConfigRemote> gitConfigRemotes = Collections.singletonList(gitConfigRemote);
+        final List<GitConfigBranch> gitConfigBranches = Arrays.asList(gitConfigBranch, badBranch);
 
-        final Map<String, String> branchProperties = new HashMap<>();
-        branchProperties.put("remote", "origin");
-        branchProperties.put("merge", "refs/heads/master");
-        final GitConfigElement branch = new GitConfigElement("branch", "master", branchProperties);
-
-        final Map<String, String> badBranchProperties = new HashMap<>();
-        badBranchProperties.put("remote", "origin");
-        badBranchProperties.put("merge", "refs/heads/bad-branch");
-        final GitConfigElement badBranch = new GitConfigElement("branch", "bad-branch", badBranchProperties);
-
+        final GitConfig gitConfig = new GitConfig(gitConfigRemotes, gitConfigBranches);
         final String gitHead = "refs/heads/master";
-        final List<GitConfigElement> gitConfigElements = new ArrayList<>();
-        gitConfigElements.add(remote);
-        gitConfigElements.add(branch);
-        gitConfigElements.add(badBranch);
 
         final GitUrlParser gitUrlParser = new GitUrlParser();
-        final GitFileTransformer gitFileTransformer = new GitFileTransformer(gitUrlParser);
-        final NameVersion nameVersion = gitFileTransformer.transformGitConfigElements(gitConfigElements, gitHead);
+        final GitConfigExtractor gitFileTransformer = new GitConfigExtractor(gitUrlParser);
+        final NameVersion nameVersion = gitFileTransformer.extractProjectInfo(gitConfig, gitHead);
 
         Assertions.assertEquals("blackducksoftware/blackduck-artifactory", nameVersion.getName());
         Assertions.assertEquals("master", nameVersion.getVersion());
     }
 
     /**
-     * When we encounter a git repository with a detached head,
-     * the HEAD file will contain a commit hash instead of a reference to a git branch since it is detached.
+     * When we encounter a git repository with a detached head, the HEAD file will contain a commit hash instead of a reference to a git branch since it is detached.
      * In this case we want the version to be the commit hash as the version since a branch cannot be chosen.
      */
     @Test
     void transformDetachedHead() throws MalformedURLException, IntegrationException {
-        final Map<String, String> remoteProperties = new HashMap<>();
-        remoteProperties.put("url", "https://github.com/blackducksoftware/synopsys-detect.git");
-        remoteProperties.put("fetch", "+refs/heads/*:refs/remotes/origin/");
-        final GitConfigElement remote = new GitConfigElement("remote", "origin", remoteProperties);
+        final GitConfigRemote gitConfigRemote = new GitConfigRemote("origin", "https://github.com/blackducksoftware/synopsys-detect.git", "+refs/heads/*:refs/remotes/origin/");
+        final GitConfigBranch gitConfigBranch = new GitConfigBranch("master", "origin", "refs/heads/master");
+        final List<GitConfigRemote> gitConfigRemotes = Collections.singletonList(gitConfigRemote);
+        final List<GitConfigBranch> gitConfigBranches = Collections.singletonList(gitConfigBranch);
 
-        final Map<String, String> branchProperties = new HashMap<>();
-        branchProperties.put("remote", "origin");
-        branchProperties.put("merge", "refs/heads/master");
-        final GitConfigElement branch = new GitConfigElement("branch", "master", branchProperties);
-
+        final GitConfig gitConfig = new GitConfig(gitConfigRemotes, gitConfigBranches);
         final String gitHead = "9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c";
-        final List<GitConfigElement> gitConfigElements = new ArrayList<>();
-        gitConfigElements.add(remote);
-        gitConfigElements.add(branch);
 
         final GitUrlParser gitUrlParser = new GitUrlParser();
-        final GitFileTransformer gitFileTransformer = new GitFileTransformer(gitUrlParser);
-        final NameVersion nameVersion = gitFileTransformer.transformGitConfigElements(gitConfigElements, gitHead);
+        final GitConfigExtractor gitFileTransformer = new GitConfigExtractor(gitUrlParser);
+        final NameVersion nameVersion = gitFileTransformer.extractProjectInfo(gitConfig, gitHead);
 
         Assertions.assertEquals("blackducksoftware/synopsys-detect", nameVersion.getName());
         Assertions.assertEquals("9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c", nameVersion.getVersion());
