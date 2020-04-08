@@ -7,7 +7,7 @@
 * Users are now allowed to [upload source](../properties/configuration/signature scanner/#upload-source-mode) when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is provided. (IDETECT-1894)
 
 ### Resolved issues
-* Resolved an issue where git extraction could fail if "git log" returned unexpected output. The commit hash will be used as a version as a last resort. (IDETECT-1906)
+* Resolved an issue where git extraction could fail if "git log" returned unexpected output. The commit hash will be used as a version as a last resort. (IDETECT-1906, [\#114](https://github.com/blackducksoftware/synopsys-detect/issues/114))
 * Resolved an issue where the default value for [parallel processors](../properties/configuration/general/#detect-parallel-processors-advanced) was not be honored. Available runtime processor count was being used. (IDETECT-1970).
 * Resolved an issue where the Nuget exe inspector would not resolve from Artifactory. (IDETECT-1973)
 ## Version 6.2.1
