@@ -34,13 +34,13 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeFileType;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
-import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeResult;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BitbakeSession {
+    private static final String TASK_DEPENDS_FILE_NAME = "task-depends.dot";
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final FileFinder fileFinder;
@@ -62,8 +62,9 @@ public class BitbakeSession {
         this.bashExecutable = bashExecutable;
     }
 
-    public Optional<BitbakeResult> executeBitbakeForDependencies(final File sourceDirectory, final String packageName, final Integer searchDepth)
+    public Optional<File> executeBitbakeForDependencies(final File sourceDirectory, final String packageName, final Integer searchDepth)
         throws ExecutableRunnerException, IOException {
+
         final String bitbakeCommand = "bitbake -g " + packageName;
         final ExecutableOutput executableOutput = runBitbake(bitbakeCommand);
         final int returnCode = executableOutput.getReturnCode();
@@ -73,26 +74,17 @@ public class BitbakeSession {
             return Optional.empty();
         }
 
-        for (final BitbakeFileType bitbakeFileType : BitbakeFileType.values()) {
-            final Optional<BitbakeResult> bitbakeResult = getBitbakeResult(sourceDirectory, workingDirectory, bitbakeFileType, searchDepth);
-            if (bitbakeResult.isPresent()) {
-                return bitbakeResult;
-            }
-        }
+        return findTaskDependsFile(sourceDirectory, workingDirectory, searchDepth);
 
-        return Optional.empty();
     }
 
-    private Optional<BitbakeResult> getBitbakeResult(final File sourceDirectory, final File outputDirectory, final BitbakeFileType bitbakeFileType, final Integer searchDepth) {
-        File file = fileFinder.findFile(outputDirectory, bitbakeFileType.getFileName(), searchDepth);
+    private Optional<File> findTaskDependsFile(final File sourceDirectory, final File outputDirectory, final Integer searchDepth) {
+        File file = fileFinder.findFile(outputDirectory, TASK_DEPENDS_FILE_NAME, searchDepth);
         if (file == null) {
-            file = fileFinder.findFile(sourceDirectory, bitbakeFileType.getFileName(), searchDepth);
-            if (file == null) {
-                return Optional.empty();
-            }
+            file = fileFinder.findFile(sourceDirectory, TASK_DEPENDS_FILE_NAME, searchDepth);
         }
 
-        return Optional.of(new BitbakeResult(bitbakeFileType, file));
+        return Optional.ofNullable(file);
 
     }
 
@@ -107,16 +99,11 @@ public class BitbakeSession {
     }
 
     private ExecutableOutput runBitbake(final String bitbakeCommand) throws ExecutableRunnerException, IOException {
-        try {
-            final StringBuilder sourceCommand = new StringBuilder("source " + buildEnvScript.getCanonicalPath());
-            for (final String sourceArgument : sourceArguments) {
-                sourceCommand.append(" ");
-                sourceCommand.append(sourceArgument);
-            }
-            return executableRunner.execute(workingDirectory, bashExecutable, "-c", sourceCommand.toString() + "; " + bitbakeCommand);
-        } catch (final ExecutableRunnerException e) {
-            logger.error(String.format("Failed executing bitbake command. %s", bitbakeCommand));
-            throw e;
+        final StringBuilder sourceCommand = new StringBuilder("source " + buildEnvScript.getCanonicalPath());
+        for (final String sourceArgument : sourceArguments) {
+            sourceCommand.append(" ");
+            sourceCommand.append(sourceArgument);
         }
+        return executableRunner.execute(workingDirectory, bashExecutable, "-c", sourceCommand.toString() + "; " + bitbakeCommand);
     }
 }
