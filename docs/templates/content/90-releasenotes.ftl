@@ -7,7 +7,7 @@
 * Users are now allowed to [upload source](../properties/configuration/signature scanner/#upload-source-mode) when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is provided (IDETECT-1894).
 
 ### Resolved issues
-
+* Resolved an issue where Detect would fail to extract project information while parsing a Git repository with a detached head. (IDETECT-1883)
 
 ## Version 6.2.1
 ### Resolved issues

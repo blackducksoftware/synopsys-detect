@@ -69,4 +69,34 @@ class GitFileTransformerTest {
         Assertions.assertEquals("blackducksoftware/blackduck-artifactory", nameVersion.getName());
         Assertions.assertEquals("master", nameVersion.getVersion());
     }
+
+    /**
+     * When we encounter a git repository with a detached head,
+     * the HEAD file will contain a commit hash instead of a reference to a git branch since it is detached.
+     * In this case we want the version to be the commit hash as the version since a branch cannot be chosen.
+     */
+    @Test
+    void transformDetachedHead() throws MalformedURLException, IntegrationException {
+        final Map<String, String> remoteProperties = new HashMap<>();
+        remoteProperties.put("url", "https://github.com/blackducksoftware/synopsys-detect.git");
+        remoteProperties.put("fetch", "+refs/heads/*:refs/remotes/origin/");
+        final GitConfigElement remote = new GitConfigElement("remote", "origin", remoteProperties);
+
+        final Map<String, String> branchProperties = new HashMap<>();
+        branchProperties.put("remote", "origin");
+        branchProperties.put("merge", "refs/heads/master");
+        final GitConfigElement branch = new GitConfigElement("branch", "master", branchProperties);
+
+        final String gitHead = "9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c";
+        final List<GitConfigElement> gitConfigElements = new ArrayList<>();
+        gitConfigElements.add(remote);
+        gitConfigElements.add(branch);
+
+        final GitUrlParser gitUrlParser = new GitUrlParser();
+        final GitFileTransformer gitFileTransformer = new GitFileTransformer(gitUrlParser);
+        final NameVersion nameVersion = gitFileTransformer.transformGitConfigElements(gitConfigElements, gitHead);
+
+        Assertions.assertEquals("blackducksoftware/synopsys-detect", nameVersion.getName());
+        Assertions.assertEquals("9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c", nameVersion.getVersion());
+    }
 }

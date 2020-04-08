@@ -26,12 +26,17 @@ import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigElement;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class GitFileTransformer {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final GitUrlParser gitUrlParser;
 
     public GitFileTransformer(final GitUrlParser gitUrlParser) {
@@ -49,24 +54,35 @@ public class GitFileTransformer {
         final Optional<String> currentBranchRemoteName = currentBranch
                                                              .map(gitConfigElement -> gitConfigElement.getProperty("remote"));
 
-        if (!currentBranchRemoteName.isPresent()) {
-            throw new IntegrationException(String.format("Failed to find a remote name for head %s", gitHead));
+        final String projectName;
+        final String projectVersionName;
+        if (currentBranchRemoteName.isPresent()) {
+            logger.debug(String.format("Parsing a git repository on branch '%s'.", currentBranchRemoteName.get()));
+
+            final String remoteUrl = gitConfigElements.stream()
+                                         .filter(gitConfigElement -> gitConfigElement.getElementType().equals("remote"))
+                                         .filter(gitConfigElement -> gitConfigElement.getName().isPresent())
+                                         .filter(gitConfigElement -> gitConfigElement.getName().get().equals(currentBranchRemoteName.get()))
+                                         .filter(gitConfigElement -> gitConfigElement.containsKey("url"))
+                                         .map(gitConfigElement -> gitConfigElement.getProperty("url"))
+                                         .findFirst()
+                                         .orElseThrow(() -> new IntegrationException("Failed to find a remote url."));
+
+            projectName = gitUrlParser.getRepoName(remoteUrl);
+            projectVersionName = currentBranch.get().getName().orElse(null);
+        } else {
+            logger.debug(String.format("Parsing a git repository with detached head '%s'.", gitHead));
+
+            final String remoteUrl = gitConfigElements.stream()
+                                         .filter(gitConfigElement -> gitConfigElement.getElementType().equals("remote"))
+                                         .filter(gitConfigElement -> gitConfigElement.containsKey("url"))
+                                         .map(gitConfigElement -> gitConfigElement.getProperty("url"))
+                                         .findFirst()
+                                         .orElseThrow(() -> new IntegrationException("No named remotes were found in config."));
+
+            projectName = gitUrlParser.getRepoName(remoteUrl);
+            projectVersionName = gitHead;
         }
-
-        final Optional<String> remoteUrlOptional = gitConfigElements.stream()
-                                                       .filter(gitConfigElement -> gitConfigElement.getElementType().equals("remote"))
-                                                       .filter(gitConfigElement -> gitConfigElement.getName().isPresent())
-                                                       .filter(gitConfigElement -> gitConfigElement.getName().get().equals(currentBranchRemoteName.get()))
-                                                       .filter(gitConfigElement -> gitConfigElement.containsKey("url"))
-                                                       .map(gitConfigElement -> gitConfigElement.getProperty("url"))
-                                                       .findAny();
-
-        if (!remoteUrlOptional.isPresent()) {
-            throw new IntegrationException("Failed to find a remote url.");
-        }
-
-        final String projectName = gitUrlParser.getRepoName(remoteUrlOptional.get());
-        final String projectVersionName = currentBranch.get().getName().orElse(null);
 
         return new NameVersion(projectName, projectVersionName);
     }
