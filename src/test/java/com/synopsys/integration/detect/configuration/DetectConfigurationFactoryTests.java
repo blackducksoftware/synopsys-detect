@@ -57,11 +57,13 @@ public class DetectConfigurationFactoryTests {
 
     //#region Parallel Processors
     @Test
-    public void parallelProcessorsDefaultsToRuntime() {
+    public void parallelProcessorsDefaultsToOne() {
+        // Using the property default is the safe choice. See IDETECT-1970 - JM
         final DetectConfigurationFactory factory = spyFactoryOf();
-        factory.findParallelProcessors();
+        final Integer defaultValue = DetectProperties.Companion.getDETECT_PARALLEL_PROCESSORS().getDefaultValue();
 
-        Mockito.verify(factory).findRuntimeProcessors();
+        Assertions.assertEquals(defaultValue.intValue(), factory.findParallelProcessors());
+        Mockito.verifyNoInteractions(factory);
     }
 
     @Test

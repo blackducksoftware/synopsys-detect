@@ -25,6 +25,7 @@ package com.synopsys.integration.detectable.detectables.git.cli;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
@@ -57,7 +58,8 @@ public class GitCliExtractor {
 
             if ("HEAD".equals(branch)) {
                 logger.info("HEAD is detached for this repo, using heuristics to find Git branch.");
-                branch = getRepoBranchBackup(gitExecutable, directory);
+                branch = getRepoBranchBackup(gitExecutable, directory)
+                             .orElseGet(() -> getCommitHash(gitExecutable, directory));
             }
 
             return new Extraction.Builder()
@@ -82,17 +84,29 @@ public class GitCliExtractor {
         return runGitSingleLinesResponse(gitExecutable, directory, "rev-parse", "--abbrev-ref", "HEAD").trim();
     }
 
-    private String getRepoBranchBackup(final File gitExecutable, final File directory) throws ExecutableRunnerException, IntegrationException {
+    private Optional<String> getRepoBranchBackup(final File gitExecutable, final File directory) throws ExecutableRunnerException, IntegrationException {
         String output = runGitSingleLinesResponse(gitExecutable, directory, "log", "-n", "1", "--pretty=%d", "HEAD").trim();
         output = StringUtils.removeStart(output, "(");
         output = StringUtils.removeEnd(output, ")");
         final String[] pieces = output.split(", ");
 
+        final String repoBranch;
         if (pieces.length != 2 || !pieces[1].startsWith(TAG_TOKEN)) {
-            throw new IntegrationException("Failed to extract branch on second attempt.");
+            logger.debug(String.format("Unexpected output on git log. %s", output));
+            repoBranch = null;
+        } else {
+            repoBranch = pieces[1].replace(TAG_TOKEN, "").trim();
         }
 
-        return pieces[1].replace(TAG_TOKEN, "").trim();
+        return Optional.ofNullable(repoBranch);
+    }
+
+    private String getCommitHash(final File gitExecutable, final File directory) {
+        try {
+            return runGitSingleLinesResponse(gitExecutable, directory, "rev-parse", "HEAD").trim();
+        } catch (final ExecutableRunnerException | IntegrationException e) {
+            return "";
+        }
     }
 
     private String runGitSingleLinesResponse(final File gitExecutable, final File directory, final String... commands) throws ExecutableRunnerException, IntegrationException {
