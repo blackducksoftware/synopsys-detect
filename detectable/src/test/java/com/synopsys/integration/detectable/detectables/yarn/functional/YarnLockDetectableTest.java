@@ -44,12 +44,12 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
     @Override
     protected void setup() throws IOException {
         addFile(Paths.get("yarn.lock"),
-            "async@^2.1.2:",
+            "async@2.5.0:",
             "   version \"2.5.0\"",
             "   dependencies:",
             "     lodash \"4.17.4\"",
             "",
-            "lodash@^4.1.0:",
+            "lodash@4.17.4:",
             "   version \"4.17.4\""
         );
 
