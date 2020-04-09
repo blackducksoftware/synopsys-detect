@@ -13,7 +13,7 @@ You can use the following property to change the default version to a timestamp:
 ```
 You can use the following property to customize the timestamp format:
 ```
---detect.default.project.version.timeformat=’yyyy-MM-dd:HH:mm:ss.SSS’
+--detect.default.project.version.timeformat='yyyy-MM-dd:HH:mm:ss.SSS'
 ```
 ## Project and version naming for Git projects
 

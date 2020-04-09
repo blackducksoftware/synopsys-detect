@@ -125,12 +125,12 @@ public class HelpPrinter {
     }
 
     private boolean isPrintGroup(final List<Group> allPrintGroups, final String filterGroup) {
-        return allPrintGroups.stream().map(Group::getName).anyMatch(name -> name.contains(filterGroup));
+        return allPrintGroups.stream().map(Group::getName).anyMatch(name -> name.equals(filterGroup));
     }
 
     private boolean isProperty(final List<Property> allOptions, final String filterTerm) {
         return allOptions.stream()
-                   .map(it -> it.getKey())
+                   .map(Property::getKey)
                    .anyMatch(it -> it.equals(filterTerm));
     }
 
@@ -147,7 +147,7 @@ public class HelpPrinter {
 
         writer.println("Property default value: " + property.describeDefault());
         if (property.listExampleValues().size() > 0) {
-            writer.println("Property acceptable values: " + property.listExampleValues().stream().collect(Collectors.joining(", ")));
+            writer.println("Property acceptable values: " + String.join(", ", property.listExampleValues()));
         }
         writer.println("");
 

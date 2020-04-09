@@ -13,16 +13,15 @@ The archive created contains the ${solution_name} .jar and the inspectors.
 Before running ${solution_name} in air gap mode, unzip the air gap archive to create the air gap directory.
 
 To run ${solution_name} in air gap mode, invoke the ${solution_name} .jar file at the top level of
-the air gap directory. Refer to
-[Running the ${solution_name} .jar](../30-running.md#running-the-synopsys-detect-jar) for more information.
+the air gap directory. Refer to [Running the ${solution_name} .jar](../../30-running/#running-the-synopsys-detect-jar) for more information.
 
 To run ${solution_name} using the Gradle inspector, set the  
-[Gradle Inspector Air Gap Path](../properties/Detectors/gradle.md#gradle-inspector-airgap-path-advanced)
+[Gradle Inspector Air Gap Path](../../properties/detectors/gradle/#gradle-inspector-airgap-path-advanced)
 
 To run ${solution_name} using the NuGet inspector, set the
-[NuGet Inspector Air Gap Path](../properties/Detectors/nuget.md#nuget-inspector-airgap-path-advanced)
+[NuGet Inspector Air Gap Path](../../properties/detectors/nuget/#nuget-inspector-airgap-path-advanced)
 
 To run ${solution_name} using the Docker inspector, set the
-[Docker Inspector Air Gap Path](../properties/Detectors/docker.md#docker-inspector-airgap-path-advanced)
+[Docker Inspector Air Gap Path](../../properties/detectors/docker/#docker-inspector-airgap-path-advanced)
 
 

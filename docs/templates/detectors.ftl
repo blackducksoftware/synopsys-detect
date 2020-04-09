@@ -11,7 +11,7 @@ or properties you have set.
 
 By default, detectors only search the project directory. In some cases, such as when your project contains sub-projects,
 or when package manager files reside in sub-directories, you may need to tell ${solution_name} to search sub-directories
-by increasing the detector search depth. For more information, refer to [detector search depth](../properties/Configuration/paths.md#detector-search-depth).
+by increasing the detector search depth. For more information, refer to [detector search depth](../../properties/configuration/paths/#detector-search-depth).
 
 Detectors then check that your environment is extractable, meaning you have all the relevant executables such as NPM or a Gradle wrapper, and all relevant downloads are present or available, such as the Docker or NuGet inspector.
 
@@ -26,13 +26,13 @@ ${solution_name}'s build detectors work in this environment and produce the most
 
 If you can't build your project, you may still be able to use ${solution_name}'s buildless detectors. The results from buildless detectors may not be as accurate as the results from
 build detectors, but buildless detectors can run without accessing the tools required to build the project. You can choose to run
-buildless detectors using the [buildless mode property](../properties/Configuration/general.md#buildless-mode).
+buildless detectors using the [buildless mode property](../../properties/configuration/general/#buildless-mode).
 
 The following tables show which detectors run in the default (build) mode, and which detectors run in buildless mode. There is some overlap across the two lists.
 
 ## Build detectors
 
-Build detectors run package manager commands; for example: *mvn dependency:tree*, and/or inspectors; for example, the [Gradle inspector](inspectors.md#gradle-inspector) to derive dependency information. Inspectors
+Build detectors run package manager commands; for example: *mvn dependency:tree*, and/or inspectors; for example, the [Gradle inspector](../inspectors/#gradle-inspector) to derive dependency information. Inspectors
 act as extensions to ${solution_name}, and are downloaded automatically if needed. The required commands as shown in the following table must be present and findable on your system. ${solution_name} uses
 the system PATH to find commands. In some cases as an alternative to the system PATH, the location of a command can be provided through a property.
 

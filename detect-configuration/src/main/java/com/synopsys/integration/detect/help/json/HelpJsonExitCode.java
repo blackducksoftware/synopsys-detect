@@ -50,5 +50,4 @@ public class HelpJsonExitCode {
     public void setExitCodeDescription(final String exitCodeDescription) {
         this.exitCodeDescription = exitCodeDescription;
     }
-
 }

@@ -4,7 +4,7 @@
 
 Requirements for ${solution_name}
 
-* Normally, access to the internet is required to download and run ${solution_name} and components from GitHub and other locations. For running without internet access, refer to [Air gap and offline modes](advanced/air-gap.md).
+* Normally, access to the internet is required to download and run ${solution_name} and components from GitHub and other locations. For running without internet access, refer to [Air gap and offline modes](../advanced/air-gap/).
 * Minimum 8GB RAM.
 * OpenJDK versions 8 or 11.
 * curl versions 7.34.0 or later.

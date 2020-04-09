@@ -13,18 +13,15 @@ import com.synopsys.integration.log.PrintStreamIntLogger
 buildscript {
     ext {
         springBootVersion = '2.2.4.RELEASE'
-        blackDuckCommonVersion = '46.0.0'
+        blackDuckCommonVersion = '47.1.0'
         polarisCommonVersion = '0.13.2'
-        junitPlatformDefaultTestTags = "integration, performance, battery"
+        junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
-    repositories {
-        mavenCentral()
-        maven { url 'https://plugins.gradle.org/m2/' }
-    }
+    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
+    apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
 
     dependencies {
-        classpath 'com.synopsys.integration:common-gradle-plugin:1.2.3'
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
         classpath "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
@@ -40,6 +37,7 @@ version = '6.3.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
+
 apply from: 'docs.gradle'
 
 def createArtifactName() {
@@ -55,14 +53,14 @@ allprojects {
     apply plugin: 'io.spring.dependency-management'
 
     dependencies {
-        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-        implementation "org.jetbrains.kotlin:kotlin-reflect"
+        implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+        implementation 'org.jetbrains.kotlin:kotlin-reflect'
         implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
         implementation 'com.paypal.digraph:digraph-parser:1.0'
         implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0'
         implementation 'com.fasterxml.jackson.core:jackson-core:2.10.0'
 
-        testImplementation "org.mockito:mockito-core:2.+"
+        testImplementation 'org.mockito:mockito-core:2.+'
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
     }
 }
@@ -106,13 +104,13 @@ test {
 
 dependencies {
     implementation project(':configuration')
-    implementation project(":detect-configuration")
-    implementation project(":detectable")
-    implementation project(":detector")
+    implementation project(':detect-configuration')
+    implementation project(':detectable')
+    implementation project(':detector')
 
-    implementation "org.zeroturnaround:zt-zip:1.13"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation "org.jetbrains.kotlin:kotlin-reflect"
+    implementation 'org.zeroturnaround:zt-zip:1.13'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect'
     implementation "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
     implementation 'org.yaml:snakeyaml:1.24'
 
@@ -125,17 +123,17 @@ dependencies {
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
-    testImplementation project(":configuration").sourceSets.test.output
+    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0'
+    testImplementation project(':configuration').sourceSets.test.output
 
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = '1.8'
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = '1.8'
 }
 
 springBoot { mainClassName = 'com.synopsys.integration.detect.Application' }
@@ -196,10 +194,10 @@ task verifyBlackDuckDetect() {
 }
 
 String parseAirGapZipPath(ByteArrayOutputStream standardOutput) {
-    String marker = "Detect Air Gap Zip: "
+    String marker = 'Detect Air Gap Zip: '
     String line = standardOutput.toString().split('\n').find { it.contains(marker) }
     String path = line.substring(line.lastIndexOf(marker) + marker.length()).trim()
-    println "Found Air Gap Zip: " + path
+    println "Found Air Gap Zip: ${path}"
     return path
 }
 
@@ -240,7 +238,6 @@ task createAirGapZipWithoutDocker(type: JavaExec) {
     doLast {
         createAirGapZipWithoutDocker.ext.airGapPath = parseAirGapZipPath(standardOutput)
     }
-
 }
 
 task publishAirGapZipWithoutDocker() {

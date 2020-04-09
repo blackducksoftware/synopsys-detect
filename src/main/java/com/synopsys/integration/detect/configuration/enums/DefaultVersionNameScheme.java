@@ -24,5 +24,5 @@ package com.synopsys.integration.detect.configuration.enums;
 
 public enum DefaultVersionNameScheme {
     TIMESTAMP,
-    DEFAULT
+    TEXT
 }

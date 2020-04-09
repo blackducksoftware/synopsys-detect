@@ -54,12 +54,12 @@ import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.configuration.source.SpringConfigurationPropertySource;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.RunBeanConfiguration;
-import com.synopsys.integration.detect.configuration.ConnectionDetails;
-import com.synopsys.integration.detect.configuration.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectGroup;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
+import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
+import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.help.DetectArgumentState;
@@ -207,11 +207,9 @@ public class DetectBoot {
 
         final RunOptions runOptions = detectConfigurationFactory.createRunOptions();
         final DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
-        final ProductDecider productDecider = new ProductDecider(detectConfigurationFactory);
-        final ProductDecision productDecision;
 
         logger.info("");
-        productDecision = productDecider.decide(directoryManager.getUserHome(), detectToolFilter);
+        final ProductDecision productDecision = new ProductDecider().decide(detectConfigurationFactory, directoryManager.getUserHome(), detectToolFilter);
 
         logger.debug("Decided what products will be run. Starting product boot.");
 

@@ -40,10 +40,7 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanTarget;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.enums.IndividualFileMatchMode;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -87,7 +84,12 @@ public class BlackDuckSignatureScanner {
 
         final ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
         scanJobBuilder.fromBlackDuckServerConfig(blackDuckServerConfig);//when offline, we must still call this with 'null' as a workaround for library issues, so offline scanner must be created with this set to null.
-        final ScanBatch scanJob = scanJobBuilder.build();
+        final ScanBatch scanJob;
+        try {
+            scanJob = scanJobBuilder.build();
+        } catch (final IllegalArgumentException e) {
+            throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_CONFIGURATION);
+        }
 
         final List<ScanCommandOutput> scanCommandOutputs = new ArrayList<>();
         final ScanBatchOutput scanJobOutput = scanJobManager.executeScans(scanJob);
@@ -209,12 +211,9 @@ public class BlackDuckSignatureScanner {
         scanJobBuilder.dryRun(signatureScannerOptions.getDryRun());
         scanJobBuilder.cleanupOutput(false);
 
-        final Optional<SnippetMatching> snippetMatching = signatureScannerOptions.getSnippetMatching();
-        if (signatureScannerOptions.getUploadSource() && !snippetMatching.isPresent() && !signatureScannerOptions.getLicenseSearch()) {
-            throw new DetectUserFriendlyException("You must enable snippet matching using " + DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING().getName() + " in order to use upload source.",
-                ExitCodeType.FAILURE_CONFIGURATION);
-        }
-        scanJobBuilder.uploadSource(snippetMatching.get(), signatureScannerOptions.getUploadSource());
+        signatureScannerOptions.getSnippetMatching().ifPresent(scanJobBuilder::snippetMatching);
+        scanJobBuilder.uploadSource(signatureScannerOptions.getUploadSource());
+        scanJobBuilder.licenseSearch(signatureScannerOptions.getLicenseSearch());
 
         signatureScannerOptions.getAdditionalArguments().ifPresent(scanJobBuilder::additionalScanArguments);
 
@@ -222,11 +221,8 @@ public class BlackDuckSignatureScanner {
         final String projectVersionName = projectNameVersion.getVersion();
         scanJobBuilder.projectAndVersionNames(projectName, projectVersionName);
 
-        final Boolean licenseSearch = signatureScannerOptions.getLicenseSearch();
-        scanJobBuilder.licenseSearch(licenseSearch);
-
-        final IndividualFileMatchMode individualFileMatching = signatureScannerOptions.getIndividualFileMatching();
-        scanJobBuilder.individualFileMatching(individualFileMatching.name());
+        signatureScannerOptions.getIndividualFileMatching()
+            .ifPresent(scanJobBuilder::individualFileMatching);
 
         final File sourcePath = directoryManager.getSourceDirectory();
         final String prefix = signatureScannerOptions.getCodeLocationPrefix().orElse(null);

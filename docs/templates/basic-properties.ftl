@@ -1,4 +1,4 @@
-This page lists Detect's basic properties; for advanced and deprecated properties, refer to [all properties](../all-properties).
+This page lists ${solution_name}'s basic properties; for advanced and deprecated properties, refer to [all properties](../all-properties).
 
 <#list groups as group>
 

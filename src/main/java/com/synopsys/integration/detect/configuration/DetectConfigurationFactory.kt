@@ -22,18 +22,22 @@
  */
 package com.synopsys.integration.detect.configuration
 
-import com.synopsys.integration.blackduck.api.enumeration.PolicySeverityType
+import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder
 import com.synopsys.integration.configuration.config.PropertyConfiguration
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils
 import com.synopsys.integration.configuration.property.types.path.PathResolver
 import com.synopsys.integration.detect.PropertyConfigUtils
+import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails
+import com.synopsys.integration.detect.configuration.connection.ConnectionDetails
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException
 import com.synopsys.integration.detect.exitcode.ExitCodeType
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions
 import com.synopsys.integration.detect.lifecycle.run.RunOptions
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions
+import com.synopsys.integration.detect.tool.detector.DetectFileFinder
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFileFilter
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableOptions
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions
@@ -45,6 +49,7 @@ import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOp
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeOptions
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions
+import com.synopsys.integration.detectable.detectable.file.FileFinder
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions
 import com.synopsys.integration.detector.finder.DetectorFinderOptions
 import com.synopsys.integration.log.SilentIntLogger
@@ -79,7 +84,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
             detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_PARALLEL_PROCESSORS) -> detectConfiguration.getValue(DetectProperties.DETECT_PARALLEL_PROCESSORS)
             detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS) -> detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS)
             detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS) -> detectConfiguration.getValue(DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS)
-            else -> null
+            else -> detectConfiguration.getValue(DetectProperties.DETECT_PARALLEL_PROCESSORS)
         }
 
         return if (provided != null && provided > 0) {
@@ -108,6 +113,17 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
 
         if (snippetMatching.extendedValue.isPresent) {
             return deprecatedSnippetMatching
+        }
+
+        return null
+    }
+
+    @Nullable
+    fun findIndividualFileMatching(): IndividualFileMatching? {
+        val individualFileMatching = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING)
+
+        if (individualFileMatching.baseValue.isPresent) {
+            return individualFileMatching.baseValue.get()
         }
 
         return null
@@ -229,22 +245,29 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         return AirGapOptions(dockerOverride, gradleOverride, nugetOverride)
     }
 
+    fun createFilteredFileFinder(sourcePath: Path): FileFinder {
+        val userProvidedExcludedFiles = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES).toMutableList()
+        return DetectFileFinder(userProvidedExcludedFiles);
+    }
+
     fun createSearchOptions(sourcePath: Path): DetectorFinderOptions {
         //Normal settings
         val maxDepth = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH)
 
         //File Filter
-        val excludedFiles = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES).toMutableList()
-        val excludedDirectories = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION)
+        val userProvidedExcludedDirectories = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION)
         val excludedDirectoryPatterns = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS)
         val excludedDirectoryPaths = detectConfiguration.getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS)
 
+        val excludedDirectories = mutableListOf<String>();
+        excludedDirectories.addAll(userProvidedExcludedDirectories);
         if (detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS)) {
             val defaultExcluded = DetectorSearchExcludedDirectories.values()
                     .map { it.directoryName }
                     .toList()
-            excludedFiles.addAll(defaultExcluded)
+            excludedDirectories.addAll(defaultExcluded)
         }
+
         val fileFilter = DetectDetectorFileFilter(sourcePath, excludedDirectories, excludedDirectoryPaths, excludedDirectoryPatterns)
 
         return DetectorFinderOptions(fileFilter, maxDepth)
@@ -313,8 +336,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val scanMemory = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_MEMORY)
         val dryRun = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_DRY_RUN)
         val uploadSource = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE)
-        val licenseSearch = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH);
-        val individualFileMatching = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING)
+        val licenseSearch = detectConfiguration.getValue(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH)
         val codeLocationPrefix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX).orElse(null)
         val codeLocationSuffix = detectConfiguration.getValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX).orElse(null)
         val additionalArguments = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS, DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS).orElse(null)
@@ -348,7 +370,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
                 codeLocationSuffix,
                 additionalArguments,
                 maxDepth,
-                individualFileMatching,
+                findIndividualFileMatching(),
                 licenseSearch
         )
     }
@@ -358,10 +380,10 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val waitForResults = detectConfiguration.getValue(DetectProperties.DETECT_WAIT_FOR_RESULTS)
         val runRiskReport = detectConfiguration.getValue(DetectProperties.DETECT_RISK_REPORT_PDF)
         val runNoticesReport = detectConfiguration.getValue(DetectProperties.DETECT_NOTICES_REPORT)
-        val riskReportPdfPath = detectConfiguration.getValue(DetectProperties.DETECT_RISK_REPORT_PDF_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
-        val noticesReportPath = detectConfiguration.getValue(DetectProperties.DETECT_NOTICES_REPORT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
+        val riskReportPdfPath = detectConfiguration.getValue(DetectProperties.DETECT_RISK_REPORT_PDF_PATH).resolvePath(pathResolver)
+        val noticesReportPath = detectConfiguration.getValue(DetectProperties.DETECT_NOTICES_REPORT_PATH).resolvePath(pathResolver)
         val policySeverities = detectConfiguration.getValue(DetectProperties.DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES)
-        val severitiesToFailPolicyCheck = FilterableEnumUtils.populatedValues(policySeverities, PolicySeverityType::class.java);
+        val severitiesToFailPolicyCheck = FilterableEnumUtils.populatedValues(policySeverities, PolicyRuleSeverityType::class.java);
 
         return BlackDuckPostOptions(waitForResults, runRiskReport, runNoticesReport, riskReportPdfPath, noticesReportPath, severitiesToFailPolicyCheck)
     }

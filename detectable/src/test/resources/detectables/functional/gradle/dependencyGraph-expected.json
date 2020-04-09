@@ -1,12 +1,17 @@
 {
+  "sourcePath": {
+    "path": "/Users/ekerwin/Documents/source/integration/hub-detect"
+  },
   "externalId": {
     "forge": {
       "name": "maven",
       "separator": ":"
     },
-    "group": "com.blackducksoftware.integration",
-    "name": "hub-detect",
-    "version": "2.0.0-SNAPSHOT"
+    "pieces": [
+      "hub-detect",
+      "2.0.0-SNAPSHOT"
+    ],
+    "prefix": "com.blackducksoftware.integration"
   },
   "dependencyGraph": {
     "rootDependencies": [
@@ -15,262 +20,81 @@
           "name": "maven",
           "separator": ":"
         },
-        "group": "org.apache.commons",
-        "name": "commons-compress",
-        "version": "1.13"
+        "pieces": [
+          "groovy-all",
+          "2.4.7"
+        ],
+        "prefix": "org.codehaus.groovy"
       },
       {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
-        "group": "org.springframework.boot",
-        "name": "spring-boot-starter",
-        "version": "1.4.3.RELEASE"
+        "pieces": [
+          "spring-boot-starter",
+          "1.4.3.RELEASE"
+        ],
+        "prefix": "org.springframework.boot"
       },
       {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
-        "group": "com.blackducksoftware.integration",
-        "name": "hub-common",
-        "version": "11.0.0-SNAPSHOT"
+        "pieces": [
+          "spring-boot-starter-test",
+          "1.4.3.RELEASE"
+        ],
+        "prefix": "org.springframework.boot"
       },
       {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
-        "group": "org.artifactory",
-        "name": "artifactory-papi",
-        "version": "4.14.0"
+        "pieces": [
+          "hub-common",
+          "11.0.0-SNAPSHOT"
+        ],
+        "prefix": "com.blackducksoftware.integration"
       },
       {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
-        "group": "org.codehaus.groovy",
-        "name": "groovy-all",
-        "version": "2.4.7"
+        "pieces": [
+          "artifactory-papi",
+          "4.14.0"
+        ],
+        "prefix": "org.artifactory"
       },
       {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
-        "group": "org.springframework",
-        "name": "spring-web",
-        "version": "4.3.5.RELEASE"
+        "pieces": [
+          "spring-web",
+          "4.3.5.RELEASE"
+        ],
+        "prefix": "org.springframework"
       },
       {
         "forge": {
           "name": "maven",
           "separator": ":"
         },
-        "group": "org.springframework.boot",
-        "name": "spring-boot-starter-test",
-        "version": "1.4.3.RELEASE"
+        "pieces": [
+          "commons-compress",
+          "1.13"
+        ],
+        "prefix": "org.apache.commons"
       }
     ],
     "dependencies": {
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework\",\"name\":\"spring-aop\",\"version\":\"4.3.5.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-aop",
-        "version": "4.3.5.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-aop",
-          "version": "4.3.5.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework.boot\",\"name\":\"spring-boot\",\"version\":\"1.4.3.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-boot",
-        "version": "1.4.3.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework.boot",
-          "name": "spring-boot",
-          "version": "1.4.3.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.json\",\"name\":\"json\",\"version\":\"20140107\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "json",
-        "version": "20140107",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.json",
-          "name": "json",
-          "version": "20140107"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.blackducksoftware.integration\",\"name\":\"hub-common\",\"version\":\"11.0.0-SNAPSHOT\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "hub-common",
-        "version": "11.0.0-SNAPSHOT",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.blackducksoftware.integration",
-          "name": "hub-common",
-          "version": "11.0.0-SNAPSHOT"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.blackducksoftware.integration\",\"name\":\"hub-common-response\",\"version\":\"0.0.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "hub-common-response",
-        "version": "0.0.6",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.blackducksoftware.integration",
-          "name": "hub-common-response",
-          "version": "0.0.6"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.slf4j\",\"name\":\"log4j-over-slf4j\",\"version\":\"1.7.22\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "log4j-over-slf4j",
-        "version": "1.7.22",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.slf4j",
-          "name": "log4j-over-slf4j",
-          "version": "1.7.22"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.squareup.okhttp3\",\"name\":\"okhttp\",\"version\":\"3.4.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "okhttp",
-        "version": "3.4.2",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.squareup.okhttp3",
-          "name": "okhttp",
-          "version": "3.4.2"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.slf4j\",\"name\":\"jul-to-slf4j\",\"version\":\"1.7.22\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "jul-to-slf4j",
-        "version": "1.7.22",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.slf4j",
-          "name": "jul-to-slf4j",
-          "version": "1.7.22"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.skyscreamer\",\"name\":\"jsonassert\",\"version\":\"1.3.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "jsonassert",
-        "version": "1.3.0",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.skyscreamer",
-          "name": "jsonassert",
-          "version": "1.3.0"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework\",\"name\":\"spring-test\",\"version\":\"4.3.5.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-test",
-        "version": "4.3.5.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-test",
-          "version": "4.3.5.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.google.code.gson\",\"name\":\"gson\",\"version\":\"2.7\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "gson",
-        "version": "2.7",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.google.code.gson",
-          "name": "gson",
-          "version": "2.7"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.squareup.okio\",\"name\":\"okio\",\"version\":\"1.9.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "okio",
-        "version": "1.9.0",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.squareup.okio",
-          "name": "okio",
-          "version": "1.9.0"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.apache.commons\",\"name\":\"commons-lang3\",\"version\":\"3.5\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "commons-lang3",
-        "version": "3.5",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.apache.commons",
-          "name": "commons-lang3",
-          "version": "3.5"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.jayway.jsonpath\",\"name\":\"json-path\",\"version\":\"2.2.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "json-path",
-        "version": "2.2.0",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.jayway.jsonpath",
-          "name": "json-path",
-          "version": "2.2.0"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.hamcrest\",\"name\":\"hamcrest-core\",\"version\":\"1.3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "hamcrest-core",
-        "version": "1.3",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.hamcrest",
-          "name": "hamcrest-core",
-          "version": "1.3"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework\",\"name\":\"spring-beans\",\"version\":\"4.3.5.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
+      "{\"forge\":\"maven\",\"pieces\":[spring-beans, 4.3.5.RELEASE],\"prefix\":\"org.springframework\",\"suffix\":null}": {
         "name": "spring-beans",
         "version": "4.3.5.RELEASE",
         "externalId": {
@@ -278,142 +102,29 @@
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework",
-          "name": "spring-beans",
-          "version": "4.3.5.RELEASE"
+          "pieces": [
+            "spring-beans",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
         }
       },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"commons-codec\",\"name\":\"commons-codec\",\"version\":\"1.10\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "commons-codec",
-        "version": "1.10",
+      "{\"forge\":\"maven\",\"pieces\":[hamcrest-core, 1.3],\"prefix\":\"org.hamcrest\",\"suffix\":null}": {
+        "name": "hamcrest-core",
+        "version": "1.3",
         "externalId": {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "commons-codec",
-          "name": "commons-codec",
-          "version": "1.10"
+          "pieces": [
+            "hamcrest-core",
+            "1.3"
+          ],
+          "prefix": "org.hamcrest"
         }
       },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.yaml\",\"name\":\"snakeyaml\",\"version\":\"1.17\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "snakeyaml",
-        "version": "1.17",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.yaml",
-          "name": "snakeyaml",
-          "version": "1.17"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.artifactory\",\"name\":\"artifactory-papi\",\"version\":\"4.14.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "artifactory-papi",
-        "version": "4.14.0",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.artifactory",
-          "name": "artifactory-papi",
-          "version": "4.14.0"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"commons-io\",\"name\":\"commons-io\",\"version\":\"2.5\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "commons-io",
-        "version": "2.5",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "commons-io",
-          "name": "commons-io",
-          "version": "2.5"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.blackducksoftware.integration\",\"name\":\"hub-common-reporting\",\"version\":\"1.0.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "hub-common-reporting",
-        "version": "1.0.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.blackducksoftware.integration",
-          "name": "hub-common-reporting",
-          "version": "1.0.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.blackducksoftware.integration\",\"name\":\"hub-common-rest\",\"version\":\"1.0.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "hub-common-rest",
-        "version": "1.0.0",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.blackducksoftware.integration",
-          "name": "hub-common-rest",
-          "version": "1.0.0"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework.boot\",\"name\":\"spring-boot-test-autoconfigure\",\"version\":\"1.4.3.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-boot-test-autoconfigure",
-        "version": "1.4.3.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework.boot",
-          "name": "spring-boot-test-autoconfigure",
-          "version": "1.4.3.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.apache.commons\",\"name\":\"commons-compress\",\"version\":\"1.13\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "commons-compress",
-        "version": "1.13",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.apache.commons",
-          "name": "commons-compress",
-          "version": "1.13"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"net.minidev\",\"name\":\"json-smart\",\"version\":\"2.2.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "json-smart",
-        "version": "2.2.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "net.minidev",
-          "name": "json-smart",
-          "version": "2.2.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.blackducksoftware.integration\",\"name\":\"integration-common\",\"version\":\"5.2.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "integration-common",
-        "version": "5.2.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.blackducksoftware.integration",
-          "name": "integration-common",
-          "version": "5.2.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"net.minidev\",\"name\":\"accessors-smart\",\"version\":\"1.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
+      "{\"forge\":\"maven\",\"pieces\":[accessors-smart, 1.1],\"prefix\":\"net.minidev\",\"suffix\":null}": {
         "name": "accessors-smart",
         "version": "1.1",
         "externalId": {
@@ -421,246 +132,29 @@
             "name": "maven",
             "separator": ":"
           },
-          "group": "net.minidev",
-          "name": "accessors-smart",
-          "version": "1.1"
+          "pieces": [
+            "accessors-smart",
+            "1.1"
+          ],
+          "prefix": "net.minidev"
         }
       },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.squareup.okhttp3\",\"name\":\"okhttp-urlconnection\",\"version\":\"3.4.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "okhttp-urlconnection",
-        "version": "3.4.2",
+      "{\"forge\":\"maven\",\"pieces\":[hub-common-rest, 1.0.0],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": {
+        "name": "hub-common-rest",
+        "version": "1.0.0",
         "externalId": {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "com.squareup.okhttp3",
-          "name": "okhttp-urlconnection",
-          "version": "3.4.2"
+          "pieces": [
+            "hub-common-rest",
+            "1.0.0"
+          ],
+          "prefix": "com.blackducksoftware.integration"
         }
       },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.objenesis\",\"name\":\"objenesis\",\"version\":\"2.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "objenesis",
-        "version": "2.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.objenesis",
-          "name": "objenesis",
-          "version": "2.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework\",\"name\":\"spring-expression\",\"version\":\"4.3.5.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-expression",
-        "version": "4.3.5.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-expression",
-          "version": "4.3.5.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework\",\"name\":\"spring-web\",\"version\":\"4.3.5.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-web",
-        "version": "4.3.5.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-web",
-          "version": "4.3.5.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.blackducksoftware.integration\",\"name\":\"phone-home-api\",\"version\":\"1.5.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "phone-home-api",
-        "version": "1.5.1",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.blackducksoftware.integration",
-          "name": "phone-home-api",
-          "version": "1.5.1"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework.boot\",\"name\":\"spring-boot-starter\",\"version\":\"1.4.3.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-boot-starter",
-        "version": "1.4.3.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework.boot",
-          "name": "spring-boot-starter",
-          "version": "1.4.3.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.hamcrest\",\"name\":\"hamcrest-library\",\"version\":\"1.3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "hamcrest-library",
-        "version": "1.3",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.hamcrest",
-          "name": "hamcrest-library",
-          "version": "1.3"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"ch.qos.logback\",\"name\":\"logback-classic\",\"version\":\"1.1.8\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "logback-classic",
-        "version": "1.1.8",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "ch.qos.logback",
-          "name": "logback-classic",
-          "version": "1.1.8"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.assertj\",\"name\":\"assertj-core\",\"version\":\"2.5.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "assertj-core",
-        "version": "2.5.0",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.assertj",
-          "name": "assertj-core",
-          "version": "2.5.0"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework.boot\",\"name\":\"spring-boot-starter-test\",\"version\":\"1.4.3.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-boot-starter-test",
-        "version": "1.4.3.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework.boot",
-          "name": "spring-boot-starter-test",
-          "version": "1.4.3.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.ow2.asm\",\"name\":\"asm\",\"version\":\"5.0.3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "asm",
-        "version": "5.0.3",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.ow2.asm",
-          "name": "asm",
-          "version": "5.0.3"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework.boot\",\"name\":\"spring-boot-starter-logging\",\"version\":\"1.4.3.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-boot-starter-logging",
-        "version": "1.4.3.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework.boot",
-          "name": "spring-boot-starter-logging",
-          "version": "1.4.3.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework.boot\",\"name\":\"spring-boot-autoconfigure\",\"version\":\"1.4.3.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-boot-autoconfigure",
-        "version": "1.4.3.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework.boot",
-          "name": "spring-boot-autoconfigure",
-          "version": "1.4.3.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.codehaus.groovy\",\"name\":\"groovy-all\",\"version\":\"2.4.7\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "groovy-all",
-        "version": "2.4.7",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.codehaus.groovy",
-          "name": "groovy-all",
-          "version": "2.4.7"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.mockito\",\"name\":\"mockito-core\",\"version\":\"1.10.19\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "mockito-core",
-        "version": "1.10.19",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.mockito",
-          "name": "mockito-core",
-          "version": "1.10.19"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"junit\",\"name\":\"junit\",\"version\":\"4.12\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "junit",
-        "version": "4.12",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "junit",
-          "name": "junit",
-          "version": "4.12"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework\",\"name\":\"spring-context\",\"version\":\"4.3.5.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "spring-context",
-        "version": "4.3.5.RELEASE",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-context",
-          "version": "4.3.5.RELEASE"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.blackducksoftware.integration\",\"name\":\"integration-bdio\",\"version\":\"2.0.0-SNAPSHOT\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "integration-bdio",
-        "version": "2.0.0-SNAPSHOT",
-        "externalId": {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.blackducksoftware.integration",
-          "name": "integration-bdio",
-          "version": "2.0.0-SNAPSHOT"
-        }
-      },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework\",\"name\":\"spring-core\",\"version\":\"4.3.5.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
+      "{\"forge\":\"maven\",\"pieces\":[spring-core, 4.3.5.RELEASE],\"prefix\":\"org.springframework\",\"suffix\":null}": {
         "name": "spring-core",
         "version": "4.3.5.RELEASE",
         "externalId": {
@@ -668,25 +162,29 @@
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework",
-          "name": "spring-core",
-          "version": "4.3.5.RELEASE"
+          "pieces": [
+            "spring-core",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
         }
       },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.slf4j\",\"name\":\"slf4j-api\",\"version\":\"1.7.22\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
-        "name": "slf4j-api",
-        "version": "1.7.22",
+      "{\"forge\":\"maven\",\"pieces\":[artifactory-papi, 4.14.0],\"prefix\":\"org.artifactory\",\"suffix\":null}": {
+        "name": "artifactory-papi",
+        "version": "4.14.0",
         "externalId": {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.slf4j",
-          "name": "slf4j-api",
-          "version": "1.7.22"
+          "pieces": [
+            "artifactory-papi",
+            "4.14.0"
+          ],
+          "prefix": "org.artifactory"
         }
       },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"joda-time\",\"name\":\"joda-time\",\"version\":\"2.9.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
+      "{\"forge\":\"maven\",\"pieces\":[joda-time, 2.9.6],\"prefix\":\"joda-time\",\"suffix\":null}": {
         "name": "joda-time",
         "version": "2.9.6",
         "externalId": {
@@ -694,12 +192,89 @@
             "name": "maven",
             "separator": ":"
           },
-          "group": "joda-time",
-          "name": "joda-time",
-          "version": "2.9.6"
+          "pieces": [
+            "joda-time",
+            "2.9.6"
+          ],
+          "prefix": "joda-time"
         }
       },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework.boot\",\"name\":\"spring-boot-test\",\"version\":\"1.4.3.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
+      "{\"forge\":\"maven\",\"pieces\":[commons-compress, 1.13],\"prefix\":\"org.apache.commons\",\"suffix\":null}": {
+        "name": "commons-compress",
+        "version": "1.13",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "commons-compress",
+            "1.13"
+          ],
+          "prefix": "org.apache.commons"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[json-smart, 2.2.1],\"prefix\":\"net.minidev\",\"suffix\":null}": {
+        "name": "json-smart",
+        "version": "2.2.1",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "json-smart",
+            "2.2.1"
+          ],
+          "prefix": "net.minidev"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[integration-common, 5.2.1],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": {
+        "name": "integration-common",
+        "version": "5.2.1",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "integration-common",
+            "5.2.1"
+          ],
+          "prefix": "com.blackducksoftware.integration"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[spring-aop, 4.3.5.RELEASE],\"prefix\":\"org.springframework\",\"suffix\":null}": {
+        "name": "spring-aop",
+        "version": "4.3.5.RELEASE",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-aop",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[spring-test, 4.3.5.RELEASE],\"prefix\":\"org.springframework\",\"suffix\":null}": {
+        "name": "spring-test",
+        "version": "4.3.5.RELEASE",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-test",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[spring-boot-test, 1.4.3.RELEASE],\"prefix\":\"org.springframework.boot\",\"suffix\":null}": {
         "name": "spring-boot-test",
         "version": "1.4.3.RELEASE",
         "externalId": {
@@ -707,12 +282,329 @@
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework.boot",
-          "name": "spring-boot-test",
-          "version": "1.4.3.RELEASE"
+          "pieces": [
+            "spring-boot-test",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
         }
       },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"ch.qos.logback\",\"name\":\"logback-core\",\"version\":\"1.1.8\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
+      "{\"forge\":\"maven\",\"pieces\":[hub-common, 11.0.0-SNAPSHOT],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": {
+        "name": "hub-common",
+        "version": "11.0.0-SNAPSHOT",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "hub-common",
+            "11.0.0-SNAPSHOT"
+          ],
+          "prefix": "com.blackducksoftware.integration"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[log4j-over-slf4j, 1.7.22],\"prefix\":\"org.slf4j\",\"suffix\":null}": {
+        "name": "log4j-over-slf4j",
+        "version": "1.7.22",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "log4j-over-slf4j",
+            "1.7.22"
+          ],
+          "prefix": "org.slf4j"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[objenesis, 2.1],\"prefix\":\"org.objenesis\",\"suffix\":null}": {
+        "name": "objenesis",
+        "version": "2.1",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "objenesis",
+            "2.1"
+          ],
+          "prefix": "org.objenesis"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[integration-bdio, 2.0.0-SNAPSHOT],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": {
+        "name": "integration-bdio",
+        "version": "2.0.0-SNAPSHOT",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "integration-bdio",
+            "2.0.0-SNAPSHOT"
+          ],
+          "prefix": "com.blackducksoftware.integration"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[spring-boot-starter, 1.4.3.RELEASE],\"prefix\":\"org.springframework.boot\",\"suffix\":null}": {
+        "name": "spring-boot-starter",
+        "version": "1.4.3.RELEASE",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-boot-starter",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[okio, 1.9.0],\"prefix\":\"com.squareup.okio\",\"suffix\":null}": {
+        "name": "okio",
+        "version": "1.9.0",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "okio",
+            "1.9.0"
+          ],
+          "prefix": "com.squareup.okio"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[json, 20140107],\"prefix\":\"org.json\",\"suffix\":null}": {
+        "name": "json",
+        "version": "20140107",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "json",
+            "20140107"
+          ],
+          "prefix": "org.json"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[spring-boot-starter-test, 1.4.3.RELEASE],\"prefix\":\"org.springframework.boot\",\"suffix\":null}": {
+        "name": "spring-boot-starter-test",
+        "version": "1.4.3.RELEASE",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-boot-starter-test",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[hamcrest-library, 1.3],\"prefix\":\"org.hamcrest\",\"suffix\":null}": {
+        "name": "hamcrest-library",
+        "version": "1.3",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "hamcrest-library",
+            "1.3"
+          ],
+          "prefix": "org.hamcrest"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[okhttp, 3.4.2],\"prefix\":\"com.squareup.okhttp3\",\"suffix\":null}": {
+        "name": "okhttp",
+        "version": "3.4.2",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "okhttp",
+            "3.4.2"
+          ],
+          "prefix": "com.squareup.okhttp3"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[spring-boot-autoconfigure, 1.4.3.RELEASE],\"prefix\":\"org.springframework.boot\",\"suffix\":null}": {
+        "name": "spring-boot-autoconfigure",
+        "version": "1.4.3.RELEASE",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-boot-autoconfigure",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[slf4j-api, 1.7.22],\"prefix\":\"org.slf4j\",\"suffix\":null}": {
+        "name": "slf4j-api",
+        "version": "1.7.22",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "slf4j-api",
+            "1.7.22"
+          ],
+          "prefix": "org.slf4j"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[spring-context, 4.3.5.RELEASE],\"prefix\":\"org.springframework\",\"suffix\":null}": {
+        "name": "spring-context",
+        "version": "4.3.5.RELEASE",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-context",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[jsonassert, 1.3.0],\"prefix\":\"org.skyscreamer\",\"suffix\":null}": {
+        "name": "jsonassert",
+        "version": "1.3.0",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "jsonassert",
+            "1.3.0"
+          ],
+          "prefix": "org.skyscreamer"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[snakeyaml, 1.17],\"prefix\":\"org.yaml\",\"suffix\":null}": {
+        "name": "snakeyaml",
+        "version": "1.17",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "snakeyaml",
+            "1.17"
+          ],
+          "prefix": "org.yaml"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[phone-home-api, 1.5.1],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": {
+        "name": "phone-home-api",
+        "version": "1.5.1",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "phone-home-api",
+            "1.5.1"
+          ],
+          "prefix": "com.blackducksoftware.integration"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[commons-io, 2.5],\"prefix\":\"commons-io\",\"suffix\":null}": {
+        "name": "commons-io",
+        "version": "2.5",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "commons-io",
+            "2.5"
+          ],
+          "prefix": "commons-io"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[spring-boot, 1.4.3.RELEASE],\"prefix\":\"org.springframework.boot\",\"suffix\":null}": {
+        "name": "spring-boot",
+        "version": "1.4.3.RELEASE",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-boot",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[assertj-core, 2.5.0],\"prefix\":\"org.assertj\",\"suffix\":null}": {
+        "name": "assertj-core",
+        "version": "2.5.0",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "assertj-core",
+            "2.5.0"
+          ],
+          "prefix": "org.assertj"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[asm, 5.0.3],\"prefix\":\"org.ow2.asm\",\"suffix\":null}": {
+        "name": "asm",
+        "version": "5.0.3",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "asm",
+            "5.0.3"
+          ],
+          "prefix": "org.ow2.asm"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[jul-to-slf4j, 1.7.22],\"prefix\":\"org.slf4j\",\"suffix\":null}": {
+        "name": "jul-to-slf4j",
+        "version": "1.7.22",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "jul-to-slf4j",
+            "1.7.22"
+          ],
+          "prefix": "org.slf4j"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[logback-core, 1.1.8],\"prefix\":\"ch.qos.logback\",\"suffix\":null}": {
         "name": "logback-core",
         "version": "1.1.8",
         "externalId": {
@@ -720,12 +612,14 @@
             "name": "maven",
             "separator": ":"
           },
-          "group": "ch.qos.logback",
-          "name": "logback-core",
-          "version": "1.1.8"
+          "pieces": [
+            "logback-core",
+            "1.1.8"
+          ],
+          "prefix": "ch.qos.logback"
         }
       },
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.slf4j\",\"name\":\"jcl-over-slf4j\",\"version\":\"1.7.22\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": {
+      "{\"forge\":\"maven\",\"pieces\":[jcl-over-slf4j, 1.7.22],\"prefix\":\"org.slf4j\",\"suffix\":null}": {
         "name": "jcl-over-slf4j",
         "version": "1.7.22",
         "externalId": {
@@ -733,844 +627,1242 @@
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.slf4j",
-          "name": "jcl-over-slf4j",
-          "version": "1.7.22"
+          "pieces": [
+            "jcl-over-slf4j",
+            "1.7.22"
+          ],
+          "prefix": "org.slf4j"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[json-path, 2.2.0],\"prefix\":\"com.jayway.jsonpath\",\"suffix\":null}": {
+        "name": "json-path",
+        "version": "2.2.0",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "json-path",
+            "2.2.0"
+          ],
+          "prefix": "com.jayway.jsonpath"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[spring-boot-test-autoconfigure, 1.4.3.RELEASE],\"prefix\":\"org.springframework.boot\",\"suffix\":null}": {
+        "name": "spring-boot-test-autoconfigure",
+        "version": "1.4.3.RELEASE",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-boot-test-autoconfigure",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[hub-common-reporting, 1.0.1],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": {
+        "name": "hub-common-reporting",
+        "version": "1.0.1",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "hub-common-reporting",
+            "1.0.1"
+          ],
+          "prefix": "com.blackducksoftware.integration"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[commons-codec, 1.10],\"prefix\":\"commons-codec\",\"suffix\":null}": {
+        "name": "commons-codec",
+        "version": "1.10",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "commons-codec",
+            "1.10"
+          ],
+          "prefix": "commons-codec"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[commons-lang3, 3.5],\"prefix\":\"org.apache.commons\",\"suffix\":null}": {
+        "name": "commons-lang3",
+        "version": "3.5",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "commons-lang3",
+            "3.5"
+          ],
+          "prefix": "org.apache.commons"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[hub-common-response, 0.0.6],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": {
+        "name": "hub-common-response",
+        "version": "0.0.6",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "hub-common-response",
+            "0.0.6"
+          ],
+          "prefix": "com.blackducksoftware.integration"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[spring-expression, 4.3.5.RELEASE],\"prefix\":\"org.springframework\",\"suffix\":null}": {
+        "name": "spring-expression",
+        "version": "4.3.5.RELEASE",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-expression",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[mockito-core, 1.10.19],\"prefix\":\"org.mockito\",\"suffix\":null}": {
+        "name": "mockito-core",
+        "version": "1.10.19",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "mockito-core",
+            "1.10.19"
+          ],
+          "prefix": "org.mockito"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[okhttp-urlconnection, 3.4.2],\"prefix\":\"com.squareup.okhttp3\",\"suffix\":null}": {
+        "name": "okhttp-urlconnection",
+        "version": "3.4.2",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "okhttp-urlconnection",
+            "3.4.2"
+          ],
+          "prefix": "com.squareup.okhttp3"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[logback-classic, 1.1.8],\"prefix\":\"ch.qos.logback\",\"suffix\":null}": {
+        "name": "logback-classic",
+        "version": "1.1.8",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "logback-classic",
+            "1.1.8"
+          ],
+          "prefix": "ch.qos.logback"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[gson, 2.7],\"prefix\":\"com.google.code.gson\",\"suffix\":null}": {
+        "name": "gson",
+        "version": "2.7",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "gson",
+            "2.7"
+          ],
+          "prefix": "com.google.code.gson"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[spring-boot-starter-logging, 1.4.3.RELEASE],\"prefix\":\"org.springframework.boot\",\"suffix\":null}": {
+        "name": "spring-boot-starter-logging",
+        "version": "1.4.3.RELEASE",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-boot-starter-logging",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[groovy-all, 2.4.7],\"prefix\":\"org.codehaus.groovy\",\"suffix\":null}": {
+        "name": "groovy-all",
+        "version": "2.4.7",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "groovy-all",
+            "2.4.7"
+          ],
+          "prefix": "org.codehaus.groovy"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[junit, 4.12],\"prefix\":\"junit\",\"suffix\":null}": {
+        "name": "junit",
+        "version": "4.12",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "junit",
+            "4.12"
+          ],
+          "prefix": "junit"
+        }
+      },
+      "{\"forge\":\"maven\",\"pieces\":[spring-web, 4.3.5.RELEASE],\"prefix\":\"org.springframework\",\"suffix\":null}": {
+        "name": "spring-web",
+        "version": "4.3.5.RELEASE",
+        "externalId": {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-web",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
         }
       }
     },
     "relationships": {
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework.boot\",\"name\":\"spring-boot\",\"version\":\"1.4.3.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[spring-boot, 1.4.3.RELEASE],\"prefix\":\"org.springframework.boot\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework",
-          "name": "spring-context",
-          "version": "4.3.5.RELEASE"
+          "pieces": [
+            "spring-context",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework",
-          "name": "spring-core",
-          "version": "4.3.5.RELEASE"
+          "pieces": [
+            "spring-core",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework\",\"name\":\"spring-aop\",\"version\":\"4.3.5.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[spring-beans, 4.3.5.RELEASE],\"prefix\":\"org.springframework\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework",
-          "name": "spring-beans",
-          "version": "4.3.5.RELEASE"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-core",
-          "version": "4.3.5.RELEASE"
+          "pieces": [
+            "spring-core",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.blackducksoftware.integration\",\"name\":\"hub-common-response\",\"version\":\"0.0.6\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[jul-to-slf4j, 1.7.22],\"prefix\":\"org.slf4j\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "com.google.code.gson",
-          "name": "gson",
-          "version": "2.7"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.apache.commons",
-          "name": "commons-lang3",
-          "version": "3.5"
+          "pieces": [
+            "slf4j-api",
+            "1.7.22"
+          ],
+          "prefix": "org.slf4j"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.blackducksoftware.integration\",\"name\":\"hub-common\",\"version\":\"11.0.0-SNAPSHOT\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[accessors-smart, 1.1],\"prefix\":\"net.minidev\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "com.blackducksoftware.integration",
-          "name": "hub-common-response",
-          "version": "0.0.6"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.squareup.okhttp3",
-          "name": "okhttp",
-          "version": "3.4.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "joda-time",
-          "name": "joda-time",
-          "version": "2.9.6"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.blackducksoftware.integration",
-          "name": "integration-common",
-          "version": "5.2.1"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.squareup.okhttp3",
-          "name": "okhttp-urlconnection",
-          "version": "3.4.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.blackducksoftware.integration",
-          "name": "hub-common-reporting",
-          "version": "1.0.1"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.blackducksoftware.integration",
-          "name": "hub-common-rest",
-          "version": "1.0.0"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.blackducksoftware.integration",
-          "name": "integration-bdio",
-          "version": "2.0.0-SNAPSHOT"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.blackducksoftware.integration",
-          "name": "phone-home-api",
-          "version": "1.5.1"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.google.code.gson",
-          "name": "gson",
-          "version": "2.7"
+          "pieces": [
+            "asm",
+            "5.0.3"
+          ],
+          "prefix": "org.ow2.asm"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework\",\"name\":\"spring-expression\",\"version\":\"4.3.5.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[jcl-over-slf4j, 1.7.22],\"prefix\":\"org.slf4j\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework",
-          "name": "spring-core",
-          "version": "4.3.5.RELEASE"
+          "pieces": [
+            "slf4j-api",
+            "1.7.22"
+          ],
+          "prefix": "org.slf4j"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework\",\"name\":\"spring-web\",\"version\":\"4.3.5.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[json-path, 2.2.0],\"prefix\":\"com.jayway.jsonpath\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework",
-          "name": "spring-aop",
-          "version": "4.3.5.RELEASE"
+          "pieces": [
+            "slf4j-api",
+            "1.7.22"
+          ],
+          "prefix": "org.slf4j"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework",
-          "name": "spring-beans",
-          "version": "4.3.5.RELEASE"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-context",
-          "version": "4.3.5.RELEASE"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-core",
-          "version": "4.3.5.RELEASE"
+          "pieces": [
+            "json-smart",
+            "2.2.1"
+          ],
+          "prefix": "net.minidev"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.slf4j\",\"name\":\"log4j-over-slf4j\",\"version\":\"1.7.22\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[hub-common-rest, 1.0.0],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.slf4j",
-          "name": "slf4j-api",
-          "version": "1.7.22"
+          "pieces": [
+            "integration-common",
+            "5.2.1"
+          ],
+          "prefix": "com.blackducksoftware.integration"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "okhttp-urlconnection",
+            "3.4.2"
+          ],
+          "prefix": "com.squareup.okhttp3"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "gson",
+            "2.7"
+          ],
+          "prefix": "com.google.code.gson"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "okhttp",
+            "3.4.2"
+          ],
+          "prefix": "com.squareup.okhttp3"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.blackducksoftware.integration\",\"name\":\"phone-home-api\",\"version\":\"1.5.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[spring-boot-test-autoconfigure, 1.4.3.RELEASE],\"prefix\":\"org.springframework.boot\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "commons-codec",
-          "name": "commons-codec",
-          "version": "1.10"
+          "pieces": [
+            "spring-boot-test",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "com.squareup.okhttp3",
-          "name": "okhttp",
-          "version": "3.4.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.squareup.okhttp3",
-          "name": "okhttp-urlconnection",
-          "version": "3.4.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.google.code.gson",
-          "name": "gson",
-          "version": "2.7"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.apache.commons",
-          "name": "commons-lang3",
-          "version": "3.5"
+          "pieces": [
+            "spring-boot-autoconfigure",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework.boot\",\"name\":\"spring-boot-starter\",\"version\":\"1.4.3.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[json-smart, 2.2.1],\"prefix\":\"net.minidev\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework.boot",
-          "name": "spring-boot",
-          "version": "1.4.3.RELEASE"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework.boot",
-          "name": "spring-boot-starter-logging",
-          "version": "1.4.3.RELEASE"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.yaml",
-          "name": "snakeyaml",
-          "version": "1.17"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework.boot",
-          "name": "spring-boot-autoconfigure",
-          "version": "1.4.3.RELEASE"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-core",
-          "version": "4.3.5.RELEASE"
+          "pieces": [
+            "accessors-smart",
+            "1.1"
+          ],
+          "prefix": "net.minidev"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.hamcrest\",\"name\":\"hamcrest-library\",\"version\":\"1.3\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[hub-common-reporting, 1.0.1],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.hamcrest",
-          "name": "hamcrest-core",
-          "version": "1.3"
+          "pieces": [
+            "gson",
+            "2.7"
+          ],
+          "prefix": "com.google.code.gson"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "commons-io",
+            "2.5"
+          ],
+          "prefix": "commons-io"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "commons-lang3",
+            "3.5"
+          ],
+          "prefix": "org.apache.commons"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.squareup.okhttp3\",\"name\":\"okhttp\",\"version\":\"3.4.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[integration-common, 5.2.1],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "com.squareup.okio",
-          "name": "okio",
-          "version": "1.9.0"
+          "pieces": [
+            "slf4j-api",
+            "1.7.22"
+          ],
+          "prefix": "org.slf4j"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "commons-io",
+            "2.5"
+          ],
+          "prefix": "commons-io"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "commons-codec",
+            "1.10"
+          ],
+          "prefix": "commons-codec"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "commons-lang3",
+            "3.5"
+          ],
+          "prefix": "org.apache.commons"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"ch.qos.logback\",\"name\":\"logback-classic\",\"version\":\"1.1.8\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[spring-aop, 4.3.5.RELEASE],\"prefix\":\"org.springframework\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.slf4j",
-          "name": "slf4j-api",
-          "version": "1.7.22"
+          "pieces": [
+            "spring-beans",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "ch.qos.logback",
-          "name": "logback-core",
-          "version": "1.1.8"
+          "pieces": [
+            "spring-core",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.slf4j\",\"name\":\"jul-to-slf4j\",\"version\":\"1.7.22\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[spring-test, 4.3.5.RELEASE],\"prefix\":\"org.springframework\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.slf4j",
-          "name": "slf4j-api",
-          "version": "1.7.22"
+          "pieces": [
+            "spring-core",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.skyscreamer\",\"name\":\"jsonassert\",\"version\":\"1.3.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[spring-boot-test, 1.4.3.RELEASE],\"prefix\":\"org.springframework.boot\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.json",
-          "name": "json",
-          "version": "20140107"
+          "pieces": [
+            "spring-boot",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework\",\"name\":\"spring-test\",\"version\":\"4.3.5.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[hub-common, 11.0.0-SNAPSHOT],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework",
-          "name": "spring-core",
-          "version": "4.3.5.RELEASE"
+          "pieces": [
+            "hub-common-reporting",
+            "1.0.1"
+          ],
+          "prefix": "com.blackducksoftware.integration"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "integration-bdio",
+            "2.0.0-SNAPSHOT"
+          ],
+          "prefix": "com.blackducksoftware.integration"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "integration-common",
+            "5.2.1"
+          ],
+          "prefix": "com.blackducksoftware.integration"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "okhttp-urlconnection",
+            "3.4.2"
+          ],
+          "prefix": "com.squareup.okhttp3"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "hub-common-rest",
+            "1.0.0"
+          ],
+          "prefix": "com.blackducksoftware.integration"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "phone-home-api",
+            "1.5.1"
+          ],
+          "prefix": "com.blackducksoftware.integration"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "gson",
+            "2.7"
+          ],
+          "prefix": "com.google.code.gson"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "okhttp",
+            "3.4.2"
+          ],
+          "prefix": "com.squareup.okhttp3"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "hub-common-response",
+            "0.0.6"
+          ],
+          "prefix": "com.blackducksoftware.integration"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "joda-time",
+            "2.9.6"
+          ],
+          "prefix": "joda-time"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework.boot\",\"name\":\"spring-boot-starter-test\",\"version\":\"1.4.3.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[hub-common-response, 0.0.6],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework.boot",
-          "name": "spring-boot-test-autoconfigure",
-          "version": "1.4.3.RELEASE"
+          "pieces": [
+            "gson",
+            "2.7"
+          ],
+          "prefix": "com.google.code.gson"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.hamcrest",
-          "name": "hamcrest-library",
-          "version": "1.3"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework.boot",
-          "name": "spring-boot-test",
-          "version": "1.4.3.RELEASE"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.skyscreamer",
-          "name": "jsonassert",
-          "version": "1.3.0"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.mockito",
-          "name": "mockito-core",
-          "version": "1.10.19"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.assertj",
-          "name": "assertj-core",
-          "version": "2.5.0"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-test",
-          "version": "4.3.5.RELEASE"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "junit",
-          "name": "junit",
-          "version": "4.12"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.jayway.jsonpath",
-          "name": "json-path",
-          "version": "2.2.0"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-core",
-          "version": "4.3.5.RELEASE"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.hamcrest",
-          "name": "hamcrest-core",
-          "version": "1.3"
+          "pieces": [
+            "commons-lang3",
+            "3.5"
+          ],
+          "prefix": "org.apache.commons"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.jayway.jsonpath\",\"name\":\"json-path\",\"version\":\"2.2.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[spring-expression, 4.3.5.RELEASE],\"prefix\":\"org.springframework\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.slf4j",
-          "name": "slf4j-api",
-          "version": "1.7.22"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "net.minidev",
-          "name": "json-smart",
-          "version": "2.2.1"
+          "pieces": [
+            "spring-core",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework\",\"name\":\"spring-beans\",\"version\":\"4.3.5.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[log4j-over-slf4j, 1.7.22],\"prefix\":\"org.slf4j\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework",
-          "name": "spring-core",
-          "version": "4.3.5.RELEASE"
+          "pieces": [
+            "slf4j-api",
+            "1.7.22"
+          ],
+          "prefix": "org.slf4j"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework.boot\",\"name\":\"spring-boot-starter-logging\",\"version\":\"1.4.3.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[integration-bdio, 2.0.0-SNAPSHOT],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "ch.qos.logback",
-          "name": "logback-classic",
-          "version": "1.1.8"
+          "pieces": [
+            "gson",
+            "2.7"
+          ],
+          "prefix": "com.google.code.gson"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.slf4j",
-          "name": "jul-to-slf4j",
-          "version": "1.7.22"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.slf4j",
-          "name": "log4j-over-slf4j",
-          "version": "1.7.22"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.slf4j",
-          "name": "jcl-over-slf4j",
-          "version": "1.7.22"
+          "pieces": [
+            "commons-lang3",
+            "3.5"
+          ],
+          "prefix": "org.apache.commons"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework.boot\",\"name\":\"spring-boot-autoconfigure\",\"version\":\"1.4.3.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[mockito-core, 1.10.19],\"prefix\":\"org.mockito\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework.boot",
-          "name": "spring-boot",
-          "version": "1.4.3.RELEASE"
+          "pieces": [
+            "hamcrest-core",
+            "1.3"
+          ],
+          "prefix": "org.hamcrest"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "objenesis",
+            "2.1"
+          ],
+          "prefix": "org.objenesis"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.blackducksoftware.integration\",\"name\":\"hub-common-reporting\",\"version\":\"1.0.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[okhttp-urlconnection, 3.4.2],\"prefix\":\"com.squareup.okhttp3\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "commons-io",
-          "name": "commons-io",
-          "version": "2.5"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.google.code.gson",
-          "name": "gson",
-          "version": "2.7"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.apache.commons",
-          "name": "commons-lang3",
-          "version": "3.5"
+          "pieces": [
+            "okhttp",
+            "3.4.2"
+          ],
+          "prefix": "com.squareup.okhttp3"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.mockito\",\"name\":\"mockito-core\",\"version\":\"1.10.19\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[spring-boot-starter, 1.4.3.RELEASE],\"prefix\":\"org.springframework.boot\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.objenesis",
-          "name": "objenesis",
-          "version": "2.1"
+          "pieces": [
+            "spring-boot",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.hamcrest",
-          "name": "hamcrest-core",
-          "version": "1.3"
+          "pieces": [
+            "snakeyaml",
+            "1.17"
+          ],
+          "prefix": "org.yaml"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-core",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-boot-starter-logging",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-boot-autoconfigure",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.blackducksoftware.integration\",\"name\":\"hub-common-rest\",\"version\":\"1.0.0\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[logback-classic, 1.1.8],\"prefix\":\"ch.qos.logback\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "com.squareup.okhttp3",
-          "name": "okhttp",
-          "version": "3.4.2"
+          "pieces": [
+            "slf4j-api",
+            "1.7.22"
+          ],
+          "prefix": "org.slf4j"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "com.blackducksoftware.integration",
-          "name": "integration-common",
-          "version": "5.2.1"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.squareup.okhttp3",
-          "name": "okhttp-urlconnection",
-          "version": "3.4.2"
-        },
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.google.code.gson",
-          "name": "gson",
-          "version": "2.7"
+          "pieces": [
+            "logback-core",
+            "1.1.8"
+          ],
+          "prefix": "ch.qos.logback"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"junit\",\"name\":\"junit\",\"version\":\"4.12\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[spring-boot-starter-test, 1.4.3.RELEASE],\"prefix\":\"org.springframework.boot\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.hamcrest",
-          "name": "hamcrest-core",
-          "version": "1.3"
-        }
-      ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework\",\"name\":\"spring-context\",\"version\":\"4.3.5.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework",
-          "name": "spring-aop",
-          "version": "4.3.5.RELEASE"
+          "pieces": [
+            "assertj-core",
+            "2.5.0"
+          ],
+          "prefix": "org.assertj"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework",
-          "name": "spring-beans",
-          "version": "4.3.5.RELEASE"
+          "pieces": [
+            "mockito-core",
+            "1.10.19"
+          ],
+          "prefix": "org.mockito"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework",
-          "name": "spring-expression",
-          "version": "4.3.5.RELEASE"
+          "pieces": [
+            "spring-test",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework",
-          "name": "spring-core",
-          "version": "4.3.5.RELEASE"
-        }
-      ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.blackducksoftware.integration\",\"name\":\"integration-bdio\",\"version\":\"2.0.0-SNAPSHOT\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "com.google.code.gson",
-          "name": "gson",
-          "version": "2.7"
+          "pieces": [
+            "hamcrest-core",
+            "1.3"
+          ],
+          "prefix": "org.hamcrest"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.apache.commons",
-          "name": "commons-lang3",
-          "version": "3.5"
-        }
-      ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework.boot\",\"name\":\"spring-boot-test-autoconfigure\",\"version\":\"1.4.3.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.springframework.boot",
-          "name": "spring-boot-autoconfigure",
-          "version": "1.4.3.RELEASE"
+          "pieces": [
+            "jsonassert",
+            "1.3.0"
+          ],
+          "prefix": "org.skyscreamer"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework.boot",
-          "name": "spring-boot-test",
-          "version": "1.4.3.RELEASE"
-        }
-      ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"net.minidev\",\"name\":\"json-smart\",\"version\":\"2.2.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "net.minidev",
-          "name": "accessors-smart",
-          "version": "1.1"
-        }
-      ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"net.minidev\",\"name\":\"accessors-smart\",\"version\":\"1.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.ow2.asm",
-          "name": "asm",
-          "version": "5.0.3"
-        }
-      ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.blackducksoftware.integration\",\"name\":\"integration-common\",\"version\":\"5.2.1\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
-        {
-          "forge": {
-            "name": "maven",
-            "separator": ":"
-          },
-          "group": "org.slf4j",
-          "name": "slf4j-api",
-          "version": "1.7.22"
+          "pieces": [
+            "json-path",
+            "2.2.0"
+          ],
+          "prefix": "com.jayway.jsonpath"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "commons-codec",
-          "name": "commons-codec",
-          "version": "1.10"
+          "pieces": [
+            "junit",
+            "4.12"
+          ],
+          "prefix": "junit"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "commons-io",
-          "name": "commons-io",
-          "version": "2.5"
+          "pieces": [
+            "spring-boot-test",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
         },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.apache.commons",
-          "name": "commons-lang3",
-          "version": "3.5"
-        }
-      ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"com.squareup.okhttp3\",\"name\":\"okhttp-urlconnection\",\"version\":\"3.4.2\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+          "pieces": [
+            "spring-boot-test-autoconfigure",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
+        },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "com.squareup.okhttp3",
-          "name": "okhttp",
-          "version": "3.4.2"
-        }
-      ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.springframework.boot\",\"name\":\"spring-boot-test\",\"version\":\"1.4.3.RELEASE\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+          "pieces": [
+            "hamcrest-library",
+            "1.3"
+          ],
+          "prefix": "org.hamcrest"
+        },
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.springframework.boot",
-          "name": "spring-boot",
-          "version": "1.4.3.RELEASE"
+          "pieces": [
+            "spring-core",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
         }
       ],
-      "{\"forge\":\"maven\",\"layer\":null,\"group\":\"org.slf4j\",\"name\":\"jcl-over-slf4j\",\"version\":\"1.7.22\",\"architecture\":null,\"moduleNames\":null,\"path\":null}": [
+      "{\"forge\":\"maven\",\"pieces\":[hamcrest-library, 1.3],\"prefix\":\"org.hamcrest\",\"suffix\":null}": [
         {
           "forge": {
             "name": "maven",
             "separator": ":"
           },
-          "group": "org.slf4j",
-          "name": "slf4j-api",
-          "version": "1.7.22"
+          "pieces": [
+            "hamcrest-core",
+            "1.3"
+          ],
+          "prefix": "org.hamcrest"
+        }
+      ],
+      "{\"forge\":\"maven\",\"pieces\":[okhttp, 3.4.2],\"prefix\":\"com.squareup.okhttp3\",\"suffix\":null}": [
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "okio",
+            "1.9.0"
+          ],
+          "prefix": "com.squareup.okio"
+        }
+      ],
+      "{\"forge\":\"maven\",\"pieces\":[spring-boot-starter-logging, 1.4.3.RELEASE],\"prefix\":\"org.springframework.boot\",\"suffix\":null}": [
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "logback-classic",
+            "1.1.8"
+          ],
+          "prefix": "ch.qos.logback"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "jul-to-slf4j",
+            "1.7.22"
+          ],
+          "prefix": "org.slf4j"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "jcl-over-slf4j",
+            "1.7.22"
+          ],
+          "prefix": "org.slf4j"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "log4j-over-slf4j",
+            "1.7.22"
+          ],
+          "prefix": "org.slf4j"
+        }
+      ],
+      "{\"forge\":\"maven\",\"pieces\":[spring-boot-autoconfigure, 1.4.3.RELEASE],\"prefix\":\"org.springframework.boot\",\"suffix\":null}": [
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-boot",
+            "1.4.3.RELEASE"
+          ],
+          "prefix": "org.springframework.boot"
+        }
+      ],
+      "{\"forge\":\"maven\",\"pieces\":[spring-context, 4.3.5.RELEASE],\"prefix\":\"org.springframework\",\"suffix\":null}": [
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-beans",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-aop",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-core",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-expression",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
+        }
+      ],
+      "{\"forge\":\"maven\",\"pieces\":[jsonassert, 1.3.0],\"prefix\":\"org.skyscreamer\",\"suffix\":null}": [
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "json",
+            "20140107"
+          ],
+          "prefix": "org.json"
+        }
+      ],
+      "{\"forge\":\"maven\",\"pieces\":[junit, 4.12],\"prefix\":\"junit\",\"suffix\":null}": [
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "hamcrest-core",
+            "1.3"
+          ],
+          "prefix": "org.hamcrest"
+        }
+      ],
+      "{\"forge\":\"maven\",\"pieces\":[phone-home-api, 1.5.1],\"prefix\":\"com.blackducksoftware.integration\",\"suffix\":null}": [
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "okhttp-urlconnection",
+            "3.4.2"
+          ],
+          "prefix": "com.squareup.okhttp3"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "gson",
+            "2.7"
+          ],
+          "prefix": "com.google.code.gson"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "commons-codec",
+            "1.10"
+          ],
+          "prefix": "commons-codec"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "okhttp",
+            "3.4.2"
+          ],
+          "prefix": "com.squareup.okhttp3"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "commons-lang3",
+            "3.5"
+          ],
+          "prefix": "org.apache.commons"
+        }
+      ],
+      "{\"forge\":\"maven\",\"pieces\":[spring-web, 4.3.5.RELEASE],\"prefix\":\"org.springframework\",\"suffix\":null}": [
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-context",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-beans",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-aop",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
+        },
+        {
+          "forge": {
+            "name": "maven",
+            "separator": ":"
+          },
+          "pieces": [
+            "spring-core",
+            "4.3.5.RELEASE"
+          ],
+          "prefix": "org.springframework"
         }
       ]
-    }
+    },
+    "dependencyGraphCombiner": {}
   }
 }
