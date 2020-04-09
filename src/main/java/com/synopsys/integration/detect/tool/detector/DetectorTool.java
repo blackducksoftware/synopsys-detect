@@ -174,7 +174,6 @@ public class DetectorTool {
                 final Optional<List<File>> metaData =
                     detectorEvaluation.getExtraction().getMetaData(ClangExtractor.CLANG_UNRECOGNGIZED_INCLUDES);
                 if (metaData.isPresent()) {
-                    logger.debug(String.format("*** Publishing detector metadata: %s", metaData.get()));
                     eventSystem.publishEvent(Event.RecommendedScanTargets, metaData.get());
                 }
             }

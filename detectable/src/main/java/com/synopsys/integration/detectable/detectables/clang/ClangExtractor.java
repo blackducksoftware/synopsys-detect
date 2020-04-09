@@ -82,9 +82,9 @@ public class ClangExtractor {
             logSummary(results.getFailedDependencyFiles(), sourceDirectory);
 
             // TEMP: fake a list of unrecognized include files
-            final List<File> unrecognizedIncludeFiles = new ArrayList<File>();
+            final List<File> unrecognizedIncludeFiles = new ArrayList<>();
             unrecognizedIncludeFiles.add(new File("/mnt/home/marbel/COMSA/cddc/component/infrastructure/include/InfoBarComponent.h"));
-            unrecognizedIncludeFiles.add(new File("/mnt/home/marbel/COMSA/cddc/altova/auto/AltovaXML/../AltovaXML/Node.h"));
+            unrecognizedIncludeFiles.add(new File("/mnt/home/marbel/COMSA/cddc/altova/auto/AltovaXML/Node.h"));
             return new Extraction.Builder()
                 .metaData(CLANG_UNRECOGNGIZED_INCLUDES, unrecognizedIncludeFiles)
                 .success(codeLocation).build();

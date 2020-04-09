@@ -41,7 +41,6 @@ import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class FormattedOutputManager {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private DetectorToolResult detectorToolResult = null;
     private final List<Status> statusSummaries = new ArrayList<>();
     private final List<DetectResult> detectResults = new ArrayList<>();
@@ -81,10 +80,9 @@ public class FormattedOutputManager {
                                             .toList();
         }
 
-        logger.debug(String.format("*** Recommended Scan targets: size: %d", recommendedScanTargets.size()));
         formattedOutput.recommendedScanTargets = Bds.of(recommendedScanTargets)
-                                               .map(recommendedScan -> new FormattedRecommendedScanTargetsOutput(recommendedScan.getAbsolutePath()))
-                                               .toList();
+                                               .map(File::getAbsolutePath)
+                                                     .toList();
 
         return formattedOutput;
     }
@@ -138,7 +136,6 @@ public class FormattedOutputManager {
     }
 
     public void addRecommendedScanTargets(final List<File> recommendedScanTargets) {
-        logger.debug(String.format("*** addRecommendedScanTargets() called: Recommended Scan targets: size: %d", recommendedScanTargets.size()));
         this.recommendedScanTargets.addAll(recommendedScanTargets);
     }
 }

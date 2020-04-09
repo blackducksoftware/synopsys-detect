@@ -33,6 +33,6 @@ public class FormattedOutput {
     public List<FormattedStatusOutput> status = new ArrayList<>();
     public List<FormattedIssueOutput> issues = new ArrayList<>();
     public List<FormattedResultOutput> results = new ArrayList<>();
-    public List<FormattedRecommendedScanTargetsOutput> recommendedScanTargets = new ArrayList<>();
+    public List<String> recommendedScanTargets = new ArrayList<>();
 }
 
