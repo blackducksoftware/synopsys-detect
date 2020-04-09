@@ -22,17 +22,10 @@
  */
 package com.synopsys.integration.detect.workflow.report.output;
 
-import java.util.ArrayList;
-import java.util.List;
+public class FormattedRecommendedScanTargetsOutput {
+    public final String recommendedScanTargetPath;
 
-public class FormattedOutput {
-    public String formatVersion = "";
-    public String detectVersion = "";
-    public List<FormattedDetectorOutput> detectors = new ArrayList<>();
-
-    public List<FormattedStatusOutput> status = new ArrayList<>();
-    public List<FormattedIssueOutput> issues = new ArrayList<>();
-    public List<FormattedResultOutput> results = new ArrayList<>();
-    public List<FormattedRecommendedScanTargetsOutput> recommendedScanTargets = new ArrayList<>();
+    public FormattedRecommendedScanTargetsOutput(final String recommendedScanTargetPath) {
+        this.recommendedScanTargetPath = recommendedScanTargetPath;
+    }
 }
-

@@ -26,6 +26,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.configuration.util.Bds;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
@@ -38,16 +41,19 @@ import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class FormattedOutputManager {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private DetectorToolResult detectorToolResult = null;
     private final List<Status> statusSummaries = new ArrayList<>();
     private final List<DetectResult> detectResults = new ArrayList<>();
     private final List<DetectIssue> detectIssues = new ArrayList<>();
+    private final List<File> recommendedScanTargets = new ArrayList<>();
 
     public FormattedOutputManager(final EventSystem eventSystem) {
         eventSystem.registerListener(Event.DetectorsComplete, this::detectorsComplete);
         eventSystem.registerListener(Event.StatusSummary, this::addStatusSummary);
         eventSystem.registerListener(Event.Issue, this::addIssue);
         eventSystem.registerListener(Event.ResultProduced, this::addDetectResult);
+        eventSystem.registerListener(Event.RecommendedScanTargets, this::addRecommendedScanTargets);
     }
 
     public FormattedOutput createFormattedOutput(DetectInfo detectInfo) {
@@ -74,6 +80,11 @@ public class FormattedOutputManager {
                                             .map(this::convertDetector)
                                             .toList();
         }
+
+        logger.debug(String.format("*** Recommended Scan targets: size: %d", recommendedScanTargets.size()));
+        formattedOutput.recommendedScanTargets = Bds.of(recommendedScanTargets)
+                                               .map(recommendedScan -> new FormattedRecommendedScanTargetsOutput(recommendedScan.getAbsolutePath()))
+                                               .toList();
 
         return formattedOutput;
     }
@@ -126,4 +137,8 @@ public class FormattedOutputManager {
         detectResults.add(detectResult);
     }
 
+    public void addRecommendedScanTargets(final List<File> recommendedScanTargets) {
+        logger.debug(String.format("*** addRecommendedScanTargets() called: Recommended Scan targets: size: %d", recommendedScanTargets.size()));
+        this.recommendedScanTargets.addAll(recommendedScanTargets);
+    }
 }

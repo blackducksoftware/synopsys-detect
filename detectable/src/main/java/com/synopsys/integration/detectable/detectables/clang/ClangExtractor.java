@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.clang;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -33,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.ExtractionMetadata;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
@@ -45,6 +47,8 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Pack
 
 public class ClangExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    public static final ExtractionMetadata<List<File>> CLANG_UNRECOGNGIZED_INCLUDES = new ExtractionMetadata("unrecognizedIncludes", List.class);
 
     private final ExecutableRunner executableRunner;
     private final DependencyFileDetailGenerator dependencyFileDetailGenerator;
@@ -77,7 +81,13 @@ public class ClangExtractor {
 
             logSummary(results.getFailedDependencyFiles(), sourceDirectory);
 
-            return new Extraction.Builder().success(codeLocation).build();
+            // TEMP: fake a list of unrecognized include files
+            final List<File> unrecognizedIncludeFiles = new ArrayList<File>();
+            unrecognizedIncludeFiles.add(new File("/mnt/home/marbel/COMSA/cddc/component/infrastructure/include/InfoBarComponent.h"));
+            unrecognizedIncludeFiles.add(new File("/mnt/home/marbel/COMSA/cddc/altova/auto/AltovaXML/../AltovaXML/Node.h"));
+            return new Extraction.Builder()
+                .metaData(CLANG_UNRECOGNGIZED_INCLUDES, unrecognizedIncludeFiles)
+                .success(codeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

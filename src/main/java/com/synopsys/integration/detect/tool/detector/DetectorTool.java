@@ -49,6 +49,7 @@ import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNam
 import com.synopsys.integration.detect.workflow.nameversion.decision.NameVersionDecision;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
+import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorType;
@@ -169,6 +170,12 @@ public class DetectorTool {
             if (detectorEvaluation.getExtraction() != null) {
                 for (final File file : detectorEvaluation.getExtraction().getRelevantFiles()) {
                     eventSystem.publishEvent(Event.CustomerFileOfInterest, file);
+                }
+                final Optional<List<File>> metaData =
+                    detectorEvaluation.getExtraction().getMetaData(ClangExtractor.CLANG_UNRECOGNGIZED_INCLUDES);
+                if (metaData.isPresent()) {
+                    logger.debug(String.format("*** Publishing detector metadata: %s", metaData.get()));
+                    eventSystem.publishEvent(Event.RecommendedScanTargets, metaData.get());
                 }
             }
         }

@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.workflow.event;
 
 import java.io.File;
+import java.util.List;
 import java.util.Set;
 
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -62,4 +63,5 @@ public class Event {
     public static final EventType<DetectResult> ResultProduced = new EventType<>(DetectResult.class);
     public static final EventType<File> CustomerFileOfInterest = new EventType<>(File.class);
     public static final EventType<ExecutableOutput> Executable = new EventType<>(ExecutableOutput.class);
+    public static final EventType<List<File>> RecommendedScanTargets = new EventType(List.class);
 }
