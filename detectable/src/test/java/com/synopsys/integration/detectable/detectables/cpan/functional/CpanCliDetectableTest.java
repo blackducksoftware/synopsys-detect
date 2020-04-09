@@ -33,8 +33,6 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
@@ -47,14 +45,14 @@ public class CpanCliDetectableTest extends DetectableFunctionalTest {
     protected void setup() throws IOException {
         addFile("Makefile.PL");
 
-        ExecutableOutput cpanListOutput = createStandardOutput(
+        final ExecutableOutput cpanListOutput = createStandardOutput(
             "ExtUtils::MakeMaker\t7.24",
             "perl\t5.1",
             "Test::More\t1.3"
         );
         addExecutableOutput(getOutputDirectory(), cpanListOutput, "cpan", "-l");
 
-        ExecutableOutput cpanmShowDepsOutput = createStandardOutput(
+        final ExecutableOutput cpanmShowDepsOutput = createStandardOutput(
             "--> Working on .",
             "Configuring App-cpanminus-1.7043 ... OK",
             "ExtUtils::MakeMaker~6.58",
@@ -68,27 +66,14 @@ public class CpanCliDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
-        class CpanResolverTest implements CpanResolver {
-            @Override
-            public File resolveCpan() {
-                return new File("cpan");
-            }
-        }
-
-        class CpanmResolverTest implements CpanmResolver {
-            @Override
-            public File resolveCpanm() {
-                return new File("cpanm");
-            }
-        }
-        return detectableFactory.createCpanCliDetectable(detectableEnvironment, new CpanResolverTest(), new CpanmResolverTest());
+        return detectableFactory.createCpanCliDetectable(detectableEnvironment, () -> new File("cpan"), () -> new File("cpanm"));
     }
 
     @Override
     public void assertExtraction(@NotNull final Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CPAN, extraction.getCodeLocations().get(0).getDependencyGraph());
+        final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CPAN, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(3);
         graphAssert.hasRootDependency("Test-More", "1.3");
         graphAssert.hasRootDependency("ExtUtils-MakeMaker", "7.24");
