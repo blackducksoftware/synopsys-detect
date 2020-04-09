@@ -8,12 +8,13 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class GitConfigTest {
+import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNodeTransformer;
+
+class GitConfigNodeTransformerTest {
 
     @Test
-    void fromGitConfigNodes() {
+    void createGitConfig() {
         //#region Create GitConfigNodes
-
         // The core node should be ignored by the transformation.
         final Map<String, String> coreProperties = new HashMap<>();
         coreProperties.put("repositoryformatversion", "0");
@@ -40,10 +41,10 @@ class GitConfigTest {
         gitConfigNodes.add(remoteNode);
         gitConfigNodes.add(branchNode);
         gitConfigNodes.add(anotherBranch);
-
         //#endregion Create GitConfigNodes
 
-        final GitConfig gitConfig = GitConfig.fromGitConfigNodes(gitConfigNodes);
+        final GitConfigNodeTransformer gitConfigNodeTransformer = new GitConfigNodeTransformer();
+        final GitConfig gitConfig = gitConfigNodeTransformer.createGitConfig(gitConfigNodes);
 
         Assertions.assertEquals(1, gitConfig.getGitConfigRemotes().size());
 
