@@ -34,11 +34,11 @@ import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfig;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigBranch;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigRemote;
-import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigExtractor;
+import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
-class GitFileTransformerTest {
+class GitConfigNameVersionTransformerTest {
 
     @Test
     void transform() throws MalformedURLException, IntegrationException {
@@ -52,8 +52,8 @@ class GitFileTransformerTest {
         final String gitHead = "refs/heads/master";
 
         final GitUrlParser gitUrlParser = new GitUrlParser();
-        final GitConfigExtractor gitFileTransformer = new GitConfigExtractor(gitUrlParser);
-        final NameVersion nameVersion = gitFileTransformer.extractProjectInfo(gitConfig, gitHead);
+        final GitConfigNameVersionTransformer gitConfigNameVersionTransformer = new GitConfigNameVersionTransformer(gitUrlParser);
+        final NameVersion nameVersion = gitConfigNameVersionTransformer.transformToProjectInfo(gitConfig, gitHead);
 
         Assertions.assertEquals("blackducksoftware/blackduck-artifactory", nameVersion.getName());
         Assertions.assertEquals("master", nameVersion.getVersion());
@@ -74,8 +74,8 @@ class GitFileTransformerTest {
         final String gitHead = "9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c";
 
         final GitUrlParser gitUrlParser = new GitUrlParser();
-        final GitConfigExtractor gitFileTransformer = new GitConfigExtractor(gitUrlParser);
-        final NameVersion nameVersion = gitFileTransformer.extractProjectInfo(gitConfig, gitHead);
+        final GitConfigNameVersionTransformer gitConfigNameVersionTransformer = new GitConfigNameVersionTransformer(gitUrlParser);
+        final NameVersion nameVersion = gitConfigNameVersionTransformer.transformToProjectInfo(gitConfig, gitHead);
 
         Assertions.assertEquals("blackducksoftware/synopsys-detect", nameVersion.getName());
         Assertions.assertEquals("9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c", nameVersion.getVersion());

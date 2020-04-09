@@ -35,16 +35,16 @@ import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConf
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
-public class GitConfigExtractor {
+public class GitConfigNameVersionTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final GitUrlParser gitUrlParser;
 
-    public GitConfigExtractor(final GitUrlParser gitUrlParser) {
+    public GitConfigNameVersionTransformer(final GitUrlParser gitUrlParser) {
         this.gitUrlParser = gitUrlParser;
     }
 
-    public NameVersion extractProjectInfo(final GitConfig gitConfig, final String gitHead) throws IntegrationException, MalformedURLException {
+    public NameVersion transformToProjectInfo(final GitConfig gitConfig, final String gitHead) throws IntegrationException, MalformedURLException {
         final Optional<GitConfigBranch> currentBranch = gitConfig.getGitConfigBranches().stream()
                                                             .filter(it -> it.getMerge().equalsIgnoreCase(gitHead))
                                                             .findFirst();

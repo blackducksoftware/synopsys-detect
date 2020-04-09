@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfig;
 import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigNode;
-import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigExtractor;
+import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNodeTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
 import com.synopsys.integration.exception.IntegrationException;
@@ -45,10 +45,10 @@ public class GitParseExtractor {
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
     private final GitFileParser gitFileParser;
-    private final GitConfigExtractor gitConfigExtractor;
+    private final GitConfigNameVersionTransformer gitConfigExtractor;
     private final GitConfigNodeTransformer gitConfigNodeTransformer;
 
-    public GitParseExtractor(final GitFileParser gitFileParser, final GitConfigExtractor gitConfigExtractor, final GitConfigNodeTransformer gitConfigNodeTransformer) {
+    public GitParseExtractor(final GitFileParser gitFileParser, final GitConfigNameVersionTransformer gitConfigExtractor, final GitConfigNodeTransformer gitConfigNodeTransformer) {
         this.gitFileParser = gitFileParser;
         this.gitConfigExtractor = gitConfigExtractor;
         this.gitConfigNodeTransformer = gitConfigNodeTransformer;
@@ -63,7 +63,7 @@ public class GitParseExtractor {
             final List<GitConfigNode> gitConfigNodes = gitFileParser.parseGitConfig(configFileContent);
             final GitConfig gitConfig = gitConfigNodeTransformer.createGitConfig(gitConfigNodes);
 
-            final NameVersion projectNameVersion = gitConfigExtractor.extractProjectInfo(gitConfig, gitHead);
+            final NameVersion projectNameVersion = gitConfigExtractor.transformToProjectInfo(gitConfig, gitHead);
 
             return new Extraction.Builder()
                        .success()

@@ -103,7 +103,7 @@ import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
-import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigExtractor;
+import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNodeTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
@@ -444,8 +444,8 @@ public class DetectableFactory {
         return new GitFileParser();
     }
 
-    private GitConfigExtractor gitConfigExtractor() {
-        return new GitConfigExtractor(gitUrlParser());
+    private GitConfigNameVersionTransformer gitConfigNameVersionTransformer() {
+        return new GitConfigNameVersionTransformer(gitUrlParser());
     }
 
     private GitConfigNodeTransformer gitConfigNodeTransformer() {
@@ -453,7 +453,7 @@ public class DetectableFactory {
     }
 
     private GitParseExtractor gitParseExtractor() {
-        return new GitParseExtractor(gitFileParser(), gitConfigExtractor(), gitConfigNodeTransformer());
+        return new GitParseExtractor(gitFileParser(), gitConfigNameVersionTransformer(), gitConfigNodeTransformer());
     }
 
     private GitUrlParser gitUrlParser() {
