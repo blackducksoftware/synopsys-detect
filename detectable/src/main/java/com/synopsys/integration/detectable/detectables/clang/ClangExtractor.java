@@ -24,11 +24,14 @@ package com.synopsys.integration.detectable.detectables.clang;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,15 +85,35 @@ public class ClangExtractor {
             logSummary(results.getFailedDependencyFiles(), sourceDirectory);
 
             // TEMP: fake a list of unrecognized include files
-            final List<File> unrecognizedIncludeFiles = new ArrayList<>();
-            unrecognizedIncludeFiles.add(new File("/mnt/home/marbel/COMSA/cddc/component/infrastructure/include/InfoBarComponent.h"));
-            unrecognizedIncludeFiles.add(new File("/mnt/home/marbel/COMSA/cddc/altova/auto/AltovaXML/Node.h"));
+            final List<File> unrecognizedIncludeFiles = getFakeFileList();
+
             return new Extraction.Builder()
                 .metaData(CLANG_UNRECOGNGIZED_INCLUDES, unrecognizedIncludeFiles)
                 .success(codeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
+    }
+
+    @NotNull
+    private List<File> getFakeFileList() {
+        final List<File> unrecognizedIncludeFiles = new ArrayList<>();
+        final File inputFile = new File("/tmp/glenn_file_list2.txt");
+        try {
+            final String inputString = FileUtils.readFileToString(inputFile, StandardCharsets.UTF_8);
+            final String[] inputLinesArray = inputString.split("\n");
+            for (final String inputLine : inputLinesArray) {
+                final File unrecognizedIncludeFile = new File(inputLine);
+                logger.debug(String.format("Faking unrecognized include file: %s", unrecognizedIncludeFile.getAbsolutePath()));
+                unrecognizedIncludeFiles.add(unrecognizedIncludeFile);
+            }
+        } catch (IOException e) {
+            logger.warn(String.format("Error reading input file %s: %s", inputFile.getAbsolutePath(), e.getMessage()));
+            unrecognizedIncludeFiles.add(new File("/mnt/home/marbel/COMSA/cddc/component/infrastructure/include/InfoBarComponent.h"));
+            unrecognizedIncludeFiles.add(new File("/mnt/home/marbel/COMSA/cddc/altova/auto/AltovaXML/Node.h"));
+        }
+
+        return unrecognizedIncludeFiles;
     }
 
     private void logSummary(final Set<File> failedDependencyFiles, final File sourceDirectory) {
