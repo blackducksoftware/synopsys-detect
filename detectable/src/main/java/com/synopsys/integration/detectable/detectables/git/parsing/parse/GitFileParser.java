@@ -31,7 +31,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigElement;
+import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConfigNode;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
@@ -42,8 +42,8 @@ public class GitFileParser {
         return headFileContent.trim().replaceFirst("ref:\\w*", "").trim();
     }
 
-    public List<GitConfigElement> parseGitConfig(final List<String> gitConfigLines) {
-        final List<GitConfigElement> gitConfigElements = new ArrayList<>();
+    public List<GitConfigNode> parseGitConfig(final List<String> gitConfigLines) {
+        final List<GitConfigNode> gitConfigNodes = new ArrayList<>();
         final List<String> lineBuffer = new ArrayList<>();
         for (final String rawLine : gitConfigLines) {
             final String line = StringUtils.stripToEmpty(rawLine);
@@ -52,42 +52,41 @@ public class GitFileParser {
                 continue;
             }
 
-            if (isGitConfigElementStart(line)) {
-                final Optional<GitConfigElement> gitConfigElement = processGitConfigElementLines(lineBuffer);
-                gitConfigElement.ifPresent(gitConfigElements::add);
+            if (isGitConfigNodeStart(line)) {
+                final Optional<GitConfigNode> gitConfigNode = processGitConfigNodeLines(lineBuffer);
+                gitConfigNode.ifPresent(gitConfigNodes::add);
                 lineBuffer.clear();
             }
 
             lineBuffer.add(line);
         }
 
-        final Optional<GitConfigElement> gitConfigElement = processGitConfigElementLines(lineBuffer);
-        gitConfigElement.ifPresent(gitConfigElements::add);
+        processGitConfigNodeLines(lineBuffer).ifPresent(gitConfigNodes::add);
 
-        return gitConfigElements;
+        return gitConfigNodes;
     }
 
-    private boolean isGitConfigElementStart(final String line) {
+    private boolean isGitConfigNodeStart(final String line) {
         return line.startsWith("[") && line.endsWith("]");
     }
 
-    private Optional<GitConfigElement> processGitConfigElementLines(final List<String> lines) {
+    private Optional<GitConfigNode> processGitConfigNodeLines(final List<String> lines) {
         final Map<String, String> properties = new HashMap<>();
-        String elementType = null;
-        String elementName = null;
+        String nodeType = null;
+        String nodeName = null;
 
         for (final String line : lines) {
-            if (isGitConfigElementStart(line)) {
+            if (isGitConfigNodeStart(line)) {
                 final String lineWithoutBrackets = line.replace("[", "").replace("]", "");
                 final String[] pieces = lineWithoutBrackets.split(" ");
 
                 if (pieces.length == 1) {
-                    elementType = pieces[0].trim();
+                    nodeType = pieces[0].trim();
                 } else if (pieces.length == 2) {
-                    elementType = pieces[0].trim();
-                    elementName = pieces[1].replace("\"", "").trim();
+                    nodeType = pieces[0].trim();
+                    nodeName = pieces[1].replace("\"", "").trim();
                 } else {
-                    logger.warn(String.format("Invalid git config element. Skipping. %s", line));
+                    logger.warn(String.format("Invalid git config node. Skipping. %s", line));
                     break;
                 }
             } else {
@@ -98,13 +97,13 @@ public class GitFileParser {
                     final String propertyValue = pieces[1].trim();
                     properties.put(propertyKey, propertyValue);
                 } else {
-                    logger.warn(String.format("Invalid git config element property. Skipping. %s", line));
+                    logger.warn(String.format("Invalid git config nodes property. Skipping. %s", line));
                 }
             }
         }
 
-        if (StringUtils.isNotBlank(elementType)) {
-            return Optional.of(new GitConfigElement(elementType, elementName, properties));
+        if (StringUtils.isNotBlank(nodeType)) {
+            return Optional.of(new GitConfigNode(nodeType, nodeName, properties));
         } else {
             return Optional.empty();
         }

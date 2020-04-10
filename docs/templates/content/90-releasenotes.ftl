@@ -9,8 +9,10 @@
 
 ### Resolved issues
 * Resolved an issue where git extraction could fail if "git log" returned unexpected output. The commit hash will be used as a version as a last resort. (IDETECT-1906, [\#114](https://github.com/blackducksoftware/synopsys-detect/issues/114))
+* Resolved an issue where Detect would fail to extract project information while parsing a Git repository with a detached head while in buildless mode. (IDETECT-1883)
 * Resolved an issue where the default value for [parallel processors](../properties/configuration/general/#detect-parallel-processors-advanced) was not be honored. Available runtime processor count was being used. (IDETECT-1970).
 * Resolved an issue where the Nuget exe inspector would not resolve from Artifactory. (IDETECT-1973)
+
 ## Version 6.2.1
 ### Resolved issues
 * Fixed an issue where an exception would be thrown when generating a risk report if the user did not set the risk report output path explicitly. (IDETECT-1960)
