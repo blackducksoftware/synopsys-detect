@@ -15,7 +15,7 @@
 
 ## Version 6.2.1
 ### Resolved issues
-* Fixed an issue where an exception would be thrown when generating a risk report if the user did not set the risk report output path explicitly. (IDETECT-1960)
+* Fixed an issue where an exception would be thrown when generating a risk report if the user did not set the risk report output path explicitly. (IDETECT-1960)
 
 ## Version 6.2.0
 ### New features
