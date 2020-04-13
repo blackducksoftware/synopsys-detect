@@ -48,7 +48,7 @@ public class YarnLockExtractor {
         this.gson = gson;
     }
 
-    public Extraction extract(final File yarnLockFile, final File packageJsonFile, boolean productionOnly) {
+    public Extraction extract(final File yarnLockFile, final File packageJsonFile, final YarnLockOptions yarnLockOptions) {
         try {
             final String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
             final PackageJson packageJson = gson.fromJson(packageJsonText, PackageJson.class);
@@ -56,7 +56,7 @@ public class YarnLockExtractor {
             final List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
             final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
 
-            final DependencyGraph dependencyGraph = yarnTransformer.transform(packageJson, yarnLock, productionOnly);
+            final DependencyGraph dependencyGraph = yarnTransformer.transform(packageJson, yarnLock, yarnLockOptions.useProductionOnly());
 
             final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
 
