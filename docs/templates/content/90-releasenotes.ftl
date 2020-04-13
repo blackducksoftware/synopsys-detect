@@ -2,6 +2,7 @@
 
 ## Version 6.3.0
 ### New features
+* (IDETECT-1917) The Yarn Detector will now extract project information for package.json files.
 
 ### Changed features
 * Users are now allowed to [upload source](../properties/configuration/signature scanner/#upload-source-mode) when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is provided. (IDETECT-1894)

@@ -60,7 +60,11 @@ public class YarnLockExtractor {
 
             final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
 
-            return new Extraction.Builder().success(detectCodeLocation).build();
+            return new Extraction.Builder()
+                       .projectName(packageJson.name)
+                       .projectVersion(packageJson.version)
+                       .success(detectCodeLocation)
+                       .build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
