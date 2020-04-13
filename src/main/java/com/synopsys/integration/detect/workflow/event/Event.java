@@ -36,6 +36,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorType;
+import com.synopsys.integration.util.NameVersion;
 
 public class Event {
     public static final EventType<DetectorEvaluationTree> SearchCompleted = new EventType<>(DetectorEvaluationTree.class);
@@ -61,5 +62,6 @@ public class Event {
     public static final EventType<DetectIssue> Issue = new EventType<>(DetectIssue.class);
     public static final EventType<DetectResult> ResultProduced = new EventType<>(DetectResult.class);
     public static final EventType<File> CustomerFileOfInterest = new EventType<>(File.class);
+    public static final EventType<NameVersion> ProjectNameVersionChosen = new EventType<>(NameVersion.class);
     public static final EventType<ExecutableOutput> Executable = new EventType<>(ExecutableOutput.class);
 }

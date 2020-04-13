@@ -29,6 +29,7 @@ import java.util.List;
 import com.synopsys.integration.configuration.util.Bds;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
+import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
@@ -36,9 +37,12 @@ import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
+import com.synopsys.integration.util.NameVersion;
 
 public class FormattedOutputManager {
     private DetectorToolResult detectorToolResult = null;
+    private BdioCodeLocationResult bdioCodeLocationResult = null;
+    private NameVersion projectNameVersion = null;
     private final List<Status> statusSummaries = new ArrayList<>();
     private final List<DetectResult> detectResults = new ArrayList<>();
     private final List<DetectIssue> detectIssues = new ArrayList<>();
@@ -48,11 +52,13 @@ public class FormattedOutputManager {
         eventSystem.registerListener(Event.StatusSummary, this::addStatusSummary);
         eventSystem.registerListener(Event.Issue, this::addIssue);
         eventSystem.registerListener(Event.ResultProduced, this::addDetectResult);
+        eventSystem.registerListener(Event.CodeLocationsCalculated, this::codeLocationsCalculated);
+        eventSystem.registerListener(Event.ProjectNameVersionChosen, this::projectNameVersionChosen);
     }
 
     public FormattedOutput createFormattedOutput(DetectInfo detectInfo) {
         FormattedOutput formattedOutput = new FormattedOutput();
-        formattedOutput.formatVersion = "0.1.0";
+        formattedOutput.formatVersion = "0.2.0";
         formattedOutput.detectVersion = detectInfo.getDetectVersion();
 
         formattedOutput.results = Bds.of(detectResults)
@@ -73,6 +79,16 @@ public class FormattedOutputManager {
                                             .filter(DetectorEvaluation::isApplicable)
                                             .map(this::convertDetector)
                                             .toList();
+        }
+        if (projectNameVersion != null) {
+            formattedOutput.projectName = projectNameVersion.getName();
+            formattedOutput.projectVersion = projectNameVersion.getVersion();
+        }
+
+        if (bdioCodeLocationResult != null && bdioCodeLocationResult.getCodeLocationNames() != null) {
+            formattedOutput.codeLocations = Bds.of(bdioCodeLocationResult.getCodeLocationNames().values())
+                                                .map(FormattedCodeLocationOutput::new)
+                                                .toList();
         }
 
         return formattedOutput;
@@ -112,6 +128,14 @@ public class FormattedOutputManager {
 
     private void detectorsComplete(final DetectorToolResult detectorToolResult) {
         this.detectorToolResult = detectorToolResult;
+    }
+
+    private void codeLocationsCalculated(final BdioCodeLocationResult bdioCodeLocationResult) {
+        this.bdioCodeLocationResult = bdioCodeLocationResult;
+    }
+
+    private void projectNameVersionChosen(final NameVersion nameVersion) {
+        this.projectNameVersion = nameVersion;
     }
 
     public void addStatusSummary(final Status status) {
