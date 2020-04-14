@@ -175,29 +175,29 @@ public class DetectorTool {
 
         final DetectorToolResult detectorToolResult = new DetectorToolResult();
 
-        detectorToolResult.rootDetectorEvaluationTree = Optional.of(rootEvaluation);
+        detectorToolResult.setRootDetectorEvaluationTree(Optional.of(rootEvaluation));
 
-        detectorToolResult.applicableDetectorTypes = applicable;
+        detectorToolResult.setApplicableDetectorTypes(applicable);
 
-        detectorToolResult.codeLocationMap = detectorEvaluations.stream()
-                                                 .filter(DetectorEvaluation::wasExtractionSuccessful)
-                                                 .map(it -> codeLocationConverter.toDetectCodeLocation(directory, it))
-                                                 .map(Map::entrySet)
-                                                 .flatMap(Collection::stream)
-                                                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        detectorToolResult.setCodeLocationMap(detectorEvaluations.stream()
+                                                  .filter(DetectorEvaluation::wasExtractionSuccessful)
+                                                  .map(it -> codeLocationConverter.toDetectCodeLocation(directory, it))
+                                                  .map(Map::entrySet)
+                                                  .flatMap(Collection::stream)
+                                                  .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
-        detectorToolResult.bomToolCodeLocations = new ArrayList<>(detectorToolResult.codeLocationMap.values());
+        detectorToolResult.setBomToolCodeLocations(new ArrayList<>(detectorToolResult.getCodeLocationMap().values()));
 
         logger.info("");
         final NameVersionDecision nameVersionDecision = detectorNameVersionHandler.finalDecision();
         nameVersionDecision.printDescription(logger);
-        detectorToolResult.bomToolProjectNameVersion = nameVersionDecision.getChosenNameVersion();
+        detectorToolResult.setBomToolProjectNameVersion(nameVersionDecision.getChosenNameVersion());
 
         //Check required detector types
         final Set<DetectorType> missingDetectors = requiredDetectors.stream()
                                                        .filter(it -> !applicable.contains(it))
                                                        .collect(Collectors.toSet());
-        if (missingDetectors.size() > 0) {
+        if (!missingDetectors.isEmpty()) {
             final String missingDetectorDisplay = missingDetectors.stream().map(Enum::toString).collect(Collectors.joining(","));
             logger.error("One or more required detector types were not found: " + missingDetectorDisplay);
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR_REQUIRED));

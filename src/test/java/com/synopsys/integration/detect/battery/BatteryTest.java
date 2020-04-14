@@ -207,10 +207,10 @@ public final class BatteryTest {
     }
 
     private void executeDetectStatic(final List<String> detectArguments) {
-        final boolean previous = Application.SHOULD_EXIT;
-        Application.SHOULD_EXIT = false;
+        final boolean previous = Application.shouldExit();
+        Application.setShouldExit(false);
         Application.main(detectArguments.toArray(new String[0]));
-        Application.SHOULD_EXIT = previous;
+        Application.setShouldExit(previous);
     }
 
     private ExecutableOutput downloadDetectBash(final File target) throws ExecutableRunnerException {

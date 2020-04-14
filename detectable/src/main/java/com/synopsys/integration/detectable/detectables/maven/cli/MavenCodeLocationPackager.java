@@ -44,8 +44,8 @@ import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
 // TODO: Re-write. Some fields could be local variables. Includes many code smells. A component none:Additional_Components:none appears in the graph.
 public class MavenCodeLocationPackager {
-    public static final List<String> indentationStrings = Arrays.asList("+- ", "|  ", "\\- ", "   ");
-    public static final List<String> KNOWN_SCOPES = Arrays.asList("compile", "provided", "runtime", "test", "system", "import");
+    private static final List<String> indentationStrings = Arrays.asList("+- ", "|  ", "\\- ", "   ");
+    private static final List<String> KNOWN_SCOPES = Arrays.asList("compile", "provided", "runtime", "test", "system", "import");
 
     private static final Logger logger = LoggerFactory.getLogger(MavenCodeLocationPackager.class);
     public static final String ORPHAN_LIST_PARENT_NODE_NAME = "Additional_Components";

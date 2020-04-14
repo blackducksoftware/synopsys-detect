@@ -226,10 +226,10 @@ public class RunManager {
             final DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter);
             final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool, requiredDetectors);
 
-            detectorToolResult.bomToolProjectNameVersion.ifPresent(it -> runResult.addToolNameVersion(DetectTool.DETECTOR, new NameVersion(it.getName(), it.getVersion())));
-            runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);
+            detectorToolResult.getBomToolProjectNameVersion().ifPresent(it -> runResult.addToolNameVersion(DetectTool.DETECTOR, new NameVersion(it.getName(), it.getVersion())));
+            runResult.addDetectCodeLocations(detectorToolResult.getBomToolCodeLocations());
 
-            if (detectorToolResult.failedDetectorTypes.size() > 0) {
+            if (!detectorToolResult.getFailedDetectorTypes().isEmpty()) {
                 eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
                 anythingFailed = true;
             }
