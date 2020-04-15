@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
-import com.synopsys.integration.blackduck.api.generated.enumeration.PolicySummaryStatusType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyStatusType;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionPolicyStatusView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.service.ProjectBomService;
@@ -46,41 +46,41 @@ public class PolicyChecker {
 
     private final EventSystem eventSystem;
 
-    public PolicyChecker(EventSystem eventSystem) {
+    public PolicyChecker(final EventSystem eventSystem) {
         this.eventSystem = eventSystem;
     }
 
     public void checkPolicy(final List<PolicyRuleSeverityType> policySeverities, final ProjectBomService projectBomService, final ProjectVersionView projectVersionView) throws IntegrationException {
         final Optional<PolicyStatusDescription> optionalPolicyStatusDescription = getPolicyStatus(projectBomService, projectVersionView);
         if (optionalPolicyStatusDescription.isPresent()) {
-            PolicyStatusDescription policyStatusDescription = optionalPolicyStatusDescription.get();
+            final PolicyStatusDescription policyStatusDescription = optionalPolicyStatusDescription.get();
             logger.info(policyStatusDescription.getPolicyStatusMessage());
             if (arePolicySeveritiesViolated(policyStatusDescription, policySeverities)) {
                 eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_POLICY_VIOLATION, policyStatusDescription.getPolicyStatusMessage()));
             }
         } else {
-            String availableLinks = StringUtils.join(projectVersionView.getAvailableLinks(), ", ");
-            logger.warn("It is not possible to check the policy status for this project/version. The policy-status link must be present. The available links are: " + availableLinks);
+            final String availableLinks = StringUtils.join(projectVersionView.getAvailableLinks(), ", ");
+            logger.warn(String.format("It is not possible to check the policy status for this project/version. The policy-status link must be present. The available links are: %s", availableLinks));
         }
     }
 
     /**
      * For the given DetectProject, find the matching Black Duck project/version, then all of its code locations, then all of their scan summaries, wait until they are all complete, then get the policy status.
-     * @throws IntegrationException
+     * @throws IntegrationException upon failure to query Black Duck.
      */
     public Optional<PolicyStatusDescription> getPolicyStatus(final ProjectBomService projectBomService, final ProjectVersionView version) throws IntegrationException {
-        final Optional<ProjectVersionPolicyStatusView> ProjectVersionPolicyStatusView = projectBomService.getPolicyStatusForVersion(version);
-        if (!ProjectVersionPolicyStatusView.isPresent()) {
+        final Optional<ProjectVersionPolicyStatusView> projectVersionPolicyStatusView = projectBomService.getPolicyStatusForVersion(version);
+        if (!projectVersionPolicyStatusView.isPresent()) {
             return Optional.empty();
         }
 
-        final PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(ProjectVersionPolicyStatusView.get());
+        final PolicyStatusDescription policyStatusDescription = new PolicyStatusDescription(projectVersionPolicyStatusView.get());
 
-        PolicySummaryStatusType statusEnum = PolicySummaryStatusType.NOT_IN_VIOLATION;
+        PolicyStatusType statusEnum = PolicyStatusType.NOT_IN_VIOLATION;
         if (policyStatusDescription.getCountInViolation() != null && policyStatusDescription.getCountInViolation().value > 0) {
-            statusEnum = PolicySummaryStatusType.IN_VIOLATION;
+            statusEnum = PolicyStatusType.IN_VIOLATION;
         } else if (policyStatusDescription.getCountInViolationOverridden() != null && policyStatusDescription.getCountInViolationOverridden().value > 0) {
-            statusEnum = PolicySummaryStatusType.IN_VIOLATION_OVERRIDDEN;
+            statusEnum = PolicyStatusType.IN_VIOLATION_OVERRIDDEN;
         }
         logger.info(String.format("Policy Status: %s", statusEnum.name()));
         return Optional.of(policyStatusDescription);
