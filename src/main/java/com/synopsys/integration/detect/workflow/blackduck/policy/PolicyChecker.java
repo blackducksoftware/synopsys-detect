@@ -90,9 +90,8 @@ public class PolicyChecker {
             }
 
             for (final ComponentPolicyRulesView componentPolicyRulesView : blackDuckService.getAllResponses(projectVersionComponentView, ProjectVersionComponentView.POLICY_RULES_LINK_RESPONSE)) {
-                logger.info(String.format("Policy rule \"%s\" (Severity: %s) was violated by component \"%s:%s\" (%s)",
+                logger.info(String.format("Policy rule \"%s\" was violated by component \"%s:%s\" (%s)",
                     componentPolicyRulesView.getName(),
-                    componentPolicyRulesView.getSeverity().prettyPrint(),
                     projectVersionComponentView.getComponentName(),
                     projectVersionComponentView.getComponentVersionName(),
                     projectVersionComponentView.getComponentVersion()
