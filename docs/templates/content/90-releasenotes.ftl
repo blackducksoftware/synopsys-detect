@@ -2,6 +2,7 @@
 
 ## Version 6.3.0
 ### New features
+* (IDETECT-1867) ${solution_name} when configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities), will now log policy violations.
 
 ### Changed features
 * Users are now allowed to [upload source](../properties/configuration/signature scanner/#upload-source-mode) when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is provided. (IDETECT-1894)
