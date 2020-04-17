@@ -38,6 +38,7 @@ import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.workflow.blackduck.policy.PolicyChecker;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
@@ -79,8 +80,8 @@ public class BlackDuckPostActions {
 
             if (blackDuckPostOptions.shouldPerformPolicyCheck()) {
                 logger.info("Detect will check policy for violations.");
-                final PolicyChecker policyChecker = new PolicyChecker(eventSystem);
-                policyChecker.checkPolicy(blackDuckPostOptions.getSeveritiesToFailPolicyCheck(), blackDuckServicesFactory.createProjectBomService(), projectVersionView);
+                final PolicyChecker policyChecker = new PolicyChecker(eventSystem, blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createProjectBomService());
+                policyChecker.checkPolicy(blackDuckPostOptions.getSeveritiesToFailPolicyCheck(), projectVersionView);
             }
 
             if (blackDuckPostOptions.shouldGenerateAnyReport()) {
