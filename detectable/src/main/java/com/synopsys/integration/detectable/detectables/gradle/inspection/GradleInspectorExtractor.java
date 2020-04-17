@@ -66,7 +66,7 @@ public class GradleInspectorExtractor {
 
             final List<String> arguments = new ArrayList<>();
             if (StringUtils.isNotBlank(gradleCommand)) {
-                gradleCommand = gradleCommand.replaceAll("dependencies", "").trim();
+                gradleCommand = gradleCommand.replace("dependencies", "").trim();
                 Arrays.stream(gradleCommand.split(" ")).filter(StringUtils::isNotBlank).forEach(arguments::add);
             }
             arguments.add("dependencies");
@@ -84,37 +84,41 @@ public class GradleInspectorExtractor {
             final ExecutableOutput output = executableRunner.execute(directory, gradleExe, arguments);
 
             if (output.getReturnCode() == 0) {
-                final File rootProjectMetadataFile = fileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
-                final List<File> reportFiles = fileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
-
-                final List<CodeLocation> codeLocations = new ArrayList<>();
-                String projectName = null;
-                String projectVersion = null;
-                if (reportFiles != null) {
-                    reportFiles.stream()
-                        .map(gradleReportParser::parseReport)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .map(gradleReportTransformer::transform)
-                        .forEach(codeLocations::add);
-
-                    if (rootProjectMetadataFile != null) {
-                        final Optional<NameVersion> projectNameVersion = gradleRootMetadataParser.parseRootProjectNameVersion(rootProjectMetadataFile);
-                        if (projectNameVersion.isPresent()) {
-                            projectName = projectNameVersion.get().getName();
-                            projectVersion = projectNameVersion.get().getVersion();
-                        }
-                    } else {
-                        logger.warn("Gradle inspector did not create a meta data report so no project version information was found.");
-                    }
-                }
-                return new Extraction.Builder().success(codeLocations).projectName(projectName).projectVersion(projectVersion).build();
+                return buildExtraction(outputDirectory);
             } else {
                 return new Extraction.Builder().failure("The gradle inspector returned a non-zero exit code: " + output.getReturnCode()).build();
             }
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
+    }
+
+    private Extraction buildExtraction(File outputDirectory) {
+        final File rootProjectMetadataFile = fileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
+        final List<File> reportFiles = fileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
+
+        final List<CodeLocation> codeLocations = new ArrayList<>();
+        String projectName = null;
+        String projectVersion = null;
+        if (reportFiles != null) {
+            reportFiles.stream()
+                .map(gradleReportParser::parseReport)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(gradleReportTransformer::transform)
+                .forEach(codeLocations::add);
+
+            if (rootProjectMetadataFile != null) {
+                final Optional<NameVersion> projectNameVersion = gradleRootMetadataParser.parseRootProjectNameVersion(rootProjectMetadataFile);
+                if (projectNameVersion.isPresent()) {
+                    projectName = projectNameVersion.get().getName();
+                    projectVersion = projectNameVersion.get().getVersion();
+                }
+            } else {
+                logger.warn("Gradle inspector did not create a meta data report so no project version information was found.");
+            }
+        }
+        return new Extraction.Builder().success(codeLocations).projectName(projectName).projectVersion(projectVersion).build();
     }
 
 }

@@ -73,15 +73,7 @@ public class GradleReportParser {
                     continue;
                 }
                 if (processingMetaData) {
-                    if (line.startsWith(PROJECT_PATH_PREFIX)) {
-                        gradleReport.setProjectSourcePath(line.substring(PROJECT_PATH_PREFIX.length()).trim());
-                    } else if (line.startsWith(PROJECT_GROUP_PREFIX)) {
-                        gradleReport.setProjectGroup(line.substring(PROJECT_GROUP_PREFIX.length()).trim());
-                    } else if (line.startsWith(PROJECT_NAME_PREFIX)) {
-                        gradleReport.setProjectName(line.substring(PROJECT_NAME_PREFIX.length()).trim());
-                    } else if (line.startsWith(PROJECT_VERSION_PREFIX)) {
-                        gradleReport.setProjectVersionName(line.substring(PROJECT_VERSION_PREFIX.length()).trim());
-                    }
+                    setGradleReportInfo(gradleReport, line);
                     continue;
                 }
 
@@ -101,6 +93,18 @@ public class GradleReportParser {
         }
 
         return Optional.ofNullable(gradleReport);
+    }
+
+    private void setGradleReportInfo(GradleReport gradleReport, String line) {
+        if (line.startsWith(PROJECT_PATH_PREFIX)) {
+            gradleReport.setProjectSourcePath(line.substring(PROJECT_PATH_PREFIX.length()).trim());
+        } else if (line.startsWith(PROJECT_GROUP_PREFIX)) {
+            gradleReport.setProjectGroup(line.substring(PROJECT_GROUP_PREFIX.length()).trim());
+        } else if (line.startsWith(PROJECT_NAME_PREFIX)) {
+            gradleReport.setProjectName(line.substring(PROJECT_NAME_PREFIX.length()).trim());
+        } else if (line.startsWith(PROJECT_VERSION_PREFIX)) {
+            gradleReport.setProjectVersionName(line.substring(PROJECT_VERSION_PREFIX.length()).trim());
+        }
     }
 
     private void parseConfigurationLines(final List<String> configurationLines, final GradleReport gradleReport) {

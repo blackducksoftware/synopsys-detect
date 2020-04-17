@@ -82,39 +82,15 @@ public class MavenCodeLocationPackager {
         level = 0;
         for (final String currentLine : mavenOutputText.split(System.lineSeparator())) {
             String line = currentLine.trim();
-            if (!isLineRelevant(line)) {
-                continue;
-            }
-            line = trimLogLevel(line);
-            if (StringUtils.isBlank(line)) {
-                continue;
-            }
-            if (isProjectSection(line)) {
-                parsingProjectSection = true;
-                continue;
-            }
-            if (!parsingProjectSection) {
-                continue;
-            }
-            if (isDependencyTreeUpdates(line)) {
+
+            if (shouldSkipLine(line)) {
                 continue;
             }
 
+            line = trimLogLevel(line);
+
             if (parsingProjectSection && currentMavenProject == null) {
-                // this is the first line of a new code location, the following lines will be the tree of dependencies for this code location
-                currentGraph = new MutableMapDependencyGraph();
-                final MavenParseResult mavenProject = createMavenParseResult(sourcePath, line, currentGraph);
-                if (null != mavenProject && modulesFilter.shouldInclude(mavenProject.getProjectName())) {
-                    logger.trace(String.format("Project: %s", mavenProject.getProjectName()));
-                    this.currentMavenProject = mavenProject;
-                    codeLocations.add(mavenProject);
-                } else {
-                    logger.trace("Project: unknown");
-                    currentMavenProject = null;
-                    dependencyParentStack.clear();
-                    parsingProjectSection = false;
-                    level = 0;
-                }
+                initializeCurrentMavenProject(modulesFilter, sourcePath, line);
                 continue;
             }
 
@@ -134,47 +110,89 @@ public class MavenCodeLocationPackager {
                 continue;
             }
             if (currentMavenProject != null) {
-                if (level == 1) {
-                    // a direct dependency, clear the stack and add this as a potential parent for the next line
-                    if (scopeFilter.shouldInclude(dependency.scope)) {
-                        logger.trace(String
-                                         .format("Level 1 component %s:%s:%s:%s is in scope; adding it to hierarchy root", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(), dependency.getExternalId().getVersion(),
-                                             dependency.scope));
-                        currentGraph.addChildToRoot(dependency);
-                        inOutOfScopeTree = false;
-                    } else {
-                        logger.trace(String.format("Level 1 component %s:%s:%s:%s is a top-level out-of-scope component; entering non-scoped tree", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(),
-                            dependency.getExternalId().getVersion(),
-                            dependency.scope));
-                        inOutOfScopeTree = true;
-                    }
-                    dependencyParentStack.clear();
-                    dependencyParentStack.push(dependency);
-                } else {
-                    // level should be greater than 1
-                    if (level == previousLevel) {
-                        // a sibling of the previous dependency
-                        dependencyParentStack.pop();
-                        addDependencyIfInScope(currentGraph, orphans, scopeFilter, inOutOfScopeTree, dependencyParentStack.peek(), dependency);
-                        dependencyParentStack.push(dependency);
-                    } else if (level > previousLevel) {
-                        // a child of the previous dependency
-                        addDependencyIfInScope(currentGraph, orphans, scopeFilter, inOutOfScopeTree, dependencyParentStack.peek(), dependency);
-                        dependencyParentStack.push(dependency);
-                    } else {
-                        // a child of a dependency further back than 1 line
-                        for (int i = previousLevel; i >= level; i--) {
-                            dependencyParentStack.pop();
-                        }
-                        addDependencyIfInScope(currentGraph, orphans, scopeFilter, inOutOfScopeTree, dependencyParentStack.peek(), dependency);
-                        dependencyParentStack.push(dependency);
-                    }
-                }
+                populateGraphDependencies(scopeFilter, dependency, previousLevel);
             }
         }
         addOrphansToGraph(currentGraph, orphans);
 
         return codeLocations;
+    }
+
+    private boolean shouldSkipLine(String line) {
+        if (!isLineRelevant(line)) {
+            return true;
+        }
+        line = trimLogLevel(line);
+        if (StringUtils.isBlank(line)) {
+            return true;
+        }
+        if (isProjectSection(line)) {
+            parsingProjectSection = true;
+            return true;
+        }
+        if (!parsingProjectSection) {
+            return true;
+        }
+        if (isDependencyTreeUpdates(line)) {
+            return true;
+        }
+        return false;
+    }
+
+    private void initializeCurrentMavenProject(ExcludedIncludedWildcardFilter modulesFilter, String sourcePath, String line) {
+        // this is the first line of a new code location, the following lines will be the tree of dependencies for this code location
+        currentGraph = new MutableMapDependencyGraph();
+        final MavenParseResult mavenProject = createMavenParseResult(sourcePath, line, currentGraph);
+        if (null != mavenProject && modulesFilter.shouldInclude(mavenProject.getProjectName())) {
+            logger.trace(String.format("Project: %s", mavenProject.getProjectName()));
+            this.currentMavenProject = mavenProject;
+            codeLocations.add(mavenProject);
+        } else {
+            logger.trace("Project: unknown");
+            currentMavenProject = null;
+            dependencyParentStack.clear();
+            parsingProjectSection = false;
+            level = 0;
+        }
+    }
+
+    private void populateGraphDependencies(ExcludedIncludedWildcardFilter scopeFilter, ScopedDependency dependency, int previousLevel) {
+        if (level == 1) {
+            // a direct dependency, clear the stack and add this as a potential parent for the next line
+            if (scopeFilter.shouldInclude(dependency.scope)) {
+                logger.trace(String
+                                 .format("Level 1 component %s:%s:%s:%s is in scope; adding it to hierarchy root", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(), dependency.getExternalId().getVersion(),
+                                     dependency.scope));
+                currentGraph.addChildToRoot(dependency);
+                inOutOfScopeTree = false;
+            } else {
+                logger.trace(String.format("Level 1 component %s:%s:%s:%s is a top-level out-of-scope component; entering non-scoped tree", dependency.getExternalId().getGroup(), dependency.getExternalId().getName(),
+                    dependency.getExternalId().getVersion(),
+                    dependency.scope));
+                inOutOfScopeTree = true;
+            }
+            dependencyParentStack.clear();
+            dependencyParentStack.push(dependency);
+        } else {
+            // level should be greater than 1
+            if (level == previousLevel) {
+                // a sibling of the previous dependency
+                dependencyParentStack.pop();
+                addDependencyIfInScope(currentGraph, orphans, scopeFilter, inOutOfScopeTree, dependencyParentStack.peek(), dependency);
+                dependencyParentStack.push(dependency);
+            } else if (level > previousLevel) {
+                // a child of the previous dependency
+                addDependencyIfInScope(currentGraph, orphans, scopeFilter, inOutOfScopeTree, dependencyParentStack.peek(), dependency);
+                dependencyParentStack.push(dependency);
+            } else {
+                // a child of a dependency further back than 1 line
+                for (int i = previousLevel; i >= level; i--) {
+                    dependencyParentStack.pop();
+                }
+                addDependencyIfInScope(currentGraph, orphans, scopeFilter, inOutOfScopeTree, dependencyParentStack.peek(), dependency);
+                dependencyParentStack.push(dependency);
+            }
+        }
     }
 
     private void addOrphansToGraph(final MutableDependencyGraph graph, final List<Dependency> orphans) {

@@ -70,6 +70,25 @@ public class Application implements ApplicationRunner {
 
     private final ConfigurableEnvironment environment;
 
+    //Events, Status and Exit Codes are required even if boot fails.
+    private EventSystem eventSystem;
+    private DetectStatusManager statusManager;
+
+    private ExitCodeUtility exitCodeUtility;
+    private ExitCodeManager exitCodeManager;
+
+    private ReportManager reportManager;
+    private FormattedOutputManager formattedOutputManager;
+
+    private final Gson gson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create();
+
+    private DetectInfo detectInfo;
+    private DetectRun detectRun;
+    private DetectContext detectContext;
+
+    private boolean printOutput;
+    private boolean shouldForceSuccess;
+
     @Autowired
     public Application(final ConfigurableEnvironment environment) {
         this.environment = environment;
@@ -94,30 +113,51 @@ public class Application implements ApplicationRunner {
     public void run(final ApplicationArguments applicationArguments) {
         final long startTime = System.currentTimeMillis();
 
-        //Events, Status and Exit Codes are required even if boot fails.
-        final EventSystem eventSystem = new EventSystem();
-        final DetectStatusManager statusManager = new DetectStatusManager(eventSystem);
-
-        final ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
-        final ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
-
-        final ReportManager reportManager = ReportManager.createDefault(eventSystem);
-        final FormattedOutputManager formattedOutputManager = new FormattedOutputManager(eventSystem);
+        initializeManagersAndUtilities();
 
         //Before boot even begins, we create a new Spring context for Detect to work within.
-        logger.debug("Initializing detect.");
-        final DetectRun detectRun = DetectRun.createDefault();
-        final DetectContext detectContext = new DetectContext(detectRun);
+        createSpringContext();
 
-        final Gson gson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().create();
-        final DetectInfo detectInfo = DetectInfoUtility.createDefaultDetectInfo();
+        Optional<DetectBootResult> detectBootResultOptional = bootDetect(applicationArguments);
+
+        if (detectBootResultOptional.isPresent()) {
+            runDetect(detectBootResultOptional.get());
+        }
+
+        createStatusOuputFile(detectBootResultOptional);
+
+        logger.debug("All Detect actions completed.");
+
+        finishRun(startTime);
+    }
+
+    private void initializeManagersAndUtilities() {
+        eventSystem = new EventSystem();
+        statusManager = new DetectStatusManager(eventSystem);
+
+        exitCodeUtility = new ExitCodeUtility();
+        exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
+
+        reportManager = ReportManager.createDefault(eventSystem);
+        formattedOutputManager = new FormattedOutputManager(eventSystem);
+
+        detectInfo = DetectInfoUtility.createDefaultDetectInfo();
+    }
+
+    private void createSpringContext() {
+        logger.debug("Initializing detect.");
+        detectRun = DetectRun.createDefault();
+        detectContext = new DetectContext(detectRun);
+
         detectContext.registerBean(gson);
         detectContext.registerBean(detectInfo);
 
-        Optional<DetectBootResult> detectBootResultOptional = Optional.empty();
-        boolean printOutput = true;
-        boolean shouldForceSuccess = false;
+        printOutput = true;
+        shouldForceSuccess = false;
+    }
 
+    private Optional<DetectBootResult> bootDetect(ApplicationArguments applicationArguments) {
+        Optional<DetectBootResult> detectBootResultOptional = Optional.empty();
         try {
             logger.debug("Detect boot begin.");
             final DetectBoot detectBoot = new DetectBoot(new DetectBootFactory());
@@ -127,39 +167,41 @@ public class Application implements ApplicationRunner {
             logger.error("Detect boot failed.");
             exitCodeManager.requestExitCode(e);
         }
-        if (detectBootResultOptional.isPresent()) {
-            final DetectBootResult detectBootResult = detectBootResultOptional.get();
-            if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && detectBootResult.getProductRunData().isPresent()) {
-                logger.debug("Detect will attempt to run.");
-                final ProductRunData productRunData = detectBootResult.getProductRunData().get();
-                final RunManager runManager = new RunManager(detectContext);
-                try {
-                    logger.debug("Detect run begin: " + detectRun.getRunId());
-                    runManager.run(productRunData);
-                    logger.debug("Detect run completed.");
-                } catch (final Exception e) {
-                    if (e.getMessage() != null) {
-                        logger.error("Detect run failed: " + e.getMessage());
-                    } else {
-                        logger.error("Detect run failed: " + e.getClass().getSimpleName());
-                    }
-                    logger.debug("An exception was thrown during the detect run.", e);
-                    exitCodeManager.requestExitCode(e);
-                }
-            } else {
-                logger.debug("Detect will NOT attempt to run.");
-                detectBootResult.getException().ifPresent(exitCodeManager::requestExitCode);
-                detectBootResult.getException().ifPresent(e -> DetectIssue.publish(eventSystem, DetectIssueType.Exception, e.getMessage()));
-            }
+        return detectBootResultOptional;
+    }
 
-            if (detectBootResult.getDetectConfiguration().isPresent()) {
-                final PropertyConfiguration detectConfiguration = detectBootResult.getDetectConfiguration().get();
-                printOutput = !detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_SUPPRESS_RESULTS_OUTPUT());
-                shouldForceSuccess = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_FORCE_SUCCESS());
+    private void runDetect(DetectBootResult detectBootResult) {
+        if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && detectBootResult.getProductRunData().isPresent()) {
+            logger.debug("Detect will attempt to run.");
+            final ProductRunData productRunData = detectBootResult.getProductRunData().get();
+            final RunManager runManager = new RunManager(detectContext);
+            try {
+                logger.debug("Detect run begin: " + detectRun.getRunId());
+                runManager.run(productRunData);
+                logger.debug("Detect run completed.");
+            } catch (final Exception e) {
+                if (e.getMessage() != null) {
+                    logger.error("Detect run failed: " + e.getMessage());
+                } else {
+                    logger.error("Detect run failed: " + e.getClass().getSimpleName());
+                }
+                logger.debug("An exception was thrown during the detect run.", e);
+                exitCodeManager.requestExitCode(e);
             }
+        } else {
+            logger.debug("Detect will NOT attempt to run.");
+            detectBootResult.getException().ifPresent(exitCodeManager::requestExitCode);
+            detectBootResult.getException().ifPresent(e -> DetectIssue.publish(eventSystem, DetectIssueType.Exception, e.getMessage()));
         }
 
-        //Create status output file.
+        if (detectBootResult.getDetectConfiguration().isPresent()) {
+            final PropertyConfiguration detectConfiguration = detectBootResult.getDetectConfiguration().get();
+            printOutput = !detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_SUPPRESS_RESULTS_OUTPUT());
+            shouldForceSuccess = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_FORCE_SUCCESS());
+        }
+    }
+
+    private void createStatusOuputFile(Optional<DetectBootResult> detectBootResultOptional) {
         try {
             if (detectBootResultOptional.isPresent() && detectBootResultOptional.get().getDirectoryManager().isPresent()) {
                 DirectoryManager directoryManager = detectBootResultOptional.get().getDirectoryManager().get();
@@ -192,9 +234,9 @@ public class Application implements ApplicationRunner {
             logger.error("Detect shutdown failed.");
             exitCodeManager.requestExitCode(e);
         }
+    }
 
-        logger.debug("All Detect actions completed.");
-
+    private void finishRun(final Long startTime) {
         //Generally, when requesting a failure status, an exit code is also requested, but if it is not, we default to an unknown error.
         if (statusManager.hasAnyFailure()) {
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_UNKNOWN_ERROR, "A failure status was requested by one or more of Detect's tools."));
@@ -227,4 +269,5 @@ public class Application implements ApplicationRunner {
             logger.info(String.format("Would normally exit(%s) but it is overridden.", finalExitCode.getExitCode()));
         }
     }
+
 }
