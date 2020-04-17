@@ -25,6 +25,7 @@ package com.synopsys.integration.detectable.detectables.docker;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.Properties;
 
@@ -47,6 +48,8 @@ public class DockerProperties {
         dockerProperties.setProperty("output.path", outputDirectory.getAbsolutePath());
         dockerProperties.setProperty("phone.home", "false");
         dockerProperties.setProperty("caller.name", "Detect");
+        dockerProperties.setProperty("working.dir.path", createDir(outputDirectory, "inspectorWorkingDir").getAbsolutePath());
+        dockerProperties.setProperty("shared.dir.path.local", createDir(outputDirectory, "inspectorSharedDir").getAbsolutePath());
 
         // Request both of the following; DI pre-8.1.0 will only recognize/return containerfilesystem.
         // DI 8.1.0 and newer will provide both; Detect will prefer squashedimage
@@ -61,5 +64,10 @@ public class DockerProperties {
 
         logger.debug("Contents of application.properties passed to Docker Inspector: " + dockerProperties.toString());
         dockerProperties.store(new FileOutputStream(dockerPropertiesFile), "");
+    }
+
+    private File createDir(final File parentDir, final String newDirName) {
+        final File newDir = new File(parentDir, newDirName);
+        Files.createDirectories(newDir.toPath());
     }
 }
