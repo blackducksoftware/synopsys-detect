@@ -25,8 +25,10 @@ package com.synopsys.integration.detectable.detectables.gradle.functional;
 import java.io.File;
 import java.util.Optional;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
@@ -48,6 +50,8 @@ public class GradleReportParserFunctionalTest {
 
     @Test
     void extractCodeLocationTest() {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS); //Does not work on windows due to path issues.
+
         final GradleReportParser gradleReportParser = new GradleReportParser();
         final Optional<GradleReport> gradleReport = gradleReportParser.parseReport(FunctionalTestFiles.asFile("/gradle/dependencyGraph.txt"));
         Assertions.assertTrue(gradleReport.isPresent());
