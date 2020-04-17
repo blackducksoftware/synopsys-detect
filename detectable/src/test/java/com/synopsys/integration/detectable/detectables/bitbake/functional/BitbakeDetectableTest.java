@@ -36,7 +36,7 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
         final ExecutableOutput bitbakeGOutput = createStandardOutput(
             ""
         );
-        addExecutableOutput(bitbakeGOutput, "bash", "-c", "source " + getSourceDirectory().toFile().getCanonicalPath() + "/oe-init-build-env; " + "bitbake " + "-g " + "core-image-minimal");
+        addExecutableOutput(bitbakeGOutput, "bash", "-c", "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "bitbake " + "-g " + "core-image-minimal");
 
         addFile(Paths.get("task-depends.dot"),
             "digraph depends {",
@@ -62,7 +62,7 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
             "base-passwd:",
             "  meta                 3.5.29"
         );
-        addExecutableOutput(bitbakeShowRecipesOutput, "bash", "-c", "source " + getSourceDirectory().toFile().getCanonicalPath() + "/oe-init-build-env; " + "bitbake-layers show-recipes");
+        addExecutableOutput(bitbakeShowRecipesOutput, "bash", "-c", "source " + getSourceDirectory().toFile().getCanonicalPath() + File.separator + "oe-init-build-env; " + "bitbake-layers show-recipes");
     }
 
     @NotNull
