@@ -193,6 +193,7 @@ import com.synopsys.integration.detectable.detectables.swift.SwiftExtractor;
 import com.synopsys.integration.detectable.detectables.swift.SwiftPackageTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
+import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 
@@ -362,8 +363,8 @@ public class DetectableFactory {
         return new SwiftCliDetectable(environment, fileFinder, swiftExtractor(), swiftResolver);
     }
 
-    public YarnLockDetectable createYarnLockDetectable(final DetectableEnvironment environment, final boolean includeDevDependencies) {
-        return new YarnLockDetectable(environment, fileFinder, yarnLockExtractor(), includeDevDependencies);
+    public YarnLockDetectable createYarnLockDetectable(final DetectableEnvironment environment, final YarnLockOptions yarnLockOptions) {
+        return new YarnLockDetectable(environment, fileFinder, yarnLockExtractor(), yarnLockOptions);
     }
 
     //#endregion
