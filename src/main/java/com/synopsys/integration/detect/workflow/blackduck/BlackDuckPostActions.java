@@ -38,7 +38,10 @@ import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.workflow.blackduck.policy.PolicyChecker;
+import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class BlackDuckPostActions {
@@ -77,8 +80,8 @@ public class BlackDuckPostActions {
 
             if (blackDuckPostOptions.shouldPerformPolicyCheck()) {
                 logger.info("Detect will check policy for violations.");
-                final PolicyChecker policyChecker = new PolicyChecker(eventSystem);
-                policyChecker.checkPolicy(blackDuckPostOptions.getSeveritiesToFailPolicyCheck(), blackDuckServicesFactory.createProjectBomService(), projectVersionView);
+                final PolicyChecker policyChecker = new PolicyChecker(eventSystem, blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createProjectBomService());
+                policyChecker.checkPolicy(blackDuckPostOptions.getSeveritiesToFailPolicyCheck(), projectVersionView);
             }
 
             if (blackDuckPostOptions.shouldGenerateAnyReport()) {
@@ -93,7 +96,9 @@ public class BlackDuckPostActions {
 
                     final DetectFontLoader detectFontLoader = new DetectFontLoader();
                     final File createdPdf = reportService.createReportPdfFile(reportDirectory, projectView, projectVersionView, detectFontLoader::loadFont, detectFontLoader::loadBoldFont);
+
                     logger.info(String.format("Created risk report pdf: %s", createdPdf.getCanonicalPath()));
+                    eventSystem.publishEvent(Event.ResultProduced, new ReportDetectResult("Risk Report", createdPdf.getCanonicalPath()));
                 }
 
                 if (blackDuckPostOptions.shouldGenerateNoticesReport()) {
@@ -106,6 +111,9 @@ public class BlackDuckPostActions {
 
                     final File noticesFile = reportService.createNoticesReportFile(noticesDirectory, projectView, projectVersionView);
                     logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
+
+                    eventSystem.publishEvent(Event.ResultProduced, new ReportDetectResult("Notices Report", noticesFile.getCanonicalPath()));
+
                 }
             }
         } catch (final DetectUserFriendlyException e) {

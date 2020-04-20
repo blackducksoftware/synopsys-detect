@@ -20,21 +20,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.report.output;
+package com.synopsys.integration.detect.workflow.result;
 
-import java.util.ArrayList;
-import java.util.List;
+public class ReportDetectResult implements DetectResult {
+    private final String reportName;
+    private final String filePath;
 
-public class FormattedOutput {
-    public String formatVersion = "";
-    public String detectVersion = "";
-    public String projectName = "";
-    public String projectVersion = "";
-    public List<FormattedDetectorOutput> detectors = new ArrayList<>();
+    public ReportDetectResult(final String reportName, final String filePath) {
+        this.reportName = reportName;
+        this.filePath = filePath;
+    }
 
-    public List<FormattedStatusOutput> status = new ArrayList<>();
-    public List<FormattedIssueOutput> issues = new ArrayList<>();
-    public List<FormattedResultOutput> results = new ArrayList<>();
-    public List<FormattedCodeLocationOutput> codeLocations = new ArrayList<>();
+    @Override
+    public String getResultLocation() {
+        return filePath;
+    }
+
+    @Override
+    public String getResultMessage() {
+        return String.format("%s: %s", reportName, filePath);
+    }
 }
-

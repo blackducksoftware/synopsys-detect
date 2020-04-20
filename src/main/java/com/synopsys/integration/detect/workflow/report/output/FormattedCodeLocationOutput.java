@@ -22,19 +22,10 @@
  */
 package com.synopsys.integration.detect.workflow.report.output;
 
-import java.util.ArrayList;
-import java.util.List;
+public class FormattedCodeLocationOutput {
+    public String codeLocationName;
 
-public class FormattedOutput {
-    public String formatVersion = "";
-    public String detectVersion = "";
-    public String projectName = "";
-    public String projectVersion = "";
-    public List<FormattedDetectorOutput> detectors = new ArrayList<>();
-
-    public List<FormattedStatusOutput> status = new ArrayList<>();
-    public List<FormattedIssueOutput> issues = new ArrayList<>();
-    public List<FormattedResultOutput> results = new ArrayList<>();
-    public List<FormattedCodeLocationOutput> codeLocations = new ArrayList<>();
+    public FormattedCodeLocationOutput(final String name) {
+        this.codeLocationName = name;
+    }
 }
-

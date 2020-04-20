@@ -250,6 +250,8 @@ public class RunManager {
         logger.info("Project name: " + projectNameVersion.getName());
         logger.info("Project version: " + projectNameVersion.getVersion());
 
+        eventSystem.publishEvent(Event.ProjectNameVersionChosen, projectNameVersion);
+
         if (anythingFailed) {
             return UniversalToolsResult.failure(projectNameVersion);
         } else {
