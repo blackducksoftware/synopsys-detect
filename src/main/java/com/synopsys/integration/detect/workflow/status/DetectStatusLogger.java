@@ -45,24 +45,9 @@ public class DetectStatusLogger {
         if (!detectIssues.isEmpty()) {
             logger.info("======== Detect Issues ========");
             logger.info("");
-            final List<DetectIssue> detectors = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.Detector).collect(Collectors.toList());
-            if (detectors.size() > 0) {
-                logger.info("DETECTORS:");
-                detectors.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
-                logger.info("");
-            }
-            final List<DetectIssue> exceptions = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.Exception).collect(Collectors.toList());
-            if (exceptions.size() > 0) {
-                logger.info("EXCEPTIONS:");
-                exceptions.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
-                logger.info("");
-            }
-            final List<DetectIssue> deprecations = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.Deprecation).collect(Collectors.toList());
-            if (deprecations.size() > 0) {
-                logger.info("DEPRECATIONS:");
-                deprecations.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
-                logger.info("");
-            }
+            logDetectors(detectIssues, logger);
+            logExceptions(detectIssues, logger);
+            logDeprecations(detectIssues, logger);
         }
 
         if (!detectResults.isEmpty()) {
@@ -92,5 +77,26 @@ public class DetectStatusLogger {
         logger.info("===============================");
         logger.info("");
 
+    }
+
+    private void logDetectors(List<DetectIssue> detectIssues, IntLogger logger) {
+        logIssuesCategory(detectIssues, DetectIssueType.Detector, "DETECTORS:", logger);
+    }
+
+    private void logExceptions(List<DetectIssue> detectIssues, IntLogger logger) {
+        logIssuesCategory(detectIssues, DetectIssueType.Exception, "EXCEPTIONS:", logger);
+    }
+
+    private void logDeprecations(List<DetectIssue> detectIssues, IntLogger logger) {
+        logIssuesCategory(detectIssues, DetectIssueType.Deprecation, "DEPRECATIONS:", logger);
+    }
+
+    private void logIssuesCategory(List<DetectIssue> detectIssues, DetectIssueType detectIssueType, String logMessage, IntLogger logger) {
+        final List<DetectIssue> issuesCategory = detectIssues.stream().filter(issue -> issue.getType() == detectIssueType).collect(Collectors.toList());
+        if (issuesCategory.size() > 0) {
+            logger.info(logMessage);
+            issuesCategory.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
+            logger.info("");
+        }
     }
 }
