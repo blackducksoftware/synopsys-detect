@@ -20,21 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.report.output;
+package com.synopsys.integration.detect.workflow.status;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.io.File;
 import java.util.List;
-import java.util.Map;
 
-public class FormattedOutput {
-    public String formatVersion = "";
-    public String detectVersion = "";
-    public List<FormattedDetectorOutput> detectors = new ArrayList<>();
+public class UnrecognizedPaths {
+    private final String group;
+    private final List<File> messages;
 
-    public List<FormattedStatusOutput> status = new ArrayList<>();
-    public List<FormattedIssueOutput> issues = new ArrayList<>();
-    public List<FormattedResultOutput> results = new ArrayList<>();
-    public Map<String, List<String>> unrecognizedPaths = new HashMap<>();
+    public UnrecognizedPaths(final String group, final List<File> messages) {
+        this.group = group;
+        this.messages = messages;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public List<File> getPaths() {
+        return messages;
+    }
 }
-

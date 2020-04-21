@@ -25,6 +25,7 @@ package com.synopsys.integration.detectable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import com.synopsys.integration.util.NameVersion;
 public class Extraction {
     private final List<CodeLocation> codeLocations;
     private final List<File> relevantFiles;
+    private final List<File> unrecognizedPaths;
     private final ExtractionResultType result;
     private final Exception error;
     private final String description;
@@ -54,6 +56,7 @@ public class Extraction {
         this.projectName = builder.projectName;
         this.metaData = builder.metaData;
         this.relevantFiles = builder.relevantFiles;
+        this.unrecognizedPaths = builder.unrecognizedPaths;
 
         if (result == null) {
             throw new IllegalArgumentException("An extraction requires a result type.");
@@ -105,9 +108,14 @@ public class Extraction {
         return relevantFiles;
     }
 
+    public List<File> getUnrecognizedPaths() {
+        return unrecognizedPaths;
+    }
+
     public static class Builder {
         private final List<CodeLocation> codeLocations = new ArrayList<>();
         private final List<File> relevantFiles = new ArrayList<>();
+        private final List<File> unrecognizedPaths = new ArrayList<>();
         private ExtractionResultType result;
         private Exception error;
         private String description;
@@ -180,6 +188,16 @@ public class Extraction {
 
         public Builder relevantFiles(final File... files) {
             this.relevantFiles.addAll(Arrays.asList(files));
+            return this;
+        }
+
+        public Builder unrecognizedPaths(final File... files) {
+            this.unrecognizedPaths.addAll(Arrays.asList(files));
+            return this;
+        }
+
+        public Builder unrecognizedPaths(final Collection<File> files) {
+            this.unrecognizedPaths.addAll(files);
             return this;
         }
 

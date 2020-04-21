@@ -24,10 +24,10 @@ package com.synopsys.integration.detect.workflow.report.output;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.synopsys.integration.configuration.util.Bds;
 import com.synopsys.integration.detect.DetectInfo;
@@ -37,6 +37,7 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
@@ -45,14 +46,14 @@ public class FormattedOutputManager {
     private final List<Status> statusSummaries = new ArrayList<>();
     private final List<DetectResult> detectResults = new ArrayList<>();
     private final List<DetectIssue> detectIssues = new ArrayList<>();
-    private final List<File> recommendedScanTargets = new ArrayList<>();
+    private final Map<String, List<File>> unrecognizedPaths = new HashMap<>();
 
     public FormattedOutputManager(final EventSystem eventSystem) {
         eventSystem.registerListener(Event.DetectorsComplete, this::detectorsComplete);
         eventSystem.registerListener(Event.StatusSummary, this::addStatusSummary);
         eventSystem.registerListener(Event.Issue, this::addIssue);
         eventSystem.registerListener(Event.ResultProduced, this::addDetectResult);
-        eventSystem.registerListener(Event.RecommendedScanTargets, this::addRecommendedScanTargets);
+        eventSystem.registerListener(Event.UnrecognizedPaths, this::addUnrecognizedPaths);
     }
 
     public FormattedOutput createFormattedOutput(DetectInfo detectInfo) {
@@ -80,9 +81,10 @@ public class FormattedOutputManager {
                                             .toList();
         }
 
-        formattedOutput.recommendedScanTargets = Bds.of(recommendedScanTargets)
-                                               .map(File::getAbsolutePath)
-                                                     .toList();
+        formattedOutput.unrecognizedPaths = new HashMap<>();
+        unrecognizedPaths.keySet().forEach(key -> {
+            formattedOutput.unrecognizedPaths.put(key, unrecognizedPaths.get(key).stream().map(File::toString).collect(Collectors.toList()));
+        });
 
         return formattedOutput;
     }
@@ -135,7 +137,10 @@ public class FormattedOutputManager {
         detectResults.add(detectResult);
     }
 
-    public void addRecommendedScanTargets(final List<File> recommendedScanTargets) {
-        this.recommendedScanTargets.addAll(recommendedScanTargets);
+    public void addUnrecognizedPaths(final UnrecognizedPaths unrecognizedPaths) {
+        if (!this.unrecognizedPaths.containsKey(unrecognizedPaths.getGroup())) {
+            this.unrecognizedPaths.put(unrecognizedPaths.getGroup(), new ArrayList<>());
+        }
+        this.unrecognizedPaths.get(unrecognizedPaths.getGroup()).addAll(unrecognizedPaths.getPaths());
     }
 }

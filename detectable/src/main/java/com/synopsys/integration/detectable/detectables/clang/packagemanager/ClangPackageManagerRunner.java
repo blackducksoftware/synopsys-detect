@@ -85,7 +85,7 @@ public class ClangPackageManagerRunner {
         } catch (final ExecutableRunnerException e) {
             logger.debug(String.format("Error with dependency file %s when running %s", dependencyFile.getAbsolutePath(), packageManagerInfo.getPkgMgrCmdString()));
             logger.error(String.format("Error executing %s: %s", packageManagerInfo.getPkgMgrCmdString(), e.getMessage()));
-
+            failedDependencyFiles.add(dependencyFile);
         }
         return new PackageDetailsResult(dependencyDetails, failedDependencyFiles);
     }

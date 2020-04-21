@@ -24,20 +24,16 @@ package com.synopsys.integration.detectable.detectables.clang;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.ExtractionMetadata;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
@@ -50,8 +46,6 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Pack
 
 public class ClangExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    public static final ExtractionMetadata<List<File>> CLANG_UNRECOGNGIZED_INCLUDES = new ExtractionMetadata("unrecognizedIncludes", List.class);
 
     private final ExecutableRunner executableRunner;
     private final DependencyFileDetailGenerator dependencyFileDetailGenerator;
@@ -85,35 +79,30 @@ public class ClangExtractor {
             logSummary(results.getFailedDependencyFiles(), sourceDirectory);
 
             // TEMP: fake a list of unrecognized include files
-            final List<File> unrecognizedIncludeFiles = getFakeFileList();
+            final List<File> unrecognizedIncludeFiles = results.getFailedDependencyFiles().stream()
+                                                            .filter(file -> isFileUnderDir(sourceDirectory, file))
+                                                            .collect(Collectors.toList());
 
             return new Extraction.Builder()
-                .metaData(CLANG_UNRECOGNGIZED_INCLUDES, unrecognizedIncludeFiles)
-                .success(codeLocation).build();
+                       .unrecognizedPaths(unrecognizedIncludeFiles)
+                       .success(codeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    @NotNull
-    private List<File> getFakeFileList() {
-        final List<File> unrecognizedIncludeFiles = new ArrayList<>();
-        final File inputFile = new File("/tmp/glenn_file_list2.txt");
+    public boolean isFileUnderDir(final File dir, final File file) {
         try {
-            final String inputString = FileUtils.readFileToString(inputFile, StandardCharsets.UTF_8);
-            final String[] inputLinesArray = inputString.split("\n");
-            for (final String inputLine : inputLinesArray) {
-                final File unrecognizedIncludeFile = new File(inputLine);
-                logger.debug(String.format("Faking unrecognized include file: %s", unrecognizedIncludeFile.getAbsolutePath()));
-                unrecognizedIncludeFiles.add(unrecognizedIncludeFile);
+            final String dirPath = dir.getCanonicalPath();
+            final String filePath = file.getCanonicalPath();
+            if (filePath.startsWith(dirPath)) {
+                return true;
             }
-        } catch (IOException e) {
-            logger.warn(String.format("Error reading input file %s: %s", inputFile.getAbsolutePath(), e.getMessage()));
-            unrecognizedIncludeFiles.add(new File("/mnt/home/marbel/COMSA/cddc/component/infrastructure/include/InfoBarComponent.h"));
-            unrecognizedIncludeFiles.add(new File("/mnt/home/marbel/COMSA/cddc/altova/auto/AltovaXML/Node.h"));
+            return false;
+        } catch (final IOException e) {
+            logger.warn(String.format("Error getting canonical path for either %s or %s", dir.getAbsolutePath(), file.getAbsolutePath()));
+            return false;
         }
-
-        return unrecognizedIncludeFiles;
     }
 
     private void logSummary(final Set<File> failedDependencyFiles, final File sourceDirectory) {
