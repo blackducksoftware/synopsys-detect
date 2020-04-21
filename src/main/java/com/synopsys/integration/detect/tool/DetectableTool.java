@@ -84,11 +84,11 @@ public class DetectableTool {
         final DetectableResult applicable = detectable.applicable();
 
         if (!applicable.getPassed()) {
-            logger.info("Was not applicable.");
+            logger.debug("Was not applicable.");
             return DetectableToolResult.skip();
         }
 
-        logger.info("Applicable passed.");
+        logger.debug("Applicable passed.");
 
         DetectableResult extractable;
         try {
@@ -101,10 +101,10 @@ public class DetectableTool {
             logger.error("Was not extractable: " + extractable.toDescription());
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.FAILURE));
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
-            return DetectableToolResult.failed();
+            return DetectableToolResult.failed(extractable);
         }
 
-        logger.info("Extractable passed.");
+        logger.debug("Extractable passed.");
 
         final ExtractionEnvironment extractionEnvironment = extractionEnvironmentProvider.createExtractionEnvironment(name);
         final Extraction extraction = detectable.extract(extractionEnvironment);
@@ -115,7 +115,7 @@ public class DetectableTool {
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
             return DetectableToolResult.failed();
         } else {
-            logger.info("Extraction success.");
+            logger.debug("Extraction success.");
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.SUCCESS));
         }
 
@@ -132,7 +132,7 @@ public class DetectableTool {
             projectInfo = new DetectToolProjectInfo(detectTool, nameVersion);
         }
 
-        logger.info("Tool finished.");
+        logger.debug("Tool finished.");
 
         return DetectableToolResult.success(detectCodeLocations, projectInfo, dockerTar);
     }
