@@ -444,7 +444,7 @@ class DetectProperties {
         }
         val DETECT_DOCKER_INSPECTOR_PATH = NullablePathProperty("detect.docker.inspector.path").apply {
             setInfo("Docker Inspector .jar File Path", "3.0.0")
-            setHelp("This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a local Docker Inspector .jar file at this path.")
+            setHelp("This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a compatible (the same major version that Detect downloads by default) local Docker Inspector .jar file at this path.")
             setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
             setCategory(DetectCategory.Advanced)
         }
