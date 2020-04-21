@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.yarn.parse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,29 +35,40 @@ public class YarnLockParser {
     private static final String OPTIONAL_DEPENDENCIES_TOKEN = "optionalDependencies:";
 
     public YarnLock parseYarnLock(final List<String> yarnLockFileAsList) {
-        boolean started = false;
         final List<YarnLockEntry> entries = new ArrayList<>();
         String resolvedVersion = "";
         List<YarnLockDependency> dependencies = new ArrayList<>();
         List<YarnLockEntryId> ids = new ArrayList<>();
         boolean inOptionalDependencies = false;
 
-        for (final String line : yarnLockFileAsList) {
-            if (StringUtils.isBlank(line) || line.trim().startsWith(COMMENT_PREFIX)) {
-                continue;
-            }
+        List<String> cleanedYarnLockFileAsList = yarnLockFileAsList
+                                                     .stream()
+                                                     .filter(StringUtils::isNotBlank)
+                                                     .filter(line -> !line.trim().startsWith(COMMENT_PREFIX))
+                                                     .collect(Collectors.toList());
+
+        int index = cleanedYarnLockFileAsList
+                        .stream()
+                        .filter(this::isLevel0)
+                        .findFirst()
+                        .map(line -> cleanedYarnLockFileAsList.indexOf(line))
+                        .orElse(-1);
+
+        if (index == -1 || index == cleanedYarnLockFileAsList.size() - 1) {
+            return new YarnLock(entries);
+        }
+
+        List<String> yarnLinesThatMatter = cleanedYarnLockFileAsList.subList(index + 1, cleanedYarnLockFileAsList.size());
+
+        for (final String line : yarnLinesThatMatter) {
 
             final String trimmedLine = line.trim();
             final int level = countIndent(line);
             if (level == 0) {
-                if (started) {
-                    entries.add(new YarnLockEntry(ids, resolvedVersion, dependencies));
-                    resolvedVersion = "";
-                    dependencies = new ArrayList<>();
-                    inOptionalDependencies = false;
-                } else {
-                    started = true;
-                }
+                entries.add(new YarnLockEntry(ids, resolvedVersion, dependencies));
+                resolvedVersion = "";
+                dependencies = new ArrayList<>();
+                inOptionalDependencies = false;
                 ids = parseMultipleEntryLine(line);
             } else if (level == 1 && trimmedLine.startsWith(VERSION_PREFIX)) {
                 resolvedVersion = getVersionFromLine(trimmedLine);
@@ -118,5 +130,10 @@ public class YarnLockParser {
     private String getVersionFromLine(final String line) {
         final String rawVersion = line.substring(VERSION_PREFIX.length(), line.lastIndexOf(VERSION_SUFFIX));
         return removeWrappingQuotes(rawVersion);
+    }
+
+    private boolean isLevel0(String line) {
+        int level = countIndent(line);
+        return level == 0;
     }
 }
