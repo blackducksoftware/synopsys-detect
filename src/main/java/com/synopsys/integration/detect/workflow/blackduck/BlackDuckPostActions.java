@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class BlackDuckPostActions {
@@ -57,56 +59,14 @@ public class BlackDuckPostActions {
             final ProjectView projectView = projectVersionWrapper.getProjectView();
             final ProjectVersionView projectVersionView = projectVersionWrapper.getProjectVersionView();
 
-            if (blackDuckPostOptions.shouldWaitForResults()) {
-                logger.info("Detect must wait for bom tool calculations to finish.");
-                final CodeLocationCreationService codeLocationCreationService = blackDuckServicesFactory.createCodeLocationCreationService();
-                if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
-                    //TODO fix this when NotificationTaskRange doesn't include task start time
-                    //ekerwin - The start time of the task is the earliest time a code location was created.
-                    // In order to wait the full timeout, we have to not use that start time and instead use now().
-                    final NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitData.getNotificationRange().getStartDate(),
-                        codeLocationWaitData.getNotificationRange().getEndDate());
-                    final CodeLocationWaitResult result = codeLocationCreationService
-                                                              .waitForCodeLocations(notificationTaskRange, codeLocationWaitData.getCodeLocationNames(), codeLocationWaitData.getExpectedNotificationCount(),
-                                                                  timeoutInSeconds);
-                    if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
-                        throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
-                    }
-                }
-            }
+            finishCodeLocations(blackDuckPostOptions, codeLocationWaitData, timeoutInSeconds);
 
-            if (blackDuckPostOptions.shouldPerformPolicyCheck()) {
-                logger.info("Detect will check policy for violations.");
-                final PolicyChecker policyChecker = new PolicyChecker(eventSystem);
-                policyChecker.checkPolicy(blackDuckPostOptions.getSeveritiesToFailPolicyCheck(), blackDuckServicesFactory.createProjectBomService(), projectVersionView);
-            }
+            performPolicyCheck(blackDuckPostOptions, projectVersionView);
 
             if (blackDuckPostOptions.shouldGenerateAnyReport()) {
                 final ReportService reportService = blackDuckServicesFactory.createReportService(timeoutInMillisec);
-                if (blackDuckPostOptions.shouldGenerateRiskReport()) {
-                    logger.info("Creating risk report pdf");
-                    final File reportDirectory = blackDuckPostOptions.getRiskReportPdfPath().toFile();
-
-                    if (!reportDirectory.exists() && !reportDirectory.mkdirs()) {
-                        logger.warn(String.format("Failed to create risk report pdf directory: %s", blackDuckPostOptions.getRiskReportPdfPath().toString()));
-                    }
-
-                    final DetectFontLoader detectFontLoader = new DetectFontLoader();
-                    final File createdPdf = reportService.createReportPdfFile(reportDirectory, projectView, projectVersionView, detectFontLoader::loadFont, detectFontLoader::loadBoldFont);
-                    logger.info(String.format("Created risk report pdf: %s", createdPdf.getCanonicalPath()));
-                }
-
-                if (blackDuckPostOptions.shouldGenerateNoticesReport()) {
-                    logger.info("Creating notices report");
-                    final File noticesDirectory = blackDuckPostOptions.getNoticesReportPath().toFile();
-
-                    if (!noticesDirectory.exists() && !noticesDirectory.mkdirs()) {
-                        logger.warn(String.format("Failed to create notices directory at %s", blackDuckPostOptions.getNoticesReportPath().toString()));
-                    }
-
-                    final File noticesFile = reportService.createNoticesReportFile(noticesDirectory, projectView, projectVersionView);
-                    logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
-                }
+                generateRiskReport(blackDuckPostOptions, reportService, projectView, projectVersionView);
+                generateNoticesReport(blackDuckPostOptions, reportService, projectView, projectVersionView);
             }
         } catch (final DetectUserFriendlyException e) {
             throw e;
@@ -118,6 +78,64 @@ public class BlackDuckPostActions {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_TIMEOUT);
         } catch (final Exception e) {
             throw new DetectUserFriendlyException(String.format("There was a problem: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
+        }
+    }
+
+    private void finishCodeLocations(final BlackDuckPostOptions blackDuckPostOptions, final CodeLocationWaitData codeLocationWaitData, final long timeoutInSeconds)
+        throws DetectUserFriendlyException, InterruptedException, IntegrationException {
+        if (blackDuckPostOptions.shouldWaitForResults()) {
+            logger.info("Detect must wait for bom tool calculations to finish.");
+            final CodeLocationCreationService codeLocationCreationService = blackDuckServicesFactory.createCodeLocationCreationService();
+            if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
+                //TODO fix this when NotificationTaskRange doesn't include task start time
+                //ekerwin - The start time of the task is the earliest time a code location was created.
+                // In order to wait the full timeout, we have to not use that start time and instead use now().
+                final NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitData.getNotificationRange().getStartDate(),
+                    codeLocationWaitData.getNotificationRange().getEndDate());
+                final CodeLocationWaitResult result = codeLocationCreationService
+                                                          .waitForCodeLocations(notificationTaskRange, codeLocationWaitData.getCodeLocationNames(), codeLocationWaitData.getExpectedNotificationCount(),
+                                                              timeoutInSeconds);
+                if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
+                    throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
+                }
+            }
+        }
+    }
+
+    private void performPolicyCheck(BlackDuckPostOptions blackDuckPostOptions, ProjectVersionView projectVersionView) throws IntegrationException {
+        if (blackDuckPostOptions.shouldPerformPolicyCheck()) {
+            logger.info("Detect will check policy for violations.");
+            final PolicyChecker policyChecker = new PolicyChecker(eventSystem);
+            policyChecker.checkPolicy(blackDuckPostOptions.getSeveritiesToFailPolicyCheck(), blackDuckServicesFactory.createProjectBomService(), projectVersionView);
+        }
+    }
+
+    private void generateRiskReport(BlackDuckPostOptions blackDuckPostOptions, ReportService reportService, ProjectView projectView, ProjectVersionView projectVersionView) throws IntegrationException, IOException {
+        if (blackDuckPostOptions.shouldGenerateRiskReport()) {
+            logger.info("Creating risk report pdf");
+            final File reportDirectory = blackDuckPostOptions.getRiskReportPdfPath().toFile();
+
+            if (!reportDirectory.exists() && !reportDirectory.mkdirs()) {
+                logger.warn(String.format("Failed to create risk report pdf directory: %s", blackDuckPostOptions.getRiskReportPdfPath().toString()));
+            }
+
+            final DetectFontLoader detectFontLoader = new DetectFontLoader();
+            final File createdPdf = reportService.createReportPdfFile(reportDirectory, projectView, projectVersionView, detectFontLoader::loadFont, detectFontLoader::loadBoldFont);
+            logger.info(String.format("Created risk report pdf: %s", createdPdf.getCanonicalPath()));
+        }
+    }
+
+    private void generateNoticesReport(BlackDuckPostOptions blackDuckPostOptions, ReportService reportService, ProjectView projectView, ProjectVersionView projectVersionView) throws IntegrationException, InterruptedException, IOException {
+        if (blackDuckPostOptions.shouldGenerateNoticesReport()) {
+            logger.info("Creating notices report");
+            final File noticesDirectory = blackDuckPostOptions.getNoticesReportPath().toFile();
+
+            if (!noticesDirectory.exists() && !noticesDirectory.mkdirs()) {
+                logger.warn(String.format("Failed to create notices directory at %s", blackDuckPostOptions.getNoticesReportPath().toString()));
+            }
+
+            final File noticesFile = reportService.createNoticesReportFile(noticesDirectory, projectView, projectVersionView);
+            logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
         }
     }
 }

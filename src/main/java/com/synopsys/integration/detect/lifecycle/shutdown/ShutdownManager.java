@@ -84,19 +84,8 @@ public class ShutdownManager {
                     }
                 }
 
-                final List<File> cleanupToSkip = new ArrayList<>();
-                if (dryRun || offline) {
-                    logger.debug("Will not cleanup scan folder.");
-                    cleanupToSkip.add(directoryManager.getScanOutputDirectory());
-                }
-                if (offline) {
-                    logger.debug("Will not cleanup bdio folder.");
-                    cleanupToSkip.add(directoryManager.getBdioOutputDirectory());
-                }
-                if (airgapZip.isPresent()) {
-                    logger.debug("Will not cleanup Air Gap file.");
-                    cleanupToSkip.add(airgapZip.get());
-                }
+                final List<File> cleanupToSkip = getCleanupToSkip(dryRun, offline, directoryManager, airgapZip);
+
                 logger.debug("Cleaning up directory: " + directoryManager.getRunHomeDirectory().getAbsolutePath());
                 cleanup(directoryManager.getRunHomeDirectory(), cleanupToSkip);
             } else {
@@ -105,6 +94,23 @@ public class ShutdownManager {
         } catch (final Exception e) {
             logger.debug("Error trying cleanup: ", e);
         }
+    }
+
+    private List<File> getCleanupToSkip(boolean dryRun, boolean offline, DirectoryManager directoryManager, Optional<File> airgapZip) {
+        final List<File> cleanupToSkip = new ArrayList<>();
+        if (dryRun || offline) {
+            logger.debug("Will not cleanup scan folder.");
+            cleanupToSkip.add(directoryManager.getScanOutputDirectory());
+        }
+        if (offline) {
+            logger.debug("Will not cleanup bdio folder.");
+            cleanupToSkip.add(directoryManager.getBdioOutputDirectory());
+        }
+        if (airgapZip.isPresent()) {
+            logger.debug("Will not cleanup Air Gap file.");
+            cleanupToSkip.add(airgapZip.get());
+        }
+        return cleanupToSkip;
     }
 
     private void cleanup(final File directory, final List<File> skip) throws IOException {

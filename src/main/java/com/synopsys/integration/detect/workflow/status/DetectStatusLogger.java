@@ -80,15 +80,15 @@ public class DetectStatusLogger {
     }
 
     private void logDetectors(List<DetectIssue> detectIssues, IntLogger logger) {
-        logIssuesCategory(detectIssues, DetectIssueType.Detector, "DETECTORS:", logger);
+        logIssuesCategory(detectIssues, DetectIssueType.DETECTOR, "DETECTORS:", logger);
     }
 
     private void logExceptions(List<DetectIssue> detectIssues, IntLogger logger) {
-        logIssuesCategory(detectIssues, DetectIssueType.Exception, "EXCEPTIONS:", logger);
+        logIssuesCategory(detectIssues, DetectIssueType.EXCEPTION, "EXCEPTIONS:", logger);
     }
 
     private void logDeprecations(List<DetectIssue> detectIssues, IntLogger logger) {
-        logIssuesCategory(detectIssues, DetectIssueType.Deprecation, "DEPRECATIONS:", logger);
+        logIssuesCategory(detectIssues, DetectIssueType.DEPRECATION, "DEPRECATIONS:", logger);
     }
 
     private void logIssuesCategory(List<DetectIssue> detectIssues, DetectIssueType detectIssueType, String logMessage, IntLogger logger) {

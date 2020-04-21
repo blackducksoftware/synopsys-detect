@@ -113,33 +113,7 @@ public class BlackDuckSignatureScanner {
                                                                  .filter(output -> output.getScanTarget().equals(target.getTargetCanonicalPath()))
                                                                  .findFirst();
 
-            final StatusType scanStatus;
-            if (!targetOutput.isPresent()) {
-                scanStatus = StatusType.FAILURE;
-                logger.info(String.format("Scanning target %s was never scanned by the BlackDuck CLI.", target.getTargetCanonicalPath()));
-            } else {
-                final ScanCommandOutput output = targetOutput.get();
-                if (output.getResult() == Result.FAILURE) {
-                    scanStatus = StatusType.FAILURE;
-
-                    if (output.getException().isPresent() && output.getErrorMessage().isPresent()) {
-                        logger.error(String.format("Scanning target %s failed: %s", target.getTargetCanonicalPath(), output.getErrorMessage().get()));
-                        logger.debug(output.getErrorMessage().get(), output.getException().get());
-                    } else if (output.getErrorMessage().isPresent()) {
-                        logger.error(String.format("Scanning target %s failed: %s", target.getTargetCanonicalPath(), output.getErrorMessage().get()));
-                    } else {
-                        logger.error(String.format("Scanning target %s failed for an unknown reason.", target.getTargetCanonicalPath()));
-                    }
-
-                    if (output.getScanExitCode().isPresent()) {
-                        anyExitCodeIs64 = anyExitCodeIs64 || output.getScanExitCode().get() == 64;
-                    }
-
-                } else {
-                    scanStatus = StatusType.SUCCESS;
-                    logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", target.getTargetCanonicalPath()));
-                }
-            }
+            final StatusType scanStatus = getScanStatus(target, targetOutput, anyExitCodeIs64);
 
             anyFailed = anyFailed || scanStatus == StatusType.FAILURE;
             eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(target.getTargetCanonicalPath(), scanStatus));
@@ -157,6 +131,37 @@ public class BlackDuckSignatureScanner {
             logger.error("");
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED));
         }
+    }
+
+    private StatusType getScanStatus(final SignatureScanPath target, final Optional<ScanCommandOutput> targetOutput, boolean anyExitCodeIs64) {
+        final StatusType scanStatus;
+        if (!targetOutput.isPresent()) {
+            scanStatus = StatusType.FAILURE;
+            logger.info(String.format("Scanning target %s was never scanned by the BlackDuck CLI.", target.getTargetCanonicalPath()));
+        } else {
+            final ScanCommandOutput output = targetOutput.get();
+            if (output.getResult() == Result.FAILURE) {
+                scanStatus = StatusType.FAILURE;
+
+                if (output.getException().isPresent() && output.getErrorMessage().isPresent()) {
+                    logger.error(String.format("Scanning target %s failed: %s", target.getTargetCanonicalPath(), output.getErrorMessage().get()));
+                    logger.debug(output.getErrorMessage().get(), output.getException().get());
+                } else if (output.getErrorMessage().isPresent()) {
+                    logger.error(String.format("Scanning target %s failed: %s", target.getTargetCanonicalPath(), output.getErrorMessage().get()));
+                } else {
+                    logger.error(String.format("Scanning target %s failed for an unknown reason.", target.getTargetCanonicalPath()));
+                }
+
+                if (output.getScanExitCode().isPresent()) {
+                    anyExitCodeIs64 = anyExitCodeIs64 || output.getScanExitCode().get() == 64;
+                }
+
+            } else {
+                scanStatus = StatusType.SUCCESS;
+                logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", target.getTargetCanonicalPath()));
+            }
+        }
+        return scanStatus;
     }
 
     private List<SignatureScanPath> determinePathsAndExclusions(final NameVersion projectNameVersion, final Integer maxDepth, final File dockerTarFile) throws IOException {

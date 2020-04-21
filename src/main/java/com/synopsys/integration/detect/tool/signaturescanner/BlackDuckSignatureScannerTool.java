@@ -66,16 +66,9 @@ public class BlackDuckSignatureScannerTool {
         final ConnectionFactory connectionFactory = detectContext.getBean(ConnectionFactory.class);
         final DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
 
-        Optional<BlackDuckServerConfig> blackDuckServerConfig = Optional.empty();
-        if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServerConfig().isPresent()) {
-            blackDuckServerConfig = blackDuckRunData.getBlackDuckServerConfig();
-        }
+        Optional<BlackDuckServerConfig> blackDuckServerConfig = getServerConfig(blackDuckRunData);
 
-        Optional<Path> localScannerInstallPath = signatureScannerOptions.getOfflineLocalScannerInstallPath();
-        if (!localScannerInstallPath.isPresent()) {
-            localScannerInstallPath = signatureScannerOptions.getOnlineLocalScannerInstallPath();
-        }
-        localScannerInstallPath.ifPresent(path -> logger.debug(String.format("Determined local scanner path: %s", path.toString())));
+        Optional<Path> localScannerInstallPath = getLocalScannerInstallPath();
 
         final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
         final ExecutorService executorService = Executors.newFixedThreadPool(blackDuckSignatureScannerOptions.getParallelProcessors());
@@ -106,6 +99,28 @@ public class BlackDuckSignatureScannerTool {
         }
         logger.debug(String.format("Determined install directory: %s", installDirectory.getAbsolutePath()));
 
+        return performScan(scanBatchRunner, blackDuckServerConfig, blackDuckRunData, projectNameVersion, installDirectory, dockerTar, executorService);
+    }
+
+    private Optional<BlackDuckServerConfig> getServerConfig(BlackDuckRunData blackDuckRunData) {
+        Optional<BlackDuckServerConfig> blackDuckServerConfig = Optional.empty();
+        if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServerConfig().isPresent()) {
+            blackDuckServerConfig = blackDuckRunData.getBlackDuckServerConfig();
+        }
+        return blackDuckServerConfig;
+    }
+
+    private Optional<Path> getLocalScannerInstallPath() {
+        Optional<Path> localScannerInstallPath = signatureScannerOptions.getOfflineLocalScannerInstallPath();
+        if (!localScannerInstallPath.isPresent()) {
+            localScannerInstallPath = signatureScannerOptions.getOnlineLocalScannerInstallPath();
+        }
+        localScannerInstallPath.ifPresent(path -> logger.debug(String.format("Determined local scanner path: %s", path.toString())));
+        return localScannerInstallPath;
+    }
+
+    private SignatureScannerToolResult performScan(ScanBatchRunner scanBatchRunner, Optional<BlackDuckServerConfig> blackDuckServerConfig, BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, File installDirectory,
+        Optional<File> dockerTar, final ExecutorService executorService) {
         try {
             // When offline, server config is null, otherwise scanner is created the same way online/offline.
             final BlackDuckSignatureScanner blackDuckSignatureScanner = detectContext.getBean(BlackDuckSignatureScanner.class, signatureScannerOptions, scanBatchRunner, blackDuckServerConfig.orElse(null));
@@ -124,7 +139,7 @@ public class BlackDuckSignatureScannerTool {
                 final ScanBatchOutput scanBatchOutput = blackDuckSignatureScanner.performScanActions(projectNameVersion, installDirectory, dockerTar.orElse(null));
                 return SignatureScannerToolResult.createOfflineResult(scanBatchOutput);
             }
-        } catch (final IOException | IntegrationException e) {
+        } catch (final IOException | IntegrationException | DetectUserFriendlyException e) {
             logger.error(String.format("Signature scan failed: %s", e.getMessage()));
             logger.debug("Signature scan error", e);
             return SignatureScannerToolResult.createFailureResult();

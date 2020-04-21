@@ -233,9 +233,9 @@ public class RunManager {
                 eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
                 anythingFailed = true;
             }
-            logger.info("Detector actions finished.");
+            logger.info("DETECTOR actions finished.");
         } else {
-            logger.info("Detector tool will not be run.");
+            logger.info("DETECTOR tool will not be run.");
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);
@@ -287,20 +287,7 @@ public class RunManager {
         final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().orElse(null);
 
         if (blackDuckRunData.isOnline() && blackDuckServicesFactory != null) {
-            logger.debug("Getting or creating project.");
-            final DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
-            final ProjectMappingService detectProjectMappingService = blackDuckServicesFactory.createProjectMappingService();
-            final DetectCustomFieldService detectCustomFieldService = new DetectCustomFieldService();
-            final DetectProjectService detectProjectService = new DetectProjectService(blackDuckServicesFactory, options, detectProjectMappingService, detectCustomFieldService);
-            projectVersionWrapper = detectProjectService.createOrUpdateBlackDuckProject(projectNameVersion);
-
-            if (null != projectVersionWrapper && runOptions.shouldUnmapCodeLocations()) {
-                logger.debug("Unmapping code locations.");
-                final DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createCodeLocationService());
-                detectCodeLocationUnmapService.unmapCodeLocations(projectVersionWrapper.getProjectVersionView());
-            } else {
-                logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");
-            }
+            projectVersionWrapper = getOrCreateProject(detectConfigurationFactory, blackDuckServicesFactory, projectNameVersion, runOptions);
         } else {
             logger.debug("Detect is not online, and will not create the project.");
         }
@@ -311,6 +298,39 @@ public class RunManager {
         final BdioOptions bdioOptions = detectConfigurationFactory.createBdioOptions();
         final BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new Bdio2Factory(), new IntegrationEscapeUtil(), codeLocationNameManager, bdioCodeLocationCreator, directoryManager, eventSystem);
         final BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations(), runOptions.shouldUseBdio2());
+
+        CodeLocationWaitData codeLocationWaitData = processCodeLocations(bdioResult, blackDuckServicesFactory, blackDuckRunData);
+
+        logger.debug("Completed Detect Code Location processing.");
+
+        performSignatureScannerActions(detectToolFilter, detectConfigurationFactory, blackDuckRunData, projectNameVersion, runResult, codeLocationWaitData, eventSystem);
+
+        performBinaryScannerActions(detectToolFilter, blackDuckServicesFactory, detectConfigurationFactory, eventSystem, codeLocationNameManager, directoryManager, projectNameVersion, codeLocationWaitData);
+
+        performPostActions(blackDuckServicesFactory, detectConfigurationFactory, eventSystem, codeLocationWaitData, bdioResult, detectToolFilter, projectVersionWrapper);
+    }
+
+    private ProjectVersionWrapper getOrCreateProject(DetectConfigurationFactory detectConfigurationFactory, BlackDuckServicesFactory blackDuckServicesFactory, NameVersion projectNameVersion, RunOptions runOptions)
+        throws DetectUserFriendlyException, IntegrationException {
+        logger.debug("Getting or creating project.");
+        final DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
+        final ProjectMappingService detectProjectMappingService = blackDuckServicesFactory.createProjectMappingService();
+        final DetectCustomFieldService detectCustomFieldService = new DetectCustomFieldService();
+        final DetectProjectService detectProjectService = new DetectProjectService(blackDuckServicesFactory, options, detectProjectMappingService, detectCustomFieldService);
+        final ProjectVersionWrapper projectVersionWrapper = detectProjectService.createOrUpdateBlackDuckProject(projectNameVersion);
+
+        if (null != projectVersionWrapper && runOptions.shouldUnmapCodeLocations()) {
+            logger.debug("Unmapping code locations.");
+            final DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createCodeLocationService());
+            detectCodeLocationUnmapService.unmapCodeLocations(projectVersionWrapper.getProjectVersionView());
+        } else {
+            logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");
+        }
+        return projectVersionWrapper;
+    }
+
+    private CodeLocationWaitData processCodeLocations(BdioResult bdioResult, BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckRunData blackDuckRunData)
+        throws DetectUserFriendlyException, IntegrationException {
 
         final CodeLocationWaitData codeLocationWaitData = new CodeLocationWaitData();
         if (bdioResult.getUploadTargets().size() > 0) {
@@ -338,9 +358,12 @@ public class RunManager {
         } else {
             logger.debug("Did not create any BDIO files.");
         }
+        return codeLocationWaitData;
+    }
 
-        logger.debug("Completed Detect Code Location processing.");
-
+    private void performSignatureScannerActions(DetectToolFilter detectToolFilter, DetectConfigurationFactory detectConfigurationFactory, BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, RunResult runResult,
+        CodeLocationWaitData codeLocationWaitData, EventSystem eventSystem)
+        throws DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
             logger.info("Will include the signature scanner tool.");
@@ -356,7 +379,11 @@ public class RunManager {
         } else {
             logger.info("Signature scan tool will not be run.");
         }
+    }
 
+    private void performBinaryScannerActions(DetectToolFilter detectToolFilter, BlackDuckServicesFactory blackDuckServicesFactory, DetectConfigurationFactory detectConfigurationFactory, EventSystem eventSystem,
+        CodeLocationNameManager codeLocationNameManager, DirectoryManager directoryManager, NameVersion projectNameVersion, CodeLocationWaitData codeLocationWaitData)
+        throws DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
             logger.info("Will include the binary scanner tool.");
@@ -374,7 +401,11 @@ public class RunManager {
         } else {
             logger.info("Binary scan tool will not be run.");
         }
+    }
 
+    private void performPostActions(BlackDuckServicesFactory blackDuckServicesFactory, DetectConfigurationFactory detectConfigurationFactory, EventSystem eventSystem, CodeLocationWaitData codeLocationWaitData, BdioResult bdioResult,
+        DetectToolFilter detectToolFilter, ProjectVersionWrapper projectVersionWrapper)
+        throws DetectUserFriendlyException {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (null != blackDuckServicesFactory) {
             logger.info("Will perform Black Duck post actions.");

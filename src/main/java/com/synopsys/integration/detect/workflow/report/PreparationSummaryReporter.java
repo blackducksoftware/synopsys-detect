@@ -52,39 +52,46 @@ public class PreparationSummaryReporter {
                                                                   .filter(it -> !skippedFallbacks.contains(it))
                                                                   .collect(Collectors.toList());
 
-            if (ready.size() > 0 || notExtractable.size() > 0) {
-                lines.add(detectorEvaluationTree.getDirectory().toString());
-                if (ready.size() > 0) {
-                    lines.add("\t    READY: " + ready.stream()
-                                                    .map(it -> it.getDetectorRule().getDescriptiveName())
-                                                    .sorted()
-                                                    .collect(Collectors.joining(", ")));
-                }
-                if (failedWithFallback.size() > 0) {
-                    lines.addAll(failedWithFallback.stream()
-                                     .map(it -> "\t FALLBACK: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
-                                     .sorted()
-                                     .collect(Collectors.toList()));
-                }
-                if (failedNotSkipped.size() > 0) {
-                    lines.addAll(failedNotSkipped.stream()
-                                     .map(it -> "\t   FAILED: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
-                                     .sorted()
-                                     .collect(Collectors.toList()));
-                }
-                if (skippedFallbacks.size() > 0) {
-                    lines.addAll(skippedFallbacks.stream()
-                                     .map(it -> "\t  SKIPPED: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
-                                     .sorted()
-                                     .collect(Collectors.toList()));
-                }
-            }
+            lines.addAll(getSummaryLines(ready, notExtractable, detectorEvaluationTree, failedWithFallback, failedNotSkipped, skippedFallbacks));
         }
         if (lines.size() > 0) {
             ReporterUtils.printHeader(writer, "Preparation for extraction");
             lines.forEach(writer::writeLine);
             ReporterUtils.printFooter(writer);
         }
+    }
+
+    private List<String> getSummaryLines(List<DetectorEvaluation> ready, List<DetectorEvaluation> notExtractable, DetectorEvaluationTree detectorEvaluationTree, List<DetectorEvaluation> failedWithFallback,
+        List<DetectorEvaluation> failedNotSkipped, List<DetectorEvaluation> skippedFallbacks) {
+        final List<String> lines = new ArrayList<>();
+        if (ready.size() > 0 || notExtractable.size() > 0) {
+            lines.add(detectorEvaluationTree.getDirectory().toString());
+            if (ready.size() > 0) {
+                lines.add("\t    READY: " + ready.stream()
+                                                .map(it -> it.getDetectorRule().getDescriptiveName())
+                                                .sorted()
+                                                .collect(Collectors.joining(", ")));
+            }
+            if (failedWithFallback.size() > 0) {
+                lines.addAll(failedWithFallback.stream()
+                                 .map(it -> "\t FALLBACK: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
+                                 .sorted()
+                                 .collect(Collectors.toList()));
+            }
+            if (failedNotSkipped.size() > 0) {
+                lines.addAll(failedNotSkipped.stream()
+                                 .map(it -> "\t   FAILED: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
+                                 .sorted()
+                                 .collect(Collectors.toList()));
+            }
+            if (skippedFallbacks.size() > 0) {
+                lines.addAll(skippedFallbacks.stream()
+                                 .map(it -> "\t  SKIPPED: " + it.getDetectorRule().getDescriptiveName() + " - " + it.getExtractabilityMessage())
+                                 .sorted()
+                                 .collect(Collectors.toList()));
+            }
+        }
+        return lines;
     }
 
 }

@@ -139,13 +139,7 @@ public class DetectBoot {
         final DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
         final Gson gson = detectContext.getBean(Gson.class);
 
-        List<PropertySource> propertySources;
-        try {
-            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, false));
-        } catch (final RuntimeException e) {
-            logger.error("An unknown property source was found, detect will still continue.", e);
-            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, true));
-        }
+        List<PropertySource> propertySources = getPropertySources(environment);
 
         final DetectArgumentState detectArgumentState = parseDetectArgumentState(sourceArgs);
 
@@ -161,14 +155,7 @@ public class DetectBoot {
 
         printDetectInfo(detectInfo);
 
-        if (detectArgumentState.isInteractive()) {
-            final List<InteractiveOption> interactiveOptions = startInteractiveMode(propertySources);
-            final Map<String, String> interactivePropertyMap = interactiveOptions.stream()
-                                                                   .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), InteractiveOption::getInteractiveValue));
-            final PropertySource interactivePropertySource = new MapPropertySource("interactive", interactivePropertyMap);
-            propertySources.add(0, interactivePropertySource);
-        }
-        final PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
+        final PropertyConfiguration detectConfiguration = getPropertyConfiguration(detectArgumentState, propertySources);
 
         logger.debug("Configuration processed completely.");
 
@@ -180,13 +167,7 @@ public class DetectBoot {
 
         logger.debug("Initializing Detect.");
 
-        final PathResolver pathResolver;
-        if (detectInfo.getCurrentOs() != OperatingSystemType.WINDOWS && detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_RESOLVE_TILDE_IN_PATHS())) {
-            logger.info("Tilde's will be automatically resolved to USER HOME.");
-            pathResolver = new TildeInPathResolver(SystemUtils.USER_HOME);
-        } else {
-            pathResolver = new SimplePathResolver();
-        }
+        final PathResolver pathResolver = getPathResolver(detectInfo, detectConfiguration);
         final DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver);
         final DirectoryManager directoryManager = new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
         final Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectConfiguration, detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
@@ -310,6 +291,17 @@ public class DetectBoot {
         detectInfoPrinter.printInfo(System.out, detectInfo);
     }
 
+    private PathResolver getPathResolver(DetectInfo detectInfo, PropertyConfiguration detectConfiguration) {
+        final PathResolver pathResolver;
+        if (detectInfo.getCurrentOs() != OperatingSystemType.WINDOWS && detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_RESOLVE_TILDE_IN_PATHS())) {
+            logger.info("Tilde's will be automatically resolved to USER HOME.");
+            pathResolver = new TildeInPathResolver(SystemUtils.USER_HOME);
+        } else {
+            pathResolver = new SimplePathResolver();
+        }
+        return pathResolver;
+    }
+
     private Optional<DetectBootResult> printConfiguration(final boolean fullConfiguration, final PropertyConfiguration detectConfiguration, final EventSystem eventSystem,
         final DetectInfo detectInfo) {
 
@@ -335,7 +327,7 @@ public class DetectBoot {
                 final String deprecationMessage = deprecationInfo.getDeprecationText();
 
                 deprecationMessages.put(property.getKey(), new ArrayList<>(Collections.singleton(deprecationMessage)));
-                DetectIssue.publish(eventSystem, DetectIssueType.Deprecation, property.getKey(), "\t" + deprecationMessage);
+                DetectIssue.publish(eventSystem, DetectIssueType.DEPRECATION, property.getKey(), "\t" + deprecationMessage);
 
                 if (detectInfo.getDetectMajorVersion() >= deprecationInfo.getFailInVersion().getIntValue()) {
                     usedFailureProperties.add(property);
@@ -372,6 +364,28 @@ public class DetectBoot {
         }
 
         return Optional.empty();
+    }
+
+    private List<PropertySource> getPropertySources(ConfigurableEnvironment environment) {
+        List<PropertySource> propertySources = new ArrayList<>();
+        try {
+            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, false));
+        } catch (final RuntimeException e) {
+            logger.error("An unknown property source was found, detect will still continue.", e);
+            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, true));
+        }
+        return propertySources;
+    }
+
+    private PropertyConfiguration getPropertyConfiguration(DetectArgumentState detectArgumentState, List<PropertySource> propertySources) {
+        if (detectArgumentState.isInteractive()) {
+            final List<InteractiveOption> interactiveOptions = startInteractiveMode(propertySources);
+            final Map<String, String> interactivePropertyMap = interactiveOptions.stream()
+                                                                   .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), InteractiveOption::getInteractiveValue));
+            final PropertySource interactivePropertySource = new MapPropertySource("interactive", interactivePropertyMap);
+            propertySources.add(0, interactivePropertySource);
+        }
+        return new PropertyConfiguration(propertySources);
     }
 
     private List<InteractiveOption> startInteractiveMode(final List<PropertySource> propertySources) {
