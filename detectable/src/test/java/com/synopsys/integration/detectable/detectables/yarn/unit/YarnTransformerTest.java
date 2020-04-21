@@ -38,15 +38,10 @@ public class YarnTransformerTest {
         final List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(validYarnLockEntryIds, "1.0", validYarnLockDependencies));
         final YarnLock yarnLock = new YarnLock(yarnLockEntries);
 
-        DependencyGraph dependencyGraph = null;
-        try {
-            dependencyGraph = yarnTransformer.transform(packageJson, yarnLock, false);
-        } catch (final MissingExternalIdException missingExternalIdException) {
-            // Not using Assertions.assetDoesNotThrow so we can re-use the dependency graph for the sanity check below.
-            Assertions.fail("MissingExternalIdException should not have been thrown.", missingExternalIdException);
-        }
+        // This should not throw an exception.
+        final DependencyGraph dependencyGraph = yarnTransformer.transform(packageJson, yarnLock, false);
 
-        // Sanity check
+        // Sanity check.
         Assertions.assertNotNull(dependencyGraph, "The dependency graph should not be null.");
         Assertions.assertEquals(1, dependencyGraph.getRootDependencies().size(), "Only 'foo:1.0' should appear in the graph.");
         final ExternalId fooExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "foo", "1.0");
