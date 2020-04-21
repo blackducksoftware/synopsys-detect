@@ -2,7 +2,8 @@
 
 ## Version 6.3.0
 ### New features
-* (IDETECT-1917) The Yarn Detector will now extract project information from package.json files.
+* (IDETECT-1974) The Yarn detector will no longer throw an exception for dependencies not defined in the yarn.lock.
+* (IDETECT-1917) The Yarn detector will now extract project information from package.json files.
 * (IDETECT-1867) ${solution_name} when configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities), will now log policy violations.
 
 ### Changed features

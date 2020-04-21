@@ -31,7 +31,9 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
 import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
@@ -43,7 +45,7 @@ public class YarnTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(final PackageJson packageJson, final YarnLock yarnLock, boolean productionOnly) throws MissingExternalIdException {
+    public DependencyGraph transform(final PackageJson packageJson, final YarnLock yarnLock, final boolean productionOnly) throws MissingExternalIdException {
         final LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
         for (final Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
@@ -70,6 +72,23 @@ public class YarnTransformer {
                 }
             }
         }
-        return graphBuilder.build();
+
+        return graphBuilder.build(this::handleMissingExternalIds);
+    }
+
+    private ExternalId handleMissingExternalIds(final DependencyId dependencyId, final LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo) throws MissingExternalIdException {
+        if (lazyDependencyInfo != null) {
+            DependencyId idToLog = dependencyId;
+            if (lazyDependencyInfo.getAliasId() != null) {
+                idToLog = lazyDependencyInfo.getAliasId();
+            }
+            logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from yarn.lock.", idToLog));
+
+            // TODO: This is to trick LazyExternalIdDependencyGraphBuilder::build to not throw an exception. This won't match in the KB. LazyExternalIdDependencyGraphBuilder::build should allow for not throwing an exception. See IDETECT-1974.
+            return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, dependencyId.toString());
+        } else {
+            // The graph is bad. Nothing more Detect can do until the ability to never throw exists.
+            throw new MissingExternalIdException(dependencyId);
+        }
     }
 }
