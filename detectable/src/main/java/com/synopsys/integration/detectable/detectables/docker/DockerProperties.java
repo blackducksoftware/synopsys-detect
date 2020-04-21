@@ -66,8 +66,9 @@ public class DockerProperties {
         dockerProperties.store(new FileOutputStream(dockerPropertiesFile), "");
     }
 
-    private File createDir(final File parentDir, final String newDirName) {
+    private File createDir(final File parentDir, final String newDirName) throws IOException {
         final File newDir = new File(parentDir, newDirName);
         Files.createDirectories(newDir.toPath());
+        return newDir;
     }
 }
