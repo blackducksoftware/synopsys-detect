@@ -38,7 +38,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.util.Bdo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
@@ -194,11 +193,10 @@ public class Application implements ApplicationRunner {
             detectBootResult.getException().ifPresent(e -> DetectIssue.publish(eventSystem, DetectIssueType.EXCEPTION, e.getMessage()));
         }
 
-        if (detectBootResult.getDetectConfiguration().isPresent()) {
-            final PropertyConfiguration detectConfiguration = detectBootResult.getDetectConfiguration().get();
+        detectBootResult.getDetectConfiguration().ifPresent(detectConfiguration -> {
             printOutput = !detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_SUPPRESS_RESULTS_OUTPUT());
             shouldForceSuccess = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_FORCE_SUCCESS());
-        }
+        });
     }
 
     private void createStatusOuputFile(Optional<DetectBootResult> detectBootResultOptional) {
