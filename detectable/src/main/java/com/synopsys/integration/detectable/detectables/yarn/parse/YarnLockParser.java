@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class YarnLockParser {
     private static final String COMMENT_PREFIX = "#";
@@ -38,27 +39,21 @@ public class YarnLockParser {
         final List<YarnLockEntry> entries = new ArrayList<>();
         String resolvedVersion = "";
         List<YarnLockDependency> dependencies = new ArrayList<>();
-        List<YarnLockEntryId> ids = new ArrayList<>();
+        List<YarnLockEntryId> ids;
         boolean inOptionalDependencies = false;
 
-        List<String> cleanedYarnLockFileAsList = yarnLockFileAsList
-                                                     .stream()
-                                                     .filter(StringUtils::isNotBlank)
-                                                     .filter(line -> !line.trim().startsWith(COMMENT_PREFIX))
-                                                     .collect(Collectors.toList());
+        List<String> cleanedYarnLockFileAsList = getCleaned(yarnLockFileAsList);
 
-        int index = cleanedYarnLockFileAsList
-                        .stream()
-                        .filter(this::isLevel0)
-                        .findFirst()
-                        .map(line -> cleanedYarnLockFileAsList.indexOf(line))
-                        .orElse(-1);
+        int indexOfFirstLevelZeroLine = getIndexOfFirstLevelZeroLine(cleanedYarnLockFileAsList);
 
-        if (index == -1 || index == cleanedYarnLockFileAsList.size() - 1) {
+        if (indexOfFirstLevelZeroLine == -1 || indexOfFirstLevelZeroLine == cleanedYarnLockFileAsList.size() - 1) {
             return new YarnLock(entries);
         }
 
-        List<String> yarnLinesThatMatter = cleanedYarnLockFileAsList.subList(index + 1, cleanedYarnLockFileAsList.size());
+        // We need to set ids with the first level zero line
+        ids = parseMultipleEntryLine(cleanedYarnLockFileAsList.get(indexOfFirstLevelZeroLine));
+
+        List<String> yarnLinesThatMatter = cleanedYarnLockFileAsList.subList(indexOfFirstLevelZeroLine + 1, cleanedYarnLockFileAsList.size());
 
         for (final String line : yarnLinesThatMatter) {
 
@@ -83,6 +78,25 @@ public class YarnLockParser {
         }
 
         return new YarnLock(entries);
+    }
+
+    @NotNull
+    private Integer getIndexOfFirstLevelZeroLine(final List<String> cleanedYarnLockFileAsList) {
+        return cleanedYarnLockFileAsList
+                   .stream()
+                   .filter(this::isLevel0)
+                   .findFirst()
+                   .map(line -> cleanedYarnLockFileAsList.indexOf(line))
+                   .orElse(-1);
+    }
+
+    @NotNull
+    private List<String> getCleaned(final List<String> yarnLockFileAsList) {
+        return yarnLockFileAsList
+                   .stream()
+                   .filter(StringUtils::isNotBlank)
+                   .filter(line -> !line.trim().startsWith(COMMENT_PREFIX))
+                   .collect(Collectors.toList());
     }
 
     public int countIndent(String line) {
