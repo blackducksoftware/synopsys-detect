@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,18 +78,14 @@ public class YarnTransformer {
     }
 
     private ExternalId handleMissingExternalIds(final DependencyId dependencyId, final LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo) throws MissingExternalIdException {
-        if (lazyDependencyInfo != null) {
-            DependencyId idToLog = dependencyId;
-            if (lazyDependencyInfo.getAliasId() != null) {
-                idToLog = lazyDependencyInfo.getAliasId();
-            }
-            logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from yarn.lock.", idToLog));
-
-            // TODO: This is to trick LazyExternalIdDependencyGraphBuilder::build to not throw an exception. This won't match in the KB. LazyExternalIdDependencyGraphBuilder::build should allow for not throwing an exception. See IDETECT-1974.
-            return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, dependencyId.toString());
-        } else {
-            // The graph is bad. Nothing more Detect can do until the ability to never throw exists.
+        if (lazyDependencyInfo == null) {
             throw new MissingExternalIdException(dependencyId);
         }
+
+        final DependencyId dependencyIdToLog = Optional.ofNullable(lazyDependencyInfo.getAliasId())
+                                                   .orElse(dependencyId);
+
+        logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from yarn.lock.", dependencyIdToLog));
+        return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, dependencyId.toString());
     }
 }
