@@ -152,6 +152,7 @@ public class Application implements ApplicationRunner {
         }
 
         //Create status output file.
+        logger.info("");
         try {
             if (detectBootResultOptional.isPresent() && detectBootResultOptional.get().getDirectoryManager().isPresent()) {
                 DirectoryManager directoryManager = detectBootResultOptional.get().getDirectoryManager().get();

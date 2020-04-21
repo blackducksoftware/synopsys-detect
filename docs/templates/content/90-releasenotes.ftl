@@ -2,10 +2,13 @@
 
 ## Version 6.3.0
 ### New features
+* (IDETECT-1917) The Yarn Detector will now extract project information from package.json files.
+* (IDETECT-1867) ${solution_name} when configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities), will now log policy violations.
 
 ### Changed features
 * Users are now allowed to [upload source](../properties/configuration/signature scanner/#upload-source-mode) when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is provided. (IDETECT-1894)
 * (IDETECT-1853) Detect is now compatible with Yocto 3.0.
+* (IDETECT-1876) Detect will stop if docker is enabled on Windows.
 
 ### Resolved issues
 * Resolved an issue where git extraction could fail if "git log" returned unexpected output. The commit hash will be used as a version as a last resort. (IDETECT-1906, [\#114](https://github.com/blackducksoftware/synopsys-detect/issues/114))

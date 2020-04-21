@@ -229,7 +229,7 @@ public class DetectDetectableFactory {
     }
 
     public YarnLockDetectable createYarnLockDetectable(final DetectableEnvironment environment) {
-        return detectableFactory.createYarnLockDetectable(environment, detectableOptionFactory.createYarnLockOptions().useProductionOnly());
+        return detectableFactory.createYarnLockDetectable(environment, detectableOptionFactory.createYarnLockOptions());
     }
 
 }

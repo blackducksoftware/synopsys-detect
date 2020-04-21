@@ -32,6 +32,8 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
@@ -56,6 +58,7 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
         addFile(Paths.get("package.json"),
             "{",
             "   \"name\": \"babel\",",
+            "   \"version\": \"1.2.3\",",
             "   \"private\": true,",
             "   \"license\": \"MIT\",",
             "   \"dependencies\": { ",
@@ -69,14 +72,18 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
     @NotNull
     @Override
     public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createYarnLockDetectable(detectableEnvironment, true);
+        return detectableFactory.createYarnLockDetectable(detectableEnvironment, new YarnLockOptions(true));
     }
 
     @Override
     public void assertExtraction(@NotNull final Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
+        final CodeLocation codeLocation = extraction.getCodeLocations().get(0);
 
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, extraction.getCodeLocations().get(0).getDependencyGraph());
+        Assertions.assertEquals("babel", extraction.getProjectName());
+        Assertions.assertEquals("1.2.3",  extraction.getProjectVersion());
+
+        final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, codeLocation.getDependencyGraph());
         graphAssert.hasRootSize(2);
         graphAssert.hasRootDependency("async", "2.5.0");
         graphAssert.hasRootDependency("lodash", "4.17.4");

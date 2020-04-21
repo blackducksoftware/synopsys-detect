@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -86,6 +87,10 @@ public class Bds<T> {
     public <R> Bds<R> flatMap(final Function<? super T, ? extends Collection<? extends R>> mapper) {
         final Function<? super T, ? extends Stream<? extends R>> streamMapper = value -> mapper.apply(value).stream();
         return new Bds<>(stream.flatMap(streamMapper));
+    }
+
+    public void forEach(final Consumer<T> consumer) {
+        stream.forEach(consumer);
     }
 
     public Optional<T> minBy(final Comparator<? super T> comparator) {
