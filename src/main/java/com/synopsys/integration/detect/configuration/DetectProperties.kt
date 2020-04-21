@@ -973,6 +973,7 @@ class DetectProperties {
 
         //#region Deprecated Properties
         const val DEPRECATED_PROPERTY_MESSAGE = "This property is deprecated."
+        const val POLARIS_CLI_DEPRECATION_MESSAGE = POLARIS_CLI_DEPRECATION_MESSAGE
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_BITBAKE_REFERENCE_IMPL = StringProperty("detect.bitbake.reference.impl", "-poky-linux").apply {
@@ -1375,7 +1376,7 @@ class DetectProperties {
             setInfo("Polaris Url", "4.1.0")
             setHelp("The url of your polaris instance.")
             setGroups(DetectGroup.POLARIS, DetectGroup.DEFAULT, DetectGroup.GLOBAL)
-            setDeprecated("This property is being removed. Detect will no longer invoke the Polaris CLI.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
+            setDeprecated(POLARIS_CLI_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
         }
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
@@ -1383,7 +1384,7 @@ class DetectProperties {
             setInfo("Polaris Access Token", "5.3.0")
             setHelp("The access token for your polaris instance.")
             setGroups(DetectGroup.POLARIS, DetectGroup.DEFAULT, DetectGroup.GLOBAL)
-            setDeprecated("This property is being removed. Detect will no longer invoke the Polaris CLI.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
+            setDeprecated(POLARIS_CLI_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
         }
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
@@ -1391,7 +1392,7 @@ class DetectProperties {
             setInfo("Polaris Arguments", "5.3.0")
             setHelp("Additional arguments to pass to polaris separated by space. The polaris.command takes precedence.")
             setGroups(DetectGroup.POLARIS, DetectGroup.DEFAULT, DetectGroup.SOURCE_SCAN)
-            setDeprecated("This property is being removed. Detect will no longer invoke the Polaris CLI.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
+            setDeprecated(POLARIS_CLI_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
         }
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
@@ -1399,7 +1400,7 @@ class DetectProperties {
             setInfo("Polaris Command", "6.0.0")
             setHelp("A replacement command to pass to polaris separated by space. Include the analyze or setup command itself. If specified, polaris.arguments will be ignored and this will take precedence.")
             setGroups(DetectGroup.POLARIS, DetectGroup.DEFAULT, DetectGroup.SOURCE_SCAN)
-            setDeprecated("This property is being removed. Detect will no longer invoke the Polaris CLI.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
+            setDeprecated(POLARIS_CLI_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT)
         }
 
         //#endregion Deprecated Properties

@@ -58,18 +58,7 @@ public class SpringConfigurationPropertySource implements PropertySource {
         List<ConfigurationPropertySource> sources = Bds.listOf(ConfigurationPropertySources.get(configurableEnvironment));
         return Bds.of(sources).map(it -> {
             if (IterableConfigurationPropertySource.class.isAssignableFrom(it.getClass())) {
-                Object underlying = it.getUnderlyingSource();
-                if (org.springframework.core.env.PropertySource.class.isAssignableFrom(underlying.getClass())) {
-                    org.springframework.core.env.PropertySource springSource = (org.springframework.core.env.PropertySource) underlying;
-                    return new SpringConfigurationPropertySource(springSource.getName(), (IterableConfigurationPropertySource) it, configurableEnvironment);
-                } else {
-                    if (ignoreUnknown) {
-                        return null;
-                    } else {
-                        throw new RuntimeException(
-                            new UnknownSpringConfigurationException("Unknown underlying spring configuration source. We may be unable to determine where a property originated. Likely a new property source type should be tested against."));
-                    }
-                }
+                return getPropertySource(configurableEnvironment, ignoreUnknown, it);
             } else if (RandomValuePropertySource.class.isAssignableFrom(it.getUnderlyingSource().getClass())) {
                 //We know an underlying random source can't be iterated but we don't care. It can't give a list of known keys.
                 return null;
@@ -83,6 +72,21 @@ public class SpringConfigurationPropertySource implements PropertySource {
             }
         }).filterNotNull().toList();
 
+    }
+
+    private static SpringConfigurationPropertySource getPropertySource(ConfigurableEnvironment configurableEnvironment, boolean ignoreUnknown, ConfigurationPropertySource configurationPropertySource) {
+        Object underlying = configurationPropertySource.getUnderlyingSource();
+        if (org.springframework.core.env.PropertySource.class.isAssignableFrom(underlying.getClass())) {
+            org.springframework.core.env.PropertySource springSource = (org.springframework.core.env.PropertySource) underlying;
+            return new SpringConfigurationPropertySource(springSource.getName(), (IterableConfigurationPropertySource) configurationPropertySource, configurableEnvironment);
+        } else {
+            if (ignoreUnknown) {
+                return null;
+            } else {
+                throw new RuntimeException(
+                    new UnknownSpringConfigurationException("Unknown underlying spring configuration source. We may be unable to determine where a property originated. Likely a new property source type should be tested against."));
+            }
+        }
     }
 
     @NotNull

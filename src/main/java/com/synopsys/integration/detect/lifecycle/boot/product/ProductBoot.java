@@ -50,6 +50,22 @@ public class ProductBoot {
         }
 
         logger.debug("Detect product boot start.");
+
+        BlackDuckRunData blackDuckRunData = getBlackDuckRunData(productDecision, productBootFactory, blackDuckConnectivityChecker, productBootOptions);
+
+        PolarisRunData polarisRunData = getPolarisRunData(productDecision, polarisConnectivityChecker);
+
+        if (productBootOptions.isTestConnections()) {
+            logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperties.Companion.getDETECT_TEST_CONNECTION().getName()));
+            return null;
+        }
+
+        logger.debug("Detect product boot completed.");
+        return new ProductRunData(polarisRunData, blackDuckRunData);
+    }
+
+    private BlackDuckRunData getBlackDuckRunData(ProductDecision productDecision, ProductBootFactory productBootFactory, BlackDuckConnectivityChecker blackDuckConnectivityChecker, ProductBootOptions productBootOptions)
+        throws DetectUserFriendlyException {
         BlackDuckRunData blackDuckRunData = null;
         final BlackDuckDecision blackDuckDecision = productDecision.getBlackDuckDecision();
         if (blackDuckDecision.shouldRun()) {
@@ -74,7 +90,10 @@ public class ProductBoot {
                 }
             }
         }
+        return blackDuckRunData;
+    }
 
+    private PolarisRunData getPolarisRunData(ProductDecision productDecision, PolarisConnectivityChecker polarisConnectivityChecker) throws DetectUserFriendlyException {
         PolarisRunData polarisRunData = null;
         final PolarisDecision polarisDecision = productDecision.getPolarisDecision();
         if (polarisDecision.shouldRun()) {
@@ -88,13 +107,6 @@ public class ProductBoot {
                 throw new DetectUserFriendlyException("Could not communicate with Polaris: " + polarisConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_POLARIS_CONNECTIVITY);
             }
         }
-
-        if (productBootOptions.isTestConnections()) {
-            logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperties.Companion.getDETECT_TEST_CONNECTION().getName()));
-            return null;
-        }
-
-        logger.debug("Detect product boot completed.");
-        return new ProductRunData(polarisRunData, blackDuckRunData);
+        return polarisRunData;
     }
 }

@@ -38,6 +38,7 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 
 public class DiagnosticSystem {
+    private static final String FAILED_TO_FINISH = "Failed to finish.";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final PropertyConfiguration propertyConfiguration;
@@ -104,21 +105,21 @@ public class DiagnosticSystem {
             logger.info("Finishing reports.");
             diagnosticReportHandler.finish();
         } catch (final Exception e) {
-            logger.error("Failed to finish.", e);
+            logger.error(FAILED_TO_FINISH, e);
         }
 
         try {
             logger.info("Finishing logging.");
             diagnosticLogSystem.finish();
         } catch (final Exception e) {
-            logger.error("Failed to finish.", e);
+            logger.error(FAILED_TO_FINISH, e);
         }
 
         try {
             logger.info("Finishing executable capture.");
             diagnosticExecutableCapture.finish();
         } catch (final Exception e) {
-            logger.error("Failed to finish.", e);
+            logger.error(FAILED_TO_FINISH, e);
         }
 
         if (diagnosticFileCapture != null) {
@@ -126,7 +127,7 @@ public class DiagnosticSystem {
                 logger.info("Finishing file capture.");
                 diagnosticFileCapture.finish();
             } catch (final Exception e) {
-                logger.error("Failed to finish.", e);
+                logger.error(FAILED_TO_FINISH, e);
             }
         }
 
