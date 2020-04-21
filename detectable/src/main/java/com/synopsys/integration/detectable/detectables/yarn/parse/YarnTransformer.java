@@ -77,12 +77,9 @@ public class YarnTransformer {
         return graphBuilder.build(this::handleMissingExternalIds);
     }
 
-    private ExternalId handleMissingExternalIds(final DependencyId dependencyId, final LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo) throws MissingExternalIdException {
-        if (lazyDependencyInfo == null) {
-            throw new MissingExternalIdException(dependencyId);
-        }
-
-        final DependencyId dependencyIdToLog = Optional.ofNullable(lazyDependencyInfo.getAliasId())
+    private ExternalId handleMissingExternalIds(final DependencyId dependencyId, final LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo) {
+        final DependencyId dependencyIdToLog = Optional.ofNullable(lazyDependencyInfo)
+                                                   .map(LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo::getAliasId)
                                                    .orElse(dependencyId);
 
         logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from yarn.lock.", dependencyIdToLog));
