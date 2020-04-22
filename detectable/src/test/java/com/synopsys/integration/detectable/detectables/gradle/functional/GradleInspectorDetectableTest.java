@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.gradle.unit;
+package com.synopsys.integration.detectable.detectables.gradle.functional;
 
 import java.io.File;
 import java.io.IOException;

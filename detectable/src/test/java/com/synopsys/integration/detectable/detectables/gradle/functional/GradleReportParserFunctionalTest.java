@@ -109,7 +109,7 @@ public class GradleReportParserFunctionalTest {
 
     @Test
     void testSpringFrameworkAop() {
-        final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/spring-framework/spring_aop_dependencyGraph.txt");
+        final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/spring_aop_dependencyGraph.txt");
         Assertions.assertTrue(codeLocation.isPresent());
         System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation.get()));
     }
