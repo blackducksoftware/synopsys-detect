@@ -973,7 +973,7 @@ class DetectProperties {
 
         //#region Deprecated Properties
         const val DEPRECATED_PROPERTY_MESSAGE = "This property is deprecated."
-        const val POLARIS_CLI_DEPRECATION_MESSAGE = POLARIS_CLI_DEPRECATION_MESSAGE
+        const val POLARIS_CLI_DEPRECATION_MESSAGE = "This property is being removed. Detect will no longer invoke the Polaris CLI."
 
         @Deprecated(DEPRECATED_PROPERTY_MESSAGE)
         val DETECT_BITBAKE_REFERENCE_IMPL = StringProperty("detect.bitbake.reference.impl", "-poky-linux").apply {
