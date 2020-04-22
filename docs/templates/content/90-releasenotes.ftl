@@ -4,18 +4,23 @@
 ### New features
 * (IDETECT-1917) The Yarn Detector will now extract project information from package.json files.
 * (IDETECT-1867) ${solution_name} when configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities), will now log policy violations.
+* (IDETECT-1894) TBD
 
 ### Changed features
 * Users are now allowed to [upload source](../properties/configuration/signature scanner/#upload-source-mode) when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is provided. (IDETECT-1894)
 * (IDETECT-1853) Detect is now compatible with Yocto 3.0.
 * (IDETECT-1876) Detect will stop if docker is enabled on Windows.
 * (IDETECT-1961) Detect now configures Docker Inspector's working directories to inside Detect's run directory.
+* (IDETECT-1874) TBD
+* Detect now runs/requires Docker Inspector version 9.x.x.
 
 ### Resolved issues
-* Resolved an issue where git extraction could fail if "git log" returned unexpected output. The commit hash will be used as a version as a last resort. (IDETECT-1906, [\#114](https://github.com/blackducksoftware/synopsys-detect/issues/114))
-* Resolved an issue where Detect would fail to extract project information while parsing a Git repository with a detached head while in buildless mode. (IDETECT-1883)
-* Resolved an issue where the default value for [parallel processors](../properties/configuration/general/#detect-parallel-processors-advanced) was not be honored. Available runtime processor count was being used. (IDETECT-1970).
-* Resolved an issue where the Nuget exe inspector would not resolve from Artifactory. (IDETECT-1973)
+* (IDETECT-1906) Resolved an issue where git extraction could fail if "git log" returned unexpected output. The commit hash will be used as a version as a last resort. ([\#114](https://github.com/blackducksoftware/synopsys-detect/issues/114))
+* (IDETECT-1883) Resolved an issue where Detect would fail to extract project information while parsing a Git repository with a detached head while in buildless mode.
+* (IDETECT-1970) Resolved an issue where the default value for [parallel processors](../properties/configuration/general/#detect-parallel-processors-advanced) was not honored. (The available runtime processor count was being used instead.)
+* (IDETECT-1973) Resolved an issue where the Nuget exe inspector would not resolve from Artifactory.
+* (IDETECT-1974) TBD
+* (IDETECT-1965) TBD
 
 ## Version 6.2.1
 ### Resolved issues
