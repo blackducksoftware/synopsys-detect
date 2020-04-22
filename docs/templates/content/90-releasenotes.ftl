@@ -3,7 +3,9 @@
 ## Version 6.3.0
 ### New features
 * (IDETECT-1917) The Yarn Detector will now extract project information from package.json files.
+* (IDETECT-1874) The Yarn Detector supports dependencies that are missing a fuzzy version in a lockfile dependency declaration.
 * (IDETECT-1867) ${solution_name} when configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities), will now log policy violations.
+* (IDETECT-1965) Resolved an issue where Detect would fail to resolve environment variables where it previously would.
 
 ### Changed features
 * (IDETECT-1894) Users are now allowed to [upload source](../properties/configuration/signature scanner/#upload-source-mode) when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is provided.
