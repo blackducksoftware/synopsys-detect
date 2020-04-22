@@ -23,11 +23,27 @@
 package com.synopsys.integration.detect.workflow.report.output;
 
 public class FormattedResultOutput {
-    public String location;
-    public String message;
+    private String location;
+    private String message;
 
     public FormattedResultOutput(final String location, final String message) {
         this.location = location;
+        this.message = message;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(final String location) {
+        this.location = location;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(final String message) {
         this.message = message;
     }
 }

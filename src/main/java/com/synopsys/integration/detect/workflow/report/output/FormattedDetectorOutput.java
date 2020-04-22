@@ -26,27 +26,171 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FormattedDetectorOutput {
-    public String folder = "";
-    public String detectorType = "";
-    public String detectorName = "";
-    public String descriptiveName = "";
+    private String folder = "";
+    private String detectorType = "";
+    private String detectorName = "";
+    private String descriptiveName = "";
 
-    public boolean searchable = true;
-    public boolean applicable = true;
-    public boolean extractable = true;
-    public boolean discoverable = true;
-    public boolean extracted = true;
+    private boolean searchable = true;
+    private boolean applicable = true;
+    private boolean extractable = true;
+    private boolean discoverable = true;
+    private boolean extracted = true;
 
-    public String searchableReason = "";
-    public String applicableReason = "";
-    public String extractableReason = "";
-    public String discoveryReason = "";
-    public String extractedReason = "";
+    private String searchableReason = "";
+    private String applicableReason = "";
+    private String extractableReason = "";
+    private String discoveryReason = "";
+    private String extractedReason = "";
 
-    public List<String> relevantFiles = new ArrayList<>();
+    private List<String> relevantFiles = new ArrayList<>();
 
-    public String projectName = "";
-    public String projectVersion = "";
-    public int codeLocationCount = 0;
+    private String projectName = "";
+    private String projectVersion = "";
+    private int codeLocationCount = 0;
+
+    public String getFolder() {
+        return folder;
+    }
+
+    public void setFolder(final String folder) {
+        this.folder = folder;
+    }
+
+    public String getDetectorType() {
+        return detectorType;
+    }
+
+    public void setDetectorType(final String detectorType) {
+        this.detectorType = detectorType;
+    }
+
+    public String getDetectorName() {
+        return detectorName;
+    }
+
+    public void setDetectorName(final String detectorName) {
+        this.detectorName = detectorName;
+    }
+
+    public String getDescriptiveName() {
+        return descriptiveName;
+    }
+
+    public void setDescriptiveName(final String descriptiveName) {
+        this.descriptiveName = descriptiveName;
+    }
+
+    public boolean isSearchable() {
+        return searchable;
+    }
+
+    public void setSearchable(final boolean searchable) {
+        this.searchable = searchable;
+    }
+
+    public boolean isApplicable() {
+        return applicable;
+    }
+
+    public void setApplicable(final boolean applicable) {
+        this.applicable = applicable;
+    }
+
+    public boolean isExtractable() {
+        return extractable;
+    }
+
+    public void setExtractable(final boolean extractable) {
+        this.extractable = extractable;
+    }
+
+    public boolean isDiscoverable() {
+        return discoverable;
+    }
+
+    public void setDiscoverable(final boolean discoverable) {
+        this.discoverable = discoverable;
+    }
+
+    public boolean isExtracted() {
+        return extracted;
+    }
+
+    public void setExtracted(final boolean extracted) {
+        this.extracted = extracted;
+    }
+
+    public String getSearchableReason() {
+        return searchableReason;
+    }
+
+    public void setSearchableReason(final String searchableReason) {
+        this.searchableReason = searchableReason;
+    }
+
+    public String getApplicableReason() {
+        return applicableReason;
+    }
+
+    public void setApplicableReason(final String applicableReason) {
+        this.applicableReason = applicableReason;
+    }
+
+    public String getExtractableReason() {
+        return extractableReason;
+    }
+
+    public void setExtractableReason(final String extractableReason) {
+        this.extractableReason = extractableReason;
+    }
+
+    public String getDiscoveryReason() {
+        return discoveryReason;
+    }
+
+    public void setDiscoveryReason(final String discoveryReason) {
+        this.discoveryReason = discoveryReason;
+    }
+
+    public String getExtractedReason() {
+        return extractedReason;
+    }
+
+    public void setExtractedReason(final String extractedReason) {
+        this.extractedReason = extractedReason;
+    }
+
+    public List<String> getRelevantFiles() {
+        return relevantFiles;
+    }
+
+    public void setRelevantFiles(final List<String> relevantFiles) {
+        this.relevantFiles = relevantFiles;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(final String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getProjectVersion() {
+        return projectVersion;
+    }
+
+    public void setProjectVersion(final String projectVersion) {
+        this.projectVersion = projectVersion;
+    }
+
+    public int getCodeLocationCount() {
+        return codeLocationCount;
+    }
+
+    public void setCodeLocationCount(final int codeLocationCount) {
+        this.codeLocationCount = codeLocationCount;
+    }
 }
 

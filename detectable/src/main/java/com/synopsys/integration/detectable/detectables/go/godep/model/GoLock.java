@@ -28,8 +28,12 @@ import com.google.gson.annotations.SerializedName;
 
 public class GoLock {
     // see https://github.com/golang/dep/blob/master/lock.go for the source of the lock file
-    public List<Project> projects;
+    private List<Project> projects;
 
     @SerializedName("solve-meta")
     public SolveMeta solveMeta;
+
+    public List<Project> getProjects() {
+        return projects;
+    }
 }

@@ -23,9 +23,17 @@
 package com.synopsys.integration.detect.workflow.report.output;
 
 public class FormattedCodeLocationOutput {
-    public String codeLocationName;
+    private String codeLocationName;
 
     public FormattedCodeLocationOutput(final String name) {
         this.codeLocationName = name;
+    }
+
+    public String getCodeLocationName() {
+        return codeLocationName;
+    }
+
+    public void setCodeLocationName(final String codeLocationName) {
+        this.codeLocationName = codeLocationName;
     }
 }

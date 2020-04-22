@@ -66,7 +66,7 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
 
-    public static boolean SHOULD_EXIT = true;
+    private static boolean SHOULD_EXIT = true;
 
     private final ConfigurableEnvironment environment;
 
@@ -74,6 +74,14 @@ public class Application implements ApplicationRunner {
     public Application(final ConfigurableEnvironment environment) {
         this.environment = environment;
         environment.setIgnoreUnresolvableNestedPlaceholders(true);
+    }
+
+    public static boolean shouldExit() {
+        return SHOULD_EXIT;
+    }
+
+    public static void setShouldExit(final boolean shouldExit) {
+        SHOULD_EXIT = shouldExit;
     }
 
     public static void main(final String[] args) {

@@ -23,13 +23,25 @@
 package com.synopsys.integration.detect.workflow.report.output;
 
 public class FormattedExitCodeOutput {
-    public Integer exitCode = 0;
-    public String exitCodeDescription = "";
-    public String exitCodeReason = "";
+    private Integer exitCode = 0;
+    private String exitCodeDescription = "";
+    private String exitCodeReason = "";
 
     public FormattedExitCodeOutput(final Integer exitCode, String exitCodeDescription, final String exitCodeReason) {
         this.exitCode = exitCode;
         this.exitCodeDescription = exitCodeDescription;
         this.exitCodeReason = exitCodeReason;
+    }
+
+    public Integer getExitCode() {
+        return exitCode;
+    }
+
+    public String getExitCodeDescription() {
+        return exitCodeDescription;
+    }
+
+    public String getExitCodeReason() {
+        return exitCodeReason;
     }
 }
