@@ -1606,7 +1606,7 @@ build artifacts or build tools. In buildless mode, there is no requirement that 
 Results from buildless mode may be less accurate than results from build mode.</p>
 <h2 id="choosing-the-working-directory">Choosing the working directory<a class="headerlink" href="#choosing-the-working-directory" title="Permanent link">#</a></h2>
 <p>You can run Synopsys Detect from any directory. If you are not running Synopsys Detect from the project directory,
-provide the project directory using the <a href="../properties/configuration/paths/#source-path-advanced">source path property</a>. When that property is not set,
+provide the project directory using the <a href="../properties/configuration/paths/#source-path">source path property</a>. When that property is not set,
 Synopsys Detect assumes the current working directory is the project directory.</p>
 <h2 id="choosing-a-run-method-script-or-jar">Choosing a run method (script or .jar)<a class="headerlink" href="#choosing-a-run-method-script-or-jar" title="Permanent link">#</a></h2>
 <p>There are two ways to run Synopsys Detect:</p>
@@ -1727,7 +1727,7 @@ and <a href="../properties/configuration/signature scanner/">Black Duck signatur
 <h3 id="offline-mode">Offline mode<a class="headerlink" href="#offline-mode" title="Permanent link">#</a></h3>
 <p>If you do not have a Black Duck instance, or if your network is down, you can still run Synopsys Detect in offline mode.
 In offline mode, Synopsys Detect creates the BDIO content and the dry run Black Duck signature scan output files without attempting to upload them to Black Duck.
-You can run Synopsys Detect in offline mode using the <a href="../properties/configuration/blackduck server/#offline-mode-advanced">offline mode property</a>.</p>
+You can run Synopsys Detect in offline mode using the <a href="../properties/configuration/blackduck server/#offline-mode">offline mode property</a>.</p>
 <h3 id="bdio-format">BDIO format<a class="headerlink" href="#bdio-format" title="Permanent link">#</a></h3>
 <p>Synopsys Detect produces dependency information for Black Duck in Black Duck Input Output (BDIO) format files.
 Synopsys Detect can produce BDIO files in two formats: BDIO version 1, or BDIO version 2.
@@ -1736,6 +1736,7 @@ accept either BDIO 1 or BDIO 2.
 By default, Synopsys Detect produces BDIO 1 files.</p>
 <p>Use the <a href="../properties/configuration/paths/#bdio-2-enabled">BDIO2 enabled property</a> to select BDIO 2 format.</p>
 <h2 id="running-with-polaris">Running with Polaris<a class="headerlink" href="#running-with-polaris" title="Permanent link">#</a></h2>
+<p>This capability is deprecated and will be removed in a future release.</p>
 <p>Synopsys Detect can be used with Polaris to perform Static Application Security Testing (SAST).</p>
 <p>When Polaris connection details are provided, Synopsys Detect executes
 the following by default:</p>

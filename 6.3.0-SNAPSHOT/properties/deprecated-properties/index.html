@@ -1215,7 +1215,7 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/packagist/#include packagist development dependencies">detect.packagist.include.dev.dependencies</a></td>
+<td><a href="../detectors/packagist/#include-packagist-development-dependencies">detect.packagist.include.dev.dependencies</a></td>
 <td>default: Optional[true] <br /><br /> Include Packagist Development Dependencies: Set this value to false if you would like to exclude your dev requires dependencies when ran. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1230,7 +1230,7 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/sbt/#sbt report search depth">detect.sbt.report.search.depth</a></td>
+<td><a href="../detectors/sbt/#sbt-report-search-depth">detect.sbt.report.search.depth</a></td>
 <td>default: Optional[3] <br /><br /> SBT Report Search Depth: Depth the sbt detector will use to search for report files. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1245,39 +1245,39 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../configuration/project/#fail on policy violation severities">detect.policy.check.fail.on.severities</a></td>
+<td><a href="../configuration/project/#fail-on-policy-violation-severities">detect.policy.check.fail.on.severities</a></td>
 <td>default: Optional[NONE] <br /><br />  Acceptable Values: ALL, NONE, UNSPECIFIED, TRIVIAL, MINOR, MAJOR, CRITICAL, BLOCKER <br /><br />Fail on Policy Violation Severities: A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/project/#project description">detect.project.description</a></td>
+<td><a href="../configuration/project/#project-description">detect.project.description</a></td>
 <td>default: Optional.empty <br /><br /> Project Description: If project description is specified, your project version will be created with this description. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/project/#project name">detect.project.name</a></td>
+<td><a href="../configuration/project/#project-name">detect.project.name</a></td>
 <td>default: Optional.empty <br /><br /> Project Name: An override for the name to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable project name. If that fails, the final part of the directory path where the inspection is taking place will be used. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/project/#project tier">detect.project.tier</a></td>
+<td><a href="../configuration/project/#project-tier">detect.project.tier</a></td>
 <td>default: Optional.empty <br /><br /> Project Tier: If a Black Duck project tier is specified, your project will be created with this tier. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/project/#version name">detect.project.version.name</a></td>
+<td><a href="../configuration/project/#version-name">detect.project.version.name</a></td>
 <td>default: Optional.empty <br /><br /> Version Name: An override for the version to use for the Black Duck project. If not supplied, Detect will attempt to use the tools to figure out a reasonable version name. If that fails, the current date will be used. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/project/#version nickname">detect.project.version.nickname</a></td>
+<td><a href="../configuration/project/#version-nickname">detect.project.version.nickname</a></td>
 <td>default: Optional.empty <br /><br /> Version Nickname: If a project version nickname is specified, your project version will be created with this nickname. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/project/#version notes">detect.project.version.notes</a></td>
+<td><a href="../configuration/project/#version-notes">detect.project.version.notes</a></td>
 <td>default: Optional.empty <br /><br /> Version Notes: If project version notes are specified, your project version will be created with these notes. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/project/#version phase">detect.project.version.phase</a></td>
+<td><a href="../configuration/project/#version-phase">detect.project.version.phase</a></td>
 <td>default: Optional[DEVELOPMENT] <br /><br />  Acceptable Values: ARCHIVED, DEPRECATED, DEVELOPMENT, PLANNING, PRERELEASE, RELEASED <br /><br />Version Phase: An override for the Project Version phase. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/project/#update project version">detect.project.version.update</a></td>
+<td><a href="../configuration/project/#update-project-version">detect.project.version.update</a></td>
 <td>default: Optional[false] <br /><br /> Update Project Version: If set to true, will update the Project Version with the configured properties. See detailed help for more information. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1292,19 +1292,19 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/docker/#docker image name">detect.docker.image</a></td>
+<td><a href="../detectors/docker/#docker-image-name">detect.docker.image</a></td>
 <td>default: Optional.empty <br /><br /> Docker Image Name: The Docker image name to inspect. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/docker/#docker image id">detect.docker.image.id</a></td>
+<td><a href="../detectors/docker/#docker-image-id">detect.docker.image.id</a></td>
 <td>default: Optional.empty <br /><br /> Docker Image ID: The Docker image ID to inspect. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/docker/#docker executable">detect.docker.path</a></td>
+<td><a href="../detectors/docker/#docker-executable">detect.docker.path</a></td>
 <td>default: Optional.empty <br /><br /> Docker Executable: Path to the docker executable. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/docker/#docker image archive file">detect.docker.tar</a></td>
+<td><a href="../detectors/docker/#docker-image-archive-file">detect.docker.tar</a></td>
 <td>default: Optional.empty <br /><br /> Docker Image Archive File: A saved Docker image - must be a .tar file. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1319,19 +1319,19 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/bazel/#bazel cquery additional options">detect.bazel.cquery.options</a></td>
+<td><a href="../detectors/bazel/#bazel-cquery-additional-options">detect.bazel.cquery.options</a></td>
 <td>default: Optional[] <br /><br /> Bazel cquery additional options: A comma-separated list of additional options to pass to the bazel cquery command. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/bazel/#bazel workspace external dependency rule">detect.bazel.dependency.type</a></td>
+<td><a href="../detectors/bazel/#bazel-workspace-external-dependency-rule">detect.bazel.dependency.type</a></td>
 <td>default: Optional[UNSPECIFIED] <br /><br />  Acceptable Values: MAVEN_JAR, MAVEN_INSTALL, UNSPECIFIED <br /><br />Bazel workspace external dependency rule: The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/bazel/#bazel executable">detect.bazel.path</a></td>
+<td><a href="../detectors/bazel/#bazel-executable">detect.bazel.path</a></td>
 <td>default: Optional.empty <br /><br /> Bazel Executable: The path to the Bazel executable. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/bazel/#bazel target">detect.bazel.target</a></td>
+<td><a href="../detectors/bazel/#bazel-target">detect.bazel.target</a></td>
 <td>default: Optional.empty <br /><br /> Bazel Target: The Bazel target (for example, //foo:foolib) for which dependencies are collected. For Detect to run Bazel, this property must be set. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1346,11 +1346,11 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../configuration/general/#buildless mode">detect.detector.buildless</a></td>
+<td><a href="../configuration/general/#buildless-mode">detect.detector.buildless</a></td>
 <td>default: Optional[false] <br /><br /> Buildless Mode: If set to true, only Detector's capable of running without a build will be run. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/general/#wait for results">detect.wait.for.results</a></td>
+<td><a href="../configuration/general/#wait-for-results">detect.wait.for.results</a></td>
 <td>default: Optional[false] <br /><br /> Wait For Results: If set to true, Detect will wait for Synopsys products until results are available or the detect.report.timeout is exceeded. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1365,11 +1365,11 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/pear/#include only required pear dependencies">detect.pear.only.required.deps</a></td>
+<td><a href="../detectors/pear/#include-only-required-pear-dependencies">detect.pear.only.required.deps</a></td>
 <td>default: Optional[false] <br /><br /> Include Only Required Pear Dependencies: Set to true if you would like to include only required packages. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/pear/#pear executable">detect.pear.path</a></td>
+<td><a href="../detectors/pear/#pear-executable">detect.pear.path</a></td>
 <td>default: Optional.empty <br /><br /> Pear Executable: The path to the pear executable. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1384,23 +1384,23 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/pip/#pipenv executable">detect.pipenv.path</a></td>
+<td><a href="../detectors/pip/#pipenv-executable">detect.pipenv.path</a></td>
 <td>default: Optional.empty <br /><br /> Pipenv Executable: The path to the Pipenv executable. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/pip/#pip include only project tree">detect.pip.only.project.tree</a></td>
+<td><a href="../detectors/pip/#pip-include-only-project-tree">detect.pip.only.project.tree</a></td>
 <td>default: Optional[false] <br /><br /> PIP Include Only Project Tree: By default, pipenv includes all dependencies found in the graph. Set to true to only include dependencies found underneath the dependency that matches the provided pip project and version name. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/pip/#pip project name">detect.pip.project.name</a></td>
+<td><a href="../detectors/pip/#pip-project-name">detect.pip.project.name</a></td>
 <td>default: Optional.empty <br /><br /> PIP Project Name: The name of your PIP project, to be used if your project's name cannot be correctly inferred from its setup.py file. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/pip/#pip project version name">detect.pip.project.version.name</a></td>
+<td><a href="../detectors/pip/#pip-project-version-name">detect.pip.project.version.name</a></td>
 <td>default: Optional.empty <br /><br /> PIP Project Version Name: The version of your PIP project, to be used if your project's version name cannot be correctly inferred from its setup.py file. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/pip/#pip requirements path">detect.pip.requirements.path</a></td>
+<td><a href="../detectors/pip/#pip-requirements-path">detect.pip.requirements.path</a></td>
 <td>default: Optional[] <br /><br /> PIP Requirements Path: A comma-separated list of paths to requirements.txt files. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1415,11 +1415,11 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/conda/#anaconda environment name">detect.conda.environment.name</a></td>
+<td><a href="../detectors/conda/#anaconda-environment-name">detect.conda.environment.name</a></td>
 <td>default: Optional.empty <br /><br /> Anaconda Environment Name: The name of the anaconda environment used by your project. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/conda/#conda executable">detect.conda.path</a></td>
+<td><a href="../detectors/conda/#conda-executable">detect.conda.path</a></td>
 <td>default: Optional.empty <br /><br /> Conda Executable: The path to the conda executable. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1434,7 +1434,7 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/hex/#rebar3 executable">detect.hex.rebar3.path</a></td>
+<td><a href="../detectors/hex/#rebar3-executable">detect.hex.rebar3.path</a></td>
 <td>default: Optional.empty <br /><br /> Rebar3 Executable: The path to the rebar3 executable. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1449,11 +1449,11 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/python/#python executable">detect.python.path</a></td>
+<td><a href="../detectors/python/#python-executable">detect.python.path</a></td>
 <td>default: Optional.empty <br /><br /> Python Executable: The path to the Python executable. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/python/#use python3">detect.python.python3</a></td>
+<td><a href="../detectors/python/#use-python3">detect.python.python3</a></td>
 <td>default: Optional[false] <br /><br /> Use Python3: If true will use Python 3 if available on class path. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1468,7 +1468,7 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/go/#go executable">detect.go.path</a></td>
+<td><a href="../detectors/go/#go-executable">detect.go.path</a></td>
 <td>default: Optional.empty <br /><br /> Go Executable: Path to the Go executable. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1483,15 +1483,15 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/npm/#additional npm command arguments">detect.npm.arguments</a></td>
+<td><a href="../detectors/npm/#additional-npm-command-arguments">detect.npm.arguments</a></td>
 <td>default: Optional.empty <br /><br /> Additional NPM Command Arguments: A space-separated list of additional arguments to add to the npm command line when running Detect against an NPM project. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/npm/#include npm development dependencies">detect.npm.include.dev.dependencies</a></td>
+<td><a href="../detectors/npm/#include-npm-development-dependencies">detect.npm.include.dev.dependencies</a></td>
 <td>default: Optional[true] <br /><br /> Include NPM Development Dependencies: Set this value to false if you would like to exclude your dev dependencies when ran. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/npm/#npm executable">detect.npm.path</a></td>
+<td><a href="../detectors/npm/#npm-executable">detect.npm.path</a></td>
 <td>default: Optional.empty <br /><br /> NPM Executable: The path to the Npm executable. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1506,11 +1506,11 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/ruby/#ruby development dependencies">detect.ruby.include.dev.dependencies</a></td>
+<td><a href="../detectors/ruby/#ruby-development-dependencies">detect.ruby.include.dev.dependencies</a></td>
 <td>default: Optional[false] <br /><br /> Ruby Development Dependencies: If set to true, development dependencies will be included when parsing *.gemspec files. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/ruby/#ruby runtime dependencies">detect.ruby.include.runtime.dependencies</a></td>
+<td><a href="../detectors/ruby/#ruby-runtime-dependencies">detect.ruby.include.runtime.dependencies</a></td>
 <td>default: Optional[true] <br /><br /> Ruby Runtime Dependencies: If set to false, runtime dependencies will not be included when parsing *.gemspec files. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1540,11 +1540,11 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/cpan/#cpanm executable">detect.cpanm.path</a></td>
+<td><a href="../detectors/cpan/#cpanm-executable">detect.cpanm.path</a></td>
 <td>default: Optional.empty <br /><br /> cpanm Executable: The path to the cpanm executable. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../detectors/cpan/#cpan executable">detect.cpan.path</a></td>
+<td><a href="../detectors/cpan/#cpan-executable">detect.cpan.path</a></td>
 <td>default: Optional.empty <br /><br /> cpan Executable: The path to the cpan executable. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1559,7 +1559,7 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../configuration/cleanup/#cleanup output">detect.cleanup</a></td>
+<td><a href="../configuration/cleanup/#cleanup-output">detect.cleanup</a></td>
 <td>default: Optional[true] <br /><br /> Cleanup Output: If true, the files created by Detect will be cleaned up. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1574,19 +1574,19 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../configuration/report/#generate notices report">detect.notices.report</a></td>
+<td><a href="../configuration/report/#generate-notices-report">detect.notices.report</a></td>
 <td>default: Optional[false] <br /><br /> Generate Notices Report: When set to true, a Black Duck notices report in text form will be created in your source directory. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/report/#notices report path">detect.notices.report.path</a></td>
+<td><a href="../configuration/report/#notices-report-path">detect.notices.report.path</a></td>
 <td>default: Optional[.] <br /><br /> Notices Report Path: The output directory for notices report. Default is the source directory. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/report/#generate risk report (pdf)">detect.risk.report.pdf</a></td>
+<td><a href="../configuration/report/#generate-risk-report-(pdf)">detect.risk.report.pdf</a></td>
 <td>default: Optional[false] <br /><br /> Generate Risk Report (PDF): When set to true, a Black Duck risk report in PDF form will be created. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/report/#risk report output path">detect.risk.report.pdf.path</a></td>
+<td><a href="../configuration/report/#risk-report-output-path">detect.risk.report.pdf.path</a></td>
 <td>default: Optional[.] <br /><br /> Risk Report Output Path: The output directory for risk report in PDF. Default is the source directory. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
@@ -1601,7 +1601,7 @@
 </thead>
 <tbody>
 <tr>
-<td><a href="../detectors/yarn/#include yarn production dependencies only">detect.yarn.prod.only</a></td>
+<td><a href="../detectors/yarn/#include-yarn-production-dependencies-only">detect.yarn.prod.only</a></td>
 <td>default: Optional[false] <br /><br /> Include Yarn Production Dependencies Only: Set this to true to only scan production dependencies. <br /><br /> <strong>DEPRECATED:  It will cause failure in  and be removed in .</strong></td>
 </tr>
 </tbody>
