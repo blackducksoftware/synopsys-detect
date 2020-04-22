@@ -238,7 +238,7 @@ public class RunManager {
             detectorToolResult.getBomToolProjectNameVersion().ifPresent(it -> runResult.addToolNameVersion(DetectTool.DETECTOR, new NameVersion(it.getName(), it.getVersion())));
             runResult.addDetectCodeLocations(detectorToolResult.getBomToolCodeLocations());
 
-            if (detectorToolResult.getFailedDetectorTypes().size() > 0) {
+            if (!detectorToolResult.getFailedDetectorTypes().isEmpty()) {
                 eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
                 anythingFailed = true;
             }
