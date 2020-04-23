@@ -43,27 +43,22 @@ public class SimpleFileFinder implements FileFinder {
             return foundFiles;
         }
         final File[] allFiles = directoryToSearch.listFiles();
-        if (allFiles != null) {
-            foundFiles.addAll(extractFileMathces(allFiles, directoryToSearch, filenameFilter, depth, findInsideMatchingDirectories));
+        if (allFiles == null) {
+            return foundFiles;
         }
-
-        return foundFiles;
-    }
-
-    private List<File> extractFileMathces(final File[] allFiles, final File directoryToSearch, final FilenameFilter filenameFilter, final int depth, final boolean findInsideMatchingDirectories) {
-        List<File> fileMatches = new ArrayList<>();
         for (final File file : allFiles) {
             final boolean matches = filenameFilter.accept(directoryToSearch, file.getName());
             if (matches) {
-                fileMatches.add(file);
+                foundFiles.add(file);
             }
             if (!matches || findInsideMatchingDirectories) {
                 if (file.isDirectory() && !Files.isSymbolicLink(file.toPath())) {
-                    fileMatches.addAll(findFiles(file, filenameFilter, depth - 1, findInsideMatchingDirectories));
+                    foundFiles.addAll(findFiles(file, filenameFilter, depth - 1, findInsideMatchingDirectories));
                 }
             }
         }
-        return fileMatches;
+
+        return foundFiles;
     }
 
     @Override
