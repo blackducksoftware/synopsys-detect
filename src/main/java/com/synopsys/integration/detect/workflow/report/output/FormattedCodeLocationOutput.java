@@ -22,18 +22,14 @@
  */
 package com.synopsys.integration.detect.workflow.report.output;
 
-public class FormattedCodeLocationOutput {
-    private String codeLocationName;
+import com.google.gson.annotations.SerializedName;
 
-    public FormattedCodeLocationOutput(final String name) {
+public class FormattedCodeLocationOutput {
+    @SerializedName("codeLocationName")
+    public String codeLocationName;
+
+    FormattedCodeLocationOutput(final String name) {
         this.codeLocationName = name;
     }
 
-    public String getCodeLocationName() {
-        return codeLocationName;
-    }
-
-    public void setCodeLocationName(final String codeLocationName) {
-        this.codeLocationName = codeLocationName;
-    }
 }

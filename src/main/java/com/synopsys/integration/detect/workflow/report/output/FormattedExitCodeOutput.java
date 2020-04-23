@@ -22,26 +22,21 @@
  */
 package com.synopsys.integration.detect.workflow.report.output;
 
-public class FormattedExitCodeOutput {
-    private Integer exitCode = 0;
-    private String exitCodeDescription = "";
-    private String exitCodeReason = "";
+import com.google.gson.annotations.SerializedName;
 
-    public FormattedExitCodeOutput(final Integer exitCode, String exitCodeDescription, final String exitCodeReason) {
+public class FormattedExitCodeOutput {
+    @SerializedName("exitCode")
+    public Integer exitCode = 0;
+
+    @SerializedName("exitCodeDescription")
+    public String exitCodeDescription = "";
+
+    @SerializedName("exitCodeReason")
+    public String exitCodeReason = "";
+
+    public FormattedExitCodeOutput(final Integer exitCode, final String exitCodeDescription, final String exitCodeReason) {
         this.exitCode = exitCode;
         this.exitCodeDescription = exitCodeDescription;
         this.exitCodeReason = exitCodeReason;
-    }
-
-    public Integer getExitCode() {
-        return exitCode;
-    }
-
-    public String getExitCodeDescription() {
-        return exitCodeDescription;
-    }
-
-    public String getExitCodeReason() {
-        return exitCodeReason;
     }
 }

@@ -37,60 +37,57 @@ import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectorToolResult {
-    private Optional<NameVersion> bomToolProjectNameVersion = Optional.empty();
-    private List<DetectCodeLocation> bomToolCodeLocations = new ArrayList<>();
+    private final Optional<NameVersion> bomToolProjectNameVersion;
+    private final List<DetectCodeLocation> bomToolCodeLocations;
 
-    private Set<DetectorType> applicableDetectorTypes = new HashSet<>();
-    private Set<DetectorType> failedDetectorTypes = new HashSet<>();
+    private final Set<DetectorType> applicableDetectorTypes;
+    private final Set<DetectorType> failedDetectorTypes;
 
-    private Optional<DetectorEvaluationTree> rootDetectorEvaluationTree = Optional.empty();
-    private Map<CodeLocation, DetectCodeLocation> codeLocationMap = new HashMap<>();
+    private final Optional<DetectorEvaluationTree> rootDetectorEvaluationTree;
+    private final Map<CodeLocation, DetectCodeLocation> codeLocationMap;
+
+    public DetectorToolResult(final NameVersion bomToolProjectNameVersion, final List<DetectCodeLocation> bomToolCodeLocations, final Set<DetectorType> applicableDetectorTypes,
+        final Set<DetectorType> failedDetectorTypes, final DetectorEvaluationTree rootDetectorEvaluationTree,
+        final Map<CodeLocation, DetectCodeLocation> codeLocationMap) {
+        this.bomToolProjectNameVersion = Optional.of(bomToolProjectNameVersion);
+        this.bomToolCodeLocations = bomToolCodeLocations;
+        this.applicableDetectorTypes = applicableDetectorTypes;
+        this.failedDetectorTypes = failedDetectorTypes;
+        this.rootDetectorEvaluationTree = Optional.of(rootDetectorEvaluationTree);
+        this.codeLocationMap = codeLocationMap;
+    }
+
+    public DetectorToolResult() {
+        this.bomToolProjectNameVersion = Optional.empty();
+        this.bomToolCodeLocations = new ArrayList<>();
+        this.applicableDetectorTypes = new HashSet<>();
+        this.failedDetectorTypes = new HashSet<>();
+        this.rootDetectorEvaluationTree = Optional.empty();
+        this.codeLocationMap = new HashMap<>();
+    }
 
     public Optional<NameVersion> getBomToolProjectNameVersion() {
         return bomToolProjectNameVersion;
-    }
-
-    public void setBomToolProjectNameVersion(final Optional<NameVersion> bomToolProjectNameVersion) {
-        this.bomToolProjectNameVersion = bomToolProjectNameVersion;
     }
 
     public List<DetectCodeLocation> getBomToolCodeLocations() {
         return bomToolCodeLocations;
     }
 
-    public void setBomToolCodeLocations(final List<DetectCodeLocation> bomToolCodeLocations) {
-        this.bomToolCodeLocations = bomToolCodeLocations;
-    }
-
     public Set<DetectorType> getApplicableDetectorTypes() {
         return applicableDetectorTypes;
-    }
-
-    public void setApplicableDetectorTypes(final Set<DetectorType> applicableDetectorTypes) {
-        this.applicableDetectorTypes = applicableDetectorTypes;
     }
 
     public Set<DetectorType> getFailedDetectorTypes() {
         return failedDetectorTypes;
     }
 
-    public void setFailedDetectorTypes(final Set<DetectorType> failedDetectorTypes) {
-        this.failedDetectorTypes = failedDetectorTypes;
-    }
-
     public Optional<DetectorEvaluationTree> getRootDetectorEvaluationTree() {
         return rootDetectorEvaluationTree;
-    }
-
-    public void setRootDetectorEvaluationTree(final Optional<DetectorEvaluationTree> rootDetectorEvaluationTree) {
-        this.rootDetectorEvaluationTree = rootDetectorEvaluationTree;
     }
 
     public Map<CodeLocation, DetectCodeLocation> getCodeLocationMap() {
         return codeLocationMap;
     }
 
-    public void setCodeLocationMap(final Map<CodeLocation, DetectCodeLocation> codeLocationMap) {
-        this.codeLocationMap = codeLocationMap;
-    }
 }

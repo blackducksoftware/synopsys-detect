@@ -58,37 +58,37 @@ public class FormattedOutputManager {
 
     public FormattedOutput createFormattedOutput(DetectInfo detectInfo) {
         FormattedOutput formattedOutput = new FormattedOutput();
-        formattedOutput.setFormatVersion("0.2.0");
-        formattedOutput.setDetectVersion(detectInfo.getDetectVersion());
+        formattedOutput.formatVersion = "0.2.0";
+        formattedOutput.detectVersion = detectInfo.getDetectVersion();
 
-        formattedOutput.setResults(Bds.of(detectResults)
-                                       .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage()))
-                                       .toList());
+        formattedOutput.results = Bds.of(detectResults)
+                                      .map(result -> new FormattedResultOutput(result.getResultLocation(), result.getResultMessage()))
+                                      .toList();
 
-        formattedOutput.setStatus(Bds.of(statusSummaries)
-                                      .map(status -> new FormattedStatusOutput(status.getDescriptionKey(), status.getStatusType().toString()))
-                                      .toList());
+        formattedOutput.status = Bds.of(statusSummaries)
+                                     .map(status -> new FormattedStatusOutput(status.getDescriptionKey(), status.getStatusType().toString()))
+                                     .toList();
 
-        formattedOutput.setIssues(Bds.of(detectIssues)
-                                      .map(issue -> new FormattedIssueOutput(issue.getType().name(), issue.getMessages()))
-                                      .toList());
+        formattedOutput.issues = Bds.of(detectIssues)
+                                     .map(issue -> new FormattedIssueOutput(issue.getType().name(), issue.getMessages()))
+                                     .toList();
 
         if (detectorToolResult != null) {
-            formattedOutput.setDetectors(Bds.of(detectorToolResult.getRootDetectorEvaluationTree())
-                                             .flatMap(DetectorEvaluationTree::allDescendentEvaluations)
-                                             .filter(DetectorEvaluation::isApplicable)
-                                             .map(this::convertDetector)
-                                             .toList());
+            formattedOutput.detectors = Bds.of(detectorToolResult.getRootDetectorEvaluationTree())
+                                            .flatMap(DetectorEvaluationTree::allDescendentEvaluations)
+                                            .filter(DetectorEvaluation::isApplicable)
+                                            .map(this::convertDetector)
+                                            .toList();
         }
         if (projectNameVersion != null) {
-            formattedOutput.setProjectName(projectNameVersion.getName());
-            formattedOutput.setProjectVersion(projectNameVersion.getVersion());
+            formattedOutput.projectName = projectNameVersion.getName();
+            formattedOutput.projectVersion = projectNameVersion.getVersion();
         }
 
         if (bdioCodeLocationResult != null && bdioCodeLocationResult.getCodeLocationNames() != null) {
-            formattedOutput.setCodeLocations(Bds.of(bdioCodeLocationResult.getCodeLocationNames().values())
-                                                 .map(FormattedCodeLocationOutput::new)
-                                                 .toList());
+            formattedOutput.codeLocations = Bds.of(bdioCodeLocationResult.getCodeLocationNames().values())
+                                                .map(FormattedCodeLocationOutput::new)
+                                                .toList();
         }
 
         return formattedOutput;
@@ -96,30 +96,30 @@ public class FormattedOutputManager {
 
     private FormattedDetectorOutput convertDetector(DetectorEvaluation evaluation) {
         FormattedDetectorOutput detectorOutput = new FormattedDetectorOutput();
-        detectorOutput.setFolder(evaluation.getDetectableEnvironment().getDirectory().toString());
-        detectorOutput.setDescriptiveName(evaluation.getDetectorRule().getDescriptiveName());
-        detectorOutput.setDetectorName(evaluation.getDetectorRule().getName());
-        detectorOutput.setDetectorType(evaluation.getDetectorRule().getDetectorType().toString());
+        detectorOutput.folder = evaluation.getDetectableEnvironment().getDirectory().toString();
+        detectorOutput.descriptiveName = evaluation.getDetectorRule().getDescriptiveName();
+        detectorOutput.detectorName = evaluation.getDetectorRule().getName();
+        detectorOutput.detectorType = evaluation.getDetectorRule().getDetectorType().toString();
 
-        detectorOutput.setSearchable(evaluation.isSearchable());
-        detectorOutput.setApplicable(evaluation.isApplicable());
-        detectorOutput.setExtractable(evaluation.isExtractable());
-        detectorOutput.setExtracted(evaluation.wasExtractionSuccessful());
-        detectorOutput.setDiscoverable(evaluation.wasDiscoverySuccessful());
+        detectorOutput.searchable = evaluation.isSearchable();
+        detectorOutput.applicable = evaluation.isApplicable();
+        detectorOutput.extractable = evaluation.isExtractable();
+        detectorOutput.extracted = evaluation.wasExtractionSuccessful();
+        detectorOutput.discoverable = evaluation.wasDiscoverySuccessful();
 
-        detectorOutput.setSearchableReason(evaluation.getSearchabilityMessage());
-        detectorOutput.setApplicableReason(evaluation.getApplicabilityMessage());
-        detectorOutput.setExtractableReason(evaluation.getExtractabilityMessage());
+        detectorOutput.searchableReason = evaluation.getSearchabilityMessage();
+        detectorOutput.applicableReason = evaluation.getApplicabilityMessage();
+        detectorOutput.extractableReason = evaluation.getExtractabilityMessage();
         if (evaluation.getDiscovery() != null) {
-            detectorOutput.setDiscoveryReason(evaluation.getDiscovery().getDescription());
+            detectorOutput.discoveryReason = evaluation.getDiscovery().getDescription();
         }
         if (evaluation.getExtraction() != null) {
-            detectorOutput.setExtractedReason(evaluation.getExtraction().getDescription());
-            detectorOutput.setRelevantFiles(Bds.of(evaluation.getExtraction().getRelevantFiles()).map(File::toString).toList());
-            detectorOutput.setProjectName(evaluation.getExtraction().getProjectName());
-            detectorOutput.setProjectVersion(evaluation.getExtraction().getProjectVersion());
+            detectorOutput.extractedReason = evaluation.getExtraction().getDescription();
+            detectorOutput.relevantFiles = Bds.of(evaluation.getExtraction().getRelevantFiles()).map(File::toString).toList();
+            detectorOutput.projectName = evaluation.getExtraction().getProjectName();
+            detectorOutput.projectVersion = evaluation.getExtraction().getProjectVersion();
             if (evaluation.getExtraction().getCodeLocations() != null) {
-                detectorOutput.setCodeLocationCount(evaluation.getExtraction().getCodeLocations().size());
+                detectorOutput.codeLocationCount = evaluation.getExtraction().getCodeLocations().size();
             }
         }
 

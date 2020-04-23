@@ -25,172 +25,62 @@ package com.synopsys.integration.detect.workflow.report.output;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.annotations.SerializedName;
+
 public class FormattedDetectorOutput {
-    private String folder = "";
-    private String detectorType = "";
-    private String detectorName = "";
-    private String descriptiveName = "";
+    @SerializedName("folder")
+    public String folder = "";
 
-    private boolean searchable = true;
-    private boolean applicable = true;
-    private boolean extractable = true;
-    private boolean discoverable = true;
-    private boolean extracted = true;
+    @SerializedName("detectorType")
+    public String detectorType = "";
 
-    private String searchableReason = "";
-    private String applicableReason = "";
-    private String extractableReason = "";
-    private String discoveryReason = "";
-    private String extractedReason = "";
+    @SerializedName("detectorName")
+    public String detectorName = "";
 
-    private List<String> relevantFiles = new ArrayList<>();
+    @SerializedName("descriptiveName")
+    public String descriptiveName = "";
 
-    private String projectName = "";
-    private String projectVersion = "";
-    private int codeLocationCount = 0;
+    @SerializedName("searchable")
+    public boolean searchable = true;
 
-    public String getFolder() {
-        return folder;
-    }
+    @SerializedName("applicable")
+    public boolean applicable = true;
 
-    public void setFolder(final String folder) {
-        this.folder = folder;
-    }
+    @SerializedName("extractable")
+    public boolean extractable = true;
 
-    public String getDetectorType() {
-        return detectorType;
-    }
+    @SerializedName("discoverable")
+    public boolean discoverable = true;
 
-    public void setDetectorType(final String detectorType) {
-        this.detectorType = detectorType;
-    }
+    @SerializedName("extracted")
+    public boolean extracted = true;
 
-    public String getDetectorName() {
-        return detectorName;
-    }
+    @SerializedName("searchableReason")
+    public String searchableReason = "";
 
-    public void setDetectorName(final String detectorName) {
-        this.detectorName = detectorName;
-    }
+    @SerializedName("applicableReason")
+    public String applicableReason = "";
 
-    public String getDescriptiveName() {
-        return descriptiveName;
-    }
+    @SerializedName("extractableReason")
+    public String extractableReason = "";
 
-    public void setDescriptiveName(final String descriptiveName) {
-        this.descriptiveName = descriptiveName;
-    }
+    @SerializedName("discoveryReason")
+    public String discoveryReason = "";
 
-    public boolean isSearchable() {
-        return searchable;
-    }
+    @SerializedName("extractedReason")
+    public String extractedReason = "";
 
-    public void setSearchable(final boolean searchable) {
-        this.searchable = searchable;
-    }
+    @SerializedName("relevantFiles")
+    public List<String> relevantFiles = new ArrayList<>();
 
-    public boolean isApplicable() {
-        return applicable;
-    }
+    @SerializedName("projectName")
+    public String projectName = "";
 
-    public void setApplicable(final boolean applicable) {
-        this.applicable = applicable;
-    }
+    @SerializedName("projectVersion")
+    public String projectVersion = "";
 
-    public boolean isExtractable() {
-        return extractable;
-    }
+    @SerializedName("codeLocationCount")
+    public int codeLocationCount = 0;
 
-    public void setExtractable(final boolean extractable) {
-        this.extractable = extractable;
-    }
-
-    public boolean isDiscoverable() {
-        return discoverable;
-    }
-
-    public void setDiscoverable(final boolean discoverable) {
-        this.discoverable = discoverable;
-    }
-
-    public boolean isExtracted() {
-        return extracted;
-    }
-
-    public void setExtracted(final boolean extracted) {
-        this.extracted = extracted;
-    }
-
-    public String getSearchableReason() {
-        return searchableReason;
-    }
-
-    public void setSearchableReason(final String searchableReason) {
-        this.searchableReason = searchableReason;
-    }
-
-    public String getApplicableReason() {
-        return applicableReason;
-    }
-
-    public void setApplicableReason(final String applicableReason) {
-        this.applicableReason = applicableReason;
-    }
-
-    public String getExtractableReason() {
-        return extractableReason;
-    }
-
-    public void setExtractableReason(final String extractableReason) {
-        this.extractableReason = extractableReason;
-    }
-
-    public String getDiscoveryReason() {
-        return discoveryReason;
-    }
-
-    public void setDiscoveryReason(final String discoveryReason) {
-        this.discoveryReason = discoveryReason;
-    }
-
-    public String getExtractedReason() {
-        return extractedReason;
-    }
-
-    public void setExtractedReason(final String extractedReason) {
-        this.extractedReason = extractedReason;
-    }
-
-    public List<String> getRelevantFiles() {
-        return relevantFiles;
-    }
-
-    public void setRelevantFiles(final List<String> relevantFiles) {
-        this.relevantFiles = relevantFiles;
-    }
-
-    public String getProjectName() {
-        return projectName;
-    }
-
-    public void setProjectName(final String projectName) {
-        this.projectName = projectName;
-    }
-
-    public String getProjectVersion() {
-        return projectVersion;
-    }
-
-    public void setProjectVersion(final String projectVersion) {
-        this.projectVersion = projectVersion;
-    }
-
-    public int getCodeLocationCount() {
-        return codeLocationCount;
-    }
-
-    public void setCodeLocationCount(final int codeLocationCount) {
-        this.codeLocationCount = codeLocationCount;
-    }
 }
 
