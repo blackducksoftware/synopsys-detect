@@ -2206,7 +2206,7 @@
 <h2 id="version-630">Version 6.3.0<a class="headerlink" href="#version-630" title="Permanent link">#</a></h2>
 <h3 id="new-features">New features<a class="headerlink" href="#new-features" title="Permanent link">#</a></h3>
 <ul>
-<li>(IDETECT-1917) The Yarn Detector will now extract project information from package.json files.</li>
+<li>(IDETECT-1917) The Yarn detector will now extract project information from package.json files.</li>
 <li>(IDETECT-1874) The Yarn Detector supports dependencies that are missing a fuzzy version in a lockfile dependency declaration.</li>
 <li>(IDETECT-1867) Synopsys Detect when configured to <a href="../properties/configuration/project/#fail-on-policy-violation-severities">fail on policy violations</a>, will now log policy violations.</li>
 </ul>
@@ -2216,7 +2216,7 @@
 <li>(IDETECT-1853) Synopsys Detect is now compatible with Yocto 3.0.</li>
 <li>(IDETECT-1876) Synopsys Detect will stop if docker is enabled on Windows.</li>
 <li>(IDETECT-1961) Synopsys Detect now configures Docker Inspector's working directories to inside Synopsys Detect's run directory.</li>
-<li>Synopsys Detect now runs/requires Docker Inspector version 9.x.x.</li>
+<li>Synopsys Detect now runs (and requires) Docker Inspector version 9.</li>
 </ul>
 <h3 id="resolved-issues">Resolved issues<a class="headerlink" href="#resolved-issues" title="Permanent link">#</a></h3>
 <ul>
@@ -2225,7 +2225,7 @@
 <li>(IDETECT-1970) Resolved an issue where the default value for <a href="../properties/configuration/general/#detect-parallel-processors-advanced">parallel processors</a> was not honored. (The available runtime processor count was being used instead.)</li>
 <li>(IDETECT-1973) Resolved an issue where the Nuget exe inspector would not resolve from Artifactory.</li>
 <li>(IDETECT-1965) Resolved an issue where Synopsys Detect would fail to resolve environment variables where it previously would.</li>
-<li>(IDETECT-1974) TBD</li>
+<li>(IDETECT-1974) The Yarn detector will no longer throw an exception for dependencies not defined in the yarn.lock.</li>
 </ul>
 <h2 id="version-621">Version 6.2.1<a class="headerlink" href="#version-621" title="Permanent link">#</a></h2>
 <h3 id="resolved-issues_1">Resolved issues<a class="headerlink" href="#resolved-issues_1" title="Permanent link">#</a></h3>
