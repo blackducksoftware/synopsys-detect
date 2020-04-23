@@ -2207,20 +2207,25 @@
 <h3 id="new-features">New features<a class="headerlink" href="#new-features" title="Permanent link">#</a></h3>
 <ul>
 <li>(IDETECT-1917) The Yarn Detector will now extract project information from package.json files.</li>
+<li>(IDETECT-1874) The Yarn Detector supports dependencies that are missing a fuzzy version in a lockfile dependency declaration.</li>
 <li>(IDETECT-1867) Synopsys Detect when configured to <a href="../properties/configuration/project/#fail-on-policy-violation-severities">fail on policy violations</a>, will now log policy violations.</li>
 </ul>
 <h3 id="changed-features">Changed features<a class="headerlink" href="#changed-features" title="Permanent link">#</a></h3>
 <ul>
-<li>Users are now allowed to <a href="../properties/configuration/signature scanner/#upload-source-mode">upload source</a> when only <a href="../properties/configuration/signature scanner/#signature-scanner-license-search">license search</a> is provided. (IDETECT-1894)</li>
-<li>(IDETECT-1853) Detect is now compatible with Yocto 3.0.</li>
-<li>(IDETECT-1876) Detect will stop if docker is enabled on Windows.</li>
+<li>(IDETECT-1894) Users are now allowed to <a href="../properties/configuration/signature scanner/#upload-source-mode">upload source</a> when only <a href="../properties/configuration/signature scanner/#signature-scanner-license-search">license search</a> is provided.</li>
+<li>(IDETECT-1853) Synopsys Detect is now compatible with Yocto 3.0.</li>
+<li>(IDETECT-1876) Synopsys Detect will stop if docker is enabled on Windows.</li>
+<li>(IDETECT-1961) Synopsys Detect now configures Docker Inspector's working directories to inside Synopsys Detect's run directory.</li>
+<li>Synopsys Detect now runs/requires Docker Inspector version 9.x.x.</li>
 </ul>
 <h3 id="resolved-issues">Resolved issues<a class="headerlink" href="#resolved-issues" title="Permanent link">#</a></h3>
 <ul>
-<li>Resolved an issue where git extraction could fail if "git log" returned unexpected output. The commit hash will be used as a version as a last resort. (IDETECT-1906, <a href="https://github.com/blackducksoftware/synopsys-detect/issues/114">#114</a>)</li>
-<li>Resolved an issue where Detect would fail to extract project information while parsing a Git repository with a detached head while in buildless mode. (IDETECT-1883)</li>
-<li>Resolved an issue where the default value for <a href="../properties/configuration/general/#detect-parallel-processors-advanced">parallel processors</a> was not be honored. Available runtime processor count was being used. (IDETECT-1970).</li>
-<li>Resolved an issue where the Nuget exe inspector would not resolve from Artifactory. (IDETECT-1973)</li>
+<li>(IDETECT-1906) Resolved an issue where git extraction could fail if "git log" returned unexpected output. The commit hash will be used as a version as a last resort. (<a href="https://github.com/blackducksoftware/synopsys-detect/issues/114">#114</a>)</li>
+<li>(IDETECT-1883) Resolved an issue where Synopsys Detect would fail to extract project information while parsing a Git repository with a detached head while in buildless mode.</li>
+<li>(IDETECT-1970) Resolved an issue where the default value for <a href="../properties/configuration/general/#detect-parallel-processors-advanced">parallel processors</a> was not honored. (The available runtime processor count was being used instead.)</li>
+<li>(IDETECT-1973) Resolved an issue where the Nuget exe inspector would not resolve from Artifactory.</li>
+<li>(IDETECT-1965) Resolved an issue where Synopsys Detect would fail to resolve environment variables where it previously would.</li>
+<li>(IDETECT-1974) TBD</li>
 </ul>
 <h2 id="version-621">Version 6.2.1<a class="headerlink" href="#version-621" title="Permanent link">#</a></h2>
 <h3 id="resolved-issues_1">Resolved issues<a class="headerlink" href="#resolved-issues_1" title="Permanent link">#</a></h3>
