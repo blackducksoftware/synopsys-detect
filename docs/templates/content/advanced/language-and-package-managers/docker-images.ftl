@@ -1,6 +1,6 @@
 # Docker image support
 
-${solution_name} can invoke Docker Inspector to inspect Docker images. For simple use cases, add either ```--detect.docker.image={repo}:{tag}``` or ```--detect.docker.tar={path to a Docker saved tarfile}``` to the ${solution_name} command line.
+On Linux and Mac, ${solution_name} can invoke Docker Inspector to inspect Docker images. For simple use cases, add either ```--detect.docker.image={repo}:{tag}``` or ```--detect.docker.tar={path to a Docker saved tarfile}``` to the ${solution_name} command line.
 
 The documentation for Docker Inspector is available [here](https://blackducksoftware.github.io/blackduck-docker-inspector/latest/overview/).
 
