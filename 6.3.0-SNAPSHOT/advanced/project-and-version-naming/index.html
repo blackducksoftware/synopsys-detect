@@ -1285,7 +1285,7 @@
 
 <h2 id="project-and-version-naming-for-git-projects">Project and version naming for Git projects<a class="headerlink" href="#project-and-version-naming-for-git-projects" title="Permanent link">#</a></h2>
 <p>If no package manager provides project and version names, you have not provided the project and version names through properties, and the project uses Git, Synopsys Detect attempts to use Git to determine project information.
-Project information is extracted from the remote URL for the current branch. The version is the current branch name.  This is performed by the Git detector. If you do not want Synopsys Detect to use Git data, you can omit the Git detector using the following property:</p>
+Project information is extracted from the remote URL for the current branch. The version is the current branch name, or the commit hash if a detached head is checked out.  This is performed by the Git detector. If you do not want Synopsys Detect to use Git data, you can omit the Git detector using the following property:</p>
 <pre><code>--detect.excluded.detector.types=GIT
 </code></pre>
 

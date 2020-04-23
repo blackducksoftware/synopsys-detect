@@ -1299,7 +1299,7 @@
                 
                 
                 <h1 id="docker-image-support">Docker image support<a class="headerlink" href="#docker-image-support" title="Permanent link">#</a></h1>
-<p>Synopsys Detect can invoke Docker Inspector to inspect Docker images. For simple use cases, add either <code>--detect.docker.image={repo}:{tag}</code> or <code>--detect.docker.tar={path to a Docker saved tarfile}</code> to the Synopsys Detect command line.</p>
+<p>On Linux and Mac, Synopsys Detect can invoke Docker Inspector to inspect Docker images. For simple use cases, add either <code>--detect.docker.image={repo}:{tag}</code> or <code>--detect.docker.tar={path to a Docker saved tarfile}</code> to the Synopsys Detect command line.</p>
 <p>The documentation for Docker Inspector is available <a href="https://blackducksoftware.github.io/blackduck-docker-inspector/latest/overview/">here</a>.</p>
 <p>When passed a value for either detect.docker.image or detect.docker.tar, Synopsys Detect runs Docker Inspector on the given image; in other words, the target image, creating one code location. Synopsys Detect by default runs the Black Duck signature scanner on the image.  This is actually the file system a container created from the image has at startup time; refer to <a href="#scantarget">Synopsys Detect's scan target</a> for more details. This creates a second code location.</p>
 <h3 id="passing-docker-inspector-property-values-to-docker-inspector-from-synopsys-detect">Passing Docker Inspector property values to Docker Inspector from Synopsys Detect<a class="headerlink" href="#passing-docker-inspector-property-values-to-docker-inspector-from-synopsys-detect" title="Permanent link">#</a></h3>
