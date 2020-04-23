@@ -4,17 +4,23 @@
 ### New features
 * (IDETECT-1974) The Yarn detector will no longer throw an exception for dependencies not defined in the yarn.lock.
 * (IDETECT-1917) The Yarn detector will now extract project information from package.json files.
+* (IDETECT-1874) The Yarn Detector supports dependencies that are missing a fuzzy version in a lockfile dependency declaration.
 * (IDETECT-1867) ${solution_name} when configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities), will now log policy violations.
 
 ### Changed features
-* Users are now allowed to [upload source](../properties/configuration/signature scanner/#upload-source-mode) when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is provided. (IDETECT-1894)
-* (IDETECT-1853) Detect is now compatible with Yocto 3.0.
+* (IDETECT-1894) Users are now allowed to [upload source](../properties/configuration/signature scanner/#upload-source-mode) when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is provided.
+* (IDETECT-1853) ${solution_name} is now compatible with Yocto 3.0.
+* (IDETECT-1876) ${solution_name} will stop if docker is enabled on Windows.
+* (IDETECT-1961) ${solution_name} now configures Docker Inspector's working directories to inside ${solution_name}'s run directory.
+* ${solution_name} now runs/requires Docker Inspector version 9.x.x.
 
 ### Resolved issues
-* Resolved an issue where git extraction could fail if "git log" returned unexpected output. The commit hash will be used as a version as a last resort. (IDETECT-1906, [\#114](https://github.com/blackducksoftware/synopsys-detect/issues/114))
-* Resolved an issue where Detect would fail to extract project information while parsing a Git repository with a detached head while in buildless mode. (IDETECT-1883)
-* Resolved an issue where the default value for [parallel processors](../properties/configuration/general/#detect-parallel-processors-advanced) was not be honored. Available runtime processor count was being used. (IDETECT-1970).
-* Resolved an issue where the Nuget exe inspector would not resolve from Artifactory. (IDETECT-1973)
+* (IDETECT-1906) Resolved an issue where git extraction could fail if "git log" returned unexpected output. The commit hash will be used as a version as a last resort. ([\#114](https://github.com/blackducksoftware/synopsys-detect/issues/114))
+* (IDETECT-1883) Resolved an issue where ${solution_name} would fail to extract project information while parsing a Git repository with a detached head while in buildless mode.
+* (IDETECT-1970) Resolved an issue where the default value for [parallel processors](../properties/configuration/general/#detect-parallel-processors-advanced) was not honored. (The available runtime processor count was being used instead.)
+* (IDETECT-1973) Resolved an issue where the Nuget exe inspector would not resolve from Artifactory.
+* (IDETECT-1965) Resolved an issue where ${solution_name} would fail to resolve environment variables where it previously would.
+* (IDETECT-1974) TBD
 
 ## Version 6.2.1
 ### Resolved issues
