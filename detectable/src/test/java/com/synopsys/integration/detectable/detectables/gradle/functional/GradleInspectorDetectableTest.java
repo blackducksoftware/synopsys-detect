@@ -73,7 +73,7 @@ public class GradleInspectorDetectableTest extends DetectableFunctionalTest {
         );
 
         ExecutableOutput gradleDependenciesOutput = createStandardOutput("");
-        addExecutableOutput(gradleDependenciesOutput, "gradle", "dependencies", "--init-script=gradle-inspector", "-DGRADLEEXTRACTIONDIR=/private" + getOutputDirectory(), "--info");
+        addExecutableOutput(gradleDependenciesOutput, "gradle", "dependencies", "--init-script=gradle-inspector", "-DGRADLEEXTRACTIONDIR=" + getOutputDirectory().toFile().getCanonicalPath(), "--info");
 
         addOutputFile(Paths.get("rootProjectMetadata.txt"), Arrays.asList(
             "DETECT META DATA START",
