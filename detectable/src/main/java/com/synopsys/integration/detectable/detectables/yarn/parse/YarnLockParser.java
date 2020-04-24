@@ -42,9 +42,9 @@ public class YarnLockParser {
         List<YarnLockEntryId> ids;
         boolean inOptionalDependencies = false;
 
-        List<String> cleanedYarnLockFileAsList = getCleaned(yarnLockFileAsList);
+        List<String> cleanedYarnLockFileAsList = cleanList(yarnLockFileAsList);
 
-        int indexOfFirstLevelZeroLine = getIndexOfFirstLevelZeroLine(cleanedYarnLockFileAsList);
+        int indexOfFirstLevelZeroLine = findIndexOfFirstLevelZeroLine(cleanedYarnLockFileAsList);
 
         if (indexOfFirstLevelZeroLine == -1 || indexOfFirstLevelZeroLine == cleanedYarnLockFileAsList.size() - 1) {
             return new YarnLock(entries);
@@ -66,11 +66,11 @@ public class YarnLockParser {
                 inOptionalDependencies = false;
                 ids = parseMultipleEntryLine(line);
             } else if (level == 1 && trimmedLine.startsWith(VERSION_PREFIX)) {
-                resolvedVersion = getVersionFromLine(trimmedLine);
+                resolvedVersion = parseVersionFromLine(trimmedLine);
             } else if (level == 1 && trimmedLine.startsWith(OPTIONAL_DEPENDENCIES_TOKEN)) {
                 inOptionalDependencies = true;
             } else if (level == 2) {
-                dependencies.add(getDependencyFromLine(trimmedLine, inOptionalDependencies));
+                dependencies.add(parseDependencyFromLine(trimmedLine, inOptionalDependencies));
             }
         }
         if (StringUtils.isNotBlank(resolvedVersion)) {
@@ -81,7 +81,7 @@ public class YarnLockParser {
     }
 
     @NotNull
-    private Integer getIndexOfFirstLevelZeroLine(final List<String> cleanedYarnLockFileAsList) {
+    private Integer findIndexOfFirstLevelZeroLine(final List<String> cleanedYarnLockFileAsList) {
         return cleanedYarnLockFileAsList
                    .stream()
                    .filter(this::isLevel0)
@@ -91,7 +91,7 @@ public class YarnLockParser {
     }
 
     @NotNull
-    private List<String> getCleaned(final List<String> yarnLockFileAsList) {
+    private List<String> cleanList(final List<String> yarnLockFileAsList) {
         return yarnLockFileAsList
                    .stream()
                    .filter(StringUtils::isNotBlank)
@@ -108,7 +108,7 @@ public class YarnLockParser {
         return count;
     }
 
-    private YarnLockDependency getDependencyFromLine(final String line, final boolean optional) {
+    private YarnLockDependency parseDependencyFromLine(final String line, final boolean optional) {
         final String[] pieces = StringUtils.split(line, " ", 2);
         return new YarnLockDependency(removeWrappingQuotes(pieces[0]), removeWrappingQuotes(pieces[1]), optional);
     }
@@ -141,7 +141,7 @@ public class YarnLockParser {
         }
     }
 
-    private String getVersionFromLine(final String line) {
+    private String parseVersionFromLine(final String line) {
         final String rawVersion = line.substring(VERSION_PREFIX.length(), line.lastIndexOf(VERSION_SUFFIX));
         return removeWrappingQuotes(rawVersion);
     }
