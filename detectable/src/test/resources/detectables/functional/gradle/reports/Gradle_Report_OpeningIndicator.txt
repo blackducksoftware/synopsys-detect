@@ -1,7 +1,0 @@
-
-------------------------------------------------------------
-Tests that a single component with an open indicator appears
-------------------------------------------------------------
-
-componentTest - this configuration has a single component that opens with indicator
-\--- solo:component:4.12
