@@ -50,10 +50,12 @@ public class SpringConfigurationPropertySource implements PropertySource {
         this.configurablePropertyResolver = configurablePropertyResolver;
     }
 
+    // TODO - this should return an Optional
     public static List<SpringConfigurationPropertySource> fromConfigurableEnvironment(ConfigurableEnvironment configurableEnvironment) {
         return fromConfigurableEnvironment(configurableEnvironment, true);
     }
 
+    // TODO - this should return an Optional
     public static List<SpringConfigurationPropertySource> fromConfigurableEnvironment(ConfigurableEnvironment configurableEnvironment, boolean ignoreUnknown) {
         List<ConfigurationPropertySource> sources = Bds.listOf(ConfigurationPropertySources.get(configurableEnvironment));
         return Bds.of(sources).map(it -> {
@@ -74,6 +76,7 @@ public class SpringConfigurationPropertySource implements PropertySource {
 
     }
 
+    // TODO - this should return an Optional
     private static SpringConfigurationPropertySource getPropertySource(ConfigurableEnvironment configurableEnvironment, boolean ignoreUnknown, ConfigurationPropertySource configurationPropertySource) {
         Object underlying = configurationPropertySource.getUnderlyingSource();
         if (org.springframework.core.env.PropertySource.class.isAssignableFrom(underlying.getClass())) {

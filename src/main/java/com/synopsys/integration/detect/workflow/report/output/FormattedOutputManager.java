@@ -74,7 +74,7 @@ public class FormattedOutputManager {
                                      .toList();
 
         if (detectorToolResult != null) {
-            formattedOutput.detectors = Bds.of(detectorToolResult.getRootDetectorEvaluationTree())
+            formattedOutput.detectors = Bds.of(detectorToolResult.rootDetectorEvaluationTree)
                                             .flatMap(DetectorEvaluationTree::allDescendentEvaluations)
                                             .filter(DetectorEvaluation::isApplicable)
                                             .map(this::convertDetector)

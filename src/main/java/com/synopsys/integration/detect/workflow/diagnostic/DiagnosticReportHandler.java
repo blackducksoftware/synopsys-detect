@@ -107,8 +107,8 @@ public class DiagnosticReportHandler {
         this.detectorToolResult = detectorToolResult;
 
         final DetectorEvaluationTree rootEvaluation;
-        if (detectorToolResult.getRootDetectorEvaluationTree().isPresent()) {
-            rootEvaluation = detectorToolResult.getRootDetectorEvaluationTree().get();
+        if (detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
+            rootEvaluation = detectorToolResult.rootDetectorEvaluationTree.get();
         } else {
             logger.warn("Detectors completed, but no evaluation was found, unable to write detector reports.");
             return;
@@ -137,14 +137,14 @@ public class DiagnosticReportHandler {
     }
 
     public void completedCodeLocations(final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        if (detectorToolResult == null || !detectorToolResult.getRootDetectorEvaluationTree().isPresent())
+        if (detectorToolResult == null || !detectorToolResult.rootDetectorEvaluationTree.isPresent())
             return;
 
         try {
             final ReportWriter clWriter = getReportWriter(ReportTypes.CODE_LOCATIONS);
             final ReportWriter dcWriter = getReportWriter(ReportTypes.DEPENDENCY_COUNTS);
             final CodeLocationReporter clReporter = new CodeLocationReporter();
-            clReporter.writeCodeLocationReport(clWriter, dcWriter, detectorToolResult.getRootDetectorEvaluationTree().get(), detectorToolResult.getCodeLocationMap(), codeLocationNameMap);
+            clReporter.writeCodeLocationReport(clWriter, dcWriter, detectorToolResult.rootDetectorEvaluationTree.get(), detectorToolResult.codeLocationMap, codeLocationNameMap);
         } catch (final Exception e) {
             logger.error("Failed to write code location report.", e);
         }

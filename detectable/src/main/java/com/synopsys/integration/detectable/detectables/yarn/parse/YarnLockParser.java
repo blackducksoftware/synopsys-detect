@@ -84,7 +84,7 @@ public class YarnLockParser {
     private Integer findIndexOfFirstLevelZeroLine(final List<String> cleanedYarnLockFileAsList) {
         return cleanedYarnLockFileAsList
                    .stream()
-                   .filter(this::isLevel0)
+                   .filter(line -> countIndent(line) == 0)
                    .findFirst()
                    .map(line -> cleanedYarnLockFileAsList.indexOf(line))
                    .orElse(-1);
@@ -144,10 +144,5 @@ public class YarnLockParser {
     private String parseVersionFromLine(final String line) {
         final String rawVersion = line.substring(VERSION_PREFIX.length(), line.lastIndexOf(VERSION_SUFFIX));
         return removeWrappingQuotes(rawVersion);
-    }
-
-    private boolean isLevel0(String line) {
-        int level = countIndent(line);
-        return level == 0;
     }
 }
