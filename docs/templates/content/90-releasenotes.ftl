@@ -2,28 +2,28 @@
 
 ## Version 6.3.0
 ### New features
-* (IDETECT-1917) The Yarn detector will now extract project information from package.json files.
-* (IDETECT-1874) The Yarn Detector supports dependencies that are missing a fuzzy version in a lockfile dependency declaration.
-* (IDETECT-1867) ${solution_name} when configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities), will now log policy violations.
+* The Yarn detector extracts project information from package.json files.
+* Added Yarn Detector support for dependencies that are missing a fuzzy version in a lockfile dependency declaration.
+* ${solution_name} logs policy violations when it is configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities).
 
 ### Changed features
-* (IDETECT-1894) Users are now allowed to [upload source](../properties/configuration/signature scanner/#upload-source-mode) when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is provided.
-* (IDETECT-1853) ${solution_name} is now compatible with Yocto 3.0.
-* (IDETECT-1876) ${solution_name} will stop if docker is enabled on Windows.
-* (IDETECT-1961) ${solution_name} now configures Docker Inspector's working directories to inside ${solution_name}'s run directory.
-* ${solution_name} now runs (and requires) Docker Inspector version 9.
+* Users can [upload source](../properties/configuration/signature scanner/#upload-source-mode) files when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is enabled.
+* ${solution_name} is now compatible with Yocto 3.0.
+* ${solution_name} stops if the Docker Inspector tool applies and ${solution_name} is running on Windows.
+* ${solution_name} configures Docker Inspector's working directories inside ${solution_name}'s run directory.
+* ${solution_name} requires and runs Docker Inspector version 9.
 
 ### Resolved issues
-* (IDETECT-1906) Resolved an issue where git extraction could fail if "git log" returned unexpected output. The commit hash will be used as a version as a last resort. ([\#114](https://github.com/blackducksoftware/synopsys-detect/issues/114))
-* (IDETECT-1883) Resolved an issue where ${solution_name} would fail to extract project information while parsing a Git repository with a detached head while in buildless mode.
-* (IDETECT-1970) Resolved an issue where the default value for [parallel processors](../properties/configuration/general/#detect-parallel-processors-advanced) was not honored. (The available runtime processor count was being used instead.)
+* (IDETECT-1906) Resolved an issue wherein git extraction might fail if "git log" returned unexpected output.  As a last resort, the commit hash will be used as a version. ([\#114](https://github.com/blackducksoftware/synopsys-detect/issues/114))
+* (IDETECT-1883) Resolved an issue where ${solution_name} failed to extract project information when parsing a Git repository with a detached head while in buildless mode.
+* (IDETECT-1970) Resolved an issue where the default value for [parallel processors](../properties/configuration/general/#detect-parallel-processors-advanced) was not used. The available runtime processor count was being used instead.
 * (IDETECT-1973) Resolved an issue where the Nuget exe inspector would not resolve from Artifactory.
-* (IDETECT-1965) Resolved an issue where ${solution_name} would fail to resolve environment variables where it previously would.
-* (IDETECT-1974) The Yarn detector will no longer throw an exception for dependencies not defined in the yarn.lock.
+* (IDETECT-1965) Resolved an issue where ${solution_name} would fail to resolve environment variables where it did so previously.
+* (IDETECT-1974) Resolved an issue wherein the Yarn detector was throwing an exception for dependencies not defined in the yarn.lock file.
 
 ## Version 6.2.1
 ### Resolved issues
-* Fixed an issue where an exception would be thrown when generating a risk report if the user did not set the risk report output path explicitly. (IDETECT-1960)
+* Resolved an issue wherein an exception was thrown when generating a risk report if users didn't set the risk report output path explicitly. (IDETECT-1960)
 
 ## Version 6.2.0
 ### New features
