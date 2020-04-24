@@ -49,15 +49,7 @@ public class YarnTransformer {
     public DependencyGraph transform(final PackageJson packageJson, final YarnLock yarnLock, final boolean productionOnly) throws MissingExternalIdException {
         final LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
-        for (final Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
-            graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
-        }
-
-        if (!productionOnly) {
-            for (final Map.Entry<String, String> packageDependency : packageJson.devDependencies.entrySet()) {
-                graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
-            }
-        }
+        addRootNodesToGraph(graphBuilder, packageJson, productionOnly);
 
         for (final YarnLockEntry entry : yarnLock.getEntries()) {
             for (final YarnLockEntryId entryId : entry.getIds()) {
@@ -84,5 +76,17 @@ public class YarnTransformer {
 
         logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from yarn.lock.", dependencyIdToLog));
         return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, dependencyId.toString());
+    }
+
+    private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, PackageJson packageJson, boolean productionOnly) {
+        for (final Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
+            graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
+        }
+
+        if (!productionOnly) {
+            for (final Map.Entry<String, String> packageDependency : packageJson.devDependencies.entrySet()) {
+                graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
+            }
+        }
     }
 }

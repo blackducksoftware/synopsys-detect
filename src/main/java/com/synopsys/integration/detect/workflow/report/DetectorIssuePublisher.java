@@ -63,7 +63,7 @@ public class DetectorIssuePublisher {
 
             if (messages.size() > 0) {
                 messages.add(0, tree.getDirectory().toString());
-                eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.Detector, messages));
+                eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.DETECTOR, messages));
             }
         }
     }
