@@ -31,10 +31,14 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 
 public class ObjectPrinter {
+    private static Logger logger = LoggerFactory.getLogger(ObjectPrinter.class);
+
     public static void printObjectPrivate(final ReportWriter writer, final Object guy) {
         final Map<String, String> fieldMap = new HashMap<>();
         populateObjectPrivate(null, guy, fieldMap);
@@ -66,7 +70,7 @@ public class ObjectPrinter {
             }
             obj = field.get(guy);
         } catch (final Exception e) {
-            e.printStackTrace();
+            logger.debug("Exception", e);
         }
         boolean shouldPrintObjectsFields = false;
         if (obj == null) {

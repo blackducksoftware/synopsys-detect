@@ -25,16 +25,35 @@ package com.synopsys.integration.detect.workflow.report.output;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.annotations.SerializedName;
+
 public class FormattedOutput {
+    @SerializedName("formatVersion")
     public String formatVersion = "";
+
+    @SerializedName("detectVersion")
     public String detectVersion = "";
+
+    @SerializedName("projectName")
     public String projectName = "";
+
+    @SerializedName("projectVersion")
     public String projectVersion = "";
+
+    @SerializedName("detectors")
     public List<FormattedDetectorOutput> detectors = new ArrayList<>();
 
+    @SerializedName("status")
     public List<FormattedStatusOutput> status = new ArrayList<>();
+
+    @SerializedName("issues")
     public List<FormattedIssueOutput> issues = new ArrayList<>();
+
+    @SerializedName("results")
     public List<FormattedResultOutput> results = new ArrayList<>();
+
+    @SerializedName("codeLocations")
     public List<FormattedCodeLocationOutput> codeLocations = new ArrayList<>();
+
 }
 

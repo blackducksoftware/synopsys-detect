@@ -131,14 +131,14 @@ public class ReportManager {
     }
 
     public void codeLocationsCompleted(final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        if (detectorToolResult != null && detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
-            extractionSummaryReporter.writeSummary(debugLogWriter, detectorToolResult.rootDetectorEvaluationTree.get(), detectorToolResult.codeLocationMap, codeLocationNameMap, false);
+        if (detectorToolResult != null && detectorToolResult.getRootDetectorEvaluationTree().isPresent()) {
+            extractionSummaryReporter.writeSummary(debugLogWriter, detectorToolResult.getRootDetectorEvaluationTree().get(), detectorToolResult.getCodeLocationMap(), codeLocationNameMap, false);
         }
     }
 
     public void printDetectorIssues() {
-        if (detectorToolResult != null && detectorToolResult.rootDetectorEvaluationTree.isPresent()) {
-            detectorIssuePublisher.publishEvents(eventSystem, detectorToolResult.rootDetectorEvaluationTree.get());
+        if (detectorToolResult != null && detectorToolResult.getRootDetectorEvaluationTree().isPresent()) {
+            detectorIssuePublisher.publishEvents(eventSystem, detectorToolResult.getRootDetectorEvaluationTree().get());
         }
     }
 }

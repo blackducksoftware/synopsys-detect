@@ -89,13 +89,13 @@ public abstract class BlackDuckIntegrationTest {
         codeLocationService = blackDuckServicesFactory.createCodeLocationService();
         reportService = blackDuckServicesFactory.createReportService(120 * 1000);
 
-        previousShouldExit = Application.SHOULD_EXIT;
-        Application.SHOULD_EXIT = false;
+        previousShouldExit = Application.shouldExit();
+        Application.setShouldExit(false);
     }
 
     @AfterAll
     public static void cleanup() {
-        Application.SHOULD_EXIT = previousShouldExit;
+        Application.setShouldExit(previousShouldExit);
     }
 
     public ProjectVersionWrapper assertProjectVersionReady(final String projectName, final String projectVersionName) throws IntegrationException {

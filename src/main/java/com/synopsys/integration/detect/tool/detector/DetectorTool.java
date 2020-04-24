@@ -42,13 +42,14 @@ import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
+import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
 import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
-import com.synopsys.integration.detect.workflow.nameversion.decision.NameVersionDecision;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorType;
@@ -173,25 +174,16 @@ public class DetectorTool {
             }
         }
 
-        final DetectorToolResult detectorToolResult = new DetectorToolResult();
+        Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(detectorEvaluations, directory);
 
-        detectorToolResult.rootDetectorEvaluationTree = Optional.of(rootEvaluation);
-
-        detectorToolResult.applicableDetectorTypes = applicable;
-
-        detectorToolResult.codeLocationMap = detectorEvaluations.stream()
-                                                 .filter(DetectorEvaluation::wasExtractionSuccessful)
-                                                 .map(it -> codeLocationConverter.toDetectCodeLocation(directory, it))
-                                                 .map(Map::entrySet)
-                                                 .flatMap(Collection::stream)
-                                                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        detectorToolResult.bomToolCodeLocations = new ArrayList<>(detectorToolResult.codeLocationMap.values());
-
-        logger.info("");
-        final NameVersionDecision nameVersionDecision = detectorNameVersionHandler.finalDecision();
-        nameVersionDecision.printDescription(logger);
-        detectorToolResult.bomToolProjectNameVersion = nameVersionDecision.getChosenNameVersion();
+        final DetectorToolResult detectorToolResult = new DetectorToolResult(
+            detectorNameVersionHandler.finalDecision().getChosenNameVersion().orElse(null),
+            new ArrayList<>(codeLocationMap.values()),
+            applicable,
+            new HashSet<>(),
+            rootEvaluation,
+            codeLocationMap
+        );
 
         //Check required detector types
         final Set<DetectorType> missingDetectors = requiredDetectors.stream()
@@ -240,10 +232,19 @@ public class DetectorTool {
         return statusMap;
     }
 
+    private Map<CodeLocation, DetectCodeLocation> createCodeLocationMap(List<DetectorEvaluation> detectorEvaluations, File directory) {
+        return detectorEvaluations.stream()
+                   .filter(DetectorEvaluation::wasExtractionSuccessful)
+                   .map(it -> codeLocationConverter.toDetectCodeLocation(directory, it))
+                   .map(Map::entrySet)
+                   .flatMap(Collection::stream)
+                   .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
     private Optional<DetectorType> preferredDetectorTypeFromString(final String detectorTypeRaw) {
         final String detectorType = detectorTypeRaw.trim().toUpperCase();
         if (StringUtils.isNotBlank(detectorType)) {
-            if (DetectorType.POSSIBLE_NAMES.contains(detectorType)) {
+            if (DetectorType.getPossibleNames().contains(detectorType)) {
                 return Optional.of(DetectorType.valueOf(detectorType));
             } else {
                 logger.info("A valid preferred detector type was not provided, deciding project name automatically.");
