@@ -43,16 +43,17 @@ public class SimpleFileFinder implements FileFinder {
             return foundFiles;
         }
         final File[] allFiles = directoryToSearch.listFiles();
-        if (allFiles != null) {
-            for (final File file : allFiles) {
-                final boolean matches = filenameFilter.accept(directoryToSearch, file.getName());
-                if (matches) {
-                    foundFiles.add(file);
-                }
-                if (!matches || findInsideMatchingDirectories) {
-                    if (file.isDirectory() && !Files.isSymbolicLink(file.toPath())) {
-                        foundFiles.addAll(findFiles(file, filenameFilter, depth - 1, findInsideMatchingDirectories));
-                    }
+        if (allFiles == null) {
+            return foundFiles;
+        }
+        for (final File file : allFiles) {
+            final boolean matches = filenameFilter.accept(directoryToSearch, file.getName());
+            if (matches) {
+                foundFiles.add(file);
+            }
+            if (!matches || findInsideMatchingDirectories) {
+                if (file.isDirectory() && !Files.isSymbolicLink(file.toPath())) {
+                    foundFiles.addAll(findFiles(file, filenameFilter, depth - 1, findInsideMatchingDirectories));
                 }
             }
         }

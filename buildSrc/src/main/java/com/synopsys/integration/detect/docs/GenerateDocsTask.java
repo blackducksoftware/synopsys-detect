@@ -158,7 +158,7 @@ public class GenerateDocsTask extends DefaultTask {
         // Updating the location on all the json options so that a new object with only 1 new property did not have to be created (and then populated) from the existing.
         for (final HelpJsonOption helpJsonOption : helpJson.getOptions()) {
             final String groupLocation = getGroupLocation(groupLocations, helpJsonOption.getGroup());
-            final String encodedPropertyLocation = helpJsonOption.getPropertyName().replace(") ", " - ").toLowerCase();
+            final String encodedPropertyLocation = helpJsonOption.getPropertyName().replace(" ", "-").toLowerCase();
 
             helpJsonOption.setLocation(String.format("%s/#%s", groupLocation, encodedPropertyLocation)); //ex: superGroup/key/#property_name
         }

@@ -18,7 +18,8 @@ You can use the following property to customize the timestamp format:
 ## Project and version naming for Git projects
 
 If no package manager provides project and version names, you have not provided the project and version names through properties, and the project uses Git, ${solution_name} attempts to use Git to determine project information.
-Project information is extracted from the remote URL for the current branch. The version is the current branch name.  This is performed by the Git detector. If you do not want ${solution_name} to use Git data, you can omit the Git detector using the following property:
+
+Project information is extracted from the remote URL for the current branch. The version is the current branch name, or the commit hash if a detached head is checked out.  This is done by the Git detector. If you don't want ${solution_name} to use Git data, omit the Git detector using the following property:
 ```
 --detect.excluded.detector.types=GIT
 ```
