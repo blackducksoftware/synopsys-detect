@@ -176,7 +176,7 @@ public class RunManager {
     }
 
     private UniversalToolsResult runUniversalProjectTools(final PropertyConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory,
-        final DirectoryManager directoryManager, final EventSystem eventSystem, DetectDetectableFactory detectDetectableFactory,
+        final DirectoryManager directoryManager, final EventSystem eventSystem, final DetectDetectableFactory detectDetectableFactory,
         final RunResult runResult, final RunOptions runOptions, final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         final ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         final CodeLocationConverter codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
@@ -192,7 +192,7 @@ public class RunManager {
             final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
             if (detectableToolResult.getFailedExtractableResult().isPresent()) {
                 //TODO: Remove hack when windows docker support added. This workaround allows docker to throw a user friendly exception when not-extractable due to operating system.
-                DetectableResult extractable = detectableToolResult.getFailedExtractableResult().get();
+                final DetectableResult extractable = detectableToolResult.getFailedExtractableResult().get();
                 if (WrongOperatingSystemResult.class.isAssignableFrom(extractable.getClass())) {
                     throw new DetectUserFriendlyException("Docker currently requires a non-Windows OS to run. Attempting to run Docker on Windows is not currently supported.", ExitCodeType.FAILURE_CONFIGURATION);
                 }
@@ -238,7 +238,7 @@ public class RunManager {
             detectorToolResult.getBomToolProjectNameVersion().ifPresent(it -> runResult.addToolNameVersion(DetectTool.DETECTOR, new NameVersion(it.getName(), it.getVersion())));
             runResult.addDetectCodeLocations(detectorToolResult.getBomToolCodeLocations());
 
-            if (!detectorToolResult.failedDetectorTypes.isEmpty()) {
+            if (!detectorToolResult.getFailedDetectorTypes().isEmpty()) {
                 eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
                 anythingFailed = true;
             }
