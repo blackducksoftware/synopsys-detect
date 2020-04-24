@@ -41,7 +41,7 @@ detect.sh is trying to execute this command:
 ````
 curl --silent --header \"X-Result-Detail: info\" https://sig-repo.synopsys.com/api/storage/bds-integrations-release/com/synopsys/integration/synopsys-detect?properties=DETECT_LATEST
 ````
-The response to this command should be similar to:
+The response to this command should be similar to the following:
 ```
 {
 "properties" : {
