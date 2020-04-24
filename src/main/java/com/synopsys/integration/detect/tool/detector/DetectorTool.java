@@ -177,10 +177,10 @@ public class DetectorTool {
         Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(detectorEvaluations, directory);
 
         final DetectorToolResult detectorToolResult = new DetectorToolResult(
-            detectorNameVersionHandler.finalDecision().getChosenNameVersion().get(),
+            detectorNameVersionHandler.finalDecision().getChosenNameVersion().orElse(null),
             new ArrayList<>(codeLocationMap.values()),
             applicable,
-            null,
+            new HashSet<>(),
             rootEvaluation,
             codeLocationMap
         );
