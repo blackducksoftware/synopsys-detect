@@ -400,6 +400,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         return DetectExecutableOptions(
                 detectConfiguration.getValue(DetectProperties.DETECT_BASH_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
                 detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_CARGO_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
                 detectConfiguration.getValue(DetectProperties.DETECT_CONDA_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
                 detectConfiguration.getValue(DetectProperties.DETECT_CPAN_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
                 detectConfiguration.getValue(DetectProperties.DETECT_CPANM_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),

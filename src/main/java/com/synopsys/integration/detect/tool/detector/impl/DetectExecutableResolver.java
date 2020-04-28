@@ -37,6 +37,7 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.CargoResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
@@ -57,7 +58,7 @@ import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 
 public class DetectExecutableResolver
     implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, DockerResolver,
-                   DotNetResolver, GitResolver, SwiftResolver, GoResolver {
+                   DotNetResolver, GitResolver, SwiftResolver, GoResolver, CargoResolver {
 
     private final SimpleExecutableResolver simpleExecutableResolver;
     private final DetectExecutableOptions detectExecutableOptions;
@@ -105,6 +106,11 @@ public class DetectExecutableResolver
     @Override
     public File resolveBazel() throws DetectableException {
         return resolveExecutable("bazel", simpleExecutableResolver::resolveBazel, detectExecutableOptions.getBazelUserPath());
+    }
+
+    @Override
+    public File resolveCargo() throws DetectableException {
+        return resolveExecutable("cargo", simpleExecutableResolver::resolveCargo, detectExecutableOptions.getCargoUserPath());
     }
 
     @Override

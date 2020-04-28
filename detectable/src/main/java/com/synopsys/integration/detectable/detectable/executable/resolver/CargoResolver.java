@@ -20,25 +20,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.go.godep;
+package com.synopsys.integration.detectable.detectable.executable.resolver;
 
-import java.io.InputStream;
+import java.io.File;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.go.godep.parse.GoLockParser;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
-public class GoDepExtractor {
-    private final GoLockParser goLockParser;
-
-    public GoDepExtractor(final GoLockParser goLockParser) {
-        this.goLockParser = goLockParser;
-    }
-
-    public Extraction extract(final InputStream goLockInputStream) {
-        final DependencyGraph graph = goLockParser.parseDepLock(goLockInputStream);
-        final CodeLocation codeLocation = new CodeLocation(graph);
-        return new Extraction.Builder().success(codeLocation).build();
-    }
+public interface CargoResolver {
+    public File resolveCargo() throws DetectableException;
 }
