@@ -74,7 +74,7 @@ public class PolarisTool {
         final File toolsDirectory = directoryManager.getPermanentDirectory();
 
         final PolarisDownloadUtility polarisDownloadUtility = PolarisDownloadUtility.fromPolaris(logger, polarisHttpClient, toolsDirectory);
-        final Optional<String> polarisCliPath = polarisDownloadUtility.retrievePolarisCliExecutablePath();
+        final Optional<String> polarisCliPath = polarisDownloadUtility.getOrDownloadPolarisCliExecutable();
 
         //TODO this should be revised to use PolarisCliExecutable and PolarisCliRunner
         if (polarisCliPath.isPresent()) {
