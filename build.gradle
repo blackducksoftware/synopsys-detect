@@ -14,7 +14,7 @@ buildscript {
     ext {
         springBootVersion = '2.2.4.RELEASE'
         blackDuckCommonVersion = '47.1.0'
-        polarisCommonVersion = '0.13.2'
+        polarisCommonVersion = '0.20.0'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
