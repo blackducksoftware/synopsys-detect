@@ -53,6 +53,7 @@ public class Terms {
         termMap.put("blackduck_binary_scanner_name", "Black Duck binary scanner");
         termMap.put("polaris_product_name", "Polaris");
         termMap.put("dockerinspector_name", "Black Duck Docker Inspector");
+        termMap.put("blackduck_kb", "Black Duck KnowledgeBase");
     }
 
     public String put(final String termKey, final String replacementString) {

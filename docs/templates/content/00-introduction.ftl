@@ -1,15 +1,21 @@
 <#-- kk edited 1.8.20 -->
 # Introduction
 
-${solution_name} analyzes your software project to identify open source component dependencies,
-and uploads the identities of those components to ${blackduck_product_name}(tm) for use in
-constructing a open source software Bill Of Materials (BOM) for your project.
+${solution_name} analyzes your software project to identify open source component dependencies.
+${solution_name} uploads the identities of those components to ${blackduck_product_name}.
+${blackduck_product_name} utilizes this information to build an open source software Bill Of Materials (BOM) for your project,
+and identify any associated security vulnerabilities and software licenses.
 
-${solution_name} discovers components by utilizing both the ${blackduck_product_name} signature scanner
-and the package manager(s) your project uses to manage dependencies.
+${solution_name} discovers components using a variety of detection methods, including:
 
-${solution_name} makes it easier to set up and scan code bases for a variety of languages and package managers.
-${solution_name} leverages multi-factor discovery techniques to scan software projects and directories.
+* Package manager inspection utilizing commonly used tools such as Maven, Gradle, etc.
+* File scanning utilizing the ${blackduck_signature_scanner_name}.
+* Docker image inspection utilizing the ${dockerinspector_name}.
+* Binary file analysis utilizing the ${blackduck_binary_scanner_name}.
+
+By combining all these techniques ${solution_name} is capable of scanning a wide range of software projects
+utilizing a variety of package managers and programming languages for open source components that are registered within the ${blackduck_kb}.
+
 ${solution_name} runs on Windows, Linux, and MacOS. It is available through GitHub, under a permissive
 Apache license and does not require pre-installation or configuration.
 For more information, refer to [Requirements](../10-requirements/).
