@@ -25,6 +25,7 @@ package com.synopsys.integration.detectable.detectables.cargo;
 import java.io.InputStream;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
@@ -37,7 +38,7 @@ public class CargoExtractor {
         this.cargoLockParser = cargoLockParser;
     }
 
-    public Extraction extract(final InputStream goLockInputStream) {
+    public Extraction extract(final InputStream goLockInputStream) throws MissingExternalIdException {
         final DependencyGraph graph = cargoLockParser.parseLockFile(goLockInputStream);
         final CodeLocation codeLocation = new CodeLocation(graph);
         return new Extraction.Builder().success(codeLocation).build();
