@@ -11,7 +11,7 @@ ${solution_name} discovers components using a variety of detection methods, incl
 * Package manager inspection utilizing commonly used tools such as Maven, Gradle, etc.
 * File scanning utilizing the ${blackduck_signature_scanner_name}.
 * Docker image inspection utilizing the ${dockerinspector_name}.
-* Binary file analysis utilizing the ${blackduck_binary_scanner_name}.
+* Binary file analysis utilizing ${blackduck_binary_scan_capability}.
 
 By combining all these techniques ${solution_name} is capable of scanning a wide range of software projects
 utilizing a variety of package managers and programming languages for open source components that are registered within the ${blackduck_kb}.

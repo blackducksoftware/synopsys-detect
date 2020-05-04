@@ -10,6 +10,6 @@ value specified in parentheses are:
 * [Bazel](../../advanced/language-and-package-managers/bazel/) (--detect.tools=BAZEL)
 * [Detector](../detectors/) (--detect.tools=DETECTOR)
 * [${blackduck_signature_scanner_name}](../../30-running/#running-with-black-duck) (--detect.tools=SIGNATURE_SCAN)
-* [${blackduck_binary_scanner_name}](../../30-running/#running-with-black-duck) (--detect.tools=BINARY_SCAN)
+* [${blackduck_binary_scan_capability}](../../30-running/#running-with-black-duck) (--detect.tools=BINARY_SCAN)
 
 The detector tool runs any applicable [detectors](../detectors/).

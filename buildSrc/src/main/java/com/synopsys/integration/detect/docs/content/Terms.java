@@ -48,9 +48,9 @@ public class Terms {
         termMap.put("spring_boot_config_doc_url", "https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html");
         termMap.put("blackduck_product_name", "Black Duck");
         termMap.put("coverity_product_name", "Coverity");
-        termMap.put("blackduck_signature_scanner_name", "Black Duck signature scanner");
+        termMap.put("blackduck_signature_scanner_name", "Black Duck Signature Scanner");
         termMap.put("blackduck_signature_scan_act", "Black Duck signature scan");
-        termMap.put("blackduck_binary_scanner_name", "Black Duck binary scanner");
+        termMap.put("blackduck_binary_scan_capability", "Black Duck - Binary Analysis");
         termMap.put("polaris_product_name", "Polaris");
         termMap.put("dockerinspector_name", "Black Duck Docker Inspector");
         termMap.put("blackduck_kb", "Black Duck KnowledgeBase");
