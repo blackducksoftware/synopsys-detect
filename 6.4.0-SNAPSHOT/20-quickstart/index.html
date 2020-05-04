@@ -1324,7 +1324,7 @@ project's dependencies without using Synopsys Detect. You might do the following
 <li>Since it's a Maven project, you would likely run <code>./mvnw dependency:tree</code> to reveal the project's dependencies; both direct and transitive.</li>
 </ol>
 <p>This is exactly what Synopsys Detect does on this project. In addition, Synopsys Detect runs the
-Black Duck signature scanner on the directory, which discovers additional dependencies
+Black Duck Signature Scanner on the directory, which discovers additional dependencies
 added to the project by any means other than the package manager.</p>
 <h2 id="step-2-run-synopsys-detect-in-offline-mode">Step 2: Run Synopsys Detect in offline mode.<a class="headerlink" href="#step-2-run-synopsys-detect-in-offline-mode" title="Permanent link">#</a></h2>
 <p>Running Synopsys Detect in offline mode eliminates the need to provide
@@ -1338,7 +1338,7 @@ By default, Synopsys Detect considers the current working directory to be your s
 <p>In the junit4 case, Synopsys Detect will:</p>
 <ol>
 <li>Run the Maven detector, creating one BDIO (Black Duck Input Output) (.jsonld) file that contains the dependencies discovered using Maven.</li>
-<li>Run the Black Duck signature scanner, creating a .json file that contains the dependencies discovered by the Black Duck signature scanner.</li>
+<li>Run the Black Duck Signature Scanner, creating a .json file that contains the dependencies discovered by the Black Duck Signature Scanner.</li>
 </ol>
 <p>In offline mode, neither of these are uploaded to Black Duck.</p>
 <p>To locate these files, look in the log for the message "Run directory: ...". These files are located inside

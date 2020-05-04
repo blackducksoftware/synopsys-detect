@@ -1349,16 +1349,23 @@
                 
                 
                 <h1 id="introduction">Introduction<a class="headerlink" href="#introduction" title="Permanent link">#</a></h1>
-<p>Synopsys Detect analyzes your software project to identify open source component dependencies.</p>
-<p>Synopsys Detect consolidates the functionality of Black Duck(tm) and Coverity(tm) on Polaris(tm) to support
-Software Composition Analysis (SCA: open source software detection) and Static Application Security Testing (SAST: static code analysis).
-Synopsys Detect makes it easier to set up and scan code bases for a variety of languages and package managers.
-Synopsys Detect leverages multi-factor discovery techniques to scan software projects and directories.
-Synopsys Detect runs on Windows, Linux, and MacOS. It is available through GitHub, under a permissive
+<p>Synopsys Detect analyzes your software project to identify open source component dependencies.
+Synopsys Detect uploads the identities of those components to Black Duck.
+Black Duck utilizes this information to build an open source software Bill Of Materials (BOM) for your project,
+and identify any associated security vulnerabilities and software licenses.</p>
+<p>Synopsys Detect discovers components using a variety of detection methods, including:</p>
+<ul>
+<li>Package manager inspection utilizing commonly used tools such as Maven, Gradle, etc.</li>
+<li>File scanning utilizing the Black Duck Signature Scanner.</li>
+<li>Docker image inspection utilizing the Black Duck Docker Inspector.</li>
+<li>Binary file analysis utilizing Black Duck - Binary Analysis.</li>
+</ul>
+<p>By combining all these techniques Synopsys Detect is capable of scanning a wide range of software projects
+utilizing a variety of package managers and programming languages for open source components that are registered within the Black Duck KnowledgeBase.</p>
+<p>Synopsys Detect runs on Windows, Linux, and MacOS. It is available through GitHub, under a permissive
 Apache license and does not require pre-installation or configuration.
 For more information, refer to <a href="../10-requirements/">Requirements</a>.</p>
-<p>Synopsys Detect can be used either for Black Duck SCA (open source software detection), or for Coverity on Polaris SAST (static code) analysis, or both simultaneously.
-Although Synopsys Detect can support large projects, care should be taken to ensure that scans are performed to optimize platform performance and produce manageable and meaningful results.
+<p>Although Synopsys Detect can support large projects, care should be taken to ensure that scans are performed to optimize platform performance and produce manageable and meaningful results.
 For applications containing multiple sub-projects, it may be advantageous to scan sub-projects separately and combine results as a project of projects, or other techniques.</p>
 <h2 id="a-typical-synopsys-detect-run">A typical Synopsys Detect run<a class="headerlink" href="#a-typical-synopsys-detect-run" title="Permanent link">#</a></h2>
 <p>While there are many variations on a Synopsys Detect run, a typical Synopsys Detect run performs the steps described
@@ -1370,7 +1377,7 @@ are to be uploaded to Black Duck.</p>
 <li>Uses the project's package manager to derive the hierarchy of dependencies known to that package manager.
 For example, on a Maven project, Synopsys Detect executes an "mvn dependency:tree" command,
 and derives dependency information from the output.</li>
-<li>Runs the Black Duck signature scanner on the project. This may identify additional dependencies
+<li>Runs the Black Duck Signature Scanner on the project. This may identify additional dependencies
 not known to the package manager (for example, a .jar file copied into the project directory).</li>
 <li>Uploads both sets of results (dependency details) to Black Duck creating the project/version
 if it does not already exist. Black Duck uses the uploaded dependency information
@@ -1389,18 +1396,18 @@ can connect to any external systems needed for the run, and creates any required
 <h3 id="run-phase">Run phase<a class="headerlink" href="#run-phase" title="Permanent link">#</a></h3>
 <p>During the run phase, Synopsys Detect processes an ordered list of <a href="../components/tools/">tools</a>, invoking all that apply.
 Tool applicability depends on how Synopsys Detect is configured; in other words, the property values you set.
-The detector tool runs by default. The Black Duck signature scanner tool runs by default when Black Duck connection
+The detector tool runs by default. The Black Duck Signature Scanner tool runs by default when Black Duck connection
 details are provided.</p>
 <p>The detector tool invokes all applicable <a href="../components/detectors/">detectors</a>.
 Detector applicability depends on what Synopsys Detect finds in your project. For example, if Synopsys Detect
 finds a pom.xml file, it runs the Maven detector. If it finds Gradle files, it runs the Gradle detector.</p>
 <p>In the typical run previously described, two tools are applied: the detector tool which ran the Maven detector,
-and the Black Duck signature scanner tool which ran the Black Duck signature scanner.</p>
+and the Black Duck Signature Scanner tool which ran the Black Duck Signature Scanner.</p>
 <p>At the end of the run phase, Synopsys Detect uploads results to the appropriate external
 system(s) (Black Duck and/or Polaris), and optionally perform post actions, such as generating
 a risk report or checking for policy violations.</p>
 <p>In the typical run previously described, Synopsys Detect uploads Black Duck results from
-the Maven detector and the Black Duck signature scanner.</p>
+the Maven detector and the Black Duck Signature Scanner.</p>
 <h3 id="cleanup-phase">Cleanup phase<a class="headerlink" href="#cleanup-phase" title="Permanent link">#</a></h3>
 <p>During the cleanup phase, Synopsys Detect removes temporary files and directories before exiting.</p>
 <h2 id="controlling-synopsys-detect-processing">Controlling Synopsys Detect processing<a class="headerlink" href="#controlling-synopsys-detect-processing" title="Permanent link">#</a></h2>
