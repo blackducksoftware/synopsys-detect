@@ -32,12 +32,14 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.GoDepRunInitEnsureDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
+@DetectableInfo(language = "Rust", forge = "crates", requirementsMarkdown = "File: Cargo.lock")
 public class CargoDetectable extends Detectable {
     public static final String CARGO_LOCK_FILENAME = "Cargo.lock";
     public static final String CARGO_TOML_FILENAME = "Cargo.toml";
