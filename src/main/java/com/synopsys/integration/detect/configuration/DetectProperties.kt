@@ -219,6 +219,11 @@ class DetectProperties {
             setHelp("Additional arguments to use when running the Black Duck signature scanner.", "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in your home directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from \${HOME}/excludes.txt'")
             setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
         }
+        val DETECT_BLACKDUCK_SIGNATURE_SCANNER_COPYRIGHT_SEARCH = BooleanProperty("detect.blackduck.signature.scanner.copyright.search", false).apply {
+            setInfo("Signature Scanner Copyright Search", "6.4.0")
+            setHelp("When set to true, user will be able to scan and discover copyright names in Black Duck")
+            setGroups(DetectGroup.SIGNATURE_SCANNER)
+        }
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN = BooleanProperty("detect.blackduck.signature.scanner.dry.run", false).apply {
             setInfo("Signature Scanner Dry Run", "4.2.0")
             setHelp("If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk.")
