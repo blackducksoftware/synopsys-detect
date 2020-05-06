@@ -214,7 +214,7 @@ public class BlackDuckSignatureScanner {
         signatureScannerOptions.getSnippetMatching().ifPresent(scanJobBuilder::snippetMatching);
         scanJobBuilder.uploadSource(signatureScannerOptions.getUploadSource());
         scanJobBuilder.licenseSearch(signatureScannerOptions.getLicenseSearch());
-        //scanJobBuilder.copyrightSearch(signatureScannerOptions.getCopyrightSearch());
+        scanJobBuilder.copyrightSearch(signatureScannerOptions.getCopyrightSearch());
 
         signatureScannerOptions.getAdditionalArguments().ifPresent(scanJobBuilder::additionalScanArguments);
 
