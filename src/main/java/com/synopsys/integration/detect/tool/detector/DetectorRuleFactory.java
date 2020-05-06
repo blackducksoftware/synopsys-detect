@@ -51,6 +51,7 @@ import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDet
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
+import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
@@ -168,6 +169,8 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.PACKAGIST, "Composer", ComposerLockDetectable.class, detectableFactory::createComposerDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.PIP, "Pip Env", PipenvDetectable.class, detectableFactory::createPipenvDetectable).defaults().build();
+
+        ruleSet.addDetector(DetectorType.POETRY, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
 
         final DetectorRule gemlock = ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", GemlockDetectable.class, detectableFactory::createGemlockDetectable).defaults().build();
         final DetectorRule gemspec = ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemspec", GemspecParseDetectable.class, detectableFactory::createGemspecParseDetectable).defaults().build();

@@ -35,6 +35,7 @@ public class DetectExecutableOptions {
     private final Path npmUserPath;
     private final Path pearUserPath;
     private final Path pipenvUserPath;
+    private final Path poetryUserPath;
     private final Path pythonUserPath;
     private final Path rebarUserPath;
     private final Path javaUserPath;
@@ -45,7 +46,8 @@ public class DetectExecutableOptions {
     private final Path swiftUserPath;
 
     public DetectExecutableOptions(final Path bashUserPath, final Path bazelUserPath, final Path condaUserPath, final Path cpanUserPath, final Path cpanmUserPath, final Path gradleUserPath, final Path mavenUserPath,
-        final Path npmUserPath, final Path pearUserPath, final Path pipenvUserPath, final Path pythonUserPath, final Path rebarUserPath, final Path javaUserPath, final Path dockerUserPath, final Path dotnetUserPath,
+        final Path npmUserPath, final Path pearUserPath, final Path pipenvUserPath, final Path poetryUserPath, final Path pythonUserPath, final Path rebarUserPath, final Path javaUserPath, final Path dockerUserPath,
+        final Path dotnetUserPath,
         final Path gitUserPath, final Path goUserPath, final Path swiftUserPath) {
         this.bashUserPath = bashUserPath;
         this.bazelUserPath = bazelUserPath;
@@ -57,6 +59,7 @@ public class DetectExecutableOptions {
         this.npmUserPath = npmUserPath;
         this.pearUserPath = pearUserPath;
         this.pipenvUserPath = pipenvUserPath;
+        this.poetryUserPath = poetryUserPath;
         this.pythonUserPath = pythonUserPath;
         this.rebarUserPath = rebarUserPath;
         this.javaUserPath = javaUserPath;
@@ -105,6 +108,10 @@ public class DetectExecutableOptions {
 
     public Path getPipenvUserPath() {
         return pipenvUserPath;
+    }
+
+    public Path getPoetryUserPath() {
+        return poetryUserPath;
     }
 
     public Path getPythonUserPath() {

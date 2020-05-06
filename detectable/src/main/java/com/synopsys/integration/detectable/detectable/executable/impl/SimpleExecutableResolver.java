@@ -42,6 +42,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.NpmRes
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.PoetryResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
@@ -49,7 +50,8 @@ import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 
 //this will cache the find result.
 public class SimpleExecutableResolver
-    implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, JavaResolver, DotNetResolver,
+    implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, PoetryResolver, MavenResolver, NpmResolver, BazelResolver, JavaResolver,
+                   DotNetResolver,
                    DockerResolver, GitResolver, SwiftResolver, GoResolver {
 
     private final CachedExecutableResolverOptions executableResolverOptions;
@@ -133,6 +135,9 @@ public class SimpleExecutableResolver
     public File resolvePipenv() {
         return findCachedSystem("pipenv");
     }
+
+    @Override
+    public File resolvePoetry() { return findCachedSystem("poetry"); }
 
     @Override
     public File resolveMaven(final DetectableEnvironment environment) {

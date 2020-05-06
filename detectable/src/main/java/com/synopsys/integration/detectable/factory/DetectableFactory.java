@@ -174,6 +174,7 @@ import com.synopsys.integration.detectable.detectables.pip.parser.PipEnvJsonGrap
 import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvTransformer;
+import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarExtractor;
 import com.synopsys.integration.detectable.detectables.rebar.parse.Rebar3TreeParser;
@@ -350,6 +351,8 @@ public class DetectableFactory {
     public PodlockDetectable createPodLockDetectable(final DetectableEnvironment environment) {
         return new PodlockDetectable(environment, fileFinder, podlockExtractor());
     }
+
+    public PoetryDetectable createPoetryDetectable(final DetectableEnvironment environment, final PythonResolver pythonResolver) { return new PoetryDetectable(environment, fileFinder, pythonResolver); }
 
     public RebarDetectable createRebarDetectable(final DetectableEnvironment environment, final Rebar3Resolver rebar3Resolver) {
         return new RebarDetectable(environment, fileFinder, rebar3Resolver, rebarExtractor());

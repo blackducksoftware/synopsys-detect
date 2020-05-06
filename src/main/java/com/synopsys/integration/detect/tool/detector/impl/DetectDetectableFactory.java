@@ -58,6 +58,7 @@ import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDet
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
+import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemlock.GemlockDetectable;
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectable;
@@ -215,6 +216,8 @@ public class DetectDetectableFactory {
     public PodlockDetectable createPodLockDetectable(final DetectableEnvironment environment) {
         return detectableFactory.createPodLockDetectable(environment);
     }
+
+    public PoetryDetectable createPoetryDetectable(final DetectableEnvironment environment) { return detectableFactory.createPoetryDetectable(environment, detectExecutableResolver); }
 
     public RebarDetectable createRebarDetectable(final DetectableEnvironment environment) {
         return detectableFactory.createRebarDetectable(environment, detectExecutableResolver);
