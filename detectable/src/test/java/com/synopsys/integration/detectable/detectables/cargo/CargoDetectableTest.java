@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 
+import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
@@ -58,8 +59,7 @@ public class CargoDetectableTest extends DetectableFunctionalTest {
     public void assertExtraction(@NotNull final Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
-        // TODO -change Forge to CRATES
-        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(null, extraction.getCodeLocations().get(0).getDependencyGraph());
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(1);
         graphAssert.hasRootDependency("abscissa_core", "0.5.2");
         graphAssert.hasParentChildRelationship("abscissa_core", "0.5.2", "abscissa_derive", "0.5.0");

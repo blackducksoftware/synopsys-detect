@@ -34,6 +34,7 @@ import com.moandjiezana.toml.Toml;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -112,7 +113,7 @@ public class CargoLockParser {
     }
 
     private Dependency createCargoDependency(final String name, final String version) {
-        final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(null, name, version);
+        final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.CRATES, name, version);
         return new Dependency(name, version, dependencyExternalId);
     }
 }
