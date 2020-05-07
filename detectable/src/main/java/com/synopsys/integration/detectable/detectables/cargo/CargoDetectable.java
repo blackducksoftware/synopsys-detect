@@ -33,9 +33,9 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.detectable.detectable.result.CargoGenerateLockfileDetectResult;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.GoDepRunInitEnsureDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
 @DetectableInfo(language = "Rust", forge = "crates", requirementsMarkdown = "File: Cargo.lock")
@@ -70,7 +70,7 @@ public class CargoDetectable extends Detectable {
     @Override
     public DetectableResult extractable() {
         if (cargoLock == null && cargoToml != null) {
-            return new GoDepRunInitEnsureDetectableResult(environment.getDirectory().getAbsolutePath());
+            return new CargoGenerateLockfileDetectResult(environment.getDirectory().getAbsolutePath());
         }
         return new PassedDetectableResult();
     }
