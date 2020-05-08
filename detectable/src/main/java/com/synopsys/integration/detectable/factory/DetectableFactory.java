@@ -175,6 +175,8 @@ import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTr
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvTransformer;
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
+import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryExtractor;
+import com.synopsys.integration.detectable.detectables.pip.poetry.parser.PoetryLockParser;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarExtractor;
 import com.synopsys.integration.detectable.detectables.rebar.parse.Rebar3TreeParser;
@@ -352,7 +354,7 @@ public class DetectableFactory {
         return new PodlockDetectable(environment, fileFinder, podlockExtractor());
     }
 
-    public PoetryDetectable createPoetryDetectable(final DetectableEnvironment environment, final PythonResolver pythonResolver) { return new PoetryDetectable(environment, fileFinder, pythonResolver); }
+    public PoetryDetectable createPoetryDetectable(final DetectableEnvironment environment) { return new PoetryDetectable(environment, fileFinder, poetryExtractor()); }
 
     public RebarDetectable createRebarDetectable(final DetectableEnvironment environment, final Rebar3Resolver rebar3Resolver) {
         return new RebarDetectable(environment, fileFinder, rebar3Resolver, rebarExtractor());
@@ -599,6 +601,8 @@ public class DetectableFactory {
     private PipInspectorExtractor pipInspectorExtractor() {
         return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser());
     }
+
+    private PoetryExtractor poetryExtractor() { return new PoetryExtractor(new PoetryLockParser()); }
 
     private GemlockExtractor gemlockExtractor() {
         return new GemlockExtractor(externalIdFactory);

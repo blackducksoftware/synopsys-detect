@@ -415,6 +415,7 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
                 detectConfiguration.getValue(DetectProperties.DETECT_DOTNET_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
                 detectConfiguration.getValue(DetectProperties.DETECT_GIT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
                 detectConfiguration.getValue(DetectProperties.DETECT_GO_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_POETRY_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
                 detectConfiguration.getValue(DetectProperties.DETECT_SWIFT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
         )
     }
