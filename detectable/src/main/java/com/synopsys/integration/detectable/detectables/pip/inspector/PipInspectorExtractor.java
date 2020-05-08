@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip;
+package com.synopsys.integration.detectable.detectables.pip.inspector;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -35,8 +35,8 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
-import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
+import com.synopsys.integration.detectable.detectables.pip.inspector.parser.PipInspectorTreeParser;
+import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipenvResult;
 
 public class PipInspectorExtractor {
     private final ExecutableRunner executableRunner;

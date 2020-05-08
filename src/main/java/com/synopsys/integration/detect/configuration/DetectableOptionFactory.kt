@@ -43,8 +43,8 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileO
 import com.synopsys.integration.detectable.detectables.npm.packagejson.NpmPackageJsonParseDetectableOptions
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectableOptions
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions
-import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions
-import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions
+import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectableOptions
+import com.synopsys.integration.detectable.detectables.pip.pipenv.PipenvDetectableOptions
 import com.synopsys.integration.detectable.detectables.rubygems.gemspec.GemspecParseDetectableOptions
 import com.synopsys.integration.detectable.detectables.sbt.SbtResolutionCacheDetectableOptions
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions

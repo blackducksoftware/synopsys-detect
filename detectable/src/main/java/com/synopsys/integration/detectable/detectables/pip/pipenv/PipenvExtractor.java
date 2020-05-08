@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip;
+package com.synopsys.integration.detectable.detectables.pip.pipenv;
 
 import java.io.File;
 import java.util.Arrays;
@@ -32,12 +32,12 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectables.pip.model.PipFreeze;
-import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraph;
-import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
-import com.synopsys.integration.detectable.detectables.pip.parser.PipEnvJsonGraphParser;
-import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
-import com.synopsys.integration.detectable.detectables.pip.parser.PipenvTransformer;
+import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipFreeze;
+import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipenvGraph;
+import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipenvResult;
+import com.synopsys.integration.detectable.detectables.pip.pipenv.parser.PipEnvJsonGraphParser;
+import com.synopsys.integration.detectable.detectables.pip.pipenv.parser.PipenvFreezeParser;
+import com.synopsys.integration.detectable.detectables.pip.pipenv.parser.PipenvTransformer;
 
 public class PipenvExtractor {
     private final ExecutableRunner executableRunner;

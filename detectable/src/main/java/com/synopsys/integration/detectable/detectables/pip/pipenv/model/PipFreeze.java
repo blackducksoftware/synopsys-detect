@@ -20,18 +20,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip.model;
+package com.synopsys.integration.detectable.detectables.pip.pipenv.model;
 
 import java.util.List;
 
-public class PipenvGraph {
-    private final List<PipenvGraphEntry> entries;
+public class PipFreeze {
+    private final List<PipFreezeEntry> entries;
 
-    public PipenvGraph(final List<PipenvGraphEntry> entries) {
+    public PipFreeze(final List<PipFreezeEntry> entries) {
         this.entries = entries;
     }
 
-    public List<PipenvGraphEntry> getEntries() {
+    public List<PipFreezeEntry> getEntries() {
         return entries;
     }
 }

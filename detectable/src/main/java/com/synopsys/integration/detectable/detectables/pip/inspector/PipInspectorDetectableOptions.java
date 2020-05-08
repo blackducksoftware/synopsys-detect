@@ -20,18 +20,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip.model;
+package com.synopsys.integration.detectable.detectables.pip.inspector;
 
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
-public class PipFreeze {
-    private final List<PipFreezeEntry> entries;
+public class PipInspectorDetectableOptions {
+    private final String pipProjectName;
+    private final List<Path> requirementsFilePaths;
 
-    public PipFreeze(final List<PipFreezeEntry> entries) {
-        this.entries = entries;
+    public PipInspectorDetectableOptions(final String pipProjectName, final List<Path> requirementsFilePaths) {
+        this.pipProjectName = pipProjectName;
+        this.requirementsFilePaths = requirementsFilePaths;
     }
 
-    public List<PipFreezeEntry> getEntries() {
-        return entries;
+    public Optional<String> getPipProjectName() {
+        return Optional.ofNullable(pipProjectName);
+    }
+
+    public List<Path> getRequirementsFilePaths() {
+        return requirementsFilePaths;
     }
 }

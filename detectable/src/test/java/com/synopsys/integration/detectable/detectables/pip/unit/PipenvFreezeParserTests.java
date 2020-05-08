@@ -30,9 +30,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.pip.model.PipFreeze;
-import com.synopsys.integration.detectable.detectables.pip.model.PipFreezeEntry;
-import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
+import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipFreeze;
+import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipFreezeEntry;
+import com.synopsys.integration.detectable.detectables.pip.pipenv.parser.PipenvFreezeParser;
 
 @UnitTest
 public class PipenvFreezeParserTests {
@@ -54,9 +54,9 @@ public class PipenvFreezeParserTests {
 
     private void assertContains(final String name, final String version, final PipFreeze pipFreeze) {
         final Optional<PipFreezeEntry> found = pipFreeze.getEntries().stream()
-                                             .filter(it -> it.getName().equals(name))
-                                             .filter(it -> it.getVersion().equals(version))
-                                             .findFirst();
+                                                   .filter(it -> it.getName().equals(name))
+                                                   .filter(it -> it.getVersion().equals(version))
+                                                   .findFirst();
 
         Assertions.assertTrue(found.isPresent(), String.format("Could not find pip freeze entry with name '%s' and version '%s'", name, version));
     }
