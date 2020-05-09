@@ -27,7 +27,6 @@ import java.nio.file.Path;
 public class DetectExecutableOptions {
     private final Path bashUserPath;
     private final Path bazelUserPath;
-    private final Path cargoUserPath;
     private final Path condaUserPath;
     private final Path cpanUserPath;
     private final Path cpanmUserPath;
@@ -45,13 +44,12 @@ public class DetectExecutableOptions {
     private final Path goUserPath;
     private final Path swiftUserPath;
 
-    public DetectExecutableOptions(final Path bashUserPath, final Path bazelUserPath, final Path cargoUserPath, final Path condaUserPath, final Path cpanUserPath, final Path cpanmUserPath, final Path gradleUserPath,
+    public DetectExecutableOptions(final Path bashUserPath, final Path bazelUserPath, final Path condaUserPath, final Path cpanUserPath, final Path cpanmUserPath, final Path gradleUserPath,
         final Path mavenUserPath,
         final Path npmUserPath, final Path pearUserPath, final Path pipenvUserPath, final Path pythonUserPath, final Path rebarUserPath, final Path javaUserPath, final Path dockerUserPath, final Path dotnetUserPath,
         final Path gitUserPath, final Path goUserPath, final Path swiftUserPath) {
         this.bashUserPath = bashUserPath;
         this.bazelUserPath = bazelUserPath;
-        this.cargoUserPath = cargoUserPath;
         this.condaUserPath = condaUserPath;
         this.cpanUserPath = cpanUserPath;
         this.cpanmUserPath = cpanmUserPath;
@@ -76,10 +74,6 @@ public class DetectExecutableOptions {
 
     public Path getBazelUserPath() {
         return bazelUserPath;
-    }
-
-    public Path getCargoUserPath() {
-        return cargoUserPath;
     }
 
     public Path getCondaUserPath() {

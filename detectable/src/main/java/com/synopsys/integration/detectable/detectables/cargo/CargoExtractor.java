@@ -22,6 +22,9 @@
  */
 package com.synopsys.integration.detectable.detectables.cargo;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -37,9 +40,13 @@ public class CargoExtractor {
         this.cargoLockParser = cargoLockParser;
     }
 
-    public Extraction extract(final InputStream goLockInputStream) {
-        final DependencyGraph graph = cargoLockParser.parseLockFile(goLockInputStream);
-        final CodeLocation codeLocation = new CodeLocation(graph);
-        return new Extraction.Builder().success(codeLocation).build();
+    public Extraction extract(final File cargoLock) {
+        try (final InputStream goLockInputStream = new FileInputStream(cargoLock)) {
+            final DependencyGraph graph = cargoLockParser.parseLockFile(goLockInputStream);
+            final CodeLocation codeLocation = new CodeLocation(graph);
+            return new Extraction.Builder().success(codeLocation).build();
+        } catch (final IOException e) {
+            return new Extraction.Builder().exception(e).build();
+        }
     }
 }

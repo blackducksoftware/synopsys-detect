@@ -94,7 +94,9 @@ public class SimpleExecutableResolver
     }
 
     @Override
-    public File resolveCargo() { return findCachedSystem("cargo"); }
+    public File resolveCargo() {
+        return findCachedSystem("cargo");
+    }
 
     @Override
     public File resolveConda() {

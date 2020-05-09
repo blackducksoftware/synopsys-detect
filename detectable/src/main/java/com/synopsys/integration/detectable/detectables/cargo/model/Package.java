@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.cargo.model;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Package {
     private String name;
@@ -31,40 +32,40 @@ public class Package {
     private String checksum;
     private List<String> dependencies;
 
-    public String getName() {
-        return name;
+    public Optional<String> getName() {
+        return Optional.ofNullable(name);
     }
 
     public void setName(final String name) {
         this.name = name;
     }
 
-    public String getVersion() {
-        return version;
+    public Optional<String> getVersion() {
+        return Optional.ofNullable(version);
     }
 
     public void setVersion(final String version) {
         this.version = version;
     }
 
-    public String getSource() {
-        return source;
+    public Optional<String> getSource() {
+        return Optional.ofNullable(source);
     }
 
     public void setSource(final String source) {
         this.source = source;
     }
 
-    public String getChecksum() {
-        return checksum;
+    public Optional<String> getChecksum() {
+        return Optional.ofNullable(checksum);
     }
 
     public void setChecksum(final String checksum) {
         this.checksum = checksum;
     }
 
-    public List<String> getDependencies() {
-        return dependencies;
+    public Optional<List<String>> getDependencies() {
+        return Optional.ofNullable(dependencies);
     }
 
     public void setDependencies(final List<String> dependencies) {

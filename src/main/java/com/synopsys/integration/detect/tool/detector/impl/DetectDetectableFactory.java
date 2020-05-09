@@ -101,7 +101,9 @@ public class DetectDetectableFactory {
         return detectableFactory.createBitbakeDetectable(environment, detectableOptionFactory.createBitbakeDetectableOptions(), detectExecutableResolver);
     }
 
-    public CargoDetectable createCargoDetectable(final DetectableEnvironment environment) { return detectableFactory.createCargoDetectable(environment); }
+    public CargoDetectable createCargoDetectable(final DetectableEnvironment environment) {
+        return detectableFactory.createCargoDetectable(environment);
+    }
 
     public ClangDetectable createClangDetectable(final DetectableEnvironment environment) {
         return detectableFactory.createClangDetectable(environment, detectableOptionFactory.createClangDetectableOptions());

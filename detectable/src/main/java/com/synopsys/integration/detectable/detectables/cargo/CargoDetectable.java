@@ -23,9 +23,6 @@
 package com.synopsys.integration.detectable.detectables.cargo;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -77,10 +74,6 @@ public class CargoDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        try (final InputStream inputStream = new FileInputStream(cargoLock)) {
-            return cargoExtractor.extract(inputStream);
-        } catch (final IOException e) {
-            return new Extraction.Builder().exception(e).build();
-        }
+        return cargoExtractor.extract(cargoLock);
     }
 }

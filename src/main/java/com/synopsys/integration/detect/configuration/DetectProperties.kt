@@ -304,11 +304,6 @@ class DetectProperties {
             setHelp("If set to true, only Detector's capable of running without a build will be run.")
             setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
         }
-        val DETECT_CARGO_PATH = NullablePathProperty("detect.cargo.path").apply {
-            setInfo("Cargo Executable", "6.4.0")
-            setHelp("The path to the cargo executable.")
-            setGroups(DetectGroup.CARGO, DetectGroup.GLOBAL)
-        }
         val DETECT_CLEANUP = BooleanProperty("detect.cleanup", true).apply {
             setInfo("Cleanup Output", "3.2.0")
             setHelp("If true, the files created by Detect will be cleaned up.")

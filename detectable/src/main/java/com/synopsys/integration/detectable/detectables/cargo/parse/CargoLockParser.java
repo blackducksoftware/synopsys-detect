@@ -49,8 +49,8 @@ public class CargoLockParser {
 
     public DependencyGraph parseLockFile(final InputStream cargoLockInputStream) {
         final CargoLock cargoLock = new Toml().read(cargoLockInputStream).to(CargoLock.class);
-        if (cargoLock.packages != null) {
-            return parseDependencies(cargoLock.packages);
+        if (cargoLock.getPackages().isPresent()) {
+            return parseDependencies(cargoLock.getPackages().get());
         }
         return new MutableMapDependencyGraph();
     }
@@ -65,13 +65,13 @@ public class CargoLockParser {
         }
 
         for (final Package lockPackage : lockPackages) {
-            if (lockPackage.getDependencies() == null) {
+            if (!lockPackage.getDependencies().isPresent()) {
                 continue;
             }
-            List<String> trimmedDependencies = trimDependencies(lockPackage.getDependencies());
+            List<String> trimmedDependencies = trimDependencies(lockPackage.getDependencies().get());
             for (final String dependency : trimmedDependencies) {
                 Dependency child = packageMap.get(dependency);
-                Dependency parent = packageMap.get(lockPackage.getName());
+                Dependency parent = packageMap.get(lockPackage.getName().orElse(""));
                 if (child != null && parent != null) {
                     graph.addChildWithParent(child, parent);
                 }
@@ -86,13 +86,13 @@ public class CargoLockParser {
 
         for (final Package lockPackage : lockPackages) {
             if (lockPackage != null) {
-                final String projectName = lockPackage.getName();
-                final String projectVersion = lockPackage.getVersion();
+                final String projectName = lockPackage.getName().orElse("");
+                final String projectVersion = lockPackage.getVersion().orElse("");
 
                 packageMap.put(projectName, createCargoDependency(projectName, projectVersion));
                 rootPackages.add(projectName);
-                if (lockPackage.getDependencies() != null) {
-                    dependencyPackages.addAll(trimDependencies(lockPackage.getDependencies()));
+                if (lockPackage.getDependencies().isPresent()) {
+                    dependencyPackages.addAll(trimDependencies(lockPackage.getDependencies().get()));
                 }
 
             }

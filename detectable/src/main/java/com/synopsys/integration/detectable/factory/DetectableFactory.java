@@ -396,7 +396,9 @@ public class DetectableFactory {
         return new DependencyFileDetailGenerator(filePathGenerator());
     }
 
-    private CargoExtractor cargoExtractor() { return new CargoExtractor(new CargoLockParser()); }
+    private CargoExtractor cargoExtractor() {
+        return new CargoExtractor(new CargoLockParser());
+    }
 
     private ClangPackageDetailsTransformer clangPackageDetailsTransformer() {
         return new ClangPackageDetailsTransformer(externalIdFactory);
