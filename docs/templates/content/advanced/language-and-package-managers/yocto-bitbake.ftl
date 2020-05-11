@@ -17,18 +17,6 @@ It also uses `bitbake-layers show-recipes` to gather layer information.
 
 ## Troubleshooting Tips
 
-### Unsupported Yocto version
-
-Symptom: Error in log similar to 'ERROR: Nothing PROVIDES {package}'
-
-Problem: ${solution_name} does not support the Yocto version. ${solution_name} requires Yocto versions 2.0 to 2.7. Yocto 3.0 is currently not supported while we investigate possible solutions.
-
-### No components in ${blackduck_product_name} BOM
-
-Symptom: Empty ${blackduck_product_name} BOM.
-
-Problem: If you are using Yocto 3.0 or greater, ${solution_name} will fail to extract dependencies because files used by ${solution_name} are no longer generated in Yocto 3.0.
-
 ### Missing components for projects using the Yocto Package Revision Service
 
 Symptom: Components are missing from the ${blackduck_product_name} BOM.
