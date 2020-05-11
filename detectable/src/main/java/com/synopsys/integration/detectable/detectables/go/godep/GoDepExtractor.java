@@ -41,4 +41,5 @@ public class GoDepExtractor {
         final CodeLocation codeLocation = new CodeLocation(graph);
         return new Extraction.Builder().success(codeLocation).build();
     }
+
 }
