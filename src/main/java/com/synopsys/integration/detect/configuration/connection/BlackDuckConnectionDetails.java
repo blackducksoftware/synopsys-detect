@@ -26,8 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.misc.NotNull;
-import org.springframework.lang.Nullable;
-//import org.antlr.v4.runtime.misc.Nullable;
+import org.antlr.v4.runtime.misc.Nullable;
 
 public class BlackDuckConnectionDetails {
     private final Boolean offline;

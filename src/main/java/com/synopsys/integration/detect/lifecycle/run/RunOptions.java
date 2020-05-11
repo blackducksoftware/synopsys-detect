@@ -25,13 +25,11 @@ package com.synopsys.integration.detect.lifecycle.run;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.lang.Nullable;
+import org.antlr.v4.runtime.misc.Nullable;
 
 import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
-
-//import org.antlr.v4.runtime.misc.Nullable;
 
 public class RunOptions {
     private final boolean unmapCodeLocations;

@@ -23,15 +23,13 @@
 package com.synopsys.integration.detect.configuration.connection;
 
 import org.antlr.v4.runtime.misc.NotNull;
-import org.springframework.lang.Nullable;
+import org.antlr.v4.runtime.misc.Nullable;
 
 import com.synopsys.integration.detect.util.ProxyUtil;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
-
-//import org.antlr.v4.runtime.misc.Nullable;
 
 public class ConnectionFactory {
     private final ConnectionDetails connectionDetails;
