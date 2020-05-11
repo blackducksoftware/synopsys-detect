@@ -27,13 +27,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.lang.Nullable;
+import org.antlr.v4.runtime.misc.Nullable;
 
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-
-//import org.antlr.v4.runtime.misc.Nullable;
 
 public class DetectableToolResult {
     private enum DetectableToolResultType {

@@ -30,12 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.antlr.v4.runtime.misc.Nullable;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.lang.Nullable;
 
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
-
-//import org.antlr.v4.runtime.misc.Nullable;
 
 public class CodeLocationNameGenerator {
     private final String codeLocationNameOverride;
