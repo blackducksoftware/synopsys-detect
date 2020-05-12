@@ -36,6 +36,9 @@ public class PoetryDetectableTest extends DetectableFunctionalTest {
             "python-versions = \">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*\"",
             "version = \"1.4.0\"",
             "",
+            "[package.dependencies]",
+            "importlib-metadata = \"*\"",
+            "",
             "[[package]]",
             "category = \"dev\"",
             "name = \"importlib-metadata\"",
@@ -56,9 +59,9 @@ public class PoetryDetectableTest extends DetectableFunctionalTest {
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, extraction.getCodeLocations().get(0).getDependencyGraph());
 
-        graphAssert.hasRootSize(3);
+        graphAssert.hasRootSize(2);
         graphAssert.hasRootDependency("appdirs", "1.4.3");
         graphAssert.hasRootDependency("atomicwrites", "1.4.0");
-        graphAssert.hasRootDependency("importlib-metadata", "1.6.0");
+        graphAssert.hasParentChildRelationship("atomicwrites", "1.4.0", "importlib-metadata", "1.6.0");
     }
 }
