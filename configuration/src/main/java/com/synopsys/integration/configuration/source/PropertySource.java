@@ -25,7 +25,7 @@ package com.synopsys.integration.configuration.source;
 import java.util.Set;
 
 import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
+import org.springframework.lang.Nullable;
 
 // IMPORTANT
 // A property source is responsible for responding with keys in the normalized form "example.key"

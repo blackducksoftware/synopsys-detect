@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.lifecycle.run;
 import java.util.List;
 import java.util.Optional;
 
-import org.antlr.v4.runtime.misc.Nullable;
+import org.springframework.lang.Nullable;
 
 import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
