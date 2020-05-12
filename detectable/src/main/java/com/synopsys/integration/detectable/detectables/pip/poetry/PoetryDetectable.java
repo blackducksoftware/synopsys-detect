@@ -1,9 +1,9 @@
 package com.synopsys.integration.detectable.detectables.pip.poetry;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -53,9 +53,10 @@ public class PoetryDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        try (final InputStream inputStream = new FileInputStream(poetryLock)) {
-            return poetryExtractor.extract(inputStream);
-        } catch (final IOException e) {
+        final Path path = Paths.get(poetryLock.getAbsolutePath());
+        try {
+            return poetryExtractor.extract(path);
+        } catch (IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
     }

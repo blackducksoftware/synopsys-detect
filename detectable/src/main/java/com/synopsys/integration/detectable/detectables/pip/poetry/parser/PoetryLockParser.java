@@ -1,14 +1,20 @@
 package com.synopsys.integration.detectable.detectables.pip.poetry.parser;
 
-import java.io.InputStream;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
-import com.moandjiezana.toml.Toml;
+import org.tomlj.Toml;
+import org.tomlj.TomlArray;
+import org.tomlj.TomlParseResult;
+import org.tomlj.TomlTable;
+
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
@@ -16,26 +22,31 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.pip.poetry.model.DependencyList;
-import com.synopsys.integration.detectable.detectables.pip.poetry.model.Package;
-import com.synopsys.integration.detectable.detectables.pip.poetry.model.PoetryLock;
+
+//import com.moandjiezana.toml.Toml;
 
 public class PoetryLockParser {
+
+    private static final String NAME_KEY = "name";
+    private static final String VERSION_KEY = "version";
+    private static final String DEPENDENCIES_KEY = "dependencies";
+    private static final String PACKAGE_KEY = "package";
 
     private final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
     private final Map<String, Dependency> packageMap = new HashMap<>();
 
-    public DependencyGraph parseLockFile(InputStream poetryInputStream) {
-        final PoetryLock poetryLock = new Toml().read(poetryInputStream).to(PoetryLock.class);
-        if (poetryLock.packages != null) {
-            return parseDependencies(poetryLock.packages);
+    public DependencyGraph parseLockFile(Path path) throws IOException {
+        TomlParseResult result = Toml.parse(path);
+        if (result.get(PACKAGE_KEY) != null) {
+            TomlArray lockPackages = result.getArray(PACKAGE_KEY);
+            return parseDependencies(lockPackages);
         }
 
         return new MutableMapDependencyGraph();
     }
 
-    private DependencyGraph parseDependencies(final List<Package> lockPackages) {
+    private DependencyGraph parseDependencies(final TomlArray lockPackages) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         Set<String> rootPackages = determineRootPackages(lockPackages);
@@ -43,45 +54,44 @@ public class PoetryLockParser {
         for (final String rootPackage : rootPackages) {
             graph.addChildToRoot(packageMap.get(rootPackage));
         }
-        //TODO - once we can parse package.dependencies
-        /*
-        for (final Package lockPackage : lockPackages) {
-            List<String> dependencies = extractFromDependencyList(lockPackage.getDependencies());
-            if (dependencies == null) {
+
+        for (int i = 0; i < lockPackages.size(); i++) {
+            TomlTable lockPackage = lockPackages.getTable(i);
+            List<String> dependencies = extractFromDependencyList(lockPackage.getTable(DEPENDENCIES_KEY));
+            if (dependencies == null || dependencies.isEmpty()) {
                 continue;
             }
             List<String> trimmedDependencies = trimDependencies(dependencies);
             for (final String dependency : trimmedDependencies) {
                 Dependency child = packageMap.get(dependency);
-                Dependency parent = packageMap.get(lockPackage.getName());
+                Dependency parent = packageMap.get(lockPackage.getString(NAME_KEY));
                 if (child != null && parent != null) {
                     graph.addChildWithParent(child, parent);
                 }
             }
         }
 
-         */
         return graph;
     }
 
-    private Set<String> determineRootPackages(List<Package> lockPackages) {
+    private Set<String> determineRootPackages(TomlArray lockPackages) {
         Set<String> rootPackages = new HashSet<>();
         Set<String> dependencyPackages = new HashSet<>();
 
-        for (final Package lockPackage : lockPackages) {
+        for (int i = 0; i < lockPackages.size(); i++) {
+            TomlTable lockPackage = lockPackages.getTable(i);
+
             if (lockPackage != null) {
-                final String projectName = lockPackage.getName();
-                final String projectVersion = lockPackage.getVersion();
+                final String projectName = lockPackage.getString(NAME_KEY);
+                final String projectVersion = lockPackage.getString(VERSION_KEY);
 
                 packageMap.put(projectName, createPoetryDependency(projectName, projectVersion));
                 rootPackages.add(projectName);
-                //TODO - once we can parse package.dependencies
-                /*
-                if (lockPackage.getDependencies() != null) {
-                    List<String> dependencies = extractFromDependencyList(lockPackage.getDependencies());
+
+                if (lockPackage.getTable(DEPENDENCIES_KEY) != null) {
+                    List<String> dependencies = extractFromDependencyList(lockPackage.getTable(DEPENDENCIES_KEY));
                     dependencyPackages.addAll(trimDependencies(dependencies));
                 }
-                 */
 
             }
         }
@@ -100,8 +110,15 @@ public class PoetryLockParser {
         return trimmedDependencies;
     }
 
-    private List<String> extractFromDependencyList(DependencyList dependencyList) {
-        return new ArrayList<>();
+    private List<String> extractFromDependencyList(TomlTable dependencyList) {
+        List<String> dependencies = new ArrayList<>();
+        if (dependencyList == null) {
+            return dependencies;
+        }
+        for (List<String> key : dependencyList.keyPathSet()) {
+            dependencies.add(key.get(0));
+        }
+        return dependencies;
     }
 
     private Dependency createPoetryDependency(final String name, final String version) {

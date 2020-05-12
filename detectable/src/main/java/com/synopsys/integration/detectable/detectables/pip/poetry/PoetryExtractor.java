@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.pip.poetry;
 
-import java.io.InputStream;
+import java.io.IOException;
+import java.nio.file.Path;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Extraction;
@@ -15,8 +16,8 @@ public class PoetryExtractor {
         this.poetryLockParser = poetryLockParser;
     }
 
-    public Extraction extract(InputStream poetryInputStream) {
-        final DependencyGraph graph = poetryLockParser.parseLockFile(poetryInputStream);
+    public Extraction extract(Path path) throws IOException {
+        final DependencyGraph graph = poetryLockParser.parseLockFile(path);
         final CodeLocation codeLocation = new CodeLocation(graph);
         return new Extraction.Builder().success(codeLocation).build();
     }
