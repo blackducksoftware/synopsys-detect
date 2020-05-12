@@ -4,6 +4,7 @@
 ### New features
 
 ### Changed features
+Moved download location of ${solution_name} for the shell script from /tmp to ~/synopsys-detect/download.
 
 ### Resolved issues
 
