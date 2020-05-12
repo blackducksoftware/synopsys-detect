@@ -1,5 +1,12 @@
 # Release notes
 
+## Version 6.4.0
+### New features
+
+### Changed features
+
+### Resolved issues
+
 ## Version 6.3.0
 ### New features
 * The Yarn detector extracts project information from package.json files.
