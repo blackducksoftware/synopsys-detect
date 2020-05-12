@@ -36,7 +36,7 @@
     
     
       
-        <title>Yocto (BitBake) - Synopsys Detect</title>
+        <title>Maven support - Synopsys Detect</title>
       
     
     
@@ -75,7 +75,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#yocto-bitbake" tabindex="1" class="md-skip">
+      <a href="#maven-support" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -101,7 +101,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Yocto (BitBake)
+                Maven support
               
             </span>
           
@@ -437,11 +437,11 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-13" type="checkbox" id="nav-9-13" checked>
     
     <label class="md-nav__link" for="nav-9-13">
-      Language and package managers
+      Package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
       <label class="md-nav__title" for="nav-9-13">
-        Language and package managers
+        Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -522,11 +522,56 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../maven/" title="Maven support" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Maven support
+      </label>
+    
+    <a href="./" title="Maven support" class="md-nav__link md-nav__link--active">
       Maven support
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#maven-pom-detector" class="md-nav__link">
+    Maven Pom detector
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maven-parse-detector" class="md-nav__link">
+    Maven Parse detector
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -582,62 +627,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Yocto (BitBake)
-      </label>
-    
-    <a href="./" title="Yocto (BitBake)" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
       Yocto (BitBake)
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#troubleshooting-tips" class="md-nav__link">
-    Troubleshooting Tips
-  </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#missing-components-for-projects-using-the-yocto-package-revision-service" class="md-nav__link">
-    Missing components for projects using the Yocto Package Revision Service
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -1260,22 +1254,16 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#troubleshooting-tips" class="md-nav__link">
-    Troubleshooting Tips
-  </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#missing-components-for-projects-using-the-yocto-package-revision-service" class="md-nav__link">
-    Missing components for projects using the Yocto Package Revision Service
+  <a href="#maven-pom-detector" class="md-nav__link">
+    Maven Pom detector
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#maven-parse-detector" class="md-nav__link">
+    Maven Parse detector
+  </a>
   
 </li>
       
@@ -1296,23 +1284,26 @@
               
                 
                 
-                <h1 id="yocto-bitbake">Yocto (BitBake)<a class="headerlink" href="#yocto-bitbake" title="Permanent link">#</a></h1>
-<p>The BitBake detector discovers dependencies of custom Linux distribution projects built using Yocto versions 2.0 through 3.0.</p>
-<p>The BitBake detector attempts to run on your project if all of the following are true:</p>
+                <h1 id="maven-support">Maven support<a class="headerlink" href="#maven-support" title="Permanent link">#</a></h1>
+<p>Synopsys Detect has two detectors for Maven:</p>
+<ul>
+<li>Maven Pom detector</li>
+<li>Maven Parse detector</li>
+</ul>
+<h2 id="maven-pom-detector">Maven Pom detector<a class="headerlink" href="#maven-pom-detector" title="Permanent link">#</a></h2>
+<p>The Maven Pom detector discovers dependencies of Maven projects.</p>
+<p>The Maven Pom detector attempts to run on your project if it finds a pom.xml file in the source directory (top level).</p>
+<p>The Maven Pom detector also requires either mvnw or mvn:</p>
 <ol>
-<li>A build environment init script (typically <em>oe-init-build-env</em>) is found in the source directory.</li>
-<li>You provide at least one package name (target image name) using the BitBake package names property. Synopsys Detect will not run the Bitbake detector if this property is not set.</li>
+<li>Synopsys Detect looks for mvnw in the source directory (top level). You can override this by setting the Maven path property. If not overridden and not found:</li>
+<li>Synopsys Detect looks for mvn on $PATH.</li>
 </ol>
-<p>The BitBake detector attempts to source the <em>oe-init-build-env</em> file on your behalf.</p>
-<p>The BitBake detector also requires a bash executable, which it looks for on $PATH. You can override this by setting the bash path property.</p>
-<p>The BitBake detector does the following for each provided recipe name: The detector sources the build environment setup script and executes
-<code>bitbake -g {package-name}</code> to generate a dependency file <em>recipe-depends.dot</em> that it parses for dependency information.
-It also uses <code>bitbake-layers show-recipes</code> to gather layer information.</p>
-<h2 id="troubleshooting-tips">Troubleshooting Tips<a class="headerlink" href="#troubleshooting-tips" title="Permanent link">#</a></h2>
-<h3 id="missing-components-for-projects-using-the-yocto-package-revision-service">Missing components for projects using the Yocto Package Revision Service<a class="headerlink" href="#missing-components-for-projects-using-the-yocto-package-revision-service" title="Permanent link">#</a></h3>
-<p>Symptom: Components are missing from the Black Duck BOM.</p>
-<p>Problem: The Yocto Package Revision Service can increment a package revision to a value not present in the Black Duck Knowledge Base, causing
-a package to fail to match.</p>
+<p>The Maven Pom detector runs <code>mvn dependency:tree</code> to get a list of the project's dependencies and then parses the output.</p>
+<p>Scope inclusion/exclusion is performed during the parsing of the output of the <code>mvn dependency:tree</code> command.
+When a component of an included scope is found under a component of an excluded scope, it is added
+to the BOM under a top level placeholder component named <em>Additional_Components</em>.</p>
+<h2 id="maven-parse-detector">Maven Parse detector<a class="headerlink" href="#maven-parse-detector" title="Permanent link">#</a></h2>
+<p>TBD</p>
                 
                   
                 
@@ -1333,7 +1324,7 @@ a package to fail to match.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../yarn/" title="Yarn support" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../hex/" title="Erlang/Hex/Rebar support" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -1342,19 +1333,19 @@ a package to fail to match.</p>
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Yarn support
+                Erlang/Hex/Rebar support
               </span>
             </div>
           </a>
         
         
-          <a href="../../troubleshooting/exit-codes/" title="Exit codes" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../npm/" title="npm support" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Exit codes
+                npm support
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

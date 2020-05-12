@@ -36,7 +36,7 @@
     
     
       
-        <title>Erlang/Hex/Rebar support - Synopsys Detect</title>
+        <title>npm support - Synopsys Detect</title>
       
     
     
@@ -75,7 +75,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#erlanghexrebar-support" tabindex="1" class="md-skip">
+      <a href="#npm-support" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -101,7 +101,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Erlang/Hex/Rebar support
+                npm support
               
             </span>
           
@@ -437,11 +437,11 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-13" type="checkbox" id="nav-9-13" checked>
     
     <label class="md-nav__link" for="nav-9-13">
-      Language and package managers
+      Package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
       <label class="md-nav__title" for="nav-9-13">
-        Language and package managers
+        Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -510,20 +510,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-    <a href="./" title="Erlang/Hex/Rebar support" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../hex/" title="Erlang/Hex/Rebar support" class="md-nav__link">
       Erlang/Hex/Rebar support
     </a>
-    
   </li>
 
         
@@ -543,11 +534,70 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../npm/" title="npm support" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        npm support
+      </label>
+    
+    <a href="./" title="npm support" class="md-nav__link md-nav__link--active">
       npm support
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#npm-package-lock" class="md-nav__link">
+    npm package lock
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#npm-shrinkwrap" class="md-nav__link">
+    npm shrinkwrap
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#npm-detector" class="md-nav__link">
+    npm  detector
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#npm-package-json" class="md-nav__link">
+    npm package JSON
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -1214,6 +1264,43 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#npm-package-lock" class="md-nav__link">
+    npm package lock
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#npm-shrinkwrap" class="md-nav__link">
+    npm shrinkwrap
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#npm-detector" class="md-nav__link">
+    npm  detector
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#npm-package-json" class="md-nav__link">
+    npm package JSON
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1225,11 +1312,32 @@
               
                 
                 
-                <h1 id="erlanghexrebar-support">Erlang/Hex/Rebar support<a class="headerlink" href="#erlanghexrebar-support" title="Permanent link">#</a></h1>
-<p>The Rebar detector discovers dependencies of Erlang projects that use the Hex package manager.</p>
-<p>The Rebar detector runs if Synopsys Detect finds a <em>rebar.config</em> file in your project.
-A <em>rebar3</em> executable must be found on the PATH, or must be <a href="../../../properties/detectors/hex/#rebar3-executable">provided</a>.</p>
-<p>The Rebar detector runs the <em>rebar3 tree</em> command and parses the output for dependency information.</p>
+                <h1 id="npm-support">npm support<a class="headerlink" href="#npm-support" title="Permanent link">#</a></h1>
+<p>Synopsys Detect has the following npm detectors:</p>
+<ul>
+<li>npm package lock detector</li>
+<li>npm package shrinkwrap detector</li>
+<li>npm package JSON detector</li>
+<li>npm CLI detector</li>
+</ul>
+<h2 id="npm-package-lock">npm package lock<a class="headerlink" href="#npm-package-lock" title="Permanent link">#</a></h2>
+<p>The npm package lock is the preferred npm detector and runs when it finds a <a href="https://docs.npmjs.com/configuring-npm/package-lock-json.html">package-lock.json</a> generated by npm.</p>
+<p>npm automatically generates the package-lock.json after an "npm install" which should be run prior to scanning.</p>
+<p>This is the most accurate way Synopsys Detect supports npm as lock file contains resolved versions and all transitives.</p>
+<h2 id="npm-shrinkwrap">npm shrinkwrap<a class="headerlink" href="#npm-shrinkwrap" title="Permanent link">#</a></h2>
+<p>The npm shrinkwrap detector uses the <a href="https://docs.npmjs.com/files/shrinkwrap.json">npm-shrinkwrap.json</a> file.</p>
+<p>It is the same as a package-lock.json but is a publishable lockfile. Synopsys Detect always chooses shrinkwrap over package lock.</p>
+<h2 id="npm-detector">npm  detector<a class="headerlink" href="#npm-detector" title="Permanent link">#</a></h2>
+<p>The npm CLI detector requires a package.json and an npm executable.</p>
+<p>It executes "npm -ls json" and parses the dependencies reported by the npm CLI.</p>
+<p>It requires that the Npm command succeeds - does not write to ERR and returns exit code 0.</p>
+<p>If your npm command does not, you can silence the errors by adding the --silent npm argument using --detect.npm.arguments.</p>
+<p>This detector is only invoked if the other detectors are not invoked and generating lockfiles for the other detectors should be preferred.</p>
+<h2 id="npm-package-json">npm package JSON<a class="headerlink" href="#npm-package-json" title="Permanent link">#</a></h2>
+<p>The npm CLI detector is the fallback when in Build mode. When in buildless the fallback detector is npm package JSON.</p>
+<p>This is the least accurate of the npm detectors.</p>
+<p>It requires and parses a "package.json".</p>
+<p>It does not find transitives and only reports the wild-card version present in the file.</p>
                 
                   
                 
@@ -1250,7 +1358,7 @@ A <em>rebar3</em> executable must be found on the PATH, or must be <a href="../.
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../gradle/" title="Gradle support" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../maven/" title="Maven support" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -1259,19 +1367,19 @@ A <em>rebar3</em> executable must be found on the PATH, or must be <a href="../.
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Gradle support
+                Maven support
               </span>
             </div>
           </a>
         
         
-          <a href="../maven/" title="Maven support" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../nuget/" title="NuGet support" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Maven support
+                NuGet support
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
