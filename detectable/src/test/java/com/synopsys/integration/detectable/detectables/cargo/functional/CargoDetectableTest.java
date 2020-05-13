@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.cargo;
+package com.synopsys.integration.detectable.detectables.cargo.functional;
 
 import java.io.IOException;
 import java.nio.file.Paths;

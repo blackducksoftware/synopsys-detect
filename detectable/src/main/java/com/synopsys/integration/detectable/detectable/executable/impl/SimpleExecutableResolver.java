@@ -29,7 +29,6 @@ import java.util.Map;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.CargoResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
@@ -51,7 +50,7 @@ import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 //this will cache the find result.
 public class SimpleExecutableResolver
     implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, JavaResolver, DotNetResolver,
-                   DockerResolver, GitResolver, SwiftResolver, GoResolver, CargoResolver {
+                   DockerResolver, GitResolver, SwiftResolver, GoResolver {
 
     private final CachedExecutableResolverOptions executableResolverOptions;
     private final SimpleLocalExecutableFinder localExecutableFinder;
@@ -91,11 +90,6 @@ public class SimpleExecutableResolver
     @Override
     public File resolveBash() {
         return findCachedSystem("bash");
-    }
-
-    @Override
-    public File resolveCargo() {
-        return findCachedSystem("cargo");
     }
 
     @Override

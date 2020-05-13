@@ -29,6 +29,7 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.CargoGenerateLockfileDetectResult;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -74,6 +75,10 @@ public class CargoDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return cargoExtractor.extract(cargoLock);
+        try {
+            return cargoExtractor.extract(cargoLock);
+        } catch (DetectableException e) {
+           return new Extraction.Builder().exception(e).build();
+        }
     }
 }

@@ -1,0 +1,7 @@
+[[package]]
+name = "test1"
+version = "1.0.0"
+
+[[package]]
+name = "test2"
+version = "2.0.0"

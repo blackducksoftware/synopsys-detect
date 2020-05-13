@@ -23,12 +23,12 @@
 package com.synopsys.integration.detectable.detectables.cargo.parse;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.moandjiezana.toml.Toml;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
@@ -38,6 +38,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.cargo.model.CargoLock;
 import com.synopsys.integration.detectable.detectables.cargo.model.Package;
 
@@ -47,10 +48,14 @@ public class CargoLockParser {
 
     private final Map<String, Dependency> packageMap = new HashMap<>();
 
-    public DependencyGraph parseLockFile(final InputStream cargoLockInputStream) {
-        final CargoLock cargoLock = new Toml().read(cargoLockInputStream).to(CargoLock.class);
-        if (cargoLock.getPackages().isPresent()) {
-            return parseDependencies(cargoLock.getPackages().get());
+    public DependencyGraph parseLockFile(final InputStream cargoLockInputStream) throws DetectableException {
+        try {
+            final CargoLock cargoLock = new Toml().read(cargoLockInputStream).to(CargoLock.class);
+            if (cargoLock.getPackages().isPresent()) {
+                return parseDependencies(cargoLock.getPackages().get());
+            }
+        } catch (IllegalStateException e) {
+            throw new DetectableException("Illegal syntax was detected in Cargo.lock file", e);
         }
         return new MutableMapDependencyGraph();
     }
@@ -68,7 +73,7 @@ public class CargoLockParser {
             if (!lockPackage.getDependencies().isPresent()) {
                 continue;
             }
-            List<String> trimmedDependencies = trimDependencies(lockPackage.getDependencies().get());
+            List<String> trimmedDependencies = extractDependencyNames(lockPackage.getDependencies().get());
             for (final String dependency : trimmedDependencies) {
                 Dependency child = packageMap.get(dependency);
                 Dependency parent = packageMap.get(lockPackage.getName().orElse(""));
@@ -85,31 +90,24 @@ public class CargoLockParser {
         Set<String> dependencyPackages = new HashSet<>();
 
         for (final Package lockPackage : lockPackages) {
-            if (lockPackage != null) {
-                final String projectName = lockPackage.getName().orElse("");
-                final String projectVersion = lockPackage.getVersion().orElse("");
+            final String projectName = lockPackage.getName().orElse("");
+            final String projectVersion = lockPackage.getVersion().orElse("");
 
-                packageMap.put(projectName, createCargoDependency(projectName, projectVersion));
-                rootPackages.add(projectName);
-                if (lockPackage.getDependencies().isPresent()) {
-                    dependencyPackages.addAll(trimDependencies(lockPackage.getDependencies().get()));
-                }
-
-            }
+            packageMap.put(projectName, createCargoDependency(projectName, projectVersion));
+            rootPackages.add(projectName);
+            lockPackage.getDependencies()
+                .map(this::extractDependencyNames)
+                .ifPresent(dependencyPackages::addAll);
         }
         rootPackages.removeAll(dependencyPackages);
 
         return rootPackages;
     }
 
-    private List<String> trimDependencies(List<String> rawDependencies) {
-        List<String> trimmedDependencies = new ArrayList<>();
-
-        for (String rawDependency : rawDependencies) {
-            String trimmedDependency = rawDependency.split(" ")[0];
-            trimmedDependencies.add(trimmedDependency);
-        }
-        return trimmedDependencies;
+    private List<String> extractDependencyNames(List<String> rawDependencies) {
+        return rawDependencies.stream()
+                   .map(dependency -> dependency.split(" ")[0])
+                   .collect(Collectors.toList());
     }
 
     private Dependency createCargoDependency(final String name, final String version) {
