@@ -80,8 +80,7 @@ public class PoetryLockParser {
             if (dependencies == null || dependencies.isEmpty()) {
                 continue;
             }
-            List<String> trimmedDependencies = trimDependencies(dependencies);
-            for (final String dependency : trimmedDependencies) {
+            for (final String dependency : dependencies) {
                 Dependency child = packageMap.get(dependency);
                 Dependency parent = packageMap.get(lockPackage.getString(NAME_KEY));
                 if (child != null && parent != null) {
@@ -109,7 +108,7 @@ public class PoetryLockParser {
 
                 if (lockPackage.getTable(DEPENDENCIES_KEY) != null) {
                     List<String> dependencies = extractFromDependencyList(lockPackage.getTable(DEPENDENCIES_KEY));
-                    dependencyPackages.addAll(trimDependencies(dependencies));
+                    dependencyPackages.addAll(dependencies);
                 }
 
             }
@@ -117,16 +116,6 @@ public class PoetryLockParser {
         rootPackages.removeAll(dependencyPackages);
 
         return rootPackages;
-    }
-
-    private List<String> trimDependencies(List<String> rawDependencies) {
-        List<String> trimmedDependencies = new ArrayList<>();
-
-        for (String rawDependency : rawDependencies) {
-            String trimmedDependency = rawDependency.split(" ")[0];
-            trimmedDependencies.add(trimmedDependency);
-        }
-        return trimmedDependencies;
     }
 
     private List<String> extractFromDependencyList(TomlTable dependencyList) {

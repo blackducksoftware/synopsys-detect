@@ -1,0 +1,24 @@
+[[package]]
+name = "test1"
+version = "1.0.0"
+
+[package.dependencies]
+test2 = ">=1.0"
+
+[[package]]
+name = "test2"
+version = "2.0"
+
+[package.dependencies]
+test4 = "<4.4"
+
+[[package]]
+name = "test3"
+version = "3.0"
+
+[[package]]
+name = "test4"
+version = "4.0"
+
+[package.dependencies]
+test1 = "~1.0.0"

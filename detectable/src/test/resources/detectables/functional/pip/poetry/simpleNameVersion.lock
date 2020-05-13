@@ -1,0 +1,7 @@
+[[package]]
+name = "pytest-cov"
+version = "2.8.1"
+
+[[package]]
+name = "pytest-mock"
+version = "2.0.0"
