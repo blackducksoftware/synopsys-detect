@@ -51,14 +51,12 @@ public class ClangPackageManagerRunnerTest {
         assertEquals(1, result.getFailedDependencyFiles().size());
         assertEquals(nonPkgOwnedIncludeFile, result.getFailedDependencyFiles().iterator().next());
     }
-
-    @Disabled
+    
     @Test
     public void testDpkg() throws ExecutableRunnerException {
         fail("Not implemented yet");
     }
 
-    @Disabled
     @Test
     public void testApk() throws ExecutableRunnerException {
         fail("Not implemented yet");
