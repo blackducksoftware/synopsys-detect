@@ -36,12 +36,13 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfoFactory;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
+import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.NotOwnedByAnyPkgException;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.RpmPackageManagerResolver;
 
 public class RpmPackageManagerTest {
 
     @Test
-    public void testValidNoEpoch() throws ExecutableRunnerException {
+    public void testValidNoEpoch() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
         final StringBuilder sb = new StringBuilder();
         sb.append("{ epoch: \"(none)\", name: \"boost-devel\", version: \"1.53.0-27.el7\", arch: \"x86_64\" }\n");
         final String pkgMgrOwnedByOutput = sb.toString();
@@ -56,7 +57,7 @@ public class RpmPackageManagerTest {
     }
 
     @Test
-    public void testValidWithEpoch() throws ExecutableRunnerException {
+    public void testValidWithEpoch() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
         final StringBuilder sb = new StringBuilder();
         sb.append("{ epoch: \"9\", name: \"boost-devel\", version: \"1.53.0-27.el7\", arch: \"x86_64\" }\n");
         final String pkgMgrOwnedByOutput = sb.toString();
@@ -71,7 +72,7 @@ public class RpmPackageManagerTest {
     }
 
     @Test
-    public void testInValid() throws ExecutableRunnerException {
+    public void testInValid() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
         final StringBuilder sb = new StringBuilder();
         sb.append("garbage\n");
         sb.append("nonsense\n");
@@ -85,7 +86,7 @@ public class RpmPackageManagerTest {
     }
 
     @Test
-    public void testResolve() throws ExecutableRunnerException {
+    public void testResolve() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
 
         final RpmPackageManagerResolver resolver = new RpmPackageManagerResolver(new Gson());
         final ClangPackageManagerInfo currentPackageManager = null;
