@@ -75,10 +75,6 @@ public class CargoDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        try {
-            return cargoExtractor.extract(cargoLock);
-        } catch (DetectableException e) {
-           return new Extraction.Builder().exception(e).build();
-        }
+        return cargoExtractor.extract(cargoLock);
     }
 }

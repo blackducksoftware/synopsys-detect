@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectables.cargo.parse;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,9 +49,9 @@ public class CargoLockParser {
 
     private final Map<String, Dependency> packageMap = new HashMap<>();
 
-    public DependencyGraph parseLockFile(final InputStream cargoLockInputStream) throws DetectableException {
+    public DependencyGraph parseLockFile(final String lockFile) throws DetectableException {
         try {
-            final CargoLock cargoLock = new Toml().read(cargoLockInputStream).to(CargoLock.class);
+            final CargoLock cargoLock = new Toml().read(lockFile).to(CargoLock.class);
             if (cargoLock.getPackages().isPresent()) {
                 return parseDependencies(cargoLock.getPackages().get());
             }

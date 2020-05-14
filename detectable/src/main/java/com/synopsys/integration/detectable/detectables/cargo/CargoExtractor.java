@@ -26,6 +26,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.List;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Extraction;
@@ -41,13 +45,19 @@ public class CargoExtractor {
         this.cargoLockParser = cargoLockParser;
     }
 
-    public Extraction extract(final File cargoLock) throws DetectableException {
-        try (final InputStream goLockInputStream = new FileInputStream(cargoLock)) {
-            final DependencyGraph graph = cargoLockParser.parseLockFile(goLockInputStream);
+    public Extraction extract(final File cargoLock) {
+        try {
+            final String cargoLockAsString = getCargoLockAsString(cargoLock, StandardCharsets.UTF_8);
+            final DependencyGraph graph = cargoLockParser.parseLockFile(cargoLockAsString);
             final CodeLocation codeLocation = new CodeLocation(graph);
             return new Extraction.Builder().success(codeLocation).build();
-        } catch (final IOException e) {
+        } catch (final IOException | DetectableException e) {
             return new Extraction.Builder().exception(e).build();
         }
+    }
+
+    private String getCargoLockAsString(File cargoLock, Charset encoding) throws IOException {
+       final List<String> goLockAsList = Files.readAllLines(cargoLock.toPath(), encoding);
+       return String.join(System.lineSeparator(), goLockAsList);
     }
 }
