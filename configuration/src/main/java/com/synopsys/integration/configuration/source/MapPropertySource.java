@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.antlr.v4.runtime.misc.NotNull;
-import org.springframework.lang.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.configuration.util.Bds;
 import com.synopsys.integration.configuration.util.KeyUtils;

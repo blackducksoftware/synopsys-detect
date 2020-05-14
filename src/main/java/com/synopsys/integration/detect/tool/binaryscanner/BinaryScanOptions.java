@@ -26,7 +26,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.lang.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class BinaryScanOptions {
     private final Path singleTargetFilePath;

@@ -23,7 +23,7 @@
 package com.synopsys.integration.detect.configuration.connection;
 
 import org.antlr.v4.runtime.misc.NotNull;
-import org.springframework.lang.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detect.util.ProxyUtil;
 import com.synopsys.integration.log.IntLogger;

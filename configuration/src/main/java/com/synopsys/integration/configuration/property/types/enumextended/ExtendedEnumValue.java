@@ -26,7 +26,7 @@ import java.util.Optional;
 
 import org.antlr.v4.runtime.misc.NotNull;
 
-import org.springframework.lang.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.util.Assert;
 
 import com.synopsys.integration.configuration.util.Bdo;
