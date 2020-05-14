@@ -20,30 +20,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip.pipenv.model;
+package com.synopsys.integration.detectable.detectables.pip.model;
 
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import java.util.List;
 
-public class PipenvResult {
-    private final String projectName;
-    private final String projectVersion;
-    private final CodeLocation codeLocation;
+import com.google.gson.annotations.SerializedName;
 
-    public PipenvResult(final String projectName, final String projectVersion, final CodeLocation codeLocation) {
-        this.projectName = projectName;
-        this.projectVersion = projectVersion;
-        this.codeLocation = codeLocation;
+public class PipenvGraphEntry {
+    @SerializedName("package_name")
+    private final String name;
+    @SerializedName("installed_version")
+    private final String version;
+    @SerializedName("dependencies")
+    private final List<PipenvGraphDependency> children;
+
+    public PipenvGraphEntry(final String name, final String version, final List<PipenvGraphDependency> children) {
+        this.name = name;
+        this.version = version;
+        this.children = children;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public String getName() {
+        return name;
     }
 
-    public String getProjectVersion() {
-        return projectVersion;
+    public String getVersion() {
+        return version;
     }
 
-    public CodeLocation getCodeLocation() {
-        return codeLocation;
+    public List<PipenvGraphDependency> getChildren() {
+        return children;
     }
 }

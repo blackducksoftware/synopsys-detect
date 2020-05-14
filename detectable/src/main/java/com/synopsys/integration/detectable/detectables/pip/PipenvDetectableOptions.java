@@ -20,18 +20,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip.pipenv.model;
+package com.synopsys.integration.detectable.detectables.pip;
 
-import java.util.List;
+import java.util.Optional;
 
-public class PipenvGraph {
-    private final List<PipenvGraphEntry> entries;
+public class PipenvDetectableOptions {
+    private final String pipProjectName;
+    private final String pipProjectVersionName;
+    private final boolean pipProjectTreeOnly;
 
-    public PipenvGraph(final List<PipenvGraphEntry> entries) {
-        this.entries = entries;
+    public PipenvDetectableOptions(final String pipProjectName, final String pipProjectVersionName, final boolean pipProjectTreeOnly) {
+        this.pipProjectName = pipProjectName;
+        this.pipProjectVersionName = pipProjectVersionName;
+        this.pipProjectTreeOnly = pipProjectTreeOnly;
     }
 
-    public List<PipenvGraphEntry> getEntries() {
-        return entries;
+    public Optional<String> getPipProjectName() {
+        return Optional.ofNullable(pipProjectName);
+    }
+
+    public Optional<String> getPipProjectVersionName() {
+        return Optional.ofNullable(pipProjectVersionName);
+    }
+
+    public boolean isPipProjectTreeOnly() {
+        return pipProjectTreeOnly;
     }
 }

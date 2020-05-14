@@ -20,13 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip.pipenv.parser;
+package com.synopsys.integration.detectable.detectables.pip.parser;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipFreeze;
-import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipFreezeEntry;
+import com.synopsys.integration.detectable.detectables.pip.model.PipFreeze;
+import com.synopsys.integration.detectable.detectables.pip.model.PipFreezeEntry;
 
 public class PipenvFreezeParser {
     private static final String VERSION_SEPARATOR = "==";

@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip.pipenv.model;
+package com.synopsys.integration.detectable.detectables.pip.model;
 
 import java.util.List;
 

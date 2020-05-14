@@ -12,7 +12,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.detectables.pip.pipenv.PipenvDetectableOptions;
+import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 

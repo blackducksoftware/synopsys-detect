@@ -34,8 +34,8 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.pip.inspector.parser.PipInspectorTreeParser;
-import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipenvResult;
+import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 @UnitTest

@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip.inspector.parser;
+package com.synopsys.integration.detectable.detectables.pip.parser;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +37,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.util.DependencyHistory;
-import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipenvResult;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
 
 public class PipInspectorTreeParser {
     private final Logger logger = LoggerFactory.getLogger(PipInspectorTreeParser.class);

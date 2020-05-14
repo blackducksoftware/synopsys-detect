@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip.pipenv.parser;
+package com.synopsys.integration.detectable.detectables.pip.parser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +31,12 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipFreeze;
-import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipFreezeEntry;
-import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipenvGraph;
-import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipenvGraphDependency;
-import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipenvGraphEntry;
-import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipenvResult;
+import com.synopsys.integration.detectable.detectables.pip.model.PipFreeze;
+import com.synopsys.integration.detectable.detectables.pip.model.PipFreezeEntry;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraph;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraphDependency;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraphEntry;
+import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
 
 public class PipenvTransformer {
     private final ExternalIdFactory externalIdFactory;

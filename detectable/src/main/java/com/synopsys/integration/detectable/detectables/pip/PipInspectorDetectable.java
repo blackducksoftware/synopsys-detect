@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip.inspector;
+package com.synopsys.integration.detectable.detectables.pip;
 
 import java.io.File;
 

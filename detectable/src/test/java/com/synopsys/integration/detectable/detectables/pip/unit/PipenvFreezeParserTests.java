@@ -30,9 +30,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipFreeze;
-import com.synopsys.integration.detectable.detectables.pip.pipenv.model.PipFreezeEntry;
-import com.synopsys.integration.detectable.detectables.pip.pipenv.parser.PipenvFreezeParser;
+import com.synopsys.integration.detectable.detectables.pip.model.PipFreeze;
+import com.synopsys.integration.detectable.detectables.pip.model.PipFreezeEntry;
+import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
 
 @UnitTest
 public class PipenvFreezeParserTests {
