@@ -7,7 +7,7 @@
 * ${solution_name} logs policy violations when it is configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities).
 
 ### Changed features
-* Users can [upload source](../properties/configuration/signature scanner/#upload-source-mode) files when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is enabled.
+* Users can [upload source](../properties/configuration/signature scanner/#upload-source-mode) files when [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is enabled regardless of whether [snippet matching](../properties/configuration/signature scanner/#snippet-matching) has been enabled.
 * ${solution_name} is now compatible with Yocto 3.0.
 * ${solution_name} stops if the Docker Inspector tool applies and ${solution_name} is running on Windows.
 * ${solution_name} configures Docker Inspector's working directories inside ${solution_name}'s run directory.
