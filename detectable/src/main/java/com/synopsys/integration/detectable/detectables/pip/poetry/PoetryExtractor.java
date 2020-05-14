@@ -22,8 +22,13 @@
  */
 package com.synopsys.integration.detectable.detectables.pip.poetry;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Extraction;
@@ -38,9 +43,18 @@ public class PoetryExtractor {
         this.poetryLockParser = poetryLockParser;
     }
 
-    public Extraction extract(Path path) throws IOException {
-        final DependencyGraph graph = poetryLockParser.parseLockFile(path);
-        final CodeLocation codeLocation = new CodeLocation(graph);
-        return new Extraction.Builder().success(codeLocation).build();
+    public Extraction extract(File poetryLock) {
+        try {
+            final DependencyGraph graph = poetryLockParser.parseLockFile(getCargoLockAsString(poetryLock, StandardCharsets.UTF_8));
+            final CodeLocation codeLocation = new CodeLocation(graph);
+            return new Extraction.Builder().success(codeLocation).build();
+        } catch (IOException e) {
+            return new Extraction.Builder().exception(e).build();
+        }
+    }
+
+    private String getCargoLockAsString(File cargoLock, Charset encoding) throws IOException {
+        final List<String> goLockAsList = Files.readAllLines(cargoLock.toPath(), encoding);
+        return String.join(System.lineSeparator(), goLockAsList);
     }
 }

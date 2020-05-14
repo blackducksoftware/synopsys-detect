@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.pip.unit;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,9 +15,17 @@ import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 public class PoetryLockParserTest {
 
     @Test
-    public void testParseNameAndVersionSimple() throws IOException {
+    public void testParseNameAndVersionSimple() {
 
-        Path input = Paths.get(this.getClass().getClassLoader().getResource("detectables/functional/pip/poetry/simpleNameVersion.lock").getPath());
+        String input = String.join(System.lineSeparator(), Arrays.asList(
+            "[[package]]",
+            "name = \"pytest-cov\"",
+            "version = \"2.8.1\"",
+            "",
+            "[[package]]",
+            "name = \"pytest-mock\"",
+            "version = \"2.0.0\""
+        ));
         PoetryLockParser poetryLockParser = new PoetryLockParser();
         DependencyGraph graph = poetryLockParser.parseLockFile(input);
 
@@ -27,8 +36,25 @@ public class PoetryLockParserTest {
     }
 
     @Test
-    public void testParseDependencies() throws IOException {
-        Path input = Paths.get(this.getClass().getClassLoader().getResource("detectables/functional/pip/poetry/packageWithDependencies.lock").getPath());
+    public void testParseDependencies() {
+        String input = String.join(System.lineSeparator(), Arrays.asList(
+            "[[package]]",
+            "name = \"pytest-cov\"",
+            "python-versions = \">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*\"",
+            "version = \"2.8.1\"", 
+            "",
+            "[package.dependencies]",
+            "coverage = \">=4.4\"",
+            "pytest = \">=3.6\"",
+            "",
+            "[[package]]",
+            "name = \"coverage\"",
+            "version = \"4.4\"",
+            "",
+            "[[package]]",
+            "name = \"pytest\"",
+            "version = \"3.7\""
+        ));
         PoetryLockParser poetryLockParser = new PoetryLockParser();
         DependencyGraph graph = poetryLockParser.parseLockFile(input);
 
@@ -41,7 +67,15 @@ public class PoetryLockParserTest {
 
     @Test
     public void testEmptyGraphWhenNoPackageObjects() throws IOException {
-        Path input = Paths.get(this.getClass().getClassLoader().getResource("detectables/functional/pip/poetry/noPackageObjects.lock").getPath());
+        String input = String.join(System.lineSeparator(), Arrays.asList(
+            "package",
+            "name = \"pytest\"",
+            "version = \"1.0.0\"",
+            "",
+            "package",
+            "name = \"python\"",
+            "version = \"3.0\""
+        ));
         PoetryLockParser poetryLockParser = new PoetryLockParser();
         DependencyGraph graph = poetryLockParser.parseLockFile(input);
 
@@ -51,7 +85,32 @@ public class PoetryLockParserTest {
 
     @Test
     public void testParseComplexDependencyHierarchy() throws IOException{
-        Path input = Paths.get(this.getClass().getClassLoader().getResource("detectables/functional/pip/poetry/complexDependencyHierarchy.lock").getPath());
+        String input = String.join(System.lineSeparator(), Arrays.asList(
+            "[[package]]",
+            "name = \"test1\"",
+            "version = \"1.0.0\"",
+            "",
+            "[package.dependencies]",
+            "test2 = \">=1.0\"",
+            "",
+            "[[package]]",
+            "name = \"test2\"",
+            "version = \"2.0\"",
+            "",
+            "[package.dependencies]",
+            "test4 = \"<4.4\"",
+            "",
+            "[[package]]",
+            "name = \"test3\"",
+            "version = \"3.0\"",
+            "",
+            "[[package]]",
+            "name = \"test4\"",
+            "version = \"4.0\"",
+            "",
+            "[package.dependencies]",
+            "test1 = \"~1.0.0\""
+        ));
         PoetryLockParser poetryLockParser = new PoetryLockParser();
         DependencyGraph graph = poetryLockParser.parseLockFile(input);
 

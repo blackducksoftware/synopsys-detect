@@ -75,11 +75,6 @@ public class PoetryDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        final Path path = Paths.get(poetryLock.getAbsolutePath());
-        try {
-            return poetryExtractor.extract(path);
-        } catch (IOException e) {
-            return new Extraction.Builder().exception(e).build();
-        }
+            return poetryExtractor.extract(poetryLock);
     }
 }

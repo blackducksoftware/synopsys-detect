@@ -1,7 +1,0 @@
-[package]
-name = "pytest"
-version = "1.0.0"
-
-package
-name = "python"
-version = "3.0"

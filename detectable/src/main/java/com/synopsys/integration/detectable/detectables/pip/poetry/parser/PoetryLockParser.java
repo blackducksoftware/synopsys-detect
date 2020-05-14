@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.pip.poetry.parser;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,8 +53,8 @@ public class PoetryLockParser {
 
     private final Map<String, Dependency> packageMap = new HashMap<>();
 
-    public DependencyGraph parseLockFile(Path path) throws IOException {
-        TomlParseResult result = Toml.parse(path);
+    public DependencyGraph parseLockFile(String lockFile) {
+        TomlParseResult result = Toml.parse(lockFile);
         if (result.get(PACKAGE_KEY) != null) {
             TomlArray lockPackages = result.getArray(PACKAGE_KEY);
             return parseDependencies(lockPackages);
