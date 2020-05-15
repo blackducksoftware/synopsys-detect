@@ -221,7 +221,7 @@ class DetectProperties {
         }
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_COPYRIGHT_SEARCH = BooleanProperty("detect.blackduck.signature.scanner.copyright.search", false).apply {
             setInfo("Signature Scanner Copyright Search", "6.4.0")
-            setHelp("When set to true, user will be able to scan and discover copyright names in Black Duck")
+            setHelp("When set to true, user will be able to scan and discover copyright names in Black Duck.")
             setGroups(DetectGroup.SIGNATURE_SCANNER)
         }
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN = BooleanProperty("detect.blackduck.signature.scanner.dry.run", false).apply {
