@@ -62,6 +62,7 @@ import com.synopsys.integration.rest.proxy.ProxyInfoBuilder
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.jetbrains.annotations.Nullable
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Path
 import java.util.*
@@ -195,6 +196,13 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val polarisServerConfigBuilder = PolarisServerConfig.newBuilder()
         val allPolarisKeys = polarisServerConfigBuilder.propertyKeys
         val polarisProperties = detectConfiguration.getRaw(allPolarisKeys)
+
+        // Detect and polaris-common use different property keys for the Polaris URL,
+        // so we need to pull it from they Detect config using Detect's key,
+        // and write it to the polaris-common config using the polaris-common key.
+        val polarisUrlValue = detectConfiguration.getRaw(DetectProperties.POLARIS_URL)
+        polarisProperties.put(PolarisServerConfigBuilder.URL_KEY.key, polarisUrlValue.orElse(null))
+
         polarisServerConfigBuilder.logger = SilentIntLogger()
 
         polarisServerConfigBuilder.setProperties(polarisProperties.entries)
