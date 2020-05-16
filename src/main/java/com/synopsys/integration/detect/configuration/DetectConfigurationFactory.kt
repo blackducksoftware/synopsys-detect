@@ -200,7 +200,9 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         // so we need to pull it from they Detect config using Detect's key,
         // and write it to the polaris-common config using the polaris-common key.
         val polarisUrlValue = detectConfiguration.getRaw(DetectProperties.POLARIS_URL)
-        polarisProperties.put(PolarisServerConfigBuilder.URL_KEY.key, polarisUrlValue.orElse(null))
+        if (StringUtils.isNotBlank(polarisUrlValue.orElse(null))) {
+            polarisProperties.put(PolarisServerConfigBuilder.URL_KEY.key, polarisUrlValue.orElse(null))
+        }
 
         polarisServerConfigBuilder.logger = SilentIntLogger()
 
