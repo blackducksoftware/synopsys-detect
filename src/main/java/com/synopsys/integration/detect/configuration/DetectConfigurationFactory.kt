@@ -62,7 +62,6 @@ import com.synopsys.integration.rest.proxy.ProxyInfoBuilder
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.math.NumberUtils
 import org.jetbrains.annotations.Nullable
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.nio.file.Path
 import java.util.*
