@@ -34,7 +34,7 @@
 * Added the property [detect.blackduck.signature.scanner.license.search](../properties/configuration/signature scanner/#signature-scanner-license-search-advanced).
 * Added the property [detect.blackduck.signature.scanner.individual.file.matching](../properties/configuration/signature scanner/#individual-file-matching-advanced).
 * If an executable returns a nonzero exit code, Detect will now log the executable output automatically.
-* Added page for [decrecated properties](../properties/deprecated-properties/) in help.
+* Added page for [deprecated properties](../properties/deprecated-properties/) in help.
 * Detect-generated risk reports now feature Synopsys logo and branding.
 
 ### Changed features
