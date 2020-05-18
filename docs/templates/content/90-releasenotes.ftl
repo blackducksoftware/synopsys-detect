@@ -20,6 +20,7 @@
 * (IDETECT-1973) Resolved an issue where the NuGet exe inspector would not resolve from Artifactory.
 * (IDETECT-1965) Resolved an issue where ${solution_name} would fail to resolve environment variables where it did so previously.
 * (IDETECT-1974) Resolved an issue wherein the Yarn detector was throwing an exception for dependencies not defined in the yarn.lock file.
+* (IDETECT-2037) Resolved an issue where ${solution_name} would fail with a "hostname in certificate didn't match" error while downloading the Gradle inspector.
 
 ## Version 6.2.1
 ### Resolved issues
