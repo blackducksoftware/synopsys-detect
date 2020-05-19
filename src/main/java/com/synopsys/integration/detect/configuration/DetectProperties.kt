@@ -719,11 +719,6 @@ class DetectProperties {
             setHelp("The path to the Pipenv executable.")
             setGroups(DetectGroup.PIP, DetectGroup.GLOBAL)
         }
-        val DETECT_POETRY_PATH = NullablePathProperty("detect.poetry.path").apply {
-            setInfo("Poetry Executable", "6.4.0")
-            setHelp("The path to the Poetry executable.")
-            setGroups(DetectGroup.PIP, DetectGroup.GLOBAL)
-        }
         val DETECT_SWIFT_PATH = NullablePathProperty("detect.swift.path").apply {
             setInfo("Swift Executable", "6.0.0")
             setHelp("Path of the swift executable.")

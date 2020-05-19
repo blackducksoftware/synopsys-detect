@@ -50,14 +50,13 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.NpmRes
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.PoetryResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
 import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 
 public class DetectExecutableResolver
-    implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, PoetryResolver, MavenResolver, NpmResolver, BazelResolver,
+    implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
                    DockerResolver,
                    DotNetResolver, GitResolver, SwiftResolver, GoResolver {
 
@@ -152,11 +151,6 @@ public class DetectExecutableResolver
     @Override
     public File resolvePipenv() throws DetectableException {
         return resolveExecutable("pipenv", simpleExecutableResolver::resolvePipenv, detectExecutableOptions.getPipenvUserPath());
-    }
-
-    @Override
-    public File resolvePoetry() throws DetectableException {
-        return resolveExecutable("poetry", simpleExecutableResolver::resolvePoetry, detectExecutableOptions.getPoetryUserPath());
     }
 
     @Override

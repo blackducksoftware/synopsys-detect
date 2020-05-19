@@ -42,7 +42,6 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.NpmRes
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
-import com.synopsys.integration.detectable.detectable.executable.resolver.PoetryResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
