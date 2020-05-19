@@ -26,7 +26,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.antlr.v4.runtime.misc.Nullable;
+import org.springframework.lang.Nullable;
 
 import com.synopsys.integration.util.NameVersion;
 
