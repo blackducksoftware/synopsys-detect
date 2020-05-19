@@ -2,7 +2,7 @@
 
 ## Version 6.3.0
 ### New features
-* The Yarn detector extracts project information from package.json files.
+* The Yarn detector now extracts project information from package.json files. Git is no longer the default supplier of project information for Yarn projects.
 * Added Yarn Detector support for dependencies that are missing a fuzzy version in a lockfile dependency declaration.
 * ${solution_name} logs policy violations when it is configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities).
 
