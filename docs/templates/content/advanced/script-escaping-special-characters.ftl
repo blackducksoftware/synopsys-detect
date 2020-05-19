@@ -2,7 +2,7 @@
 
 ## Bash script (${bash_script_name})
 
-When an argument contains a space, you should wrap the argument with a quote.
+When an argument contains a space, you should wrap the argument with escaped quotes.
 
 For example:
 
@@ -13,7 +13,7 @@ escape the character with a backslash. The backslash should precede the escaped 
 
 For example:
 
-    bash <(curl -s -L detect.synopsys.com/detect.sh) --detect.project.name="Project\!Test"
+    detect.sh --detect.project.name="Project\!Test"
 
 ## PowerShell script (${powershell_script_name})
 
