@@ -24,7 +24,7 @@ package com.synopsys.integration.detectable.detectable.inspector.go;
 
 import java.io.File;
 
-import org.jetbrains.annotations.Nullable;
+import org.antlr.v4.runtime.misc.Nullable;
 
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 

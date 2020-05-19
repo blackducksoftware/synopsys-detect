@@ -26,7 +26,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import org.jetbrains.annotations.Nullable;
+import org.antlr.v4.runtime.misc.Nullable;
 
 public class BinaryScanOptions {
     private final Path singleTargetFilePath;

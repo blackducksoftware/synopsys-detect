@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.misc.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.antlr.v4.runtime.misc.Nullable;
 
 public class BlackDuckConnectionDetails {
     private final Boolean offline;

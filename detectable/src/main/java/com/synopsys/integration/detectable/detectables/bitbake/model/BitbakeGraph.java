@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.jetbrains.annotations.Nullable;
+import org.antlr.v4.runtime.misc.Nullable;
 
 public class BitbakeGraph {
     private final List<BitbakeNode> nodes = new ArrayList<>();

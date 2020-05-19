@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
+import org.antlr.v4.runtime.misc.Nullable;
 
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
 

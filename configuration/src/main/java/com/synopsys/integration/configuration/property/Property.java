@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.antlr.v4.runtime.misc.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.antlr.v4.runtime.misc.Nullable;
 
 import com.synopsys.integration.configuration.util.Category;
 import com.synopsys.integration.configuration.util.Group;
