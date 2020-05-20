@@ -1,5 +1,5 @@
 /**
- * detector
+ * detectable
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,42 +20,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.base;
+package com.synopsys.integration.detectable.detectable.result;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+public class CargoGenerateLockfileDetectResult extends FailedDetectableResult {
+    private final String directoryPath;
 
-public enum DetectorType {
-    BITBAKE,
-    CARGO,
-    COCOAPODS,
-    CONDA,
-    CPAN,
-    CRAN,
-    GIT,
-    GO_MOD,
-    GO_DEP,
-    GO_VNDR,
-    GO_VENDOR,
-    GO_GRADLE,
-    GRADLE,
-    HEX,
-    MAVEN,
-    NPM,
-    NUGET,
-    PACKAGIST,
-    PEAR,
-    PIP,
-    RUBYGEMS,
-    SBT,
-    SWIFT,
-    YARN,
-    CLANG;
+    public CargoGenerateLockfileDetectResult(final String directoryPath) {
+        this.directoryPath = directoryPath;
+    }
 
-    protected static final List<String> POSSIBLE_NAMES = Arrays.stream(DetectorType.values()).map(DetectorType::name).collect(Collectors.toList());
-
-    public static List<String> getPossibleNames() {
-        return POSSIBLE_NAMES;
+    @Override
+    public String toDescription() {
+        return String.format("A Cargo.toml was located in %s, but the Cargo.lock file was NOT located. Please run 'cargo generate-lockfile' in that location and try again.", directoryPath);
     }
 }
