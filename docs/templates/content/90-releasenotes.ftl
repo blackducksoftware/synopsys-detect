@@ -1,11 +1,20 @@
 # Release notes
 
+## Version 6.4.0
+### New features
+
+### Changed features
+Moved download location of ${solution_name} for the shell script from /tmp to ~/synopsys-detect/download.
+
+### Resolved issues
+
 ## Version 6.3.0
 ### New features
 * The Yarn detector extracts project information from package.json files.
 * Added Yarn Detector support for dependencies that are missing a fuzzy version in a lockfile dependency declaration.
 * ${solution_name} logs policy violations when it is configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities).
 * Added the property [detect.blackduck.signature.scanner.copyright.search](../properties/configuration/signature scanner/#signature-scanner-copyright-search-advanced).
+* Detect now supports projects managed by the Cargo package manager.
 
 ### Changed features
 * Users can [upload source](../properties/configuration/signature scanner/#upload-source-mode) files when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is enabled.
@@ -29,7 +38,7 @@
 ## Version 6.2.0
 ### New features
 * The ${solution_name} .jar file is now signed, enabling [code verification](../advanced/verifying/) by users.
-* [Simple proxy information](../advanced/language-and-package-managers/gradle/#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
+* [Simple proxy information](../advanced/package-managers/gradle/#running-the-gradle-inspector-with-a-proxy) will be forwarded to the Gradle Inspector.
 * Detect now creates a status file describing the results of the run which includes things like [issues, results and status codes.](../advanced/status-file/)
 * The property configuration table in the log now includes the origin of the property's value.
 * Added the property [detect.blackduck.signature.scanner.license.search](../properties/configuration/signature scanner/#signature-scanner-license-search-advanced).
@@ -39,17 +48,17 @@
 * Detect-generated risk reports now feature Synopsys logo and branding.
 
 ### Changed features
-* The [PipEnv Detector](../advanced/language-and-package-managers/python/#pipenv-detector) now parses a json representation of the dependency tree.
+* The [PipEnv Detector](../advanced/package-managers/python/#pipenv-detector) now parses a json representation of the dependency tree.
 * Powershell download speed increased.
 
 ### Resolved issues
 * Resolved an issue where the download URL for ${solution_name} was being set to an internal URL upon release (IDETECT-1847).
-* Resolved an issue where all transitive dependencies found by the [Pip inspector](../advanced/language-and-package-managers/python/#the-pip-detector) were being reported as direct dependencies (IDETECT-1893).
-* Resolved an issue where using pip version 20+ with the [Pip inspector](../advanced/language-and-package-managers/python/#the-pip-detector) caused a failure to import a dependency. [GitHub PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868)
+* Resolved an issue where all transitive dependencies found by the [Pip inspector](../advanced/package-managers/python/#the-pip-detector) were being reported as direct dependencies (IDETECT-1893).
+* Resolved an issue where using pip version 20+ with the [Pip inspector](../advanced/package-managers/python/#the-pip-detector) caused a failure to import a dependency. [GitHub PR](https://github.com/blackducksoftware/synopsys-detect/pull/107) (IDETECT-1868)
 * Resolved the following vulnerabilities (IDETECT-1872):
 * org.springframework.boot:spring-boot-starter 5.1.7.RELEASE BDSA-2020-0069 (CVE-2020-5398)
 * Resolved an issue where ${solution_name} had the potential to fail on projects that utilized Yarn workspaces (IDETECT-1916).
-* Note: Yarn workspaces are not currently supported. See [yarn workspace support](../advanced/language-and-package-managers/yarn/#yarn-workspace-support).
+* Note: Yarn workspaces are not currently supported. See [yarn workspace support](../advanced/package-managers/yarn/#yarn-workspace-support).
 * Resolved an issue in the Bazel Detector that caused it to fail for the maven_install rule when the tags field contained multiple tags with a mixture of formats (IDETECT-1925).
 * When parsing package.xml files, Detect will no longer raise a SAXParseException when the file contains a doctype declaration, and will continue parsing the rest of the file (IDETECT-1866).
 * Resolved an issue that could cause generation of an invalid Black Duck Input/Output (BDIO) file when the only differences between two component names/versions are non-alphanumeric characters (IDETECT-1856).
