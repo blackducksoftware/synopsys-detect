@@ -429,10 +429,46 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-13" type="checkbox" id="nav-9-13">
     
     <label class="md-nav__link" for="nav-9-13">
-      Package managers
+      Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
       <label class="md-nav__title" for="nav-9-13">
+        Language and package managers
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../advanced/language-and-package-managers/cargo/" title="Cargo support" class="md-nav__link">
+      Cargo support
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-14" type="checkbox" id="nav-9-14">
+    
+    <label class="md-nav__link" for="nav-9-14">
+      Package managers
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-9-14">
         Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -594,13 +630,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-14" type="checkbox" id="nav-9-14">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-15" type="checkbox" id="nav-9-15">
     
-    <label class="md-nav__link" for="nav-9-14">
+    <label class="md-nav__link" for="nav-9-15">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-14">
+      <label class="md-nav__title" for="nav-9-15">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1769,6 +1805,10 @@
 <td>default: Optional.empty <br /><br /> Signature Scanner Arguments: Additional arguments to use when running the Black Duck signature scanner. <br /><br /></td>
 </tr>
 <tr>
+<td><a href="../configuration/signature scanner/#signature-scanner-copyright-search">detect.blackduck.signature.scanner.copyright.search</a></td>
+<td>default: Optional[false] <br /><br /> Signature Scanner Copyright Search: When set to true, user will be able to scan and discover copyright names in Black Duck. <br /><br /></td>
+</tr>
+<tr>
 <td><a href="../configuration/signature scanner/#signature-scanner-dry-run">detect.blackduck.signature.scanner.dry.run</a></td>
 <td>default: Optional[false] <br /><br /> Signature Scanner Dry Run: If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk. <br /><br /></td>
 </tr>
@@ -1882,7 +1922,7 @@
 <tbody>
 <tr>
 <td><a href="../configuration/detector/#required-detect-types">detect.required.detector.types</a></td>
-<td>default: Optional[] <br /><br />  Acceptable Values: BITBAKE, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG <br /><br />Required Detect Types: The set of required detectors. <br /><br /></td>
+<td>default: Optional[] <br /><br />  Acceptable Values: BITBAKE, CARGO, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG <br /><br />Required Detect Types: The set of required detectors. <br /><br /></td>
 </tr>
 </tbody>
 </table>

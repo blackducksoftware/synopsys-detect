@@ -433,10 +433,46 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-13" type="checkbox" id="nav-9-13">
     
     <label class="md-nav__link" for="nav-9-13">
-      Package managers
+      Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
       <label class="md-nav__title" for="nav-9-13">
+        Language and package managers
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/language-and-package-managers/cargo/" title="Cargo support" class="md-nav__link">
+      Cargo support
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-14" type="checkbox" id="nav-9-14">
+    
+    <label class="md-nav__link" for="nav-9-14">
+      Package managers
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-9-14">
         Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -598,13 +634,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-14" type="checkbox" id="nav-9-14">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-15" type="checkbox" id="nav-9-15">
     
-    <label class="md-nav__link" for="nav-9-14">
+    <label class="md-nav__link" for="nav-9-15">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-14">
+      <label class="md-nav__title" for="nav-9-15">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -1342,7 +1378,7 @@
                 
                 <h1 id="detector">detector<a class="headerlink" href="#detector" title="Permanent link">#</a></h1>
 <h2 id="required-detect-types">Required Detect Types<a class="headerlink" href="#required-detect-types" title="Permanent link">#</a></h2>
-<pre><code>--detect.required.detector.types=BITBAKE,COCOAPODS,CONDA,CPAN,CRAN,GIT,GO_MOD,GO_DEP,GO_VNDR,GO_VENDOR,GO_GRADLE,GRADLE,HEX,MAVEN,NPM,NUGET,PACKAGIST,PEAR,PIP,RUBYGEMS,SBT,SWIFT,YARN,CLANG 
+<pre><code>--detect.required.detector.types=BITBAKE,CARGO,COCOAPODS,CONDA,CPAN,CRAN,GIT,GO_MOD,GO_DEP,GO_VNDR,GO_VENDOR,GO_GRADLE,GRADLE,HEX,MAVEN,NPM,NUGET,PACKAGIST,PEAR,PIP,RUBYGEMS,SBT,SWIFT,YARN,CLANG 
 </code></pre>
 
 <p>The set of required detectors.</p>
@@ -1377,7 +1413,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>BITBAKE, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG</td>
+<td>BITBAKE, CARGO, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG</td>
 </tr>
 <tr>
 <td>Strict</td>
@@ -1386,7 +1422,7 @@
 </tbody>
 </table>
 <h2 id="detector-types-excluded-advanced">Detector Types Excluded (Advanced)<a class="headerlink" href="#detector-types-excluded-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.excluded.detector.types=ALL,NONE,BITBAKE,COCOAPODS,CONDA,CPAN,CRAN,GIT,GO_MOD,GO_DEP,GO_VNDR,GO_VENDOR,GO_GRADLE,GRADLE,HEX,MAVEN,NPM,NUGET,PACKAGIST,PEAR,PIP,RUBYGEMS,SBT,SWIFT,YARN,CLANG 
+<pre><code>--detect.excluded.detector.types=ALL,NONE,BITBAKE,CARGO,COCOAPODS,CONDA,CPAN,CRAN,GIT,GO_MOD,GO_DEP,GO_VNDR,GO_VENDOR,GO_GRADLE,GRADLE,HEX,MAVEN,NPM,NUGET,PACKAGIST,PEAR,PIP,RUBYGEMS,SBT,SWIFT,YARN,CLANG 
 </code></pre>
 
 <p>By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify "ALL". Exclusion rules always win.</p>
@@ -1421,7 +1457,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>ALL, NONE, BITBAKE, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG</td>
+<td>ALL, NONE, BITBAKE, CARGO, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG</td>
 </tr>
 <tr>
 <td>Strict</td>
@@ -1430,7 +1466,7 @@
 </tbody>
 </table>
 <h2 id="detector-types-included-advanced">Detector Types Included (Advanced)<a class="headerlink" href="#detector-types-included-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.included.detector.types=ALL,NONE,BITBAKE,COCOAPODS,CONDA,CPAN,CRAN,GIT,GO_MOD,GO_DEP,GO_VNDR,GO_VENDOR,GO_GRADLE,GRADLE,HEX,MAVEN,NPM,NUGET,PACKAGIST,PEAR,PIP,RUBYGEMS,SBT,SWIFT,YARN,CLANG 
+<pre><code>--detect.included.detector.types=ALL,NONE,BITBAKE,CARGO,COCOAPODS,CONDA,CPAN,CRAN,GIT,GO_MOD,GO_DEP,GO_VNDR,GO_VENDOR,GO_GRADLE,GRADLE,HEX,MAVEN,NPM,NUGET,PACKAGIST,PEAR,PIP,RUBYGEMS,SBT,SWIFT,YARN,CLANG 
 </code></pre>
 
 <p>By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.</p>
@@ -1465,7 +1501,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>ALL, NONE, BITBAKE, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG</td>
+<td>ALL, NONE, BITBAKE, CARGO, COCOAPODS, CONDA, CPAN, CRAN, GIT, GO_MOD, GO_DEP, GO_VNDR, GO_VENDOR, GO_GRADLE, GRADLE, HEX, MAVEN, NPM, NUGET, PACKAGIST, PEAR, PIP, RUBYGEMS, SBT, SWIFT, YARN, CLANG</td>
 </tr>
 <tr>
 <td>Strict</td>
