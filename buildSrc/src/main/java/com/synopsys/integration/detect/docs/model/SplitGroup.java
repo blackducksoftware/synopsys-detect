@@ -34,8 +34,7 @@ public class SplitGroup {
     private final List<HelpJsonOption> advanced;
     private final List<HelpJsonOption> deprecated;
 
-    public SplitGroup(final String groupName, final String superGroup, final String location, final List<HelpJsonOption> simple, final List<HelpJsonOption> advanced,
-        final List<HelpJsonOption> deprecated) {
+    public SplitGroup(final String groupName, final String superGroup, final String location, final List<HelpJsonOption> simple, final List<HelpJsonOption> advanced, final List<HelpJsonOption> deprecated) {
         this.groupName = groupName;
         this.superGroup = superGroup;
         this.location = location;
