@@ -5,7 +5,7 @@
 * The Yarn detector extracts project information from package.json files.
 * Added Yarn Detector support for dependencies that are missing a fuzzy version in a lockfile dependency declaration.
 * ${solution_name} logs policy violations when it is configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities).
-* (IDETECT-1540) Detect now supports projects managed by the Cargo package manager.
+* Detect now supports projects managed by the Cargo package manager.
 
 ### Changed features
 * Users can [upload source](../properties/configuration/signature scanner/#upload-source-mode) files when only [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is enabled.
