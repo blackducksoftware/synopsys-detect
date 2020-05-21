@@ -26,23 +26,30 @@ import java.io.File;
 import java.util.Optional;
 
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
 public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
     private final AirGapInspectorPaths airGapInspectorPaths;
 
-    public AirgapNugetInspectorLocator(final AirGapInspectorPaths airGapInspectorPaths) {
+    public AirgapNugetInspectorLocator(AirGapInspectorPaths airGapInspectorPaths) {
         this.airGapInspectorPaths = airGapInspectorPaths;
     }
 
     @Override
+    public File locateDotnet3Inspector() throws DetectableException {
+        // FIXME implement
+        return null;
+    }
+
+    @Override
     public File locateExeInspector() {
-        final Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
+        Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
         return new File(nugetAirGapPath.get(), "nuget_classic"); // TODO: Why is there no ifPresent() check?
     }
 
     @Override
     public File locateDotnetInspector() {
-        final Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
+        Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
         return new File(nugetAirGapPath.get(), "nuget_dotnet"); // TODO: Why is there no ifPresent() check?
     }
 }

@@ -27,36 +27,40 @@ import java.util.Optional;
 
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.function.ThrowingBiFunction;
 
 public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
     private final NugetInspectorInstaller nugetInspectorInstaller;
     private final DirectoryManager directoryManager;
     private final String overrideVersion;
 
-    public OnlineNugetInspectorLocator(final NugetInspectorInstaller nugetInspectorInstaller, final DirectoryManager directoryManager, final String overrideVersion) {
+    public OnlineNugetInspectorLocator(NugetInspectorInstaller nugetInspectorInstaller, DirectoryManager directoryManager, String overrideVersion) {
         this.nugetInspectorInstaller = nugetInspectorInstaller;
         this.directoryManager = directoryManager;
         this.overrideVersion = overrideVersion;
     }
 
     @Override
+    public File locateDotnet3Inspector() throws DetectableException {
+        return locateInspector(nugetInspectorInstaller::installDotNet3);
+    }
+
+    @Override
     public File locateDotnetInspector() throws DetectableException {
-        try {
-            final File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
-            return nugetInspectorInstaller.installDotNet(nugetDirectory, Optional.ofNullable(overrideVersion));
-        } catch (final Exception e) {
-            throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
-        }
+        return locateInspector(nugetInspectorInstaller::installDotNet);
     }
 
     @Override
     public File locateExeInspector() throws DetectableException {
+        return locateInspector(nugetInspectorInstaller::installExeInspector);
+    }
+
+    private File locateInspector(ThrowingBiFunction<File, Optional<String>, File, DetectableException> inspectorInstaller) throws DetectableException {
         try {
-            final File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
-            return nugetInspectorInstaller.installExeInspector(nugetDirectory, Optional.ofNullable(overrideVersion));
-        } catch (final Exception e) {
+            File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
+            return inspectorInstaller.apply(nugetDirectory, Optional.ofNullable(overrideVersion));
+        } catch (Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }
     }
-
 }

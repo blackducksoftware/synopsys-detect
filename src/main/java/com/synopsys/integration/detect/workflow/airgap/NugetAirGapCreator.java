@@ -40,11 +40,11 @@ public class NugetAirGapCreator {
 
     private final NugetInspectorInstaller nugetInspectorInstaller;
 
-    public NugetAirGapCreator(final NugetInspectorInstaller nugetInspectorInstaller) {
+    public NugetAirGapCreator(NugetInspectorInstaller nugetInspectorInstaller) {
         this.nugetInspectorInstaller = nugetInspectorInstaller;
     }
 
-    public void installNugetDependencies(final File nugetFolder) throws DetectUserFriendlyException {
+    public void installNugetDependencies(File nugetFolder) throws DetectUserFriendlyException {
         logger.info("Installing nuget dotnet inspector.");
         installThenCopy(nugetFolder, "nuget_dotnet", true);
 
@@ -52,18 +52,19 @@ public class NugetAirGapCreator {
         installThenCopy(nugetFolder, "nuget_classic", false);
     }
 
-    private void installThenCopy(final File nugetFolder, final String folderName, final boolean dotnet) throws DetectUserFriendlyException {
+    private void installThenCopy(File nugetFolder, String folderName, boolean dotnet) throws DetectUserFriendlyException {
         try {
-            final File inspectorFolder = new File(nugetFolder, folderName);
-            final File installTarget;
+            File inspectorFolder = new File(nugetFolder, folderName);
+            File installTarget;
             if (dotnet) {
+                // FIXME check which dotnet runtime should be used
                 installTarget = nugetInspectorInstaller.installDotNet(inspectorFolder, Optional.empty());
             } else {
                 installTarget = nugetInspectorInstaller.installExeInspector(inspectorFolder, Optional.empty());
             }
             FileUtils.copyDirectory(installTarget, inspectorFolder);
             FileUtils.deleteDirectory(installTarget);
-        } catch (final DetectableException | IOException e) {
+        } catch (DetectableException | IOException e) {
             throw new DetectUserFriendlyException("An error occurred installing to the " + folderName + " inspector folder.", e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
