@@ -14,7 +14,7 @@
 * ${solution_name} requires and runs Docker Inspector version 9.
 
 ### Resolved issues
-* (IDETECT-1906) Resolved an issue wherein git extraction might fail if "git log" returned unexpected output.  As a last resort, the commit hash will be used as a version. ([\#114](https://github.com/blackducksoftware/synopsys-detect/issues/114))
+* (IDETECT-1906) Resolved an issue wherein git extraction might fail if "git log" returned unexpected output.  As a last resort, the commit hash will be used as a version.
 * (IDETECT-1883) Resolved an issue where ${solution_name} failed to extract project information when parsing a Git repository with a detached head while in buildless mode.
 * (IDETECT-1970) Resolved an issue where the default value for [parallel processors](../properties/configuration/general/#detect-parallel-processors-advanced) was not used. The available runtime processor count was being used instead.
 * (IDETECT-1973) Resolved an issue where the NuGet exe inspector would not resolve from Artifactory.
