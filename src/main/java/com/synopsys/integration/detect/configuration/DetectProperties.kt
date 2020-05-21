@@ -969,6 +969,12 @@ class DetectProperties {
             setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
         }
 
+        val DETECT_LERNA_PATH = NullablePathProperty("detect.lerna.path").apply {
+            setInfo("Lerna Executable", "6.0.0")
+            setHelp("Path of the lerna executable.")
+            setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+        }
+
         //#endregion Active Properties
 
         //#region Deprecated Properties
