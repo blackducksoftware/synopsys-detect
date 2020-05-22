@@ -1,5 +1,8 @@
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -22,11 +25,15 @@ public class NugetRuntimeResolverTest {
 
         NugetRuntimeResolver nugetRuntimeResolver = Mockito.mock(NugetRuntimeResolver.class);
         Mockito.when(nugetRuntimeResolver.listAvailableDotNetRuntimes()).thenReturn(dotnetRuntimes);
+        Mockito.when(nugetRuntimeResolver.isRuntimeAvailable(Mockito.anyString())).thenCallRealMethod();
         Mockito.when(nugetRuntimeResolver.isRuntimeAvailable(Mockito.anyInt(), Mockito.anyInt())).thenCallRealMethod();
 
         assertAvailability(Assert::assertTrue, nugetRuntimeResolver, 2, 1);
+        assertTrue("Expected 2.1 runtime to be available when passed as a semanticVersion string", nugetRuntimeResolver.isRuntimeAvailable("2.1"));
         assertAvailability(Assert::assertTrue, nugetRuntimeResolver, 3, 1);
+
         assertAvailability(Assert::assertFalse, nugetRuntimeResolver, 4, 0);
+        assertFalse("Expected 4.0 runtime not to be available when passed as a semanticVersion string", nugetRuntimeResolver.isRuntimeAvailable("4.0"));
         assertAvailability(Assert::assertFalse, nugetRuntimeResolver, 2, 2);
     }
 

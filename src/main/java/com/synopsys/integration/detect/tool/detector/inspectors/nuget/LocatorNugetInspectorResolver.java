@@ -96,9 +96,14 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
             }
         }
 
-        // TODO determine which version of dotnet to use here
         if (useDotnet) {
-            File dotnetFolder = nugetInspectorLocator.locateDotnetInspector();
+            File dotnetFolder;
+            // TODO find a better way to get the working directory
+            if (isRuntimeAvailable(new File("."), "3.1")) {
+                dotnetFolder = nugetInspectorLocator.locateDotnet3Inspector();
+            } else {
+                dotnetFolder = nugetInspectorLocator.locateDotnetInspector();
+            }
             return findDotnetCoreInspector(dotnetFolder, dotnetExecutable);
         } else {
             File classicFolder = nugetInspectorLocator.locateExeInspector();
@@ -135,6 +140,12 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         } else {
             throw new DetectableException("Unable to find nuget inspector named '" + exeName + "' in " + toolsFolder.getAbsolutePath());
         }
+    }
+
+    private boolean isRuntimeAvailable(File workingDir, String semanticVersion) throws DetectableException {
+        // TODO should this be passed through the constructor?
+        NugetRuntimeResolver runtimeResolver = new NugetRuntimeResolver(executableRunner, workingDir);
+        return runtimeResolver.isRuntimeAvailable(semanticVersion);
     }
 
     private boolean isWindows(DetectInfo detectInfo) {
