@@ -96,10 +96,13 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
             }
         }
 
+        // TODO should these be passed through the constructor?
+        File workingDir = new File(".");
+        NugetRuntimeResolver runtimeResolver = new NugetRuntimeResolver(executableRunner, workingDir);
+
         if (useDotnet) {
             File dotnetFolder;
-            // TODO find a better way to get the working directory
-            if (isRuntimeAvailable(new File("."), "3.1")) {
+            if (runtimeResolver.isRuntimeAvailable(3)) {
                 dotnetFolder = nugetInspectorLocator.locateDotnet3Inspector();
             } else {
                 dotnetFolder = nugetInspectorLocator.locateDotnetInspector();
@@ -140,12 +143,6 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         } else {
             throw new DetectableException("Unable to find nuget inspector named '" + exeName + "' in " + toolsFolder.getAbsolutePath());
         }
-    }
-
-    private boolean isRuntimeAvailable(File workingDir, String semanticVersion) throws DetectableException {
-        // TODO should this be passed through the constructor?
-        NugetRuntimeResolver runtimeResolver = new NugetRuntimeResolver(executableRunner, workingDir);
-        return runtimeResolver.isRuntimeAvailable(semanticVersion);
     }
 
     private boolean isWindows(DetectInfo detectInfo) {

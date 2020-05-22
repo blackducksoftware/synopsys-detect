@@ -40,17 +40,18 @@ public class NugetRuntimeResolver {
                                                  .map(NumberUtils::toInt)
                                                  .collect(Collectors.toList());
 
-        if (numericVersionTokens.size() < 2) {
+        if (numericVersionTokens.isEmpty()) {
             logger.warn("Invalid semantic version parameter for dotnet runtime query");
             return false;
         }
 
-        return isRuntimeAvailable(numericVersionTokens.get(0), numericVersionTokens.get(1));
+        Integer[] intArray = new Integer[numericVersionTokens.size()];
+        return isRuntimeAvailable(numericVersionTokens.toArray(intArray));
     }
 
-    public boolean isRuntimeAvailable(Integer majorVersion, Integer minorVersion) throws DetectableException {
+    public boolean isRuntimeAvailable(Integer... versionTokens) throws DetectableException {
         List<String> runtimes = listAvailableDotNetRuntimes();
-        Pattern runtimePattern = createRuntimePattern(majorVersion, minorVersion);
+        Pattern runtimePattern = createRuntimePattern(versionTokens);
         for (String runtime : runtimes) {
             Matcher runtimeMatcher = runtimePattern.matcher(runtime);
             if (runtimeMatcher.matches()) {
@@ -78,8 +79,8 @@ public class NugetRuntimeResolver {
         }
     }
 
-    private Pattern createRuntimePattern(Integer majorVersion, Integer minorVersion) {
-        String regexSafeVersion = String.join("\\.", majorVersion.toString(), minorVersion.toString());
+    private Pattern createRuntimePattern(Integer... versionTokens) {
+        String regexSafeVersion = StringUtils.join(versionTokens, "\\.");
         String runtimePattern = DOTNET_RUNTIME_PATTERN_WITHOUT_VERSION.replace(DOTNET_RUNTIME_PATTERN_VERSION_PLACEHOLDER, regexSafeVersion);
         return Pattern.compile(runtimePattern);
     }
