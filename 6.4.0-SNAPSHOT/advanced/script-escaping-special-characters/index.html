@@ -1320,22 +1320,20 @@
                 
                 <h1 id="quoting-and-escaping-shell-script-arguments">Quoting and escaping shell script arguments<a class="headerlink" href="#quoting-and-escaping-shell-script-arguments" title="Permanent link">#</a></h1>
 <h2 id="bash-script-detectsh">Bash script (detect.sh)<a class="headerlink" href="#bash-script-detectsh" title="Permanent link">#</a></h2>
-<p>When passing an argument that must be quoted; for example, it contains a space, to detect.sh, you must 
-quote the argument using escaped quote characters by preceding each quote with a backslash character. For example:</p>
-<pre><code>bash &lt;(curl -s -L detect.synopsys.com/detect.sh) --detect.project.name=\"Project Test\"
+<p>When an argument contains a space, you should wrap the argument with escaped quotes.</p>
+<p>For example:</p>
+<pre><code>detect.sh --detect.project.name=\"Project Test\"
 </code></pre>
-<p>When passing an argument that contains a character that must be escaped; for example, an exclamation point, to detect.sh, you must 
-escape the character by preceding the character with a backslash character and quote the string that contains it. For example:</p>
-<pre><code>bash &lt;(curl -s -L detect.synopsys.com/detect.sh) --detect.project.name="Project\!Test"
+<p>When an argument contains a special character (for example, an exclamation point) you must
+escape the character with a backslash. The backslash should precede the escaped character.</p>
+<p>For example:</p>
+<pre><code>detect.sh --detect.project.name=Project\!Test
 </code></pre>
 <h2 id="powershell-script-detectps1">PowerShell script (detect.ps1)<a class="headerlink" href="#powershell-script-detectps1" title="Permanent link">#</a></h2>
-<p>When passing an argument that must be quoted; for example, it contains a space, to detect.ps1, you must 
-quote the argument using escaped quote characters, by preceding each quote with a back quote character. For example:</p>
-<pre><code>powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect" --detect.project.name=`"Project Test`"
-</code></pre>
-<p>When passing an argument that contains a character that must be escaped; for example, a back quote character, to detect.ps1, you must 
-escape the character by preceding the character with a back quote character. For example:</p>
-<pre><code>powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect" --detect.project.name=Project``Test
+<p>When an argument contains a space, comma or other special character, you should escape the character with a back quote. The back quote should precede the escaped character.</p>
+<p>For example:</p>
+<pre><code>detect.ps1 --detect.project.name=Project` Test
+detect.ps1 --detect.signature.scanner.paths=path1`,path2
 </code></pre>
                 
                   
