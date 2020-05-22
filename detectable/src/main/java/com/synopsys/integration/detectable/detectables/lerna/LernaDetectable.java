@@ -19,13 +19,15 @@ public class LernaDetectable extends Detectable {
 
     private final FileFinder fileFinder;
     private final LernaResolver lernaResolver;
+    private final LernaExtractor lernaExtractor;
 
     private File lernaExecutable;
 
-    public LernaDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final LernaResolver lernaResolver) {
+    public LernaDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final LernaResolver lernaResolver, final LernaExtractor lernaExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.lernaResolver = lernaResolver;
+        this.lernaExtractor = lernaExtractor;
     }
 
     @Override
@@ -52,6 +54,6 @@ public class LernaDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return null;
+        return lernaExtractor.extract(lernaExecutable, extractionEnvironment);
     }
 }
