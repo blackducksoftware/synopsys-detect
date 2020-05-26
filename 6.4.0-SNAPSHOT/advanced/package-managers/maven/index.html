@@ -36,7 +36,7 @@
     
     
       
-        <title>Yarn support - Synopsys Detect</title>
+        <title>Maven support - Synopsys Detect</title>
       
     
     
@@ -75,7 +75,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#yarn-support" tabindex="1" class="md-skip">
+      <a href="#maven-support" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -101,7 +101,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Yarn support
+                Maven support
               
             </span>
           
@@ -437,11 +437,11 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-13" type="checkbox" id="nav-9-13" checked>
     
     <label class="md-nav__link" for="nav-9-13">
-      Language and package managers
+      Package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
       <label class="md-nav__title" for="nav-9-13">
-        Language and package managers
+        Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -454,6 +454,18 @@
   <li class="md-nav__item">
     <a href="../bazel/" title="Bazel support" class="md-nav__link">
       Bazel support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../cargo/" title="Cargo support" class="md-nav__link">
+      Cargo support
     </a>
   </li>
 
@@ -522,11 +534,56 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../maven/" title="Maven support" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Maven support
+      </label>
+    
+    <a href="./" title="Maven support" class="md-nav__link md-nav__link--active">
       Maven support
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#maven-pom-detector" class="md-nav__link">
+    Maven Pom detector
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maven-parse-detector" class="md-nav__link">
+    Maven Parse detector
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -570,49 +627,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Yarn support
-      </label>
-    
-    <a href="./" title="Yarn support" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../yarn/" title="Yarn support" class="md-nav__link">
       Yarn support
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#yarn-workspace-support" class="md-nav__link">
-    Yarn Workspace Support
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
         
@@ -1247,8 +1266,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#yarn-workspace-support" class="md-nav__link">
-    Yarn Workspace Support
+  <a href="#maven-pom-detector" class="md-nav__link">
+    Maven Pom detector
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maven-parse-detector" class="md-nav__link">
+    Maven Parse detector
   </a>
   
 </li>
@@ -1270,15 +1296,26 @@
               
                 
                 
-                <h1 id="yarn-support">Yarn support<a class="headerlink" href="#yarn-support" title="Permanent link">#</a></h1>
-<p>Synopsys Detect runs the Yarn detector if it finds both of the following files in your project:</p>
+                <h1 id="maven-support">Maven support<a class="headerlink" href="#maven-support" title="Permanent link">#</a></h1>
+<p>Synopsys Detect has two detectors for Maven:</p>
 <ul>
-<li>yarn.lock</li>
-<li>package.json</li>
+<li>Maven Pom detector</li>
+<li>Maven Parse detector</li>
 </ul>
-<p>The Yarn detector reads both files and derives project and dependency information from their contents.</p>
-<h2 id="yarn-workspace-support">Yarn Workspace Support<a class="headerlink" href="#yarn-workspace-support" title="Permanent link">#</a></h2>
-<p>Synopsys Detect does not currently support Yarn workspaces as defined <a href="https://classic.yarnpkg.com/en/docs/workspaces/">here</a>.</p>
+<h2 id="maven-pom-detector">Maven Pom detector<a class="headerlink" href="#maven-pom-detector" title="Permanent link">#</a></h2>
+<p>The Maven Pom detector discovers dependencies of Maven projects.</p>
+<p>The Maven Pom detector attempts to run on your project if it finds a pom.xml file in the source directory (top level).</p>
+<p>The Maven Pom detector also requires either mvnw or mvn:</p>
+<ol>
+<li>Synopsys Detect looks for mvnw in the source directory (top level). You can override this by setting the Maven path property. If not overridden and not found:</li>
+<li>Synopsys Detect looks for mvn on $PATH.</li>
+</ol>
+<p>The Maven Pom detector runs <code>mvn dependency:tree</code> to get a list of the project's dependencies and then parses the output.</p>
+<p>Scope inclusion/exclusion is performed during the parsing of the output of the <code>mvn dependency:tree</code> command.
+When a component of an included scope is found under a component of an excluded scope, it is added
+to the BOM under a top level placeholder component named <em>Additional_Components</em>.</p>
+<h2 id="maven-parse-detector">Maven Parse detector<a class="headerlink" href="#maven-parse-detector" title="Permanent link">#</a></h2>
+<p>TBD</p>
                 
                   
                 
@@ -1299,7 +1336,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../python/" title="Python support" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../hex/" title="Erlang/Hex/Rebar support" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -1308,19 +1345,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Python support
+                Erlang/Hex/Rebar support
               </span>
             </div>
           </a>
         
         
-          <a href="../yocto-bitbake/" title="Yocto (BitBake)" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../npm/" title="npm support" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Yocto (BitBake)
+                npm support
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
