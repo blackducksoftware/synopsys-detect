@@ -33,6 +33,24 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         );
         addExecutableOutput(goListOutput, "go", "list", "-m");
 
+        ExecutableOutput goListUJsonOutput = createStandardOutput(
+            "{",
+            "\t\"Path\": \"github.com/codegangsta/negroni\",",
+            "\t\"Version\": \"v1.0.0\"",
+            "}",
+            "",
+            "{",
+            "\t\"Path\": \"github.com/sirupsen/logrus\",",
+            "\t\"Version\": \"v1.1.1\"",
+            "}",
+            "",
+            "{",
+            "\t\"Path\": \"github.com/davecgh/go-spew\",",
+            "\t\"Version\": \"v1.1.1\"",
+            "}"
+        );
+        addExecutableOutput(goListUJsonOutput, "go", "list", "-m", "-u", "-json", "all");
+
         ExecutableOutput goModGraphOutput = createStandardOutput(
             "github.com/gomods/athens github.com/codegangsta/negroni@v1.0.0",
             "github.com/gomods/athens github.com/sirupsen/logrus@v1.1.1",
