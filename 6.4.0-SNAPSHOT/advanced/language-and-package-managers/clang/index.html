@@ -36,7 +36,7 @@
     
     
       
-        <title>Docker image support - Synopsys Detect</title>
+        <title>C/C++ (Clang) support - Synopsys Detect</title>
       
     
     
@@ -75,7 +75,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#docker-image-support" tabindex="1" class="md-skip">
+      <a href="#cc-clang-support" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -101,7 +101,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Docker image support
+                C/C++ (Clang) support
               
             </span>
           
@@ -437,11 +437,11 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-13" type="checkbox" id="nav-9-13" checked>
     
     <label class="md-nav__link" for="nav-9-13">
-      Package managers
+      Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
       <label class="md-nav__title" for="nav-9-13">
-        Package managers
+        Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -462,30 +462,6 @@
           
           
 
-
-  <li class="md-nav__item">
-    <a href="../cargo/" title="Cargo support" class="md-nav__link">
-      Cargo support
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../clang/" title="C/C++ (Clang) support" class="md-nav__link">
-      C/C++ (Clang) support
-    </a>
-  </li>
-
-        
-          
-          
-          
-
   
 
 
@@ -496,53 +472,22 @@
       
     
     
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Docker image support
-      </label>
-    
-    <a href="./" title="Docker image support" class="md-nav__link md-nav__link--active">
-      Docker image support
+    <a href="./" title="C/C++ (Clang) support" class="md-nav__link md-nav__link--active">
+      C/C++ (Clang) support
     </a>
     
-      
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#passing-docker-inspector-property-values-to-docker-inspector-from-synopsys-detect" class="md-nav__link">
-    Passing Docker Inspector property values to Docker Inspector from Synopsys Detect
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#synopsys-detects-scan-target" class="md-nav__link">
-    Synopsys Detect's scan target
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#isolating-application-components" class="md-nav__link">
-    Isolating application components
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
-</nav>
-    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../docker-images/" title="Docker image support" class="md-nav__link">
+      Docker image support
+    </a>
   </li>
 
         
@@ -1269,36 +1214,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#passing-docker-inspector-property-values-to-docker-inspector-from-synopsys-detect" class="md-nav__link">
-    Passing Docker Inspector property values to Docker Inspector from Synopsys Detect
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#synopsys-detects-scan-target" class="md-nav__link">
-    Synopsys Detect's scan target
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#isolating-application-components" class="md-nav__link">
-    Isolating application components
-  </a>
-  
-</li>
-      
-      
-      
-      
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -1310,33 +1225,31 @@
               
                 
                 
-                <h1 id="docker-image-support">Docker image support<a class="headerlink" href="#docker-image-support" title="Permanent link">#</a></h1>
-<p>On Linux and Mac, Synopsys Detect can invoke Docker Inspector to inspect Docker images. For simple use cases, add either <code>--detect.docker.image={repo}:{tag}</code> or <code>--detect.docker.tar={path to a Docker saved tarfile}</code> to the Synopsys Detect command line.</p>
-<p>The documentation for Docker Inspector is available <a href="https://blackducksoftware.github.io/blackduck-docker-inspector/latest/overview/">here</a>.</p>
-<p>When passed a value for either detect.docker.image or detect.docker.tar, Synopsys Detect runs Docker Inspector on the given image; in other words, the target image, creating one code location. Synopsys Detect by default runs the Black Duck Signature Scanner on the image.  This is actually the file system a container created from the image has at startup time; refer to <a href="#scantarget">Synopsys Detect's scan target</a> for more details. This creates a second code location.</p>
-<h3 id="passing-docker-inspector-property-values-to-docker-inspector-from-synopsys-detect">Passing Docker Inspector property values to Docker Inspector from Synopsys Detect<a class="headerlink" href="#passing-docker-inspector-property-values-to-docker-inspector-from-synopsys-detect" title="Permanent link">#</a></h3>
-<p>For more complex use cases, you may need to pass Docker Inspector property values to Docker Inspector using Synopsys Detect. To do this, construct the Synopsys Detect property name by prefixing the Docker Inspector property name with <code>detect.docker.passthrough.</code>.</p>
-<p>For example, suppose you need to set Docker Inspector's service.timeout value (the length of time Docker Inspector waits for a response from the Image Inspector services that it uses) to 480000 milliseconds. You add the prefix to the Docker Inspector property name to derive the Synopsys Detect property name <code>detect.docker.passthrough.service.timeout</code>. Therefore, add <code>--detect.docker.passthrough.service.timeout=480000</code> to the Synopsys Detect command line.</p>
-<p>For example:</p>
-<pre><code>./detect.sh --detect.docker.image=ubuntu:latest --detect.docker.passthrough.service.timeout=480000
-</code></pre>
-
-<p>You can set any Docker Inspector property using this method.</p>
-<p><a name="scantarget"></a></p>
-<h3 id="synopsys-detects-scan-target">Synopsys Detect's scan target<a class="headerlink" href="#synopsys-detects-scan-target" title="Permanent link">#</a></h3>
-<p>When a Docker image is run; for example, using a <code>docker run</code> command, a container is created. That container has a file system; in other words, the container file system. The container file system at the instant the container is created; in other words, the initial container file system, can be determined in advance from the image without running the image. Because the target image is not yet trusted, Docker Inspector does not run the image; that is, it does not create a container from the image, but it does construct the initial container file system, which is the file system a container has at the instant it is created.</p>
-<p>When Synopsys Detect invokes both Docker Inspector because either detect.docker.image or detect.docker.tar is set, and the Black Duck Signature Scanner, as it does by default, the target of that Black Duck signature scan is the initial container file system constructed by Docker Inspector, packaged in a way to optimize results from Black Duck's matching algorithms. Rather than directly running the Black Duck Signature Scanner on the initial container file system, Synopsys Detect runs the Black Duck Signature Scanner on a new image; in other words, the squashed image, constructed using the initial container file system built by Docker Inspector. Packaging the initial container file system in a Docker image triggers matching algorithms within Black Duck that optimize match results for Linux file systems.</p>
-<p>In earlier versions of Synopsys Detect / Docker Inspector, Synopsys Detect ran the Black Duck Signature Scanner directly on the target image. This approach had the disadvantage of potentially producing false positives under certain circumstances. For example, suppose your target image consists of multiple layers. If version 1 of a package is installed in layer 0, and then replaced with a newer version of that package in layer 1, both versions exist in the image, even though the initial container file system only includes version 2. A Black Duck signature scan of the target image shows both versions, even though version 1 has been effectively replaced with version 2. The current Synopsys Detect / Docker Inspector functionality avoids this potential for false positives.</p>
-<h3 id="isolating-application-components">Isolating application components<a class="headerlink" href="#isolating-application-components" title="Permanent link">#</a></h3>
-<p>If you are interested in components from the application layers of your image, but not interested in components from the underlying platform layers, you can exclude components from platform layers from the results.</p>
-<p>For example, if you build your application on ubuntu:latest (your Dockerfile starts with FROM ubuntu:latest), you can exclude components from the Ubuntu layer(s) so that the components generated by Synopsys Detect using Docker Inspector and the Black Duck Signature Scanner contain only components from your application layers.</p>
-<p>First, find the layer ID of the platform's top layer. To do this task:</p>
-<p>Run the docker inspect command on the base image; in our example this is ubuntu:latest.
-Find the last element in the RootFS.Layers array. This is the platform top layer ID. In the following example, this is sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c.
-Set the value of the Docker Inspector property docker.platform.top.layer.id to the platform top layer ID. For example:</p>
-<pre><code>./detect.sh ... --detect.docker.image={your application image} --detect.docker.platform.top.layer.id=sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c
-</code></pre>
-<p>In this mode, there may be some loss in match accuracy from the Black Duck Signature Scanner because, in this scenario, the Black Duck Signature Scanner may be deprived of some contextual information, such as the operating system files that enable it to determine the Linux distribution, and that that may negatively affect its ability to accurately identify components.</p>
+                <h1 id="cc-clang-support">C/C++ (Clang) support<a class="headerlink" href="#cc-clang-support" title="Permanent link">#</a></h1>
+<p>C/C++ (Clang) support is limited to Linux systems that support one of the following
+package manager commands: APK, DPKG, or RPM.</p>
+<p>For C/C++ projects on Linux systems that meet these requirements, Synopsys Detect can derive
+dependency information using information read from a JSON Compilation Database
+(compile_commands.json file) and the Linux package manager.</p>
+<p>The JSON compilation database
+must be generated by your project build before running Synopsys Detect.
+There are multiple C/C++ build tools that are capable of generating a JSON compilation database.
+For example, some versions of CMake generate a JSON compilation database
+when run with the following option:</p>
+<p>-DCMAKE_EXPORT_COMPILE_COMMANDS=ON</p>
+<p>The Clang detector runs when it finds a compile_commands.json file
+in the project directory. If the compile_commands.json file resides in a sub-directory,
+adjust the <a href="../../../properties/configuration/paths/#detector-search-depth">detector search depth</a>
+to enable Synopsys Detect to find it. If the compile_commands.json file
+resides in a normally excluded subdirectory (for example: ./build),
+you can turn off the <a href="../../../properties/configuration/paths/#detector-exclude-default-directories-advanced">default detector search exclusions</a>,
+or fine tune the <a href="../../../properties/configuration/paths/#detector-directory-patterns-exclusions-advanced">detector search directory exclusion patterns</a>.</p>
+<p>For each compile command in the compile_commands.json file, the Clang detector
+runs a version of the command that is modified to ensure that it does
+not overwrite build artifacts, and generate a list of include files used.
+This is performed by adding the <em>-M</em> and <em>-MF</em> compiler options.
+It then uses the Linux package manager to identify which installed package owns each
+include file. These packages are added as a component to the results.</p>
                 
                   
                 
@@ -1357,7 +1270,7 @@ Set the value of the Docker Inspector property docker.platform.top.layer.id to t
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../clang/" title="C/C++ (Clang) support" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../bazel/" title="Bazel support" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -1366,19 +1279,19 @@ Set the value of the Docker Inspector property docker.platform.top.layer.id to t
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                C/C++ (Clang) support
+                Bazel support
               </span>
             </div>
           </a>
         
         
-          <a href="../golang/" title="GoLang support" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../docker-images/" title="Docker image support" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                GoLang support
+                Docker image support
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">

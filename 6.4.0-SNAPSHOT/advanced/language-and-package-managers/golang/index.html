@@ -36,7 +36,7 @@
     
     
       
-        <title>Erlang/Hex/Rebar support - Synopsys Detect</title>
+        <title>GoLang support - Synopsys Detect</title>
       
     
     
@@ -75,7 +75,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#erlanghexrebar-support" tabindex="1" class="md-skip">
+      <a href="#golang-support" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -101,7 +101,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Erlang/Hex/Rebar support
+                GoLang support
               
             </span>
           
@@ -437,11 +437,11 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-13" type="checkbox" id="nav-9-13" checked>
     
     <label class="md-nav__link" for="nav-9-13">
-      Package managers
+      Language and package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
       <label class="md-nav__title" for="nav-9-13">
-        Package managers
+        Language and package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -454,18 +454,6 @@
   <li class="md-nav__item">
     <a href="../bazel/" title="Bazel support" class="md-nav__link">
       Bazel support
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../cargo/" title="Cargo support" class="md-nav__link">
-      Cargo support
     </a>
   </li>
 
@@ -498,11 +486,77 @@
           
           
 
+  
 
-  <li class="md-nav__item">
-    <a href="../golang/" title="GoLang support" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        GoLang support
+      </label>
+    
+    <a href="./" title="GoLang support" class="md-nav__link md-nav__link--active">
       GoLang support
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#go-lock-go_dep-detector" class="md-nav__link">
+    Go Lock (GO_DEP) detector
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-go-gradle-go_gradle-detector" class="md-nav__link">
+    The Go Gradle (GO_GRADLE) detector
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-go-mod-cli-go_mod-detector" class="md-nav__link">
+    The Go Mod Cli (GO_MOD) detector
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-go-vendor-go_vendor-detector" class="md-nav__link">
+    The Go Vendor (GO_VENDOR) detector
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-go-vndr-go_vndr-detector" class="md-nav__link">
+    The Go Vndr (GO_VNDR) detector
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
         
@@ -522,20 +576,11 @@
           
           
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-    <a href="./" title="Erlang/Hex/Rebar support" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../hex/" title="Erlang/Hex/Rebar support" class="md-nav__link">
       Erlang/Hex/Rebar support
     </a>
-    
   </li>
 
         
@@ -1226,6 +1271,50 @@
     
   
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#go-lock-go_dep-detector" class="md-nav__link">
+    Go Lock (GO_DEP) detector
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-go-gradle-go_gradle-detector" class="md-nav__link">
+    The Go Gradle (GO_GRADLE) detector
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-go-mod-cli-go_mod-detector" class="md-nav__link">
+    The Go Mod Cli (GO_MOD) detector
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-go-vendor-go_vendor-detector" class="md-nav__link">
+    The Go Vendor (GO_VENDOR) detector
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-go-vndr-go_vndr-detector" class="md-nav__link">
+    The Go Vndr (GO_VNDR) detector
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1237,11 +1326,60 @@
               
                 
                 
-                <h1 id="erlanghexrebar-support">Erlang/Hex/Rebar support<a class="headerlink" href="#erlanghexrebar-support" title="Permanent link">#</a></h1>
-<p>The Rebar detector discovers dependencies of Erlang projects that use the Hex package manager.</p>
-<p>The Rebar detector runs if Synopsys Detect finds a <em>rebar.config</em> file in your project.
-A <em>rebar3</em> executable must be found on the PATH, or must be <a href="../../../properties/detectors/hex/#rebar3-executable">provided</a>.</p>
-<p>The Rebar detector runs the <em>rebar3 tree</em> command and parses the output for dependency information.</p>
+                <h1 id="golang-support">GoLang support<a class="headerlink" href="#golang-support" title="Permanent link">#</a></h1>
+<p>Synopsys Detect has four detectors for GoLang:</p>
+<ul>
+<li><a href="#godeplockdetector">Go Lock (GO_DEP) detector</a></li>
+<li><a href="#godepclidetector">Go Gradle (GO_GRADLE) detector</a></li>
+<li><a href="#gomodclidetector">Go Mod Cli (GO_MOD) detector</a></li>
+<li><a href="#govendordetector">Go Vendor (GO_VENDOR) detector</a></li>
+<li><a href="#govndrdetector">Go Vndr (GO_VNDR) detector</a></li>
+</ul>
+<p><a name="godeplockdetector"></a></p>
+<h2 id="go-lock-go_dep-detector">Go Lock (GO_DEP) detector<a class="headerlink" href="#go-lock-go_dep-detector" title="Permanent link">#</a></h2>
+<p>The Go Lock (GO_DEP) detector:</p>
+<ul>
+<li>discovers dependencies of GoLang projects.</li>
+<li>attempts to run on your project if a Gopkg.lock file is found in your source directory.</li>
+<li>does not rely on external executables; for example, go, dep, and others.</li>
+<li>parses Gopkg.lock for dependencies.</li>
+</ul>
+<p><a name="godepclidetector"></a></p>
+<h2 id="the-go-gradle-go_gradle-detector">The Go Gradle (GO_GRADLE) detector<a class="headerlink" href="#the-go-gradle-go_gradle-detector" title="Permanent link">#</a></h2>
+<p>The Go Gradle (GO_GRADLE) detector:</p>
+<ul>
+<li>discovers dependencies of go language (GoLang) projects.</li>
+<li>attempts to run on your project if a gogradle.lock file is found in your source directory.</li>
+<li>does not rely on external executables; for example, go, dep, and others.</li>
+<li>parses gogradle.lock for dependencies.</li>
+</ul>
+<p><a name="gomodclidetector"></a></p>
+<h2 id="the-go-mod-cli-go_mod-detector">The Go Mod Cli (GO_MOD) detector<a class="headerlink" href="#the-go-mod-cli-go_mod-detector" title="Permanent link">#</a></h2>
+<p>The Go Mod Cli (GO_MOD) detector:</p>
+<ul>
+<li>discovers dependencies of go language (GoLang) projects.</li>
+<li>attempts to run on your project if a go.mod file is found in your source directory.</li>
+<li>requires that the <em>go</em> executable is on the PATH.</li>
+<li>runs <em>go list -m</em> and <em>go mod graph</em>, and parses the output of both to discover dependencies.</li>
+</ul>
+<p><a name="govendordetector"></a></p>
+<h2 id="the-go-vendor-go_vendor-detector">The Go Vendor (GO_VENDOR) detector<a class="headerlink" href="#the-go-vendor-go_vendor-detector" title="Permanent link">#</a></h2>
+<p>The Go Vendor (GO_VENDOR) detector:</p>
+<ul>
+<li>discovers dependencies of go language (GoLang) projects.</li>
+<li>attempts to run on your project if the file vendor/vendor.json is found in your source directory.</li>
+<li>does not rely on external executables; for example, go, dep, and others.</li>
+<li>parses vendor/vendor.json for dependencies.</li>
+</ul>
+<p><a name="govndrdetector"></a></p>
+<h2 id="the-go-vndr-go_vndr-detector">The Go Vndr (GO_VNDR) detector<a class="headerlink" href="#the-go-vndr-go_vndr-detector" title="Permanent link">#</a></h2>
+<p>The Go Vndr (GO_VNDR) detector:</p>
+<ul>
+<li>discovers dependencies of go language (GoLang) projects.</li>
+<li>attempts to run on your project if the file vendor.conf is found in your source directory.</li>
+<li>does not rely on external executables; for example, go, dep, and others.</li>
+<li>parses vendor.conf for dependencies.</li>
+</ul>
                 
                   
                 
@@ -1262,7 +1400,7 @@ A <em>rebar3</em> executable must be found on the PATH, or must be <a href="../.
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../gradle/" title="Gradle support" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../docker-images/" title="Docker image support" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -1271,19 +1409,19 @@ A <em>rebar3</em> executable must be found on the PATH, or must be <a href="../.
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Gradle support
+                Docker image support
               </span>
             </div>
           </a>
         
         
-          <a href="../maven/" title="Maven support" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../gradle/" title="Gradle support" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Maven support
+                Gradle support
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
