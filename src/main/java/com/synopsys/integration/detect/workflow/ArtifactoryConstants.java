@@ -30,6 +30,10 @@ public class ArtifactoryConstants {
     public static final String GRADLE_INSPECTOR_PROPERTY = "GRADLE_INSPECTOR_LATEST_0";
     public static final String GRADLE_INSPECTOR_MAVEN_REPO = "https://repo.blackducksoftware.com/artifactory/bds-integration-public-cache/";
 
+    public static final String NUGET_DOTNET3_INSPECTOR_REPO = "bds-integrations-nuget-release/NugetDotnet3Inspector";
+    public static final String NUGET_DOTNET3_INSPECTOR_PROPERTY = "NUGET_DOTNET3_INSPECTOR_LATEST_0";
+    public static final String NUGET_DOTNET3_INSPECTOR_VERSION_OVERRIDE = "/NugetDotnet3Inspector." + ArtifactoryConstants.VERSION_PLACEHOLDER + ".nupkg";
+
     public static final String NUGET_INSPECTOR_REPO = "bds-integrations-nuget-release/BlackduckNugetInspector";
     public static final String NUGET_INSPECTOR_PROPERTY = "NUGET_INSPECTOR_LATEST_0";
     public static final String NUGET_INSPECTOR_VERSION_OVERRIDE = "/BlackduckNugetInspector." + ArtifactoryConstants.VERSION_PLACEHOLDER + ".nupkg";

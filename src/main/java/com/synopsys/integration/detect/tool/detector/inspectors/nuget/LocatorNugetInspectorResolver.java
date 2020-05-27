@@ -114,6 +114,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         }
     }
 
+    // FIXME create an abstraction for these finders and add one for dotnet3
     private DotNetCoreNugetInspector findDotnetCoreInspector(File nupkgFolder, File dotnetExecutable) throws DetectableException {
         //new inspector
         final String dotnetInspectorName = "BlackduckNugetInspector.dll";

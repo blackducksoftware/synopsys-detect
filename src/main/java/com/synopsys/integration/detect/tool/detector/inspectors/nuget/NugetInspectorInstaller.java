@@ -49,7 +49,7 @@ public class NugetInspectorInstaller {
     public File installDotNet3(File destination, Optional<String> overrideVersion) throws DetectableException {
         logger.debug("Will attempt to resolve the dotnet3 inspector version.");
         // FIXME create constants for and pass the correct Artifactory repo
-        return installInspector(destination, overrideVersion, "REPO", "PROPERTY", "OVERRIDE");
+        return installInspector(destination, overrideVersion, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_REPO, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_PROPERTY, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_VERSION_OVERRIDE);
     }
 
     public File installDotNet(File destination, Optional<String> overrideVersion) throws DetectableException {
