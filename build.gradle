@@ -13,13 +13,17 @@ import com.synopsys.integration.log.PrintStreamIntLogger
 buildscript {
     ext {
         springBootVersion = '2.2.4.RELEASE'
-        blackDuckCommonVersion = '47.1.3'
+        blackDuckCommonVersion = '48.0.0-SNAPSHOT'
         polarisCommonVersion = '0.13.2'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
+
+    repositories {
+        mavenLocal()
+    }
 
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"

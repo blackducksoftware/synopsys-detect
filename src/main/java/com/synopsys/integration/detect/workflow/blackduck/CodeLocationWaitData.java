@@ -28,14 +28,19 @@ import java.util.Set;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
+import com.synopsys.integration.util.NameVersion;
 
 public class CodeLocationWaitData {
     private NotificationTaskRange notificationRange;
+    private NameVersion projectAndVersion;
     private Set<String> codeLocationNames = new HashSet<>();
     private int expectedNotificationCount = 0;
 
     public void addWaitForCreationData(CodeLocationCreationData codeLocationCreationData) {
         expectedNotificationCount += codeLocationCreationData.getOutput().getExpectedNotificationCount();
+        if (null == projectAndVersion) {
+            projectAndVersion = codeLocationCreationData.getOutput().getProjectAndVersion();
+        }
         codeLocationNames.addAll(codeLocationCreationData.getOutput().getSuccessfulCodeLocationNames());
         if (null == notificationRange) {
             notificationRange = codeLocationCreationData.getNotificationTaskRange();
@@ -62,6 +67,10 @@ public class CodeLocationWaitData {
 
     public NotificationTaskRange getNotificationRange() {
         return notificationRange;
+    }
+
+    public NameVersion getProjectAndVersion() {
+        return projectAndVersion;
     }
 
     public Set<String> getCodeLocationNames() {
