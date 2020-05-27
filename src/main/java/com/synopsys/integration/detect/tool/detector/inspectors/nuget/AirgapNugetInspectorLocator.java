@@ -29,6 +29,10 @@ import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
 public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
+    public static final String INSPECTOR_DIR_DOTNET3 = "nuget_dotnet3";
+    public static final String INSPECTOR_DIR_DOTNET = "nuget_dotnet";
+    public static final String INSPECTOR_DIR_CLASSIC = "nuget_classic";
+
     private final AirGapInspectorPaths airGapInspectorPaths;
 
     public AirgapNugetInspectorLocator(AirGapInspectorPaths airGapInspectorPaths) {

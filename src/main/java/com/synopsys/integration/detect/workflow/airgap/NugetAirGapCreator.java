@@ -32,8 +32,8 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.AirgapNugetInspectorLocator;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorLocator;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.function.ThrowingBiFunction;
 
@@ -48,13 +48,13 @@ public class NugetAirGapCreator {
 
     public void installNugetDependencies(File nugetFolder) throws DetectUserFriendlyException {
         logger.info("Installing nuget dotnet3 inspector.");
-        installThenCopy(nugetFolder, NugetInspectorLocator.INSPECTOR_DIR_DOTNET3, nugetInspectorInstaller::installDotNet3);
+        installThenCopy(nugetFolder, AirgapNugetInspectorLocator.INSPECTOR_DIR_DOTNET3, nugetInspectorInstaller::installDotNet3);
 
         logger.info("Installing nuget dotnet inspector.");
-        installThenCopy(nugetFolder, NugetInspectorLocator.INSPECTOR_DIR_DOTNET, nugetInspectorInstaller::installDotNet);
+        installThenCopy(nugetFolder, AirgapNugetInspectorLocator.INSPECTOR_DIR_DOTNET, nugetInspectorInstaller::installDotNet);
 
         logger.info("Installing nuget classic inspector.");
-        installThenCopy(nugetFolder, NugetInspectorLocator.INSPECTOR_DIR_CLASSIC, nugetInspectorInstaller::installExeInspector);
+        installThenCopy(nugetFolder, AirgapNugetInspectorLocator.INSPECTOR_DIR_CLASSIC, nugetInspectorInstaller::installExeInspector);
     }
 
     private void installThenCopy(File nugetFolder, String folderName, ThrowingBiFunction<File, Optional<String>, File, DetectableException> installer) throws DetectUserFriendlyException {

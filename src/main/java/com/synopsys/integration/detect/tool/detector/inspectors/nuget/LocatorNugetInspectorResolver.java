@@ -121,7 +121,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         return findInspector(nupkgFolder, dotnetInspectorName, constructor);
     }
 
-    //original inspector 
+    //original inspector
     private NugetInspector findExeInspector(File nupkgFolder) throws DetectableException {
         String exeName = nugetInspectorName + ".exe";
         Function<String, NugetInspector> constructor = (String exePath) -> new ExeNugetInspector(executableRunner, exePath);
@@ -135,7 +135,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         Optional<File> foundExecutable = fileFinder.findFiles(toolsFolder, inspectorName, 3).stream().findFirst();
         if (foundExecutable.isPresent() && foundExecutable.get().exists()) {
             String inspectorExecutable = foundExecutable.get().getAbsolutePath();
-            logger.debug("Found nuget inspector: " + inspectorExecutable);
+            logger.debug("Found nuget inspector: {}", inspectorExecutable);
             return inspectorInitializer.apply(inspectorExecutable);
         } else {
             throw new DetectableException("Unable to find nuget inspector, looking for " + inspectorName + " in " + toolsFolder.toString());
