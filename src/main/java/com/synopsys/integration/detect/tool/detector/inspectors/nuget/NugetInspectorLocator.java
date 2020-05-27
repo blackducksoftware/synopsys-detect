@@ -27,8 +27,12 @@ import java.io.File;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
 public interface NugetInspectorLocator {
+    String INSPECTOR_DIR_DOTNET3 = "nuget_dotnet3";
+    String INSPECTOR_DIR_DOTNET = "nuget_dotnet";
+    String INSPECTOR_DIR_CLASSIC = "nuget_classic";
+
     File locateDotnet3Inspector() throws DetectableException;
-    
+
     File locateDotnetInspector() throws DetectableException;
 
     File locateExeInspector() throws DetectableException;

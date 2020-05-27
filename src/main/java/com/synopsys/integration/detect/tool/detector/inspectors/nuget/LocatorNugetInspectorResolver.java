@@ -25,6 +25,7 @@ package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,47 +103,42 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
 
         if (useDotnet) {
             File dotnetFolder;
-            if (runtimeResolver.isRuntimeAvailable(3)) {
+            if (runtimeResolver.isRuntimeAvailable(3, 1)) {
                 dotnetFolder = nugetInspectorLocator.locateDotnet3Inspector();
+                return findDotnetCoreInspector(dotnetFolder, dotnetExecutable, "NugetDotnet3Inspector.dll");
             } else {
                 dotnetFolder = nugetInspectorLocator.locateDotnetInspector();
+                return findDotnetCoreInspector(dotnetFolder, dotnetExecutable, "BlackduckNugetInspector.dll");
             }
-            return findDotnetCoreInspector(dotnetFolder, dotnetExecutable);
         } else {
             File classicFolder = nugetInspectorLocator.locateExeInspector();
             return findExeInspector(classicFolder);
         }
     }
 
-    // FIXME create an abstraction for these finders and add one for dotnet3
-    private DotNetCoreNugetInspector findDotnetCoreInspector(File nupkgFolder, File dotnetExecutable) throws DetectableException {
-        //new inspector
-        final String dotnetInspectorName = "BlackduckNugetInspector.dll";
-        logger.debug("Searching for: " + dotnetInspectorName);
-        File toolsFolder = new File(nupkgFolder, "tools");
-        Optional<File> foundExe = fileFinder.findFiles(toolsFolder, dotnetInspectorName, 3).stream().findFirst();
-        if (foundExe.isPresent() && foundExe.get().exists()) {
-            String inspectorExe = foundExe.get().getAbsolutePath();
-            logger.debug("Found nuget inspector: " + inspectorExe);
-            return new DotNetCoreNugetInspector(dotnetExecutable, inspectorExe, executableRunner);
-        } else {
-            throw new DetectableException("Unable to find nuget inspector, looking for " + dotnetInspectorName + " in " + toolsFolder.toString());
-        }
+    private NugetInspector findDotnetCoreInspector(File nupkgFolder, File dotnetExecutable, String dotnetInspectorName) throws DetectableException {
+        Function<String, NugetInspector> constructor = (String exePath) -> new DotNetCoreNugetInspector(dotnetExecutable, exePath, executableRunner);
+        return findInspector(nupkgFolder, dotnetInspectorName, constructor);
     }
 
-    private ExeNugetInspector findExeInspector(File nupkgFolder) throws DetectableException {
-        //original inspector
+    //original inspector 
+    private NugetInspector findExeInspector(File nupkgFolder) throws DetectableException {
         String exeName = nugetInspectorName + ".exe";
-        logger.debug("Searching for: " + exeName);
+        Function<String, NugetInspector> constructor = (String exePath) -> new ExeNugetInspector(executableRunner, exePath);
+        return findInspector(nupkgFolder, exeName, constructor);
+    }
+
+    private NugetInspector findInspector(File nupkgFolder, String inspectorName, Function<String, NugetInspector> inspectorInitializer) throws DetectableException {
+        logger.debug("Searching for: " + inspectorName);
         File toolsFolder = new File(nupkgFolder, "tools");
         logger.debug("Searching in: " + toolsFolder.getAbsolutePath());
-        Optional<File> foundExe = fileFinder.findFiles(toolsFolder, exeName, 3).stream().findFirst();
-        if (foundExe.isPresent() && foundExe.get().exists()) {
-            String inspectorExe = foundExe.get().getAbsolutePath();
-            logger.debug("Found nuget inspector: " + inspectorExe);
-            return new ExeNugetInspector(executableRunner, inspectorExe);
+        Optional<File> foundExecutable = fileFinder.findFiles(toolsFolder, inspectorName, 3).stream().findFirst();
+        if (foundExecutable.isPresent() && foundExecutable.get().exists()) {
+            String inspectorExecutable = foundExecutable.get().getAbsolutePath();
+            logger.debug("Found nuget inspector: " + inspectorExecutable);
+            return inspectorInitializer.apply(inspectorExecutable);
         } else {
-            throw new DetectableException("Unable to find nuget inspector named '" + exeName + "' in " + toolsFolder.getAbsolutePath());
+            throw new DetectableException("Unable to find nuget inspector, looking for " + inspectorName + " in " + toolsFolder.toString());
         }
     }
 

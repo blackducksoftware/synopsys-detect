@@ -31,7 +31,6 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.util.DetectZipUtil;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
@@ -48,7 +47,6 @@ public class NugetInspectorInstaller {
 
     public File installDotNet3(File destination, Optional<String> overrideVersion) throws DetectableException {
         logger.debug("Will attempt to resolve the dotnet3 inspector version.");
-        // FIXME create constants for and pass the correct Artifactory repo
         return installInspector(destination, overrideVersion, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_REPO, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_PROPERTY, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_VERSION_OVERRIDE);
     }
 
@@ -71,7 +69,7 @@ public class NugetInspectorInstaller {
         }
     }
 
-    private File installFromSource(File dest, String source) throws IntegrationException, IOException, DetectUserFriendlyException {
+    private File installFromSource(File dest, String source) throws IntegrationException, IOException {
         logger.debug("Resolved the nuget inspector url: " + source);
         String nupkgName = artifactResolver.parseFileName(source);
         logger.debug("Parsed artifact name: " + nupkgName);

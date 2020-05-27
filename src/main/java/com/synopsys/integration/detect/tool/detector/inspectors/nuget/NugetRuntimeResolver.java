@@ -81,7 +81,7 @@ public class NugetRuntimeResolver {
 
     private Pattern createRuntimePattern(Integer... versionTokens) {
         String regexSafeVersion = StringUtils.join(versionTokens, "\\.");
-        String runtimePattern = DOTNET_RUNTIME_PATTERN_WITHOUT_VERSION.replace(DOTNET_RUNTIME_PATTERN_VERSION_PLACEHOLDER, regexSafeVersion);
-        return Pattern.compile(runtimePattern);
+        String runtimePatternWithVersion = DOTNET_RUNTIME_PATTERN_WITHOUT_VERSION.replace(DOTNET_RUNTIME_PATTERN_VERSION_PLACEHOLDER, regexSafeVersion);
+        return Pattern.compile(runtimePatternWithVersion);
     }
 }

@@ -37,19 +37,24 @@ public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
 
     @Override
     public File locateDotnet3Inspector() throws DetectableException {
-        // FIXME implement
-        return null;
+        return locateInspector(INSPECTOR_DIR_DOTNET3);
     }
 
     @Override
-    public File locateExeInspector() {
-        Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
-        return new File(nugetAirGapPath.get(), "nuget_classic"); // TODO: Why is there no ifPresent() check?
+    public File locateDotnetInspector() throws DetectableException {
+        return locateInspector(INSPECTOR_DIR_DOTNET);
     }
 
     @Override
-    public File locateDotnetInspector() {
+    public File locateExeInspector() throws DetectableException {
+        return locateInspector(INSPECTOR_DIR_CLASSIC);
+    }
+
+    private File locateInspector(String childName) throws DetectableException {
         Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
-        return new File(nugetAirGapPath.get(), "nuget_dotnet"); // TODO: Why is there no ifPresent() check?
+        if (nugetAirGapPath.isPresent()) {
+            return new File(nugetAirGapPath.get(), childName);
+        }
+        throw new DetectableException("Could not get the nuget air gap path");
     }
 }
