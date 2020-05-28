@@ -51,13 +51,15 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
     private final FileFinder fileFinder;
     private final String nugetInspectorName;
     private final List<String> packagesRepoUrl;
+    private final NugetInspectorLocator nugetInspectorLocator;
+    private final DotNetRuntimeAvailabilityVerifier dotNetRuntimeVerifier;
 
     private boolean hasResolvedInspector;
     private NugetInspector resolvedNugetInspector;
-    private final NugetInspectorLocator nugetInspectorLocator;
 
     public LocatorNugetInspectorResolver(DetectExecutableResolver executableResolver, ExecutableRunner executableRunner, DetectInfo detectInfo,
-        FileFinder fileFinder, String nugetInspectorName, List<String> packagesRepoUrl, NugetInspectorLocator nugetInspectorLocator) {
+        FileFinder fileFinder, String nugetInspectorName, List<String> packagesRepoUrl, NugetInspectorLocator nugetInspectorLocator,
+        DotNetRuntimeAvailabilityVerifier dotNetRuntimeVerifier) {
         this.executableResolver = executableResolver;
         this.executableRunner = executableRunner;
         this.detectInfo = detectInfo;
@@ -65,6 +67,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         this.nugetInspectorName = nugetInspectorName;
         this.packagesRepoUrl = packagesRepoUrl;
         this.nugetInspectorLocator = nugetInspectorLocator;
+        this.dotNetRuntimeVerifier = dotNetRuntimeVerifier;
     }
 
     @Override
@@ -97,13 +100,9 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
             }
         }
 
-        // TODO should these be passed through the constructor?
-        File workingDir = new File(".");
-        NugetRuntimeResolver runtimeResolver = new NugetRuntimeResolver(executableRunner, workingDir);
-
         if (useDotnet) {
             File dotnetFolder;
-            if (runtimeResolver.isRuntimeAvailable(3, 1)) {
+            if (dotNetRuntimeVerifier.isRuntimeAvailable(3, 1)) {
                 dotnetFolder = nugetInspectorLocator.locateDotnet3Inspector();
                 return findDotnetCoreInspector(dotnetFolder, dotnetExecutable, "NugetDotnet3Inspector.dll");
             } else {
