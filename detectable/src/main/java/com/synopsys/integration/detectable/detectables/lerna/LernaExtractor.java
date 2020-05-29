@@ -41,6 +41,8 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaPackage;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileExtractor;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 
@@ -50,14 +52,18 @@ public class LernaExtractor {
     private final ExecutableRunner executableRunner;
     private final FileFinder fileFinder;
     private final Gson gson;
+    private final NpmLockfileExtractor npmLockfileExtractor;
+    private final NpmLockfileOptions npmLockfileOptions;
     private final YarnLockExtractor yarnLockExtractor;
     private final YarnLockOptions yarnLockOptions;
 
-    public LernaExtractor(final ExecutableRunner executableRunner, final FileFinder fileFinder, final Gson gson, final YarnLockExtractor yarnLockExtractor,
-        final YarnLockOptions yarnLockOptions) {
+    public LernaExtractor(final ExecutableRunner executableRunner, final FileFinder fileFinder, final Gson gson, final NpmLockfileExtractor npmLockfileExtractor, final NpmLockfileOptions npmLockfileOptions,
+        final YarnLockExtractor yarnLockExtractor, final YarnLockOptions yarnLockOptions) {
         this.executableRunner = executableRunner;
         this.fileFinder = fileFinder;
         this.gson = gson;
+        this.npmLockfileExtractor = npmLockfileExtractor;
+        this.npmLockfileOptions = npmLockfileOptions;
         this.yarnLockExtractor = yarnLockExtractor;
         this.yarnLockOptions = yarnLockOptions;
     }
@@ -150,15 +156,11 @@ public class LernaExtractor {
     }
 
     private Extraction extractFromShrinkwrap(final File packageJsonFile, final File shrinkwrapJsonFile) {
-        // TODO: Implement.
-        logger.error("extractFromShrinkwrap not implemented.");
-        return null;
+        return npmLockfileExtractor.extract(shrinkwrapJsonFile, packageJsonFile, npmLockfileOptions.shouldIncludeDeveloperDependencies());
     }
 
     private Extraction extractFromPackageLock(final File packageJsonFile, final File packageLockJsonFile) {
-        // TODO: Implement.
-        logger.error("extractFromPackageLock not implemented.");
-        return null;
+        return npmLockfileExtractor.extract(packageLockJsonFile, packageJsonFile, npmLockfileOptions.shouldIncludeDeveloperDependencies());
     }
 
     private Extraction extractFromYarnLock(final File packageJsonFile, final File yarnLockFile) {

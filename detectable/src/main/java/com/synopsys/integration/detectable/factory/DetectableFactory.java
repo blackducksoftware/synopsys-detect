@@ -370,8 +370,8 @@ public class DetectableFactory {
         return new YarnLockDetectable(environment, fileFinder, yarnLockExtractor(), yarnLockOptions);
     }
 
-    public LernaDetectable createLernaDetectable(final DetectableEnvironment environment, final LernaResolver lernaResolver, final YarnLockOptions yarnLockOptions) {
-        return new LernaDetectable(environment, fileFinder, lernaResolver, lernaExtractor(yarnLockOptions));
+    public LernaDetectable createLernaDetectable(final DetectableEnvironment environment, final LernaResolver lernaResolver, final YarnLockOptions yarnLockOptions, final NpmLockfileOptions npmLockfileOptions) {
+        return new LernaDetectable(environment, fileFinder, lernaResolver, lernaExtractor(yarnLockOptions, npmLockfileOptions));
     }
 
     //#endregion
@@ -720,8 +720,8 @@ public class DetectableFactory {
         return new SwiftExtractor(executableRunner, swiftCliParser(), swiftPackageTransformer());
     }
 
-    private LernaExtractor lernaExtractor(final YarnLockOptions yarnLockOptions) {
-        return new LernaExtractor(executableRunner, fileFinder, gson, yarnLockExtractor(), yarnLockOptions);
+    private LernaExtractor lernaExtractor(final YarnLockOptions yarnLockOptions, final NpmLockfileOptions npmLockfileOptions) {
+        return new LernaExtractor(executableRunner, fileFinder, gson, npmLockfileExtractor(), npmLockfileOptions, yarnLockExtractor(), yarnLockOptions);
     }
     //#endregion Utility
 
