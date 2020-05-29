@@ -65,9 +65,14 @@ public class LernaExtractor {
         final File sourceDirectory = detectableEnvironment.getDirectory();
 
         try {
+            final Extraction rootExtraction = extractWithRootLockfile(sourceDirectory, sourceDirectory);
+            if (!rootExtraction.isSuccess()) {
+                throw rootExtraction.getError();
+            }
+
+            final List<CodeLocation> codeLocations = new ArrayList<>(rootExtraction.getCodeLocations());
             final List<LernaPackage> lernaPackages = lernaPackageDiscoverer.discoverLernaPackages(sourceDirectory, lernaExecutable);
 
-            final List<CodeLocation> codeLocations = new ArrayList<>();
             for (final LernaPackage lernaPackage : lernaPackages) {
                 logger.debug(String.format("Now extracting Lerna package %s:%s at %s.", lernaPackage.getName(), lernaPackage.getVersion(), lernaPackage.getLocation()));
                 final File lernaPackageDirectory = new File(sourceDirectory.getParent(), lernaPackage.getLocation());
@@ -85,7 +90,11 @@ public class LernaExtractor {
                 }
             }
 
-            return new Extraction.Builder().success(codeLocations).build(); // TODO: Add project name/version info.
+            return new Extraction.Builder()
+                       .projectName(rootExtraction.getProjectName())
+                       .projectVersion(rootExtraction.getProjectVersion())
+                       .success(codeLocations)
+                       .build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
