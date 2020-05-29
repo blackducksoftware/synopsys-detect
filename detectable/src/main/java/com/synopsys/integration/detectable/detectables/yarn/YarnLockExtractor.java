@@ -35,6 +35,7 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 
 public class YarnLockExtractor {
@@ -55,8 +56,9 @@ public class YarnLockExtractor {
 
             final List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
             final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
+            final YarnLockResult yarnLockResult = new YarnLockResult(yarnLockFile, yarnLock);
 
-            final DependencyGraph dependencyGraph = yarnTransformer.transform(packageJson, yarnLock, yarnLockOptions.useProductionOnly());
+            final DependencyGraph dependencyGraph = yarnTransformer.transform(packageJson, yarnLockResult, yarnLockOptions.useProductionOnly());
 
             final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
 

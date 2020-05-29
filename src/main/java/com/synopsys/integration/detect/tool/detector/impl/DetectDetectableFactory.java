@@ -45,6 +45,7 @@ import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetecta
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseDetectable;
+import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
@@ -232,4 +233,7 @@ public class DetectDetectableFactory {
         return detectableFactory.createYarnLockDetectable(environment, detectableOptionFactory.createYarnLockOptions());
     }
 
+    public LernaDetectable createLernaDetectable(final DetectableEnvironment environment) {
+        return detectableFactory.createLernaDetectable(environment, detectExecutableResolver, detectableOptionFactory.createYarnLockOptions());
+    }
 }

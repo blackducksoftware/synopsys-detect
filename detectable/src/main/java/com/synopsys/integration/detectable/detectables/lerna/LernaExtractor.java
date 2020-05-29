@@ -1,51 +1,95 @@
+/**
+ * detectable
+ *
+ * Copyright (c) 2020 Synopsys, Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.synopsys.integration.detectable.detectables.lerna;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaPackage;
-import com.synopsys.integration.detectable.detectables.lerna.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
+import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 
 public class LernaExtractor {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final ExecutableRunner executableRunner;
     private final FileFinder fileFinder;
     private final Gson gson;
+    private final YarnLockExtractor yarnLockExtractor;
+    private final YarnLockOptions yarnLockOptions;
 
-    public LernaExtractor(final ExecutableRunner executableRunner, final FileFinder fileFinder, final Gson gson) {
+    public LernaExtractor(final ExecutableRunner executableRunner, final FileFinder fileFinder, final Gson gson, final YarnLockExtractor yarnLockExtractor,
+        final YarnLockOptions yarnLockOptions) {
         this.executableRunner = executableRunner;
         this.fileFinder = fileFinder;
         this.gson = gson;
+        this.yarnLockExtractor = yarnLockExtractor;
+        this.yarnLockOptions = yarnLockOptions;
     }
 
-    public Extraction extract(final File lernaExecutable, final ExtractionEnvironment extractionEnvironment) {
-        try {
-            final List<LernaPackage> lernaPackages = determineLernaPackages(extractionEnvironment.getOutputDirectory(), lernaExecutable);
-            final List<PackageJson> packageJsons = parsePackageJsonFiles(extractionEnvironment.getOutputDirectory(), lernaPackages);
+    public Extraction extract(final DetectableEnvironment detectableEnvironment, final File lernaExecutable) {
+        final File sourceDirectory = detectableEnvironment.getDirectory();
 
-            // TODO: Match components in the packageJsons with finalized versions in package-lock.json (npm) or yarn.lock (yarn).
-            
-            return null;
-        } catch (final ExecutableRunnerException | FileNotFoundException e) {
+        try {
+            final List<LernaPackage> lernaPackages = queryLernaPackages(sourceDirectory, lernaExecutable);
+
+            final List<CodeLocation> codeLocations = new ArrayList<>();
+            for (final LernaPackage lernaPackage : lernaPackages) {
+                logger.debug(String.format("Now extracting Lerna package %s:%s at %s.", lernaPackage.getName(), lernaPackage.getVersion(), lernaPackage.getLocation()));
+
+                final Extraction extraction = extractLernaPackage(sourceDirectory, lernaPackage);
+                if (extraction.isSuccess()) {
+                    logger.debug(String.format("Extraction completed successfully on %s:%s.", lernaPackage.getName(), lernaPackage.getLocation()));
+                    codeLocations.addAll(extraction.getCodeLocations());
+                } else {
+                    logger.warn(String.format("Failed to extract lerna package: %s", extraction.getError().getMessage()));
+                    logger.debug("Lerna Extraction Failure", extraction.getError());
+                }
+            }
+
+            return new Extraction.Builder().success(codeLocations).build(); // TODO: Add project name/version info.
+        } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    private List<LernaPackage> determineLernaPackages(final File workingDirectory, final File lernaExecutable) throws ExecutableRunnerException {
+    // TODO: Move this to its own class for testability.
+    private List<LernaPackage> queryLernaPackages(final File workingDirectory, final File lernaExecutable) throws ExecutableRunnerException {
         final ExecutableOutput lernaLsExecutableOutput = executableRunner.execute(workingDirectory, lernaExecutable, "ls", "--all", "--json");
         final String lernaLsOutput = lernaLsExecutableOutput.getStandardOutput();
 
@@ -54,24 +98,70 @@ public class LernaExtractor {
         return gson.fromJson(lernaLsOutput, lernaPackageListType);
     }
 
-    private List<PackageJson> parsePackageJsonFiles(final File workingDirectory, final List<LernaPackage> lernaPackages) throws FileNotFoundException {
-        final List<PackageJson> packageJsons = new ArrayList<>();
+    private Extraction extractLernaPackage(final File sourceDirectory, final LernaPackage lernaPackage) {
+        final File lernaPackageDirectory = new File(sourceDirectory.getParent(), lernaPackage.getLocation());
 
-        for (final LernaPackage lernaPackage : lernaPackages) {
-            final File lernaPackageDirectory = new File(workingDirectory.getParent(), lernaPackage.getLocation());
-            final File packageJsonFile = fileFinder.findFile(lernaPackageDirectory, "package.json");
-
-            if (packageJsonFile == null) {
-                throw new FileNotFoundException(String.format("Missing package.json file in %s", lernaPackageDirectory.getAbsolutePath()));
-            }
-
-            final InputStream packageJsonInputStream = new FileInputStream(packageJsonFile);
-            final Reader packageJsonReader = new InputStreamReader(packageJsonInputStream);
-            final PackageJson packageJson = gson.fromJson(packageJsonReader, PackageJson.class);
-
-            packageJsons.add(packageJson);
+        Extraction extraction = extractWithLocalLockfile(lernaPackageDirectory);
+        if (!extraction.isSuccess()) {
+            extraction = extractWithRootLockfile(lernaPackageDirectory, sourceDirectory);
         }
 
-        return packageJsons;
+        return extraction;
+    }
+
+    private Extraction extractWithRootLockfile(final File lernaPackageDirectory, final File sourceDirectory) {
+        final File packageJsonFile = fileFinder.findFile(lernaPackageDirectory, LernaDetectable.PACKAGE_JSON);
+        try {
+            return extractWithAnyLockfile(sourceDirectory, packageJsonFile);
+        } catch (final FileNotFoundException e) {
+            return new Extraction.Builder().exception(e).build();
+        }
+    }
+
+    private Extraction extractWithLocalLockfile(final File lernaPackageDirectory) {
+        final File packageJsonFile = fileFinder.findFile(lernaPackageDirectory, LernaDetectable.PACKAGE_JSON);
+        try {
+            return extractWithAnyLockfile(lernaPackageDirectory, packageJsonFile);
+        } catch (final FileNotFoundException e) {
+            return new Extraction.Builder().exception(e).build();
+        }
+    }
+
+    private Extraction extractWithAnyLockfile(final File searchDirectory, final File packageJsonFile) throws FileNotFoundException {
+        final File packageLockJsonFile = fileFinder.findFile(searchDirectory, LernaDetectable.PACKAGE_LOCK_JSON);
+        final File shrinkwrapJsonFile = fileFinder.findFile(searchDirectory, LernaDetectable.SHRINKWRAP_JSON);
+        final File yarnLockFile = fileFinder.findFile(searchDirectory, LernaDetectable.YARN_LOCK);
+
+        if (packageLockJsonFile != null) {
+            return extractFromPackageLock(packageJsonFile, packageLockJsonFile);
+        } else if (shrinkwrapJsonFile != null) {
+            return extractFromShrinkwrap(packageJsonFile, shrinkwrapJsonFile);
+        } else if (yarnLockFile != null) {
+            return extractFromYarnLock(packageJsonFile, yarnLockFile);
+        } else {
+            throw new FileNotFoundException(
+                String.format("Lerna extraction from %s requires one of the following files: %s, %s, %s",
+                    searchDirectory.getAbsolutePath(),
+                    LernaDetectable.PACKAGE_LOCK_JSON,
+                    LernaDetectable.SHRINKWRAP_JSON,
+                    LernaDetectable.YARN_LOCK)
+            );
+        }
+    }
+
+    private Extraction extractFromShrinkwrap(final File packageJsonFile, final File shrinkwrapJsonFile) {
+        // TODO: Implement.
+        logger.error("extractFromShrinkwrap not implemented.");
+        return null;
+    }
+
+    private Extraction extractFromPackageLock(final File packageJsonFile, final File packageLockJsonFile) {
+        // TODO: Implement.
+        logger.error("extractFromPackageLock not implemented.");
+        return null;
+    }
+
+    private Extraction extractFromYarnLock(final File packageJsonFile, final File yarnLockFile) {
+        return yarnLockExtractor.extract(yarnLockFile, packageJsonFile, yarnLockOptions);
     }
 }

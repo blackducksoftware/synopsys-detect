@@ -42,9 +42,9 @@ public class YarnLockParser {
         List<YarnLockEntryId> ids;
         boolean inOptionalDependencies = false;
 
-        List<String> cleanedYarnLockFileAsList = cleanList(yarnLockFileAsList);
+        final List<String> cleanedYarnLockFileAsList = cleanList(yarnLockFileAsList);
 
-        int indexOfFirstLevelZeroLine = findIndexOfFirstLevelZeroLine(cleanedYarnLockFileAsList);
+        final int indexOfFirstLevelZeroLine = findIndexOfFirstLevelZeroLine(cleanedYarnLockFileAsList);
 
         if (indexOfFirstLevelZeroLine == -1 || indexOfFirstLevelZeroLine == cleanedYarnLockFileAsList.size() - 1) {
             return new YarnLock(entries);
@@ -53,7 +53,7 @@ public class YarnLockParser {
         // We need to set ids with the first level zero line
         ids = parseMultipleEntryLine(cleanedYarnLockFileAsList.get(indexOfFirstLevelZeroLine));
 
-        List<String> yarnLinesThatMatter = cleanedYarnLockFileAsList.subList(indexOfFirstLevelZeroLine + 1, cleanedYarnLockFileAsList.size());
+        final List<String> yarnLinesThatMatter = cleanedYarnLockFileAsList.subList(indexOfFirstLevelZeroLine + 1, cleanedYarnLockFileAsList.size());
 
         for (final String line : yarnLinesThatMatter) {
 
@@ -124,14 +124,14 @@ public class YarnLockParser {
         for (final String entryRaw : entries) {
             final String entryNoColon = StringUtils.removeEnd(entryRaw.trim(), ":");
             final String entryNoColonOrQuotes = removeWrappingQuotes(entryNoColon);
-            YarnLockEntryId entry = parseSingleEntry(entryNoColonOrQuotes);
+            final YarnLockEntryId entry = parseSingleEntry(entryNoColonOrQuotes);
             ids.add(entry);
         }
         return ids;
     }
 
     //Takes an entry of format "name@version" or "@name@version" where name has an @ symbol.
-    public YarnLockEntryId parseSingleEntry(String entry) {
+    public YarnLockEntryId parseSingleEntry(final String entry) {
         if (StringUtils.countMatches(entry, "@") == 1 && entry.startsWith("@")) {
             return new YarnLockEntryId(entry, "");
         } else {

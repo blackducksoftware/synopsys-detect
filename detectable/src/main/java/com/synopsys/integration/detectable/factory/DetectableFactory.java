@@ -42,6 +42,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.Docker
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.LernaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
@@ -128,6 +129,8 @@ import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.G
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseExtractor;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.parse.BuildGradleParser;
+import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
+import com.synopsys.integration.detectable.detectables.lerna.LernaExtractor;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractor;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocationPackager;
@@ -365,6 +368,10 @@ public class DetectableFactory {
 
     public YarnLockDetectable createYarnLockDetectable(final DetectableEnvironment environment, final YarnLockOptions yarnLockOptions) {
         return new YarnLockDetectable(environment, fileFinder, yarnLockExtractor(), yarnLockOptions);
+    }
+
+    public LernaDetectable createLernaDetectable(final DetectableEnvironment environment, final LernaResolver lernaResolver, final YarnLockOptions yarnLockOptions) {
+        return new LernaDetectable(environment, fileFinder, lernaResolver, lernaExtractor(yarnLockOptions));
     }
 
     //#endregion
@@ -711,6 +718,10 @@ public class DetectableFactory {
 
     private SwiftExtractor swiftExtractor() {
         return new SwiftExtractor(executableRunner, swiftCliParser(), swiftPackageTransformer());
+    }
+
+    private LernaExtractor lernaExtractor(final YarnLockOptions yarnLockOptions) {
+        return new LernaExtractor(executableRunner, fileFinder, gson, yarnLockExtractor(), yarnLockOptions);
     }
     //#endregion Utility
 

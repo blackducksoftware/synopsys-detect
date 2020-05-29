@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.yarn.unit;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockEntryId;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 
 @UnitTest
@@ -37,9 +39,10 @@ public class YarnTransformerTest {
         final List<YarnLockDependency> validYarnLockDependencies = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
         final List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(validYarnLockEntryIds, "1.0", validYarnLockDependencies));
         final YarnLock yarnLock = new YarnLock(yarnLockEntries);
+        final YarnLockResult yarnLockResult = new YarnLockResult(new File("yarn.lock"), yarnLock);
 
         // This should not throw an exception.
-        final DependencyGraph dependencyGraph = yarnTransformer.transform(packageJson, yarnLock, false);
+        final DependencyGraph dependencyGraph = yarnTransformer.transform(packageJson, yarnLockResult, false);
 
         // Sanity check.
         Assertions.assertNotNull(dependencyGraph, "The dependency graph should not be null.");
