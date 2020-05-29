@@ -25,9 +25,11 @@ package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Optional;
+
+import javax.annotation.Nullable;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,24 +47,24 @@ public class NugetInspectorInstaller {
         this.artifactResolver = artifactResolver;
     }
 
-    public File installDotNet3(File destination, Optional<String> overrideVersion) throws DetectableException {
+    public File installDotNet3(File destination, @Nullable String overrideVersion) throws DetectableException {
         logger.debug("Will attempt to resolve the dotnet3 inspector version.");
         return installInspector(destination, overrideVersion, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_REPO, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_PROPERTY, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_VERSION_OVERRIDE);
     }
 
-    public File installDotNet(File destination, Optional<String> overrideVersion) throws DetectableException {
+    public File installDotNet(File destination, @Nullable String overrideVersion) throws DetectableException {
         logger.debug("Will attempt to resolve the dotnet inspector version.");
         return installInspector(destination, overrideVersion, ArtifactoryConstants.NUGET_INSPECTOR_REPO, ArtifactoryConstants.NUGET_INSPECTOR_PROPERTY, ArtifactoryConstants.NUGET_INSPECTOR_VERSION_OVERRIDE);
     }
 
-    public File installExeInspector(File destination, Optional<String> overrideVersion) throws DetectableException {
+    public File installExeInspector(File destination, @Nullable String overrideVersion) throws DetectableException {
         logger.debug("Will attempt to resolve the classic inspector version.");
         return installInspector(destination, overrideVersion, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_REPO, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_PROPERTY, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_VERSION_OVERRIDE);
     }
 
-    private File installInspector(File destination, Optional<String> overrideVersion, String inspectorRepo, String inspectorProperty, String inspectorVersionOverride) throws DetectableException {
+    private File installInspector(File destination, @Nullable String overrideVersion, String inspectorRepo, String inspectorProperty, String inspectorVersionOverride) throws DetectableException {
         try {
-            String source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, inspectorRepo, inspectorProperty, overrideVersion.orElse(""), inspectorVersionOverride);
+            String source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, inspectorRepo, inspectorProperty, StringUtils.defaultString(overrideVersion), inspectorVersionOverride);
             return installFromSource(destination, source);
         } catch (Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);

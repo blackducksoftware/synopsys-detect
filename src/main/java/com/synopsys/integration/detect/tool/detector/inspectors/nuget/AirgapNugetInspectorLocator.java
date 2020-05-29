@@ -23,7 +23,6 @@
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
-import java.util.Optional;
 
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -55,10 +54,8 @@ public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
     }
 
     private File locateInspector(String childName) throws DetectableException {
-        Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
-        if (nugetAirGapPath.isPresent()) {
-            return new File(nugetAirGapPath.get(), childName);
-        }
-        throw new DetectableException("Could not get the nuget air gap path");
+        return airGapInspectorPaths.getNugetInspectorAirGapFile()
+                   .map(nugetAirGapPath -> new File(nugetAirGapPath, childName))
+                   .orElseThrow(() -> new DetectableException("Could not get the nuget air gap path"));
     }
 }

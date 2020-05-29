@@ -23,7 +23,6 @@
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
-import java.util.Optional;
 
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -55,10 +54,10 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
         return locateInspector(nugetInspectorInstaller::installExeInspector);
     }
 
-    private File locateInspector(ThrowingBiFunction<File, Optional<String>, File, DetectableException> inspectorInstaller) throws DetectableException {
+    private File locateInspector(ThrowingBiFunction<File, String, File, DetectableException> inspectorInstaller) throws DetectableException {
         try {
             File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
-            return inspectorInstaller.apply(nugetDirectory, Optional.ofNullable(overrideVersion));
+            return inspectorInstaller.apply(nugetDirectory, overrideVersion);
         } catch (Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }

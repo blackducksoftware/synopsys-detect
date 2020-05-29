@@ -137,7 +137,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
             logger.debug("Found nuget inspector: {}", inspectorExecutable);
             return inspectorInitializer.apply(inspectorExecutable);
         } else {
-            throw new DetectableException("Unable to find nuget inspector, looking for " + inspectorName + " in " + toolsFolder.toString());
+            throw new DetectableException(String.format("Unable to find nuget inspector, looking for %s in %s", inspectorName, toolsFolder.toString()));
         }
     }
 

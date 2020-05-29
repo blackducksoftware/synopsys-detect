@@ -24,7 +24,6 @@ package com.synopsys.integration.detect.workflow.airgap;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -57,10 +56,10 @@ public class NugetAirGapCreator {
         installThenCopy(nugetFolder, AirgapNugetInspectorLocator.INSPECTOR_DIR_CLASSIC, nugetInspectorInstaller::installExeInspector);
     }
 
-    private void installThenCopy(File nugetFolder, String folderName, ThrowingBiFunction<File, Optional<String>, File, DetectableException> installer) throws DetectUserFriendlyException {
+    private void installThenCopy(File nugetFolder, String folderName, ThrowingBiFunction<File, String, File, DetectableException> installer) throws DetectUserFriendlyException {
         try {
             File inspectorFolder = new File(nugetFolder, folderName);
-            File installTarget = installer.apply(inspectorFolder, Optional.empty());
+            File installTarget = installer.apply(inspectorFolder, null);
             FileUtils.copyDirectory(installTarget, inspectorFolder);
             FileUtils.deleteDirectory(installTarget);
         } catch (DetectableException | IOException e) {
