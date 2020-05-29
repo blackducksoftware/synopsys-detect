@@ -24,21 +24,15 @@ package com.synopsys.integration.detectable.detectables.lerna;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaPackage;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileExtractor;
@@ -49,19 +43,18 @@ import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 public class LernaExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final ExecutableRunner executableRunner;
     private final FileFinder fileFinder;
-    private final Gson gson;
+    private final LernaPackageDiscoverer lernaPackageDiscoverer;
     private final NpmLockfileExtractor npmLockfileExtractor;
     private final NpmLockfileOptions npmLockfileOptions;
     private final YarnLockExtractor yarnLockExtractor;
     private final YarnLockOptions yarnLockOptions;
 
-    public LernaExtractor(final ExecutableRunner executableRunner, final FileFinder fileFinder, final Gson gson, final NpmLockfileExtractor npmLockfileExtractor, final NpmLockfileOptions npmLockfileOptions,
+    public LernaExtractor(final FileFinder fileFinder, final LernaPackageDiscoverer lernaPackageDiscoverer, final NpmLockfileExtractor npmLockfileExtractor,
+        final NpmLockfileOptions npmLockfileOptions,
         final YarnLockExtractor yarnLockExtractor, final YarnLockOptions yarnLockOptions) {
-        this.executableRunner = executableRunner;
         this.fileFinder = fileFinder;
-        this.gson = gson;
+        this.lernaPackageDiscoverer = lernaPackageDiscoverer;
         this.npmLockfileExtractor = npmLockfileExtractor;
         this.npmLockfileOptions = npmLockfileOptions;
         this.yarnLockExtractor = yarnLockExtractor;
@@ -72,7 +65,7 @@ public class LernaExtractor {
         final File sourceDirectory = detectableEnvironment.getDirectory();
 
         try {
-            final List<LernaPackage> lernaPackages = queryLernaPackages(sourceDirectory, lernaExecutable);
+            final List<LernaPackage> lernaPackages = lernaPackageDiscoverer.discoverLernaPackages(sourceDirectory, lernaExecutable);
 
             final List<CodeLocation> codeLocations = new ArrayList<>();
             for (final LernaPackage lernaPackage : lernaPackages) {
@@ -92,16 +85,6 @@ public class LernaExtractor {
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
-    }
-
-    // TODO: Move this to its own class for testability.
-    private List<LernaPackage> queryLernaPackages(final File workingDirectory, final File lernaExecutable) throws ExecutableRunnerException {
-        final ExecutableOutput lernaLsExecutableOutput = executableRunner.execute(workingDirectory, lernaExecutable, "ls", "--all", "--json");
-        final String lernaLsOutput = lernaLsExecutableOutput.getStandardOutput();
-
-        final Type lernaPackageListType = new TypeToken<ArrayList<LernaPackage>>() {}.getType();
-
-        return gson.fromJson(lernaLsOutput, lernaPackageListType);
     }
 
     private Extraction extractLernaPackage(final File sourceDirectory, final LernaPackage lernaPackage) {

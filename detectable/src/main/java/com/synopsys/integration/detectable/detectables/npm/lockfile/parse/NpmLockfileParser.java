@@ -65,7 +65,7 @@ public class NpmLockfileParser {
 
         logger.debug("Processing project.");
         if (packageLock.dependencies != null) {
-            logger.debug(String.format("Found %d dependencies.", packageLock.dependencies.size()));
+            logger.debug(String.format("Found %d dependencies in the lockfile.", packageLock.dependencies.size()));
             //Convert to our custom format
             final NpmDependencyConverter dependencyConverter = new NpmDependencyConverter(externalIdFactory);
             final NpmProject project = dependencyConverter.convertLockFile(packageLock, packageJson);
@@ -89,6 +89,7 @@ public class NpmLockfileParser {
                     .forEach(dependencyGraph::addChildToRoot);
             }
 
+            logger.debug(String.format("Found %d root dependencies.", dependencyGraph.getRootDependencies().size()));
         } else {
             logger.debug("Lock file did not have a 'dependencies' section.");
         }

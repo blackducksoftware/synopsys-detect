@@ -131,6 +131,7 @@ import com.synopsys.integration.detectable.detectables.gradle.parsing.GradlePars
 import com.synopsys.integration.detectable.detectables.gradle.parsing.parse.BuildGradleParser;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaExtractor;
+import com.synopsys.integration.detectable.detectables.lerna.LernaPackageDiscoverer;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractor;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCodeLocationPackager;
@@ -720,8 +721,12 @@ public class DetectableFactory {
         return new SwiftExtractor(executableRunner, swiftCliParser(), swiftPackageTransformer());
     }
 
+    private LernaPackageDiscoverer lernaPackageDiscoverer() {
+        return new LernaPackageDiscoverer(executableRunner, gson);
+    }
+
     private LernaExtractor lernaExtractor(final YarnLockOptions yarnLockOptions, final NpmLockfileOptions npmLockfileOptions) {
-        return new LernaExtractor(executableRunner, fileFinder, gson, npmLockfileExtractor(), npmLockfileOptions, yarnLockExtractor(), yarnLockOptions);
+        return new LernaExtractor(fileFinder, lernaPackageDiscoverer(), npmLockfileExtractor(), npmLockfileOptions, yarnLockExtractor(), yarnLockOptions);
     }
     //#endregion Utility
 
