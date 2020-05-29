@@ -144,7 +144,7 @@ public class CodeLocationNameGenerator {
     }
 
     private String shortenPiece(final String piece) {
-        if (piece.length() <= 40) {
+        if (piece == null || piece.length() <= 40) {
             return piece;
         } else {
             return piece.substring(0, 19) + "..." + piece.substring(piece.length() - 18);
