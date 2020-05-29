@@ -28,7 +28,7 @@ public class DotNetRuntimeAvailabilityVerifierTest {
         DotNetRuntimeFinder runtimeFinder = Mockito.mock(DotNetRuntimeFinder.class);
         Mockito.when(runtimeFinder.listAvailableRuntimes()).thenReturn(VALID_RUNTIME_STRINGS);
 
-        DotNetRuntimeAvailabilityVerifier runtimeResolver = new DotNetRuntimeAvailabilityVerifier(runtimeFinder);
+        DotNetRuntimeAvailabilityVerifier2 runtimeResolver = new DotNetRuntimeAvailabilityVerifier2(runtimeFinder);
         assertAvailability(Assertions::assertTrue, runtimeResolver, 2, 1);
         assertAvailability(Assertions::assertTrue, runtimeResolver, 3, 1);
         assertTrue(runtimeResolver.isRuntimeAvailable(2, 1, 18), "Expected 2.1.18 runtime to be available when passed as an array of Integers");
@@ -43,12 +43,12 @@ public class DotNetRuntimeAvailabilityVerifierTest {
         DotNetRuntimeFinder runtimeFinder = Mockito.mock(DotNetRuntimeFinder.class);
         Mockito.when(runtimeFinder.listAvailableRuntimes()).thenReturn(VALID_RUNTIME_STRINGS);
 
-        DotNetRuntimeAvailabilityVerifier runtimeResolver = new DotNetRuntimeAvailabilityVerifier(runtimeFinder);
+        DotNetRuntimeAvailabilityVerifier2 runtimeResolver = new DotNetRuntimeAvailabilityVerifier2(runtimeFinder);
         assertTrue(runtimeResolver.isRuntimeAvailable("2.1.18"), "Expected 2.1.18 runtime to be available when passed as a semanticVersion string");
         assertFalse(runtimeResolver.isRuntimeAvailable("4.0"), "Expected 4.0 runtime not to be available when passed as a semanticVersion string");
     }
 
-    private void assertAvailability(BiConsumer<Boolean, String> assertion, DotNetRuntimeAvailabilityVerifier nugetRuntimeResolver, Integer majorVersion, Integer minorVersion) throws DetectableException {
+    private void assertAvailability(BiConsumer<Boolean, String> assertion, DotNetRuntimeAvailabilityVerifier2 nugetRuntimeResolver, Integer majorVersion, Integer minorVersion) throws DetectableException {
         boolean isVersionAvailable = nugetRuntimeResolver.isRuntimeAvailable(majorVersion, minorVersion);
         assertion.accept(isVersionAvailable, String.format("Different runtime availability expected for %d.%d runtime", majorVersion, minorVersion));
     }
