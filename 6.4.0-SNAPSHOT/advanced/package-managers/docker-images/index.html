@@ -1321,7 +1321,15 @@
 <pre><code>./detect.sh --detect.docker.image=ubuntu:latest --detect.docker.passthrough.service.timeout=480000
 </code></pre>
 
-<p>You can set any Docker Inspector property using this method.</p>
+<p>You can set any Docker Inspector property using this method.
+However, you usually should not override the values of the following Docker Inspector properties (which Synopsys Detect sets)
+because changing their values is likely to interfere with Synopsys Detect's ability to work with Docker Inspector:</p>
+<ul>
+<li>output.path</li>
+<li>output.include.squashedimage</li>
+<li>output.include.containerfilesystem</li>
+<li>upload.bdio</li>
+</ul>
 <p><a name="scantarget"></a></p>
 <h3 id="synopsys-detects-scan-target">Synopsys Detect's scan target<a class="headerlink" href="#synopsys-detects-scan-target" title="Permanent link">#</a></h3>
 <p>When a Docker image is run; for example, using a <code>docker run</code> command, a container is created. That container has a file system; in other words, the container file system. The container file system at the instant the container is created; in other words, the initial container file system, can be determined in advance from the image without running the image. Because the target image is not yet trusted, Docker Inspector does not run the image; that is, it does not create a container from the image, but it does construct the initial container file system, which is the file system a container has at the instant it is created.</p>
