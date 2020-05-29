@@ -70,11 +70,15 @@ public class LernaExtractor {
             final List<CodeLocation> codeLocations = new ArrayList<>();
             for (final LernaPackage lernaPackage : lernaPackages) {
                 logger.debug(String.format("Now extracting Lerna package %s:%s at %s.", lernaPackage.getName(), lernaPackage.getVersion(), lernaPackage.getLocation()));
+                final File lernaPackageDirectory = new File(sourceDirectory.getParent(), lernaPackage.getLocation());
 
-                final Extraction extraction = extractLernaPackage(sourceDirectory, lernaPackage);
+                final Extraction extraction = extractLernaPackage(sourceDirectory, lernaPackageDirectory);
                 if (extraction.isSuccess()) {
                     logger.debug(String.format("Extraction completed successfully on %s:%s.", lernaPackage.getName(), lernaPackage.getLocation()));
-                    codeLocations.addAll(extraction.getCodeLocations());
+
+                    extraction.getCodeLocations().stream()
+                        .map(codeLocation -> new CodeLocation(codeLocation.getDependencyGraph(), codeLocation.getExternalId().orElse(null), lernaPackageDirectory))
+                        .forEach(codeLocations::add);
                 } else {
                     logger.warn(String.format("Failed to extract lerna package: %s", extraction.getError().getMessage()));
                     logger.debug("Lerna Extraction Failure", extraction.getError());
@@ -87,9 +91,7 @@ public class LernaExtractor {
         }
     }
 
-    private Extraction extractLernaPackage(final File sourceDirectory, final LernaPackage lernaPackage) {
-        final File lernaPackageDirectory = new File(sourceDirectory.getParent(), lernaPackage.getLocation());
-
+    private Extraction extractLernaPackage(final File sourceDirectory, final File lernaPackageDirectory) {
         Extraction extraction = extractWithLocalLockfile(lernaPackageDirectory);
         if (!extraction.isSuccess()) {
             extraction = extractWithRootLockfile(lernaPackageDirectory, sourceDirectory);
