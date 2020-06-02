@@ -55,6 +55,9 @@ import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspe
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorLocator;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.OnlineNugetInspectorLocator;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeFinder;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeManager;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeParser;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScanner;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
@@ -218,7 +221,11 @@ public class RunBeanConfiguration {
             final NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactResolver());
             locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion().orElse(null));
         }
-        return new LocatorNugetInspectorResolver(detectExecutableResolver(), executableRunner(), detectInfo, fullFileFinder(), installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator);
+
+        final ExecutableRunner executableRunner = executableRunner();
+        final DotNetRuntimeFinder runtimeFinder = new DotNetRuntimeFinder(executableRunner, new File("."));
+        final DotNetRuntimeManager dotNetRuntimeManager = new DotNetRuntimeManager(runtimeFinder, new DotNetRuntimeParser());
+        return new LocatorNugetInspectorResolver(detectExecutableResolver(), executableRunner, detectInfo, fullFileFinder(), installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator, dotNetRuntimeManager);
     }
 
     @Bean()

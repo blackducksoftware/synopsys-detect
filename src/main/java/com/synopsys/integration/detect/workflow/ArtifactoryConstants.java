@@ -30,13 +30,19 @@ public class ArtifactoryConstants {
     public static final String GRADLE_INSPECTOR_PROPERTY = "GRADLE_INSPECTOR_LATEST_0";
     public static final String GRADLE_INSPECTOR_MAVEN_REPO = "https://repo.blackducksoftware.com/artifactory/bds-integration-public-cache/";
 
+    private static final String NUGET_VERSION_SUFFIX = ".nupkg";
+
+    public static final String NUGET_DOTNET3_INSPECTOR_REPO = "bds-integrations-nuget-release/NugetDotnet3Inspector";
+    public static final String NUGET_DOTNET3_INSPECTOR_PROPERTY = "NUGET_DOTNET3_INSPECTOR_LATEST_0";
+    public static final String NUGET_DOTNET3_INSPECTOR_VERSION_OVERRIDE = "/NugetDotnet3Inspector." + ArtifactoryConstants.VERSION_PLACEHOLDER + NUGET_VERSION_SUFFIX;
+
     public static final String NUGET_INSPECTOR_REPO = "bds-integrations-nuget-release/BlackduckNugetInspector";
     public static final String NUGET_INSPECTOR_PROPERTY = "NUGET_INSPECTOR_LATEST_0";
-    public static final String NUGET_INSPECTOR_VERSION_OVERRIDE = "/BlackduckNugetInspector." + ArtifactoryConstants.VERSION_PLACEHOLDER + ".nupkg";
+    public static final String NUGET_INSPECTOR_VERSION_OVERRIDE = "/BlackduckNugetInspector." + ArtifactoryConstants.VERSION_PLACEHOLDER + NUGET_VERSION_SUFFIX;
 
     public static final String CLASSIC_NUGET_INSPECTOR_REPO = "bds-integrations-nuget-release/IntegrationNugetInspector";
     public static final String CLASSIC_NUGET_INSPECTOR_PROPERTY = "NUGET_INSPECTOR_LATEST_2";
-    public static final String CLASSIC_NUGET_INSPECTOR_VERSION_OVERRIDE = "/IntegrationNugetInspector." + ArtifactoryConstants.VERSION_PLACEHOLDER + ".nupkg";
+    public static final String CLASSIC_NUGET_INSPECTOR_VERSION_OVERRIDE = "/IntegrationNugetInspector." + ArtifactoryConstants.VERSION_PLACEHOLDER + NUGET_VERSION_SUFFIX;
 
     public static final String DOCKER_INSPECTOR_REPO = "bds-integrations-release/com/synopsys/integration/blackduck-docker-inspector";
     public static final String DOCKER_INSPECTOR_PROPERTY = "DOCKER_INSPECTOR_LATEST_9";
