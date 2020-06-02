@@ -24,7 +24,6 @@ package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -58,9 +57,9 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
     private boolean hasResolvedInspector;
     private NugetInspector resolvedNugetInspector;
 
-    public LocatorNugetInspectorResolver(DetectExecutableResolver executableResolver, ExecutableRunner executableRunner, DetectInfo detectInfo,
-        FileFinder fileFinder, String nugetInspectorName, List<String> packagesRepoUrl, NugetInspectorLocator nugetInspectorLocator,
-        DotNetRuntimeManager dotNetRuntimeManager) {
+    public LocatorNugetInspectorResolver(final DetectExecutableResolver executableResolver, final ExecutableRunner executableRunner, final DetectInfo detectInfo,
+        final FileFinder fileFinder, final String nugetInspectorName, final List<String> packagesRepoUrl, final NugetInspectorLocator nugetInspectorLocator,
+        final DotNetRuntimeManager dotNetRuntimeManager) {
         this.executableResolver = executableResolver;
         this.executableRunner = executableRunner;
         this.detectInfo = detectInfo;
@@ -80,14 +79,14 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
             }
 
             return resolvedNugetInspector;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new DetectableException(e);
         }
     }
 
     private NugetInspector install() throws IntegrationException {
         //dotnet
-        File dotnetExecutable = executableResolver.resolveDotNet();
+        final File dotnetExecutable = executableResolver.resolveDotNet();
 
         boolean useDotnet = true;
         if (shouldForceExeInspector(detectInfo)) {
@@ -102,7 +101,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         }
 
         if (useDotnet) {
-            File dotnetFolder;
+            final File dotnetFolder;
             if (dotNetRuntimeManager.isRuntimeAvailable(3, 1)) {
                 dotnetFolder = nugetInspectorLocator.locateDotnet3Inspector();
                 return findDotnetCoreInspector(dotnetFolder, dotnetExecutable, "NugetDotnet3Inspector.dll");
@@ -111,53 +110,53 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
                 return findDotnetCoreInspector(dotnetFolder, dotnetExecutable, "BlackduckNugetInspector.dll");
             }
         } else {
-            File classicFolder = nugetInspectorLocator.locateExeInspector();
+            final File classicFolder = nugetInspectorLocator.locateExeInspector();
             return findExeInspector(classicFolder);
         }
     }
 
-    private NugetInspector findDotnetCoreInspector(File nupkgFolder, File dotnetExecutable, String dotnetInspectorName) throws DetectableException {
-        Function<String, NugetInspector> constructor = (String exePath) -> new DotNetCoreNugetInspector(dotnetExecutable, exePath, executableRunner);
+    private NugetInspector findDotnetCoreInspector(final File nupkgFolder, final File dotnetExecutable, final String dotnetInspectorName) throws DetectableException {
+        final Function<String, NugetInspector> constructor = (String exePath) -> new DotNetCoreNugetInspector(dotnetExecutable, exePath, executableRunner);
         return findInspector(nupkgFolder, dotnetInspectorName, constructor);
     }
 
     //original inspector
-    private NugetInspector findExeInspector(File nupkgFolder) throws DetectableException {
-        String exeName = nugetInspectorName + ".exe";
-        Function<String, NugetInspector> constructor = (String exePath) -> new ExeNugetInspector(executableRunner, exePath);
+    private NugetInspector findExeInspector(final File nupkgFolder) throws DetectableException {
+        final String exeName = nugetInspectorName + ".exe";
+        final Function<String, NugetInspector> constructor = (String exePath) -> new ExeNugetInspector(executableRunner, exePath);
         return findInspector(nupkgFolder, exeName, constructor);
     }
 
-    private NugetInspector findInspector(File nupkgFolder, String inspectorName, Function<String, NugetInspector> inspectorInitializer) throws DetectableException {
+    private NugetInspector findInspector(final File nupkgFolder, final String inspectorName, final Function<String, NugetInspector> inspectorInitializer) throws DetectableException {
         logger.debug("Searching for: " + inspectorName);
-        File toolsFolder = new File(nupkgFolder, "tools");
+        final File toolsFolder = new File(nupkgFolder, "tools");
         logger.debug("Searching in: " + toolsFolder.getAbsolutePath());
-        Optional<File> foundExecutable = fileFinder.findFiles(toolsFolder, inspectorName, 3).stream().findFirst();
-        if (foundExecutable.isPresent() && foundExecutable.get().exists()) {
-            String inspectorExecutable = foundExecutable.get().getAbsolutePath();
-            logger.debug("Found nuget inspector: {}", inspectorExecutable);
-            return inspectorInitializer.apply(inspectorExecutable);
-        } else {
-            throw new DetectableException(String.format("Unable to find nuget inspector, looking for %s in %s", inspectorName, toolsFolder.toString()));
-        }
+        final File foundExecutable = fileFinder.findFiles(toolsFolder, inspectorName, 3)
+                                   .stream()
+                                   .findFirst()
+                                   .filter(File::exists)
+                                   .orElseThrow(() -> new DetectableException(String.format("Unable to find nuget inspector, looking for %s in %s", inspectorName, toolsFolder.toString())));
+        final String inspectorExecutable = foundExecutable.getAbsolutePath();
+        logger.debug("Found nuget inspector: {}", inspectorExecutable);
+        return inspectorInitializer.apply(inspectorExecutable);
     }
 
-    private boolean isWindows(DetectInfo detectInfo) {
+    private boolean isWindows(final DetectInfo detectInfo) {
         return detectInfo.getCurrentOs() == OperatingSystemType.WINDOWS;
     }
 
-    private boolean isNotWindows(DetectInfo detectInfo) {
+    private boolean isNotWindows(final DetectInfo detectInfo) {
         return !isWindows(detectInfo);
     }
 
-    private boolean shouldForceExeInspector(DetectInfo detectInfo) {
+    private boolean shouldForceExeInspector(final DetectInfo detectInfo) {
         if (isNotWindows(detectInfo)) {
             return false;
         }
 
         //if customers have overridden the repo url's and include a v2 api, we must use the old nuget inspector (exe inspector) until 5.0.0 of detect.
         //TODO: Remove in 7.0.0
-        for (String source : packagesRepoUrl) {
+        for (final String source : packagesRepoUrl) {
             if (source.contains("v2")) {
                 logger.warn("You are using Version 2 of the Nuget Api. Please update to version 3. Support for 2 is deprecated.");
                 return true;

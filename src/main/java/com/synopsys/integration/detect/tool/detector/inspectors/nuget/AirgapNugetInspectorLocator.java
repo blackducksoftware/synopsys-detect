@@ -34,7 +34,7 @@ public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
 
     private final AirGapInspectorPaths airGapInspectorPaths;
 
-    public AirgapNugetInspectorLocator(AirGapInspectorPaths airGapInspectorPaths) {
+    public AirgapNugetInspectorLocator(final AirGapInspectorPaths airGapInspectorPaths) {
         this.airGapInspectorPaths = airGapInspectorPaths;
     }
 
@@ -53,7 +53,7 @@ public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
         return locateInspector(INSPECTOR_DIR_CLASSIC);
     }
 
-    private File locateInspector(String childName) throws DetectableException {
+    private File locateInspector(final String childName) throws DetectableException {
         return airGapInspectorPaths.getNugetInspectorAirGapFile()
                    .map(nugetAirGapPath -> new File(nugetAirGapPath, childName))
                    .orElseThrow(() -> new DetectableException("Could not get the nuget air gap path"));

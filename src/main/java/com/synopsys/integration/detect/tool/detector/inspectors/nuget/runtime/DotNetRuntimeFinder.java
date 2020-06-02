@@ -38,8 +38,8 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 public class DotNetRuntimeFinder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private ExecutableRunner executableRunner;
-    private File workingDir;
+    private final ExecutableRunner executableRunner;
+    private final File workingDir;
 
     public DotNetRuntimeFinder(ExecutableRunner executableRunner, File workingDir) {
         this.executableRunner = executableRunner;

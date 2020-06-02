@@ -142,7 +142,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public CodeLocationNameGenerator codeLocationNameService() {
-        String codeLocationNameOverride = detectConfiguration.getValueOrEmpty(DetectProperties.Companion.getDETECT_CODE_LOCATION_NAME()).orElse(null);
+        final String codeLocationNameOverride = detectConfiguration.getValueOrEmpty(DetectProperties.Companion.getDETECT_CODE_LOCATION_NAME()).orElse(null);
         return new CodeLocationNameGenerator(codeLocationNameOverride);
     }
 
@@ -158,7 +158,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public AirGapInspectorPaths airGapManager() {
-        AirGapOptions airGapOptions = detectConfigurationFactory.createAirGapOptions();
+        final AirGapOptions airGapOptions = detectConfigurationFactory.createAirGapOptions();
         return new AirGapInspectorPaths(airGapPathFinder(), airGapOptions);
     }
 
@@ -200,31 +200,31 @@ public class RunBeanConfiguration {
     //#region Detectables
     @Bean
     public DockerInspectorResolver dockerInspectorResolver() {
-        DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver());
+        final DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver());
         return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fullFileFinder(), dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
     }
 
     @Bean()
     public GradleInspectorResolver gradleInspectorResolver() {
-        GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver());
+        final GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver());
         return new ArtifactoryGradleInspectorResolver(gradleInspectorInstaller, configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapManager(), directoryManager);
     }
 
     @Bean()
     public NugetInspectorResolver nugetInspectorResolver() {
-        NugetLocatorOptions installerOptions = detectableOptionFactory.createNugetInstallerOptions();
-        NugetInspectorLocator locator;
-        Optional<File> nugetAirGapPath = airGapManager().getNugetInspectorAirGapFile();
+        final NugetLocatorOptions installerOptions = detectableOptionFactory.createNugetInstallerOptions();
+        final NugetInspectorLocator locator;
+        final Optional<File> nugetAirGapPath = airGapManager().getNugetInspectorAirGapFile();
         if (nugetAirGapPath.isPresent()) {
             locator = new AirgapNugetInspectorLocator(airGapManager());
         } else {
-            NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactResolver());
+            final NugetInspectorInstaller installer = new NugetInspectorInstaller(artifactResolver());
             locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion().orElse(null));
         }
 
-        ExecutableRunner executableRunner = executableRunner();
-        DotNetRuntimeFinder runtimeFinder = new DotNetRuntimeFinder(executableRunner, new File("."));
-        DotNetRuntimeManager dotNetRuntimeManager = new DotNetRuntimeManager(runtimeFinder, new DotNetRuntimeParser());
+        final ExecutableRunner executableRunner = executableRunner();
+        final DotNetRuntimeFinder runtimeFinder = new DotNetRuntimeFinder(executableRunner, new File("."));
+        final DotNetRuntimeManager dotNetRuntimeManager = new DotNetRuntimeManager(runtimeFinder, new DotNetRuntimeParser());
         return new LocatorNugetInspectorResolver(detectExecutableResolver(), executableRunner, detectInfo, fullFileFinder(), installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator, dotNetRuntimeManager);
     }
 
@@ -252,7 +252,7 @@ public class RunBeanConfiguration {
 
     @Lazy
     @Bean()
-    public BlackDuckSignatureScanner blackDuckSignatureScanner(BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, ScanBatchRunner scanBatchRunner, BlackDuckServerConfig blackDuckServerConfig) {
+    public BlackDuckSignatureScanner blackDuckSignatureScanner(final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions, final ScanBatchRunner scanBatchRunner, final BlackDuckServerConfig blackDuckServerConfig) {
         return new BlackDuckSignatureScanner(directoryManager, fullFileFinder(), codeLocationNameManager(), blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, blackDuckServerConfig);
     }
 }

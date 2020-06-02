@@ -30,7 +30,7 @@ public class DotNetRuntimeParser {
     private static final String[] RUNTIME_PREFIX_END_TOKENS = { "All", "App" };
     private static final String RUNTIME_SUFFIX_START_TOKEN = "[";
 
-    public boolean doRuntimesContainVersionStartingWith(List<String> runtimes, String versionSearchString) {
+    public boolean doRuntimesContainVersionStartingWith(final List<String> runtimes, final String versionSearchString) {
         return runtimes
                    .stream()
                    .map(this::extractVersionSubstringFromRuntime)
@@ -38,7 +38,7 @@ public class DotNetRuntimeParser {
     }
 
     private String extractVersionSubstringFromRuntime(String runtime) {
-        for (String lastTokenBeforeVersion : RUNTIME_PREFIX_END_TOKENS) {
+        for (final String lastTokenBeforeVersion : RUNTIME_PREFIX_END_TOKENS) {
             if (runtime.contains(lastTokenBeforeVersion)) {
                 runtime = StringUtils.substringAfter(runtime, lastTokenBeforeVersion);
                 break;

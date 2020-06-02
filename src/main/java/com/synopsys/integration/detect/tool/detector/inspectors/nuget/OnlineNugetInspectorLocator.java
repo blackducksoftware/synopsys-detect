@@ -36,7 +36,7 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
     @Nullable
     private final String overrideVersion;
 
-    public OnlineNugetInspectorLocator(NugetInspectorInstaller nugetInspectorInstaller, DirectoryManager directoryManager, @Nullable String overrideVersion) {
+    public OnlineNugetInspectorLocator(final NugetInspectorInstaller nugetInspectorInstaller, final DirectoryManager directoryManager, @Nullable final String overrideVersion) {
         this.nugetInspectorInstaller = nugetInspectorInstaller;
         this.directoryManager = directoryManager;
         this.overrideVersion = overrideVersion;
@@ -57,11 +57,11 @@ public class OnlineNugetInspectorLocator implements NugetInspectorLocator {
         return locateInspector(nugetInspectorInstaller::installExeInspector);
     }
 
-    private File locateInspector(ThrowingBiFunction<File, String, File, DetectableException> inspectorInstaller) throws DetectableException {
+    private File locateInspector(final ThrowingBiFunction<File, String, File, DetectableException> inspectorInstaller) throws DetectableException {
         try {
-            File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
+            final File nugetDirectory = directoryManager.getPermanentDirectory("nuget");
             return inspectorInstaller.apply(nugetDirectory, overrideVersion);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }
     }
