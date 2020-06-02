@@ -8,7 +8,7 @@ public class DotNetRuntimeParser {
     private static final String[] RUNTIME_PREFIX_END_TOKENS = { "All", "App" };
     private static final String RUNTIME_SUFFIX_START_TOKEN = "[";
 
-    public boolean doesRuntimeContainVersionStartingWith(List<String> runtimes, String versionSearchString) {
+    public boolean doRuntimesContainVersionStartingWith(List<String> runtimes, String versionSearchString) {
         return runtimes
                    .stream()
                    .map(this::extractVersionSubstringFromRuntime)

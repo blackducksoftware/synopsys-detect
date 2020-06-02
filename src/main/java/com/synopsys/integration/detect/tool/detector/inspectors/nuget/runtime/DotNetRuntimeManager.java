@@ -22,6 +22,6 @@ public class DotNetRuntimeManager {
 
     public boolean isRuntimeAvailable(String version) throws DetectableException {
         List<String> availableRuntimes = runtimeFinder.listAvailableRuntimes();
-        return runtimeParser.doesRuntimeContainVersionStartingWith(availableRuntimes, version);
+        return runtimeParser.doRuntimesContainVersionStartingWith(availableRuntimes, version);
     }
 }

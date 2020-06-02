@@ -37,7 +37,7 @@ public class DotNetRuntimeParserTest {
     }
 
     private void assertAvailability(BiConsumer<Boolean, String> assertion, DotNetRuntimeParser runtimeParser, String versionSearchString) {
-        boolean isVersionAvailable = runtimeParser.doesRuntimeContainVersionStartingWith(VALID_RUNTIME_STRINGS, versionSearchString);
+        boolean isVersionAvailable = runtimeParser.doRuntimesContainVersionStartingWith(VALID_RUNTIME_STRINGS, versionSearchString);
         assertion.accept(isVersionAvailable, String.format("Different runtime availability expected for '%s' runtime", versionSearchString));
     }
 }
