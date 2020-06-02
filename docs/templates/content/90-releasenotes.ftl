@@ -5,6 +5,7 @@
 
 ### Changed features
 Moved download location of ${solution_name} for the shell script from /tmp to ~/synopsys-detect/download.
+* Eliminated any need for the ${blackduck_product_name} Global Code Scanner overall role.
 
 ### Resolved issues
 * (IDETECT-2034) Resolved an issue that would cause a NullPointerException when ${solution_name}'s initial attempt at generating a code location name produced a code location name greater than 250 characters and either code location prefix or code location suffix is not set.

@@ -18,7 +18,7 @@ For connecting to ${blackduck_product_name}:
 
 * Licensed installation of the current version of ${blackduck_product_name} with access credentials.  Visit [this page](${blackduck_release_page}) to determine the current version of Black Duck.
 * The ${blackduck_product_name} notifications module must be enabled.
-* A ${blackduck_product_name} user with project creator and global code scanner roles.
+* A ${blackduck_product_name} user with the [required roles](../advanced/BD-user-role-requirements/).
 
 ## ${polaris_product_name} requirements
 
