@@ -24,8 +24,11 @@ package com.synopsys.integration.detect.lifecycle.run;
 
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.misc.Nullable;
 import org.apache.commons.lang3.StringUtils;
@@ -147,7 +150,7 @@ public class RunManager {
             logger.info("Polaris tools will not be run.");
         }
 
-        final UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, detectDetectableFactory, runResult, runOptions, detectToolFilter);
+        final UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, detectDetectableFactory, runResult, runOptions, detectToolFilter, codeLocationNameManager);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
             final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName().orElse(null), runOptions.getAggregateMode(), universalToolsResult);
@@ -177,7 +180,7 @@ public class RunManager {
 
     private UniversalToolsResult runUniversalProjectTools(final PropertyConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory,
         final DirectoryManager directoryManager, final EventSystem eventSystem, final DetectDetectableFactory detectDetectableFactory,
-        final RunResult runResult, final RunOptions runOptions, final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
+        final RunResult runResult, final RunOptions runOptions, final DetectToolFilter detectToolFilter, final CodeLocationNameManager codeLocationNameManager) throws DetectUserFriendlyException {
         final ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         final CodeLocationConverter codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
 
@@ -198,6 +201,7 @@ public class RunManager {
                 }
             }
             runResult.addDetectableToolResult(detectableToolResult);
+            eventSystem.publishEvent(Event.CodeLocationNamesCalculated, collectCodeLocationNames(detectableToolResult, codeLocationNameManager, directoryManager));
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
             logger.info("Docker actions finished.");
         } else {
@@ -212,6 +216,7 @@ public class RunManager {
                 eventSystem);
             final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
             runResult.addDetectableToolResult(detectableToolResult);
+            eventSystem.publishEvent(Event.CodeLocationNamesCalculated, collectCodeLocationNames(detectableToolResult, codeLocationNameManager, directoryManager));
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
             logger.info("Bazel actions finished.");
         } else {
@@ -344,7 +349,7 @@ public class RunManager {
                                                 .map(URL::toExternalForm)
                                                 .orElse("Unknown Host");
                 uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(blackDuckUrl, bdioResult.getUploadTargets(), bdioUploader);
-                codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
+                codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData, eventSystem);
             }
         } else {
             logger.debug("Did not create any BDIO files.");
@@ -359,7 +364,7 @@ public class RunManager {
             final BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
             final SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar());
             if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
-                codeLocationWaitData.addWaitForCreationData(signatureScannerToolResult.getCreationData().get());
+                codeLocationWaitData.addWaitForCreationData(signatureScannerToolResult.getCreationData().get(), eventSystem);
             } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
                 eventSystem.publishEvent(Event.StatusSummary, new Status("SIGNATURE_SCAN", StatusType.FAILURE));
             }
@@ -377,7 +382,7 @@ public class RunManager {
                 if (blackDuckBinaryScanner.shouldRun()) {
                     final BinaryScanToolResult result = blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
                     if (result.isSuccessful()) {
-                        codeLocationWaitData.addWaitForCreationData(result.getCodeLocationCreationData());
+                        codeLocationWaitData.addWaitForCreationData(result.getCodeLocationCreationData(), eventSystem);
                     }
                 }
             }
@@ -407,6 +412,16 @@ public class RunManager {
         } else {
             logger.debug("Will not perform Black Duck post actions: Detect is not online.");
         }
+    }
+
+    private Set<String> collectCodeLocationNames(DetectableToolResult detectableToolResult, CodeLocationNameManager codeLocationNameManager, DirectoryManager directoryManager) {
+        if (detectableToolResult.getDetectToolProjectInfo().isPresent()) {
+            NameVersion projectNameVersion = detectableToolResult.getDetectToolProjectInfo().get().getSuggestedNameVersion();
+            return detectableToolResult.getDetectCodeLocations().stream()
+                       .map(detectCodeLocation -> codeLocationNameManager.createCodeLocationName(detectCodeLocation, directoryManager.getSourceDirectory(), projectNameVersion.getName(), projectNameVersion.getVersion(), null, null))
+                       .collect(Collectors.toSet());
+        }
+        return new HashSet<>();
     }
 
 }
