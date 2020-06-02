@@ -50,13 +50,14 @@ import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorI
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.LocalPipInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.AirgapNugetInspectorLocator;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.DotNetRuntimeAvailabilityVerifier;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.DotNetRuntimeFinder;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.LocatorNugetInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorLocator;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.OnlineNugetInspectorLocator;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeFinder;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeManager;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeParser;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScanner;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
@@ -222,9 +223,9 @@ public class RunBeanConfiguration {
         }
 
         ExecutableRunner executableRunner = executableRunner();
-        DotNetRuntimeFinder dotNetRuntimeFinder = new DotNetRuntimeFinder(executableRunner, new File("."));
-        DotNetRuntimeAvailabilityVerifier dotNetRuntimeVerifier = new DotNetRuntimeAvailabilityVerifier(dotNetRuntimeFinder);
-        return new LocatorNugetInspectorResolver(detectExecutableResolver(), executableRunner, detectInfo, fullFileFinder(), installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator, dotNetRuntimeVerifier);
+        DotNetRuntimeFinder runtimeFinder = new DotNetRuntimeFinder(executableRunner, new File("."));
+        DotNetRuntimeManager dotNetRuntimeManager = new DotNetRuntimeManager(runtimeFinder, new DotNetRuntimeParser());
+        return new LocatorNugetInspectorResolver(detectExecutableResolver(), executableRunner, detectInfo, fullFileFinder(), installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator, dotNetRuntimeManager);
     }
 
     @Bean()

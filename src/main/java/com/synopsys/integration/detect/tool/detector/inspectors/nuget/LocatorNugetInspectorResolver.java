@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
+import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeManager;
 import com.synopsys.integration.detect.type.OperatingSystemType;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
@@ -52,14 +53,14 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
     private final String nugetInspectorName;
     private final List<String> packagesRepoUrl;
     private final NugetInspectorLocator nugetInspectorLocator;
-    private final DotNetRuntimeAvailabilityVerifier dotNetRuntimeVerifier;
+    private final DotNetRuntimeManager dotNetRuntimeManager;
 
     private boolean hasResolvedInspector;
     private NugetInspector resolvedNugetInspector;
 
     public LocatorNugetInspectorResolver(DetectExecutableResolver executableResolver, ExecutableRunner executableRunner, DetectInfo detectInfo,
         FileFinder fileFinder, String nugetInspectorName, List<String> packagesRepoUrl, NugetInspectorLocator nugetInspectorLocator,
-        DotNetRuntimeAvailabilityVerifier dotNetRuntimeVerifier) {
+        DotNetRuntimeManager dotNetRuntimeManager) {
         this.executableResolver = executableResolver;
         this.executableRunner = executableRunner;
         this.detectInfo = detectInfo;
@@ -67,7 +68,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         this.nugetInspectorName = nugetInspectorName;
         this.packagesRepoUrl = packagesRepoUrl;
         this.nugetInspectorLocator = nugetInspectorLocator;
-        this.dotNetRuntimeVerifier = dotNetRuntimeVerifier;
+        this.dotNetRuntimeManager = dotNetRuntimeManager;
     }
 
     @Override
@@ -102,7 +103,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
 
         if (useDotnet) {
             File dotnetFolder;
-            if (dotNetRuntimeVerifier.isRuntimeAvailable(3, 1)) {
+            if (dotNetRuntimeManager.isRuntimeAvailable(3, 1)) {
                 dotnetFolder = nugetInspectorLocator.locateDotnet3Inspector();
                 return findDotnetCoreInspector(dotnetFolder, dotnetExecutable, "NugetDotnet3Inspector.dll");
             } else {
