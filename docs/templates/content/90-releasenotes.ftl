@@ -4,7 +4,7 @@
 ### New features
 
 ### Changed features
-Moved download location of ${solution_name} for the shell script from /tmp to ~/synopsys-detect/download.
+* Moved the location to which ${bash_script_name} downloads the ${solution_name} .jar from /tmp to ~/synopsys-detect/download.
 * Eliminated any need for the ${blackduck_product_name} Global Code Scanner overall role.
 
 ### Resolved issues
