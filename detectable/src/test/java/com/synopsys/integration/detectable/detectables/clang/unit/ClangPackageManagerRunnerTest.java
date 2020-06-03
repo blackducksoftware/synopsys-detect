@@ -7,7 +7,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import org.mockito.Mockito;
@@ -77,7 +76,7 @@ public class ClangPackageManagerRunnerTest {
         final PackageDetailsResult result = runner.getPackages(currentPackageManager, workingDirectory, executableRunner, nonPkgOwnedIncludeFile);
 
         // Verify
-        assertEquals(1, result.getFailedDependencyFiles().size());
-        assertEquals(nonPkgOwnedIncludeFile, result.getFailedDependencyFiles().iterator().next());
+        assertEquals(1, result.getUnRecognizedDependencyFiles().size());
+        assertEquals(nonPkgOwnedIncludeFile, result.getUnRecognizedDependencyFiles().iterator().next());
     }
 }

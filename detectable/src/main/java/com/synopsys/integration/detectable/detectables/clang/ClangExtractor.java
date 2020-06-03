@@ -71,15 +71,15 @@ public class ClangExtractor {
             final PackageDetailsResult results = packageManagerRunner.getAllPackages(currentPackageManager, sourceDirectory, executableRunner, dependencyFileDetails);
 
             logger.trace("Found : " + results.getFoundPackages() + " packages.");
-            logger.trace("Found : " + results.getFailedDependencyFiles() + " non-package files.");
+            logger.trace("Found : " + results.getUnRecognizedDependencyFiles() + " non-package files.");
 
             final List<Forge> packageForges = currentPackageManager.getPackageManagerInfo().getForges();
             final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(packageForges, results.getFoundPackages());
 
-            logSummary(results.getFailedDependencyFiles(), sourceDirectory);
+            logSummary(results.getUnRecognizedDependencyFiles(), sourceDirectory);
 
             // TEMP: fake a list of unrecognized include files
-            final List<File> unrecognizedIncludeFiles = results.getFailedDependencyFiles().stream()
+            final List<File> unrecognizedIncludeFiles = results.getUnRecognizedDependencyFiles().stream()
                                                             .filter(file -> isFileUnderDir(sourceDirectory, file))
                                                             .collect(Collectors.toList());
 
@@ -105,18 +105,18 @@ public class ClangExtractor {
         }
     }
 
-    private void logSummary(final Set<File> failedDependencyFiles, final File sourceDirectory) {
+    private void logSummary(final Set<File> unRecognizedDependencyFiles, final File sourceDirectory) {
         logger.debug("Dependency files outside the build directory that were not recognized by the package manager:");
-        for (final File failedDependencyFile : failedDependencyFiles) {
+        for (final File unRecognizedDependencyFile : unRecognizedDependencyFiles) {
             try {
-                if (FileUtils.directoryContains(sourceDirectory, failedDependencyFile)) {
-                    logger.debug(String.format("\t%s is not managed, but it's in the source.dir, ignoring.", failedDependencyFile.getAbsolutePath()));
+                if (FileUtils.directoryContains(sourceDirectory, unRecognizedDependencyFile)) {
+                    logger.debug(String.format("\t%s is not managed, but it's in the source.dir, ignoring.", unRecognizedDependencyFile.getAbsolutePath()));
                 } else {
-                    logger.debug(String.format("\t%s", failedDependencyFile.getAbsolutePath()));
+                    logger.debug(String.format("\t%s", unRecognizedDependencyFile.getAbsolutePath()));
                 }
             } catch (final IOException e) {
-                logger.debug(String.format("%s may or may not be in the source dir, failed to check.", failedDependencyFile.getAbsolutePath()));
-                logger.debug(String.format("\t%s", failedDependencyFile.getAbsolutePath()));
+                logger.debug(String.format("%s may or may not be in the source dir (attempt to verify location failed).", unRecognizedDependencyFile.getAbsolutePath()));
+                logger.debug(String.format("\t%s", unRecognizedDependencyFile.getAbsolutePath()));
             }
         }
     }

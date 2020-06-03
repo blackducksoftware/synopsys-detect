@@ -27,15 +27,15 @@ import java.util.Set;
 
 public class PackageDetailsResult {
     private final Set<PackageDetails> foundPackages;
-    private final Set<File> failedDependencyFiles;
+    private final Set<File> unRecognizedDependencyFiles;
 
-    public PackageDetailsResult(final Set<PackageDetails> foundPackages, final Set<File> failedDependencyFiles) {
+    public PackageDetailsResult(final Set<PackageDetails> foundPackages, final Set<File> unRecognizedDependencyFiles) {
         this.foundPackages = foundPackages;
-        this.failedDependencyFiles = failedDependencyFiles;
+        this.unRecognizedDependencyFiles = unRecognizedDependencyFiles;
     }
 
-    public Set<File> getFailedDependencyFiles() {
-        return failedDependencyFiles;
+    public Set<File> getUnRecognizedDependencyFiles() {
+        return unRecognizedDependencyFiles;
     }
 
     public Set<PackageDetails> getFoundPackages() {
