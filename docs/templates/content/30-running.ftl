@@ -19,7 +19,7 @@ Results from buildless mode may be less accurate than results from build mode.
 ## Choosing the working directory
 
 You can run ${solution_name} from any directory. If you are not running ${solution_name} from the project directory,
-provide the project directory using the [source path property](../properties/configuration/paths/#source-path-advanced). When that property is not set,
+provide the project directory using the [source path property](../properties/configuration/paths/#source-path). When that property is not set,
 ${solution_name} assumes the current working directory is the project directory.
 
 ## Choosing a run method (script or .jar)
@@ -171,8 +171,8 @@ project directory.
 ${solution_name} can be configured to perform additional tasks, including the following:
 
 * Enable any of the supported snippet matching modes in the [${blackduck_signature_scanner_name}](../properties/configuration/signature scanner/).
-* Run the [${blackduck_binary_scanner_name}](../properties/configuration/signature scanner/#binary-scan-target) on a given binary files.
-* Run the ${dockerinspector_name} on a given [Docker image](../advanced/language-and-package-managers/docker-images/).
+* Run [${blackduck_binary_scan_capability}](../properties/configuration/signature scanner/#binary-scan-target) on a given binary files.
+* Run the ${dockerinspector_name} on a given [Docker image](../advanced/package-managers/docker-images/).
 * Generate a [report](../properties/configuration/report/).
 * Fail on [policy violation](../properties/configuration/project/#fail-on-policy-violation-severities-advanced).
 
@@ -183,7 +183,7 @@ and [${blackduck_signature_scanner_name} properties](../properties/configuration
 
 If you do not have a ${blackduck_product_name} instance, or if your network is down, you can still run ${solution_name} in offline mode.
 In offline mode, ${solution_name} creates the BDIO content and the dry run ${blackduck_signature_scan_act} output files without attempting to upload them to ${blackduck_product_name}.
-You can run ${solution_name} in offline mode using the [offline mode property](../properties/configuration/blackduck server/#offline-mode-advanced).
+You can run ${solution_name} in offline mode using the [offline mode property](../properties/configuration/blackduck server/#offline-mode).
 
 ### BDIO format
 
@@ -196,6 +196,8 @@ By default, ${solution_name} produces BDIO 1 files.
 Use the [BDIO2 enabled property](../properties/configuration/paths/#bdio-2-enabled) to select BDIO 2 format.
 
 ## Running with ${polaris_product_name}
+
+This capability is deprecated and will be removed in a future release.
 
 ${solution_name} can be used with ${polaris_product_name} to perform Static Application Security Testing (SAST).
 

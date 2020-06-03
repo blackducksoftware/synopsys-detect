@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 public enum DetectorType {
     BITBAKE,
+    CARGO,
     COCOAPODS,
     CONDA,
     CPAN,
@@ -52,5 +53,9 @@ public enum DetectorType {
     YARN,
     CLANG;
 
-    public static final List<String> POSSIBLE_NAMES = Arrays.stream(DetectorType.values()).map(DetectorType::name).collect(Collectors.toList());
+    protected static final List<String> POSSIBLE_NAMES = Arrays.stream(DetectorType.values()).map(DetectorType::name).collect(Collectors.toList());
+
+    public static List<String> getPossibleNames() {
+        return POSSIBLE_NAMES;
+    }
 }

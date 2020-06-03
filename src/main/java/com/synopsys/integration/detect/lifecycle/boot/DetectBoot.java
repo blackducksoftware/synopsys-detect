@@ -335,7 +335,7 @@ public class DetectBoot {
                 final String deprecationMessage = deprecationInfo.getDeprecationText();
 
                 deprecationMessages.put(property.getKey(), new ArrayList<>(Collections.singleton(deprecationMessage)));
-                DetectIssue.publish(eventSystem, DetectIssueType.Deprecation, property.getKey(), "\t" + deprecationMessage);
+                DetectIssue.publish(eventSystem, DetectIssueType.DEPRECATION, property.getKey(), "\t" + deprecationMessage);
 
                 if (detectInfo.getDetectMajorVersion() >= deprecationInfo.getFailInVersion().getIntValue()) {
                     usedFailureProperties.add(property);

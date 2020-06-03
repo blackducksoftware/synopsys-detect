@@ -24,8 +24,8 @@ package com.synopsys.integration.detectable.detectables.nuget.model;
 
 import java.util.List;
 
-import org.apache.commons.lang3.builder.RecursiveToStringStyle;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -38,6 +38,6 @@ public class NugetPackageSet {
 
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toString(this, RecursiveToStringStyle.JSON_STYLE);
+        return ReflectionToStringBuilder.toString(this, ToStringStyle.JSON_STYLE);
     }
 }

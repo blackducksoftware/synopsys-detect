@@ -23,8 +23,6 @@
 package com.synopsys.integration.detectable;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -49,7 +47,9 @@ import com.synopsys.integration.detectable.factory.DetectableFactory;
 //This sample application will an example detectable tool and execute it against the current folder.
 public class SingleDetectableApplication {
     public static void main(final String[] args) {
-
+        /*
+            Empty main method
+         */
     }
 
     //In this example, we use the Detectable to determine if we can extract and if all necessary pieces are present.

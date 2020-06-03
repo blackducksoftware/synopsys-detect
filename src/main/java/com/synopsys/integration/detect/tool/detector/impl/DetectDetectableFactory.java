@@ -29,6 +29,7 @@ import com.synopsys.integration.detectable.detectable.inspector.PipInspectorReso
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
+import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
@@ -98,6 +99,10 @@ public class DetectDetectableFactory {
 
     public BitbakeDetectable createBitbakeDetectable(final DetectableEnvironment environment) {
         return detectableFactory.createBitbakeDetectable(environment, detectableOptionFactory.createBitbakeDetectableOptions(), detectExecutableResolver);
+    }
+
+    public CargoDetectable createCargoDetectable(final DetectableEnvironment environment) {
+        return detectableFactory.createCargoDetectable(environment);
     }
 
     public ClangDetectable createClangDetectable(final DetectableEnvironment environment) {
@@ -229,7 +234,7 @@ public class DetectDetectableFactory {
     }
 
     public YarnLockDetectable createYarnLockDetectable(final DetectableEnvironment environment) {
-        return detectableFactory.createYarnLockDetectable(environment, detectableOptionFactory.createYarnLockOptions().useProductionOnly());
+        return detectableFactory.createYarnLockDetectable(environment, detectableOptionFactory.createYarnLockOptions());
     }
 
 }

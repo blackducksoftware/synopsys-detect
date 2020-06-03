@@ -1,5 +1,34 @@
 # Solutions to common problems
 
+## WARNING: An illegal reflective access operation has occurred
+
+### Symptom
+A block of warnings may appear in ${solution_name}'s logs similar to the following:
+```
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass (file:/Users/myuser/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.4.12/760afc568cbd94c09d78f801ce51aed1326710af/groovy-all-2.4.12.jar) to method java.lang.Object.finalize()
+WARNING: Please consider reporting this to the maintainers of org.codehaus.groovy.reflection.CachedClass
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+```
+
+### Possible cause
+Running ${solution_name} with Java 11 can cause these warnings. <br/>
+This is a known issue with Apache since Groovy 2.4.11. See [GROOVY-8339](https://issues.apache.org/jira/browse/GROOVY-8339). <br/>
+${solution_name}'s use of Groovy 2 is the result of using Spring Boot 2.2.4.RELEASE which currently depends on Groovy 2. <br/>
+
+### Solution
+Currently we have observed no adverse effects on ${solution_name} as a result of these warnings. <br/>
+The issue has been fixed in Groovy 3 as per [GROOVY-8339](https://issues.apache.org/jira/browse/GROOVY-8339). <br/>
+Clients running ${solution_name} with Java 11 will have these warnings until the [Spring Boot project](https://github.com/spring-projects/spring-boot) upgrades its Groovy dependencies to Groovy 3 and ${solution_name} upgrades Spring Boot.
+
+### Source Code
+The relevant source code within ${solution_name}. <br/>
+[synopsys-detect/build.gradle#L15](https://github.com/blackducksoftware/synopsys-detect/blob/6f7f8026e188999f4a9cac4dfdbcf63dcda1d90b/build.gradle#L15))
+
+The relevant source code within [Spring Boot](https://github.com/spring-projects/spring-boot). <br/>
+[spring-boot-dependencies/pom.xml#L69](https://github.com/spring-projects/spring-boot/blob/58a45c53ac599588104dd82f9ddc81d73fd3f829/spring-boot-project/spring-boot-dependencies/pom.xml#L69)
+
 ## DETECT_SOURCE was not set or computed correctly
 
 ### Symptom
@@ -12,7 +41,7 @@ detect.sh is trying to execute this command:
 ````
 curl --silent --header \"X-Result-Detail: info\" https://sig-repo.synopsys.com/api/storage/bds-integrations-release/com/synopsys/integration/synopsys-detect?properties=DETECT_LATEST
 ````
-The response to this command should be similar to:
+The response to this command should be similar to the following:
 ```
 {
 "properties" : {
@@ -112,3 +141,21 @@ The Black Duck server certificate is not in Java's keystore.
 1. Run [keytool](https://docs.oracle.com/en/java/javase/11/tools/keytool.html) to install the Black Duck server certificate into the keystore in that Java home directory.
 
 Although not recommended, it is possible to disable the certificate check with the [trust cert property](../../../properties/configuration/blackduck server/#trust-all-ssl-certificates-advanced).
+
+## Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException
+
+### Symptom
+
+Running ${solution_name} on a NuGet project on Windows, a message similar to the following appears in the ${solution_name} log:
+
+````
+Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException: Illegal char <:> at index 2: C:\...
+````
+
+### Possible cause
+
+The value of $PATH contains a whitespace character after a semicolon and the path mentioned in the log message.
+
+### Solution
+
+Remove spaces immediately following semicolons in the value of $PATH.

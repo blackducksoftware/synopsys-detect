@@ -23,11 +23,15 @@
 package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 
 import java.io.File;
-import java.util.Optional;
 
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
 public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
+    public static final String INSPECTOR_DIR_DOTNET3 = "nuget_dotnet3";
+    public static final String INSPECTOR_DIR_DOTNET = "nuget_dotnet";
+    public static final String INSPECTOR_DIR_CLASSIC = "nuget_classic";
+
     private final AirGapInspectorPaths airGapInspectorPaths;
 
     public AirgapNugetInspectorLocator(final AirGapInspectorPaths airGapInspectorPaths) {
@@ -35,14 +39,23 @@ public class AirgapNugetInspectorLocator implements NugetInspectorLocator {
     }
 
     @Override
-    public File locateExeInspector() {
-        final Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
-        return new File(nugetAirGapPath.get(), "nuget_classic"); // TODO: Why is there no ifPresent() check?
+    public File locateDotnet3Inspector() throws DetectableException {
+        return locateInspector(INSPECTOR_DIR_DOTNET3);
     }
 
     @Override
-    public File locateDotnetInspector() {
-        final Optional<File> nugetAirGapPath = airGapInspectorPaths.getNugetInspectorAirGapFile();
-        return new File(nugetAirGapPath.get(), "nuget_dotnet"); // TODO: Why is there no ifPresent() check?
+    public File locateDotnetInspector() throws DetectableException {
+        return locateInspector(INSPECTOR_DIR_DOTNET);
+    }
+
+    @Override
+    public File locateExeInspector() throws DetectableException {
+        return locateInspector(INSPECTOR_DIR_CLASSIC);
+    }
+
+    private File locateInspector(final String childName) throws DetectableException {
+        return airGapInspectorPaths.getNugetInspectorAirGapFile()
+                   .map(nugetAirGapPath -> new File(nugetAirGapPath, childName))
+                   .orElseThrow(() -> new DetectableException("Could not get the nuget air gap path"));
     }
 }

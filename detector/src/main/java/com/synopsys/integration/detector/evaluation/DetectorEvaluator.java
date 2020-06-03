@@ -101,7 +101,7 @@ public class DetectorEvaluator {
             getDetectorEvaluatorListener().ifPresent(it -> it.applicableEnded(detectorEvaluation));
         }
 
-        if (appliedSoFar.size() > 0) {
+        if (!appliedSoFar.isEmpty()) {
             logger.debug("Found (" + appliedSoFar.size() + ") applicable detectors in: " + detectorEvaluationTree.getDirectory()
                                                                                                .toString()); //TODO: Perfect log level also matters here. To little and we may appear stuck, but we may also be flooding the logs.
         }
@@ -125,30 +125,7 @@ public class DetectorEvaluator {
                 logger.trace("Detector was searchable and applicable, will check extractable: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
 
                 logger.trace("Checking to see if this detector is a fallback detector.");
-                DetectableResult detectableExtractableResult = null;
-                final Optional<DetectorRule> fallbackFrom = detectorEvaluationTree.getDetectorRuleSet().getFallbackFrom(detectorEvaluation.getDetectorRule());
-                if (fallbackFrom.isPresent()) {
-                    final Optional<DetectorEvaluation> fallbackEvaluationOptional = detectorEvaluationTree.getEvaluation(fallbackFrom.get());
-
-                    if (fallbackEvaluationOptional.isPresent()) {
-                        final DetectorEvaluation fallbackEvaluation = fallbackEvaluationOptional.get();
-                        fallbackEvaluation.setFallbackTo(detectorEvaluation);
-                        detectorEvaluation.setFallbackFrom(fallbackEvaluation);
-
-                        if (fallbackEvaluation.isExtractable()) {
-                            detectableExtractableResult = new FallbackNotNeededDetectorResult(fallbackEvaluation.getDetectorRule());
-                        }
-                    }
-                }
-
-                if (detectableExtractableResult == null) {
-                    final Detectable detectable = detectorEvaluation.getDetectable();
-                    try {
-                        detectableExtractableResult = detectable.extractable();
-                    } catch (final DetectableException e) {
-                        detectableExtractableResult = new ExceptionDetectableResult(e);
-                    }
-                }
+                DetectableResult detectableExtractableResult = getDetectableExtractableResult(detectorEvaluationTree, detectorEvaluation);
 
                 final DetectorResult extractableResult = new DetectorResult(detectableExtractableResult.getPassed(), detectableExtractableResult.toDescription());
                 detectorEvaluation.setExtractable(extractableResult);
@@ -165,6 +142,40 @@ public class DetectorEvaluator {
         for (final DetectorEvaluationTree childDetectorEvaluationTree : detectorEvaluationTree.getChildren()) {
             extractableEvaluation(childDetectorEvaluationTree);
         }
+    }
+
+    private DetectableResult getDetectableExtractableResult(DetectorEvaluationTree detectorEvaluationTree, DetectorEvaluation detectorEvaluation) {
+        DetectableResult detectableExtractableResult;
+
+        detectableExtractableResult = checkForFallbackDetector(detectorEvaluationTree, detectorEvaluation);
+
+        if (detectableExtractableResult == null) {
+            final Detectable detectable = detectorEvaluation.getDetectable();
+            try {
+                return detectable.extractable();
+            } catch (final DetectableException e) {
+                return new ExceptionDetectableResult(e);
+            }
+        }
+        return detectableExtractableResult;
+    }
+
+    private DetectableResult checkForFallbackDetector(DetectorEvaluationTree detectorEvaluationTree, DetectorEvaluation detectorEvaluation) {
+        final Optional<DetectorRule> fallbackFrom = detectorEvaluationTree.getDetectorRuleSet().getFallbackFrom(detectorEvaluation.getDetectorRule());
+        if (fallbackFrom.isPresent()) {
+            final Optional<DetectorEvaluation> fallbackEvaluationOptional = detectorEvaluationTree.getEvaluation(fallbackFrom.get());
+
+            if (fallbackEvaluationOptional.isPresent()) {
+                final DetectorEvaluation fallbackEvaluation = fallbackEvaluationOptional.get();
+                fallbackEvaluation.setFallbackTo(detectorEvaluation);
+                detectorEvaluation.setFallbackFrom(fallbackEvaluation);
+
+                if (fallbackEvaluation.isExtractable()) {
+                    return new FallbackNotNeededDetectorResult(fallbackEvaluation.getDetectorRule());
+                }
+            }
+        }
+        return null;
     }
 
     public void setupDiscoveryAndExtractions(final DetectorEvaluationTree detectorEvaluationTree, final Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider) {

@@ -68,6 +68,9 @@ import com.synopsys.integration.detectable.detectables.bitbake.BitbakeRecipesToL
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
+import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
+import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
+import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
@@ -103,8 +106,9 @@ import com.synopsys.integration.detectable.detectables.git.cli.GitCliExtractor;
 import com.synopsys.integration.detectable.detectables.git.cli.GitUrlParser;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseDetectable;
 import com.synopsys.integration.detectable.detectables.git.parsing.GitParseExtractor;
+import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNameVersionTransformer;
+import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitConfigNodeTransformer;
 import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileParser;
-import com.synopsys.integration.detectable.detectables.git.parsing.parse.GitFileTransformer;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepExtractor;
 import com.synopsys.integration.detectable.detectables.go.godep.GoDepLockDetectable;
 import com.synopsys.integration.detectable.detectables.go.godep.parse.GoLockParser;
@@ -192,6 +196,7 @@ import com.synopsys.integration.detectable.detectables.swift.SwiftExtractor;
 import com.synopsys.integration.detectable.detectables.swift.SwiftPackageTransformer;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
+import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 
@@ -229,6 +234,10 @@ public class DetectableFactory {
 
     public BitbakeDetectable createBitbakeDetectable(final DetectableEnvironment environment, final BitbakeDetectableOptions bitbakeDetectableOptions, final BashResolver bashResolver) {
         return new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor(), bashResolver);
+    }
+
+    public CargoDetectable createCargoDetectable(final DetectableEnvironment environment) {
+        return new CargoDetectable(environment, fileFinder, cargoExtractor());
     }
 
     public ClangDetectable createClangDetectable(final DetectableEnvironment environment, final ClangDetectableOptions clangDetectableOptions) {
@@ -361,8 +370,8 @@ public class DetectableFactory {
         return new SwiftCliDetectable(environment, fileFinder, swiftExtractor(), swiftResolver);
     }
 
-    public YarnLockDetectable createYarnLockDetectable(final DetectableEnvironment environment, final boolean includeDevDependencies) {
-        return new YarnLockDetectable(environment, fileFinder, yarnLockExtractor(), includeDevDependencies);
+    public YarnLockDetectable createYarnLockDetectable(final DetectableEnvironment environment, final YarnLockOptions yarnLockOptions) {
+        return new YarnLockDetectable(environment, fileFinder, yarnLockExtractor(), yarnLockOptions);
     }
 
     //#endregion
@@ -385,6 +394,10 @@ public class DetectableFactory {
 
     private DependencyFileDetailGenerator dependencyFileDetailGenerator() {
         return new DependencyFileDetailGenerator(filePathGenerator());
+    }
+
+    private CargoExtractor cargoExtractor() {
+        return new CargoExtractor(new CargoLockParser());
     }
 
     private ClangPackageDetailsTransformer clangPackageDetailsTransformer() {
@@ -443,12 +456,16 @@ public class DetectableFactory {
         return new GitFileParser();
     }
 
-    private GitFileTransformer gitFileTransformer() {
-        return new GitFileTransformer(gitUrlParser());
+    private GitConfigNameVersionTransformer gitConfigNameVersionTransformer() {
+        return new GitConfigNameVersionTransformer(gitUrlParser());
+    }
+
+    private GitConfigNodeTransformer gitConfigNodeTransformer() {
+        return new GitConfigNodeTransformer();
     }
 
     private GitParseExtractor gitParseExtractor() {
-        return new GitParseExtractor(gitFileParser(), gitFileTransformer());
+        return new GitParseExtractor(gitFileParser(), gitConfigNameVersionTransformer(), gitConfigNodeTransformer());
     }
 
     private GitUrlParser gitUrlParser() {

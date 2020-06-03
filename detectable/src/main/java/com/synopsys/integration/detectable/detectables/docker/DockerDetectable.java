@@ -71,10 +71,6 @@ public class DockerDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        if (OperatingSystemType.determineFromSystem() == OperatingSystemType.WINDOWS) {
-            return new WrongOperatingSystemResult(OperatingSystemType.determineFromSystem());
-        }
-
         if (!dockerDetectableOptions.hasDockerImageOrTar()) {
             return new PropertyInsufficientDetectableResult();
         }
@@ -83,6 +79,9 @@ public class DockerDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
+        if (OperatingSystemType.determineFromSystem() == OperatingSystemType.WINDOWS) {
+            return new WrongOperatingSystemResult(OperatingSystemType.determineFromSystem());
+        }
         javaExe = javaResolver.resolveJava();
         if (javaExe == null) {
             return new ExecutableNotFoundDetectableResult("java");

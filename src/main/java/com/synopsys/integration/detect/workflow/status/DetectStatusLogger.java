@@ -45,19 +45,19 @@ public class DetectStatusLogger {
         if (!detectIssues.isEmpty()) {
             logger.info("======== Detect Issues ========");
             logger.info("");
-            final List<DetectIssue> detectors = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.Detector).collect(Collectors.toList());
+            final List<DetectIssue> detectors = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.DETECTOR).collect(Collectors.toList());
             if (detectors.size() > 0) {
                 logger.info("DETECTORS:");
                 detectors.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
                 logger.info("");
             }
-            final List<DetectIssue> exceptions = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.Exception).collect(Collectors.toList());
+            final List<DetectIssue> exceptions = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.EXCEPTION).collect(Collectors.toList());
             if (exceptions.size() > 0) {
                 logger.info("EXCEPTIONS:");
                 exceptions.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
                 logger.info("");
             }
-            final List<DetectIssue> deprecations = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.Deprecation).collect(Collectors.toList());
+            final List<DetectIssue> deprecations = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.DEPRECATION).collect(Collectors.toList());
             if (deprecations.size() > 0) {
                 logger.info("DEPRECATIONS:");
                 deprecations.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));

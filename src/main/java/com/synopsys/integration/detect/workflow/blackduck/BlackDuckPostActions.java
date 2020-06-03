@@ -38,8 +38,12 @@ import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.workflow.blackduck.policy.PolicyChecker;
+import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
+import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckPostActions {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -66,9 +70,10 @@ public class BlackDuckPostActions {
                     // In order to wait the full timeout, we have to not use that start time and instead use now().
                     final NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitData.getNotificationRange().getStartDate(),
                         codeLocationWaitData.getNotificationRange().getEndDate());
+                    final NameVersion projectNameVersion = new NameVersion(projectView.getName(), projectVersionView.getVersionName());
                     final CodeLocationWaitResult result = codeLocationCreationService
-                                                              .waitForCodeLocations(notificationTaskRange, codeLocationWaitData.getCodeLocationNames(), codeLocationWaitData.getExpectedNotificationCount(),
-                                                                  timeoutInSeconds);
+                        .waitForCodeLocations(notificationTaskRange, projectNameVersion, codeLocationWaitData.getCodeLocationNames(), codeLocationWaitData.getExpectedNotificationCount(),
+                            timeoutInSeconds);
                     if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
                         throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
                     }
@@ -77,8 +82,8 @@ public class BlackDuckPostActions {
 
             if (blackDuckPostOptions.shouldPerformPolicyCheck()) {
                 logger.info("Detect will check policy for violations.");
-                final PolicyChecker policyChecker = new PolicyChecker(eventSystem);
-                policyChecker.checkPolicy(blackDuckPostOptions.getSeveritiesToFailPolicyCheck(), blackDuckServicesFactory.createProjectBomService(), projectVersionView);
+                final PolicyChecker policyChecker = new PolicyChecker(eventSystem, blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createProjectBomService());
+                policyChecker.checkPolicy(blackDuckPostOptions.getSeveritiesToFailPolicyCheck(), projectVersionView);
             }
 
             if (blackDuckPostOptions.shouldGenerateAnyReport()) {
@@ -93,7 +98,9 @@ public class BlackDuckPostActions {
 
                     final DetectFontLoader detectFontLoader = new DetectFontLoader();
                     final File createdPdf = reportService.createReportPdfFile(reportDirectory, projectView, projectVersionView, detectFontLoader::loadFont, detectFontLoader::loadBoldFont);
+
                     logger.info(String.format("Created risk report pdf: %s", createdPdf.getCanonicalPath()));
+                    eventSystem.publishEvent(Event.ResultProduced, new ReportDetectResult("Risk Report", createdPdf.getCanonicalPath()));
                 }
 
                 if (blackDuckPostOptions.shouldGenerateNoticesReport()) {
@@ -106,6 +113,9 @@ public class BlackDuckPostActions {
 
                     final File noticesFile = reportService.createNoticesReportFile(noticesDirectory, projectView, projectVersionView);
                     logger.info(String.format("Created notices report: %s", noticesFile.getCanonicalPath()));
+
+                    eventSystem.publishEvent(Event.ResultProduced, new ReportDetectResult("Notices Report", noticesFile.getCanonicalPath()));
+
                 }
             }
         } catch (final DetectUserFriendlyException e) {

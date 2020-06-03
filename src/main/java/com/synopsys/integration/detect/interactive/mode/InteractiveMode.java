@@ -108,7 +108,7 @@ public abstract class InteractiveMode {
             attempts += 1;
             printStream.println("Please answer yes or no.");
         }
-        return null;
+        return false;
     }
 
     public Properties optionsToProperties() {

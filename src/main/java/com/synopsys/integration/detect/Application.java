@@ -66,7 +66,7 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
 
-    public static boolean SHOULD_EXIT = true;
+    private static boolean SHOULD_EXIT = true;
 
     private final ConfigurableEnvironment environment;
 
@@ -74,6 +74,14 @@ public class Application implements ApplicationRunner {
     public Application(final ConfigurableEnvironment environment) {
         this.environment = environment;
         environment.setIgnoreUnresolvableNestedPlaceholders(true);
+    }
+
+    public static boolean shouldExit() {
+        return SHOULD_EXIT;
+    }
+
+    public static void setShouldExit(final boolean shouldExit) {
+        SHOULD_EXIT = shouldExit;
     }
 
     public static void main(final String[] args) {
@@ -141,7 +149,7 @@ public class Application implements ApplicationRunner {
             } else {
                 logger.debug("Detect will NOT attempt to run.");
                 detectBootResult.getException().ifPresent(exitCodeManager::requestExitCode);
-                detectBootResult.getException().ifPresent(e -> DetectIssue.publish(eventSystem, DetectIssueType.Exception, e.getMessage()));
+                detectBootResult.getException().ifPresent(e -> DetectIssue.publish(eventSystem, DetectIssueType.EXCEPTION, e.getMessage()));
             }
 
             if (detectBootResult.getDetectConfiguration().isPresent()) {
@@ -152,6 +160,7 @@ public class Application implements ApplicationRunner {
         }
 
         //Create status output file.
+        logger.info("");
         try {
             if (detectBootResultOptional.isPresent() && detectBootResultOptional.get().getDirectoryManager().isPresent()) {
                 DirectoryManager directoryManager = detectBootResultOptional.get().getDirectoryManager().get();

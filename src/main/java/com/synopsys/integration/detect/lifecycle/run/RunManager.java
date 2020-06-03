@@ -101,6 +101,8 @@ import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.WrongOperatingSystemResult;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
@@ -174,7 +176,7 @@ public class RunManager {
     }
 
     private UniversalToolsResult runUniversalProjectTools(final PropertyConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory,
-        final DirectoryManager directoryManager, final EventSystem eventSystem, DetectDetectableFactory detectDetectableFactory,
+        final DirectoryManager directoryManager, final EventSystem eventSystem, final DetectDetectableFactory detectDetectableFactory,
         final RunResult runResult, final RunOptions runOptions, final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         final ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         final CodeLocationConverter codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
@@ -188,6 +190,13 @@ public class RunManager {
                 extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
                 eventSystem);
             final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
+            if (detectableToolResult.getFailedExtractableResult().isPresent()) {
+                //TODO: Remove hack when windows docker support added. This workaround allows docker to throw a user friendly exception when not-extractable due to operating system.
+                final DetectableResult extractable = detectableToolResult.getFailedExtractableResult().get();
+                if (WrongOperatingSystemResult.class.isAssignableFrom(extractable.getClass())) {
+                    throw new DetectUserFriendlyException("Docker currently requires a non-Windows OS to run. Attempting to run Docker on Windows is not currently supported.", ExitCodeType.FAILURE_CONFIGURATION);
+                }
+            }
             runResult.addDetectableToolResult(detectableToolResult);
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
             logger.info("Docker actions finished.");
@@ -226,10 +235,10 @@ public class RunManager {
             final DetectorTool detectorTool = new DetectorTool(new DetectorFinder(), extractionEnvironmentProvider, eventSystem, codeLocationConverter);
             final DetectorToolResult detectorToolResult = detectorTool.performDetectors(directoryManager.getSourceDirectory(), detectRuleSet, finderOptions, detectorEvaluationOptions, projectBomTool, requiredDetectors);
 
-            detectorToolResult.bomToolProjectNameVersion.ifPresent(it -> runResult.addToolNameVersion(DetectTool.DETECTOR, new NameVersion(it.getName(), it.getVersion())));
-            runResult.addDetectCodeLocations(detectorToolResult.bomToolCodeLocations);
+            detectorToolResult.getBomToolProjectNameVersion().ifPresent(it -> runResult.addToolNameVersion(DetectTool.DETECTOR, new NameVersion(it.getName(), it.getVersion())));
+            runResult.addDetectCodeLocations(detectorToolResult.getBomToolCodeLocations());
 
-            if (detectorToolResult.failedDetectorTypes.size() > 0) {
+            if (!detectorToolResult.getFailedDetectorTypes().isEmpty()) {
                 eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
                 anythingFailed = true;
             }
@@ -249,6 +258,8 @@ public class RunManager {
 
         logger.info("Project name: " + projectNameVersion.getName());
         logger.info("Project version: " + projectNameVersion.getVersion());
+
+        eventSystem.publishEvent(Event.ProjectNameVersionChosen, projectNameVersion);
 
         if (anythingFailed) {
             return UniversalToolsResult.failure(projectNameVersion);

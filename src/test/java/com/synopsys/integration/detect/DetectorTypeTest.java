@@ -30,12 +30,12 @@ import com.synopsys.integration.detector.base.DetectorType;
 public class DetectorTypeTest {
     @Test
     public void testFoundName() {
-        Assertions.assertTrue(DetectorType.POSSIBLE_NAMES.contains(DetectorType.COCOAPODS.name()));
+        Assertions.assertTrue(DetectorType.getPossibleNames().contains(DetectorType.COCOAPODS.name()));
     }
 
     @Test
     public void testNotFoundName() {
-        Assertions.assertFalse(DetectorType.POSSIBLE_NAMES.contains("quoth the raven - NEVERMORE!"));
+        Assertions.assertFalse(DetectorType.getPossibleNames().contains("quoth the raven - NEVERMORE!"));
     }
 
 }

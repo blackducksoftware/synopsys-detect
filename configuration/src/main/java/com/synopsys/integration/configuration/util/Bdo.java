@@ -23,6 +23,7 @@
 package com.synopsys.integration.configuration.util;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -50,6 +51,15 @@ public class Bdo<T> {
 
     public Optional<T> toOptional() {
         return Optional.ofNullable(value);
+    }
+
+    public <U> Bdo<U> map(final Function<? super T, U> mapper) {
+        return Bdo.of(mapper.apply(value));
+    }
+
+    public Bdo<T> peek(final Consumer<T> consumer) {
+        consumer.accept(value);
+        return this;
     }
 
     public boolean isPresent() {

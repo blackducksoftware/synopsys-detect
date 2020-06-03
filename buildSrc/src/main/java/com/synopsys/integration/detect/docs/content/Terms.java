@@ -37,7 +37,7 @@ public class Terms {
         termMap.put("project_name", "synopsys-detect");
         termMap.put("source_repo_organization", "blackducksoftware");
         termMap.put("image_repo_organization", "blackducksoftware");
-        termMap.put("blackduck_release_page", "https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/177799187/Black+Duck+Release+Compatibility");
+        termMap.put("blackduck_release_page", "https://github.com/blackducksoftware/hub/releases");
         termMap.put("bash_script_name", "detect.sh");
         termMap.put("powershell_script_name", "detect.ps1");
         termMap.put("binary_repo_url_base", "https://sig-repo.synopsys.com");
@@ -48,11 +48,12 @@ public class Terms {
         termMap.put("spring_boot_config_doc_url", "https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html");
         termMap.put("blackduck_product_name", "Black Duck");
         termMap.put("coverity_product_name", "Coverity");
-        termMap.put("blackduck_signature_scanner_name", "Black Duck signature scanner");
+        termMap.put("blackduck_signature_scanner_name", "Black Duck Signature Scanner");
         termMap.put("blackduck_signature_scan_act", "Black Duck signature scan");
-        termMap.put("blackduck_binary_scanner_name", "Black Duck binary scanner");
+        termMap.put("blackduck_binary_scan_capability", "Black Duck - Binary Analysis");
         termMap.put("polaris_product_name", "Polaris");
         termMap.put("dockerinspector_name", "Black Duck Docker Inspector");
+        termMap.put("blackduck_kb", "Black Duck KnowledgeBase");
     }
 
     public String put(final String termKey, final String replacementString) {
