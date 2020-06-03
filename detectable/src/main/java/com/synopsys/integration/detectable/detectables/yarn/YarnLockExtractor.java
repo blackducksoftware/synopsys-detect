@@ -33,13 +33,15 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransforme
 public class YarnLockExtractor {
     private final YarnPackager yarnPackager;
     private final YarnTransformer yarnTransformer;
+    private final YarnLockOptions yarnLockOptions;
 
-    public YarnLockExtractor(YarnTransformer yarnTransformer, YarnPackager yarnPackager) {
+    public YarnLockExtractor(YarnTransformer yarnTransformer, YarnPackager yarnPackager, YarnLockOptions yarnLockOptions) {
         this.yarnTransformer = yarnTransformer;
         this.yarnPackager = yarnPackager;
+        this.yarnLockOptions = yarnLockOptions;
     }
 
-    public Extraction extract(File yarnLockFile, File packageJsonFile, YarnLockOptions yarnLockOptions) {
+    public Extraction extract(File yarnLockFile, File packageJsonFile) {
         try {
             YarnLockResult yarnLockResult = yarnPackager.generateYarnResult(packageJsonFile, yarnLockFile);
             DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, yarnLockOptions.useProductionOnly());

@@ -377,11 +377,11 @@ public class DetectableFactory {
     }
 
     public YarnLockDetectable createYarnLockDetectable(DetectableEnvironment environment, YarnLockOptions yarnLockOptions) {
-        return new YarnLockDetectable(environment, fileFinder, yarnLockExtractor(), yarnLockOptions);
+        return new YarnLockDetectable(environment, fileFinder, yarnLockExtractor(yarnLockOptions));
     }
 
     public LernaDetectable createLernaDetectable(DetectableEnvironment environment, LernaResolver lernaResolver, YarnLockOptions yarnLockOptions, NpmLockfileOptions npmLockfileOptions) {
-        return new LernaDetectable(environment, fileFinder, lernaResolver, lernaExtractor(yarnLockOptions, npmLockfileOptions));
+        return new LernaDetectable(environment, fileFinder, lernaResolver, lernaExtractor(npmLockfileOptions, yarnLockOptions));
     }
 
     //#endregion
@@ -638,8 +638,8 @@ public class DetectableFactory {
         return new YarnPackager(gson, yarnLockParser());
     }
 
-    private YarnLockExtractor yarnLockExtractor() {
-        return new YarnLockExtractor(yarnTransformer(), yarnPackager());
+    private YarnLockExtractor yarnLockExtractor(YarnLockOptions yarnLockOptions) {
+        return new YarnLockExtractor(yarnTransformer(), yarnPackager(), yarnLockOptions);
     }
 
     private BitbakeRecipesParser bitbakeRecipesParser() {
@@ -742,12 +742,12 @@ public class DetectableFactory {
         return new LernaPackageDiscoverer(executableRunner, gson);
     }
 
-    private LernaPackager lernaPackager(NpmLockfileOptions npmLockfileOptions) {
-        return new LernaPackager(fileFinder, npmLockfilePackager(), npmLockfileOptions, yarnPackager, yarnTransformer, yarnLockOptions);
+    private LernaPackager lernaPackager(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions) {
+        return new LernaPackager(fileFinder, npmLockfilePackager(), npmLockfileOptions, yarnPackager(), yarnTransformer(), yarnLockOptions);
     }
 
-    private LernaExtractor lernaExtractor(YarnLockOptions yarnLockOptions, NpmLockfileOptions npmLockfileOptions) {
-        return new LernaExtractor(lernaPackageDiscoverer(), lernaPackager(npmLockfileOptions));
+    private LernaExtractor lernaExtractor(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions) {
+        return new LernaExtractor(lernaPackageDiscoverer(), lernaPackager(npmLockfileOptions, yarnLockOptions));
     }
     //#endregion Utility
 
