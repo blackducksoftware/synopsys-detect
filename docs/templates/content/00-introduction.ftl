@@ -2,16 +2,24 @@
 # Introduction
 
 ${solution_name} analyzes your software project to identify open source component dependencies.
+${solution_name} uploads the identities of those components to ${blackduck_product_name}.
+${blackduck_product_name} utilizes this information to build an open source software Bill Of Materials (BOM) for your project,
+and identify any associated security vulnerabilities and software licenses.
 
-${solution_name} consolidates the functionality of ${blackduck_product_name}(tm) and Coverity(tm) on Polaris(tm) to support
-Software Composition Analysis (SCA: open source software detection) and Static Application Security Testing (SAST: static code analysis).
-${solution_name} makes it easier to set up and scan code bases for a variety of languages and package managers.
-${solution_name} leverages multi-factor discovery techniques to scan software projects and directories.
+${solution_name} discovers components using a variety of detection methods, including:
+
+* Package manager inspection utilizing commonly used tools such as Maven, Gradle, etc.
+* File scanning utilizing the ${blackduck_signature_scanner_name}.
+* Docker image inspection utilizing the ${dockerinspector_name}.
+* Binary file analysis utilizing ${blackduck_binary_scan_capability}.
+
+By combining all these techniques ${solution_name} is capable of scanning a wide range of software projects
+utilizing a variety of package managers and programming languages for open source components that are registered within the ${blackduck_kb}.
+
 ${solution_name} runs on Windows, Linux, and MacOS. It is available through GitHub, under a permissive
 Apache license and does not require pre-installation or configuration.
 For more information, refer to [Requirements](../10-requirements/).
 
-${solution_name} can be used either for ${blackduck_product_name} SCA (open source software detection), or for Coverity on Polaris SAST (static code) analysis, or both simultaneously.
 Although ${solution_name} can support large projects, care should be taken to ensure that scans are performed to optimize platform performance and produce manageable and meaningful results.
 For applications containing multiple sub-projects, it may be advantageous to scan sub-projects separately and combine results as a project of projects, or other techniques.
 

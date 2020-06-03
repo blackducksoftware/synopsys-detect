@@ -69,6 +69,9 @@ import com.synopsys.integration.detectable.detectables.bitbake.BitbakeRecipesToL
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
+import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
+import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
+import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
@@ -239,6 +242,10 @@ public class DetectableFactory {
         return new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor(), bashResolver);
     }
 
+    public CargoDetectable createCargoDetectable(DetectableEnvironment environment) {
+        return new CargoDetectable(environment, fileFinder, cargoExtractor());
+    }
+
     public ClangDetectable createClangDetectable(DetectableEnvironment environment, ClangDetectableOptions clangDetectableOptions) {
         return new ClangDetectable(environment, executableRunner, fileFinder, clangPackageManagerFactory().createPackageManagers(), clangExtractor(), clangDetectableOptions, clangPackageManagerRunner());
     }
@@ -397,6 +404,10 @@ public class DetectableFactory {
 
     private DependencyFileDetailGenerator dependencyFileDetailGenerator() {
         return new DependencyFileDetailGenerator(filePathGenerator());
+    }
+
+    private CargoExtractor cargoExtractor() {
+        return new CargoExtractor(new CargoLockParser());
     }
 
     private ClangPackageDetailsTransformer clangPackageDetailsTransformer() {

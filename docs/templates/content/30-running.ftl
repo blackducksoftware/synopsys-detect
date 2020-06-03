@@ -171,8 +171,8 @@ project directory.
 ${solution_name} can be configured to perform additional tasks, including the following:
 
 * Enable any of the supported snippet matching modes in the [${blackduck_signature_scanner_name}](../properties/configuration/signature scanner/).
-* Run the [${blackduck_binary_scanner_name}](../properties/configuration/signature scanner/#binary-scan-target) on a given binary files.
-* Run the ${dockerinspector_name} on a given [Docker image](../advanced/language-and-package-managers/docker-images/).
+* Run [${blackduck_binary_scan_capability}](../properties/configuration/signature scanner/#binary-scan-target) on a given binary files.
+* Run the ${dockerinspector_name} on a given [Docker image](../advanced/package-managers/docker-images/).
 * Generate a [report](../properties/configuration/report/).
 * Fail on [policy violation](../properties/configuration/project/#fail-on-policy-violation-severities-advanced).
 
