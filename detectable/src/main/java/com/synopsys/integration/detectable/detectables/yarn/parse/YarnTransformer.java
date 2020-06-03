@@ -66,7 +66,7 @@ public class YarnTransformer {
             }
         }
 
-        return graphBuilder.build((dependencyId, lazyDependencyInfo) -> handleMissingExternalIds(dependencyId, lazyDependencyInfo, yarnLockResult.getFile().getAbsolutePath()));
+        return graphBuilder.build((dependencyId, lazyDependencyInfo) -> handleMissingExternalIds(dependencyId, lazyDependencyInfo, yarnLockResult.getYarnLockFilePath()));
     }
 
     private ExternalId handleMissingExternalIds(DependencyId dependencyId, LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo, String yarnLockFilePath) {

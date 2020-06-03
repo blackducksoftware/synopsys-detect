@@ -22,23 +22,21 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
-import java.io.File;
-
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
 public class YarnLockResult {
     private final PackageJson packageJson;
-    private final File file;
+    private final String yarnLockFilePath;
     private final YarnLock yarnLock;
 
-    public YarnLockResult(PackageJson packageJson, File file, YarnLock yarnLock) {
+    public YarnLockResult(PackageJson packageJson, String yarnLockFilePath, YarnLock yarnLock) {
         this.packageJson = packageJson;
-        this.file = file;
+        this.yarnLockFilePath = yarnLockFilePath;
         this.yarnLock = yarnLock;
     }
 
-    public File getFile() {
-        return file;
+    public String getYarnLockFilePath() {
+        return yarnLockFilePath;
     }
 
     public YarnLock getYarnLock() {

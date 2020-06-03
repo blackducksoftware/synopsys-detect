@@ -1,6 +1,5 @@
 package com.synopsys.integration.detectable.detectables.yarn.unit;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -28,26 +27,26 @@ public class YarnTransformerTest {
     void doesntThrowOnMissingExternalId() throws MissingExternalIdException {
         // Ensure components not defined in the graph doesn't cause an exception to be thrown. See IDETECT-1974.
 
-        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final YarnTransformer yarnTransformer = new YarnTransformer(externalIdFactory);
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        YarnTransformer yarnTransformer = new YarnTransformer(externalIdFactory);
 
-        final PackageJson packageJson = new PackageJson();
+        PackageJson packageJson = new PackageJson();
         packageJson.dependencies = new HashMap<>();
         packageJson.dependencies.put("foo", "fuzzyVersion-1.0");
 
-        final List<YarnLockEntryId> validYarnLockEntryIds = Collections.singletonList(new YarnLockEntryId("foo", "fuzzyVersion-1.0"));
-        final List<YarnLockDependency> validYarnLockDependencies = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
-        final List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(validYarnLockEntryIds, "1.0", validYarnLockDependencies));
-        final YarnLock yarnLock = new YarnLock(yarnLockEntries);
-        final YarnLockResult yarnLockResult = new YarnLockResult(packageJson, new File("yarn.lock"), yarnLock);
+        List<YarnLockEntryId> validYarnLockEntryIds = Collections.singletonList(new YarnLockEntryId("foo", "fuzzyVersion-1.0"));
+        List<YarnLockDependency> validYarnLockDependencies = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
+        List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(validYarnLockEntryIds, "1.0", validYarnLockDependencies));
+        YarnLock yarnLock = new YarnLock(yarnLockEntries);
+        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, "yarn.lock", yarnLock);
 
         // This should not throw an exception.
-        final DependencyGraph dependencyGraph = yarnTransformer.transform(packageJson, yarnLockResult, false);
+        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false);
 
         // Sanity check.
         Assertions.assertNotNull(dependencyGraph, "The dependency graph should not be null.");
         Assertions.assertEquals(1, dependencyGraph.getRootDependencies().size(), "Only 'foo:1.0' should appear in the graph.");
-        final ExternalId fooExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "foo", "1.0");
+        ExternalId fooExternalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, "foo", "1.0");
         Assertions.assertTrue(dependencyGraph.hasDependency(fooExternalId), "Missing the only expected dependency.");
     }
 }

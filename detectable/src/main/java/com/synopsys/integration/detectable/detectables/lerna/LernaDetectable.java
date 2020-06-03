@@ -22,6 +22,11 @@
  */
 package com.synopsys.integration.detectable.detectables.lerna;
 
+import static com.synopsys.integration.detectable.detectables.lerna.LernaDetectable.PACKAGE_JSON;
+import static com.synopsys.integration.detectable.detectables.lerna.LernaDetectable.PACKAGE_LOCK_JSON;
+import static com.synopsys.integration.detectable.detectables.lerna.LernaDetectable.SHRINKWRAP_JSON;
+import static com.synopsys.integration.detectable.detectables.lerna.LernaDetectable.YARN_LOCK;
+
 import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;

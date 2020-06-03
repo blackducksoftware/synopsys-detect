@@ -634,12 +634,12 @@ public class DetectableFactory {
         return new YarnTransformer(externalIdFactory);
     }
 
-    private YarnPackager yarnPackager() {
-        return new YarnPackager(gson, yarnLockParser());
+    private YarnPackager yarnPackager(YarnLockOptions yarnLockOptions) {
+        return new YarnPackager(gson, yarnLockParser(), yarnTransformer(), yarnLockOptions);
     }
 
     private YarnLockExtractor yarnLockExtractor(YarnLockOptions yarnLockOptions) {
-        return new YarnLockExtractor(yarnTransformer(), yarnPackager(), yarnLockOptions);
+        return new YarnLockExtractor(yarnPackager(yarnLockOptions));
     }
 
     private BitbakeRecipesParser bitbakeRecipesParser() {
@@ -743,7 +743,7 @@ public class DetectableFactory {
     }
 
     private LernaPackager lernaPackager(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions) {
-        return new LernaPackager(fileFinder, npmLockfilePackager(), npmLockfileOptions, yarnPackager(), yarnTransformer(), yarnLockOptions);
+        return new LernaPackager(fileFinder, npmLockfilePackager(), npmLockfileOptions, yarnPackager(yarnLockOptions));
     }
 
     private LernaExtractor lernaExtractor(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions) {

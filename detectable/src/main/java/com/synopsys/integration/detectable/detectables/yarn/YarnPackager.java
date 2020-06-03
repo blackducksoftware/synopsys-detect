@@ -1,34 +1,64 @@
+/**
+ * detectable
+ *
+ * Copyright (c) 2020 Synopsys, Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.synopsys.integration.detectable.detectables.yarn;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-
 import com.google.gson.Gson;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 
 public class YarnPackager {
     private final Gson gson;
     private final YarnLockParser yarnLockParser;
+    private final YarnTransformer yarnTransformer;
+    private final YarnLockOptions yarnLockOptions;
 
-    public YarnPackager(Gson gson, YarnLockParser yarnLockParser) {
+    public YarnPackager(Gson gson, YarnLockParser yarnLockParser, YarnTransformer yarnTransformer, YarnLockOptions yarnLockOptions) {
         this.gson = gson;
         this.yarnLockParser = yarnLockParser;
+        this.yarnTransformer = yarnTransformer;
+        this.yarnLockOptions = yarnLockOptions;
     }
 
-    public YarnLockResult generateYarnResult(File packageJsonFile, File yarnLockFile) throws IOException {
-        String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
+    public YarnResult generateYarnResult(String packageJsonText, List<String> yarnLockLines, String yarnLockFilePath) {
         PackageJson packageJson = gson.fromJson(packageJsonText, PackageJson.class);
-
-        List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
+        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, yarnLockFilePath, yarnLock);
 
-        return new YarnLockResult(packageJson, yarnLockFile, yarnLock);
+        try {
+            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, yarnLockOptions.useProductionOnly());
+            CodeLocation codeLocation = new CodeLocation(dependencyGraph);
+
+            return YarnResult.success(packageJson.name, packageJson.version, codeLocation);
+        } catch (MissingExternalIdException exception) {
+            return YarnResult.failure(exception);
+        }
     }
 }

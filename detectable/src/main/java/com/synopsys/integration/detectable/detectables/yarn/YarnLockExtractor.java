@@ -23,35 +23,34 @@
 package com.synopsys.integration.detectable.detectables.yarn;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
+import org.apache.commons.io.FileUtils;
+
 import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 
 public class YarnLockExtractor {
     private final YarnPackager yarnPackager;
-    private final YarnTransformer yarnTransformer;
-    private final YarnLockOptions yarnLockOptions;
 
-    public YarnLockExtractor(YarnTransformer yarnTransformer, YarnPackager yarnPackager, YarnLockOptions yarnLockOptions) {
-        this.yarnTransformer = yarnTransformer;
+    public YarnLockExtractor(YarnPackager yarnPackager) {
         this.yarnPackager = yarnPackager;
-        this.yarnLockOptions = yarnLockOptions;
     }
 
     public Extraction extract(File yarnLockFile, File packageJsonFile) {
         try {
-            YarnLockResult yarnLockResult = yarnPackager.generateYarnResult(packageJsonFile, yarnLockFile);
-            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, yarnLockOptions.useProductionOnly());
+            String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
+            List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
+            YarnResult yarnResult = yarnPackager.generateYarnResult(packageJsonText, yarnLockLines, yarnLockFile.getAbsolutePath());
 
-            CodeLocation codeLocation = new CodeLocation(dependencyGraph);
+            if (yarnResult.getException().isPresent()) {
+                throw yarnResult.getException().get();
+            }
 
             return new Extraction.Builder()
-                       .projectName(yarnLockResult.getPackageJson().name)
-                       .projectVersion(yarnLockResult.getPackageJson().version)
-                       .success(codeLocation)
+                       .projectName(yarnResult.getProjectName())
+                       .projectVersion(yarnResult.getProjectVersionName())
+                       .success(yarnResult.getCodeLocation())
                        .build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();

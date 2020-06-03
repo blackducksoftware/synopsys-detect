@@ -20,10 +20,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.lerna.model;
+package com.synopsys.integration.detectable.detectables.yarn;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,27 +29,27 @@ import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 
-public class LernaResult {
+public class YarnResult {
     @Nullable
     private final String projectName;
     @Nullable
     private final String projectVersionName;
-    private final List<CodeLocation> codeLocations;
+    private final CodeLocation codeLocation;
     @Nullable
     private final Exception exception;
 
-    public static LernaResult success(@Nullable String projectName, @Nullable String projectVersionName, List<CodeLocation> codeLocations) {
-        return new LernaResult(projectName, projectVersionName, codeLocations, null);
+    public static YarnResult success(@Nullable String projectName, @Nullable String projectVersionName, CodeLocation codeLocation) {
+        return new YarnResult(projectName, projectVersionName, codeLocation, null);
     }
 
-    public static LernaResult failure(@NotNull Exception exception) {
-        return new LernaResult(null, null, Collections.emptyList(), exception);
+    public static YarnResult failure(@NotNull Exception exception) {
+        return new YarnResult(null, null, null, exception);
     }
 
-    private LernaResult(@Nullable String projectName, @Nullable String projectVersionName, List<CodeLocation> codeLocations, @Nullable Exception exception) {
+    private YarnResult(@Nullable String projectName, @Nullable String projectVersionName, @Nullable CodeLocation codeLocation, @Nullable Exception exception) {
         this.projectName = projectName;
         this.projectVersionName = projectVersionName;
-        this.codeLocations = codeLocations;
+        this.codeLocation = codeLocation;
         this.exception = exception;
     }
 
@@ -65,8 +63,9 @@ public class LernaResult {
         return projectVersionName;
     }
 
-    public List<CodeLocation> getCodeLocations() {
-        return codeLocations;
+    @Nullable
+    public CodeLocation getCodeLocation() {
+        return codeLocation;
     }
 
     public Optional<Exception> getException() {

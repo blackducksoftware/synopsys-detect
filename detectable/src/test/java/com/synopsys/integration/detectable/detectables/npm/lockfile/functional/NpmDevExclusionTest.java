@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.npm.lockfile.functional;
 
-import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -60,7 +58,7 @@ public class NpmDevExclusionTest {
 
     @Test
     public void testDevDependencyNotExists() {
-        NpmParseResult result = npmLockfileParser.parse(Optional.of(packageJsonText), packageLockText, false);
+        NpmParseResult result = npmLockfileParser.parse(packageJsonText, packageLockText, false);
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, result.getCodeLocation().getDependencyGraph());
         graphAssert.hasNoDependency(childDev);
         graphAssert.hasNoDependency(parentDev);
@@ -69,7 +67,7 @@ public class NpmDevExclusionTest {
 
     @Test
     public void testDevDependencyExists() {
-        NpmParseResult result = npmLockfileParser.parse(Optional.of(packageJsonText), packageLockText, true);
+        NpmParseResult result = npmLockfileParser.parse(packageJsonText, packageLockText, true);
         GraphAssert graphAssert = new GraphAssert(Forge.NPMJS, result.getCodeLocation().getDependencyGraph());
         graphAssert.hasDependency(childDev);
         graphAssert.hasDependency(parentDev);

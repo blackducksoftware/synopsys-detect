@@ -1,3 +1,25 @@
+/**
+ * detectable
+ *
+ * Copyright (c) 2020 Synopsys, Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.synopsys.integration.detectable.detectables.lerna;
 
 import java.io.File;
@@ -12,8 +34,6 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaPackage;
@@ -21,10 +41,8 @@ import com.synopsys.integration.detectable.detectables.lerna.model.LernaResult;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfilePackager;
-import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnPackager;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
+import com.synopsys.integration.detectable.detectables.yarn.YarnResult;
 
 public class LernaPackager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -33,17 +51,12 @@ public class LernaPackager {
     private final NpmLockfilePackager npmLockfileParser;
     private final NpmLockfileOptions npmLockfileOptions;
     private final YarnPackager yarnPackager;
-    private final YarnTransformer yarnTransformer;
-    private final YarnLockOptions yarnLockOptions;
 
-    public LernaPackager(FileFinder fileFinder, NpmLockfilePackager npmLockfileParser, NpmLockfileOptions npmLockfileOptions, YarnPackager yarnPackager,
-        YarnTransformer yarnTransformer, YarnLockOptions yarnLockOptions) {
+    public LernaPackager(FileFinder fileFinder, NpmLockfilePackager npmLockfileParser, NpmLockfileOptions npmLockfileOptions, YarnPackager yarnPackager) {
         this.fileFinder = fileFinder;
         this.npmLockfileParser = npmLockfileParser;
         this.npmLockfileOptions = npmLockfileOptions;
         this.yarnPackager = yarnPackager;
-        this.yarnTransformer = yarnTransformer;
-        this.yarnLockOptions = yarnLockOptions;
     }
 
     public LernaResult generateLernaResult(File sourceDirectory, List<LernaPackage> lernaPackages) {
@@ -120,8 +133,8 @@ public class LernaPackager {
 
     private LernaResult extractFromNpmLockfile(File packageJsonFile, File npmLockfile) {
         try {
-            String lockfileText = FileUtils.readFileToString(npmLockfile, StandardCharsets.UTF_8);
             String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
+            String lockfileText = FileUtils.readFileToString(npmLockfile, StandardCharsets.UTF_8);
 
             NpmParseResult npmParseResult = npmLockfileParser.parse(packageJsonText, lockfileText, npmLockfileOptions.shouldIncludeDeveloperDependencies());
 
@@ -133,12 +146,17 @@ public class LernaPackager {
 
     private LernaResult extractFromYarnLock(File packageJsonFile, File yarnLockFile) {
         try {
-            YarnLockResult yarnLockResult = yarnPackager.generateYarnResult(packageJsonFile, yarnLockFile);
-            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, yarnLockOptions.useProductionOnly());
-            CodeLocation codeLocation = new CodeLocation(dependencyGraph);
+            String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
+            List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
 
-            return LernaResult.success(yarnLockResult.getPackageJson().name, yarnLockResult.getPackageJson().version, Collections.singletonList(codeLocation));
-        } catch (IOException | MissingExternalIdException exception) {
+            YarnResult yarnResult = yarnPackager.generateYarnResult(packageJsonText, yarnLockLines, yarnLockFile.getAbsolutePath());
+
+            if (yarnResult.getException().isPresent()) {
+                throw yarnResult.getException().get();
+            }
+
+            return LernaResult.success(yarnResult.getProjectName(), yarnResult.getProjectVersionName(), Collections.singletonList(yarnResult.getCodeLocation()));
+        } catch (Exception exception) {
             return LernaResult.failure(exception);
         }
     }
