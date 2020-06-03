@@ -90,18 +90,24 @@ public class PolicyChecker {
             }
 
             for (final ComponentPolicyRulesView componentPolicyRulesView : blackDuckService.getAllResponses(projectVersionComponentView, ProjectVersionComponentView.POLICY_RULES_LINK_RESPONSE)) {
-                logger.info(String.format("Policy rule \"%s\" was violated by component \"%s:%s\" (%s)",
+                String componentId = projectVersionComponentView.getComponentName();
+                if (StringUtils.isNotBlank(projectVersionComponentView.getComponentVersionName())) {
+                    componentId += ":" + projectVersionComponentView.getComponentVersionName();
+                }
+
+                String policyRuleComponentVersionSuffix = ".";
+                if (StringUtils.isNotBlank(projectVersionComponentView.getComponentVersion())) {
+                    policyRuleComponentVersionSuffix = String.format(" (%s).", projectVersionComponentView.getComponentVersion());
+                }
+                logger.info(String.format("Policy rule \"%s\" was violated by component \"%s\"%s",
                     componentPolicyRulesView.getName(),
-                    projectVersionComponentView.getComponentName(),
-                    projectVersionComponentView.getComponentVersionName(),
-                    projectVersionComponentView.getComponentVersion()
+                    componentId,
+                    policyRuleComponentVersionSuffix
                 ));
 
-                final String policyRuleSuffix;
+                String policyRuleSuffix = ".";
                 if (StringUtils.isNotBlank(componentPolicyRulesView.getDescription())) {
                     policyRuleSuffix = String.format(" with description: %s", componentPolicyRulesView.getDescription());
-                } else {
-                    policyRuleSuffix = ".";
                 }
 
                 logger.info(String.format("Policy rule \"%s\" has a severity type of %s%s",
