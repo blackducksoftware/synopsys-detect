@@ -64,7 +64,7 @@ public class FormattedOutputManager {
 
     public FormattedOutput createFormattedOutput(DetectInfo detectInfo) {
         FormattedOutput formattedOutput = new FormattedOutput();
-        formattedOutput.formatVersion = "0.2.0";
+        formattedOutput.formatVersion = "0.3.0";
         formattedOutput.detectVersion = detectInfo.getDetectVersion();
 
         formattedOutput.results = Bds.of(detectResults)
