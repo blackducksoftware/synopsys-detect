@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.clang.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.List;
@@ -72,7 +73,7 @@ public class RpmPackageManagerTest {
     }
 
     @Test
-    public void testInValid() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
+    public void testInValid() throws ExecutableRunnerException {
         final StringBuilder sb = new StringBuilder();
         sb.append("garbage\n");
         sb.append("nonsense\n");
@@ -80,9 +81,12 @@ public class RpmPackageManagerTest {
         final String pkgMgrOwnedByOutput = sb.toString();
 
         final RpmPackageManagerResolver pkgMgr = new RpmPackageManagerResolver(new Gson());
-        final List<PackageDetails> pkgs = pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().rpm(), null, null, pkgMgrOwnedByOutput);
-
-        assertEquals(0, pkgs.size());
+        try {
+            pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().rpm(), null, null, pkgMgrOwnedByOutput);
+            fail("Expected NotOwnedByAnyPkgException");
+        } catch (NotOwnedByAnyPkgException e) {
+            // expected
+        }
     }
 
     @Test
