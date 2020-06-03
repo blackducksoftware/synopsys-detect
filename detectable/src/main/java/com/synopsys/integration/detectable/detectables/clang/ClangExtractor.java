@@ -77,12 +77,9 @@ public class ClangExtractor {
             final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(packageForges, results.getFoundPackages());
 
             logSummary(results.getUnRecognizedDependencyFiles(), sourceDirectory);
-
-            // TEMP: fake a list of unrecognized include files
             final List<File> unrecognizedIncludeFiles = results.getUnRecognizedDependencyFiles().stream()
-                                                            .filter(file -> isFileUnderDir(sourceDirectory, file))
+                                                            .filter(file -> !isFileUnderDir(sourceDirectory, file))
                                                             .collect(Collectors.toList());
-
             return new Extraction.Builder()
                        .unrecognizedPaths(unrecognizedIncludeFiles)
                        .success(codeLocation).build();
@@ -115,8 +112,7 @@ public class ClangExtractor {
                     logger.debug(String.format("\t%s", unRecognizedDependencyFile.getAbsolutePath()));
                 }
             } catch (final IOException e) {
-                logger.debug(String.format("%s may or may not be in the source dir (attempt to verify location failed).", unRecognizedDependencyFile.getAbsolutePath()));
-                logger.debug(String.format("\t%s", unRecognizedDependencyFile.getAbsolutePath()));
+                logger.debug(String.format("\t%s (may or may not be in the source dir; attempt to verify location failed)", unRecognizedDependencyFile.getAbsolutePath()));
             }
         }
     }
