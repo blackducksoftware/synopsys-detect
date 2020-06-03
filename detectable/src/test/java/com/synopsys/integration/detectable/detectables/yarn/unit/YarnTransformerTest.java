@@ -39,7 +39,7 @@ public class YarnTransformerTest {
         final List<YarnLockDependency> validYarnLockDependencies = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
         final List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(validYarnLockEntryIds, "1.0", validYarnLockDependencies));
         final YarnLock yarnLock = new YarnLock(yarnLockEntries);
-        final YarnLockResult yarnLockResult = new YarnLockResult(new File("yarn.lock"), yarnLock);
+        final YarnLockResult yarnLockResult = new YarnLockResult(packageJson, new File("yarn.lock"), yarnLock);
 
         // This should not throw an exception.
         final DependencyGraph dependencyGraph = yarnTransformer.transform(packageJson, yarnLockResult, false);

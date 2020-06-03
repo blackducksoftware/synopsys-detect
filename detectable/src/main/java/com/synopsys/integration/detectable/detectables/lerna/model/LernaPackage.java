@@ -37,7 +37,7 @@ public class LernaPackage {
     @SerializedName("location")
     private final String location;
 
-    public LernaPackage(final String name, final String version, final boolean isPrivate, final String location) {
+    public LernaPackage(String name, String version, boolean isPrivate, String location) {
         this.name = name;
         this.version = version;
         this.isPrivate = isPrivate;

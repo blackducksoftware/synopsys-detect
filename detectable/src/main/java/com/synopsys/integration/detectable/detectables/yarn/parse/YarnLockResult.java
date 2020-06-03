@@ -24,11 +24,15 @@ package com.synopsys.integration.detectable.detectables.yarn.parse;
 
 import java.io.File;
 
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+
 public class YarnLockResult {
+    private final PackageJson packageJson;
     private final File file;
     private final YarnLock yarnLock;
 
-    public YarnLockResult(final File file, final YarnLock yarnLock) {
+    public YarnLockResult(PackageJson packageJson, File file, YarnLock yarnLock) {
+        this.packageJson = packageJson;
         this.file = file;
         this.yarnLock = yarnLock;
     }
@@ -39,5 +43,9 @@ public class YarnLockResult {
 
     public YarnLock getYarnLock() {
         return yarnLock;
+    }
+
+    public PackageJson getPackageJson() {
+        return packageJson;
     }
 }

@@ -23,51 +23,35 @@
 package com.synopsys.integration.detectable.detectables.yarn;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-
-import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 
 public class YarnLockExtractor {
-    private final YarnLockParser yarnLockParser;
+    private final YarnPackager yarnPackager;
     private final YarnTransformer yarnTransformer;
-    private final Gson gson;
 
-    public YarnLockExtractor(final YarnLockParser yarnLockParser, final YarnTransformer yarnTransformer, final Gson gson) {
-        this.yarnLockParser = yarnLockParser;
+    public YarnLockExtractor(YarnTransformer yarnTransformer, YarnPackager yarnPackager) {
         this.yarnTransformer = yarnTransformer;
-        this.gson = gson;
+        this.yarnPackager = yarnPackager;
     }
 
-    public Extraction extract(final File yarnLockFile, final File packageJsonFile, final YarnLockOptions yarnLockOptions) {
+    public Extraction extract(File yarnLockFile, File packageJsonFile, YarnLockOptions yarnLockOptions) {
         try {
-            final String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
-            final PackageJson packageJson = gson.fromJson(packageJsonText, PackageJson.class);
+            YarnLockResult yarnLockResult = yarnPackager.generateYarnResult(packageJsonFile, yarnLockFile);
+            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, yarnLockOptions.useProductionOnly());
 
-            final List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
-            final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
-            final YarnLockResult yarnLockResult = new YarnLockResult(yarnLockFile, yarnLock);
-
-            final DependencyGraph dependencyGraph = yarnTransformer.transform(packageJson, yarnLockResult, yarnLockOptions.useProductionOnly());
-
-            final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
+            CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
             return new Extraction.Builder()
-                       .projectName(packageJson.name)
-                       .projectVersion(packageJson.version)
-                       .success(detectCodeLocation)
+                       .projectName(yarnLockResult.getPackageJson().name)
+                       .projectVersion(yarnLockResult.getPackageJson().version)
+                       .success(codeLocation)
                        .build();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }

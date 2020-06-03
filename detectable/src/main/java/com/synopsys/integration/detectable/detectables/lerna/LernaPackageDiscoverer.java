@@ -38,16 +38,16 @@ public class LernaPackageDiscoverer {
     private final ExecutableRunner executableRunner;
     private final Gson gson;
 
-    public LernaPackageDiscoverer(final ExecutableRunner executableRunner, final Gson gson) {
+    public LernaPackageDiscoverer(ExecutableRunner executableRunner, Gson gson) {
         this.executableRunner = executableRunner;
         this.gson = gson;
     }
 
-    public List<LernaPackage> discoverLernaPackages(final File workingDirectory, final File lernaExecutable) throws ExecutableRunnerException {
-        final ExecutableOutput lernaLsExecutableOutput = executableRunner.execute(workingDirectory, lernaExecutable, "ls", "--all", "--json");
-        final String lernaLsOutput = lernaLsExecutableOutput.getStandardOutput();
+    public List<LernaPackage> discoverLernaPackages(File workingDirectory, File lernaExecutable) throws ExecutableRunnerException {
+        ExecutableOutput lernaLsExecutableOutput = executableRunner.execute(workingDirectory, lernaExecutable, "ls", "--all", "--json");
+        String lernaLsOutput = lernaLsExecutableOutput.getStandardOutput();
 
-        final Type lernaPackageListType = new TypeToken<ArrayList<LernaPackage>>() {}.getType();
+        Type lernaPackageListType = new TypeToken<ArrayList<LernaPackage>>() {}.getType();
 
         return gson.fromJson(lernaLsOutput, lernaPackageListType);
     }

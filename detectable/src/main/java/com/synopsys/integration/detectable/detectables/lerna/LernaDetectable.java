@@ -51,12 +51,9 @@ public class LernaDetectable extends Detectable {
     private final LernaResolver lernaResolver;
     private final LernaExtractor lernaExtractor;
 
-    private File packageLockFile;
-    private File shrinkwrapFile;
-    private File yarnLockFile;
     private File lernaExecutable;
 
-    public LernaDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final LernaResolver lernaResolver, final LernaExtractor lernaExtractor) {
+    public LernaDetectable(DetectableEnvironment environment, FileFinder fileFinder, LernaResolver lernaResolver, LernaExtractor lernaExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.lernaResolver = lernaResolver;
@@ -65,7 +62,7 @@ public class LernaDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        final File lernaJsonFile = fileFinder.findFile(environment.getDirectory(), LERNA_JSON);
+        File lernaJsonFile = fileFinder.findFile(environment.getDirectory(), LERNA_JSON);
 
         if (lernaJsonFile == null) {
             return new FileNotFoundDetectableResult(LERNA_JSON);
@@ -77,9 +74,9 @@ public class LernaDetectable extends Detectable {
     @Override
     public DetectableResult extractable() throws DetectableException {
         // Lerna is used in conjunction with traditional NPM projects or Yarn projects.
-        packageLockFile = fileFinder.findFile(environment.getDirectory(), PACKAGE_LOCK_JSON);
-        shrinkwrapFile = fileFinder.findFile(environment.getDirectory(), SHRINKWRAP_JSON);
-        yarnLockFile = fileFinder.findFile(environment.getDirectory(), YARN_LOCK);
+        File packageLockFile = fileFinder.findFile(environment.getDirectory(), PACKAGE_LOCK_JSON);
+        File shrinkwrapFile = fileFinder.findFile(environment.getDirectory(), SHRINKWRAP_JSON);
+        File yarnLockFile = fileFinder.findFile(environment.getDirectory(), YARN_LOCK);
         if (packageLockFile == null && shrinkwrapFile == null && yarnLockFile == null) {
             return new FilesNotFoundDetectableResult(PACKAGE_LOCK_JSON, YARN_LOCK);
         }
@@ -93,7 +90,7 @@ public class LernaDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return lernaExtractor.extract(environment, lernaExecutable);
     }
 }

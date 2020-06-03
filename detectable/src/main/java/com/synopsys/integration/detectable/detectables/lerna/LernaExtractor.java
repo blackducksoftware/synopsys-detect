@@ -23,141 +23,40 @@
 package com.synopsys.integration.detectable.detectables.lerna;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaPackage;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileExtractor;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
-import com.synopsys.integration.detectable.detectables.yarn.YarnLockExtractor;
-import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
+import com.synopsys.integration.detectable.detectables.lerna.model.LernaResult;
 
 public class LernaExtractor {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private final FileFinder fileFinder;
     private final LernaPackageDiscoverer lernaPackageDiscoverer;
-    private final NpmLockfileExtractor npmLockfileExtractor;
-    private final NpmLockfileOptions npmLockfileOptions;
-    private final YarnLockExtractor yarnLockExtractor;
-    private final YarnLockOptions yarnLockOptions;
+    private final LernaPackager lernaPackager;
 
-    public LernaExtractor(final FileFinder fileFinder, final LernaPackageDiscoverer lernaPackageDiscoverer, final NpmLockfileExtractor npmLockfileExtractor,
-        final NpmLockfileOptions npmLockfileOptions,
-        final YarnLockExtractor yarnLockExtractor, final YarnLockOptions yarnLockOptions) {
-        this.fileFinder = fileFinder;
+    public LernaExtractor(LernaPackageDiscoverer lernaPackageDiscoverer, LernaPackager lernaPackager) {
         this.lernaPackageDiscoverer = lernaPackageDiscoverer;
-        this.npmLockfileExtractor = npmLockfileExtractor;
-        this.npmLockfileOptions = npmLockfileOptions;
-        this.yarnLockExtractor = yarnLockExtractor;
-        this.yarnLockOptions = yarnLockOptions;
+        this.lernaPackager = lernaPackager;
     }
 
-    public Extraction extract(final DetectableEnvironment detectableEnvironment, final File lernaExecutable) {
-        final File sourceDirectory = detectableEnvironment.getDirectory();
+    public Extraction extract(DetectableEnvironment detectableEnvironment, File lernaExecutable) {
+        File sourceDirectory = detectableEnvironment.getDirectory();
 
         try {
-            final Extraction rootExtraction = extractWithRootLockfile(sourceDirectory, sourceDirectory);
-            if (!rootExtraction.isSuccess()) {
-                throw rootExtraction.getError();
-            }
+            List<LernaPackage> lernaPackages = lernaPackageDiscoverer.discoverLernaPackages(sourceDirectory, lernaExecutable);
+            LernaResult lernaResult = lernaPackager.generateLernaResult(sourceDirectory, lernaPackages);
 
-            final List<CodeLocation> codeLocations = new ArrayList<>(rootExtraction.getCodeLocations());
-            final List<LernaPackage> lernaPackages = lernaPackageDiscoverer.discoverLernaPackages(sourceDirectory, lernaExecutable);
-
-            for (final LernaPackage lernaPackage : lernaPackages) {
-                logger.debug(String.format("Now extracting Lerna package %s:%s at %s.", lernaPackage.getName(), lernaPackage.getVersion(), lernaPackage.getLocation()));
-                final File lernaPackageDirectory = new File(sourceDirectory.getParent(), lernaPackage.getLocation());
-
-                final Extraction extraction = extractLernaPackage(sourceDirectory, lernaPackageDirectory);
-                if (extraction.isSuccess()) {
-                    logger.debug(String.format("Extraction completed successfully on %s:%s.", lernaPackage.getName(), lernaPackage.getLocation()));
-
-                    extraction.getCodeLocations().stream()
-                        .map(codeLocation -> new CodeLocation(codeLocation.getDependencyGraph(), codeLocation.getExternalId().orElse(null), lernaPackageDirectory))
-                        .forEach(codeLocations::add);
-                } else {
-                    logger.warn(String.format("Failed to extract lerna package: %s", extraction.getError().getMessage()));
-                    logger.debug("Lerna Extraction Failure", extraction.getError());
-                }
+            if (lernaResult.getException().isPresent()) {
+                throw lernaResult.getException().get();
             }
 
             return new Extraction.Builder()
-                       .projectName(rootExtraction.getProjectName())
-                       .projectVersion(rootExtraction.getProjectVersion())
-                       .success(codeLocations)
+                       .projectName(lernaResult.getProjectName())
+                       .projectVersion(lernaResult.getProjectVersionName())
+                       .success(lernaResult.getCodeLocations())
                        .build();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
-    }
-
-    private Extraction extractLernaPackage(final File sourceDirectory, final File lernaPackageDirectory) {
-        Extraction extraction = extractWithLocalLockfile(lernaPackageDirectory);
-        if (!extraction.isSuccess()) {
-            extraction = extractWithRootLockfile(lernaPackageDirectory, sourceDirectory);
-        }
-
-        return extraction;
-    }
-
-    private Extraction extractWithRootLockfile(final File lernaPackageDirectory, final File sourceDirectory) {
-        final File packageJsonFile = fileFinder.findFile(lernaPackageDirectory, LernaDetectable.PACKAGE_JSON);
-        try {
-            return extractWithAnyLockfile(sourceDirectory, packageJsonFile);
-        } catch (final FileNotFoundException e) {
-            return new Extraction.Builder().exception(e).build();
-        }
-    }
-
-    private Extraction extractWithLocalLockfile(final File lernaPackageDirectory) {
-        final File packageJsonFile = fileFinder.findFile(lernaPackageDirectory, LernaDetectable.PACKAGE_JSON);
-        try {
-            return extractWithAnyLockfile(lernaPackageDirectory, packageJsonFile);
-        } catch (final FileNotFoundException e) {
-            return new Extraction.Builder().exception(e).build();
-        }
-    }
-
-    private Extraction extractWithAnyLockfile(final File searchDirectory, final File packageJsonFile) throws FileNotFoundException {
-        final File packageLockJsonFile = fileFinder.findFile(searchDirectory, LernaDetectable.PACKAGE_LOCK_JSON);
-        final File shrinkwrapJsonFile = fileFinder.findFile(searchDirectory, LernaDetectable.SHRINKWRAP_JSON);
-        final File yarnLockFile = fileFinder.findFile(searchDirectory, LernaDetectable.YARN_LOCK);
-
-        if (packageLockJsonFile != null) {
-            return extractFromPackageLock(packageJsonFile, packageLockJsonFile);
-        } else if (shrinkwrapJsonFile != null) {
-            return extractFromShrinkwrap(packageJsonFile, shrinkwrapJsonFile);
-        } else if (yarnLockFile != null) {
-            return extractFromYarnLock(packageJsonFile, yarnLockFile);
-        } else {
-            throw new FileNotFoundException(
-                String.format("Lerna extraction from %s requires one of the following files: %s, %s, %s",
-                    searchDirectory.getAbsolutePath(),
-                    LernaDetectable.PACKAGE_LOCK_JSON,
-                    LernaDetectable.SHRINKWRAP_JSON,
-                    LernaDetectable.YARN_LOCK)
-            );
-        }
-    }
-
-    private Extraction extractFromShrinkwrap(final File packageJsonFile, final File shrinkwrapJsonFile) {
-        return npmLockfileExtractor.extract(shrinkwrapJsonFile, packageJsonFile, npmLockfileOptions.shouldIncludeDeveloperDependencies());
-    }
-
-    private Extraction extractFromPackageLock(final File packageJsonFile, final File packageLockJsonFile) {
-        return npmLockfileExtractor.extract(packageLockJsonFile, packageJsonFile, npmLockfileOptions.shouldIncludeDeveloperDependencies());
-    }
-
-    private Extraction extractFromYarnLock(final File packageJsonFile, final File yarnLockFile) {
-        return yarnLockExtractor.extract(yarnLockFile, packageJsonFile, yarnLockOptions);
     }
 }
