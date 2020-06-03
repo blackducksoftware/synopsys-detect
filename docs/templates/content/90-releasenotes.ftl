@@ -4,7 +4,6 @@
 ### New features
 
 ### Changed features
-* Moved the location to which ${bash_script_name} downloads the ${solution_name} .jar from /tmp to ~/synopsys-detect/download.
 * Eliminated any need for the ${blackduck_product_name} Global Code Scanner overall role.
 
 ### Resolved issues
@@ -24,6 +23,7 @@
 * ${solution_name} stops if the Docker Inspector tool applies and ${solution_name} is running on Windows.
 * ${solution_name} configures Docker Inspector's working directories inside ${solution_name}'s run directory.
 * ${solution_name} requires and runs Docker Inspector version 9.
+* Moved the location to which ${bash_script_name} downloads the ${solution_name} .jar from /tmp to ~/synopsys-detect/download.
 
 ### Resolved issues
 * (IDETECT-1906) Resolved an issue wherein git extraction might fail if "git log" returned unexpected output.  As a last resort, the commit hash will be used as a version.
