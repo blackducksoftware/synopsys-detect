@@ -1410,7 +1410,7 @@
                 
                 <h1 id="nuget">nuget<a class="headerlink" href="#nuget" title="Permanent link">#</a></h1>
 <h2 id="dotnet-executable">dotnet Executable<a class="headerlink" href="#dotnet-executable" title="Permanent link">#</a></h2>
-<pre><code>--detect.dotnet.path=Optional.empty
+<pre><code>--detect.dotnet.path
 </code></pre>
 
 <p>The path to the dotnet executable.</p>
@@ -1432,7 +1432,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1453,7 +1453,7 @@
 </tbody>
 </table>
 <h2 id="nuget-config-file">Nuget Config File<a class="headerlink" href="#nuget-config-file" title="Permanent link">#</a></h2>
-<pre><code>--detect.nuget.config.path=Optional.empty
+<pre><code>--detect.nuget.config.path
 </code></pre>
 
 <p>The path to the Nuget.Config file to supply to the nuget exe.</p>
@@ -1475,7 +1475,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1496,7 +1496,7 @@
 </tbody>
 </table>
 <h2 id="nuget-packages-repository-url">Nuget Packages Repository URL<a class="headerlink" href="#nuget-packages-repository-url" title="Permanent link">#</a></h2>
-<pre><code>--detect.nuget.packages.repo.url=Optional[https://api.nuget.org/v3/index.json]
+<pre><code>--detect.nuget.packages.repo.url=https://api.nuget.org/v3/index.json
 </code></pre>
 
 <p>The source for nuget packages</p>
@@ -1519,7 +1519,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[https://api.nuget.org/v3/index.json]</td>
+<td>https://api.nuget.org/v3/index.json</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1540,7 +1540,7 @@
 </tbody>
 </table>
 <h2 id="nuget-projects-excluded-advanced">Nuget Projects Excluded (Advanced)<a class="headerlink" href="#nuget-projects-excluded-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.nuget.excluded.modules=Optional.empty
+<pre><code>--detect.nuget.excluded.modules
 </code></pre>
 
 <p>The names of the projects in a solution to exclude.</p>
@@ -1562,7 +1562,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1583,7 +1583,7 @@
 </tbody>
 </table>
 <h2 id="ignore-nuget-failures-advanced">Ignore Nuget Failures (Advanced)<a class="headerlink" href="#ignore-nuget-failures-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.nuget.ignore.failure=Optional[false]
+<pre><code>--detect.nuget.ignore.failure=false
 </code></pre>
 
 <p>If true errors will be logged and then ignored.</p>
@@ -1605,7 +1605,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1626,7 +1626,7 @@
 </tbody>
 </table>
 <h2 id="nuget-modules-included-advanced">Nuget Modules Included (Advanced)<a class="headerlink" href="#nuget-modules-included-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.nuget.included.modules=Optional.empty
+<pre><code>--detect.nuget.included.modules
 </code></pre>
 
 <p>The names of the projects in a solution to include (overrides exclude).</p>
@@ -1648,7 +1648,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1669,7 +1669,7 @@
 </tbody>
 </table>
 <h2 id="nuget-inspector-airgap-path-advanced">Nuget Inspector AirGap Path (Advanced)<a class="headerlink" href="#nuget-inspector-airgap-path-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.nuget.inspector.air.gap.path=Optional.empty
+<pre><code>--detect.nuget.inspector.air.gap.path
 </code></pre>
 
 <p>The path to the directory containing the nuget inspector nupkg.</p>
@@ -1691,7 +1691,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1712,7 +1712,7 @@
 </tbody>
 </table>
 <h2 id="nuget-inspector-version-advanced">Nuget Inspector Version (Advanced)<a class="headerlink" href="#nuget-inspector-version-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.nuget.inspector.version=Optional.empty
+<pre><code>--detect.nuget.inspector.version
 </code></pre>
 
 <p>Version of the Nuget Inspector. By default Detect will run the latest version that is compatible with the Detect version.</p>
@@ -1734,7 +1734,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1755,7 +1755,7 @@
 </tbody>
 </table>
 <h2 id="detect-nuget-inspector-name-deprecated">Detect Nuget Inspector Name (Deprecated)<a class="headerlink" href="#detect-nuget-inspector-name-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.nuget.inspector.name=Optional[IntegrationNugetInspector]
+<pre><code>--detect.nuget.inspector.name=IntegrationNugetInspector
 </code></pre>
 
 <p>Name of the Nuget Inspector package and the Nuget Inspector exe. (Do not include '.exe'.)</p>
@@ -1779,7 +1779,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[IntegrationNugetInspector]</td>
+<td>IntegrationNugetInspector</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1800,7 +1800,7 @@
 </tbody>
 </table>
 <h2 id="detect-nuget-path-deprecated">Detect Nuget Path (Deprecated)<a class="headerlink" href="#detect-nuget-path-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.nuget.path=Optional.empty
+<pre><code>--detect.nuget.path
 </code></pre>
 
 <p>The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package.</p>
@@ -1823,7 +1823,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>

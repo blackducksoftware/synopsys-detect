@@ -1648,7 +1648,7 @@
                 
                 <h1 id="paths">paths<a class="headerlink" href="#paths" title="Permanent link">#</a></h1>
 <h2 id="bash-executable">Bash Executable<a class="headerlink" href="#bash-executable" title="Permanent link">#</a></h2>
-<pre><code>--detect.bash.path=Optional.empty
+<pre><code>--detect.bash.path
 </code></pre>
 
 <p>Path to the Bash executable.</p>
@@ -1671,7 +1671,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1692,7 +1692,7 @@
 </tbody>
 </table>
 <h2 id="bdio-2-enabled">BDIO 2 Enabled<a class="headerlink" href="#bdio-2-enabled" title="Permanent link">#</a></h2>
-<pre><code>--detect.bdio2.enabled=Optional[false]
+<pre><code>--detect.bdio2.enabled=false
 </code></pre>
 
 <p>The version of BDIO files to generate.</p>
@@ -1715,7 +1715,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1736,7 +1736,7 @@
 </tbody>
 </table>
 <h2 id="bdio-output-directory">BDIO Output Directory<a class="headerlink" href="#bdio-output-directory" title="Permanent link">#</a></h2>
-<pre><code>--detect.bdio.output.path=Optional.empty
+<pre><code>--detect.bdio.output.path
 </code></pre>
 
 <p>The path to the output directory for all BDIO files.</p>
@@ -1759,7 +1759,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1780,7 +1780,7 @@
 </tbody>
 </table>
 <h2 id="detector-search-depth">Detector Search Depth<a class="headerlink" href="#detector-search-depth" title="Permanent link">#</a></h2>
-<pre><code>--detect.detector.search.depth=Optional[0]
+<pre><code>--detect.detector.search.depth=0
 </code></pre>
 
 <p>Depth of subdirectories within the source directory to which Detect will search for files that indicate whether a detector applies.</p>
@@ -1803,7 +1803,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[0]</td>
+<td>0</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1824,7 +1824,7 @@
 </tbody>
 </table>
 <h2 id="git-executable">Git Executable<a class="headerlink" href="#git-executable" title="Permanent link">#</a></h2>
-<pre><code>--detect.git.path=Optional.empty
+<pre><code>--detect.git.path
 </code></pre>
 
 <p>Path of the git executable</p>
@@ -1846,7 +1846,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1867,7 +1867,7 @@
 </tbody>
 </table>
 <h2 id="java-executable">Java Executable<a class="headerlink" href="#java-executable" title="Permanent link">#</a></h2>
-<pre><code>--detect.java.path=Optional.empty
+<pre><code>--detect.java.path
 </code></pre>
 
 <p>Path to the java executable.</p>
@@ -1890,7 +1890,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1911,7 +1911,7 @@
 </tbody>
 </table>
 <h2 id="detect-output-path">Detect Output Path<a class="headerlink" href="#detect-output-path" title="Permanent link">#</a></h2>
-<pre><code>--detect.output.path=Optional.empty
+<pre><code>--detect.output.path
 </code></pre>
 
 <p>The path to the output directory.</p>
@@ -1934,7 +1934,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1955,7 +1955,7 @@
 </tbody>
 </table>
 <h2 id="resolve-tilde-in-paths">Resolve Tilde in Paths<a class="headerlink" href="#resolve-tilde-in-paths" title="Permanent link">#</a></h2>
-<pre><code>--detect.resolve.tilde.in.paths=Optional[true]
+<pre><code>--detect.resolve.tilde.in.paths=true
 </code></pre>
 
 <p>If set to false Detect will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.</p>
@@ -1977,7 +1977,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[true]</td>
+<td>true</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1998,7 +1998,7 @@
 </tbody>
 </table>
 <h2 id="scan-output-path">Scan Output Path<a class="headerlink" href="#scan-output-path" title="Permanent link">#</a></h2>
-<pre><code>--detect.scan.output.path=Optional.empty
+<pre><code>--detect.scan.output.path
 </code></pre>
 
 <p>The output directory for all signature scanner output files. If not set, the signature scanner output files will be in a 'scan' subdirectory of the output directory.</p>
@@ -2020,7 +2020,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2041,7 +2041,7 @@
 </tbody>
 </table>
 <h2 id="source-path">Source Path<a class="headerlink" href="#source-path" title="Permanent link">#</a></h2>
-<pre><code>--detect.source.path=Optional.empty
+<pre><code>--detect.source.path
 </code></pre>
 
 <p>The path to the project directory to inspect.</p>
@@ -2064,7 +2064,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2085,7 +2085,7 @@
 </tbody>
 </table>
 <h2 id="swift-executable">Swift Executable<a class="headerlink" href="#swift-executable" title="Permanent link">#</a></h2>
-<pre><code>--detect.swift.path=Optional.empty
+<pre><code>--detect.swift.path
 </code></pre>
 
 <p>Path of the swift executable.</p>
@@ -2107,7 +2107,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2151,7 +2151,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2195,7 +2195,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2216,7 +2216,7 @@
 </tbody>
 </table>
 <h2 id="detector-search-continue-advanced">Detector Search Continue (Advanced)<a class="headerlink" href="#detector-search-continue-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.detector.search.continue=Optional[false]
+<pre><code>--detect.detector.search.continue=false
 </code></pre>
 
 <p>If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.</p>
@@ -2239,7 +2239,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2260,7 +2260,7 @@
 </tbody>
 </table>
 <h2 id="detector-directory-exclusions-advanced">Detector Directory Exclusions (Advanced)<a class="headerlink" href="#detector-directory-exclusions-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.detector.search.exclusion=Optional[]
+<pre><code>--detect.detector.search.exclusion
 </code></pre>
 
 <p>A comma-separated list of directory names to exclude from detector search.</p>
@@ -2283,7 +2283,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2304,7 +2304,7 @@
 </tbody>
 </table>
 <h2 id="detector-exclude-default-directories-advanced">Detector Exclude Default Directories (Advanced)<a class="headerlink" href="#detector-exclude-default-directories-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.detector.search.exclusion.defaults=Optional[true]
+<pre><code>--detect.detector.search.exclusion.defaults=true
 </code></pre>
 
 <p>If true, the bom tool search will exclude the default directory names. See the detailed help for more information.</p>
@@ -2327,7 +2327,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[true]</td>
+<td>true</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2348,7 +2348,7 @@
 </tbody>
 </table>
 <h2 id="detector-file-exclusions-advanced">Detector File Exclusions (Advanced)<a class="headerlink" href="#detector-file-exclusions-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.detector.search.exclusion.files=Optional[]
+<pre><code>--detect.detector.search.exclusion.files
 </code></pre>
 
 <p>A comma-separated list of file names to exclude from detector search.</p>
@@ -2370,7 +2370,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2391,7 +2391,7 @@
 </tbody>
 </table>
 <h2 id="detector-directory-path-exclusions-advanced">Detector Directory Path Exclusions (Advanced)<a class="headerlink" href="#detector-directory-path-exclusions-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.detector.search.exclusion.paths=Optional[]
+<pre><code>--detect.detector.search.exclusion.paths
 </code></pre>
 
 <p>A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)</p>
@@ -2414,7 +2414,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2435,7 +2435,7 @@
 </tbody>
 </table>
 <h2 id="detector-directory-patterns-exclusions-advanced">Detector Directory Patterns Exclusions (Advanced)<a class="headerlink" href="#detector-directory-patterns-exclusions-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.detector.search.exclusion.patterns=Optional[]
+<pre><code>--detect.detector.search.exclusion.patterns
 </code></pre>
 
 <p>A comma-separated list of directory name patterns to exclude from detector search.</p>
@@ -2458,7 +2458,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2479,7 +2479,7 @@
 </tbody>
 </table>
 <h2 id="project-nameversion-detector-advanced">Project Name/Version Detector (Advanced)<a class="headerlink" href="#project-nameversion-detector-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.project.detector=Optional.empty
+<pre><code>--detect.project.detector
 </code></pre>
 
 <p>The detector that will be used to determine the project name and version when multiple detector types. This property should be used with the detect.project.tool.</p>
@@ -2502,7 +2502,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2546,7 +2546,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[DOCKER,DETECTOR,BAZEL]</td>
+<td>DOCKER,DETECTOR,BAZEL</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2567,7 +2567,7 @@
 </tbody>
 </table>
 <h2 id="detect-tools-output-path-advanced">Detect Tools Output Path (Advanced)<a class="headerlink" href="#detect-tools-output-path-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.tools.output.path=Optional.empty
+<pre><code>--detect.tools.output.path
 </code></pre>
 
 <p>The path to the tools directory where detect should download and/or access things like the Signature Scanner that it shares over multiple runs.</p>
@@ -2590,7 +2590,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2611,7 +2611,7 @@
 </tbody>
 </table>
 <h2 id="detect-bom-tool-search-continue-deprecated">Detect Bom Tool Search Continue (Deprecated)<a class="headerlink" href="#detect-bom-tool-search-continue-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.bom.tool.search.continue=Optional[false]
+<pre><code>--detect.bom.tool.search.continue=false
 </code></pre>
 
 <p>If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.</p>
@@ -2635,7 +2635,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2656,7 +2656,7 @@
 </tbody>
 </table>
 <h2 id="detect-bom-tool-search-depth-deprecated">Detect Bom Tool Search Depth (Deprecated)<a class="headerlink" href="#detect-bom-tool-search-depth-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.bom.tool.search.depth=Optional[0]
+<pre><code>--detect.bom.tool.search.depth=0
 </code></pre>
 
 <p>Depth of subdirectories within the source directory to search for files that indicate whether a detector applies.</p>
@@ -2680,7 +2680,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[0]</td>
+<td>0</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2701,7 +2701,7 @@
 </tbody>
 </table>
 <h2 id="detect-bom-tool-search-exclusion-deprecated">Detect Bom Tool Search Exclusion (Deprecated)<a class="headerlink" href="#detect-bom-tool-search-exclusion-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.bom.tool.search.exclusion=Optional[]
+<pre><code>--detect.bom.tool.search.exclusion
 </code></pre>
 
 <p>A comma-separated list of directory names to exclude from the bom tool search.</p>
@@ -2724,7 +2724,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2745,7 +2745,7 @@
 </tbody>
 </table>
 <h2 id="detect-bom-tool-search-exclusion-defaults-deprecated">Detect Bom Tool Search Exclusion Defaults (Deprecated)<a class="headerlink" href="#detect-bom-tool-search-exclusion-defaults-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.bom.tool.search.exclusion.defaults=Optional[true]
+<pre><code>--detect.bom.tool.search.exclusion.defaults=true
 </code></pre>
 
 <p>If true, the bom tool search will exclude the default directory names. See the detailed help for more information.</p>
@@ -2769,7 +2769,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[true]</td>
+<td>true</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2790,7 +2790,7 @@
 </tbody>
 </table>
 <h2 id="detect-project-bom-tool-deprecated">Detect Project Bom Tool (Deprecated)<a class="headerlink" href="#detect-project-bom-tool-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.project.bom.tool=Optional.empty
+<pre><code>--detect.project.bom.tool
 </code></pre>
 
 <p>The detector to choose when multiple detector types are found and one needs to be chosen for project name and version. This property should be used with the detect.project.tool.</p>
@@ -2813,7 +2813,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>

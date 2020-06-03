@@ -2286,7 +2286,9 @@
 <h2 id="version-640">Version 6.4.0<a class="headerlink" href="#version-640" title="Permanent link">#</a></h2>
 <h3 id="new-features">New features<a class="headerlink" href="#new-features" title="Permanent link">#</a></h3>
 <h3 id="changed-features">Changed features<a class="headerlink" href="#changed-features" title="Permanent link">#</a></h3>
-<p>Moved download location of Synopsys Detect for the shell script from /tmp to ~/synopsys-detect/download.</p>
+<ul>
+<li>Eliminated any need for the Black Duck Global Code Scanner overall role.</li>
+</ul>
 <h3 id="resolved-issues">Resolved issues<a class="headerlink" href="#resolved-issues" title="Permanent link">#</a></h3>
 <ul>
 <li>(IDETECT-2034) Resolved an issue that would cause a NullPointerException when Synopsys Detect's initial attempt at generating a code location name produced a code location name greater than 250 characters and either code location prefix or code location suffix is not set.</li>
@@ -2294,7 +2296,7 @@
 <h2 id="version-630">Version 6.3.0<a class="headerlink" href="#version-630" title="Permanent link">#</a></h2>
 <h3 id="new-features_1">New features<a class="headerlink" href="#new-features_1" title="Permanent link">#</a></h3>
 <ul>
-<li>The Yarn detector extracts project information from package.json files.</li>
+<li>The Yarn detector now extracts project information from package.json files. Git is no longer the default supplier of project information for Yarn projects.</li>
 <li>Added Yarn Detector support for dependencies that are missing a fuzzy version in a lockfile dependency declaration.</li>
 <li>Synopsys Detect logs policy violations when it is configured to <a href="../properties/configuration/project/#fail-on-policy-violation-severities">fail on policy violations</a>.</li>
 <li>Added the property <a href="../properties/configuration/signature scanner/#signature-scanner-copyright-search-advanced">detect.blackduck.signature.scanner.copyright.search</a>.</li>
@@ -2302,20 +2304,22 @@
 </ul>
 <h3 id="changed-features_1">Changed features<a class="headerlink" href="#changed-features_1" title="Permanent link">#</a></h3>
 <ul>
-<li>Users can <a href="../properties/configuration/signature scanner/#upload-source-mode">upload source</a> files when only <a href="../properties/configuration/signature scanner/#signature-scanner-license-search">license search</a> is enabled.</li>
+<li>Users can <a href="../properties/configuration/signature scanner/#upload-source-mode">upload source</a> files when <a href="../properties/configuration/signature scanner/#signature-scanner-license-search">license search</a> is enabled regardless of whether <a href="../properties/configuration/signature scanner/#snippet-matching">snippet matching</a> has been enabled.</li>
 <li>Synopsys Detect is now compatible with Yocto 3.0.</li>
 <li>Synopsys Detect stops if the Docker Inspector tool applies and Synopsys Detect is running on Windows.</li>
 <li>Synopsys Detect configures Docker Inspector's working directories inside Synopsys Detect's run directory.</li>
 <li>Synopsys Detect requires and runs Docker Inspector version 9.</li>
+<li>Moved the location to which detect.sh downloads the Synopsys Detect .jar from /tmp to ~/synopsys-detect/download.</li>
 </ul>
 <h3 id="resolved-issues_1">Resolved issues<a class="headerlink" href="#resolved-issues_1" title="Permanent link">#</a></h3>
 <ul>
-<li>(IDETECT-1906) Resolved an issue wherein git extraction might fail if "git log" returned unexpected output.  As a last resort, the commit hash will be used as a version. (<a href="https://github.com/blackducksoftware/synopsys-detect/issues/114">#114</a>)</li>
+<li>(IDETECT-1906) Resolved an issue wherein git extraction might fail if "git log" returned unexpected output.  As a last resort, the commit hash will be used as a version.</li>
 <li>(IDETECT-1883) Resolved an issue where Synopsys Detect failed to extract project information when parsing a Git repository with a detached head while in buildless mode.</li>
 <li>(IDETECT-1970) Resolved an issue where the default value for <a href="../properties/configuration/general/#detect-parallel-processors-advanced">parallel processors</a> was not used. The available runtime processor count was being used instead.</li>
-<li>(IDETECT-1973) Resolved an issue where the Nuget exe inspector would not resolve from Artifactory.</li>
+<li>(IDETECT-1973) Resolved an issue where the NuGet exe inspector would not resolve from Artifactory.</li>
 <li>(IDETECT-1965) Resolved an issue where Synopsys Detect would fail to resolve environment variables where it did so previously.</li>
 <li>(IDETECT-1974) Resolved an issue wherein the Yarn detector was throwing an exception for dependencies not defined in the yarn.lock file.</li>
+<li>(IDETECT-2037) Resolved an issue where Synopsys Detect would fail with a "hostname in certificate didn't match" error while downloading the Gradle inspector.</li>
 </ul>
 <h2 id="version-621">Version 6.2.1<a class="headerlink" href="#version-621" title="Permanent link">#</a></h2>
 <h3 id="resolved-issues_2">Resolved issues<a class="headerlink" href="#resolved-issues_2" title="Permanent link">#</a></h3>
@@ -2332,7 +2336,7 @@
 <li>Added the property <a href="../properties/configuration/signature scanner/#signature-scanner-license-search-advanced">detect.blackduck.signature.scanner.license.search</a>.</li>
 <li>Added the property <a href="../properties/configuration/signature scanner/#individual-file-matching-advanced">detect.blackduck.signature.scanner.individual.file.matching</a>.</li>
 <li>If an executable returns a nonzero exit code, Detect will now log the executable output automatically.</li>
-<li>Added page for <a href="../properties/deprecated-properties/">decrecated properties</a> in help.</li>
+<li>Added page for <a href="../properties/deprecated-properties/">deprecated properties</a> in help.</li>
 <li>Detect-generated risk reports now feature Synopsys logo and branding.</li>
 </ul>
 <h3 id="changed-features_2">Changed features<a class="headerlink" href="#changed-features_2" title="Permanent link">#</a></h3>

@@ -1718,7 +1718,7 @@
                 
                 <h1 id="signature-scanner">signature scanner<a class="headerlink" href="#signature-scanner" title="Permanent link">#</a></h1>
 <h2 id="binary-scan-target">Binary Scan Target<a class="headerlink" href="#binary-scan-target" title="Permanent link">#</a></h2>
-<pre><code>--detect.binary.scan.file.path=Optional.empty
+<pre><code>--detect.binary.scan.file.path
 </code></pre>
 
 <p>If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns.</p>
@@ -1740,7 +1740,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1761,7 +1761,7 @@
 </tbody>
 </table>
 <h2 id="binary-scan-filename-patterns">Binary Scan Filename Patterns<a class="headerlink" href="#binary-scan-filename-patterns" title="Permanent link">#</a></h2>
-<pre><code>--detect.binary.scan.file.name.patterns=Optional[]
+<pre><code>--detect.binary.scan.file.name.patterns
 </code></pre>
 
 <p>If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified.</p>
@@ -1783,7 +1783,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1804,7 +1804,7 @@
 </tbody>
 </table>
 <h2 id="signature-scanner-arguments">Signature Scanner Arguments<a class="headerlink" href="#signature-scanner-arguments" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.arguments=Optional.empty
+<pre><code>--detect.blackduck.signature.scanner.arguments
 </code></pre>
 
 <p>Additional arguments to use when running the Black Duck signature scanner.</p>
@@ -1827,7 +1827,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1848,7 +1848,7 @@
 </tbody>
 </table>
 <h2 id="signature-scanner-copyright-search">Signature Scanner Copyright Search<a class="headerlink" href="#signature-scanner-copyright-search" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.copyright.search=Optional[false]
+<pre><code>--detect.blackduck.signature.scanner.copyright.search=false
 </code></pre>
 
 <p>When set to true, user will be able to scan and discover copyright names in Black Duck.</p>
@@ -1870,7 +1870,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1891,7 +1891,7 @@
 </tbody>
 </table>
 <h2 id="signature-scanner-dry-run">Signature Scanner Dry Run<a class="headerlink" href="#signature-scanner-dry-run" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.dry.run=Optional[false]
+<pre><code>--detect.blackduck.signature.scanner.dry.run=false
 </code></pre>
 
 <p>If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk.</p>
@@ -1913,7 +1913,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1934,7 +1934,7 @@
 </tbody>
 </table>
 <h2 id="directory-name-exclusion-patterns">Directory Name Exclusion Patterns<a class="headerlink" href="#directory-name-exclusion-patterns" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.exclusion.name.patterns=Optional[node_modules]
+<pre><code>--detect.blackduck.signature.scanner.exclusion.name.patterns=node_modules
 </code></pre>
 
 <p>A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.</p>
@@ -1957,7 +1957,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[node_modules]</td>
+<td>node_modules</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1978,7 +1978,7 @@
 </tbody>
 </table>
 <h2 id="exclusion-patterns">Exclusion Patterns<a class="headerlink" href="#exclusion-patterns" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.exclusion.patterns=Optional[]
+<pre><code>--detect.blackduck.signature.scanner.exclusion.patterns
 </code></pre>
 
 <p>A comma-separated list of values to be used with the Signature Scanner --exclude flag.</p>
@@ -2001,7 +2001,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2022,7 +2022,7 @@
 </tbody>
 </table>
 <h2 id="exclusion-patterns-search-depth">Exclusion Patterns Search Depth<a class="headerlink" href="#exclusion-patterns-search-depth" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.exclusion.pattern.search.depth=Optional[4]
+<pre><code>--detect.blackduck.signature.scanner.exclusion.pattern.search.depth=4
 </code></pre>
 
 <p>Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.</p>
@@ -2044,7 +2044,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[4]</td>
+<td>4</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2087,7 +2087,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[NONE]</td>
+<td>NONE</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2108,7 +2108,7 @@
 </tbody>
 </table>
 <h2 id="signature-scanner-license-search">Signature Scanner License Search<a class="headerlink" href="#signature-scanner-license-search" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.license.search=Optional[false]
+<pre><code>--detect.blackduck.signature.scanner.license.search=false
 </code></pre>
 
 <p>When set to true, user will be able to scan and discover license names in Black Duck</p>
@@ -2130,7 +2130,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2151,7 +2151,7 @@
 </tbody>
 </table>
 <h2 id="signature-scanner-local-path">Signature Scanner Local Path<a class="headerlink" href="#signature-scanner-local-path" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.local.path=Optional.empty
+<pre><code>--detect.blackduck.signature.scanner.local.path
 </code></pre>
 
 <p>To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.</p>
@@ -2173,7 +2173,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2194,7 +2194,7 @@
 </tbody>
 </table>
 <h2 id="signature-scanner-target-paths">Signature Scanner Target Paths<a class="headerlink" href="#signature-scanner-target-paths" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.paths=Optional[]
+<pre><code>--detect.blackduck.signature.scanner.paths
 </code></pre>
 
 <p>These paths and only these paths will be scanned.</p>
@@ -2216,7 +2216,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2259,7 +2259,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[NONE]</td>
+<td>NONE</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2280,7 +2280,7 @@
 </tbody>
 </table>
 <h2 id="upload-source-mode">Upload source mode<a class="headerlink" href="#upload-source-mode" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.upload.source.mode=Optional[false]
+<pre><code>--detect.blackduck.signature.scanner.upload.source.mode=false
 </code></pre>
 
 <p>If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck.</p>
@@ -2302,7 +2302,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2323,7 +2323,7 @@
 </tbody>
 </table>
 <h2 id="signature-scanner-host-url-advanced">Signature Scanner Host URL (Advanced)<a class="headerlink" href="#signature-scanner-host-url-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.host.url=Optional.empty
+<pre><code>--detect.blackduck.signature.scanner.host.url
 </code></pre>
 
 <p>If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Black Duck's urls for different operating systems.</p>
@@ -2345,7 +2345,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2366,7 +2366,7 @@
 </tbody>
 </table>
 <h2 id="signature-scanner-memory-advanced">Signature Scanner Memory (Advanced)<a class="headerlink" href="#signature-scanner-memory-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.memory=Optional[4096]
+<pre><code>--detect.blackduck.signature.scanner.memory=4096
 </code></pre>
 
 <p>The memory for the scanner to use.</p>
@@ -2388,7 +2388,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[4096]</td>
+<td>4096</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2409,7 +2409,7 @@
 </tbody>
 </table>
 <h2 id="signature-scanner-local-path-40offline41-advanced">Signature Scanner Local Path (Offline) (Advanced)<a class="headerlink" href="#signature-scanner-local-path-40offline41-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.offline.local.path=Optional.empty
+<pre><code>--detect.blackduck.signature.scanner.offline.local.path
 </code></pre>
 
 <p>To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.</p>
@@ -2431,7 +2431,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2452,7 +2452,7 @@
 </tbody>
 </table>
 <h2 id="detect-blackduck-signature-scanner-disabled-deprecated">Detect Blackduck Signature Scanner Disabled (Deprecated)<a class="headerlink" href="#detect-blackduck-signature-scanner-disabled-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.disabled=Optional[false]
+<pre><code>--detect.blackduck.signature.scanner.disabled=false
 </code></pre>
 
 <p>Set to true to disable the Black Duck Signature Scanner.</p>
@@ -2475,7 +2475,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2496,7 +2496,7 @@
 </tbody>
 </table>
 <h2 id="signature-scanner-parallel-processors-deprecated">Signature Scanner Parallel Processors (Deprecated)<a class="headerlink" href="#signature-scanner-parallel-processors-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.parallel.processors=Optional[1]
+<pre><code>--detect.blackduck.signature.scanner.parallel.processors=1
 </code></pre>
 
 <p>The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.</p>
@@ -2519,7 +2519,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[1]</td>
+<td>1</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2540,7 +2540,7 @@
 </tbody>
 </table>
 <h2 id="snippet-scanning-deprecated">Snippet Scanning (Deprecated)<a class="headerlink" href="#snippet-scanning-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.blackduck.signature.scanner.snippet.mode=Optional[false]
+<pre><code>--detect.blackduck.signature.scanner.snippet.mode=false
 </code></pre>
 
 <p>If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode.</p>
@@ -2563,7 +2563,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2584,7 +2584,7 @@
 </tbody>
 </table>
 <h2 id="detect-hub-signature-scanner-arguments-deprecated">Detect Hub Signature Scanner Arguments (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-arguments-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.hub.signature.scanner.arguments=Optional.empty
+<pre><code>--detect.hub.signature.scanner.arguments
 </code></pre>
 
 <p>Additional arguments to use when running the Hub signature scanner.</p>
@@ -2607,7 +2607,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2628,7 +2628,7 @@
 </tbody>
 </table>
 <h2 id="detect-hub-signature-scanner-disabled-deprecated">Detect Hub Signature Scanner Disabled (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-disabled-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.hub.signature.scanner.disabled=Optional[false]
+<pre><code>--detect.hub.signature.scanner.disabled=false
 </code></pre>
 
 <p>Set to true to disable the Hub Signature Scanner.</p>
@@ -2651,7 +2651,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2672,7 +2672,7 @@
 </tbody>
 </table>
 <h2 id="detect-hub-signature-scanner-dry-run-deprecated">Detect Hub Signature Scanner Dry Run (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-dry-run-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.hub.signature.scanner.dry.run=Optional[false]
+<pre><code>--detect.hub.signature.scanner.dry.run=false
 </code></pre>
 
 <p>If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.</p>
@@ -2695,7 +2695,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2716,7 +2716,7 @@
 </tbody>
 </table>
 <h2 id="detect-hub-signature-scanner-exclusion-name-patterns-deprecated">Detect Hub Signature Scanner Exclusion Name Patterns (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-exclusion-name-patterns-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.hub.signature.scanner.exclusion.name.patterns=Optional[node_modules]
+<pre><code>--detect.hub.signature.scanner.exclusion.name.patterns=node_modules
 </code></pre>
 
 <p>A comma-separated list of directory name patterns Detect will search for and add to the Signature Scanner --exclude flag values.</p>
@@ -2740,7 +2740,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[node_modules]</td>
+<td>node_modules</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2761,7 +2761,7 @@
 </tbody>
 </table>
 <h2 id="detect-hub-signature-scanner-exclusion-patterns-deprecated">Detect Hub Signature Scanner Exclusion Patterns (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-exclusion-patterns-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.hub.signature.scanner.exclusion.patterns=Optional[]
+<pre><code>--detect.hub.signature.scanner.exclusion.patterns
 </code></pre>
 
 <p>A comma-separated list of values to be used with the Signature Scanner --exclude flag.</p>
@@ -2784,7 +2784,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2805,7 +2805,7 @@
 </tbody>
 </table>
 <h2 id="detect-hub-signature-scanner-host-url-deprecated">Detect Hub Signature Scanner Host Url (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-host-url-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.hub.signature.scanner.host.url=Optional.empty
+<pre><code>--detect.hub.signature.scanner.host.url
 </code></pre>
 
 <p>If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.</p>
@@ -2828,7 +2828,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2849,7 +2849,7 @@
 </tbody>
 </table>
 <h2 id="detect-hub-signature-scanner-local-path-deprecated">Detect Hub Signature Scanner Local Path (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-local-path-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.hub.signature.scanner.local.path=Optional.empty
+<pre><code>--detect.hub.signature.scanner.local.path
 </code></pre>
 
 <p>To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.</p>
@@ -2872,7 +2872,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2893,7 +2893,7 @@
 </tbody>
 </table>
 <h2 id="detect-hub-signature-scanner-memory-deprecated">Detect Hub Signature Scanner Memory (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-memory-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.hub.signature.scanner.memory=Optional[4096]
+<pre><code>--detect.hub.signature.scanner.memory=4096
 </code></pre>
 
 <p>The memory for the scanner to use.</p>
@@ -2916,7 +2916,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[4096]</td>
+<td>4096</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2937,7 +2937,7 @@
 </tbody>
 </table>
 <h2 id="detect-hub-signature-scanner-offline-local-path-deprecated">Detect Hub Signature Scanner Offline Local Path (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-offline-local-path-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.hub.signature.scanner.offline.local.path=Optional.empty
+<pre><code>--detect.hub.signature.scanner.offline.local.path
 </code></pre>
 
 <p>To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.</p>
@@ -2960,7 +2960,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2981,7 +2981,7 @@
 </tbody>
 </table>
 <h2 id="detect-hub-signature-scanner-parallel-processors-deprecated">Detect Hub Signature Scanner Parallel Processors (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-parallel-processors-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.hub.signature.scanner.parallel.processors=Optional[1]
+<pre><code>--detect.hub.signature.scanner.parallel.processors=1
 </code></pre>
 
 <p>The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.</p>
@@ -3004,7 +3004,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[1]</td>
+<td>1</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -3025,7 +3025,7 @@
 </tbody>
 </table>
 <h2 id="detect-hub-signature-scanner-paths-deprecated">Detect Hub Signature Scanner Paths (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-paths-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.hub.signature.scanner.paths=Optional[]
+<pre><code>--detect.hub.signature.scanner.paths
 </code></pre>
 
 <p>These paths and only these paths will be scanned.</p>
@@ -3048,7 +3048,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -3069,7 +3069,7 @@
 </tbody>
 </table>
 <h2 id="detect-hub-signature-scanner-snippet-mode-deprecated">Detect Hub Signature Scanner Snippet Mode (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-snippet-mode-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.hub.signature.scanner.snippet.mode=Optional[false]
+<pre><code>--detect.hub.signature.scanner.snippet.mode=false
 </code></pre>
 
 <p>If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.</p>
@@ -3092,7 +3092,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>

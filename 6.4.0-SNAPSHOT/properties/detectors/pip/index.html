@@ -1340,7 +1340,7 @@
                 
                 <h1 id="pip">pip<a class="headerlink" href="#pip" title="Permanent link">#</a></h1>
 <h2 id="pipenv-executable">Pipenv Executable<a class="headerlink" href="#pipenv-executable" title="Permanent link">#</a></h2>
-<pre><code>--detect.pipenv.path=Optional.empty
+<pre><code>--detect.pipenv.path
 </code></pre>
 
 <p>The path to the Pipenv executable.</p>
@@ -1362,7 +1362,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1383,7 +1383,7 @@
 </tbody>
 </table>
 <h2 id="pip-include-only-project-tree">PIP Include Only Project Tree<a class="headerlink" href="#pip-include-only-project-tree" title="Permanent link">#</a></h2>
-<pre><code>--detect.pip.only.project.tree=Optional[false]
+<pre><code>--detect.pip.only.project.tree=false
 </code></pre>
 
 <p>By default, pipenv includes all dependencies found in the graph. Set to true to only include dependencies found underneath the dependency that matches the provided pip project and version name.</p>
@@ -1405,7 +1405,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1426,7 +1426,7 @@
 </tbody>
 </table>
 <h2 id="pip-project-name">PIP Project Name<a class="headerlink" href="#pip-project-name" title="Permanent link">#</a></h2>
-<pre><code>--detect.pip.project.name=Optional.empty
+<pre><code>--detect.pip.project.name
 </code></pre>
 
 <p>The name of your PIP project, to be used if your project's name cannot be correctly inferred from its setup.py file.</p>
@@ -1448,7 +1448,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1469,7 +1469,7 @@
 </tbody>
 </table>
 <h2 id="pip-project-version-name">PIP Project Version Name<a class="headerlink" href="#pip-project-version-name" title="Permanent link">#</a></h2>
-<pre><code>--detect.pip.project.version.name=Optional.empty
+<pre><code>--detect.pip.project.version.name
 </code></pre>
 
 <p>The version of your PIP project, to be used if your project's version name cannot be correctly inferred from its setup.py file.</p>
@@ -1491,7 +1491,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1512,7 +1512,7 @@
 </tbody>
 </table>
 <h2 id="pip-requirements-path">PIP Requirements Path<a class="headerlink" href="#pip-requirements-path" title="Permanent link">#</a></h2>
-<pre><code>--detect.pip.requirements.path=Optional[]
+<pre><code>--detect.pip.requirements.path
 </code></pre>
 
 <p>A comma-separated list of paths to requirements.txt files.</p>
@@ -1534,7 +1534,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>

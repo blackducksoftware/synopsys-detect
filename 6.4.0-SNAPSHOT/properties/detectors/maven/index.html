@@ -1382,7 +1382,7 @@
                 
                 <h1 id="maven">maven<a class="headerlink" href="#maven" title="Permanent link">#</a></h1>
 <h2 id="maven-build-command">Maven Build Command<a class="headerlink" href="#maven-build-command" title="Permanent link">#</a></h2>
-<pre><code>--detect.maven.build.command=Optional.empty
+<pre><code>--detect.maven.build.command
 </code></pre>
 
 <p>Maven command line arguments to add to the mvn/mvnw command line.</p>
@@ -1405,7 +1405,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1426,7 +1426,7 @@
 </tbody>
 </table>
 <h2 id="dependency-scope-excluded">Dependency Scope Excluded<a class="headerlink" href="#dependency-scope-excluded" title="Permanent link">#</a></h2>
-<pre><code>--detect.maven.excluded.scopes=Optional.empty
+<pre><code>--detect.maven.excluded.scopes
 </code></pre>
 
 <p>A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).</p>
@@ -1449,7 +1449,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1470,7 +1470,7 @@
 </tbody>
 </table>
 <h2 id="dependency-scope-included">Dependency Scope Included<a class="headerlink" href="#dependency-scope-included" title="Permanent link">#</a></h2>
-<pre><code>--detect.maven.included.scopes=Optional.empty
+<pre><code>--detect.maven.included.scopes
 </code></pre>
 
 <p>A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).</p>
@@ -1493,7 +1493,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1514,7 +1514,7 @@
 </tbody>
 </table>
 <h2 id="maven-executable">Maven Executable<a class="headerlink" href="#maven-executable" title="Permanent link">#</a></h2>
-<pre><code>--detect.maven.path=Optional.empty
+<pre><code>--detect.maven.path
 </code></pre>
 
 <p>The path to the Maven executable (mvn or mvnw).</p>
@@ -1537,7 +1537,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1558,7 +1558,7 @@
 </tbody>
 </table>
 <h2 id="maven-modules-excluded-advanced">Maven Modules Excluded (Advanced)<a class="headerlink" href="#maven-modules-excluded-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.maven.excluded.modules=Optional.empty
+<pre><code>--detect.maven.excluded.modules
 </code></pre>
 
 <p>A comma-separated list of Maven modules (sub-projects) to exclude.</p>
@@ -1581,7 +1581,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1602,7 +1602,7 @@
 </tbody>
 </table>
 <h2 id="maven-modules-included-advanced">Maven Modules Included (Advanced)<a class="headerlink" href="#maven-modules-included-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.maven.included.modules=Optional.empty
+<pre><code>--detect.maven.included.modules
 </code></pre>
 
 <p>A comma-separated list of Maven modules (sub-projects) to include.</p>
@@ -1625,7 +1625,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1646,7 +1646,7 @@
 </tbody>
 </table>
 <h2 id="maven-include-plugins-advanced">Maven Include Plugins (Advanced)<a class="headerlink" href="#maven-include-plugins-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.maven.include.plugins=Optional[false]
+<pre><code>--detect.maven.include.plugins=false
 </code></pre>
 
 <p>Whether or not detect will include the plugins section when parsing a pom.xml.</p>
@@ -1668,7 +1668,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[false]</td>
+<td>false</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1689,7 +1689,7 @@
 </tbody>
 </table>
 <h2 id="dependency-scope-included-deprecated">Dependency Scope Included (Deprecated)<a class="headerlink" href="#dependency-scope-included-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.maven.scope=Optional.empty
+<pre><code>--detect.maven.scope
 </code></pre>
 
 <p>The name of a Maven scope. Output will be limited to dependencies with this scope.</p>
@@ -1713,7 +1713,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional.empty</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>

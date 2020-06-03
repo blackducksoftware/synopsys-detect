@@ -1340,7 +1340,7 @@
                 
                 <h1 id="bitbake">bitbake<a class="headerlink" href="#bitbake" title="Permanent link">#</a></h1>
 <h2 id="bitbake-init-script-name">BitBake Init Script Name<a class="headerlink" href="#bitbake-init-script-name" title="Permanent link">#</a></h2>
-<pre><code>--detect.bitbake.build.env.name=Optional[oe-init-build-env]
+<pre><code>--detect.bitbake.build.env.name=oe-init-build-env
 </code></pre>
 
 <p>The name of the build environment init script.</p>
@@ -1362,7 +1362,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[oe-init-build-env]</td>
+<td>oe-init-build-env</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1383,7 +1383,7 @@
 </tbody>
 </table>
 <h2 id="bitbake-package-names">BitBake Package Names<a class="headerlink" href="#bitbake-package-names" title="Permanent link">#</a></h2>
-<pre><code>--detect.bitbake.package.names=Optional[]
+<pre><code>--detect.bitbake.package.names
 </code></pre>
 
 <p>A comma-separated list of package names from which dependencies are extracted.</p>
@@ -1405,7 +1405,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1426,7 +1426,7 @@
 </tbody>
 </table>
 <h2 id="bitbake-search-depth">BitBake Search Depth<a class="headerlink" href="#bitbake-search-depth" title="Permanent link">#</a></h2>
-<pre><code>--detect.bitbake.search.depth=Optional[1]
+<pre><code>--detect.bitbake.search.depth=1
 </code></pre>
 
 <p>The depth at which Detect will search for the recipe-depends.dot or package-depends.dot files.</p>
@@ -1448,7 +1448,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[1]</td>
+<td>1</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1469,7 +1469,7 @@
 </tbody>
 </table>
 <h2 id="bitbake-source-arguments">BitBake Source Arguments<a class="headerlink" href="#bitbake-source-arguments" title="Permanent link">#</a></h2>
-<pre><code>--detect.bitbake.source.arguments=Optional[]
+<pre><code>--detect.bitbake.source.arguments
 </code></pre>
 
 <p>A comma-separated list of arguments to supply when sourcing the build environment init script.</p>
@@ -1491,7 +1491,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[]</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -1512,7 +1512,7 @@
 </tbody>
 </table>
 <h2 id="reference-implementation-deprecated">Reference implementation (Deprecated)<a class="headerlink" href="#reference-implementation-deprecated" title="Permanent link">#</a></h2>
-<pre><code>--detect.bitbake.reference.impl=Optional[-poky-linux]
+<pre><code>--detect.bitbake.reference.impl=-poky-linux
 </code></pre>
 
 <p>The reference implementation of the Yocto project. These characters are stripped from the discovered target architecture.</p>
@@ -1535,7 +1535,7 @@
 </tr>
 <tr>
 <td>Default Value</td>
-<td>Optional[-poky-linux]</td>
+<td>-poky-linux</td>
 </tr>
 <tr>
 <td>Comma Separated</td>

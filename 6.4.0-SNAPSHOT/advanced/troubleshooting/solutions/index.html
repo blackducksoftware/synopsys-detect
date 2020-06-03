@@ -920,6 +920,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#not-extractable-nuget-solution-info-main-exception-occurred-javaniofileinvalidpathexception" class="md-nav__link">
+    Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#symptom_7" class="md-nav__link">
+    Symptom
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#possible-cause_7" class="md-nav__link">
+    Possible cause
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solution_6" class="md-nav__link">
+    Solution
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -1727,6 +1761,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#not-extractable-nuget-solution-info-main-exception-occurred-javaniofileinvalidpathexception" class="md-nav__link">
+    Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#symptom_7" class="md-nav__link">
+    Symptom
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#possible-cause_7" class="md-nav__link">
+    Possible cause
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solution_6" class="md-nav__link">
+    Solution
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -1841,6 +1909,16 @@ or application.xml that are written for any application other than Synopsys Dete
 <li>Run <a href="https://docs.oracle.com/en/java/javase/11/tools/keytool.html">keytool</a> to install the Black Duck server certificate into the keystore in that Java home directory.</li>
 </ol>
 <p>Although not recommended, it is possible to disable the certificate check with the <a href="../../../properties/configuration/blackduck server/#trust-all-ssl-certificates-advanced">trust cert property</a>.</p>
+<h2 id="not-extractable-nuget-solution-info-main-exception-occurred-javaniofileinvalidpathexception">Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException<a class="headerlink" href="#not-extractable-nuget-solution-info-main-exception-occurred-javaniofileinvalidpathexception" title="Permanent link">#</a></h2>
+<h3 id="symptom_7">Symptom<a class="headerlink" href="#symptom_7" title="Permanent link">#</a></h3>
+<p>Running Synopsys Detect on a NuGet project on Windows, a message similar to the following appears in the Synopsys Detect log:</p>
+<pre><code>Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException: Illegal char &lt;:&gt; at index 2: C:\...
+</code></pre>
+
+<h3 id="possible-cause_7">Possible cause<a class="headerlink" href="#possible-cause_7" title="Permanent link">#</a></h3>
+<p>The value of $PATH contains a whitespace character after a semicolon and the path mentioned in the log message.</p>
+<h3 id="solution_6">Solution<a class="headerlink" href="#solution_6" title="Permanent link">#</a></h3>
+<p>Remove spaces immediately following semicolons in the value of $PATH.</p>
                 
                   
                 
