@@ -28,7 +28,7 @@ public class ArtifactoryConstants {
 
     public static final String GRADLE_INSPECTOR_REPO = "bds-integrations-release/com/blackducksoftware/integration/integration-gradle-inspector";
     public static final String GRADLE_INSPECTOR_PROPERTY = "GRADLE_INSPECTOR_LATEST_0";
-    public static final String GRADLE_INSPECTOR_MAVEN_REPO = "https://repo.blackducksoftware.com/artifactory/bds-integration-public-cache/";
+    public static final String GRADLE_INSPECTOR_MAVEN_REPO = ARTIFACTORY_URL + "bds-integration-public-cache/";
 
     private static final String NUGET_VERSION_SUFFIX = ".nupkg";
 
