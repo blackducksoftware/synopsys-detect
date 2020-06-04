@@ -51,12 +51,14 @@ public class LernaPackager {
     private final NpmLockfilePackager npmLockfileParser;
     private final NpmLockfileOptions npmLockfileOptions;
     private final YarnPackager yarnPackager;
+    private final LernaOptions lernaOptions;
 
-    public LernaPackager(FileFinder fileFinder, NpmLockfilePackager npmLockfileParser, NpmLockfileOptions npmLockfileOptions, YarnPackager yarnPackager) {
+    public LernaPackager(FileFinder fileFinder, NpmLockfilePackager npmLockfileParser, NpmLockfileOptions npmLockfileOptions, YarnPackager yarnPackager, LernaOptions lernaOptions) {
         this.fileFinder = fileFinder;
         this.npmLockfileParser = npmLockfileParser;
         this.npmLockfileOptions = npmLockfileOptions;
         this.yarnPackager = yarnPackager;
+        this.lernaOptions = lernaOptions;
     }
 
     public LernaResult generateLernaResult(File sourceDirectory, List<LernaPackage> lernaPackages) {
@@ -67,12 +69,19 @@ public class LernaPackager {
 
         List<CodeLocation> codeLocations = new ArrayList<>();
         for (LernaPackage lernaPackage : lernaPackages) {
-            logger.debug(String.format("Now extracting Lerna package %s:%s at %s.", lernaPackage.getName(), lernaPackage.getVersion(), lernaPackage.getLocation()));
+            String lernaPackageDetails = String.format("%s:%s at %s", lernaPackage.getName(), lernaPackage.getVersion(), lernaPackage.getLocation());
+
+            if (!lernaOptions.shouldIncludePrivatePackages() && lernaPackage.isPrivate()) {
+                logger.debug(String.format("Skipping extraction of private lerna package %s.", lernaPackageDetails));
+                continue;
+            }
+
+            logger.debug(String.format("Now extracting Lerna package %s.", lernaPackageDetails));
             File lernaPackageDirectory = new File(sourceDirectory.getParent(), lernaPackage.getLocation());
 
             LernaResult lernaResult = extractLernaPackage(sourceDirectory, lernaPackageDirectory);
             if (lernaResult.isSuccess()) {
-                logger.debug(String.format("Extraction completed successfully on %s:%s.", lernaPackage.getName(), lernaPackage.getLocation()));
+                logger.debug(String.format("Extraction completed successfully on %s.", lernaPackageDetails));
 
                 lernaResult.getCodeLocations().stream()
                     .map(codeLocation -> new CodeLocation(codeLocation.getDependencyGraph(), codeLocation.getExternalId().orElse(null), lernaPackageDirectory))
