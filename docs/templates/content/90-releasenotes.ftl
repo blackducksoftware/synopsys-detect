@@ -2,6 +2,7 @@
 
 ## Version 6.4.0
 ### New features
+* Added support for the Lerna package manager.
 
 ### Changed features
 Moved download location of ${solution_name} for the shell script from /tmp to ~/synopsys-detect/download.
