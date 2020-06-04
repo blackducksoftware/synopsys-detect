@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,10 +79,15 @@ public class ClangPackageManagerRunner {
         try {
             final List<String> fileSpecificGetOwnerArgs = new ArrayList<>(packageManagerInfo.getPkgMgrGetOwnerCmdArgs());
             fileSpecificGetOwnerArgs.add(dependencyFile.getAbsolutePath());
-            final ExecutableOutput queryPackageOutput = executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetOwnerArgs);
-            final String queryPackageCombinedOutput = queryPackageOutput.getStandardOutput() + File.separator + queryPackageOutput.getErrorOutput();
+            final ExecutableOutput queryPackageResult = executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetOwnerArgs);
+            final String queryPackageOutputToParse;
+            if (StringUtils.isNotBlank(queryPackageResult.getStandardOutput())) {
+                queryPackageOutputToParse = queryPackageResult.getStandardOutput();
+            } else {
+                queryPackageOutputToParse = queryPackageResult.getErrorOutput();
+            }
             final ClangPackageManagerResolver resolver = currentPackageManager.getPackageResolver();
-            final List<PackageDetails> packageDetails = resolver.resolvePackages(currentPackageManager.getPackageManagerInfo(), executableRunner, workingDirectory, queryPackageCombinedOutput);
+            final List<PackageDetails> packageDetails = resolver.resolvePackages(currentPackageManager.getPackageManagerInfo(), executableRunner, workingDirectory, queryPackageOutputToParse);
             dependencyDetails.addAll(packageDetails);
         } catch (final NotOwnedByAnyPkgException notOwnedException) {
             logger.debug(String.format("%s is not recognized by the linux package manager (%s)", dependencyFile.getAbsolutePath(), notOwnedException.getMessage()));
