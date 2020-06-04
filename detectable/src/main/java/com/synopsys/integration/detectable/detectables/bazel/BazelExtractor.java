@@ -61,7 +61,7 @@ public class BazelExtractor {
             final List<String> providedCqueryAdditionalOptions) {
         logger.debug("Bazel extraction:");
         try {
-            final WorkspaceRule ruleFromWorkspaceFile = WorkspaceRule.MAVEN_INSTALL; //bazelWorkspace.getDependencyRule();
+            final WorkspaceRule ruleFromWorkspaceFile = bazelWorkspace.getDependencyRule();
             final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget, providedCqueryAdditionalOptions);
             final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor);
