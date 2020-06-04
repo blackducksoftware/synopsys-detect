@@ -44,7 +44,6 @@ import com.synopsys.integration.util.NameVersion;
 
 public class FormattedOutputManager {
     private DetectorToolResult detectorToolResult = null;
-    //private BdioCodeLocationResult bdioCodeLocationResult = null;
     private Set<String> codeLocations = new HashSet<>();
     private NameVersion projectNameVersion = null;
     private final List<Status> statusSummaries = new ArrayList<>();
