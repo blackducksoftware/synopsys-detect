@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -45,12 +45,12 @@ import org.xml.sax.SAXException;
 
 import com.synopsys.integration.exception.IntegrationException;
 
-public class StepExecutorParseEachXml implements StepExecutor {
+public class IntermediateStepParseEachXml implements IntermediateStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final String xPathToElement;
     private final String targetAttributeName;
 
-    public StepExecutorParseEachXml(final String xPathToElement, final String targetAttributeName) {
+    public IntermediateStepParseEachXml(final String xPathToElement, final String targetAttributeName) {
         this.xPathToElement = xPathToElement;
         this.targetAttributeName = targetAttributeName;
     }

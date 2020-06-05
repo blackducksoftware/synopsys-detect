@@ -29,17 +29,17 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorSplitEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepSplitEach;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class StepExecutorSplitEachEachTest {
+public class IntermediateStepSplitEachEachTest {
 
     @Test
     public void test() throws IntegrationException {
-        final StepExecutor stepExecutorSplitEach = new StepExecutorSplitEach("\\s+");
+        final IntermediateStep intermediateStepSplitEach = new IntermediateStepSplitEach("\\s+");
         final List<String> input = Arrays.asList("@org_apache_commons_commons_io//jar:jar\n@com_google_guava_guava//jar:jar");
-        final List<String> output = stepExecutorSplitEach.process(input);
+        final List<String> output = intermediateStepSplitEach.process(input);
         assertEquals(2, output.size());
         assertEquals("@org_apache_commons_commons_io//jar:jar", output.get(0));
         assertEquals("@com_google_guava_guava//jar:jar", output.get(1));

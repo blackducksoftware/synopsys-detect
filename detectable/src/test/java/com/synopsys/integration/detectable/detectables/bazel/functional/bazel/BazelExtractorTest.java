@@ -48,9 +48,9 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelWorkspace;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelVariableSubstitutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BazelExtractorTest {
@@ -146,7 +146,7 @@ public class BazelExtractorTest {
         final BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
         final BazelVariableSubstitutor bazelVariableSubstitutor = Mockito.mock(BazelVariableSubstitutor.class);
         final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor);
-        final List<StepExecutor> steps = pipelines.get(WorkspaceRule.MAVEN_INSTALL);
+        final List<IntermediateStep> steps = pipelines.get(WorkspaceRule.MAVEN_INSTALL);
         final File workspaceDir = new File(".");
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();

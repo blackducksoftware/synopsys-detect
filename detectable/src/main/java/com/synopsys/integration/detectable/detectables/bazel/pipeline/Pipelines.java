@@ -29,40 +29,40 @@ import java.util.List;
 import java.util.Map;
 
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelVariableSubstitutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorReplaceInEach;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorExecuteBazelOnEach;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorFilter;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorParseEachXml;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorSplitEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepReplaceInEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepExecuteBazelOnEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepFilter;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseEachXml;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepSplitEach;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class Pipelines {
-    private final Map<WorkspaceRule, List<StepExecutor>> availablePipelines = new HashMap<>();
+    private final Map<WorkspaceRule, List<IntermediateStep>> availablePipelines = new HashMap<>();
 
     public Pipelines(final BazelCommandExecutor bazelCommandExecutor, final BazelVariableSubstitutor bazelVariableSubstitutor) {
-        final List<StepExecutor> mavenJarPipeline = new ArrayList<>();
-        mavenJarPipeline.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "filter('@.*:jar', deps(${detect.bazel.target}))")));
-        mavenJarPipeline.add(new StepExecutorSplitEach("\\s+"));
-        mavenJarPipeline.add(new StepExecutorReplaceInEach("^@", ""));
-        mavenJarPipeline.add(new StepExecutorReplaceInEach("//.*", ""));
-        mavenJarPipeline.add(new StepExecutorReplaceInEach("^", "//external:"));
-        mavenJarPipeline.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "kind(maven_jar, ${input.item})", "--output", "xml")));
-        mavenJarPipeline.add(new StepExecutorParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value"));
+        final List<IntermediateStep> mavenJarPipeline = new ArrayList<>();
+        mavenJarPipeline.add(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "filter('@.*:jar', deps(${detect.bazel.target}))")));
+        mavenJarPipeline.add(new IntermediateStepSplitEach("\\s+"));
+        mavenJarPipeline.add(new IntermediateStepReplaceInEach("^@", ""));
+        mavenJarPipeline.add(new IntermediateStepReplaceInEach("//.*", ""));
+        mavenJarPipeline.add(new IntermediateStepReplaceInEach("^", "//external:"));
+        mavenJarPipeline.add(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "kind(maven_jar, ${input.item})", "--output", "xml")));
+        mavenJarPipeline.add(new IntermediateStepParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value"));
         availablePipelines.put(WorkspaceRule.MAVEN_JAR, mavenJarPipeline);
 
-        final List<StepExecutor> mavenInstallPipeline = new ArrayList<>();
-        mavenInstallPipeline.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("cquery", "--noimplicit_deps", "${detect.bazel.cquery.options}", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")));
-        mavenInstallPipeline.add(new StepExecutorSplitEach("\n"));
-        mavenInstallPipeline.add(new StepExecutorFilter(".*maven_coordinates=.*"));
-        mavenInstallPipeline.add(new StepExecutorReplaceInEach(".*\"maven_coordinates=", ""));
-        mavenInstallPipeline.add(new StepExecutorReplaceInEach("\".*", ""));
+        final List<IntermediateStep> mavenInstallPipeline = new ArrayList<>();
+        mavenInstallPipeline.add(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("cquery", "--noimplicit_deps", "${detect.bazel.cquery.options}", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")));
+        mavenInstallPipeline.add(new IntermediateStepSplitEach("\n"));
+        mavenInstallPipeline.add(new IntermediateStepFilter(".*maven_coordinates=.*"));
+        mavenInstallPipeline.add(new IntermediateStepReplaceInEach(".*\"maven_coordinates=", ""));
+        mavenInstallPipeline.add(new IntermediateStepReplaceInEach("\".*", ""));
         availablePipelines.put(WorkspaceRule.MAVEN_INSTALL, mavenInstallPipeline);
     }
 
-    public List<StepExecutor> get(final WorkspaceRule bazelDependencyType) throws IntegrationException {
+    public List<IntermediateStep> get(final WorkspaceRule bazelDependencyType) throws IntegrationException {
         if (!availablePipelines.containsKey(bazelDependencyType)) {
             throw new IntegrationException(String.format("No pipeline found for dependency type %s", bazelDependencyType.getName()));
         }

@@ -36,9 +36,9 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelVariableSubstitutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class PipelineTest {
@@ -205,8 +205,8 @@ public class PipelineTest {
         final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor);
         System.out.printf("# maven_install steps: %d\n", pipelines.get(WorkspaceRule.MAVEN_INSTALL).size());
         List<String> intermediateResult = new ArrayList<>();
-        for (final StepExecutor stepExecutor : pipelines.get(WorkspaceRule.MAVEN_INSTALL)) {
-            intermediateResult = stepExecutor.process(intermediateResult);
+        for (final IntermediateStep intermediateStep : pipelines.get(WorkspaceRule.MAVEN_INSTALL)) {
+            intermediateResult = intermediateStep.process(intermediateResult);
         }
         return intermediateResult;
     }

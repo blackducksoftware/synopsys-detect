@@ -29,17 +29,17 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorReplaceInEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepReplaceInEach;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class StepExecutorReplaceInEachTest {
+public class IntermediateStepReplaceInEachTest {
 
     @Test
     public void testRemoveLeadingAtSign() throws IntegrationException {
         final List<String> input = Arrays.asList("@org_apache_commons_commons_io//jar:jar", "@com_google_guava_guava//jar:jar");
-        final StepExecutor stepExecutor = new StepExecutorReplaceInEach("^@", "");
-        final List<String> output = stepExecutor.process(input);
+        final IntermediateStep intermediateStep = new IntermediateStepReplaceInEach("^@", "");
+        final List<String> output = intermediateStep.process(input);
         assertEquals(2, output.size());
         assertEquals("org_apache_commons_commons_io//jar:jar", output.get(0));
         assertEquals("com_google_guava_guava//jar:jar", output.get(1));
@@ -48,8 +48,8 @@ public class StepExecutorReplaceInEachTest {
     @Test
     public void testRemoveTrailingJunk() throws IntegrationException {
         final List<String> input = Arrays.asList("org_apache_commons_commons_io//jar:jar", "com_google_guava_guava//jar:jar");
-        final StepExecutor stepExecutor = new StepExecutorReplaceInEach("//.*", "");
-        final List<String> output = stepExecutor.process(input);
+        final IntermediateStep intermediateStep = new IntermediateStepReplaceInEach("//.*", "");
+        final List<String> output = intermediateStep.process(input);
         assertEquals(2, output.size());
         assertEquals("org_apache_commons_commons_io", output.get(0));
         assertEquals("com_google_guava_guava", output.get(1));
@@ -58,8 +58,8 @@ public class StepExecutorReplaceInEachTest {
     @Test
     public void testInsertPrefix() throws IntegrationException {
         final List<String> input = Arrays.asList("org_apache_commons_commons_io", "com_google_guava_guava");
-        final StepExecutor stepExecutor = new StepExecutorReplaceInEach("^", "//external:");
-        final List<String> output = stepExecutor.process(input);
+        final IntermediateStep intermediateStep = new IntermediateStepReplaceInEach("^", "//external:");
+        final List<String> output = intermediateStep.process(input);
         assertEquals(2, output.size());
         assertEquals("//external:org_apache_commons_commons_io", output.get(0));
         assertEquals("//external:com_google_guava_guava", output.get(1));
@@ -68,11 +68,11 @@ public class StepExecutorReplaceInEachTest {
     @Test
     public void testMavenInstallBuildOutputExtractMavenCoordinates() throws IntegrationException {
         final List<String> input = Arrays.asList("  tags = [\"maven_coordinates=com.google.guava:guava:27.0-jre\"],");
-        final StepExecutor stepExecutorOne = new StepExecutorReplaceInEach("^\\s*tags\\s*\\s*=\\s*\\[\\s*\"maven_coordinates=", "");
-        final List<String> stepOneOutput = stepExecutorOne.process(input);
+        final IntermediateStep intermediateStepOne = new IntermediateStepReplaceInEach("^\\s*tags\\s*\\s*=\\s*\\[\\s*\"maven_coordinates=", "");
+        final List<String> stepOneOutput = intermediateStepOne.process(input);
 
-        final StepExecutor stepExecutorTwo = new StepExecutorReplaceInEach("\".*", "");
-        final List<String> output = stepExecutorTwo.process(stepOneOutput);
+        final IntermediateStep intermediateStepTwo = new IntermediateStepReplaceInEach("\".*", "");
+        final List<String> output = intermediateStepTwo.process(stepOneOutput);
 
         assertEquals(1, output.size());
         assertEquals("com.google.guava:guava:27.0-jre", output.get(0));
@@ -81,10 +81,10 @@ public class StepExecutorReplaceInEachTest {
     @Test
     public void testRemoveLeadingAtSignMixedTags() throws IntegrationException {
         final List<String> input = Arrays.asList("  tags = [\"__SOME_OTHER_TAG__\", \"maven_coordinates=com.company.thing:thing-common-client:2.100.0\"],", "  tags = [\"maven_coordinates=com.google.code.findbugs:jsr305:3.0.2\"],");
-        final StepExecutor stepExecutor1 = new StepExecutorReplaceInEach(".*\"maven_coordinates=", "");
-        final StepExecutor stepExecutor2 = new StepExecutorReplaceInEach("\".*", "");
-        final List<String> intermediate = stepExecutor1.process(input);
-        final List<String> output = stepExecutor2.process(intermediate);
+        final IntermediateStep intermediateStep1 = new IntermediateStepReplaceInEach(".*\"maven_coordinates=", "");
+        final IntermediateStep intermediateStep2 = new IntermediateStepReplaceInEach("\".*", "");
+        final List<String> intermediate = intermediateStep1.process(input);
+        final List<String> output = intermediateStep2.process(intermediate);
 
         assertEquals(2, output.size());
         assertEquals("com.company.thing:thing-common-client:2.100.0", output.get(0));

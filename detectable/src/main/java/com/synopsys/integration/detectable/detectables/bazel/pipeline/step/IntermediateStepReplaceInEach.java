@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,24 +28,25 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StepExecutorFilter implements StepExecutor {
+public class IntermediateStepReplaceInEach implements IntermediateStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final String regex;
+    final String targetPattern;
+    final String replacementString;
 
-    public StepExecutorFilter(final String regex) {
-        this.regex = regex;
+    public IntermediateStepReplaceInEach(final String targetPattern, final String replacementString) {
+        this.targetPattern = targetPattern;
+        this.replacementString = replacementString;
     }
 
     @Override
     public List<String> process(final List<String> input) {
-        final List<String> output = new ArrayList<>();
-        logger.trace(String.format("Filtering with regex %s", regex));
+        final List<String> results = new ArrayList<>();
+        logger.trace(String.format("Replace target pattern: %s; replacement string: %s", targetPattern, replacementString));
         for (final String inputItem : input) {
-            if (inputItem.matches(regex)) {
-                logger.trace(String.format("Filter keeping: %s", inputItem));
-                output.add(inputItem);
-            }
+            final String modifiedInputItem = inputItem.replaceAll(targetPattern, replacementString);
+            logger.trace(String.format("Edit changed %s to %s", inputItem, modifiedInputItem));
+            results.add(modifiedInputItem);
         }
-        return output;
+        return results;
     }
 }

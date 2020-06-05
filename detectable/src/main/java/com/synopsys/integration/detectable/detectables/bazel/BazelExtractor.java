@@ -39,9 +39,9 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -66,11 +66,11 @@ public class BazelExtractor {
             final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget, providedCqueryAdditionalOptions);
             final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor);
             final WorkspaceRule workspaceRule = workspaceRuleChooser.choose(ruleFromWorkspaceFile, providedBazelDependencyType);
-            final List<StepExecutor> pipeline = pipelines.get(workspaceRule);
+            final List<IntermediateStep> pipeline = pipelines.get(workspaceRule);
 
             // Execute pipeline steps (like linux cmd piping with '|'); each step processes the output of the previous step
             List<String> pipelineData = new ArrayList<>();
-            for (final StepExecutor pipelineStep : pipeline) {
+            for (final IntermediateStep pipelineStep : pipeline) {
                 pipelineData = pipelineStep.process(pipelineData);
             }
             // final pipelineData is a list of group:artifact:version strings

@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +28,12 @@ import java.util.Optional;
 
 import com.synopsys.integration.exception.IntegrationException;
 
-public class StepExecutorExecuteBazelOnEach implements StepExecutor {
+public class IntermediateStepExecuteBazelOnEach implements IntermediateStep {
     private final BazelCommandExecutor bazelCommandExecutor;
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
     private final List<String> bazelCommandArgs;
 
-    public StepExecutorExecuteBazelOnEach(final BazelCommandExecutor bazelCommandExecutor, final BazelVariableSubstitutor bazelVariableSubstitutor, final List<String> bazelCommandArgs) {
+    public IntermediateStepExecuteBazelOnEach(final BazelCommandExecutor bazelCommandExecutor, final BazelVariableSubstitutor bazelVariableSubstitutor, final List<String> bazelCommandArgs) {
         this.bazelCommandExecutor = bazelCommandExecutor;
         this.bazelVariableSubstitutor = bazelVariableSubstitutor;
         this.bazelCommandArgs = bazelCommandArgs;
