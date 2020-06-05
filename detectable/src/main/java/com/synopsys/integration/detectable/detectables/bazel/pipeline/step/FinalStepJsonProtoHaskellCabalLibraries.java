@@ -31,16 +31,21 @@ import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class FinalStepJsonProtoHaskellCabalLibrary implements FinalStep {
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import org.skyscreamer.jsonassert.JSONParser;
+
+public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Gson gson;
 
-    public FinalStepJsonProtoHaskellCabalLibrary(final Gson gson) {
+    public FinalStepJsonProtoHaskellCabalLibraries(final Gson gson) {
         this.gson = gson;
     }
 
     @Override
     public MutableDependencyGraph finish(final List<String> input) throws IntegrationException {
+        final JSONObject json = (JSONObject) JSONParser.parseJSON(input.get(0));
         return null;
     }
 }
