@@ -35,8 +35,8 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
+import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 
 public class PipInspectorExtractor {
     private final ExecutableRunner executableRunner;

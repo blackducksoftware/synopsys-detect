@@ -56,8 +56,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftR
 import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 
 public class DetectExecutableResolver
-    implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
-                   DockerResolver,
+    implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, DockerResolver,
                    DotNetResolver, GitResolver, SwiftResolver, GoResolver {
 
     private final SimpleExecutableResolver simpleExecutableResolver;

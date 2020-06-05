@@ -217,7 +217,9 @@ public class DetectDetectableFactory {
         return detectableFactory.createPodLockDetectable(environment);
     }
 
-    public PoetryDetectable createPoetryDetectable(final DetectableEnvironment environment) { return detectableFactory.createPoetryDetectable(environment); }
+    public PoetryDetectable createPoetryDetectable(final DetectableEnvironment environment) {
+        return detectableFactory.createPoetryDetectable(environment);
+    }
 
     public RebarDetectable createRebarDetectable(final DetectableEnvironment environment) {
         return detectableFactory.createRebarDetectable(environment, detectExecutableResolver);

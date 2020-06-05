@@ -49,7 +49,7 @@ import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 
 //this will cache the find result.
 public class SimpleExecutableResolver
-    implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, PoetryResolver, MavenResolver, NpmResolver, BazelResolver, JavaResolver,
+    implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, JavaResolver,
                    DotNetResolver,
                    DockerResolver, GitResolver, SwiftResolver, GoResolver {
 
@@ -134,9 +134,6 @@ public class SimpleExecutableResolver
     public File resolvePipenv() {
         return findCachedSystem("pipenv");
     }
-
-    @Override
-    public File resolvePoetry() { return findCachedSystem("poetry"); }
 
     @Override
     public File resolveMaven(final DetectableEnvironment environment) {

@@ -354,7 +354,9 @@ public class DetectableFactory {
         return new PodlockDetectable(environment, fileFinder, podlockExtractor());
     }
 
-    public PoetryDetectable createPoetryDetectable(final DetectableEnvironment environment) { return new PoetryDetectable(environment, fileFinder, poetryExtractor()); }
+    public PoetryDetectable createPoetryDetectable(final DetectableEnvironment environment) {
+        return new PoetryDetectable(environment, fileFinder, poetryExtractor());
+    }
 
     public RebarDetectable createRebarDetectable(final DetectableEnvironment environment, final Rebar3Resolver rebar3Resolver) {
         return new RebarDetectable(environment, fileFinder, rebar3Resolver, rebarExtractor());
@@ -602,7 +604,9 @@ public class DetectableFactory {
         return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser());
     }
 
-    private PoetryExtractor poetryExtractor() { return new PoetryExtractor(new PoetryLockParser()); }
+    private PoetryExtractor poetryExtractor() {
+        return new PoetryExtractor(new PoetryLockParser());
+    }
 
     private GemlockExtractor gemlockExtractor() {
         return new GemlockExtractor(externalIdFactory);
