@@ -20,13 +20,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
 import java.util.List;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStep;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
 
-public interface FinalStep {
-    MutableDependencyGraph finish(final List<String> input) throws IntegrationException;
+public class Pipeline {
+    private final List<IntermediateStep> intermediateSteps;
+    private final FinalStep finalStep;
+
+    public Pipeline(final List<IntermediateStep> intermediateSteps, final FinalStep finalStep) {
+        this.intermediateSteps = intermediateSteps;
+        this.finalStep = finalStep;
+    }
+
+    public List<IntermediateStep> getIntermediateSteps() {
+        return intermediateSteps;
+    }
+
+    public FinalStep getFinalStep() {
+        return finalStep;
+    }
 }
