@@ -54,7 +54,6 @@ public class PoetryExtractor {
     }
 
     private String getCargoLockAsString(File cargoLock, Charset encoding) throws IOException {
-        final List<String> goLockAsList = Files.readAllLines(cargoLock.toPath(), encoding);
-        return String.join(System.lineSeparator(), goLockAsList);
+        return FileUtils.readFileToString(cargoLock, encoding);
     }
 }
