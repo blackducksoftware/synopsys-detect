@@ -201,7 +201,7 @@ public class RunManager {
                 }
             }
             runResult.addDetectableToolResult(detectableToolResult);
-            eventSystem.publishEvent(Event.CodeLocationNamesCalculated, collectCodeLocationNames(detectableToolResult, codeLocationNameManager, directoryManager));
+            eventSystem.publishEvent(Event.CodeLocationNamesCalculated, createCodeLocationNames(detectableToolResult, codeLocationNameManager, directoryManager));
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
             logger.info("Docker actions finished.");
         } else {
@@ -216,7 +216,7 @@ public class RunManager {
                 eventSystem);
             final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
             runResult.addDetectableToolResult(detectableToolResult);
-            eventSystem.publishEvent(Event.CodeLocationNamesCalculated, collectCodeLocationNames(detectableToolResult, codeLocationNameManager, directoryManager));
+            eventSystem.publishEvent(Event.CodeLocationNamesCalculated, createCodeLocationNames(detectableToolResult, codeLocationNameManager, directoryManager));
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
             logger.info("Bazel actions finished.");
         } else {
@@ -414,7 +414,7 @@ public class RunManager {
         }
     }
 
-    private Set<String> collectCodeLocationNames(DetectableToolResult detectableToolResult, CodeLocationNameManager codeLocationNameManager, DirectoryManager directoryManager) {
+    private Set<String> createCodeLocationNames(DetectableToolResult detectableToolResult, CodeLocationNameManager codeLocationNameManager, DirectoryManager directoryManager) {
         if (detectableToolResult.getDetectToolProjectInfo().isPresent()) {
             NameVersion projectNameVersion = detectableToolResult.getDetectToolProjectInfo().get().getSuggestedNameVersion();
             return detectableToolResult.getDetectCodeLocations().stream()
