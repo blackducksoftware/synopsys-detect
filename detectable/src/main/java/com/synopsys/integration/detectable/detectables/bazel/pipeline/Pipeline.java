@@ -22,10 +22,13 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class Pipeline {
     private final List<IntermediateStep> intermediateSteps;
@@ -36,11 +39,13 @@ public class Pipeline {
         this.finalStep = finalStep;
     }
 
-    public List<IntermediateStep> getIntermediateSteps() {
-        return intermediateSteps;
-    }
-
-    public FinalStep getFinalStep() {
-        return finalStep;
+    public MutableDependencyGraph run() throws IntegrationException {
+        // Execute pipeline steps (like linux cmd piping with '|'); each step processes the output of the previous step
+        List<String> pipelineData = new ArrayList<>();
+        for (final IntermediateStep pipelineStep : intermediateSteps) {
+            pipelineData = pipelineStep.process(pipelineData);
+        }
+        final MutableDependencyGraph dependencyGraph = finalStep.finish(pipelineData);
+        return dependencyGraph;
     }
 }

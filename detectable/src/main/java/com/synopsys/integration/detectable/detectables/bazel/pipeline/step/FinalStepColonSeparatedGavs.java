@@ -20,24 +20,43 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
+
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.exception.IntegrationException;
 
-public class BazelDependencyParser {
+public class FinalStepColonSeparatedGavs implements FinalStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
 
-    public BazelDependencyParser(final ExternalIdFactory externalIdFactory) {
+    public FinalStepColonSeparatedGavs(final ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Dependency gavStringToDependency(final String artifactString, final String separatorRegex) {
+    @Override
+    public MutableDependencyGraph finish(final List<String> gavStrings) throws IntegrationException {
+        final MutableDependencyGraph dependencyGraph  = new MutableMapDependencyGraph();
+        for (String gavString : gavStrings) {
+            final Dependency artifactDependency = gavStringToDependency(gavString, ":");
+            try {
+                dependencyGraph.addChildToRoot(artifactDependency);
+            } catch (final Exception e) {
+                logger.error(String.format("Unable to create dependency from %s", gavString));
+            }
+        }
+        return dependencyGraph;
+    }
+
+    private Dependency gavStringToDependency(final String artifactString, final String separatorRegex) {
         final String[] gavParts = artifactString.split(separatorRegex);
         final String group = gavParts[0];
         final String artifact = gavParts[1];

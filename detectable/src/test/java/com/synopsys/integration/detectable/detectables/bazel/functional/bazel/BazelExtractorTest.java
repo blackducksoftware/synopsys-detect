@@ -41,11 +41,11 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectables.bazel.BazelDependencyParser;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.BazelProjectNameGenerator;
 import com.synopsys.integration.detectable.detectables.bazel.BazelWorkspace;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
@@ -59,7 +59,8 @@ public class BazelExtractorTest {
     public void testMavenJar() throws ExecutableRunnerException, IntegrationException {
         final BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
         final BazelVariableSubstitutor bazelVariableSubstitutor = Mockito.mock(BazelVariableSubstitutor.class);
-        final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor);
+        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        final Pipelines pipelines = new Pipelines(bazelCommandExecutor,  bazelVariableSubstitutor, externalIdFactory);
 
         final String commonsIoXml = "<?xml version=\"1.1\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
                                         + "<query version=\"2\">\n"
@@ -79,12 +80,11 @@ public class BazelExtractorTest {
 
         final File workspaceDir = new File(".");
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final BazelWorkspace bazelWorkspace = Mockito.mock(BazelWorkspace.class);
         Mockito.when(bazelWorkspace.getDependencyRule()).thenReturn(WorkspaceRule.MAVEN_JAR);
         final WorkspaceRuleChooser workspaceRuleChooser = Mockito.mock(WorkspaceRuleChooser.class);
         Mockito.when(workspaceRuleChooser.choose(Mockito.eq(WorkspaceRule.MAVEN_JAR), Mockito.isNull())).thenReturn(WorkspaceRule.MAVEN_JAR);
-        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, new BazelDependencyParser(externalIdFactory), workspaceRuleChooser);
+        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
         final File bazelExe = new File("/usr/bin/bazel");
 
         // bazel query 'filter("@.*:jar", deps(//:ProjectRunner))'
@@ -145,16 +145,17 @@ public class BazelExtractorTest {
 
         final BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
         final BazelVariableSubstitutor bazelVariableSubstitutor = Mockito.mock(BazelVariableSubstitutor.class);
-        final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor);
-        final List<IntermediateStep> steps = pipelines.get(WorkspaceRule.MAVEN_INSTALL);
+        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory);
+        // TODO why is this here but unused
+        final Pipeline steps = pipelines.get(WorkspaceRule.MAVEN_INSTALL);
         final File workspaceDir = new File(".");
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final BazelWorkspace bazelWorkspace = Mockito.mock(BazelWorkspace.class);
         Mockito.when(bazelWorkspace.getDependencyRule()).thenReturn(WorkspaceRule.MAVEN_INSTALL);
         final WorkspaceRuleChooser workspaceRuleChooser = Mockito.mock(WorkspaceRuleChooser.class);
         Mockito.when(workspaceRuleChooser.choose(Mockito.eq(WorkspaceRule.MAVEN_INSTALL), Mockito.isNull())).thenReturn(WorkspaceRule.MAVEN_INSTALL);
-        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, new BazelDependencyParser(externalIdFactory), workspaceRuleChooser);
+        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
         final File bazelExe = new File("/usr/bin/bazel");
 
         // bazel cquery --noimplicit_deps "kind(j.*import, deps(//:ProjectRunner))" --output build

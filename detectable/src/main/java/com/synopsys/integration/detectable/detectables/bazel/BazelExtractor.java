@@ -34,9 +34,11 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
@@ -46,13 +48,14 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.Bazel
 public class BazelExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
-    private final BazelDependencyParser bazelDependencyParser;
+    private final ExternalIdFactory externalIdFactory;
     private final WorkspaceRuleChooser workspaceRuleChooser;
 
     public BazelExtractor(final ExecutableRunner executableRunner,
-        final BazelDependencyParser bazelDependencyParser, final WorkspaceRuleChooser workspaceRuleChooser) {
+        final ExternalIdFactory externalIdFactory,
+        final WorkspaceRuleChooser workspaceRuleChooser) {
         this.executableRunner = executableRunner;
-        this.bazelDependencyParser = bazelDependencyParser;
+        this.externalIdFactory = externalIdFactory;
         this.workspaceRuleChooser = workspaceRuleChooser;
     }
 
@@ -64,17 +67,10 @@ public class BazelExtractor {
             final WorkspaceRule ruleFromWorkspaceFile = bazelWorkspace.getDependencyRule();
             final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
             final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor(bazelTarget, providedCqueryAdditionalOptions);
-            final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor);
+            final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory);
             final WorkspaceRule workspaceRule = workspaceRuleChooser.choose(ruleFromWorkspaceFile, providedBazelDependencyType);
-            final List<IntermediateStep> pipeline = pipelines.get(workspaceRule);
-
-            // Execute pipeline steps (like linux cmd piping with '|'); each step processes the output of the previous step
-            List<String> pipelineData = new ArrayList<>();
-            for (final IntermediateStep pipelineStep : pipeline) {
-                pipelineData = pipelineStep.process(pipelineData);
-            }
-            // final pipelineData is a list of group:artifact:version strings
-            final MutableDependencyGraph dependencyGraph = gavStringsToDependencyGraph(pipelineData);
+            final Pipeline pipeline = pipelines.get(workspaceRule);
+            final MutableDependencyGraph dependencyGraph = pipeline.run();
             final CodeLocation codeLocation = new CodeLocation(dependencyGraph);
             final List<CodeLocation> codeLocations = Arrays.asList(codeLocation);
             final String projectName = bazelProjectNameGenerator.generateFromBazelTarget(bazelTarget);
@@ -87,19 +83,5 @@ public class BazelExtractor {
             logger.debug(msg, e);
             return new Extraction.Builder().failure(msg).build();
         }
-    }
-
-    @NotNull
-    private MutableDependencyGraph gavStringsToDependencyGraph(final List<String> gavStrings) {
-        final MutableDependencyGraph dependencyGraph  = new MutableMapDependencyGraph();
-        for (String gavString : gavStrings) {
-            final Dependency artifactDependency = bazelDependencyParser.gavStringToDependency(gavString, ":");
-            try {
-                dependencyGraph.addChildToRoot(artifactDependency);
-            } catch (final Exception e) {
-                logger.error(String.format("Unable to create dependency from %s", gavString));
-            }
-        }
-        return dependencyGraph;
     }
 }

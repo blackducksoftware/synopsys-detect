@@ -43,9 +43,9 @@ public class PipelineBuilder {
         return this;
     }
 
-    public Pipeline build() throws IntegrationException {
+    public Pipeline build() {
         if (finalStep == null) {
-            throw new IntegrationException("A final step is required");
+            throw new UnsupportedOperationException("A final step is required");
         }
         return new Pipeline(intermediateSteps, finalStep);
     }
