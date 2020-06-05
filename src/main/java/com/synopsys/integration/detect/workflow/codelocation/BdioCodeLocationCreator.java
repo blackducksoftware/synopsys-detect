@@ -69,7 +69,7 @@ public class BdioCodeLocationCreator {
 
         final BdioCodeLocationResult result = new BdioCodeLocationResult(bdioCodeLocations, failedBomToolGroups, codeLocationsAndNames);
         eventSystem.publishEvent(Event.CodeLocationsCalculated, result);
-        eventSystem.publishEvent(Event.CodeLocationNamesCalculated, result.getCodeLocationNames().values());
+        eventSystem.publishEvent(Event.CodeLocationNamesAdded, result.getCodeLocationNames().values());
         return result;
     }
 

@@ -58,7 +58,7 @@ public class Event {
     public static final EventType<DetectorEvaluation> DiscoveryStarted = new EventType<>(DetectorEvaluation.class);
     public static final EventType<DetectorEvaluation> DiscoveryEnded = new EventType<>(DetectorEvaluation.class);
     public static final EventType<BdioCodeLocationResult> CodeLocationsCalculated = new EventType<>(BdioCodeLocationResult.class);
-    public static final EventType<Collection<String>> CodeLocationNamesCalculated = new EventType(Collection.class);
+    public static final EventType<Collection<String>> CodeLocationNamesAdded = new EventType(Collection.class);
     public static final EventType<ExitCodeRequest> ExitCode = new EventType<>(ExitCodeRequest.class);
     public static final EventType<Status> StatusSummary = new EventType<>(Status.class);
     public static final EventType<DetectIssue> Issue = new EventType<>(DetectIssue.class);

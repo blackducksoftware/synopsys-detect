@@ -24,7 +24,6 @@ package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
@@ -32,7 +31,7 @@ import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 
-public class CodeLocationWaitData {
+public class CodeLocationWaitController {
     private NotificationTaskRange notificationRange;
     private Set<String> codeLocationNames = new HashSet<>();
     private int expectedNotificationCount = 0;
@@ -42,7 +41,7 @@ public class CodeLocationWaitData {
 
         Set<String> codeLocationNames = codeLocationCreationData.getOutput().getSuccessfulCodeLocationNames();
         this.codeLocationNames.addAll(codeLocationNames);
-        eventSystem.publishEvent(Event.CodeLocationNamesCalculated, codeLocationNames);
+        eventSystem.publishEvent(Event.CodeLocationNamesAdded, codeLocationNames);
 
         if (null == notificationRange) {
             notificationRange = codeLocationCreationData.getNotificationTaskRange();

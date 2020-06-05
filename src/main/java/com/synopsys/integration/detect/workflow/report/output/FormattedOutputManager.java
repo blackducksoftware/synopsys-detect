@@ -32,7 +32,6 @@ import java.util.Set;
 import com.synopsys.integration.configuration.util.Bds;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
-import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
@@ -55,7 +54,7 @@ public class FormattedOutputManager {
         eventSystem.registerListener(Event.StatusSummary, this::addStatusSummary);
         eventSystem.registerListener(Event.Issue, this::addIssue);
         eventSystem.registerListener(Event.ResultProduced, this::addDetectResult);
-        eventSystem.registerListener(Event.CodeLocationNamesCalculated, this::codeLocationsCalculated);
+        eventSystem.registerListener(Event.CodeLocationNamesAdded, this::codeLocationsCalculated);
         eventSystem.registerListener(Event.ProjectNameVersionChosen, this::projectNameVersionChosen);
     }
 
