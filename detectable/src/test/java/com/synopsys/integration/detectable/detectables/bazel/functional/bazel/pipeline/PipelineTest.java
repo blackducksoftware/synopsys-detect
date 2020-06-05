@@ -204,9 +204,17 @@ public class PipelineTest {
 
         final List<String> userProvidedCqueryAdditionalOptions = null;
 
-        //        final List<String> results = doTest(STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, CQUERY_OUTPUT_MIXED_TAGS_REVERSED_ORDER);
-        //        assertEquals(1, results.size());
-        //        assertEquals("com.company.thing:thing-common-client:2.100.0", results.get(0));
+        final MutableDependencyGraph dependencyGraph = doTest(STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, CQUERY_OUTPUT_MIXED_TAGS_REVERSED_ORDER);
+        assertEquals(1, dependencyGraph.getRootDependencies().size());
+        int foundCount = 0;
+        for (final Dependency dependency : dependencyGraph.getRootDependencies()) {
+            if ("com.company.thing".equals(dependency.getExternalId().getGroup()) &&
+                    "thing-common-client".equals(dependency.getExternalId().getName()) &&
+                    "2.100.0".equals(dependency.getExternalId().getVersion())) {
+                foundCount++;
+            }
+        }
+        assertEquals(1, foundCount);
     }
 
     @Test
@@ -216,10 +224,22 @@ public class PipelineTest {
         final List<String> userProvidedCqueryAdditionalOptions = Arrays.asList("--option1=a", "--option2=b");
         final List<String> expectedBazelCommandArgs = Arrays.asList("cquery", "--noimplicit_deps", "--option1=a", "--option2=b", "kind(j.*import, deps(/:testTarget))", "--output", "build");
 
-        //        List<String> results = doTest(expectedBazelCommandArgs, userProvidedCqueryAdditionalOptions, CQUERY_OUTPUT_SIMPLE);
-        //        assertEquals(8, results.size());
-        //        assertEquals("com.google.guava:guava:27.0-jre", results.get(0));
-        //        assertEquals("com.google.code.findbugs:jsr305:3.0.2", results.get(7));
+        final MutableDependencyGraph dependencyGraph = doTest(expectedBazelCommandArgs, userProvidedCqueryAdditionalOptions, CQUERY_OUTPUT_SIMPLE);
+        assertEquals(8, dependencyGraph.getRootDependencies().size());
+        int foundCount = 0;
+        for (final Dependency dependency : dependencyGraph.getRootDependencies()) {
+            if ("com.google.guava".equals(dependency.getExternalId().getGroup()) &&
+                    "guava".equals(dependency.getExternalId().getName()) &&
+                    "27.0-jre".equals(dependency.getExternalId().getVersion())) {
+                foundCount++;
+            }
+            if ("com.google.code.findbugs".equals(dependency.getExternalId().getGroup()) &&
+                    "jsr305".equals(dependency.getExternalId().getName()) &&
+                    "3.0.2".equals(dependency.getExternalId().getVersion())) {
+                foundCount++;
+            }
+        }
+        assertEquals(2, foundCount);
     }
 
     private MutableDependencyGraph doTest(final List<String> expectedBazelCommandArgs, final List<String> userProvidedCqueryAdditionalOptions, final String input) throws IntegrationException {

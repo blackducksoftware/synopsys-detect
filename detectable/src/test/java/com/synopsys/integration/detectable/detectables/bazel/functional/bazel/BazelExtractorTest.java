@@ -147,8 +147,6 @@ public class BazelExtractorTest {
         final BazelVariableSubstitutor bazelVariableSubstitutor = Mockito.mock(BazelVariableSubstitutor.class);
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory);
-        // TODO why is this here but unused
-        final Pipeline steps = pipelines.get(WorkspaceRule.MAVEN_INSTALL);
         final File workspaceDir = new File(".");
         final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         final BazelWorkspace bazelWorkspace = Mockito.mock(BazelWorkspace.class);
