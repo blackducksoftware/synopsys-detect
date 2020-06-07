@@ -28,12 +28,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.exception.IntegrationException;
 
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
-import org.skyscreamer.jsonassert.JSONParser;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -45,7 +46,17 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
 
     @Override
     public MutableDependencyGraph finish(final List<String> input) throws IntegrationException {
-        final JSONObject json = (JSONObject) JSONParser.parseJSON(input.get(0));
+        final JsonElement resultsElement = JsonParser.parseString(input.get(0));
+        final JsonObject resultsObject = resultsElement.getAsJsonObject();
+        final JsonElement resultsMember = resultsObject.get("results");
+        final JsonArray targets = resultsMember.getAsJsonArray();
+        logger.info(String.format("Number of targets: %d", targets.size()));
+        final JsonElement firstTargetElement = targets.get(0);
+        final JsonObject firstTargetObject = firstTargetElement.getAsJsonObject();
+        final JsonElement firstTargetElementSub = firstTargetObject.get("target");
+        final JsonObject firstTargetObjectSub = firstTargetElementSub.getAsJsonObject();
+        logger.info(String.format("firstTargetType: %s", firstTargetObjectSub.get("type").toString()));
+
         return null;
     }
 }
