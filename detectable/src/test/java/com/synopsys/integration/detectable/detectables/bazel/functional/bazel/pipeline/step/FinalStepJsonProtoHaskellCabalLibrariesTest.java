@@ -25,11 +25,10 @@ public class FinalStepJsonProtoHaskellCabalLibrariesTest {
     public void testStep() throws IntegrationException, IOException {
         final File jsonProtoFile = new File("src/test/resources/detectables/functional/bazel/jsonProtoForHaskellCabalLibraries.txt");
         final String jsonProtoHaskellCabalLibrary = FileUtils.readFileToString(jsonProtoFile, StandardCharsets.UTF_8);
-        final FinalStepJsonProtoHaskellCabalLibraries step = new FinalStepJsonProtoHaskellCabalLibraries(new Gson());
+        final FinalStepJsonProtoHaskellCabalLibraries step = new FinalStepJsonProtoHaskellCabalLibraries();
         final List<String> input = new ArrayList<>(1);
         input.add(jsonProtoHaskellCabalLibrary);
         final MutableDependencyGraph graph = step.finish(input);
-        // TODO Finish me!
         assertEquals(5, graph.getRootDependencies().size());
         boolean foundTargetComp = false;
         for (final Dependency dep : graph.getRootDependencies()) {
@@ -43,7 +42,7 @@ public class FinalStepJsonProtoHaskellCabalLibrariesTest {
 
     @Test
     public void testDependencyGeneration() {
-        final FinalStepJsonProtoHaskellCabalLibraries step = new FinalStepJsonProtoHaskellCabalLibraries(new Gson());
+        final FinalStepJsonProtoHaskellCabalLibraries step = new FinalStepJsonProtoHaskellCabalLibraries();
         final Dependency dep = step.haskageCompNameVersionToDependency("testComp", "testVersion");
         System.out.printf("dep externalId: %s\n", dep.getExternalId());
         assertEquals("hackage", dep.getExternalId().getForge().getName());
