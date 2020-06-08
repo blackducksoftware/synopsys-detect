@@ -7,6 +7,9 @@
 * Eliminated any need for the ${blackduck_product_name} Global Code Scanner overall role.
 * The CLANG detector collects any dependency files not recognized by the Linux package manager that reside outside the source directory (the directory containing the compile_commands.json file),
 and writes them to the status.json file.
+* Detect now supports projects managed by the Poetry package manager.
+* Added the property [detect.blackduck.signature.scanner.copyright.search](../properties/configuration/signature scanner/#signature-scanner-copyright-search-advanced).
+* Detect now supports projects managed by the Cargo package manager.
 
 ### Resolved issues
 * (IDETECT-2034) Resolved an issue that would cause a NullPointerException when ${solution_name}'s initial attempt at generating a code location name produced a code location name greater than 250 characters and either code location prefix or code location suffix is not set.
@@ -16,8 +19,6 @@ and writes them to the status.json file.
 * The Yarn detector now extracts project information from package.json files. Git is no longer the default supplier of project information for Yarn projects.
 * Added Yarn Detector support for dependencies that are missing a fuzzy version in a lockfile dependency declaration.
 * ${solution_name} logs policy violations when it is configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities).
-* Added the property [detect.blackduck.signature.scanner.copyright.search](../properties/configuration/signature scanner/#signature-scanner-copyright-search-advanced).
-* Detect now supports projects managed by the Cargo package manager.
 
 ### Changed features
 * Users can [upload source](../properties/configuration/signature scanner/#upload-source-mode) files when [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is enabled regardless of whether [snippet matching](../properties/configuration/signature scanner/#snippet-matching) has been enabled.
