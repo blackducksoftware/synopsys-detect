@@ -24,10 +24,12 @@ package com.synopsys.integration.detectable.detectables.clang;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,32 +72,46 @@ public class ClangExtractor {
             final PackageDetailsResult results = packageManagerRunner.getAllPackages(currentPackageManager, sourceDirectory, executableRunner, dependencyFileDetails);
 
             logger.trace("Found : " + results.getFoundPackages() + " packages.");
-            logger.trace("Found : " + results.getFailedDependencyFiles() + " non-package files.");
+            logger.trace("Found : " + results.getUnRecognizedDependencyFiles() + " non-package files.");
 
             final List<Forge> packageForges = currentPackageManager.getPackageManagerInfo().getForges();
             final CodeLocation codeLocation = clangPackageDetailsTransformer.toCodeLocation(packageForges, results.getFoundPackages());
 
-            logSummary(results.getFailedDependencyFiles(), sourceDirectory);
+            logFileCollection("Unrecognized dependency files (all)", results.getUnRecognizedDependencyFiles());
+            final List<File> unrecognizedIncludeFiles = results.getUnRecognizedDependencyFiles().stream()
+                                                            .filter(file -> !isFileUnderDir(sourceDirectory, file))
+                                                            .collect(Collectors.toList());
+            logFileCollection(String.format("Unrecognized dependency files that are outside the compile_commands.json directory (%s) and will be collected", sourceDirectory), unrecognizedIncludeFiles);
 
-            return new Extraction.Builder().success(codeLocation).build();
+            return new Extraction.Builder()
+                       .unrecognizedPaths(unrecognizedIncludeFiles)
+                       .success(codeLocation).build();
         } catch (final Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    private void logSummary(final Set<File> failedDependencyFiles, final File sourceDirectory) {
-        logger.debug("Dependency files outside the build directory that were not recognized by the package manager:");
-        for (final File failedDependencyFile : failedDependencyFiles) {
-            try {
-                if (FileUtils.directoryContains(sourceDirectory, failedDependencyFile)) {
-                    logger.debug(String.format("\t%s is not managed, but it's in the source.dir, ignoring.", failedDependencyFile.getAbsolutePath()));
-                } else {
-                    logger.debug(String.format("\t%s", failedDependencyFile.getAbsolutePath()));
-                }
-            } catch (final IOException e) {
-                logger.debug(String.format("%s may or may not be in the source dir, failed to check.", failedDependencyFile.getAbsolutePath()));
-                logger.debug(String.format("\t%s", failedDependencyFile.getAbsolutePath()));
+    public boolean isFileUnderDir(final File dir, final File file) {
+        try {
+            final String dirPath = dir.getCanonicalPath();
+            final String filePath = file.getCanonicalPath();
+            if (filePath.startsWith(dirPath)) {
+                return true;
             }
+            return false;
+        } catch (final IOException e) {
+            logger.warn(String.format("Error getting canonical path for either %s or %s", dir.getAbsolutePath(), file.getAbsolutePath()));
+            return false;
+        }
+    }
+
+    private void logFileCollection(final String description, Collection<File> files) {
+        if (files == null) {
+            files = new ArrayList<>(0);
+        }
+        logger.debug(String.format("%s (%d files):", description, files.size()));
+        for (final File file : files) {
+            logger.debug(String.format("\t%s", file.getAbsolutePath()));
         }
     }
 }

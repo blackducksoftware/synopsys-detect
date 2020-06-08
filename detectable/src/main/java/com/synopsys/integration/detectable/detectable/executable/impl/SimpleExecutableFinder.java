@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.misc.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.util.OperatingSystemType;

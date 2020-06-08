@@ -1,5 +1,5 @@
 /**
- * configuration
+ * synopsys-detect
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,30 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.source;
+package com.synopsys.integration.detect.workflow.status;
 
-import java.util.Set;
+import java.io.File;
+import java.util.List;
 
-import org.antlr.v4.runtime.misc.NotNull;
-import org.jetbrains.annotations.Nullable;
+public class UnrecognizedPaths {
+    private final String group;
+    private final List<File> messages;
 
-// IMPORTANT
-// A property source is responsible for responding with keys in the normalized form "example.key"
-// It must respond to well formed keys in the normalized form "example.key"
-// Use KeyUtils if you have keys from unknown sources to ensure consistent key format.
-public interface PropertySource {
-    @NotNull
-    Boolean hasKey(String key);
+    public UnrecognizedPaths(final String group, final List<File> messages) {
+        this.group = group;
+        this.messages = messages;
+    }
 
-    @NotNull
-    Set<String> getKeys();
+    public String getGroup() {
+        return group;
+    }
 
-    @Nullable
-    String getValue(String key);
-
-    @Nullable
-    String getOrigin(String key);
-
-    @NotNull
-    String getName();
+    public List<File> getPaths() {
+        return messages;
+    }
 }

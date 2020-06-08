@@ -26,7 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.util.Assert;
 
 // An enum that can be the given ENUM or can be STRING

@@ -37,13 +37,14 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Clan
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPackageManagerResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgVersionResolver;
+import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.NotOwnedByAnyPkgException;
 
 public class DpkgPackageManagerTest {
 
     //TODO: Split into 2 tests - one for VersionResolution and one for FullResolution
 
     @Test
-    public void test() throws ExecutableRunnerException {
+    public void test() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
         StringBuilder sb = new StringBuilder();
         sb.append("garbage\n");
         sb.append("nonsense\n");
@@ -91,7 +92,7 @@ public class DpkgPackageManagerTest {
     }
 
     @Test
-    public void testEpoch() throws ExecutableRunnerException {
+    public void testEpoch() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
 
         StringBuilder sb = new StringBuilder();
         sb.append("garbage\n");

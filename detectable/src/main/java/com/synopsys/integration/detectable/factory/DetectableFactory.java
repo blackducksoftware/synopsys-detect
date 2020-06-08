@@ -169,13 +169,16 @@ import com.synopsys.integration.detectable.detectables.pear.transform.PearDepend
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorExtractor;
+import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipenvExtractor;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipEnvJsonGraphParser;
-import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvTransformer;
+import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
+import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryExtractor;
+import com.synopsys.integration.detectable.detectables.pip.poetry.parser.PoetryLockParser;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarExtractor;
 import com.synopsys.integration.detectable.detectables.rebar.parse.Rebar3TreeParser;
@@ -355,6 +358,10 @@ public class DetectableFactory {
 
     public PodlockDetectable createPodLockDetectable(final DetectableEnvironment environment) {
         return new PodlockDetectable(environment, fileFinder, podlockExtractor());
+    }
+
+    public PoetryDetectable createPoetryDetectable(final DetectableEnvironment environment) {
+        return new PoetryDetectable(environment, fileFinder, poetryExtractor());
     }
 
     public RebarDetectable createRebarDetectable(final DetectableEnvironment environment, final Rebar3Resolver rebar3Resolver) {
@@ -604,6 +611,10 @@ public class DetectableFactory {
 
     private PipInspectorExtractor pipInspectorExtractor() {
         return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser());
+    }
+
+    private PoetryExtractor poetryExtractor() {
+        return new PoetryExtractor(new PoetryLockParser());
     }
 
     private GemlockExtractor gemlockExtractor() {
