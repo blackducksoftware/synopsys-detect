@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.help.json;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.antlr.v4.runtime.misc.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 class HelpJsonOption {
     private String propertyName = "";
