@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,49 +43,67 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
+    private static final String FORGE_NAME = "hackage";
+    private static final String FORGE_SEPARATOR = "/";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Forge hackageForge = new Forge(FORGE_SEPARATOR, FORGE_NAME);
 
     @Override
     public MutableDependencyGraph finish(final List<String> input) throws IntegrationException {
+        final String jsonString = extractJsonString(input);
+        final JsonArray resultsArray = parseResultsJson(jsonString);
         final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-
-        final JsonElement protoElement = JsonParser.parseString(input.get(0));
-        final JsonObject protoObject = protoElement.getAsJsonObject();
-        final JsonElement resultsElement = protoObject.get("results");
-        final JsonArray resultsArray = resultsElement.getAsJsonArray();
-        logger.debug(String.format("Number of resultsArray: %d", resultsArray.size()));
         for (final JsonElement resultsArrayMemberElement : resultsArray) {
-            final JsonObject resultsArrayMemberObject = resultsArrayMemberElement.getAsJsonObject();
-            final JsonElement targetElement = resultsArrayMemberObject.get("target");
-            final JsonObject targetObject = targetElement.getAsJsonObject();
-            logger.debug(String.format("targetType: %s", targetObject.get("type").toString()));
-            final JsonElement targetTypeElement = targetObject.get("type");
-            final String targetTypeValue = targetTypeElement.getAsString();
-            if (!"RULE".equals(targetTypeValue)) {
-                logger.debug(String.format("This is not a rule; skipping it. (It's a %s)", targetTypeValue));
-                continue;
+            final Optional<JsonObject> ruleObject = extractHaskellCabalLibraryRule(resultsArrayMemberElement);
+            if (ruleObject.isPresent()) {
+                addDependencyToGraph(dependencyGraph, ruleObject.get());
             }
-            final JsonElement ruleElement = targetObject.get("rule");
-            final JsonObject ruleObject = ruleElement.getAsJsonObject();
-            logger.debug(String.format("ruleClass: %s", ruleObject.get("ruleClass").toString()));
-            final JsonElement ruleClassElement = ruleObject.get("ruleClass");
-            final String ruleClassValue = ruleClassElement.getAsString();
-            if (!"haskell_cabal_library".equals(ruleClassValue)) {
-                logger.debug(String.format("This is not a haskell_cabal_library rule; skipping it. (It's a %s rule)", ruleClassValue));
-                continue;
-            }
-            addDependencyToGraph(dependencyGraph, ruleObject);
-
         }
         return dependencyGraph;
     }
 
-    public Dependency haskageCompNameVersionToDependency(final String compName, final String compVersion) {
-        final Forge hackageForge = new Forge("/", "hackage");
+    private String extractJsonString(final List<String> input) throws IntegrationException {
+        if (input.size() != 1) {
+            throw new IntegrationException(String.format("Input size is %d; expected 1", input.size()));
+        }
+        return input.get(0);
+    }
+
+    private JsonArray parseResultsJson(final String jsonString) {
+        final JsonElement protoElement = JsonParser.parseString(jsonString);
+        final JsonObject protoObject = protoElement.getAsJsonObject();
+        final JsonElement resultsElement = protoObject.get("results");
+        return resultsElement.getAsJsonArray();
+    }
+
+    private Dependency haskageCompNameVersionToDependency(final String compName, final String compVersion) {
         final ExternalId externalId = (new ExternalIdFactory()).createNameVersionExternalId(hackageForge, compName, compVersion);
         externalId.createBdioId(); // Validity check; throws IllegalStateException if invalid
         final Dependency artifactDependency = new Dependency(compName, compVersion, externalId);
         return artifactDependency;
+    }
+
+    private Optional<JsonObject> extractHaskellCabalLibraryRule(final JsonElement resultsArrayMemberElement) {
+        final JsonObject resultsArrayMemberObject = resultsArrayMemberElement.getAsJsonObject();
+        final JsonElement targetElement = resultsArrayMemberObject.get("target");
+        final JsonObject targetObject = targetElement.getAsJsonObject();
+        logger.debug(String.format("targetType: %s", targetObject.get("type").toString()));
+        final JsonElement targetTypeElement = targetObject.get("type");
+        final String targetTypeValue = targetTypeElement.getAsString();
+        if (!"RULE".equals(targetTypeValue)) {
+            logger.debug(String.format("This is not a rule; skipping it. (It's a %s)", targetTypeValue));
+            return Optional.empty();
+        }
+        final JsonElement ruleElement = targetObject.get("rule");
+        final JsonObject ruleObject = ruleElement.getAsJsonObject();
+        logger.debug(String.format("ruleClass: %s", ruleObject.get("ruleClass").toString()));
+        final JsonElement ruleClassElement = ruleObject.get("ruleClass");
+        final String ruleClassValue = ruleClassElement.getAsString();
+        if (!"haskell_cabal_library".equals(ruleClassValue)) {
+            logger.debug(String.format("This is not a haskell_cabal_library rule; skipping it. (It's a %s rule)", ruleClassValue));
+            return Optional.empty();
+        }
+        return Optional.of(ruleObject);
     }
 
     private void addDependencyToGraph(final MutableDependencyGraph dependencyGraph, final JsonObject ruleObject) throws IntegrationException {

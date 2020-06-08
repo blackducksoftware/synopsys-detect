@@ -33,23 +33,16 @@ public class FinalStepJsonProtoHaskellCabalLibrariesTest {
         boolean foundTargetComp = false;
         for (final Dependency dep : graph.getRootDependencies()) {
             if ("colour".equals(dep.getExternalId().getName())) {
+                assertEquals("hackage", dep.getExternalId().getForge().getName());
+                assertEquals("/", dep.getExternalId().getForge().getSeparator());
+                assertEquals("colour", dep.getExternalId().getName());
+                assertEquals("2.3.5", dep.getExternalId().getVersion());
+                assertTrue(StringUtils.isBlank(dep.getExternalId().getGroup()));
+                assertTrue(StringUtils.isBlank(dep.getExternalId().getArchitecture()));
                 foundTargetComp = true;
                 break;
             }
         }
         assertTrue(foundTargetComp);
-    }
-
-    @Test
-    public void testDependencyGeneration() {
-        final FinalStepJsonProtoHaskellCabalLibraries step = new FinalStepJsonProtoHaskellCabalLibraries();
-        final Dependency dep = step.haskageCompNameVersionToDependency("testComp", "testVersion");
-        System.out.printf("dep externalId: %s\n", dep.getExternalId());
-        assertEquals("hackage", dep.getExternalId().getForge().getName());
-        assertEquals("/", dep.getExternalId().getForge().getSeparator());
-        assertEquals("testComp", dep.getExternalId().getName());
-        assertEquals("testVersion", dep.getExternalId().getVersion());
-        assertTrue(StringUtils.isBlank(dep.getExternalId().getGroup()));
-        assertTrue(StringUtils.isBlank(dep.getExternalId().getArchitecture()));
     }
 }
