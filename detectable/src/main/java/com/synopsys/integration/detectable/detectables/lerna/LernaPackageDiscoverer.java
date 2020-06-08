@@ -26,6 +26,8 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -48,7 +50,10 @@ public class LernaPackageDiscoverer {
         String lernaLsOutput = lernaLsExecutableOutput.getStandardOutput();
 
         Type lernaPackageListType = new TypeToken<ArrayList<LernaPackage>>() {}.getType();
+        List<LernaPackage> lernaPackages = gson.fromJson(lernaLsOutput, lernaPackageListType);
 
-        return gson.fromJson(lernaLsOutput, lernaPackageListType);
+        return lernaPackages.stream()
+                   .filter(Objects::nonNull)
+                   .collect(Collectors.toList());
     }
 }
