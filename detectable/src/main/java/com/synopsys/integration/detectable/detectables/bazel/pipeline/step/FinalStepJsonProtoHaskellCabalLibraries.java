@@ -31,6 +31,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.exception.IntegrationException;
 
 import com.google.gson.JsonObject;
@@ -46,6 +51,8 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
 
     @Override
     public MutableDependencyGraph finish(final List<String> input) throws IntegrationException {
+        final MutableDependencyGraph dependencyGraph  = new MutableMapDependencyGraph();
+
         final JsonElement resultsElement = JsonParser.parseString(input.get(0));
         final JsonObject resultsObject = resultsElement.getAsJsonObject();
         final JsonElement resultsMember = resultsObject.get("results");
@@ -74,6 +81,8 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
             }
             final JsonElement attributeElement = ruleObject.get("attribute");
             final JsonArray attributeArray = attributeElement.getAsJsonArray();
+            String dependencyNameValue = null;
+            String dependencyVersionValue = null;
             for (final JsonElement currentAttribute : attributeArray) {
                 final JsonObject currentAttributeObject = currentAttribute.getAsJsonObject();
                 final JsonElement currentAttributeNameElement = currentAttributeObject.get("name");
@@ -82,19 +91,36 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
 
                 if ("name".equals(currentAttributeNameValue)) {
                     final JsonElement dependencyNameElement = currentAttributeObject.get("stringValue");
-                    final String dependencyNameValue = dependencyNameElement.getAsString();
+                    dependencyNameValue = dependencyNameElement.getAsString();
                     logger.info(String.format("dependencyNameValue: %s", dependencyNameValue));
                 }
 
                 if ("version".equals(currentAttributeNameValue)) {
                     final JsonElement dependencyVersionElement = currentAttributeObject.get("stringValue");
-                    final String dependencyVersionValue = dependencyVersionElement.getAsString();
+                    dependencyVersionValue = dependencyVersionElement.getAsString();
                     logger.info(String.format("dependencyVersionValue: %s", dependencyVersionValue));
+                }
+                if (dependencyNameValue != null && dependencyVersionValue != null) {
+                    final Dependency artifactDependency = haskageCompNameVersionToDependency(dependencyNameValue, dependencyVersionValue);
+                    try {
+                        logger.info(String.format("Adding %s to graph", artifactDependency.getExternalId().toString()));
+                        dependencyGraph.addChildToRoot(artifactDependency);
+                    } catch (final Exception e) {
+                        logger.error(String.format("Unable to create dependency from %s/%s", dependencyNameValue, dependencyVersionValue));
+                    }
+                    break;
                 }
             }
 
         }
+        return dependencyGraph;
+    }
 
-        return null;
+    public Dependency haskageCompNameVersionToDependency(final String compName, final String compVersion) {
+        final Forge hackageForge = new Forge("/", "hackage");
+        final ExternalId externalId = (new ExternalIdFactory()).createNameVersionExternalId(hackageForge, compName, compVersion);
+        externalId.createBdioId(); // Validity check; throws IllegalStateException if invalid
+        final Dependency artifactDependency = new Dependency(compName, compVersion, externalId);
+        return artifactDependency;
     }
 }
