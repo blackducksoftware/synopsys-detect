@@ -44,7 +44,7 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.Bazel
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class PipelineTest {
+public class PipelinesTest {
     private static final List<String> MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS = Arrays.asList("cquery", "--noimplicit_deps", "kind(j.*import, deps(/:testTarget))", "--output", "build");
     private static final List<String> HASKELL_CABAL_LIBRARY_STANDARD_BAZEL_COMMAND_ARGS = Arrays.asList("cquery", "--noimplicit_deps", "kind(haskell_cabal_library, deps(/:testTarget))", "--output", "jsonproto");
     private static final String MAVEN_INSTALL_CQUERY_OUTPUT_SIMPLE = createStandardOutput(

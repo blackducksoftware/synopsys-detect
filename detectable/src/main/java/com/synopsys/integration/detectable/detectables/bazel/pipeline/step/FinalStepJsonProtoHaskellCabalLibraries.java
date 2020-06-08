@@ -48,23 +48,23 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
     public MutableDependencyGraph finish(final List<String> input) throws IntegrationException {
         final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
-        final JsonElement resultsElement = JsonParser.parseString(input.get(0));
-        final JsonObject resultsObject = resultsElement.getAsJsonObject();
-        final JsonElement resultsMember = resultsObject.get("results");
-        final JsonArray targets = resultsMember.getAsJsonArray();
-        logger.debug(String.format("Number of targets: %d", targets.size()));
-        for (final JsonElement targetElement : targets) {
+        final JsonElement protoElement = JsonParser.parseString(input.get(0));
+        final JsonObject protoObject = protoElement.getAsJsonObject();
+        final JsonElement resultsElement = protoObject.get("results");
+        final JsonArray resultsArray = resultsElement.getAsJsonArray();
+        logger.debug(String.format("Number of resultsArray: %d", resultsArray.size()));
+        for (final JsonElement resultsArrayMemberElement : resultsArray) {
+            final JsonObject resultsArrayMemberObject = resultsArrayMemberElement.getAsJsonObject();
+            final JsonElement targetElement = resultsArrayMemberObject.get("target");
             final JsonObject targetObject = targetElement.getAsJsonObject();
-            final JsonElement targetElementSub = targetObject.get("target");
-            final JsonObject targetObjectSub = targetElementSub.getAsJsonObject();
-            logger.debug(String.format("targetType: %s", targetObjectSub.get("type").toString()));
-            final JsonElement targetTypeElement = targetObjectSub.get("type");
+            logger.debug(String.format("targetType: %s", targetObject.get("type").toString()));
+            final JsonElement targetTypeElement = targetObject.get("type");
             final String targetTypeValue = targetTypeElement.getAsString();
             if (!"RULE".equals(targetTypeValue)) {
                 logger.debug(String.format("This is not a rule; skipping it. (It's a %s)", targetTypeValue));
                 continue;
             }
-            final JsonElement ruleElement = targetObjectSub.get("rule");
+            final JsonElement ruleElement = targetObject.get("rule");
             final JsonObject ruleObject = ruleElement.getAsJsonObject();
             logger.debug(String.format("ruleClass: %s", ruleObject.get("ruleClass").toString()));
             final JsonElement ruleClassElement = ruleObject.get("ruleClass");
