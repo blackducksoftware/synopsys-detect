@@ -45,7 +45,7 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
     }
 
     @Override
-    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException {
+    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException, NotOwnedByAnyPkgException {
         List<PackageDetails> packageDetailsList = new ArrayList<>();
         final String[] packageLines = queryPackageOutput.split("\n");
         for (final String packageLine : packageLines) {
@@ -65,7 +65,10 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
         return packageDetailsList;
     }
 
-    private boolean valid(final String packageLine) {
+    private boolean valid(final String packageLine) throws NotOwnedByAnyPkgException {
+        if (packageLine.contains("no path found matching pattern")) {
+            throw new NotOwnedByAnyPkgException(packageLine);
+        }
         return packageLine.matches(".+:.+: .+");
     }
 }

@@ -1,5 +1,5 @@
 /**
- * detectable
+ * synopsys-detect
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,16 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver;
+package com.synopsys.integration.detect.workflow.status;
 
 import java.io.File;
 import java.util.List;
 
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
-import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
+public class UnrecognizedPaths {
+    private final String group;
+    private final List<File> messages;
 
-public interface ClangPackageManagerResolver {
-    List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException, NotOwnedByAnyPkgException;
+    public UnrecognizedPaths(final String group, final List<File> messages) {
+        this.group = group;
+        this.messages = messages;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public List<File> getPaths() {
+        return messages;
+    }
 }

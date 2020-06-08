@@ -15,6 +15,7 @@ The file includes status codes, issues encountered and results produced. As addi
 "status": [ List of Status, see format below. ]
 "issues": [ List of Issues, see format below. ]
 "results": [ List of Results, see format below. ]
+"unrecognizedPaths": [ List of Unrecognized Paths, see format and details below. ]
 }
 ```
 
@@ -63,3 +64,13 @@ The file includes status codes, issues encountered and results produced. As addi
 "message": A string describing the result.
 }
 ```
+
+##Unrecognized Paths
+
+For those detectors that support it (currently, only CLANG), a list of file paths to dependencies that
+(a) were not recognized by the package manager, and (b) reside outside the source directory.
+````
+{
+"<Detector type>": [ A list of file paths to unrecognized dependencies ]
+}
+````
