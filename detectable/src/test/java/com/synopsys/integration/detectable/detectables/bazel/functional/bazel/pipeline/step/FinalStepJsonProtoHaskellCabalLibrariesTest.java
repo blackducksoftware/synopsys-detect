@@ -27,6 +27,6 @@ public class FinalStepJsonProtoHaskellCabalLibrariesTest {
         input.add(jsonProtoHaskellCabalLibrary);
         final MutableDependencyGraph graph = step.finish(input);
         // TODO Finish me!
-        //assertEquals(99, graph.getRootDependencies().size());
+        assertEquals(99, graph.getRootDependencies().size());
     }
 }
