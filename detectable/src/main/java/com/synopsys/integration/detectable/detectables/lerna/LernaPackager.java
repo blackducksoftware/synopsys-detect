@@ -62,12 +62,12 @@ public class LernaPackager {
     }
 
     public LernaResult generateLernaResult(File sourceDirectory, List<LernaPackage> lernaPackages) {
-        LernaResult rootExtraction = extractWithRootLockfile(sourceDirectory, sourceDirectory);
-        if (rootExtraction.isFailure()) {
-            return rootExtraction;
+        LernaResult rootLernaResult = extractWithRootLockfile(sourceDirectory, sourceDirectory);
+        if (rootLernaResult.isFailure()) {
+            return rootLernaResult;
         }
 
-        List<CodeLocation> codeLocations = new ArrayList<>();
+        List<CodeLocation> codeLocations = new ArrayList<>(rootLernaResult.getCodeLocations());
         for (LernaPackage lernaPackage : lernaPackages) {
             String lernaPackageDetails = String.format("%s:%s at %s", lernaPackage.getName(), lernaPackage.getVersion(), lernaPackage.getLocation());
 
@@ -93,7 +93,7 @@ public class LernaPackager {
             }
         }
 
-        return LernaResult.success(rootExtraction.getProjectName(), rootExtraction.getProjectVersionName(), codeLocations);
+        return LernaResult.success(rootLernaResult.getProjectName(), rootLernaResult.getProjectVersionName(), codeLocations);
     }
 
     private LernaResult extractLernaPackage(File sourceDirectory, File lernaPackageDirectory) {
@@ -107,11 +107,17 @@ public class LernaPackager {
 
     private LernaResult extractWithRootLockfile(File lernaPackageDirectory, File sourceDirectory) {
         File packageJsonFile = fileFinder.findFile(lernaPackageDirectory, LernaDetectable.PACKAGE_JSON);
+        if (packageJsonFile == null) {
+            return LernaResult.failure(new FileNotFoundException(String.format("A %s file was not found in %s.", LernaDetectable.PACKAGE_JSON, lernaPackageDirectory.getAbsolutePath())));
+        }
         return extractWithAnyLockfile(sourceDirectory, packageJsonFile);
     }
 
     private LernaResult extractWithLocalLockfile(File lernaPackageDirectory) {
         File packageJsonFile = fileFinder.findFile(lernaPackageDirectory, LernaDetectable.PACKAGE_JSON);
+        if (packageJsonFile == null) {
+            return LernaResult.failure(new FileNotFoundException(String.format("A %s file was not found in %s.", LernaDetectable.PACKAGE_JSON, lernaPackageDirectory.getAbsolutePath())));
+        }
         return extractWithAnyLockfile(lernaPackageDirectory, packageJsonFile);
     }
 
