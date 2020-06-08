@@ -30,7 +30,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 public class ConnectionDetails {
-    private final ProxyInfo proxyInformation; // Not nuzll because of NO_PROXY_INFO value.
+    private final ProxyInfo proxyInformation; // Not null because of NO_PROXY_INFO value.
     private final List<Pattern> ignoredProxyHostPatterns;
     private final Long timeout;
     private final Boolean alwaysTrust;

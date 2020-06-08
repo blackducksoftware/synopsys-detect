@@ -78,7 +78,7 @@ public class CodeLocationBdioCreator {
             final SimpleBdioDocument simpleBdioDocument = simpleBdioFactory.createSimpleBdioDocument(codeLocationName, projectNameVersion.getName(), projectNameVersion.getVersion(), externalId, dependencyGraph);
 
             detectBdioWriter.writeBdioFile(bdioOutputFile, simpleBdioDocument);
-            uploadTargets.add(UploadTarget.createDefault(codeLocationName, bdioOutputFile));
+            uploadTargets.add(UploadTarget.createDefault(projectNameVersion, codeLocationName, bdioOutputFile));
         }
 
         return uploadTargets;
@@ -110,7 +110,7 @@ public class CodeLocationBdioCreator {
                 bdio2Writer.writeBdioDocument(outputStream, bdio2Document);
                 logger.debug(String.format("BDIO Generated: %s", bdio2OutputFile.getAbsolutePath()));
 
-                uploadTargets.add(UploadTarget.createDefault(codeLocationName, bdio2OutputFile));
+                uploadTargets.add(UploadTarget.createDefault(projectNameVersion, codeLocationName, bdio2OutputFile));
             } catch (final IOException e) {
                 throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_GENERAL_ERROR);
             }

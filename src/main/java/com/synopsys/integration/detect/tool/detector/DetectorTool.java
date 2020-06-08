@@ -49,6 +49,7 @@ import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionH
 import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
+import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
@@ -170,6 +171,10 @@ public class DetectorTool {
             if (detectorEvaluation.getExtraction() != null) {
                 for (final File file : detectorEvaluation.getExtraction().getRelevantFiles()) {
                     eventSystem.publishEvent(Event.CustomerFileOfInterest, file);
+                }
+                List<File> paths = detectorEvaluation.getExtraction().getUnrecognizedPaths();
+                if (paths != null && paths.size() > 0) {
+                    eventSystem.publishEvent(Event.UnrecognizedPaths, new UnrecognizedPaths(detectorEvaluation.getDetectorRule().getDetectorType().toString(), paths));
                 }
             }
         }

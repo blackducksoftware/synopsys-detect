@@ -36,10 +36,10 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspe
 public class NugetInspectorArguments {
     private static final Logger logger = LoggerFactory.getLogger(NugetInspectorArguments.class);
 
-    //At the time of righting, both inspectors (exe and dotnet) use the same arguments so a shared static method is provided.
+    //At the time of writing, both inspectors (exe and dotnet) use the same arguments so a shared static method is provided.
     //If they diverge the options object protects the argument conversion so each inspector can convert as they see fit.
-    public static List<String> fromInspectorOptions(final NugetInspectorOptions nugetInspectorOptions, final File sourcePath, final File outputDirectory) throws IOException {
-        final List<String> options = new ArrayList<>(Arrays.asList(
+    public static List<String> fromInspectorOptions(NugetInspectorOptions nugetInspectorOptions, File sourcePath, File outputDirectory) throws IOException {
+        List<String> options = new ArrayList<>(Arrays.asList(
             "--target_path=" + sourcePath.getCanonicalPath(),
             "--output_directory=" + outputDirectory.getCanonicalPath(),
             "--ignore_failure=" + nugetInspectorOptions.isIgnoreFailures()));
@@ -50,9 +50,9 @@ public class NugetInspectorArguments {
         nugetInspectorOptions.getIncludedModules()
             .ifPresent(arg -> options.add("--included_modules=" + arg));
 
-        final List<String> nugetPackagesRepo = nugetInspectorOptions.getPackagesRepoUrl();
+        List<String> nugetPackagesRepo = nugetInspectorOptions.getPackagesRepoUrl();
         if (nugetPackagesRepo != null && nugetPackagesRepo.size() > 0) {
-            final String packagesRepos = String.join(",", nugetPackagesRepo);
+            String packagesRepos = String.join(",", nugetPackagesRepo);
             options.add("--packages_repo_url=" + packagesRepos);
         }
 

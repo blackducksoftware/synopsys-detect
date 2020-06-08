@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +36,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.ClangPackageManagerResolver;
+import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.NotOwnedByAnyPkgException;
 
 public class ClangPackageManagerRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -60,34 +62,41 @@ public class ClangPackageManagerRunner {
 
     public PackageDetailsResult getAllPackages(final ClangPackageManager currentPackageManager, final File workingDirectory, final ExecutableRunner executableRunner, final Set<File> dependencyFiles) {
         final Set<PackageDetails> packageDetails = new HashSet<>();
-        final Set<File> failedDependencyFiles = new HashSet<>();
+        final Set<File> unRecognizedDependencyFiles = new HashSet<>();
         for (final File dependencyFile : dependencyFiles) {
             final PackageDetailsResult packageDetailsResult = getPackages(currentPackageManager, workingDirectory, executableRunner, dependencyFile);
             packageDetails.addAll(packageDetailsResult.getFoundPackages());
-            failedDependencyFiles.addAll(packageDetailsResult.getFailedDependencyFiles());
+            unRecognizedDependencyFiles.addAll(packageDetailsResult.getUnRecognizedDependencyFiles());
         }
 
-        return new PackageDetailsResult(packageDetails, failedDependencyFiles);
+        return new PackageDetailsResult(packageDetails, unRecognizedDependencyFiles);
     }
 
     public PackageDetailsResult getPackages(final ClangPackageManager currentPackageManager, final File workingDirectory, final ExecutableRunner executableRunner, final File dependencyFile) {
         final ClangPackageManagerInfo packageManagerInfo = currentPackageManager.getPackageManagerInfo();
         final Set<PackageDetails> dependencyDetails = new HashSet<>();
-        final Set<File> failedDependencyFiles = new HashSet<>();
+        final Set<File> unRecognizedDependencyFiles = new HashSet<>();
         try {
             final List<String> fileSpecificGetOwnerArgs = new ArrayList<>(packageManagerInfo.getPkgMgrGetOwnerCmdArgs());
             fileSpecificGetOwnerArgs.add(dependencyFile.getAbsolutePath());
-            final ExecutableOutput queryPackageOutput = executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetOwnerArgs);
-
+            final ExecutableOutput queryPackageResult = executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetOwnerArgs);
+            final String queryPackageOutputToParse;
+            if (StringUtils.isNotBlank(queryPackageResult.getStandardOutput())) {
+                queryPackageOutputToParse = queryPackageResult.getStandardOutput();
+            } else {
+                queryPackageOutputToParse = queryPackageResult.getErrorOutput();
+            }
             final ClangPackageManagerResolver resolver = currentPackageManager.getPackageResolver();
-            final List<PackageDetails> packageDetails = resolver.resolvePackages(currentPackageManager.getPackageManagerInfo(), executableRunner, workingDirectory, queryPackageOutput.getStandardOutput());
+            final List<PackageDetails> packageDetails = resolver.resolvePackages(currentPackageManager.getPackageManagerInfo(), executableRunner, workingDirectory, queryPackageOutputToParse);
             dependencyDetails.addAll(packageDetails);
+        } catch (final NotOwnedByAnyPkgException notOwnedException) {
+            logger.debug(String.format("%s is not recognized by the linux package manager (%s)", dependencyFile.getAbsolutePath(), notOwnedException.getMessage()));
+            unRecognizedDependencyFiles.add(dependencyFile);
         } catch (final ExecutableRunnerException e) {
             logger.debug(String.format("Error with dependency file %s when running %s", dependencyFile.getAbsolutePath(), packageManagerInfo.getPkgMgrCmdString()));
             logger.error(String.format("Error executing %s: %s", packageManagerInfo.getPkgMgrCmdString(), e.getMessage()));
-
         }
-        return new PackageDetailsResult(dependencyDetails, failedDependencyFiles);
+        return new PackageDetailsResult(dependencyDetails, unRecognizedDependencyFiles);
     }
 
 }

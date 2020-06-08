@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.tool.detector;
 
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
+import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
@@ -131,6 +132,8 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.CLANG, "Clang", ClangDetectable.class, detectableFactory::createClangDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.SWIFT, "Swift", SwiftCliDetectable.class, detectableFactory::createSwiftCliDetectable).defaults().build();
+
+        ruleSet.addDetector(DetectorType.CARGO, "Cargo", CargoDetectable.class, detectableFactory::createCargoDetectable).defaults().build();
 
         final DetectorRule gitParse = ruleSet.addDetector(DetectorType.GIT, "Git Parse", GitParseDetectable.class, detectableFactory::createGitParseDetectable).defaults().build();
         final DetectorRule gitCli = ruleSet.addDetector(DetectorType.GIT, "Git Cli", GitCliDetectable.class, detectableFactory::createGitCliDetectable).defaults().build();

@@ -13,8 +13,8 @@ import com.synopsys.integration.log.PrintStreamIntLogger
 buildscript {
     ext {
         springBootVersion = '2.2.4.RELEASE'
-        blackDuckCommonVersion = '47.1.0'
-        polarisCommonVersion = '0.13.2'
+        blackDuckCommonVersion = '48.0.0'
+        polarisCommonVersion = '0.20.0'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
@@ -257,7 +257,7 @@ task signJar() {
     dependsOn build
     doLast {
         exec {
-            commandLine 'jarsigner', '-tsa', 'http://timestamp.globalsign.com/scripts/timestamp.dll', '-storetype', 'pkcs12', '-storepass', "${System.env.JARSIGNER_KEYSTORE_PASS}", '-keystore', "${System.env.JARSIGNER_KEYSTORE_PATH}", "${createArtifactName()}", "${System.env.JARSIGNER_CERT_ALIAS}"
+            commandLine 'jarsigner', '-tsa', 'http://timestamp.globalsign.com/scripts/timestamp.dll', '-storetype', 'pkcs12', '-storepass', "${jarSigningKeystorePassword}", '-keystore', "${jarSigningKeystorePath}", "${createArtifactName()}", "${jarSigningCertificateAlias}"
         }
     }
 }

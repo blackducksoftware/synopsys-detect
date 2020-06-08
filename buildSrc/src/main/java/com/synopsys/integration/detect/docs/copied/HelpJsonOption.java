@@ -24,22 +24,17 @@ package com.synopsys.integration.detect.docs.copied;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-import org.jetbrains.annotations.Nullable;
 
 // Copied from detect-configuration
 public class HelpJsonOption {
     private String propertyName = "";
     private String propertyKey = "";
     private String propertyType = "";
-    @Nullable
-    private String defaultValue = null;
+    private String defaultValue = "";
     private String addedInVersion = "";
     private String category = "";
     private String group = "";
-    @Nullable
-    private String superGroup = null;
+    private String superGroup = "";
     private List<String> additionalGroups = new ArrayList<>();
     private String description = "";
     private String detailedDescription = "";
@@ -80,11 +75,11 @@ public class HelpJsonOption {
         this.propertyType = propertyType;
     }
 
-    public Optional<String> getDefaultValue() {
-        return Optional.ofNullable(defaultValue);
+    public String getDefaultValue() {
+        return defaultValue;
     }
 
-    public void setDefaultValue(@Nullable final String defaultValue) {
+    public void setDefaultValue(final String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
@@ -112,11 +107,11 @@ public class HelpJsonOption {
         this.group = group;
     }
 
-    public Optional<String> getSuperGroup() {
-        return Optional.ofNullable(superGroup);
+    public String getSuperGroup() {
+        return superGroup;
     }
 
-    public void setSuperGroup(@Nullable final String superGroup) {
+    public void setSuperGroup(final String superGroup) {
         this.superGroup = superGroup;
     }
 
