@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 public enum DetectorType {
     BITBAKE,
+    CARGO,
     COCOAPODS,
     CONDA,
     CPAN,

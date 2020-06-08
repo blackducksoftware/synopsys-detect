@@ -23,7 +23,9 @@
 package com.synopsys.integration.detect.workflow.report.output;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -52,8 +54,10 @@ public class FormattedOutput {
     @SerializedName("results")
     public List<FormattedResultOutput> results = new ArrayList<>();
 
+    @SerializedName("unrecognizedPaths")
+    public Map<String, List<String>> unrecognizedPaths = new HashMap<>();
+
     @SerializedName("codeLocations")
     public List<FormattedCodeLocationOutput> codeLocations = new ArrayList<>();
-
 }
 

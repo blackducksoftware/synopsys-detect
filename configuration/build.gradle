@@ -2,9 +2,6 @@ plugins {
     id 'java'
 }
 
-group 'com.synopsys.integration'
-version '6.2.0-SNAPSHOT'
-
 sourceCompatibility = 1.8
 
 repositories {

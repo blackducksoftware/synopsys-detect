@@ -25,7 +25,13 @@ or fine tune the [detector search directory exclusion patterns](../../../propert
 
 For each compile command in the compile_commands.json file, the Clang detector
 runs a version of the command that is modified to ensure that it does
-not overwrite build artifacts, and generate a list of include files used.
+not overwrite build artifacts, and generate a list of dependency files used.
 This is performed by adding the *-M* and *-MF* compiler options.
 It then uses the Linux package manager to identify which installed package owns each
-include file. These packages are added as a component to the results.
+dependency file. These packages are added as a component to the results.
+
+Any dependency file that is not recognized by the Linux package manager
+and resides outside the source directory (the directory containing the
+compile_commands.json file) is written to the status.json file under
+unrecognizedPaths.CLANG.
+

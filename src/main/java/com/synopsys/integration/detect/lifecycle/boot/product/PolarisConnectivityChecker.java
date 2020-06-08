@@ -25,11 +25,11 @@ package com.synopsys.integration.detect.lifecycle.boot.product;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.rest.client.ConnectionResult;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 import com.synopsys.integration.polaris.common.rest.AccessTokenPolarisHttpClient;
-import com.synopsys.integration.rest.request.Response;
+import com.synopsys.integration.rest.client.ConnectionResult;
+import com.synopsys.integration.rest.response.Response;
 
 public class PolarisConnectivityChecker {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

@@ -1,6 +1,6 @@
 repositories {
     maven {
-        url 'https://repo.blackducksoftware.com:443/artifactory/bds-integration-public-cache'
+        url 'https://sig-repo.synopsys.com/bds-integration-public-cache/'
     }
 }
 

@@ -68,6 +68,9 @@ import com.synopsys.integration.detectable.detectables.bitbake.BitbakeRecipesToL
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeGraphTransformer;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.GraphParserTransformer;
+import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
+import com.synopsys.integration.detectable.detectables.cargo.CargoExtractor;
+import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangExtractor;
@@ -167,13 +170,16 @@ import com.synopsys.integration.detectable.detectables.pear.transform.PearDepend
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorExtractor;
+import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipenvExtractor;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipEnvJsonGraphParser;
-import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvTransformer;
+import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
+import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryExtractor;
+import com.synopsys.integration.detectable.detectables.pip.poetry.parser.PoetryLockParser;
 import com.synopsys.integration.detectable.detectables.rebar.RebarDetectable;
 import com.synopsys.integration.detectable.detectables.rebar.RebarExtractor;
 import com.synopsys.integration.detectable.detectables.rebar.parse.Rebar3TreeParser;
@@ -231,6 +237,10 @@ public class DetectableFactory {
 
     public BitbakeDetectable createBitbakeDetectable(final DetectableEnvironment environment, final BitbakeDetectableOptions bitbakeDetectableOptions, final BashResolver bashResolver) {
         return new BitbakeDetectable(environment, fileFinder, bitbakeDetectableOptions, bitbakeExtractor(), bashResolver);
+    }
+
+    public CargoDetectable createCargoDetectable(final DetectableEnvironment environment) {
+        return new CargoDetectable(environment, fileFinder, cargoExtractor());
     }
 
     public ClangDetectable createClangDetectable(final DetectableEnvironment environment, final ClangDetectableOptions clangDetectableOptions) {
@@ -351,6 +361,10 @@ public class DetectableFactory {
         return new PodlockDetectable(environment, fileFinder, podlockExtractor());
     }
 
+    public PoetryDetectable createPoetryDetectable(final DetectableEnvironment environment) {
+        return new PoetryDetectable(environment, fileFinder, poetryExtractor());
+    }
+
     public RebarDetectable createRebarDetectable(final DetectableEnvironment environment, final Rebar3Resolver rebar3Resolver) {
         return new RebarDetectable(environment, fileFinder, rebar3Resolver, rebarExtractor());
     }
@@ -387,6 +401,10 @@ public class DetectableFactory {
 
     private DependencyFileDetailGenerator dependencyFileDetailGenerator() {
         return new DependencyFileDetailGenerator(filePathGenerator());
+    }
+
+    private CargoExtractor cargoExtractor() {
+        return new CargoExtractor(new CargoLockParser());
     }
 
     private ClangPackageDetailsTransformer clangPackageDetailsTransformer() {
@@ -595,6 +613,10 @@ public class DetectableFactory {
 
     private PipInspectorExtractor pipInspectorExtractor() {
         return new PipInspectorExtractor(executableRunner, pipInspectorTreeParser());
+    }
+
+    private PoetryExtractor poetryExtractor() {
+        return new PoetryExtractor(new PoetryLockParser());
     }
 
     private GemlockExtractor gemlockExtractor() {

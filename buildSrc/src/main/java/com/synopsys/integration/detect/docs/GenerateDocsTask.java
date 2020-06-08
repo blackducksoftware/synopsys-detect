@@ -242,7 +242,7 @@ public class GenerateDocsTask extends DefaultTask {
 
         helpJson.getOptions().forEach(option -> {
             final String defaultSuperGroup = "Configuration";
-            final String rawSuperGroup = option.getSuperGroup().orElse("");
+            final String rawSuperGroup = option.getSuperGroup();
             final String superGroup;
             if (StringUtils.isBlank(rawSuperGroup)) {
                 superGroup = defaultSuperGroup;

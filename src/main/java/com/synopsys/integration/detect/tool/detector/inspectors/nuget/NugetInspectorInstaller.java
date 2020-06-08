@@ -25,13 +25,13 @@ package com.synopsys.integration.detect.tool.detector.inspectors.nuget;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.util.DetectZipUtil;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
@@ -46,31 +46,31 @@ public class NugetInspectorInstaller {
         this.artifactResolver = artifactResolver;
     }
 
-    public File installDotNet(final File destination, final Optional<String> overrideVersion) throws DetectableException {
+    public File installDotNet3(final File destination, @Nullable final String overrideVersion) throws DetectableException {
+        logger.debug("Will attempt to resolve the dotnet3 inspector version.");
+        return installInspector(destination, overrideVersion, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_REPO, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_PROPERTY, ArtifactoryConstants.NUGET_DOTNET3_INSPECTOR_VERSION_OVERRIDE);
+    }
+
+    public File installDotNet(final File destination, @Nullable final String overrideVersion) throws DetectableException {
+        logger.debug("Will attempt to resolve the dotnet inspector version.");
+        return installInspector(destination, overrideVersion, ArtifactoryConstants.NUGET_INSPECTOR_REPO, ArtifactoryConstants.NUGET_INSPECTOR_PROPERTY, ArtifactoryConstants.NUGET_INSPECTOR_VERSION_OVERRIDE);
+    }
+
+    public File installExeInspector(final File destination, @Nullable final String overrideVersion) throws DetectableException {
+        logger.debug("Will attempt to resolve the classic inspector version.");
+        return installInspector(destination, overrideVersion, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_REPO, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_PROPERTY, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_VERSION_OVERRIDE);
+    }
+
+    private File installInspector(final File destination, @Nullable final String overrideVersion, final String inspectorRepo, final String inspectorProperty, final String inspectorVersionOverride) throws DetectableException {
         try {
-            logger.debug("Will attempt to resolve the dotnet inspector version.");
-            final String source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.NUGET_INSPECTOR_REPO, ArtifactoryConstants.NUGET_INSPECTOR_PROPERTY,
-                overrideVersion.orElse(""),
-                ArtifactoryConstants.NUGET_INSPECTOR_VERSION_OVERRIDE);
+            final String source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, inspectorRepo, inspectorProperty, StringUtils.defaultString(overrideVersion), inspectorVersionOverride);
             return installFromSource(destination, source);
         } catch (final Exception e) {
             throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
         }
     }
 
-    public File installExeInspector(final File destination, final Optional<String> overrideVersion) throws DetectableException {
-        try {
-            logger.debug("Will attempt to resolve the classic inspector version.");
-            final String source = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_REPO, ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_PROPERTY,
-                overrideVersion.orElse(""),
-                ArtifactoryConstants.CLASSIC_NUGET_INSPECTOR_VERSION_OVERRIDE);
-            return installFromSource(destination, source);
-        } catch (final Exception e) {
-            throw new DetectableException("Unable to install the nuget inspector from Artifactory.", e);
-        }
-    }
-
-    private File installFromSource(final File dest, final String source) throws IntegrationException, IOException, DetectUserFriendlyException {
+    private File installFromSource(final File dest, final String source) throws IntegrationException, IOException {
         logger.debug("Resolved the nuget inspector url: " + source);
         final String nupkgName = artifactResolver.parseFileName(source);
         logger.debug("Parsed artifact name: " + nupkgName);
@@ -83,10 +83,9 @@ public class NugetInspectorInstaller {
             logger.debug("Extracting nuget inspector.");
             DetectZipUtil.unzip(nupkgFile, inspectorFolder, Charset.defaultCharset());
             FileUtils.deleteQuietly(nupkgFile);
-            return inspectorFolder;
         } else {
             logger.debug("Inspector is already downloaded, folder exists.");
-            return inspectorFolder;
         }
+        return inspectorFolder;
     }
 }
