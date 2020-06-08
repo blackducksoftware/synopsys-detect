@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jetbrains.annotations.Nullable;
 import org.tomlj.Toml;
 import org.tomlj.TomlArray;
 import org.tomlj.TomlParseResult;
@@ -75,7 +76,7 @@ public class PoetryLockParser {
         for (int i = 0; i < lockPackages.size(); i++) {
             TomlTable lockPackage = lockPackages.getTable(i);
             List<String> dependencies = extractFromDependencyList(lockPackage.getTable(DEPENDENCIES_KEY));
-            if (dependencies == null || dependencies.isEmpty()) {
+            if (dependencies.isEmpty()) {
                 continue;
             }
             for (final String dependency : dependencies) {
@@ -116,7 +117,7 @@ public class PoetryLockParser {
         return rootPackages;
     }
 
-    private List<String> extractFromDependencyList(TomlTable dependencyList) {
+    private List<String> extractFromDependencyList(@Nullable TomlTable dependencyList) {
         List<String> dependencies = new ArrayList<>();
         if (dependencyList == null) {
             return dependencies;

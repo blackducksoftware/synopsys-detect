@@ -30,6 +30,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -45,15 +47,11 @@ public class PoetryExtractor {
 
     public Extraction extract(File poetryLock) {
         try {
-            final DependencyGraph graph = poetryLockParser.parseLockFile(getCargoLockAsString(poetryLock, StandardCharsets.UTF_8));
+            final DependencyGraph graph = poetryLockParser.parseLockFile(FileUtils.readFileToString(poetryLock, StandardCharsets.UTF_8));
             final CodeLocation codeLocation = new CodeLocation(graph);
             return new Extraction.Builder().success(codeLocation).build();
         } catch (IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
-    }
-
-    private String getCargoLockAsString(File cargoLock, Charset encoding) throws IOException {
-        return FileUtils.readFileToString(cargoLock, encoding);
     }
 }
