@@ -612,6 +612,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#poetry-detector" class="md-nav__link">
+    Poetry detector
+  </a>
+  
+</li>
+      
       
       
       
@@ -1279,6 +1286,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#poetry-detector" class="md-nav__link">
+    Poetry detector
+  </a>
+  
+</li>
+      
       
       
       
@@ -1297,10 +1311,11 @@
                 
                 
                 <h1 id="python-support">Python support<a class="headerlink" href="#python-support" title="Permanent link">#</a></h1>
-<p>Synopsys Detect has two detectors for Python:</p>
+<p>Synopsys Detect has three detectors for Python:</p>
 <ul>
 <li><a href="#pipdetector">Pip detector</a></li>
 <li><a href="#pipenvdetector">Pipenv detector</a></li>
+<li><a href="#poetrydetector">Poetry detector</a></li>
 </ul>
 <p><a name="pipdetector"></a></p>
 <h2 id="the-pip-detector">The Pip detector<a class="headerlink" href="#the-pip-detector" title="Permanent link">#</a></h2>
@@ -1352,6 +1367,15 @@ pip install -r requirements.txt
 </ul>
 <p>The Pipenv detector runs <code>pipenv run pip freeze</code> and <code>pipenv graph --bare --json-tree</code> and derives dependency information from the output. The dependency hierarchy is derived from the output of <code>pipenv graph --bare --json-tree</code>. The output of <code>pipenv run pip freeze</code> is used to improve the accuracy of dependency versions.</p>
 <p>To troubleshoot of the Pipenv detector, start by running <code>pipenv graph --bare --json-tree</code>, and making sure that the output looks correct since this is the basis from which Synopsys Detect constructs the BDIO. If the output of <code>pipenv graph --bare --json-tree</code> does not look correct, make sure the packages (dependencies) are installed into the Pipenv virtual environment (<code>pipenv install</code>).</p>
+<p><a name="poetrydetector"></a></p>
+<h2 id="poetry-detector">Poetry detector<a class="headerlink" href="#poetry-detector" title="Permanent link">#</a></h2>
+<p>The Poetry detector discovers dependencies of Python projects.</p>
+<p>The Poetry detector attempts to run on your project if either of the following is true:</p>
+<ol>
+<li>A poetry.lock file is found.</li>
+<li>A pyproject.toml file is found.</li>
+</ol>
+<p>The Poetry detector parses poetry.lock for dependency information. If the detector discovers a pyproject.toml file but not a poetry.lock file, it will prompt the user to generate a poetry.lock by running <code>poetry install</code> and then run Detect again.</p>
                 
                   
                 

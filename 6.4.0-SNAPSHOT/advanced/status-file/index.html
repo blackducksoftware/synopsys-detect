@@ -456,6 +456,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#unrecognized-paths" class="md-nav__link">
+    Unrecognized Paths
+  </a>
+  
+</li>
+      
       
       
       
@@ -1319,6 +1326,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#unrecognized-paths" class="md-nav__link">
+    Unrecognized Paths
+  </a>
+  
+</li>
+      
       
       
       
@@ -1350,6 +1364,7 @@
 &quot;status&quot;: [ List of Status, see format below. ]
 &quot;issues&quot;: [ List of Issues, see format below. ]
 &quot;results&quot;: [ List of Results, see format below. ]
+&quot;unrecognizedPaths&quot;: [ List of Unrecognized Paths, see format and details below. ]
 }
 </code></pre>
 
@@ -1392,6 +1407,14 @@
 <pre><code>{
 &quot;location&quot;: The path to the result.
 &quot;message&quot;: A string describing the result.
+}
+</code></pre>
+
+<h2 id="unrecognized-paths">Unrecognized Paths<a class="headerlink" href="#unrecognized-paths" title="Permanent link">#</a></h2>
+<p>For those detectors that support it (currently, only CLANG), a list of file paths to dependencies that
+(a) were not recognized by the package manager, and (b) reside outside the source directory.</p>
+<pre><code>{
+&quot;&lt;Detector type&gt;&quot;: [ A list of file paths to unrecognized dependencies ]
 }
 </code></pre>
                 
