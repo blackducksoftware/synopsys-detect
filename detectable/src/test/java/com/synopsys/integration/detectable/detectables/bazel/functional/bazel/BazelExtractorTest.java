@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.bazel.functional.bazel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.ArrayList;

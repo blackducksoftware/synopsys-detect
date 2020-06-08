@@ -34,6 +34,7 @@ import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepColonSeparatedGavs;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepJsonProtoHaskellCabalLibraries;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepReplaceInEach;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepExecuteBazelOnEach;
@@ -68,6 +69,12 @@ public class Pipelines {
               .setFinalStep(new FinalStepColonSeparatedGavs(externalIdFactory))
               .build();
         availablePipelines.put(WorkspaceRule.MAVEN_INSTALL, mavenInstallPipeline);
+
+        final Pipeline haskellCabalLibraryPipeline = (new PipelineBuilder())
+              .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("cquery", "--noimplicit_deps", "${detect.bazel.cquery.options}", "kind(haskell_cabal_library, deps(${detect.bazel.target}))", "--output", "jsonproto")))
+              .setFinalStep(new FinalStepJsonProtoHaskellCabalLibraries())
+              .build();
+        availablePipelines.put(WorkspaceRule.HASKELL_CABAL_LIBRARY, haskellCabalLibraryPipeline);
     }
 
     public Pipeline get(final WorkspaceRule bazelDependencyType) throws IntegrationException {
