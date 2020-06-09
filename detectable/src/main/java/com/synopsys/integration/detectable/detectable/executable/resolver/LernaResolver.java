@@ -24,7 +24,7 @@ package com.synopsys.integration.detectable.detectable.executable.resolver;
 
 import java.io.File;
 
-import org.antlr.v4.runtime.misc.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 

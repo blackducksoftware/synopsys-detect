@@ -176,11 +176,11 @@ import com.synopsys.integration.detectable.detectables.pear.transform.PearDepend
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorExtractor;
-import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectable;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pip.PipenvExtractor;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipEnvJsonGraphParser;
+import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvTransformer;
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
@@ -233,7 +233,8 @@ public class DetectableFactory {
     //Should be scoped to Prototype so a new Detectable is created every time one is needed.
     //Should only be accessed through the DetectableFactory.
 
-    public DockerDetectable createDockerDetectable(DetectableEnvironment environment, DockerDetectableOptions dockerDetectableOptions, DockerInspectorResolver dockerInspectorResolver, JavaResolver javaResolver, BashResolver bashResolver, DockerResolver dockerResolver) {
+    public DockerDetectable createDockerDetectable(DetectableEnvironment environment, DockerDetectableOptions dockerDetectableOptions, DockerInspectorResolver dockerInspectorResolver, JavaResolver javaResolver, BashResolver bashResolver,
+        DockerResolver dockerResolver) {
         return new DockerDetectable(environment, dockerInspectorResolver, javaResolver, bashResolver, dockerResolver, dockerExtractor(), dockerDetectableOptions);
     }
 
@@ -367,11 +368,11 @@ public class DetectableFactory {
         return new PodlockDetectable(environment, fileFinder, podlockExtractor());
     }
 
-    public PoetryDetectable createPoetryDetectable(final DetectableEnvironment environment) {
+    public PoetryDetectable createPoetryDetectable(DetectableEnvironment environment) {
         return new PoetryDetectable(environment, fileFinder, poetryExtractor());
     }
 
-    public RebarDetectable createRebarDetectable(final DetectableEnvironment environment, final Rebar3Resolver rebar3Resolver) {
+    public RebarDetectable createRebarDetectable(DetectableEnvironment environment, Rebar3Resolver rebar3Resolver) {
         return new RebarDetectable(environment, fileFinder, rebar3Resolver, rebarExtractor());
     }
 
