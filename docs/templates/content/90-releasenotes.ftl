@@ -5,8 +5,12 @@
 * Added support for the Lerna package manager.
 
 ### Changed features
-Moved download location of ${solution_name} for the shell script from /tmp to ~/synopsys-detect/download.
 * Eliminated any need for the ${blackduck_product_name} Global Code Scanner overall role.
+* The CLANG detector collects any dependency files not recognized by the Linux package manager that reside outside the source directory (the directory containing the compile_commands.json file),
+and writes them to the status.json file.
+* Detect now supports projects managed by the Poetry package manager.
+* Added the property [detect.blackduck.signature.scanner.copyright.search](../properties/configuration/signature scanner/#signature-scanner-copyright-search-advanced).
+* Detect now supports projects managed by the Cargo package manager.
 
 ### Resolved issues
 * (IDETECT-2034) Resolved an issue that would cause a NullPointerException when ${solution_name}'s initial attempt at generating a code location name produced a code location name greater than 250 characters and either code location prefix or code location suffix is not set.
@@ -16,8 +20,6 @@ Moved download location of ${solution_name} for the shell script from /tmp to ~/
 * The Yarn detector now extracts project information from package.json files. Git is no longer the default supplier of project information for Yarn projects.
 * Added Yarn Detector support for dependencies that are missing a fuzzy version in a lockfile dependency declaration.
 * ${solution_name} logs policy violations when it is configured to [fail on policy violations](../properties/configuration/project/#fail-on-policy-violation-severities).
-* Added the property [detect.blackduck.signature.scanner.copyright.search](../properties/configuration/signature scanner/#signature-scanner-copyright-search-advanced).
-* Detect now supports projects managed by the Cargo package manager.
 
 ### Changed features
 * Users can [upload source](../properties/configuration/signature scanner/#upload-source-mode) files when [license search](../properties/configuration/signature scanner/#signature-scanner-license-search) is enabled regardless of whether [snippet matching](../properties/configuration/signature scanner/#snippet-matching) has been enabled.
@@ -25,9 +27,10 @@ Moved download location of ${solution_name} for the shell script from /tmp to ~/
 * ${solution_name} stops if the Docker Inspector tool applies and ${solution_name} is running on Windows.
 * ${solution_name} configures Docker Inspector's working directories inside ${solution_name}'s run directory.
 * ${solution_name} requires and runs Docker Inspector version 9.
+* Moved the location to which ${bash_script_name} downloads the ${solution_name} .jar from /tmp to ~/synopsys-detect/download.
 
 ### Resolved issues
-* (IDETECT-1906) Resolved an issue wherein git extraction might fail if "git log" returned unexpected output.  As a last resort, the commit hash will be used as a version. ([\#114](https://github.com/blackducksoftware/synopsys-detect/issues/114))
+* (IDETECT-1906) Resolved an issue wherein git extraction might fail if "git log" returned unexpected output.  As a last resort, the commit hash will be used as a version.
 * (IDETECT-1883) Resolved an issue where ${solution_name} failed to extract project information when parsing a Git repository with a detached head while in buildless mode.
 * (IDETECT-1970) Resolved an issue where the default value for [parallel processors](../properties/configuration/general/#detect-parallel-processors-advanced) was not used. The available runtime processor count was being used instead.
 * (IDETECT-1973) Resolved an issue where the NuGet exe inspector would not resolve from Artifactory.

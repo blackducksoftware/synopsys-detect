@@ -1,5 +1,5 @@
 /**
- * configuration
+ * detectable
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,30 +20,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.source;
+package com.synopsys.integration.detectable.detectable.result;
 
-import java.util.Set;
+public class PoetryRunPoetryInstallDetectResult extends FailedDetectableResult {
+    private final String directoryPath;
 
-import org.antlr.v4.runtime.misc.NotNull;
-import org.jetbrains.annotations.Nullable;
+    public PoetryRunPoetryInstallDetectResult(final String directoryPath) {
+        this.directoryPath = directoryPath;
+    }
 
-// IMPORTANT
-// A property source is responsible for responding with keys in the normalized form "example.key"
-// It must respond to well formed keys in the normalized form "example.key"
-// Use KeyUtils if you have keys from unknown sources to ensure consistent key format.
-public interface PropertySource {
-    @NotNull
-    Boolean hasKey(String key);
-
-    @NotNull
-    Set<String> getKeys();
-
-    @Nullable
-    String getValue(String key);
-
-    @Nullable
-    String getOrigin(String key);
-
-    @NotNull
-    String getName();
+    @Override
+    public String toDescription() {
+        return String.format("A pyproject.toml was located in %s, but the Poetry.lock file was NOT located. Please run 'poetry install' in that location and try again.", directoryPath);
+    }
 }

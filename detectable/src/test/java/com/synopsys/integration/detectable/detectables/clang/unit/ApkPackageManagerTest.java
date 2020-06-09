@@ -40,10 +40,11 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Clan
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.ApkArchitectureResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.ApkPackageManagerResolver;
+import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.NotOwnedByAnyPkgException;
 
 public class ApkPackageManagerTest {
     @Test
-    public void canParsePackages() throws ExecutableRunnerException {
+    public void canParsePackages() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
         final StringBuilder sb = new StringBuilder();
         sb.append("garbage\n");
         sb.append("nonsense\n");

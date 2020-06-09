@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.antlr.v4.runtime.misc.NotNull;
-import org.antlr.v4.runtime.misc.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public interface FileFinder {
     @Nullable
