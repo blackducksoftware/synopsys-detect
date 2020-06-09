@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import groovy.util.MapEntry;
+
 public class BazelVariableSubstitutor {
     private final Map<String, String> stringSubstitutions;
     private final Map<String, List<String>> listInsertions;
@@ -58,10 +60,10 @@ public class BazelVariableSubstitutor {
 
     private boolean handleListInsertion(final List<String> modifiedStrings, final String origString, final String input) {
         boolean foundListInsertionVariable = false;
-        for (final String listInsertionKey : listInsertions.keySet()) {
-            if (origString.equals(listInsertionKey)) {
+        for (final Map.Entry<String, List<String>> listInsertion : listInsertions.entrySet()) {
+            if (origString.equals(listInsertion.getKey())) {
                 foundListInsertionVariable = true;
-                final List<String> valuesToInsert = listInsertions.get(listInsertionKey);
+                final List<String> valuesToInsert = listInsertion.getValue();
                 if (valuesToInsert != null) {
                     for (final String valueToInsert : valuesToInsert) {
                         // Substituting here gives user the ability to use ${detect.bazel.target} and ${input.item} in list insertion values
@@ -79,8 +81,8 @@ public class BazelVariableSubstitutor {
         if (input != null) {
             stringSubstitutions.put("\\$\\{input.item}", input);
         }
-        for (final String variablePattern : stringSubstitutions.keySet()) {
-            modifiedString = modifiedString.replaceAll(variablePattern, stringSubstitutions.get(variablePattern));
+        for (final Map.Entry<String, String> substitution : stringSubstitutions.entrySet()) {
+            modifiedString = modifiedString.replaceAll(substitution.getKey(), substitution.getValue());
         }
         return modifiedString;
     }
