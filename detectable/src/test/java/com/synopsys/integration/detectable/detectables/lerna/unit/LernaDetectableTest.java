@@ -126,7 +126,7 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
 
     @Override
     public void assertExtraction(@NotNull Extraction extraction) {
-        Assertions.assertEquals(2, extraction.getCodeLocations().size(), "A code location should have been generated.");
+        Assertions.assertEquals(2, extraction.getCodeLocations().size(), "Expected one code location from root, and one from a non-private package.");
 
         NameVersionGraphAssert rootGraphAssert = new NameVersionGraphAssert(Forge.NPMJS, extraction.getCodeLocations().get(0).getDependencyGraph());
         rootGraphAssert.hasRootSize(1);
