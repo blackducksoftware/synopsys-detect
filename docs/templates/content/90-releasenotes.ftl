@@ -2,6 +2,7 @@
 
 ## Version 6.4.0
 ### New features
+* Bazel detector: added support for Bazel projects that specify dependencies using the haskell_cabal_library repository rule.
 
 ### Changed features
 * Eliminated any need for the ${blackduck_product_name} Global Code Scanner overall role.
