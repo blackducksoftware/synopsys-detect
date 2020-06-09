@@ -64,7 +64,6 @@ public class FinalStepColonSeparatedGavs implements FinalStep {
 
         logger.debug(String.format("Adding dependency from external id: %s:%s:%s", group, artifact, version));
         final ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
-        final Dependency artifactDependency = new Dependency(artifact, version, externalId);
-        return artifactDependency;
+        return new Dependency(artifact, version, externalId);
     }
 }

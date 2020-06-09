@@ -42,7 +42,7 @@ public class IntermediateStepExecuteBazelOnEach implements IntermediateStep {
     @Override
     public List<String> process(final List<String> input) throws IntegrationException {
         final List<String> adjustedInput;
-        if (input.size() == 0) {
+        if (input.isEmpty()) {
             adjustedInput = new ArrayList<>(1);
             adjustedInput.add(null);
         } else {

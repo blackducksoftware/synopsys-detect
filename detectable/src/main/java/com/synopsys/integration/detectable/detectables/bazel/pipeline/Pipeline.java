@@ -45,7 +45,6 @@ public class Pipeline {
         for (final IntermediateStep pipelineStep : intermediateSteps) {
             pipelineData = pipelineStep.process(pipelineData);
         }
-        final MutableDependencyGraph dependencyGraph = finalStep.finish(pipelineData);
-        return dependencyGraph;
+        return finalStep.finish(pipelineData);
     }
 }

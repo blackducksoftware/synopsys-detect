@@ -22,11 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
-import java.nio.channels.Pipe;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -35,7 +32,6 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.Bazel
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepColonSeparatedGavs;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepJsonProtoHaskellCabalLibraries;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepReplaceInEach;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepExecuteBazelOnEach;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepFilter;

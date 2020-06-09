@@ -27,7 +27,6 @@ import java.util.List;
 
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class PipelineBuilder {
     private final List<IntermediateStep> intermediateSteps = new ArrayList<>();

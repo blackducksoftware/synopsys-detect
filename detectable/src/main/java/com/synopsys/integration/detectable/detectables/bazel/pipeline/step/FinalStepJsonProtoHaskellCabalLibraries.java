@@ -79,8 +79,7 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
     private Dependency haskageCompNameVersionToDependency(final String compName, final String compVersion) {
         final ExternalId externalId = (new ExternalIdFactory()).createNameVersionExternalId(hackageForge, compName, compVersion);
         externalId.createBdioId(); // Validity check; throws IllegalStateException if invalid
-        final Dependency artifactDependency = new Dependency(compName, compVersion, externalId);
-        return artifactDependency;
+        return new Dependency(compName, compVersion, externalId);
     }
 
     private Optional<JsonObject> extractHaskellCabalLibraryRule(final JsonElement resultsArrayMemberElement) {
