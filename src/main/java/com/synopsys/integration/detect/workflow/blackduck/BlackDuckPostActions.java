@@ -72,7 +72,7 @@ public class BlackDuckPostActions {
                         codeLocationWaitController.getNotificationRange().getEndDate());
                     final NameVersion projectNameVersion = new NameVersion(projectView.getName(), projectVersionView.getVersionName());
                     final CodeLocationWaitResult result = codeLocationCreationService
-                        .waitForCodeLocations(notificationTaskRange, projectNameVersion, codeLocationWaitData.getCodeLocationNames(), codeLocationWaitData.getExpectedNotificationCount(),
+                        .waitForCodeLocations(notificationTaskRange, projectNameVersion, codeLocationWaitController.getCodeLocationNames(), codeLocationWaitController.getExpectedNotificationCount(),
                             timeoutInSeconds);
                     if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
                         throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
