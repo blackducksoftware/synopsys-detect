@@ -54,7 +54,7 @@ public class FormattedOutputManager {
         eventSystem.registerListener(Event.StatusSummary, this::addStatusSummary);
         eventSystem.registerListener(Event.Issue, this::addIssue);
         eventSystem.registerListener(Event.ResultProduced, this::addDetectResult);
-        eventSystem.registerListener(Event.CodeLocationNamesAdded, this::codeLocationsCalculated);
+        eventSystem.registerListener(Event.CodeLocationNamesAdded, this::codeLocationsAdded);
         eventSystem.registerListener(Event.ProjectNameVersionChosen, this::projectNameVersionChosen);
     }
 
@@ -130,7 +130,7 @@ public class FormattedOutputManager {
         this.detectorToolResult = detectorToolResult;
     }
 
-    private void codeLocationsCalculated(final Collection<String> codeLocations) {
+    private void codeLocationsAdded(final Collection<String> codeLocations) {
         this.codeLocations.addAll(codeLocations);
     }
 
