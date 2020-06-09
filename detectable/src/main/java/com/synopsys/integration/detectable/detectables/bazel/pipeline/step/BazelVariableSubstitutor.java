@@ -27,8 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import groovy.util.MapEntry;
-
 public class BazelVariableSubstitutor {
     private final Map<String, String> stringSubstitutions;
     private final Map<String, List<String>> listInsertions;
