@@ -18,6 +18,13 @@ For example:
 ```
 
 You can set any Docker Inspector property using this method.
+However, you usually should not override the values of the following Docker Inspector properties (which ${solution_name} sets)
+because changing their values is likely to interfere with ${solution_name}'s ability to work with Docker Inspector:
+
+* output.path
+* output.include.squashedimage
+* output.include.containerfilesystem
+* upload.bdio
 
 <a name="scantarget"></a>
 ### ${solution_name}'s scan target

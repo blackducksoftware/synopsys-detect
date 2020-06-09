@@ -18,7 +18,7 @@ The NuGet detectors do not work with mono.
 
 Source: https://github.com/blackducksoftware/blackduck-nuget-inspector
 
-Binary: https://repo.blackducksoftware.com:443/artifactory/bds-integrations-nuget-release/BlackduckNugetInspector
+Binary: https://sig-repo.synopsys.com/bds-integrations-nuget-release/BlackduckNugetInspector/
 
 Requires: .NET framework version 4.5
 
@@ -26,7 +26,7 @@ Requires: .NET framework version 4.5
 
 Source: https://github.com/blackducksoftware/integration-nuget-inspector
 
-Binary: https://repo.blackducksoftware.com:443/artifactory/bds-integrations-nuget-release/IntegrationNugetInspector
+Binary: https://sig-repo.synopsys.com/bds-integrations-nuget-release/IntegrationNugetInspector/
 
 ## Operation
 

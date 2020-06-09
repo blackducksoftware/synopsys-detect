@@ -45,7 +45,9 @@ public class ApkPackageManagerResolver implements ClangPackageManagerResolver {
     }
 
     @Override
-    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException {
+    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner,
+            File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException, NotOwnedByAnyPkgException {
+        isValid(queryPackageOutput);
         Optional<String> architecture = architectureResolver.resolveArchitecture(currentPackageManager, workingDirectory, executableRunner);
         List<PackageDetails> packageDetailsList = new ArrayList<>();
         final String[] packageLines = queryPackageOutput.split("\n");
@@ -65,6 +67,12 @@ public class ApkPackageManagerResolver implements ClangPackageManagerResolver {
             }
         }
         return packageDetailsList;
+    }
+
+    private void isValid(final String queryPackageOutput) throws NotOwnedByAnyPkgException {
+        if (queryPackageOutput.contains("ERROR") && queryPackageOutput.contains("Could not find owner package")) {
+            throw new NotOwnedByAnyPkgException(queryPackageOutput);
+        }
     }
 
     private String deriveVersion(final List<String> pkgParts) {

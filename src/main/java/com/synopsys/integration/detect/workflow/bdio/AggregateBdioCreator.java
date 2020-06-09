@@ -93,7 +93,7 @@ public class AggregateBdioCreator {
 
         detectBdioWriter.writeBdioFile(aggregateBdioFile, aggregateBdioDocument);
 
-        return createUploadTarget(codeLocationName, aggregateBdioFile, aggregateDependencyGraph, uploadEmptyAggregate);
+        return createUploadTarget(projectNameVersion, codeLocationName, aggregateBdioFile, aggregateDependencyGraph, uploadEmptyAggregate);
     }
 
     public Optional<UploadTarget> createAggregateBdio2File(final String aggregateName, final AggregateMode aggregateMode, final boolean uploadEmptyAggregate, final File sourcePath, final File bdioDirectory,
@@ -120,13 +120,13 @@ public class AggregateBdioCreator {
             throw new DetectUserFriendlyException(e.getMessage(), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
 
-        return createUploadTarget(codeLocationName, aggregateBdioFile, aggregateDependencyGraph, uploadEmptyAggregate);
+        return createUploadTarget(projectNameVersion, codeLocationName, aggregateBdioFile, aggregateDependencyGraph, uploadEmptyAggregate);
     }
 
-    private Optional<UploadTarget> createUploadTarget(final String codeLocationName, final File aggregateBdioFile, final DependencyGraph dependencyGraph, final boolean uploadEmptyAggregate) {
+    private Optional<UploadTarget> createUploadTarget(final NameVersion projectNameVersion, final String codeLocationName, final File aggregateBdioFile, final DependencyGraph dependencyGraph, final boolean uploadEmptyAggregate) {
         final boolean aggregateHasDependencies = !dependencyGraph.getRootDependencies().isEmpty();
         if (aggregateHasDependencies || uploadEmptyAggregate) {
-            return Optional.of(UploadTarget.createDefault(codeLocationName, aggregateBdioFile));
+            return Optional.of(UploadTarget.createDefault(projectNameVersion, codeLocationName, aggregateBdioFile));
         } else {
             logger.warn("The aggregate contained no dependencies, will not upload aggregate at this time.");
             return Optional.empty();

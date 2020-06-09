@@ -1,9 +1,10 @@
 # Python support
 
-${solution_name} has two detectors for Python:
+${solution_name} has three detectors for Python:
 
 * [Pip detector](#pipdetector)
 * [Pipenv detector](#pipenvdetector)
+* [Poetry detector](#poetrydetector)
 
 <a name="pipdetector"></a>
 ## The Pip detector
@@ -59,3 +60,15 @@ The Pipenv detector also requires Python and Pipenv executables:
 The Pipenv detector runs `pipenv run pip freeze` and `pipenv graph --bare --json-tree` and derives dependency information from the output. The dependency hierarchy is derived from the output of `pipenv graph --bare --json-tree`. The output of `pipenv run pip freeze` is used to improve the accuracy of dependency versions.
 
 To troubleshoot of the Pipenv detector, start by running `pipenv graph --bare --json-tree`, and making sure that the output looks correct since this is the basis from which ${solution_name} constructs the BDIO. If the output of `pipenv graph --bare --json-tree` does not look correct, make sure the packages (dependencies) are installed into the Pipenv virtual environment (`pipenv install`).
+
+<a name="poetrydetector"></a>
+## Poetry detector
+
+The Poetry detector discovers dependencies of Python projects.
+
+The Poetry detector attempts to run on your project if either of the following is true:
+
+1. A poetry.lock file is found.
+2. A pyproject.toml file is found.
+
+The Poetry detector parses poetry.lock for dependency information. If the detector discovers a pyproject.toml file but not a poetry.lock file, it will prompt the user to generate a poetry.lock by running `poetry install` and then run Detect again.

@@ -43,6 +43,7 @@ import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
+import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckPostActions {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -69,9 +70,10 @@ public class BlackDuckPostActions {
                     // In order to wait the full timeout, we have to not use that start time and instead use now().
                     final NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitController.getNotificationRange().getStartDate(),
                         codeLocationWaitController.getNotificationRange().getEndDate());
+                    final NameVersion projectNameVersion = new NameVersion(projectView.getName(), projectVersionView.getVersionName());
                     final CodeLocationWaitResult result = codeLocationCreationService
-                                                              .waitForCodeLocations(notificationTaskRange, codeLocationWaitController.getCodeLocationNames(), codeLocationWaitController.getExpectedNotificationCount(),
-                                                                  timeoutInSeconds);
+                        .waitForCodeLocations(notificationTaskRange, projectNameVersion, codeLocationWaitData.getCodeLocationNames(), codeLocationWaitData.getExpectedNotificationCount(),
+                            timeoutInSeconds);
                     if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
                         throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
                     }

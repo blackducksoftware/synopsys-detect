@@ -59,3 +59,17 @@ INFO: Invocation ID: 0a320967-b2a8-4b36-ab47-e183bc4d4781
 Loading: 0 packages loaded
 ```
 Finally, it parses the group/artifact/version details from the value of the string element using the name of artifact.
+
+## Example
+
+The following example will (if you add your ${blackduck_product_name} connection details
+to the ${solution_name} command line) run the Bazel tool on the
+*//tests/integration:ArtifactExclusionsTest* target in the
+rules_jvm_external project and discover dependencies defined with the
+maven_install repository rule:
+
+````
+git clone https://github.com/bazelbuild/rules_jvm_external
+cd rules_jvm_external/
+bash <(curl -s -L https://detect.synopsys.com/detect.sh) --detect.bazel.target='//tests/integration:ArtifactExclusionsTest'
+````

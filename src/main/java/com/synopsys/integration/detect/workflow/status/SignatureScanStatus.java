@@ -30,6 +30,6 @@ public class SignatureScanStatus extends Status {
     }
 
     public SignatureScanStatus(final String scanTargetPath, final StatusType statusType) {
-        super("Scan Target " + scanTargetPath, statusType);
+        super("Signature scan / Snippet scan on " + scanTargetPath, statusType);
     }
 }
