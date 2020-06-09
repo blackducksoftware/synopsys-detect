@@ -954,6 +954,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#no-project-nameversion-provided-or-derived" class="md-nav__link">
+    No project name/version provided or derived
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#symptom_8" class="md-nav__link">
+    Symptom
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#possible-cause_8" class="md-nav__link">
+    Possible cause
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solution_7" class="md-nav__link">
+    Solution
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -1795,6 +1829,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#no-project-nameversion-provided-or-derived" class="md-nav__link">
+    No project name/version provided or derived
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#symptom_8" class="md-nav__link">
+    Symptom
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#possible-cause_8" class="md-nav__link">
+    Possible cause
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solution_7" class="md-nav__link">
+    Solution
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -1919,6 +1987,17 @@ or application.xml that are written for any application other than Synopsys Dete
 <p>The value of $PATH contains a whitespace character after a semicolon and the path mentioned in the log message.</p>
 <h3 id="solution_6">Solution<a class="headerlink" href="#solution_6" title="Permanent link">#</a></h3>
 <p>Remove spaces immediately following semicolons in the value of $PATH.</p>
+<h2 id="no-project-nameversion-provided-or-derived">No project name/version provided or derived<a class="headerlink" href="#no-project-nameversion-provided-or-derived" title="Permanent link">#</a></h2>
+<h3 id="symptom_8">Symptom<a class="headerlink" href="#symptom_8" title="Permanent link">#</a></h3>
+<p>Upload to Black Duck fails with a message similar to the following in the log:</p>
+<pre><code>ERROR [main] -- createProject.arg0.name can't be blank [HTTP Error]: There was a problem trying to POST https://.../api/projects, response was 412 Precondition Failed.
+</code></pre>
+
+<h3 id="possible-cause_8">Possible cause<a class="headerlink" href="#possible-cause_8" title="Permanent link">#</a></h3>
+<p>No project name and version were provided via properties and no Synopsys Detect tool capable of deriving a project name and version was included in the run. For example,
+you will get this (or a similar) error if you run with --detect.tools.BINARY_SCANNER and do not set --detect.project.name or --detect.project.version.name.</p>
+<h3 id="solution_7">Solution<a class="headerlink" href="#solution_7" title="Permanent link">#</a></h3>
+<p>Set --detect.project.name and --detect.project.version.name.</p>
                 
                   
                 
