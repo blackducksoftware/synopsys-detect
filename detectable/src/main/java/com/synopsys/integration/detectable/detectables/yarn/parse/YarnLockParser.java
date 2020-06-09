@@ -35,16 +35,16 @@ public class YarnLockParser {
     private static final String VERSION_SUFFIX = "\"";
     private static final String OPTIONAL_DEPENDENCIES_TOKEN = "optionalDependencies:";
 
-    public YarnLock parseYarnLock(final List<String> yarnLockFileAsList) {
-        final List<YarnLockEntry> entries = new ArrayList<>();
+    public YarnLock parseYarnLock(List<String> yarnLockFileAsList) {
+        List<YarnLockEntry> entries = new ArrayList<>();
         String resolvedVersion = "";
         List<YarnLockDependency> dependencies = new ArrayList<>();
         List<YarnLockEntryId> ids;
         boolean inOptionalDependencies = false;
 
-        final List<String> cleanedYarnLockFileAsList = cleanList(yarnLockFileAsList);
+        List<String> cleanedYarnLockFileAsList = cleanList(yarnLockFileAsList);
 
-        final int indexOfFirstLevelZeroLine = findIndexOfFirstLevelZeroLine(cleanedYarnLockFileAsList);
+        int indexOfFirstLevelZeroLine = findIndexOfFirstLevelZeroLine(cleanedYarnLockFileAsList);
 
         if (indexOfFirstLevelZeroLine == -1 || indexOfFirstLevelZeroLine == cleanedYarnLockFileAsList.size() - 1) {
             return new YarnLock(entries);
@@ -53,12 +53,12 @@ public class YarnLockParser {
         // We need to set ids with the first level zero line
         ids = parseMultipleEntryLine(cleanedYarnLockFileAsList.get(indexOfFirstLevelZeroLine));
 
-        final List<String> yarnLinesThatMatter = cleanedYarnLockFileAsList.subList(indexOfFirstLevelZeroLine + 1, cleanedYarnLockFileAsList.size());
+        List<String> yarnLinesThatMatter = cleanedYarnLockFileAsList.subList(indexOfFirstLevelZeroLine + 1, cleanedYarnLockFileAsList.size());
 
-        for (final String line : yarnLinesThatMatter) {
+        for (String line : yarnLinesThatMatter) {
 
-            final String trimmedLine = line.trim();
-            final int level = countIndent(line);
+            String trimmedLine = line.trim();
+            int level = countIndent(line);
             if (level == 0) {
                 entries.add(new YarnLockEntry(ids, resolvedVersion, dependencies));
                 resolvedVersion = "";
@@ -81,7 +81,7 @@ public class YarnLockParser {
     }
 
     @NotNull
-    private Integer findIndexOfFirstLevelZeroLine(final List<String> cleanedYarnLockFileAsList) {
+    private Integer findIndexOfFirstLevelZeroLine(List<String> cleanedYarnLockFileAsList) {
         return cleanedYarnLockFileAsList
                    .stream()
                    .filter(line -> countIndent(line) == 0)
@@ -91,7 +91,7 @@ public class YarnLockParser {
     }
 
     @NotNull
-    private List<String> cleanList(final List<String> yarnLockFileAsList) {
+    private List<String> cleanList(List<String> yarnLockFileAsList) {
         return yarnLockFileAsList
                    .stream()
                    .filter(StringUtils::isNotBlank)
@@ -108,41 +108,41 @@ public class YarnLockParser {
         return count;
     }
 
-    private YarnLockDependency parseDependencyFromLine(final String line, final boolean optional) {
-        final String[] pieces = StringUtils.split(line, " ", 2);
+    private YarnLockDependency parseDependencyFromLine(String line, boolean optional) {
+        String[] pieces = StringUtils.split(line, " ", 2);
         return new YarnLockDependency(removeWrappingQuotes(pieces[0]), removeWrappingQuotes(pieces[1]), optional);
     }
 
-    private String removeWrappingQuotes(final String s) {
+    private String removeWrappingQuotes(String s) {
         return StringUtils.removeStart(StringUtils.removeEnd(s.trim(), "\""), "\"");
     }
 
     //Takes a line of the form "entry \"entry\" entry:"
-    public List<YarnLockEntryId> parseMultipleEntryLine(final String line) {
-        final List<YarnLockEntryId> ids = new ArrayList<>();
-        final String[] entries = line.split(",");
-        for (final String entryRaw : entries) {
-            final String entryNoColon = StringUtils.removeEnd(entryRaw.trim(), ":");
-            final String entryNoColonOrQuotes = removeWrappingQuotes(entryNoColon);
-            final YarnLockEntryId entry = parseSingleEntry(entryNoColonOrQuotes);
+    public List<YarnLockEntryId> parseMultipleEntryLine(String line) {
+        List<YarnLockEntryId> ids = new ArrayList<>();
+        String[] entries = line.split(",");
+        for (String entryRaw : entries) {
+            String entryNoColon = StringUtils.removeEnd(entryRaw.trim(), ":");
+            String entryNoColonOrQuotes = removeWrappingQuotes(entryNoColon);
+            YarnLockEntryId entry = parseSingleEntry(entryNoColonOrQuotes);
             ids.add(entry);
         }
         return ids;
     }
 
     //Takes an entry of format "name@version" or "@name@version" where name has an @ symbol.
-    public YarnLockEntryId parseSingleEntry(final String entry) {
+    public YarnLockEntryId parseSingleEntry(String entry) {
         if (StringUtils.countMatches(entry, "@") == 1 && entry.startsWith("@")) {
             return new YarnLockEntryId(entry, "");
         } else {
-            final String name = StringUtils.substringBeforeLast(entry, "@");
-            final String version = StringUtils.substringAfterLast(entry, "@");
+            String name = StringUtils.substringBeforeLast(entry, "@");
+            String version = StringUtils.substringAfterLast(entry, "@");
             return new YarnLockEntryId(name, version);
         }
     }
 
-    private String parseVersionFromLine(final String line) {
-        final String rawVersion = line.substring(VERSION_PREFIX.length(), line.lastIndexOf(VERSION_SUFFIX));
+    private String parseVersionFromLine(String line) {
+        String rawVersion = line.substring(VERSION_PREFIX.length(), line.lastIndexOf(VERSION_SUFFIX));
         return removeWrappingQuotes(rawVersion);
     }
 }
