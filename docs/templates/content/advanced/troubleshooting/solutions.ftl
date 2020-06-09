@@ -159,3 +159,22 @@ The value of $PATH contains a whitespace character after a semicolon and the pat
 ### Solution
 
 Remove spaces immediately following semicolons in the value of $PATH.
+
+## No project name/version provided or derived
+
+### Symptom
+
+Upload to ${blackduck_product_name} fails with a message similar to the following in the log:
+
+````
+ERROR [main] -- createProject.arg0.name can't be blank [HTTP Error]: There was a problem trying to POST https://.../api/projects, response was 412 Precondition Failed.
+````
+
+### Possible cause
+
+No project name and version were provided via properties and no ${solution_name} tool capable of deriving a project name and version was included in the run. For example,
+you will get this (or a similar) error if you run with --detect.tools.BINARY_SCANNER and do not set --detect.project.name or --detect.project.version.name.
+
+### Solution
+
+Set --detect.project.name and --detect.project.version.name.
