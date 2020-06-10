@@ -186,7 +186,7 @@ class DetectProperties {
         }
         val DETECT_BINARY_SCAN_FILE = NullablePathProperty("detect.binary.scan.file.path").apply {
             setInfo("Binary Scan Target", "4.2.0")
-            setHelp("If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns.")
+            setHelp("If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns. The BINARY_SCAN tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the BINARY_SCAN tool is invoked.")
             setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_PATH)
         }
         val DETECT_BINARY_SCAN_FILE_NAME_PATTERNS = StringListProperty("detect.binary.scan.file.name.patterns", emptyList()).apply {
