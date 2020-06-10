@@ -223,7 +223,7 @@ public class RunBeanConfiguration {
         }
 
         final ExecutableRunner executableRunner = executableRunner();
-        final DotNetRuntimeFinder runtimeFinder = new DotNetRuntimeFinder(executableRunner, directoryManager.getPermanentDirectory());
+        final DotNetRuntimeFinder runtimeFinder = new DotNetRuntimeFinder(executableRunner, directoryManager.getSourceDirectory());
         final DotNetRuntimeManager dotNetRuntimeManager = new DotNetRuntimeManager(runtimeFinder, new DotNetRuntimeParser());
         return new LocatorNugetInspectorResolver(detectExecutableResolver(), executableRunner, detectInfo, fullFileFinder(), installerOptions.getNugetInspectorName(), installerOptions.getPackagesRepoUrl(), locator, dotNetRuntimeManager);
     }
