@@ -41,26 +41,26 @@ public class DotNetRuntimeFinder {
     private final ExecutableRunner executableRunner;
     private final File workingDir;
 
-    public DotNetRuntimeFinder(ExecutableRunner executableRunner, File workingDir) {
+    public DotNetRuntimeFinder(final ExecutableRunner executableRunner, final File workingDir) {
         this.executableRunner = executableRunner;
         this.workingDir = workingDir;
     }
 
     public List<String> listAvailableRuntimes() throws DetectableException {
         try {
-            ExecutableOutput runtimesOutput = executableRunner.execute(workingDir, "dotnet", "--list-runtimes");
-            List<String> foundRuntimes = runtimesOutput.getStandardOutputAsList()
-                                             .stream()
-                                             .map(StringUtils::trimToEmpty)
-                                             .filter(StringUtils::isNotBlank)
-                                             .collect(Collectors.toList());
+            final ExecutableOutput runtimesOutput = executableRunner.execute(workingDir, "dotnet", "--list-runtimes");
+            final List<String> foundRuntimes = runtimesOutput.getStandardOutputAsList()
+                                                   .stream()
+                                                   .map(StringUtils::trimToEmpty)
+                                                   .filter(StringUtils::isNotBlank)
+                                                   .collect(Collectors.toList());
             logger.info("Found {} available dotnet runtimes", foundRuntimes.size());
             if (foundRuntimes.isEmpty()) {
                 throw new DetectableException("No available dotnet runtimes");
             }
             return foundRuntimes;
-        } catch (ExecutableRunnerException e) {
-            throw new DetectableException("Could not determine available dotnet runtimes", e);
+        } catch (final ExecutableRunnerException e) {
+            throw new DetectableException(String.format("Could not determine available dotnet runtimes: %s", e.getLocalizedMessage()), e);
         }
     }
 }
