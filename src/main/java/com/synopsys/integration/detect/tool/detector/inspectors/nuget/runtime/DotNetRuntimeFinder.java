@@ -30,37 +30,49 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 
 public class DotNetRuntimeFinder {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final String DOTNET_LIST_RUNTIMES_COMMAND = "--list-runtimes";
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExecutableRunner executableRunner;
+    private final DetectExecutableResolver executableResolver;
     private final File workingDir;
 
-    public DotNetRuntimeFinder(ExecutableRunner executableRunner, File workingDir) {
+    public DotNetRuntimeFinder(final ExecutableRunner executableRunner, final DetectExecutableResolver executableResolver, final File workingDir) {
         this.executableRunner = executableRunner;
+        this.executableResolver = executableResolver;
         this.workingDir = workingDir;
     }
 
     public List<String> listAvailableRuntimes() throws DetectableException {
         try {
-            ExecutableOutput runtimesOutput = executableRunner.execute(workingDir, "dotnet", "--list-runtimes");
-            List<String> foundRuntimes = runtimesOutput.getStandardOutputAsList()
-                                             .stream()
-                                             .map(StringUtils::trimToEmpty)
-                                             .filter(StringUtils::isNotBlank)
-                                             .collect(Collectors.toList());
+            final ExecutableOutput runtimesOutput = dotnetListRuntimes();
+            final List<String> foundRuntimes = runtimesOutput.getStandardOutputAsList()
+                                                   .stream()
+                                                   .map(StringUtils::trimToEmpty)
+                                                   .filter(StringUtils::isNotBlank)
+                                                   .collect(Collectors.toList());
             logger.info("Found {} available dotnet runtimes", foundRuntimes.size());
             if (foundRuntimes.isEmpty()) {
                 throw new DetectableException("No available dotnet runtimes");
             }
             return foundRuntimes;
-        } catch (ExecutableRunnerException e) {
+        } catch (final ExecutableRunnerException e) {
             throw new DetectableException("Could not determine available dotnet runtimes", e);
         }
+    }
+
+    private ExecutableOutput dotnetListRuntimes() throws DetectableException, ExecutableRunnerException {
+        final File dotnetExe = executableResolver.resolveDotNet();
+        if (dotnetExe != null) {
+            return executableRunner.execute(workingDir, dotnetExe, DOTNET_LIST_RUNTIMES_COMMAND);
+        }
+        return executableRunner.execute(workingDir, "dotnet", DOTNET_LIST_RUNTIMES_COMMAND);
     }
 }
