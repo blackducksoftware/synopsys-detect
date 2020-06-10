@@ -10,6 +10,7 @@
 * The CLANG detector collects any dependency files not recognized by the Linux package manager that reside outside the source directory (the directory containing the compile_commands.json file),
 and writes them to the status.json file.
 * Added the property [detect.blackduck.signature.scanner.copyright.search](../properties/configuration/signature scanner/#signature-scanner-copyright-search-advanced).
+* Removed PipEnv from the list of buildless detectors as it was never buildless.
 
 ### Resolved issues
 * (IDETECT-2019) Resolved an issue where the pip inspector would not be able to parse the requirements.txt file if pip's version was >= 20.1.
