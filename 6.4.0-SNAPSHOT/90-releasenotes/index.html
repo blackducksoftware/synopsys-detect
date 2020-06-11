@@ -2285,17 +2285,21 @@
                 <h1 id="release-notes">Release notes<a class="headerlink" href="#release-notes" title="Permanent link">#</a></h1>
 <h2 id="version-640">Version 6.4.0<a class="headerlink" href="#version-640" title="Permanent link">#</a></h2>
 <h3 id="new-features">New features<a class="headerlink" href="#new-features" title="Permanent link">#</a></h3>
+<ul>
+<li>Detect now supports projects managed by the Cargo package manager.</li>
+<li>Detect now supports projects managed by the Poetry package manager.</li>
+</ul>
 <h3 id="changed-features">Changed features<a class="headerlink" href="#changed-features" title="Permanent link">#</a></h3>
 <ul>
 <li>Eliminated any need for the Black Duck Global Code Scanner overall role.</li>
 <li>The CLANG detector collects any dependency files not recognized by the Linux package manager that reside outside the source directory (the directory containing the compile_commands.json file),
 and writes them to the status.json file.</li>
-<li>Detect now supports projects managed by the Poetry package manager.</li>
 <li>Added the property <a href="../properties/configuration/signature scanner/#signature-scanner-copyright-search-advanced">detect.blackduck.signature.scanner.copyright.search</a>.</li>
-<li>Detect now supports projects managed by the Cargo package manager.</li>
+<li>Removed PipEnv from the list of buildless detectors as it was never buildless.</li>
 </ul>
 <h3 id="resolved-issues">Resolved issues<a class="headerlink" href="#resolved-issues" title="Permanent link">#</a></h3>
 <ul>
+<li>(IDETECT-2019) Resolved an issue where the pip inspector would not be able to parse the requirements.txt file if pip's version was &gt;= 20.1.</li>
 <li>(IDETECT-2034) Resolved an issue that would cause a NullPointerException when Synopsys Detect's initial attempt at generating a code location name produced a code location name greater than 250 characters and either code location prefix or code location suffix is not set.</li>
 </ul>
 <h2 id="version-630">Version 6.3.0<a class="headerlink" href="#version-630" title="Permanent link">#</a></h2>
