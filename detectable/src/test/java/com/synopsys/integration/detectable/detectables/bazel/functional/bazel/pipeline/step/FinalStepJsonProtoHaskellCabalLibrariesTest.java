@@ -14,6 +14,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepJsonProtoHaskellCabalLibraries;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -23,7 +24,7 @@ public class FinalStepJsonProtoHaskellCabalLibrariesTest {
     public void testStep() throws IntegrationException, IOException {
         File jsonProtoFile = new File("src/test/resources/detectables/functional/bazel/jsonProtoForHaskellCabalLibraries.txt");
         String jsonProtoHaskellCabalLibrary = FileUtils.readFileToString(jsonProtoFile, StandardCharsets.UTF_8);
-        FinalStepJsonProtoHaskellCabalLibraries step = new FinalStepJsonProtoHaskellCabalLibraries();
+        FinalStepJsonProtoHaskellCabalLibraries step = new FinalStepJsonProtoHaskellCabalLibraries(new HaskellCabalLibraryJsonProtoParser());
         List<String> input = new ArrayList<>(1);
         input.add(jsonProtoHaskellCabalLibrary);
 
