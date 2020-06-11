@@ -1,8 +1,5 @@
 package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline.step;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -10,39 +7,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
-import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepJsonProtoHaskellCabalLibraries;
+import com.synopsys.integration.detectable.util.graph.GraphAssert;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class FinalStepJsonProtoHaskellCabalLibrariesTest {
 
     @Test
     public void testStep() throws IntegrationException, IOException {
-        final File jsonProtoFile = new File("src/test/resources/detectables/functional/bazel/jsonProtoForHaskellCabalLibraries.txt");
-        final String jsonProtoHaskellCabalLibrary = FileUtils.readFileToString(jsonProtoFile, StandardCharsets.UTF_8);
-        final FinalStepJsonProtoHaskellCabalLibraries step = new FinalStepJsonProtoHaskellCabalLibraries();
-        final List<String> input = new ArrayList<>(1);
+        File jsonProtoFile = new File("src/test/resources/detectables/functional/bazel/jsonProtoForHaskellCabalLibraries.txt");
+        String jsonProtoHaskellCabalLibrary = FileUtils.readFileToString(jsonProtoFile, StandardCharsets.UTF_8);
+        FinalStepJsonProtoHaskellCabalLibraries step = new FinalStepJsonProtoHaskellCabalLibraries();
+        List<String> input = new ArrayList<>(1);
         input.add(jsonProtoHaskellCabalLibrary);
-        final MutableDependencyGraph graph = step.finish(input);
-        assertEquals(5, graph.getRootDependencies().size());
-        boolean foundTargetComp = false;
-        for (final Dependency dep : graph.getRootDependencies()) {
-            if ("colour".equals(dep.getExternalId().getName())) {
-                assertEquals("hackage", dep.getExternalId().getForge().getName());
-                assertEquals("/", dep.getExternalId().getForge().getSeparator());
-                assertEquals("colour", dep.getExternalId().getName());
-                assertEquals("2.3.5", dep.getExternalId().getVersion());
-                assertTrue(StringUtils.isBlank(dep.getExternalId().getGroup()));
-                assertTrue(StringUtils.isBlank(dep.getExternalId().getArchitecture()));
-                foundTargetComp = true;
-                break;
-            }
-        }
-        assertTrue(foundTargetComp);
+
+        MutableDependencyGraph graph = step.finish(input);
+
+        Forge hackageForge = new Forge("/", "hackage");
+        GraphAssert graphAssert = new GraphAssert(hackageForge, graph);
+        graphAssert.hasRootSize(1);
+        ExternalId expectedExternalId = new ExternalIdFactory().createNameVersionExternalId(hackageForge, "colour", "2.3.5");
+        graphAssert.hasRootDependency(expectedExternalId);
     }
 }

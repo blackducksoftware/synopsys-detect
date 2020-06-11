@@ -30,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
@@ -39,9 +41,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
     private static final String FORGE_NAME = "hackage";
     private static final String FORGE_SEPARATOR = "/";
@@ -49,12 +48,12 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
     private final Forge hackageForge = new Forge(FORGE_SEPARATOR, FORGE_NAME);
 
     @Override
-    public MutableDependencyGraph finish(final List<String> input) throws IntegrationException {
-        final String jsonString = extractJsonString(input);
-        final JsonArray resultsArray = parseResultsJson(jsonString);
-        final MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        for (final JsonElement resultsArrayMemberElement : resultsArray) {
-            final Optional<JsonObject> ruleObject = extractHaskellCabalLibraryRule(resultsArrayMemberElement);
+    public MutableDependencyGraph finish(List<String> input) throws IntegrationException {
+        String jsonString = extractJsonString(input);
+        JsonArray resultsArray = parseResultsJson(jsonString);
+        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        for (JsonElement resultsArrayMemberElement : resultsArray) {
+            Optional<JsonObject> ruleObject = extractHaskellCabalLibraryRule(resultsArrayMemberElement);
             if (ruleObject.isPresent()) {
                 addDependencyToGraph(dependencyGraph, ruleObject.get());
             }
@@ -62,42 +61,42 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
         return dependencyGraph;
     }
 
-    private String extractJsonString(final List<String> input) throws IntegrationException {
+    private String extractJsonString(List<String> input) throws IntegrationException {
         if (input.size() != 1) {
             throw new IntegrationException(String.format("Input size is %d; expected 1", input.size()));
         }
         return input.get(0);
     }
 
-    private JsonArray parseResultsJson(final String jsonString) {
-        final JsonElement protoElement = JsonParser.parseString(jsonString);
-        final JsonObject protoObject = protoElement.getAsJsonObject();
-        final JsonElement resultsElement = protoObject.get("results");
+    private JsonArray parseResultsJson(String jsonString) {
+        JsonElement protoElement = JsonParser.parseString(jsonString);
+        JsonObject protoObject = protoElement.getAsJsonObject();
+        JsonElement resultsElement = protoObject.get("results");
         return resultsElement.getAsJsonArray();
     }
 
-    private Dependency haskageCompNameVersionToDependency(final String compName, final String compVersion) {
-        final ExternalId externalId = (new ExternalIdFactory()).createNameVersionExternalId(hackageForge, compName, compVersion);
+    private Dependency hackageCompNameVersionToDependency(String compName, String compVersion) {
+        ExternalId externalId = (new ExternalIdFactory()).createNameVersionExternalId(hackageForge, compName, compVersion);
         externalId.createBdioId(); // Validity check; throws IllegalStateException if invalid
         return new Dependency(compName, compVersion, externalId);
     }
 
-    private Optional<JsonObject> extractHaskellCabalLibraryRule(final JsonElement resultsArrayMemberElement) {
-        final JsonObject resultsArrayMemberObject = resultsArrayMemberElement.getAsJsonObject();
-        final JsonElement targetElement = resultsArrayMemberObject.get("target");
-        final JsonObject targetObject = targetElement.getAsJsonObject();
+    private Optional<JsonObject> extractHaskellCabalLibraryRule(JsonElement resultsArrayMemberElement) {
+        JsonObject resultsArrayMemberObject = resultsArrayMemberElement.getAsJsonObject();
+        JsonElement targetElement = resultsArrayMemberObject.get("target");
+        JsonObject targetObject = targetElement.getAsJsonObject();
         logger.debug(String.format("targetType: %s", targetObject.get("type").toString()));
-        final JsonElement targetTypeElement = targetObject.get("type");
-        final String targetTypeValue = targetTypeElement.getAsString();
+        JsonElement targetTypeElement = targetObject.get("type");
+        String targetTypeValue = targetTypeElement.getAsString();
         if (!"RULE".equals(targetTypeValue)) {
             logger.debug(String.format("This is not a rule; skipping it. (It's a %s)", targetTypeValue));
             return Optional.empty();
         }
-        final JsonElement ruleElement = targetObject.get("rule");
-        final JsonObject ruleObject = ruleElement.getAsJsonObject();
+        JsonElement ruleElement = targetObject.get("rule");
+        JsonObject ruleObject = ruleElement.getAsJsonObject();
         logger.debug(String.format("ruleClass: %s", ruleObject.get("ruleClass").toString()));
-        final JsonElement ruleClassElement = ruleObject.get("ruleClass");
-        final String ruleClassValue = ruleClassElement.getAsString();
+        JsonElement ruleClassElement = ruleObject.get("ruleClass");
+        String ruleClassValue = ruleClassElement.getAsString();
         if (!"haskell_cabal_library".equals(ruleClassValue)) {
             logger.debug(String.format("This is not a haskell_cabal_library rule; skipping it. (It's a %s rule)", ruleClassValue));
             return Optional.empty();
@@ -105,35 +104,35 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
         return Optional.of(ruleObject);
     }
 
-    private void addDependencyToGraph(final MutableDependencyGraph dependencyGraph, final JsonObject ruleObject) throws IntegrationException {
-        final JsonElement attributeElement = ruleObject.get("attribute");
-        final JsonArray attributeArray = attributeElement.getAsJsonArray();
+    private void addDependencyToGraph(MutableDependencyGraph dependencyGraph, JsonObject ruleObject) throws IntegrationException {
+        JsonElement attributeElement = ruleObject.get("attribute");
+        JsonArray attributeArray = attributeElement.getAsJsonArray();
 
-        final NameVersion dependencyNameVersion = extractDependencyDetails(attributeArray);
-        final Dependency artifactDependency = haskageCompNameVersionToDependency(dependencyNameVersion.getName(), dependencyNameVersion.getVersion());
+        NameVersion dependencyNameVersion = extractDependencyDetails(attributeArray);
+        Dependency artifactDependency = hackageCompNameVersionToDependency(dependencyNameVersion.getName(), dependencyNameVersion.getVersion());
         try {
             logger.debug(String.format("Adding %s to graph", artifactDependency.getExternalId().toString()));
             dependencyGraph.addChildToRoot(artifactDependency);
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.error(String.format("Unable to create dependency from %s/%s", dependencyNameVersion.getName(), dependencyNameVersion.getVersion()));
         }
     }
 
-    private NameVersion extractDependencyDetails(final JsonArray attributeArray) throws IntegrationException {
+    private NameVersion extractDependencyDetails(JsonArray attributeArray) throws IntegrationException {
         String dependencyNameValue = null;
         String dependencyVersionValue = null;
-        for (final JsonElement currentAttribute : attributeArray) {
-            final JsonObject currentAttributeObject = currentAttribute.getAsJsonObject();
-            final JsonElement currentAttributeNameElement = currentAttributeObject.get("name");
-            final String currentAttributeNameValue = currentAttributeNameElement.getAsString();
+        for (JsonElement currentAttribute : attributeArray) {
+            JsonObject currentAttributeObject = currentAttribute.getAsJsonObject();
+            JsonElement currentAttributeNameElement = currentAttributeObject.get("name");
+            String currentAttributeNameValue = currentAttributeNameElement.getAsString();
             logger.trace(String.format("currentAttributeNameElement: %s", currentAttributeNameValue));
             if ("name".equals(currentAttributeNameValue)) {
-                final JsonElement dependencyNameElement = currentAttributeObject.get("stringValue");
+                JsonElement dependencyNameElement = currentAttributeObject.get("stringValue");
                 dependencyNameValue = dependencyNameElement.getAsString();
                 logger.trace(String.format("dependencyNameValue: %s", dependencyNameValue));
             }
             if ("version".equals(currentAttributeNameValue)) {
-                final JsonElement dependencyVersionElement = currentAttributeObject.get("stringValue");
+                JsonElement dependencyVersionElement = currentAttributeObject.get("stringValue");
                 dependencyVersionValue = dependencyVersionElement.getAsString();
                 logger.trace(String.format("dependencyVersionValue: %s", dependencyVersionValue));
             }
