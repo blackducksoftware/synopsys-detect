@@ -101,6 +101,7 @@ public class ProductBoot {
                         PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
                         blackDuckRunData = BlackDuckRunData.online(blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
                     } else {
+                        logger.debug("Skipping phone home due to Black Duck global settings.");
                         blackDuckRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig());
                     }
                 } else {
