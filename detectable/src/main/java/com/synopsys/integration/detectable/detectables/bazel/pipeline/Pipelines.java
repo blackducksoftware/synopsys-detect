@@ -46,33 +46,34 @@ public class Pipelines {
     public Pipelines(BazelCommandExecutor bazelCommandExecutor, BazelVariableSubstitutor bazelVariableSubstitutor,
         ExternalIdFactory externalIdFactory) {
         Pipeline mavenJarPipeline = (new PipelineBuilder())
-                                              .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "filter('@.*:jar', deps(${detect.bazel.target}))")))
-                                              .addIntermediateStep(new IntermediateStepSplitEach("\\s+"))
-                                              .addIntermediateStep(new IntermediateStepReplaceInEach("^@", ""))
-                                              .addIntermediateStep(new IntermediateStepReplaceInEach("//.*", ""))
-                                              .addIntermediateStep(new IntermediateStepReplaceInEach("^", "//external:"))
-                                              .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "kind(maven_jar, ${input.item})", "--output", "xml")))
-                                              .addIntermediateStep(new IntermediateStepParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value"))
-                                              .setFinalStep(new FinalStepColonSeparatedGavs(externalIdFactory))
-                                              .build();
+                                        .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "filter('@.*:jar', deps(${detect.bazel.target}))")))
+                                        .addIntermediateStep(new IntermediateStepSplitEach("\\s+"))
+                                        .addIntermediateStep(new IntermediateStepReplaceInEach("^@", ""))
+                                        .addIntermediateStep(new IntermediateStepReplaceInEach("//.*", ""))
+                                        .addIntermediateStep(new IntermediateStepReplaceInEach("^", "//external:"))
+                                        .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "kind(maven_jar, ${input.item})", "--output", "xml")))
+                                        .addIntermediateStep(new IntermediateStepParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value"))
+                                        .setFinalStep(new FinalStepColonSeparatedGavs(externalIdFactory))
+                                        .build();
         availablePipelines.put(WorkspaceRule.MAVEN_JAR, mavenJarPipeline);
 
         Pipeline mavenInstallPipeline = (new PipelineBuilder())
-                                                  .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
-                                                      Arrays.asList("cquery", "--noimplicit_deps", "${detect.bazel.cquery.options}", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")))
-                                                  .addIntermediateStep(new IntermediateStepSplitEach("\n"))
-                                                  .addIntermediateStep(new IntermediateStepFilter(".*maven_coordinates=.*"))
-                                                  .addIntermediateStep(new IntermediateStepReplaceInEach(".*\"maven_coordinates=", ""))
-                                                  .addIntermediateStep(new IntermediateStepReplaceInEach("\".*", ""))
-                                                  .setFinalStep(new FinalStepColonSeparatedGavs(externalIdFactory))
-                                                  .build();
+                                            .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
+                                                Arrays.asList("cquery", "--noimplicit_deps", "${detect.bazel.cquery.options}", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")))
+                                            .addIntermediateStep(new IntermediateStepSplitEach("\n"))
+                                            .addIntermediateStep(new IntermediateStepFilter(".*maven_coordinates=.*"))
+                                            .addIntermediateStep(new IntermediateStepReplaceInEach(".*\"maven_coordinates=", ""))
+                                            .addIntermediateStep(new IntermediateStepReplaceInEach("\".*", ""))
+                                            .setFinalStep(new FinalStepColonSeparatedGavs(externalIdFactory))
+                                            .build();
         availablePipelines.put(WorkspaceRule.MAVEN_INSTALL, mavenInstallPipeline);
 
         Pipeline haskellCabalLibraryPipeline = (new PipelineBuilder())
-                                                         .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
-                                                             Arrays.asList("cquery", "--noimplicit_deps", "${detect.bazel.cquery.options}", "kind(haskell_cabal_library, deps(${detect.bazel.target}))", "--output", "jsonproto")))
-                                                         .setFinalStep(new FinalStepJsonProtoHaskellCabalLibraries(new HaskellCabalLibraryJsonProtoParser()))
-                                                         .build();
+                                                   .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
+                                                       Arrays.asList("cquery", "--noimplicit_deps", "${detect.bazel.cquery.options}", "kind(haskell_cabal_library, deps(${detect.bazel.target}))", "--output", "jsonproto")))
+                                                   .setFinalStep(new FinalStepJsonProtoHaskellCabalLibraries(new HaskellCabalLibraryJsonProtoParser(),
+                                                       new ExternalIdFactory()))
+                                                   .build();
         availablePipelines.put(WorkspaceRule.HASKELL_CABAL_LIBRARY, haskellCabalLibraryPipeline);
     }
 

@@ -24,7 +24,9 @@ public class FinalStepJsonProtoHaskellCabalLibrariesTest {
     public void testStep() throws IntegrationException, IOException {
         File jsonProtoFile = new File("src/test/resources/detectables/functional/bazel/jsonProtoForHaskellCabalLibraries.txt");
         String jsonProtoHaskellCabalLibrary = FileUtils.readFileToString(jsonProtoFile, StandardCharsets.UTF_8);
-        FinalStepJsonProtoHaskellCabalLibraries step = new FinalStepJsonProtoHaskellCabalLibraries(new HaskellCabalLibraryJsonProtoParser());
+        FinalStepJsonProtoHaskellCabalLibraries step = new FinalStepJsonProtoHaskellCabalLibraries(
+            new HaskellCabalLibraryJsonProtoParser(),
+            new ExternalIdFactory());
         List<String> input = new ArrayList<>(1);
         input.add(jsonProtoHaskellCabalLibrary);
 

@@ -42,9 +42,11 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Forge hackageForge = new Forge(FORGE_SEPARATOR, FORGE_NAME);
     private final HaskellCabalLibraryJsonProtoParser parser;
+    private final ExternalIdFactory externalIdFactory;
 
-    public FinalStepJsonProtoHaskellCabalLibraries(HaskellCabalLibraryJsonProtoParser parser) {
+    public FinalStepJsonProtoHaskellCabalLibraries(HaskellCabalLibraryJsonProtoParser parser, ExternalIdFactory externalIdFactory) {
         this.parser = parser;
+        this.externalIdFactory = externalIdFactory;
     }
 
     @Override
@@ -65,12 +67,6 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
         return input.get(0);
     }
 
-    private Dependency hackageCompNameVersionToDependency(String compName, String compVersion) {
-        ExternalId externalId = (new ExternalIdFactory()).createNameVersionExternalId(hackageForge, compName, compVersion);
-        externalId.createBdioId(); // Validity check; throws IllegalStateException if invalid
-        return new Dependency(compName, compVersion, externalId);
-    }
-
     private void addDependencyToGraph(MutableDependencyGraph dependencyGraph, NameVersion dependencyDetails) throws IntegrationException {
         Dependency artifactDependency = hackageCompNameVersionToDependency(dependencyDetails.getName(), dependencyDetails.getVersion());
         try {
@@ -79,5 +75,11 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
         } catch (Exception e) {
             logger.error(String.format("Unable to create dependency from %s/%s", dependencyDetails.getName(), dependencyDetails.getVersion()));
         }
+    }
+
+    private Dependency hackageCompNameVersionToDependency(String compName, String compVersion) {
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(hackageForge, compName, compVersion);
+        externalId.createBdioId(); // Validity check; throws IllegalStateException if invalid
+        return new Dependency(compName, compVersion, externalId);
     }
 }
