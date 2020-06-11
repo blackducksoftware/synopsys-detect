@@ -27,8 +27,6 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
@@ -49,16 +47,22 @@ import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
 public class ProductBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public ProductRunData boot(ProductDecision productDecision, ProductBootOptions productBootOptions, BlackDuckConnectivityChecker blackDuckConnectivityChecker,
+    public ProductRunData boot(
+        ProductDecision productDecision,
+        ProductBootOptions productBootOptions,
+        BlackDuckConnectivityChecker blackDuckConnectivityChecker,
         PolarisConnectivityChecker polarisConnectivityChecker,
-        ProductBootFactory productBootFactory) throws DetectUserFriendlyException {
+        ProductBootFactory productBootFactory,
+        AnalyticsConfigurationService analyticsConfigurationService
+    ) throws DetectUserFriendlyException {
+
         if (!productDecision.willRunAny()) {
             throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
         }
 
         logger.debug("Detect product boot start.");
 
-        BlackDuckRunData blackDuckRunData = getBlackDuckRunData(productDecision, productBootFactory, blackDuckConnectivityChecker, productBootOptions);
+        BlackDuckRunData blackDuckRunData = getBlackDuckRunData(productDecision, productBootFactory, blackDuckConnectivityChecker, productBootOptions, analyticsConfigurationService);
 
         PolarisRunData polarisRunData = getPolarisRunData(productDecision, polarisConnectivityChecker);
 
@@ -71,7 +75,8 @@ public class ProductBoot {
         return new ProductRunData(polarisRunData, blackDuckRunData);
     }
 
-    private BlackDuckRunData getBlackDuckRunData(ProductDecision productDecision, ProductBootFactory productBootFactory, BlackDuckConnectivityChecker blackDuckConnectivityChecker, ProductBootOptions productBootOptions)
+    private BlackDuckRunData getBlackDuckRunData(ProductDecision productDecision, ProductBootFactory productBootFactory, BlackDuckConnectivityChecker blackDuckConnectivityChecker, ProductBootOptions productBootOptions,
+        AnalyticsConfigurationService analyticsConfigurationService)
         throws DetectUserFriendlyException {
         BlackDuckRunData blackDuckRunData = null;
         BlackDuckDecision blackDuckDecision = productDecision.getBlackDuckDecision();
@@ -85,12 +90,10 @@ public class ProductBoot {
 
                 if (blackDuckConnectivityResult.isSuccessfullyConnected()) {
                     BlackDuckServicesFactory blackDuckServicesFactory = blackDuckConnectivityResult.getBlackDuckServicesFactory();
-                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                    AnalyticsConfigurationService analyticsConfigurationService = new AnalyticsConfigurationService(blackDuckServicesFactory.createBlackDuckService(), gson);
 
                     boolean usePhoneHome;
                     try {
-                        AnalyticsSetting analyticsSetting = analyticsConfigurationService.fetchAnalyticsSetting();
+                        AnalyticsSetting analyticsSetting = analyticsConfigurationService.fetchAnalyticsSetting(blackDuckServicesFactory.createBlackDuckService());
                         usePhoneHome = analyticsSetting.isEnabled();
                     } catch (IntegrationException | IOException e) {
                         logger.trace("Failed to check analytics setting on Black Duck. Likely this Black Duck instance does not support it.", e);

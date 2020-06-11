@@ -14,15 +14,13 @@ public class AnalyticsConfigurationService {
     private static final BlackDuckPath INTEGRATION_SETTINGS_PATH = new BlackDuckPath("/api/internal/integration-settings");
     private static final String MIME_TYPE = "application/vnd.blackducksoftware.integration-setting-1+json";
 
-    private final BlackDuckService blackDuckService;
     private final Gson gson;
 
-    public AnalyticsConfigurationService(BlackDuckService blackDuckService, Gson gson) {
-        this.blackDuckService = blackDuckService;
+    public AnalyticsConfigurationService(Gson gson) {
         this.gson = gson;
     }
 
-    public AnalyticsSetting fetchAnalyticsSetting() throws IntegrationException, IOException {
+    public AnalyticsSetting fetchAnalyticsSetting(BlackDuckService blackDuckService) throws IntegrationException, IOException {
         String uri = blackDuckService.getUri(INTEGRATION_SETTINGS_PATH) + "/analytics";
 
         Request request = new Request.Builder()
