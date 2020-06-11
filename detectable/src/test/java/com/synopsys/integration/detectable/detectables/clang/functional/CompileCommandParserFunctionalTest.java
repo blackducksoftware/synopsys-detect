@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.clang.functional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -88,5 +89,30 @@ public class CompileCommandParserFunctionalTest {
         assertEquals("-DNSULATE_VERSION=\"1.2.82\"", result.get(i++));
         assertEquals("-I/home/jslave/sean/mainline/nsulate/include", result.get(i++));
         assertEquals("-I/home/jslave/sean/mainline/nsulate/src", result.get(i++));
+    }
+
+    @Test
+    public void testComplexNestedQuoting() throws IOException {
+        final CompileCommandDatabaseParser compileCommandDatabaseParser = new CompileCommandDatabaseParser(new Gson());
+
+        final List<CompileCommand> compileCommands = compileCommandDatabaseParser.parseCompileCommandDatabase(FunctionalTestFiles.asFile("/clang/compile_commands_nestedquoting_small.json"));
+
+        final CompileCommand first = compileCommands.get(0);
+        final CompileCommandParser compileCommandParser = new CompileCommandParser();
+
+        final List<String> result = compileCommandParser.parseCommand(first, Collections.emptyMap());
+
+        assertEquals(15, result.size());
+        int i = 0;
+        assertEquals("cc", result.get(i++));
+        assertEquals("-c", result.get(i++));
+        assertEquals("-I/usr/include/mit-krb5", result.get(i++));
+
+        final String valConfigureAssignment = result.get(i++);
+        assertTrue(valConfigureAssignment.startsWith("-DVAL_CONFIGURE"));
+        assertTrue(valConfigureAssignment.contains("--with-tclconfig="));
+
+        assertEquals("-DVAL_CC=gcc", result.get(i++));
+        assertEquals("-DVAL_CPPFLAGS=-I/usr/include/x86_64-linux-gnu -D_GNU_SOURCE -I/usr/include/libxml2 -I/usr/include/mit-krb5", result.get(i++));
     }
 }

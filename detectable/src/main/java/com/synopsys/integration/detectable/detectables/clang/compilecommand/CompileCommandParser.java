@@ -32,6 +32,8 @@ import org.apache.commons.text.matcher.StringMatcherFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.util.Stringable;
+
 public class CompileCommandParser {
     private static final String ESCAPED_DOUBLE_QUOTE = "\\\\\"";
     private static final String DOUBLE_QUOTE = "\"";
@@ -145,7 +147,7 @@ public class CompileCommandParser {
         }
     }
 
-    private class ParserState {
+    private class ParserState extends Stringable {
         private boolean lastCharWasEscapeChar = false;
         private boolean inQuotes = false;
         private boolean quoteTypeIsDouble = false;
