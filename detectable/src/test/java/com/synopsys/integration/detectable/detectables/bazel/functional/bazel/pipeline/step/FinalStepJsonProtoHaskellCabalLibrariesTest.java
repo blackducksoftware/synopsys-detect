@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -25,7 +26,7 @@ public class FinalStepJsonProtoHaskellCabalLibrariesTest {
         File jsonProtoFile = new File("src/test/resources/detectables/functional/bazel/jsonProtoForHaskellCabalLibraries.txt");
         String jsonProtoHaskellCabalLibrary = FileUtils.readFileToString(jsonProtoFile, StandardCharsets.UTF_8);
         FinalStepJsonProtoHaskellCabalLibraries step = new FinalStepJsonProtoHaskellCabalLibraries(
-            new HaskellCabalLibraryJsonProtoParser(),
+            new HaskellCabalLibraryJsonProtoParser(new Gson()),
             new ExternalIdFactory());
         List<String> input = new ArrayList<>(1);
         input.add(jsonProtoHaskellCabalLibrary);

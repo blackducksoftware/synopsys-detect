@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
@@ -42,6 +43,7 @@ import com.synopsys.integration.exception.IntegrationException;
 
 public class Pipelines {
     private final Map<WorkspaceRule, Pipeline> availablePipelines = new HashMap<>();
+    private final Gson gson = new Gson();
 
     public Pipelines(BazelCommandExecutor bazelCommandExecutor, BazelVariableSubstitutor bazelVariableSubstitutor,
         ExternalIdFactory externalIdFactory) {
@@ -68,7 +70,7 @@ public class Pipelines {
                                             .build();
         availablePipelines.put(WorkspaceRule.MAVEN_INSTALL, mavenInstallPipeline);
 
-        HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser = new HaskellCabalLibraryJsonProtoParser();
+        HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser = new HaskellCabalLibraryJsonProtoParser(gson);
         Pipeline haskellCabalLibraryPipeline = (new PipelineBuilder())
                                                    .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
                                                        Arrays.asList("cquery", "--noimplicit_deps", "${detect.bazel.cquery.options}", "kind(haskell_cabal_library, deps(${detect.bazel.target}))", "--output", "jsonproto")))

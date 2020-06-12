@@ -29,83 +29,51 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.Gson;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model.AttributeItem;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model.Proto;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model.ResultItem;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class HaskellCabalLibraryJsonProtoParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Gson gson;
+
+    public HaskellCabalLibraryJsonProtoParser(Gson gson) {
+        this.gson = gson;
+    }
 
     public List<NameVersion> parse(String jsonProtoString) throws IntegrationException {
         List<NameVersion> dependencies = new ArrayList<>();
-        JsonElement protoElement = JsonParser.parseString(jsonProtoString);
-        JsonObject protoObject = protoElement.getAsJsonObject();
-        JsonElement resultsElement = protoObject.get("results");
-        JsonArray resultsArray = resultsElement.getAsJsonArray();
-        for (JsonElement resultsArrayMemberElement : resultsArray) {
-            Optional<JsonObject> ruleObject = extractHaskellCabalLibraryRule(resultsArrayMemberElement);
-            if (ruleObject.isPresent()) {
-                addDependencyToList(dependencies, ruleObject.get());
+        Proto proto = gson.fromJson(jsonProtoString, Proto.class);
+        for (ResultItem result : proto.getResults()) {
+            List<AttributeItem> attributes = result.getTarget().getRule().getAttribute();
+            Optional<NameVersion> dependency = extractDependency(attributes);
+            if (dependency.isPresent()) {
+                logger.debug(String.format("Adding dependency %s/%s", dependency.get().getName(), dependency.get().getVersion()));
+                dependencies.add(dependency.get());
+            } else {
+                logger.debug(String.format("No dependency was extractable from attributes: %s", attributes.toString()));
             }
         }
         return dependencies;
     }
 
-    private void addDependencyToList(List<NameVersion> dependencies, JsonObject ruleObject) throws IntegrationException {
-        NameVersion dependencyNameVersion = extractDependencyDetails(ruleObject);
-        dependencies.add(dependencyNameVersion);
-    }
-
-    private NameVersion extractDependencyDetails(JsonObject ruleObject) throws IntegrationException {
-        JsonElement attributeElement = ruleObject.get("attribute");
-        JsonArray attributeArray = attributeElement.getAsJsonArray();
-        String dependencyNameValue = null;
-        String dependencyVersionValue = null;
-        for (JsonElement currentAttribute : attributeArray) {
-            JsonObject currentAttributeObject = currentAttribute.getAsJsonObject();
-            JsonElement currentAttributeNameElement = currentAttributeObject.get("name");
-            String currentAttributeNameValue = currentAttributeNameElement.getAsString();
-            logger.trace(String.format("currentAttributeNameElement: %s", currentAttributeNameValue));
-            if ("name".equals(currentAttributeNameValue)) {
-                JsonElement dependencyNameElement = currentAttributeObject.get("stringValue");
-                dependencyNameValue = dependencyNameElement.getAsString();
-                logger.trace(String.format("dependencyNameValue: %s", dependencyNameValue));
+    private Optional<NameVersion> extractDependency(List<AttributeItem> attributes) throws IntegrationException {
+        String dependencyName = null;
+        String dependencyVersion = null;
+        for (AttributeItem attributeItem : attributes) {
+            if ("name".equals(attributeItem.getName())) {
+                dependencyName = attributeItem.getStringValue();
+            } else if ("version".equals(attributeItem.getName())) {
+                dependencyVersion = attributeItem.getStringValue();
             }
-            if ("version".equals(currentAttributeNameValue)) {
-                JsonElement dependencyVersionElement = currentAttributeObject.get("stringValue");
-                dependencyVersionValue = dependencyVersionElement.getAsString();
-                logger.trace(String.format("dependencyVersionValue: %s", dependencyVersionValue));
-            }
-            if (dependencyNameValue != null && dependencyVersionValue != null) {
-                return new NameVersion(dependencyNameValue, dependencyVersionValue);
+            if (dependencyName != null && dependencyVersion != null) {
+                NameVersion dependencyNameVersion = new NameVersion(dependencyName, dependencyVersion);
+                return Optional.of(dependencyNameVersion);
             }
         }
-        throw new IntegrationException(String.format("Did not find dependency name and version in %s", attributeArray.toString()));
-    }
-
-    private Optional<JsonObject> extractHaskellCabalLibraryRule(JsonElement resultsArrayMemberElement) {
-        JsonObject resultsArrayMemberObject = resultsArrayMemberElement.getAsJsonObject();
-        JsonElement targetElement = resultsArrayMemberObject.get("target");
-        JsonObject targetObject = targetElement.getAsJsonObject();
-        logger.debug(String.format("targetType: %s", targetObject.get("type").toString()));
-        JsonElement targetTypeElement = targetObject.get("type");
-        String targetTypeValue = targetTypeElement.getAsString();
-        if (!"RULE".equals(targetTypeValue)) {
-            logger.debug(String.format("This is not a rule; skipping it. (It's a %s)", targetTypeValue));
-            return Optional.empty();
-        }
-        JsonElement ruleElement = targetObject.get("rule");
-        JsonObject ruleObject = ruleElement.getAsJsonObject();
-        logger.debug(String.format("ruleClass: %s", ruleObject.get("ruleClass").toString()));
-        JsonElement ruleClassElement = ruleObject.get("ruleClass");
-        String ruleClassValue = ruleClassElement.getAsString();
-        if (!"haskell_cabal_library".equals(ruleClassValue)) {
-            logger.debug(String.format("This is not a haskell_cabal_library rule; skipping it. (It's a %s rule)", ruleClassValue));
-            return Optional.empty();
-        }
-        return Optional.of(ruleObject);
+        throw new IntegrationException(String.format("Dependency name/version not found in attribute list: %s", attributes.toString()));
     }
 }

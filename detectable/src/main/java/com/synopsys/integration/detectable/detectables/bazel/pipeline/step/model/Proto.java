@@ -26,6 +26,7 @@ import java.util.List;
 
 import com.synopsys.integration.util.Stringable;
 
+// Model for output produced by: bazel cquery ... --output jsonproto
 public class Proto extends Stringable {
     private List<ResultItem> results;
 
