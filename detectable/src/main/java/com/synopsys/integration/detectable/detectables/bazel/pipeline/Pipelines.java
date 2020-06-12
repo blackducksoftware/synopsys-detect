@@ -23,8 +23,7 @@
 package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -42,7 +41,7 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.Inter
 import com.synopsys.integration.exception.IntegrationException;
 
 public class Pipelines {
-    private final Map<WorkspaceRule, Pipeline> availablePipelines = new HashMap<>();
+    private final EnumMap<WorkspaceRule, Pipeline> availablePipelines = new EnumMap<>(WorkspaceRule.class);
     private final Gson gson = new Gson();
 
     public Pipelines(BazelCommandExecutor bazelCommandExecutor, BazelVariableSubstitutor bazelVariableSubstitutor,

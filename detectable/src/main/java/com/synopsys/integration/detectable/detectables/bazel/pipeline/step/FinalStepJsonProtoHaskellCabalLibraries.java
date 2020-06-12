@@ -67,7 +67,7 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
         return input.get(0);
     }
 
-    private void addDependencyToGraph(MutableDependencyGraph dependencyGraph, NameVersion dependencyDetails) throws IntegrationException {
+    private void addDependencyToGraph(MutableDependencyGraph dependencyGraph, NameVersion dependencyDetails) {
         Dependency artifactDependency = hackageCompNameVersionToDependency(dependencyDetails.getName(), dependencyDetails.getVersion());
         try {
             logger.debug(String.format("Adding %s to graph", artifactDependency.getExternalId().toString()));
