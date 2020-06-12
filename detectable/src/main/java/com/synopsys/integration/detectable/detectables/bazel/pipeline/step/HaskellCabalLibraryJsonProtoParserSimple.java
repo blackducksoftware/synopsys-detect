@@ -49,19 +49,9 @@ public class HaskellCabalLibraryJsonProtoParserSimple {
         Proto proto = gson.fromJson(jsonProtoString, Proto.class);
         logger.info(String.format("proto: %s", proto.getResults().get(0).getTarget().getType()));
         for (ResultItem result : proto.getResults()) {
-            String dependencyName = null;
-            String dependencyVersion = null;
-            for (AttributeItem attributeItem : result.getTarget().getRule().getAttribute()) {
-                if ("name".equals(attributeItem.getName())) {
-                    dependencyName = attributeItem.getStringValue();
-                } else if ("version".equals(attributeItem.getName())) {
-                    dependencyVersion = attributeItem.getStringValue();
-                }
-                if (dependencyName != null && dependencyVersion != null) {
-                    NameVersion dependencyNameVersion = new NameVersion(dependencyName, dependencyVersion);
-                    dependencies.add(dependencyNameVersion);
-                    break;
-                }
+            Optional<NameVersion> dependency = extractDependency(result.getTarget().getRule().getAttribute());
+            if (dependency.isPresent()) {
+                dependencies.add(dependency.get());
             }
         }
         return dependencies;
