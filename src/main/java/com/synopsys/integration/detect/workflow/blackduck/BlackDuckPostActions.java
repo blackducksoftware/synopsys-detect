@@ -55,7 +55,7 @@ public class BlackDuckPostActions {
         this.eventSystem = eventSystem;
     }
 
-    public void perform(final BlackDuckPostOptions blackDuckPostOptions, final CodeLocationWaitData codeLocationWaitData, final ProjectVersionWrapper projectVersionWrapper, final long timeoutInSeconds) throws DetectUserFriendlyException {
+    public void perform(final BlackDuckPostOptions blackDuckPostOptions, final CodeLocationWaitController codeLocationWaitController, final ProjectVersionWrapper projectVersionWrapper, final long timeoutInSeconds) throws DetectUserFriendlyException {
         try {
             final long timeoutInMillisec = 1000L * timeoutInSeconds;
             final ProjectView projectView = projectVersionWrapper.getProjectView();
@@ -64,15 +64,15 @@ public class BlackDuckPostActions {
             if (blackDuckPostOptions.shouldWaitForResults()) {
                 logger.info("Detect must wait for bom tool calculations to finish.");
                 final CodeLocationCreationService codeLocationCreationService = blackDuckServicesFactory.createCodeLocationCreationService();
-                if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
+                if (codeLocationWaitController.getExpectedNotificationCount() > 0) {
                     //TODO fix this when NotificationTaskRange doesn't include task start time
                     //ekerwin - The start time of the task is the earliest time a code location was created.
                     // In order to wait the full timeout, we have to not use that start time and instead use now().
-                    final NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitData.getNotificationRange().getStartDate(),
-                        codeLocationWaitData.getNotificationRange().getEndDate());
+                    final NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitController.getNotificationRange().getStartDate(),
+                        codeLocationWaitController.getNotificationRange().getEndDate());
                     final NameVersion projectNameVersion = new NameVersion(projectView.getName(), projectVersionView.getVersionName());
                     final CodeLocationWaitResult result = codeLocationCreationService
-                        .waitForCodeLocations(notificationTaskRange, projectNameVersion, codeLocationWaitData.getCodeLocationNames(), codeLocationWaitData.getExpectedNotificationCount(),
+                        .waitForCodeLocations(notificationTaskRange, projectNameVersion, codeLocationWaitController.getCodeLocationNames(), codeLocationWaitController.getExpectedNotificationCount(),
                             timeoutInSeconds);
                     if (result.getStatus() == CodeLocationWaitResult.Status.PARTIAL) {
                         throw new DetectUserFriendlyException(result.getErrorMessage().orElse("Timed out waiting for code locations to finish on the Black Duck server."), ExitCodeType.FAILURE_TIMEOUT);
