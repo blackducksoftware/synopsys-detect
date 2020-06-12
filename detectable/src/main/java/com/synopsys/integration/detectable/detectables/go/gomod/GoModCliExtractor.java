@@ -91,9 +91,6 @@ public class GoModCliExtractor {
 
         for (String line : modGraphOutput) {
             for (String original : replacementData.keySet()) {
-                if (line.contains("ocsql@v0.1.5")) {
-                    System.out.println("");
-                }
                 String newLine = line.replace(original, replacementData.get(original));
                 int indexOfLine = modGraphOutput.indexOf(line);
                 modGraphOutput.set(indexOfLine, newLine);
