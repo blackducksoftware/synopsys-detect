@@ -26,7 +26,6 @@ import com.synopsys.integration.util.Stringable;
 
 public class AttributeItem extends Stringable {
     private String name;
-    private String type;
     private String stringValue;
 
     public String getName() {
