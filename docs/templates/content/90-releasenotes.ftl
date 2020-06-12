@@ -13,6 +13,7 @@ and writes them to the status.json file.
 
 ### Resolved issues
 * (IDETECT-2034) Resolved an issue that would cause a NullPointerException when ${solution_name}'s initial attempt at generating a code location name produced a code location name greater than 250 characters and either code location prefix or code location suffix is not set.
+* (IDETECT-1979) Resolved an issue that could cause the CLANG detector to miss some dependencies because it failed to correctly parse complex nested quoted strings within compile_commands.json values.
 
 ## Version 6.3.0
 ### New features
