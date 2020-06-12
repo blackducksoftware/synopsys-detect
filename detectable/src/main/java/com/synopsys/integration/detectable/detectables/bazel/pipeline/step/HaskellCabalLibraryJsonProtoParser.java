@@ -33,6 +33,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model.AttributeItem;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model.Proto;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model.ResultItem;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model.Target;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
@@ -47,14 +48,26 @@ public class HaskellCabalLibraryJsonProtoParser {
     public List<NameVersion> parse(String jsonProtoString) throws IntegrationException {
         List<NameVersion> dependencies = new ArrayList<>();
         Proto proto = gson.fromJson(jsonProtoString, Proto.class);
+        if (proto == null || proto.getResults() == null || proto.getResults().isEmpty()) {
+            throw new IntegrationException(String.format("Unable to parse results from JSON proto string: %s", jsonProtoString));
+        }
         for (ResultItem result : proto.getResults()) {
-            List<AttributeItem> attributes = result.getTarget().getRule().getAttribute();
-            Optional<NameVersion> dependency = extractDependency(attributes);
-            if (dependency.isPresent()) {
-                logger.debug(String.format("Adding dependency %s/%s", dependency.get().getName(), dependency.get().getVersion()));
-                dependencies.add(dependency.get());
-            } else {
-                logger.debug(String.format("No dependency was extractable from attributes: %s", attributes.toString()));
+            if (result == null || result.getTarget() == null) {
+                throw new IntegrationException(String.format("Unable to parse target from result inJSON proto string: %s", jsonProtoString));
+            }
+            Target target = result.getTarget();
+            if ("RULE".equals(target.getType())) {
+                if (target.getRule() == null || target.getRule().getAttribute() == null) {
+                    throw new IntegrationException(String.format("Unable to parse attributes from rule inJSON proto string: %s", jsonProtoString));
+                }
+                List<AttributeItem> attributes = target.getRule().getAttribute();
+                Optional<NameVersion> dependency = extractDependency(attributes);
+                if (dependency.isPresent()) {
+                    logger.debug(String.format("Adding dependency %s/%s", dependency.get().getName(), dependency.get().getVersion()));
+                    dependencies.add(dependency.get());
+                } else {
+                    logger.debug(String.format("No dependency was extractable from attributes: %s", attributes.toString()));
+                }
             }
         }
         return dependencies;

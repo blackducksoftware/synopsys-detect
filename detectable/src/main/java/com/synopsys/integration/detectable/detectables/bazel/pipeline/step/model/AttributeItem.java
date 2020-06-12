@@ -22,16 +22,12 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model;
 
-import java.util.List;
-
 import com.synopsys.integration.util.Stringable;
 
 public class AttributeItem extends Stringable {
     private String name;
     private String type;
     private String stringValue;
-    private List<String> stringListValue;
-    private Integer intValue;
 
     public String getName() {
         return name;
