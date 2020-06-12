@@ -64,7 +64,7 @@ Finally, it parses the group/artifact/version details from the value of the stri
 
 ## Processing for the *haskell_cabal_library* workspace rule
 
-Requires Bazel 2.2.0 or later.
+Requires Bazel 2.1.0 or later.
 
 ${solution_name}'s Bazel detector runs a bazel cquery on the given target to produce output from which it can
 extract artifact project and version for dependencies.
