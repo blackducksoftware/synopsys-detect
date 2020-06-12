@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +28,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StepExecutorReplaceInEach implements StepExecutor {
+public class IntermediateStepReplaceInEach implements IntermediateStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     final String targetPattern;
     final String replacementString;
 
-    public StepExecutorReplaceInEach(final String targetPattern, final String replacementString) {
+    public IntermediateStepReplaceInEach(final String targetPattern, final String replacementString) {
         this.targetPattern = targetPattern;
         this.replacementString = replacementString;
     }

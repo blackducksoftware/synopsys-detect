@@ -2,6 +2,7 @@
 
 ## Version 6.4.0
 ### New features
+* Bazel detector: added support for Bazel projects that specify dependencies using the haskell_cabal_library repository rule.
 * Detect now supports projects managed by the Cargo package manager.
 * Detect now supports projects managed by the Poetry package manager.
 
