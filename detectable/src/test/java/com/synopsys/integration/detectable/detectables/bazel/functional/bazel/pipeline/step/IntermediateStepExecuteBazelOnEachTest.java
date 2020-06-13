@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline.stepexecutor;
+package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline.step;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -35,13 +35,13 @@ import org.mockito.Mockito;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelVariableSubstitutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorExecuteBazelOnEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepExecuteBazelOnEach;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class StepExecutorExecuteBazelOnEachTest {
+public class IntermediateStepExecuteBazelOnEachTest {
 
     @Test
     public void testNoInput() throws ExecutableRunnerException, IntegrationException {
@@ -57,7 +57,7 @@ public class StepExecutorExecuteBazelOnEachTest {
         Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgs)).thenReturn(bazelCmdExecutableOutput);
         final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
         final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("//:ProjectRunner", null);
-        final StepExecutor executor = new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "filter(\\\"@.*:jar\\\", deps(${detect.bazel.target}))"));
+        final IntermediateStep executor = new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "filter(\\\"@.*:jar\\\", deps(${detect.bazel.target}))"));
         final List<String> input = new ArrayList<>(0);
 
         final List<String> output = executor.process(input);

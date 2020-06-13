@@ -2,16 +2,19 @@
 
 ## Version 6.4.0
 ### New features
+* Bazel detector: added support for Bazel projects that specify dependencies using the haskell_cabal_library repository rule.
+* Detect now supports projects managed by the Cargo package manager.
+* Detect now supports projects managed by the Poetry package manager.
 
 ### Changed features
 * Eliminated any need for the ${blackduck_product_name} Global Code Scanner overall role.
 * The CLANG detector collects any dependency files not recognized by the Linux package manager that reside outside the source directory (the directory containing the compile_commands.json file),
 and writes them to the status.json file.
-* Detect now supports projects managed by the Poetry package manager.
 * Added the property [detect.blackduck.signature.scanner.copyright.search](../properties/configuration/signature scanner/#signature-scanner-copyright-search-advanced).
-* Detect now supports projects managed by the Cargo package manager.
+* Removed PipEnv from the list of buildless detectors as it was never buildless.
 
 ### Resolved issues
+* (IDETECT-2019) Resolved an issue where the pip inspector would not be able to parse the requirements.txt file if pip's version was >= 20.1.
 * (IDETECT-2034) Resolved an issue that would cause a NullPointerException when ${solution_name}'s initial attempt at generating a code location name produced a code location name greater than 250 characters and either code location prefix or code location suffix is not set.
 * (IDETECT-1979) Resolved an issue that could cause the CLANG detector to miss some dependencies because it failed to correctly parse complex nested quoted strings within compile_commands.json values.
 

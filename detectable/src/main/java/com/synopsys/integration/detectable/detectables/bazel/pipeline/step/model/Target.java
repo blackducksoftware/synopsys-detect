@@ -20,23 +20,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model;
 
-import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.util.Stringable;
 
-public enum WorkspaceRule {
-    MAVEN_JAR("maven_jar"),
-    MAVEN_INSTALL("maven_install"),
-    HASKELL_CABAL_LIBRARY("haskell_cabal_library"),
-    UNSPECIFIED(null); //changed to UNSPECIFIED so property is simpler, if this causes confusion willing to discuss - jp
+public class Target extends Stringable {
+    private String type;
+    private Rule rule;
 
-    private String name;
-
-    WorkspaceRule(final String name) {
-        this.name = name;
+    public String getType() {
+        return type;
     }
 
-    public String getName() {
-        return name;
+    public Rule getRule() {
+        return rule;
     }
 }

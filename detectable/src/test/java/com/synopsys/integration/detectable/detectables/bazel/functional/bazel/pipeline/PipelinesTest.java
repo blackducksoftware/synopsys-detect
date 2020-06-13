@@ -23,8 +23,8 @@
 package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -34,16 +34,20 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelVariableSubstitutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class PipelineTest {
-    private static final List<String> STANDARD_BAZEL_COMMAND_ARGS = Arrays.asList("cquery", "--noimplicit_deps", "kind(j.*import, deps(/:testTarget))", "--output", "build");
-    private static final String CQUERY_OUTPUT_SIMPLE = createStandardOutput(
+public class PipelinesTest {
+    private static final List<String> MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS = Arrays.asList("cquery", "--noimplicit_deps", "kind(j.*import, deps(/:testTarget))", "--output", "build");
+    private static final List<String> HASKELL_CABAL_LIBRARY_STANDARD_BAZEL_COMMAND_ARGS = Arrays.asList("cquery", "--noimplicit_deps", "kind(haskell_cabal_library, deps(/:testTarget))", "--output", "jsonproto");
+    private static final String MAVEN_INSTALL_CQUERY_OUTPUT_SIMPLE = createStandardOutput(
         "# /root/.cache/bazel/_bazel_root/896e039de1e50d7e2de0b14a9acf4028/external/exclusion_testing/BUILD:41:1",
         "jvm_import(",
         "  name = \"com_google_guava_guava\",",
@@ -107,7 +111,7 @@ public class PipelineTest {
         "  deps = [],",
         ")");
 
-    private static final String CQUERY_OUTPUT_MIXED_TAGS = createStandardOutput(
+    private static final String MAVEN_INSTALL_OUTPUT_MIXED_TAGS = createStandardOutput(
         "java_import(",
         "  name = \"sso-adminsdk\",",
         "  tags = [\"__SOME_OTHER_TAG__\"],",
@@ -138,7 +142,7 @@ public class PipelineTest {
         "  neverlink = True,",
         ")");
 
-    private static final String CQUERY_OUTPUT_MIXED_TAGS_REVERSED_ORDER = createStandardOutput(
+    private static final String MAVEN_INSTALL_OUTPUT_MIXED_TAGS_REVERSED_ORDER = createStandardOutput(
         "java_import(",
         "  name = \"thing-common-client\",",
         "  tags = [\"maven_coordinates=com.company.thing:thing-common-client:2.100.0\", \"__SOME_OTHER_TAG__\"],",
@@ -149,16 +153,69 @@ public class PipelineTest {
         "  srcjar = \"@thing_cis//:java-toolkit/runtime/thing-common-client-2.100.0-sources.jar\",",
         ")");
 
+    private static final String HASKELL_CABAL_LIBRARY_JSONPROTO = createStandardOutput(
+        "{",
+          "  \"results\": [{",
+          "    \"target\": {",
+          "      \"type\": \"RULE\",",
+          "      \"rule\": {",
+          "        \"name\": \"@stackage//:optparse-applicative\",",
+          "        \"ruleClass\": \"haskell_cabal_library\",",
+          "        \"location\": \"/root/.cache/bazel/_bazel_root/cc59a4f96db0d7083a7d7596a883ccd0/external/stackage/BUILD.bazel:528:1\",",
+          "        \"attribute\": [{",
+          "          \"name\": \"generator_location\",",
+          "          \"type\": \"STRING\",",
+          "          \"stringValue\": \"\",",
+          "          \"explicitlySpecified\": false,",
+          "          \"nodep\": false",
+          "        }, {",
+          "          \"name\": \"name\",",
+          "          \"type\": \"STRING\",",
+          "          \"stringValue\": \"optparse-applicative\",",
+          "          \"explicitlySpecified\": true,",
+          "          \"nodep\": false",
+          "        }, {",
+          "          \"name\": \"version\",",
+          "          \"type\": \"STRING\",",
+          "          \"stringValue\": \"0.14.3.0\",",
+          "          \"explicitlySpecified\": true,",
+          "          \"nodep\": false",
+          "        }, {",
+          "          \"name\": \"$rule_implementation_hash\",",
+          "          \"type\": \"STRING\",",
+          "          \"stringValue\": \"1b75caf6fa81d9febe4bf63485fc3b7e3a1c6bef5637ec66e6ffbf9590a8c41f\"",
+          "        }],",
+          "        \"ruleInput\": [\"@stackage//:ansi-wl-pprint\", \"@stackage//:base\", \"@stackage//:transformers\", \"@stackage//:transformers-compat\"]",
+          "      }",
+          "    },",
+          "    \"configuration\": {",
+          "      \"checksum\": \"113f3ed6a7eba369dbe1453fe1da149ce5b6faa1129ed584fd4ad044389cc463\"",
+          "    }",
+          "  }]",
+          "}");
+
     @Test
     public void testMavenInstall() throws IntegrationException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         final List<String> userProvidedCqueryAdditionalOptions = null;
 
-        final List<String> results = doTest(STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, CQUERY_OUTPUT_SIMPLE);
-        assertEquals(8, results.size());
-        assertEquals("com.google.guava:guava:27.0-jre", results.get(0));
-        assertEquals("com.google.code.findbugs:jsr305:3.0.2", results.get(7));
+        final MutableDependencyGraph dependencyGraph = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_CQUERY_OUTPUT_SIMPLE);
+        assertEquals(8, dependencyGraph.getRootDependencies().size());
+        int foundCount = 0;
+        for (final Dependency dependency : dependencyGraph.getRootDependencies()) {
+            if ("com.google.guava".equals(dependency.getExternalId().getGroup()) &&
+                    "guava".equals(dependency.getExternalId().getName()) &&
+                    "27.0-jre".equals(dependency.getExternalId().getVersion())) {
+                foundCount++;
+            }
+            if ("com.google.code.findbugs".equals(dependency.getExternalId().getGroup()) &&
+                    "jsr305".equals(dependency.getExternalId().getName()) &&
+                    "3.0.2".equals(dependency.getExternalId().getVersion())) {
+                foundCount++;
+            }
+        }
+        assertEquals(2, foundCount);
     }
 
     @Test
@@ -167,10 +224,22 @@ public class PipelineTest {
 
         final List<String> userProvidedCqueryAdditionalOptions = null;
 
-        final List<String> results = doTest(STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, CQUERY_OUTPUT_MIXED_TAGS);
-        assertEquals(2, results.size());
-        assertEquals("com.company.thing:thing-common-client:2.100.0", results.get(0));
-        assertEquals("javax.servlet:javax.servlet-api:3.0.1", results.get(1));
+        final MutableDependencyGraph dependencyGraph = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_OUTPUT_MIXED_TAGS);
+        assertEquals(2, dependencyGraph.getRootDependencies().size());
+        int foundCount = 0;
+        for (final Dependency dependency : dependencyGraph.getRootDependencies()) {
+            if ("com.company.thing".equals(dependency.getExternalId().getGroup()) &&
+                    "thing-common-client".equals(dependency.getExternalId().getName()) &&
+                    "2.100.0".equals(dependency.getExternalId().getVersion())) {
+                foundCount++;
+            }
+            if ("javax.servlet".equals(dependency.getExternalId().getGroup()) &&
+                    "javax.servlet-api".equals(dependency.getExternalId().getName()) &&
+                    "3.0.1".equals(dependency.getExternalId().getVersion())) {
+                foundCount++;
+            }
+        }
+        assertEquals(2, foundCount);
     }
 
     @Test
@@ -179,9 +248,17 @@ public class PipelineTest {
 
         final List<String> userProvidedCqueryAdditionalOptions = null;
 
-        final List<String> results = doTest(STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, CQUERY_OUTPUT_MIXED_TAGS_REVERSED_ORDER);
-        assertEquals(1, results.size());
-        assertEquals("com.company.thing:thing-common-client:2.100.0", results.get(0));
+        final MutableDependencyGraph dependencyGraph = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_OUTPUT_MIXED_TAGS_REVERSED_ORDER);
+        assertEquals(1, dependencyGraph.getRootDependencies().size());
+        int foundCount = 0;
+        for (final Dependency dependency : dependencyGraph.getRootDependencies()) {
+            if ("com.company.thing".equals(dependency.getExternalId().getGroup()) &&
+                    "thing-common-client".equals(dependency.getExternalId().getName()) &&
+                    "2.100.0".equals(dependency.getExternalId().getVersion())) {
+                foundCount++;
+            }
+        }
+        assertEquals(1, foundCount);
     }
 
     @Test
@@ -191,24 +268,54 @@ public class PipelineTest {
         final List<String> userProvidedCqueryAdditionalOptions = Arrays.asList("--option1=a", "--option2=b");
         final List<String> expectedBazelCommandArgs = Arrays.asList("cquery", "--noimplicit_deps", "--option1=a", "--option2=b", "kind(j.*import, deps(/:testTarget))", "--output", "build");
 
-        List<String> results = doTest(expectedBazelCommandArgs, userProvidedCqueryAdditionalOptions, CQUERY_OUTPUT_SIMPLE);
-        assertEquals(8, results.size());
-        assertEquals("com.google.guava:guava:27.0-jre", results.get(0));
-        assertEquals("com.google.code.findbugs:jsr305:3.0.2", results.get(7));
+        final MutableDependencyGraph dependencyGraph = doTest(WorkspaceRule.MAVEN_INSTALL, expectedBazelCommandArgs, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_CQUERY_OUTPUT_SIMPLE);
+        assertEquals(8, dependencyGraph.getRootDependencies().size());
+        int foundCount = 0;
+        for (final Dependency dependency : dependencyGraph.getRootDependencies()) {
+            if ("com.google.guava".equals(dependency.getExternalId().getGroup()) &&
+                    "guava".equals(dependency.getExternalId().getName()) &&
+                    "27.0-jre".equals(dependency.getExternalId().getVersion())) {
+                foundCount++;
+            }
+            if ("com.google.code.findbugs".equals(dependency.getExternalId().getGroup()) &&
+                    "jsr305".equals(dependency.getExternalId().getName()) &&
+                    "3.0.2".equals(dependency.getExternalId().getVersion())) {
+                foundCount++;
+            }
+        }
+        assertEquals(2, foundCount);
     }
 
-    private List<String> doTest(final List<String> expectedBazelCommandArgs, final List<String> userProvidedCqueryAdditionalOptions, final String input) throws IntegrationException {
+    @Test
+    public void haskellCabalLibraryTest() throws IntegrationException {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+
+        final List<String> userProvidedCqueryAdditionalOptions = null;
+
+        final MutableDependencyGraph dependencyGraph = doTest(WorkspaceRule.HASKELL_CABAL_LIBRARY,
+            HASKELL_CABAL_LIBRARY_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, HASKELL_CABAL_LIBRARY_JSONPROTO);
+        assertEquals(1, dependencyGraph.getRootDependencies().size());
+        int foundCount = 0;
+        for (final Dependency dependency : dependencyGraph.getRootDependencies()) {
+            if ("optparse-applicative".equals(dependency.getExternalId().getName()) &&
+                    "0.14.3.0".equals(dependency.getExternalId().getVersion())) {
+                foundCount++;
+            }
+        }
+        assertEquals(1, foundCount);
+    }
+
+
+    private MutableDependencyGraph doTest(final WorkspaceRule workspaceRule, final List<String> expectedBazelCommandArgs, final List<String> userProvidedCqueryAdditionalOptions, final String input) throws IntegrationException {
         final BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
         Mockito.when(bazelCommandExecutor.executeToString(expectedBazelCommandArgs)).thenReturn(Optional.of(input));
         final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("/:testTarget", userProvidedCqueryAdditionalOptions);
 
-        final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor);
-        System.out.printf("# maven_install steps: %d\n", pipelines.get(WorkspaceRule.MAVEN_INSTALL).size());
-        List<String> intermediateResult = new ArrayList<>();
-        for (final StepExecutor stepExecutor : pipelines.get(WorkspaceRule.MAVEN_INSTALL)) {
-            intermediateResult = stepExecutor.process(intermediateResult);
-        }
-        return intermediateResult;
+        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory);
+        final Pipeline pipeline = pipelines.get(workspaceRule);
+        final MutableDependencyGraph dependencyGraph = pipeline.run();
+        return dependencyGraph;
     }
 
     private static String createStandardOutput(final String... outputLines) {
