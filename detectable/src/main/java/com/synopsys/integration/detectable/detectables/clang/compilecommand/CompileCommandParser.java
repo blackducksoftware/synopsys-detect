@@ -35,8 +35,6 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.util.Stringable;
 
 public class CompileCommandParser {
-    private static final String ESCAPED_DOUBLE_QUOTE = "\\\\\"";
-    private static final String DOUBLE_QUOTE = "\"";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final char SINGLE_QUOTE_CHAR = '\'';
     private static final char DOUBLE_QUOTE_CHAR = '"';
@@ -68,7 +66,8 @@ public class CompileCommandParser {
         String lastPart = "";
         int partIndex = 0;
         while (tokenizer.hasNext()) {
-            String part = unEscapeDoubleQuotes(restoreWhitespace(tokenizer.nextToken()));
+            String token = tokenizer.nextToken();
+            String part = restoreWhitespace(token);
             if (partIndex > 0) {
                 String optionValueOverride = null;
                 for (String optionToOverride : optionOverrides.keySet()) {
@@ -98,12 +97,6 @@ public class CompileCommandParser {
         return newString;
     }
 
-    private String unEscapeDoubleQuotes(String givenString) {
-        String newString = givenString.replaceAll(ESCAPED_DOUBLE_QUOTE, DOUBLE_QUOTE);
-        logger.trace(String.format("unEscapeDoubleQuotes() changed %s to %s", givenString, newString));
-        return newString;
-    }
-
     private String escapeQuotedWhitespace(String givenString) {
         StringBuilder newString = new StringBuilder();
         ParserState parserState = new ParserState();
@@ -124,11 +117,12 @@ public class CompileCommandParser {
         // Currently inside a quoted substring
         if (!parserState.isLastCharEscapeChar() && (c == SINGLE_QUOTE_CHAR) && (parserState.getQuoteType() == QuoteType.SINGLE)) {
             parserState.setQuoteType(QuoteType.NONE);
+            newString.append(c);
         } else if (!parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && (parserState.getQuoteType() == QuoteType.DOUBLE)) {
             parserState.setQuoteType(QuoteType.NONE);
+            newString.append(c);
         } else if (parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && parserState.getQuoteType() == QuoteType.ESCAPED_DOUBLE) {
             parserState.setQuoteType(QuoteType.NONE);
-            newString.append(ESCAPE_CHAR);
             newString.append(c);
         } else if (c == SPACE_CHAR) {
             newString.append(ESCAPE_SEQUENCE_FOR_SPACE_CHAR);
@@ -142,11 +136,12 @@ public class CompileCommandParser {
     private void processNonQuotedChar(ParserState parserState, char c, StringBuilder newString) {
         if (!parserState.isLastCharEscapeChar() && (c == SINGLE_QUOTE_CHAR)) {
             parserState.setQuoteType(QuoteType.SINGLE);
+            newString.append(c);
         } else if (!parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR)) {
             parserState.setQuoteType(QuoteType.DOUBLE);
+            newString.append(c);
         } else if (parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR)) {
             parserState.setQuoteType(QuoteType.ESCAPED_DOUBLE);
-            newString.append(ESCAPE_CHAR);
             newString.append(c);
         } else {
             newString.append(c);

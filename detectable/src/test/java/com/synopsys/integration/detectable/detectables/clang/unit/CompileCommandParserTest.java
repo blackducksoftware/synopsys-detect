@@ -31,10 +31,8 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-import com.google.gson.Gson;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
-import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandDatabaseParser;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
 
 @UnitTest
@@ -68,37 +66,41 @@ public class CompileCommandParserTest {
         assertEquals(6, result.size());
         int i = 0;
         assertEquals("g++", result.get(i++));
-        assertEquals("-DDOUBLEQUOTED=A value for the compiler", result.get(i++));
-        assertEquals("-DSINGLEQUOTED=Another value for the compiler", result.get(i++));
+        assertEquals("-DDOUBLEQUOTED=\"A value for the compiler\"", result.get(i++));
+        assertEquals("-DSINGLEQUOTED='Another value for the compiler'", result.get(i++));
         assertEquals("file.c", result.get(i++));
         assertEquals("-o", result.get(i++));
         assertEquals("/dev/null", result.get(i++));
     }
 
     @Test
-    public void testFullCompileCommand() {
+    public void testComplexCompileCommand() {
         CompileCommand command = new CompileCommand();
-        command.directory = "/home/jslave/sean/mainline/nsulate/src";
-        command.command = "/usr/bin/env CCACHE_CPP2=yes /usr/bin/ccache /usr/bin/clang++-3.6  -DAVX2=1 -DCMAKE_BUILD_TYPE=\\\"Debug\\\" -DCMAKE_CC_FLAGS=\"\\\" -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -fopenmp --std=c11 -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC --std=c11\\\"\"  -o CMakeFiles/cli_proto.dir/cli.pb.cc.o -c /home/jslave/sean/mainline/nsulate/src/cli.pb.cc";
-        command.file = "/home/jslave/sean/mainline/nsulate/src/cli.pb.cc";
+        command.command = "/usr/bin/clang++-3.6 -DCMAKE_BUILD_TYPE=\\\"Debug\\\" -DCMAKE_CC_FLAGS=\"\\\" -ggdb -Wstrict-aliasing=2 -pedantic -fPIC --std=c11\\\"\"  -c ./pb.cc";
 
-        CompileCommandDatabaseParser compileCommandDatabaseParser = new CompileCommandDatabaseParser(new Gson());
         CompileCommandParser compileCommandParser = new CompileCommandParser();
         List<String> result = compileCommandParser.parseCommand(command, Collections.emptyMap());
 
-        assertEquals(11, result.size());
+        assertEquals(5, result.size());
         int i = 0;
-        assertEquals("/usr/bin/env", result.get(i++));
-        assertEquals("CCACHE_CPP2=yes", result.get(i++));
-        assertEquals("/usr/bin/ccache", result.get(i++));
         assertEquals("/usr/bin/clang++-3.6", result.get(i++));
-        assertEquals("-DAVX2=1", result.get(i++));
         assertEquals("-DCMAKE_BUILD_TYPE=\\\"Debug\\\"", result.get(i++));
-        assertEquals("-DCMAKE_CC_FLAGS=\" -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC -fopenmp --std=c11 -ggdb -Werror -Wall -Wstrict-aliasing=2 -pedantic -fPIC --std=c11\"", result.get(i++));
-        assertEquals("-o", result.get(i++));
-        assertEquals("CMakeFiles/cli_proto.dir/cli.pb.cc.o", result.get(i++));
+        assertEquals("-DCMAKE_CC_FLAGS=\"\\\" -ggdb -Wstrict-aliasing=2 -pedantic -fPIC --std=c11\\\"\"", result.get(i++));
         assertEquals("-c", result.get(i++));
-        assertEquals("/home/jslave/sean/mainline/nsulate/src/cli.pb.cc", result.get(i++));
+        assertEquals("./pb.cc", result.get(i++));
+    }
+
+    @Test
+    public void testCrazyNestedQuoting() {
+        CompileCommand command = new CompileCommand();
+        command.command = "X=\"\\\" a  b\\\"\"";
+
+        CompileCommandParser compileCommandParser = new CompileCommandParser();
+        List<String> result = compileCommandParser.parseCommand(command, Collections.emptyMap());
+
+        assertEquals(1, result.size());
+        int i = 0;
+        assertEquals("X=\"\\\" a  b\\\"\"", result.get(i++));
     }
 
     @Test
@@ -108,7 +110,6 @@ public class CompileCommandParserTest {
         command.command = "X=\\\"'a' 'b'\\\"";
         command.file = "test.cc";
 
-        CompileCommandDatabaseParser compileCommandDatabaseParser = new CompileCommandDatabaseParser(new Gson());
         CompileCommandParser compileCommandParser = new CompileCommandParser();
         List<String> result = compileCommandParser.parseCommand(command, Collections.emptyMap());
         assertEquals(1, result.size());
