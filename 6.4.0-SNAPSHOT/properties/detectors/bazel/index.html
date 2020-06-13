@@ -1369,7 +1369,7 @@
 </tbody>
 </table>
 <h2 id="bazel-workspace-external-dependency-rule">Bazel workspace external dependency rule<a class="headerlink" href="#bazel-workspace-external-dependency-rule" title="Permanent link">#</a></h2>
-<pre><code>--detect.bazel.dependency.type=MAVEN_JAR,MAVEN_INSTALL,UNSPECIFIED 
+<pre><code>--detect.bazel.dependency.type=MAVEN_JAR,MAVEN_INSTALL,HASKELL_CABAL_LIBRARY,UNSPECIFIED 
 </code></pre>
 
 <p>The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.</p>
@@ -1403,7 +1403,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>MAVEN_JAR, MAVEN_INSTALL, UNSPECIFIED</td>
+<td>MAVEN_JAR, MAVEN_INSTALL, HASKELL_CABAL_LIBRARY, UNSPECIFIED</td>
 </tr>
 <tr>
 <td>Strict</td>

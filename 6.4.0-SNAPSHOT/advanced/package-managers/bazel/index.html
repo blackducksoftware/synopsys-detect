@@ -493,9 +493,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    Example
+  <a href="#processing-for-the-haskell_cabal_library-workspace-rule" class="md-nav__link">
+    Processing for the haskell_cabal_library workspace rule
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mvn_install-rule-example" class="md-nav__link">
+    mvn_install rule example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#haskell_cabal_library-rule-example" class="md-nav__link">
+    haskell_cabal_library rule example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1287,9 +1314,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example" class="md-nav__link">
-    Example
+  <a href="#processing-for-the-haskell_cabal_library-workspace-rule" class="md-nav__link">
+    Processing for the haskell_cabal_library workspace rule
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    Examples
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mvn_install-rule-example" class="md-nav__link">
+    mvn_install rule example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#haskell_cabal_library-rule-example" class="md-nav__link">
+    haskell_cabal_library rule example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1313,7 +1367,8 @@
                 <h1 id="bazel-support">Bazel support<a class="headerlink" href="#bazel-support" title="Permanent link">#</a></h1>
 <p>As of Synopsys Detect versions 5.2.0 and higher, Synopsys Detect provides limited support for Bazel projects.</p>
 <p>As of Synopsys Detect version 5.2.0, Synopsys Detect supports dependencies specified in <em>maven_jar</em> workspace rules.
-As of Synopsys Detect version 6.0.0, Synopsys Detect also supports dependencies specified in <em>maven_install</em> workspace rules.</p>
+As of Synopsys Detect version 6.0.0, Synopsys Detect also supports dependencies specified in <em>maven_install</em> workspace rules.
+As of Synopsys Detect version 6.4.0, Synopsys Detect also supports dependencies specified in <em>haskell_cabal_library</em> workspace rules.</p>
 <p>The Bazel tool attempts to run on your project if you provide a Bazel build target using the Bazel target property.</p>
 <p>The Bazel tool also requires a bazel executable on $PATH.</p>
 <p>Synopsys Detect attempts to determine the workspace dependency rule (<em>maven_jar</em> or <em>maven_install</em>) from the WORKSPACE file.
@@ -1321,7 +1376,8 @@ In case it cannot, you can specify which rule you use with the Bazel dependency 
 Refer to <a href="../../../properties/detectors/bazel/">Properties</a> for details.</p>
 <h2 id="processing-for-the-maven_install-workspace-rule">Processing for the <em>maven_install</em> workspace rule<a class="headerlink" href="#processing-for-the-maven_install-workspace-rule" title="Permanent link">#</a></h2>
 <p>The Bazel tool runs a bazel cquery on the given target to produce output from which it can parse artifact details such as group, artifact, and version for dependencies.</p>
-<p>The following is an example using commands similar to those that Synopsys Detect runs, but from the command line of how Synopsys Detect's Bazel detector currently identifies components.</p>
+<p>Synopsys Detect's Bazel detector uses commands very similar to the following
+to discover <em>maven_install</em> dependencies.</p>
 <pre><code>$ bazel cquery --noimplicit_deps 'kind(j.*import, deps(//tests/integration:ArtifactExclusionsTest))' --output build 2&gt;&amp;1 | grep maven_coordinates
 tags = [&quot;maven_coordinates=com.google.guava:guava:27.0-jre&quot;],
 tags = [&quot;maven_coordinates=org.hamcrest:hamcrest:2.1&quot;],
@@ -1359,7 +1415,41 @@ Loading: 0 packages loaded
 </code></pre>
 
 <p>Finally, it parses the group/artifact/version details from the value of the string element using the name of artifact.</p>
-<h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h2>
+<h2 id="processing-for-the-haskell_cabal_library-workspace-rule">Processing for the <em>haskell_cabal_library</em> workspace rule<a class="headerlink" href="#processing-for-the-haskell_cabal_library-workspace-rule" title="Permanent link">#</a></h2>
+<p>Requires Bazel 2.1.0 or later.</p>
+<p>Synopsys Detect's Bazel detector runs a bazel cquery on the given target to produce output from which it can
+extract artifact project and version for dependencies.</p>
+<p>The Bazel detector uses a command very similar to the following
+to discover <em>haskell_cabal_library</em> dependencies.</p>
+<pre><code>$ bazel cquery --noimplicit_deps 'kind(haskell_cabal_library, deps(//cat_hs/lib/args:args))' --output jsonproto
+{
+&quot;results&quot;: [{
+&quot;target&quot;: {
+&quot;type&quot;: &quot;RULE&quot;,
+&quot;rule&quot;: {
+...
+&quot;attribute&quot;: [{
+...
+}, {
+&quot;name&quot;: &quot;name&quot;,
+&quot;type&quot;: &quot;STRING&quot;,
+&quot;stringValue&quot;: &quot;hspec&quot;,
+&quot;explicitlySpecified&quot;: true,
+&quot;nodep&quot;: false
+}, {
+&quot;name&quot;: &quot;version&quot;,
+&quot;type&quot;: &quot;STRING&quot;,
+&quot;stringValue&quot;: &quot;2.7.1&quot;,
+&quot;explicitlySpecified&quot;: true,
+&quot;nodep&quot;: false
+}, {
+...
+</code></pre>
+
+<p>It then uses Gson to parse the JSON output into a parse tree,
+and extracts the name and version from the corresponding rule attributes.</p>
+<h2 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">#</a></h2>
+<h3 id="mvn_install-rule-example">mvn_install rule example<a class="headerlink" href="#mvn_install-rule-example" title="Permanent link">#</a></h3>
 <p>The following example will (if you add your Black Duck connection details
 to the Synopsys Detect command line) run the Bazel tool on the
 <em>//tests/integration:ArtifactExclusionsTest</em> target in the
@@ -1368,6 +1458,17 @@ maven_install repository rule:</p>
 <pre><code>git clone https://github.com/bazelbuild/rules_jvm_external
 cd rules_jvm_external/
 bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --detect.bazel.target='//tests/integration:ArtifactExclusionsTest'
+</code></pre>
+
+<h3 id="haskell_cabal_library-rule-example">haskell_cabal_library rule example<a class="headerlink" href="#haskell_cabal_library-rule-example" title="Permanent link">#</a></h3>
+<p>The following example will (if you add your Black Duck connection details
+to the Synopsys Detect command line) run the Bazel tool on the
+<em>//cat_hs/lib/args:args</em> target in the
+rules_haskell/examples project and discover dependencies defined with the
+haskell_cabal_library repository rule:</p>
+<pre><code>git clone https://github.com/tweag/rules_haskell.git
+cd rules_haskell/examples
+bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --detect.bazel.target='//cat_hs/lib/args:args'
 </code></pre>
                 
                   
