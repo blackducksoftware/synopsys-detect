@@ -43,8 +43,8 @@ public class CompileCommandParser {
     private static final char SPACE_CHAR = ' ';
     private static final String SPACE_CHAR_AS_STRING = " ";
     private static final String TAB_CHAR_AS_STRING = "\t";
-    private static final String ESCAPE_SEQUENCE_FOR_SPACE_CHAR = "%20";
-    private static final String ESCAPE_SEQUENCE_FOR_TAB_CHAR = "%09";
+    private static final String ENCODED_SPACE_CHAR = "%20";
+    private static final String ENCODED_TAB_CHAR = "%09";
 
     public List<String> parseCommand(CompileCommand compileCommand, Map<String, String> optionOverrides) {
 
@@ -58,7 +58,7 @@ public class CompileCommandParser {
 
     public List<String> parseCommandString(String commandString, Map<String, String> optionOverrides) {
         logger.trace(String.format("origCompileCommand         : %s", commandString));
-        String quotesRemovedCompileCommand = escapeQuotedWhitespace(commandString);
+        String quotesRemovedCompileCommand = encodeQuotedWhitespace(commandString);
         logger.trace(String.format("quotesRemovedCompileCommand: %s", quotesRemovedCompileCommand));
         StringTokenizer tokenizer = new StringTokenizer(quotesRemovedCompileCommand);
         tokenizer.setQuoteMatcher(StringMatcherFactory.INSTANCE.quoteMatcher());
@@ -91,13 +91,13 @@ public class CompileCommandParser {
 
     private String restoreWhitespace(String givenString) {
         String newString = givenString
-                               .replace(ESCAPE_SEQUENCE_FOR_SPACE_CHAR, SPACE_CHAR_AS_STRING)
-                               .replace(ESCAPE_SEQUENCE_FOR_TAB_CHAR, TAB_CHAR_AS_STRING);
+                               .replace(ENCODED_SPACE_CHAR, SPACE_CHAR_AS_STRING)
+                               .replace(ENCODED_TAB_CHAR, TAB_CHAR_AS_STRING);
         logger.trace(String.format("restoreWhitespace() changed %s to %s", givenString, newString));
         return newString;
     }
 
-    private String escapeQuotedWhitespace(String givenString) {
+    private String encodeQuotedWhitespace(String givenString) {
         StringBuilder newString = new StringBuilder();
         ParserState parserState = new ParserState();
         for (int i = 0; i < givenString.length(); i++) {
@@ -125,9 +125,9 @@ public class CompileCommandParser {
             parserState.setQuoteType(QuoteType.NONE);
             newString.append(c);
         } else if (c == SPACE_CHAR) {
-            newString.append(ESCAPE_SEQUENCE_FOR_SPACE_CHAR);
+            newString.append(ENCODED_SPACE_CHAR);
         } else if (c == TAB_CHAR) {
-            newString.append(ESCAPE_SEQUENCE_FOR_TAB_CHAR);
+            newString.append(ENCODED_TAB_CHAR);
         } else {
             newString.append(c);
         }
