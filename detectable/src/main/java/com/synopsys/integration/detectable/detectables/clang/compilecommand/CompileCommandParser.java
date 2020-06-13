@@ -70,9 +70,9 @@ public class CompileCommandParser {
             String part = restoreWhitespace(token);
             if (partIndex > 0) {
                 String optionValueOverride = null;
-                for (String optionToOverride : optionOverrides.keySet()) {
-                    if (optionToOverride.equals(lastPart)) {
-                        optionValueOverride = optionOverrides.get(optionToOverride);
+                for (Map.Entry<String, String> optionToOverride : optionOverrides.entrySet()) {
+                    if (optionToOverride.getKey().equals(lastPart)) {
+                        optionValueOverride = optionToOverride.getValue();
                     }
                 }
                 if (optionValueOverride != null) {
@@ -115,13 +115,10 @@ public class CompileCommandParser {
 
     private void processQuotedChar(ParserState parserState, char c, StringBuilder newString) {
         // Currently inside a quoted substring
-        if (!parserState.isLastCharEscapeChar() && (c == SINGLE_QUOTE_CHAR) && (parserState.getQuoteType() == QuoteType.SINGLE)) {
-            parserState.setQuoteType(QuoteType.NONE);
-            newString.append(c);
-        } else if (!parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && (parserState.getQuoteType() == QuoteType.DOUBLE)) {
-            parserState.setQuoteType(QuoteType.NONE);
-            newString.append(c);
-        } else if (parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && parserState.getQuoteType() == QuoteType.ESCAPED_DOUBLE) {
+        if ((!parserState.isLastCharEscapeChar() && (c == SINGLE_QUOTE_CHAR) && (parserState.getQuoteType() == QuoteType.SINGLE)) ||
+                (!parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && (parserState.getQuoteType() == QuoteType.DOUBLE)) ||
+                (parserState.isLastCharEscapeChar() && (c == DOUBLE_QUOTE_CHAR) && parserState.getQuoteType() == QuoteType.ESCAPED_DOUBLE)) {
+            // Close quote
             parserState.setQuoteType(QuoteType.NONE);
             newString.append(c);
         } else if (c == SPACE_CHAR) {
