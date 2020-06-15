@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline.stepexecutor;
+package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline.step;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,11 +29,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorParseEachXml;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseEachXml;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class StepExecutorParseEachXmlTest {
+public class IntermediateStepParseEachXmlTest {
 
     private static final String COMMONS_IO_XML = "<?xml version=\"1.1\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
                                                      + "<query version=\"2\">\n"
@@ -53,10 +53,10 @@ public class StepExecutorParseEachXmlTest {
 
     @Test
     public void test() throws IntegrationException {
-        final StepExecutor stepExecutor = new StepExecutorParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value");
+        final IntermediateStep intermediateStep = new IntermediateStepParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value");
         final List<String> input = Arrays.asList(COMMONS_IO_XML, GUAVA_XML);
 
-        final List<String> results = stepExecutor.process(input);
+        final List<String> results = intermediateStep.process(input);
 
         assertEquals(2, results.size());
         assertEquals("org.apache.commons:commons-io:1.3.2", results.get(0));

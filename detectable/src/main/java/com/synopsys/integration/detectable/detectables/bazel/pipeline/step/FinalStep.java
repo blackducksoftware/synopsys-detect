@@ -20,23 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
+import java.util.List;
+
+import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.exception.IntegrationException;
 
-public enum WorkspaceRule {
-    MAVEN_JAR("maven_jar"),
-    MAVEN_INSTALL("maven_install"),
-    HASKELL_CABAL_LIBRARY("haskell_cabal_library"),
-    UNSPECIFIED(null); //changed to UNSPECIFIED so property is simpler, if this causes confusion willing to discuss - jp
-
-    private String name;
-
-    WorkspaceRule(final String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
+public interface FinalStep {
+    MutableDependencyGraph finish(final List<String> input) throws IntegrationException;
 }

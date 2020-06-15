@@ -57,7 +57,6 @@ import com.synopsys.integration.detectable.detectable.inspector.PipInspectorReso
 import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
-import com.synopsys.integration.detectable.detectables.bazel.BazelDependencyParser;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
@@ -397,9 +396,8 @@ public class DetectableFactory {
     //#region Utility
 
     private BazelExtractor bazelExtractor() {
-        WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
-        BazelDependencyParser bazelDependencyParser = new BazelDependencyParser(externalIdFactory);
-        return new BazelExtractor(executableRunner, bazelDependencyParser, workspaceRuleChooser);
+        final WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
+        return new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
     }
 
     private FilePathGenerator filePathGenerator() {

@@ -20,23 +20,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.bazel;
+package com.synopsys.integration.detectable.detectables.bazel.pipeline.step.model;
 
-import com.synopsys.integration.exception.IntegrationException;
+import java.util.List;
 
-public enum WorkspaceRule {
-    MAVEN_JAR("maven_jar"),
-    MAVEN_INSTALL("maven_install"),
-    HASKELL_CABAL_LIBRARY("haskell_cabal_library"),
-    UNSPECIFIED(null); //changed to UNSPECIFIED so property is simpler, if this causes confusion willing to discuss - jp
+import com.synopsys.integration.util.Stringable;
 
-    private String name;
+// Model for output produced by: bazel cquery ... --output jsonproto
+public class Proto extends Stringable {
+    private List<ResultItem> results;
 
-    WorkspaceRule(final String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
+    public List<ResultItem> getResults() {
+        return results;
     }
 }
