@@ -22,21 +22,21 @@
  */
 package com.synopsys.integration.detect.tool.detector;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import com.synopsys.integration.detect.workflow.event.Event;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorProjectInfo;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorProjectInfoMetadata;
-import com.synopsys.integration.detect.workflow.event.Event;
-import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.evaluation.DiscoveryFilter;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectDiscoveryFilter implements DiscoveryFilter {
-    private DetectorNameVersionHandler detectorNameVersionHandler;
+    private final DetectorNameVersionHandler detectorNameVersionHandler;
 
-    public DetectDiscoveryFilter(EventSystem eventSystem, final DetectorNameVersionHandler detectorNameVersionHandler) {
+    public DetectDiscoveryFilter(EventSystem eventSystem, DetectorNameVersionHandler detectorNameVersionHandler) {
         this.detectorNameVersionHandler = detectorNameVersionHandler;
 
         eventSystem.registerListener(Event.DiscoveryEnded, this::discoveryEnded);
@@ -50,7 +50,7 @@ public class DetectDiscoveryFilter implements DiscoveryFilter {
     }
 
     @Override
-    public boolean shouldDiscover(final DetectorEvaluation detectorEvaluation) {
+    public boolean shouldDiscover(DetectorEvaluation detectorEvaluation) {
         return detectorNameVersionHandler.willAccept(toMetadataProjectInfo(detectorEvaluation));
     }
 
