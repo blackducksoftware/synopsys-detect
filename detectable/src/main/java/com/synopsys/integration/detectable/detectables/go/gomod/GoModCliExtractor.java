@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
@@ -46,7 +48,6 @@ public class GoModCliExtractor {
     private final GoModGraphParser goModGraphParser;
     private final Gson gson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().setLenient().create();
     private final Map<String, String> replacementData = new HashMap<>();
-    private final static String PATHS = "paths";
 
     public GoModCliExtractor(final ExecutableRunner executableRunner, final GoModGraphParser goModGraphParser) {
         this.executableRunner = executableRunner;
@@ -78,14 +79,15 @@ public class GoModCliExtractor {
     private List<String> modGraphOutputWithReplacements(File directory, File goExe, List<String> listUJsonOutput) throws ExecutableRunnerException, DetectableException {
         final List<String> modGraphOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "mod", "graph");
         String jsonString = convertOutputToJsonString(listUJsonOutput);
-        JsonArray json = gson.fromJson(jsonString, JsonArray.class);
 
-        for (final JsonElement jsonElement : json) {
-            GoListUJsonData data = gson.fromJson(jsonElement, GoListUJsonData.class);
-            ReplaceData replace = data.getReplace();
+        Type goListUJsonEntryType = new TypeToken<List<GoListUJsonData>>() {}.getType();
+        List<GoListUJsonData> data = gson.fromJson(jsonString, goListUJsonEntryType);
+
+        for (final GoListUJsonData entry : data) {
+            ReplaceData replace = entry.getReplace();
             if (replace != null) {
-                String path = data.getPath();
-                String originalVersion = data.getVersion();
+                String path = entry.getPath();
+                String originalVersion = entry.getVersion();
                 String replaceVersion = replace.getVersion();
                 replacementData.put(String.format("%s@%s", path, originalVersion), String.format("%s@%s", path, replaceVersion));
             }
