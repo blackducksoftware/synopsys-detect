@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.SetUtils;
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,7 +47,7 @@ public class BdioCompare {
         public String id = "";
         public List<String> relatedIds = new ArrayList<>();
 
-        public BdioNode(final String name, final String revision, final String id, final List<String> relatedIds) {
+        public BdioNode(String name, String revision, String id, List<String> relatedIds) {
             this.name = name;
             this.revision = revision;
             this.id = id;
@@ -66,9 +66,9 @@ public class BdioCompare {
     }
 
     public class BdioIssue {
-        private String issue;
+        private final String issue;
 
-        private BdioIssue(final String issue) {
+        private BdioIssue(String issue) {
             this.issue = issue;
         }
 

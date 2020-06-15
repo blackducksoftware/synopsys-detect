@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.configuration.util.Bds;
 import com.synopsys.integration.detect.workflow.nameversion.decision.ArbitraryNameVersionDecision;
@@ -52,11 +52,11 @@ public class DetectorNameVersionHandler {
 
     private final List<DetectorType> lowPriorityDetectorTypes;
 
-    public DetectorNameVersionHandler(final List<DetectorType> lowPriorityDetectorTypes) {
+    public DetectorNameVersionHandler(List<DetectorType> lowPriorityDetectorTypes) {
         this.lowPriorityDetectorTypes = lowPriorityDetectorTypes;
     }
 
-    public boolean willAccept(final DetectorProjectInfoMetadata metadata) {
+    public boolean willAccept(DetectorProjectInfoMetadata metadata) {
         if (!lowestDepth.isEmpty()) {
             return metadata.getDepth() <= lowestDepth.get(0).getDepth();
         } else {
@@ -64,13 +64,13 @@ public class DetectorNameVersionHandler {
         }
     }
 
-    public void accept(final DetectorProjectInfo projectInfo) {
+    public void accept(DetectorProjectInfo projectInfo) {
         if (StringUtils.isBlank(projectInfo.getNameVersion().getName())) {
             return;
         }
 
         if (!lowestDepth.isEmpty()) {
-            final int currentDepth = lowestDepth.get(0).getDepth();
+            int currentDepth = lowestDepth.get(0).getDepth();
             if (projectInfo.getDepth() == currentDepth) {
                 lowestDepth.add(projectInfo);
             } else if (projectInfo.getDepth() < currentDepth) {
@@ -83,7 +83,7 @@ public class DetectorNameVersionHandler {
     }
 
     public NameVersionDecision finalDecision() {
-        final List<DetectorProjectInfo> uniqueDetectorsAtLowestDepth = filterUniqueDetectorsOnly(lowestDepth);
+        List<DetectorProjectInfo> uniqueDetectorsAtLowestDepth = filterUniqueDetectorsOnly(lowestDepth);
 
         if (uniqueDetectorsAtLowestDepth.size() == 1) {
             return new UniqueDetectorDecision(uniqueDetectorsAtLowestDepth.get(0));
@@ -94,19 +94,19 @@ public class DetectorNameVersionHandler {
         }
     }
 
-    private NameVersionDecision decideProjectNameVersionArbitrarily(final List<DetectorProjectInfo> allPossibilities) {
-        final List<DetectorProjectInfo> normalPossibilities = Bds.of(allPossibilities)
+    private NameVersionDecision decideProjectNameVersionArbitrarily(List<DetectorProjectInfo> allPossibilities) {
+        List<DetectorProjectInfo> normalPossibilities = Bds.of(allPossibilities)
                                                                   .filterNot(it -> lowPriorityDetectorTypes.contains(it.getDetectorType()))
                                                                   .toList();
 
-        final List<DetectorProjectInfo> chosenPossibilities;
+        List<DetectorProjectInfo> chosenPossibilities;
         if (normalPossibilities.isEmpty()) {
             chosenPossibilities = allPossibilities;
         } else {
             chosenPossibilities = normalPossibilities;
         }
 
-        final Optional<DetectorProjectInfo> chosenDetectorProjectInfo = chosenPossibilities.stream().min(Comparator.comparing(p -> p.getNameVersion().getName()));
+        Optional<DetectorProjectInfo> chosenDetectorProjectInfo = chosenPossibilities.stream().min(Comparator.comparing(p -> p.getNameVersion().getName()));
 
         return chosenDetectorProjectInfo.map(chosen -> {
             List<DetectorProjectInfo> otherOptions = chosenPossibilities.stream()
@@ -117,8 +117,8 @@ public class DetectorNameVersionHandler {
     }
 
     // Return only project info whose detector types appear exactly once.
-    protected List<DetectorProjectInfo> filterUniqueDetectorsOnly(final List<DetectorProjectInfo> projectNamePossibilities) {
-        final Map<DetectorType, List<DetectorProjectInfo>> grouped = Bds.of(projectNamePossibilities)
+    protected List<DetectorProjectInfo> filterUniqueDetectorsOnly(List<DetectorProjectInfo> projectNamePossibilities) {
+        Map<DetectorType, List<DetectorProjectInfo>> grouped = Bds.of(projectNamePossibilities)
                                                                          .groupBy(DetectorProjectInfo::getDetectorType);
 
         return grouped.values().stream()
