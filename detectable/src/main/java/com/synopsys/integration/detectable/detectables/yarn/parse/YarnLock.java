@@ -25,6 +25,7 @@ package com.synopsys.integration.detectable.detectables.yarn.parse;
 import java.util.List;
 
 public class YarnLock {
+    private final List<YarnLockEntry> entries;
 
     public YarnLock(final List<YarnLockEntry> entries) {
         this.entries = entries;
@@ -33,6 +34,4 @@ public class YarnLock {
     public List<YarnLockEntry> getEntries() {
         return entries;
     }
-
-    private final List<YarnLockEntry> entries;
 }

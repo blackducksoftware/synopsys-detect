@@ -45,6 +45,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.DotNet
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.LernaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
@@ -57,7 +58,7 @@ import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 
 public class DetectExecutableResolver
     implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, DockerResolver,
-                   DotNetResolver, GitResolver, SwiftResolver, GoResolver {
+                   DotNetResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver {
 
     private final SimpleExecutableResolver simpleExecutableResolver;
     private final DetectExecutableOptions detectExecutableOptions;
@@ -190,6 +191,11 @@ public class DetectExecutableResolver
     @Override
     public File resolveGo() throws DetectableException {
         return resolveExecutable("go", simpleExecutableResolver::resolveGo, detectExecutableOptions.getGoUserPath());
+    }
+
+    @Override
+    public File resolveLerna() throws DetectableException {
+        return resolveExecutable("lerna", simpleExecutableResolver::resolveLerna, detectExecutableOptions.getLernaUserPath());
     }
 }
 

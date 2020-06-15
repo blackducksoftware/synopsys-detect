@@ -24,15 +24,17 @@ package com.synopsys.integration.detect.workflow.report.output;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.synopsys.integration.configuration.util.Bds;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
-import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
@@ -45,7 +47,7 @@ import com.synopsys.integration.util.NameVersion;
 
 public class FormattedOutputManager {
     private DetectorToolResult detectorToolResult = null;
-    private BdioCodeLocationResult bdioCodeLocationResult = null;
+    private Set<String> codeLocations = new HashSet<>();
     private NameVersion projectNameVersion = null;
     private final List<Status> statusSummaries = new ArrayList<>();
     private final List<DetectResult> detectResults = new ArrayList<>();
@@ -57,8 +59,8 @@ public class FormattedOutputManager {
         eventSystem.registerListener(Event.StatusSummary, this::addStatusSummary);
         eventSystem.registerListener(Event.Issue, this::addIssue);
         eventSystem.registerListener(Event.ResultProduced, this::addDetectResult);
+        eventSystem.registerListener(Event.CodeLocationNamesAdded, this::codeLocationsAdded);
         eventSystem.registerListener(Event.UnrecognizedPaths, this::addUnrecognizedPaths);
-        eventSystem.registerListener(Event.CodeLocationsCalculated, this::codeLocationsCalculated);
         eventSystem.registerListener(Event.ProjectNameVersionChosen, this::projectNameVersionChosen);
     }
 
@@ -91,11 +93,9 @@ public class FormattedOutputManager {
             formattedOutput.projectVersion = projectNameVersion.getVersion();
         }
 
-        if (bdioCodeLocationResult != null && bdioCodeLocationResult.getCodeLocationNames() != null) {
-            formattedOutput.codeLocations = Bds.of(bdioCodeLocationResult.getCodeLocationNames().values())
+        formattedOutput.codeLocations = Bds.of(this.codeLocations)
                                                 .map(FormattedCodeLocationOutput::new)
                                                 .toList();
-        }
 
         formattedOutput.unrecognizedPaths = new HashMap<>();
         unrecognizedPaths.keySet().forEach(key -> {
@@ -141,8 +141,8 @@ public class FormattedOutputManager {
         this.detectorToolResult = detectorToolResult;
     }
 
-    private void codeLocationsCalculated(final BdioCodeLocationResult bdioCodeLocationResult) {
-        this.bdioCodeLocationResult = bdioCodeLocationResult;
+    private void codeLocationsAdded(final Collection<String> codeLocations) {
+        this.codeLocations.addAll(codeLocations);
     }
 
     private void projectNameVersionChosen(final NameVersion nameVersion) {
