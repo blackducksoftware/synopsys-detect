@@ -20,18 +20,43 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn.parse;
+package com.synopsys.integration.detectable.detectables.lerna.model;
 
-import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
-public class YarnLock {
-    private final List<YarnLockEntry> entries;
+public class LernaPackage {
+    @SerializedName("name")
+    private final String name;
 
-    public YarnLock(final List<YarnLockEntry> entries) {
-        this.entries = entries;
+    @SerializedName("version")
+    private final String version;
+
+    @SerializedName("private")
+    private final boolean isPrivate;
+
+    @SerializedName("location")
+    private final String location;
+
+    public LernaPackage(String name, String version, boolean isPrivate, String location) {
+        this.name = name;
+        this.version = version;
+        this.isPrivate = isPrivate;
+        this.location = location;
     }
 
-    public List<YarnLockEntry> getEntries() {
-        return entries;
+    public String getName() {
+        return name;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public String getLocation() {
+        return location;
     }
 }

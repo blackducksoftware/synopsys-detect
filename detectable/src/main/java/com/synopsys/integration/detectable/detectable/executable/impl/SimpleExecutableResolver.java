@@ -37,6 +37,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.DotNet
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.LernaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.MavenResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
@@ -50,7 +51,7 @@ import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 //this will cache the find result.
 public class SimpleExecutableResolver
     implements GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, JavaResolver, DotNetResolver,
-                   DockerResolver, GitResolver, SwiftResolver, GoResolver {
+                   DockerResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver {
 
     private final CachedExecutableResolverOptions executableResolverOptions;
     private final SimpleLocalExecutableFinder localExecutableFinder;
@@ -177,5 +178,10 @@ public class SimpleExecutableResolver
     @Override
     public File resolveGo() {
         return findCachedSystem("go");
+    }
+
+    @Override
+    public File resolveLerna() {
+        return findCachedSystem("lerna");
     }
 }
