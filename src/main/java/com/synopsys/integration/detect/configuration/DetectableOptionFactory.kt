@@ -36,6 +36,7 @@ import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableO
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptOptions
+import com.synopsys.integration.detectable.detectables.lerna.LernaOptions
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenCliExtractorOptions
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseOptions
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractorOptions
@@ -122,6 +123,11 @@ class DetectableOptionFactory(private val detectConfiguration: PropertyConfigura
         val scriptOptions = GradleInspectorScriptOptions(excludedProjectNames, includedProjectNames, excludedConfigurationNames, includedConfigurationNames, customRepository, onlineInspectorVersion)
         val gradleBuildCommand = detectConfiguration.getValue(DetectProperties.DETECT_GRADLE_BUILD_COMMAND).orElse(null)
         return GradleInspectorOptions(gradleBuildCommand, scriptOptions, proxyInfo)
+    }
+
+    fun createLernaOptions(): LernaOptions {
+        val includePrivate = detectConfiguration.getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE)
+        return LernaOptions(includePrivate)
     }
 
     fun createMavenCliOptions(): MavenCliExtractorOptions {

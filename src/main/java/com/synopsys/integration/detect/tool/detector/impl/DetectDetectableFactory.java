@@ -46,6 +46,7 @@ import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetecta
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleParseDetectable;
+import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
 import com.synopsys.integration.detectable.detectables.maven.parsing.MavenParseDetectable;
@@ -78,9 +79,9 @@ public class DetectDetectableFactory {
     private final NugetInspectorResolver nugetInspectorResolver;
     private final PipInspectorResolver pipInspectorResolver;
 
-    public DetectDetectableFactory(final DetectableFactory detectableFactory, final DetectableOptionFactory detectableOptionFactory, final DetectExecutableResolver detectExecutableResolver,
-        final DockerInspectorResolver dockerInspectorResolver, final GradleInspectorResolver gradleInspectorResolver, final NugetInspectorResolver nugetInspectorResolver,
-        final PipInspectorResolver pipInspectorResolver) {
+    public DetectDetectableFactory(DetectableFactory detectableFactory, DetectableOptionFactory detectableOptionFactory, DetectExecutableResolver detectExecutableResolver,
+        DockerInspectorResolver dockerInspectorResolver, GradleInspectorResolver gradleInspectorResolver, NugetInspectorResolver nugetInspectorResolver,
+        PipInspectorResolver pipInspectorResolver) {
         this.detectableFactory = detectableFactory;
         this.detectableOptionFactory = detectableOptionFactory;
         this.detectExecutableResolver = detectExecutableResolver;
@@ -90,156 +91,164 @@ public class DetectDetectableFactory {
         this.pipInspectorResolver = pipInspectorResolver;
     }
 
-    public DockerDetectable createDockerDetectable(final DetectableEnvironment environment) {
+    public DockerDetectable createDockerDetectable(DetectableEnvironment environment) {
         return detectableFactory.createDockerDetectable(environment, detectableOptionFactory.createDockerDetectableOptions(), dockerInspectorResolver, detectExecutableResolver, detectExecutableResolver, detectExecutableResolver);
     }
 
-    public BazelDetectable createBazelDetectable(final DetectableEnvironment environment) {
+    public BazelDetectable createBazelDetectable(DetectableEnvironment environment) {
         return detectableFactory.createBazelDetectable(environment, detectableOptionFactory.createBazelDetectableOptions(), detectExecutableResolver);
     }
 
-    public BitbakeDetectable createBitbakeDetectable(final DetectableEnvironment environment) {
+    public BitbakeDetectable createBitbakeDetectable(DetectableEnvironment environment) {
         return detectableFactory.createBitbakeDetectable(environment, detectableOptionFactory.createBitbakeDetectableOptions(), detectExecutableResolver);
     }
 
-    public CargoDetectable createCargoDetectable(final DetectableEnvironment environment) {
+    public CargoDetectable createCargoDetectable(DetectableEnvironment environment) {
         return detectableFactory.createCargoDetectable(environment);
     }
 
-    public ClangDetectable createClangDetectable(final DetectableEnvironment environment) {
+    public ClangDetectable createClangDetectable(DetectableEnvironment environment) {
         return detectableFactory.createClangDetectable(environment, detectableOptionFactory.createClangDetectableOptions());
     }
 
-    public ComposerLockDetectable createComposerDetectable(final DetectableEnvironment environment) {
+    public ComposerLockDetectable createComposerDetectable(DetectableEnvironment environment) {
         return detectableFactory.createComposerDetectable(environment, detectableOptionFactory.createComposerLockDetectableOptions());
     }
 
-    public CondaCliDetectable createCondaCliDetectable(final DetectableEnvironment environment) {
+    public CondaCliDetectable createCondaCliDetectable(DetectableEnvironment environment) {
         return detectableFactory.createCondaCliDetectable(environment, detectExecutableResolver, detectableOptionFactory.createCondaOptions());
     }
 
-    public CpanCliDetectable createCpanCliDetectable(final DetectableEnvironment environment) {
+    public CpanCliDetectable createCpanCliDetectable(DetectableEnvironment environment) {
         return detectableFactory.createCpanCliDetectable(environment, detectExecutableResolver, detectExecutableResolver);
     }
 
-    public GemlockDetectable createGemlockDetectable(final DetectableEnvironment environment) {
+    public GemlockDetectable createGemlockDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGemlockDetectable(environment);
     }
 
-    public GitParseDetectable createGitParseDetectable(final DetectableEnvironment environment) {
+    public GitParseDetectable createGitParseDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGitParseDetectable(environment);
     }
 
-    public GitCliDetectable createGitCliDetectable(final DetectableEnvironment environment) {
+    public GitCliDetectable createGitCliDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGitCliDetectable(environment, detectExecutableResolver);
     }
 
-    public GoModCliDetectable createGoModCliDetectable(final DetectableEnvironment environment) {
+    public GoModCliDetectable createGoModCliDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGoModCliDetectable(environment, detectExecutableResolver);
     }
 
-    public GoDepLockDetectable createGoLockDetectable(final DetectableEnvironment environment) {
+    public GoDepLockDetectable createGoLockDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGoLockDetectable(environment);
     }
 
-    public GoVndrDetectable createGoVndrDetectable(final DetectableEnvironment environment) {
+    public GoVndrDetectable createGoVndrDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGoVndrDetectable(environment);
     }
 
-    public GoVendorDetectable createGoVendorDetectable(final DetectableEnvironment environment) {
+    public GoVendorDetectable createGoVendorDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGoVendorDetectable(environment);
     }
 
-    public GoGradleDetectable createGoGradleDetectable(final DetectableEnvironment environment) {
+    public GoGradleDetectable createGoGradleDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGoGradleDetectable(environment);
     }
 
-    public GradleDetectable createGradleDetectable(final DetectableEnvironment environment) {
+    public GradleDetectable createGradleDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGradleDetectable(environment, detectableOptionFactory.createGradleInspectorOptions(), gradleInspectorResolver, detectExecutableResolver);
     }
 
-    public GradleParseDetectable createGradleParseDetectable(final DetectableEnvironment environment) {
+    public GradleParseDetectable createGradleParseDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGradleParseDetectable(environment);
     }
 
-    public GemspecParseDetectable createGemspecParseDetectable(final DetectableEnvironment environment) {
+    public GemspecParseDetectable createGemspecParseDetectable(DetectableEnvironment environment) {
         return detectableFactory.createGemspecParseDetectable(environment, detectableOptionFactory.createGemspecParseDetectableOptions());
     }
 
-    public MavenPomDetectable createMavenPomDetectable(final DetectableEnvironment environment) {
+    public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment) {
         return detectableFactory.createMavenPomDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions());
     }
 
-    public MavenPomWrapperDetectable createMavenPomWrapperDetectable(final DetectableEnvironment environment) {
+    public MavenPomWrapperDetectable createMavenPomWrapperDetectable(DetectableEnvironment environment) {
         return detectableFactory.createMavenPomWrapperDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions());
     }
 
-    public MavenParseDetectable createMavenParseDetectable(final DetectableEnvironment environment) {
+    public MavenParseDetectable createMavenParseDetectable(DetectableEnvironment environment) {
         return detectableFactory.createMavenParseDetectable(environment, detectableOptionFactory.createMavenParseOptions());
     }
 
-    public NpmCliDetectable createNpmCliDetectable(final DetectableEnvironment environment) {
+    public NpmCliDetectable createNpmCliDetectable(DetectableEnvironment environment) {
         return detectableFactory.createNpmCliDetectable(environment, detectExecutableResolver, detectableOptionFactory.createNpmCliExtractorOptions());
     }
 
-    public NpmPackageLockDetectable createNpmPackageLockDetectable(final DetectableEnvironment environment) {
+    public NpmPackageLockDetectable createNpmPackageLockDetectable(DetectableEnvironment environment) {
         return detectableFactory.createNpmPackageLockDetectable(environment, detectableOptionFactory.createNpmLockfileOptions());
     }
 
-    public NugetProjectDetectable createNugetProjectDetectable(final DetectableEnvironment environment) {
+    public NugetProjectDetectable createNugetProjectDetectable(DetectableEnvironment environment) {
         return detectableFactory.createNugetProjectDetectable(environment, detectableOptionFactory.createNugetInspectorOptions(), nugetInspectorResolver);
     }
 
-    public NpmShrinkwrapDetectable createNpmShrinkwrapDetectable(final DetectableEnvironment environment) {
+    public NpmShrinkwrapDetectable createNpmShrinkwrapDetectable(DetectableEnvironment environment) {
         return detectableFactory.createNpmShrinkwrapDetectable(environment, detectableOptionFactory.createNpmLockfileOptions());
     }
 
-    public NpmPackageJsonParseDetectable createNpmPackageJsonParseDetectable(final DetectableEnvironment environment) {
+    public NpmPackageJsonParseDetectable createNpmPackageJsonParseDetectable(DetectableEnvironment environment) {
         return detectableFactory.createNpmPackageJsonParseDetectable(environment, detectableOptionFactory.createNpmPackageJsonParseDetectableOptions());
     }
 
-    public NugetSolutionDetectable createNugetSolutionDetectable(final DetectableEnvironment environment) {
+    public NugetSolutionDetectable createNugetSolutionDetectable(DetectableEnvironment environment) {
         return detectableFactory.createNugetSolutionDetectable(environment, detectableOptionFactory.createNugetInspectorOptions(), nugetInspectorResolver);
     }
 
-    public PackratLockDetectable createPackratLockDetectable(final DetectableEnvironment environment) {
+    public PackratLockDetectable createPackratLockDetectable(DetectableEnvironment environment) {
         return detectableFactory.createPackratLockDetectable(environment);
     }
 
-    public PearCliDetectable createPearCliDetectable(final DetectableEnvironment environment) {
+    public PearCliDetectable createPearCliDetectable(DetectableEnvironment environment) {
         return detectableFactory.createPearCliDetectable(environment, detectableOptionFactory.createPearCliDetectableOptions(), detectExecutableResolver);
     }
 
-    public PipenvDetectable createPipenvDetectable(final DetectableEnvironment environment) {
+    public PipenvDetectable createPipenvDetectable(DetectableEnvironment environment) {
         return detectableFactory.createPipenvDetectable(environment, detectableOptionFactory.createPipenvDetectableOptions(), detectExecutableResolver, detectExecutableResolver);
     }
 
-    public PipInspectorDetectable createPipInspectorDetectable(final DetectableEnvironment environment) {
+    public PipInspectorDetectable createPipInspectorDetectable(DetectableEnvironment environment) {
         return detectableFactory.createPipInspectorDetectable(environment, detectableOptionFactory.createPipInspectorDetectableOptions(), pipInspectorResolver, detectExecutableResolver, detectExecutableResolver);
     }
 
-    public PodlockDetectable createPodLockDetectable(final DetectableEnvironment environment) {
+    public PodlockDetectable createPodLockDetectable(DetectableEnvironment environment) {
         return detectableFactory.createPodLockDetectable(environment);
     }
 
-    public PoetryDetectable createPoetryDetectable(final DetectableEnvironment environment) {
+    public PoetryDetectable createPoetryDetectable( DetectableEnvironment environment) {
         return detectableFactory.createPoetryDetectable(environment);
     }
 
-    public RebarDetectable createRebarDetectable(final DetectableEnvironment environment) {
+    public RebarDetectable createRebarDetectable( DetectableEnvironment environment) {
         return detectableFactory.createRebarDetectable(environment, detectExecutableResolver);
     }
 
-    public SbtResolutionCacheDetectable createSbtResolutionCacheDetectable(final DetectableEnvironment environment) {
+    public SbtResolutionCacheDetectable createSbtResolutionCacheDetectable(DetectableEnvironment environment) {
         return detectableFactory.createSbtResolutionCacheDetectable(environment, detectableOptionFactory.createSbtResolutionCacheDetectableOptions());
     }
 
-    public SwiftCliDetectable createSwiftCliDetectable(final DetectableEnvironment environment) {
+    public SwiftCliDetectable createSwiftCliDetectable(DetectableEnvironment environment) {
         return detectableFactory.createSwiftCliDetectable(environment, detectExecutableResolver);
     }
 
-    public YarnLockDetectable createYarnLockDetectable(final DetectableEnvironment environment) {
+    public YarnLockDetectable createYarnLockDetectable(DetectableEnvironment environment) {
         return detectableFactory.createYarnLockDetectable(environment, detectableOptionFactory.createYarnLockOptions());
     }
 
+    public LernaDetectable createLernaDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createLernaDetectable(environment,
+            detectExecutableResolver,
+            detectableOptionFactory.createYarnLockOptions(),
+            detectableOptionFactory.createNpmLockfileOptions(),
+            detectableOptionFactory.createLernaOptions()
+        );
+    }
 }
