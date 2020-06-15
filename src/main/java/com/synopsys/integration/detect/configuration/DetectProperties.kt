@@ -186,7 +186,7 @@ class DetectProperties {
         }
         val DETECT_BINARY_SCAN_FILE = NullablePathProperty("detect.binary.scan.file.path").apply {
             setInfo("Binary Scan Target", "4.2.0")
-            setHelp("If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns.")
+            setHelp("If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns. The BINARY_SCAN tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the BINARY_SCAN tool is invoked.")
             setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_PATH)
         }
         val DETECT_BINARY_SCAN_FILE_NAME_PATTERNS = StringListProperty("detect.binary.scan.file.name.patterns", emptyList()).apply {
@@ -972,6 +972,18 @@ class DetectProperties {
             setInfo("Wait For Results", "5.5.0")
             setHelp("If set to true, Detect will wait for Synopsys products until results are available or the detect.report.timeout is exceeded.")
             setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
+        }
+
+        val DETECT_LERNA_PATH = NullablePathProperty("detect.lerna.path").apply {
+            setInfo("Lerna Executable", "6.0.0")
+            setHelp("Path of the lerna executable.")
+            setGroups(DetectGroup.LERNA, DetectGroup.PATHS, DetectGroup.GLOBAL)
+        }
+
+        val DETECT_LERNA_INCLUDE_PRIVATE = BooleanProperty("detect.lerna.include.private", false).apply {
+            setInfo("Include Lerna Packages defined as private.", "6.0.0")
+            setHelp("Lerna allows for private packages that do not get published. Set this to true to include all packages including private packages.")
+            setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
         }
 
         //#endregion Active Properties

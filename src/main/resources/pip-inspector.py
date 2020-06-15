@@ -1,7 +1,5 @@
 #
-# Copyright (C) 2017 Black Duck Software, Inc.
-# http://www.blackducksoftware.com/
-#
+# Copyright (c) 2020 Synopsys, Inc.
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements. See the NOTICE file
@@ -21,11 +19,11 @@
 # under the License.
 #
 
-import pkg_resources
-import os
-import sys
 import getopt
+import os
 import pip
+import pkg_resources
+import sys
 
 pip_major_version = int(pip.__version__.split(".")[0])
 if pip_major_version >= 20:
@@ -71,7 +69,15 @@ def main():
             requirements = parse_requirements(requirements_path, session=PipSession())
             for req in requirements:
                 try:
-                    requirement = resolve_package_by_name(req.req.name, [])
+                    package_name = None
+                    # In 20.1 of pip, the requirements object changed
+                    if hasattr(req, 'req'):
+                        package_name = req.req.name
+                    if package_name is None:
+                        import re
+                        package_name = re.split('==|>=', req.requirement)[0]
+
+                    requirement = resolve_package_by_name(package_name, [])
                     if requirement is None:
                         raise Exception()
                     project.children = project.children + [requirement]

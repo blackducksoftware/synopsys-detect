@@ -123,10 +123,10 @@ public class AggregateBdioCreator {
         return createUploadTarget(projectNameVersion, codeLocationName, aggregateBdioFile, aggregateDependencyGraph, uploadEmptyAggregate);
     }
 
-    private Optional<UploadTarget> createUploadTarget(final NameVersion projectAndVersion, final String codeLocationName, final File aggregateBdioFile, final DependencyGraph dependencyGraph, final boolean uploadEmptyAggregate) {
+    private Optional<UploadTarget> createUploadTarget(final NameVersion projectNameVersion, final String codeLocationName, final File aggregateBdioFile, final DependencyGraph dependencyGraph, final boolean uploadEmptyAggregate) {
         final boolean aggregateHasDependencies = !dependencyGraph.getRootDependencies().isEmpty();
         if (aggregateHasDependencies || uploadEmptyAggregate) {
-            return Optional.of(UploadTarget.createDefault(projectAndVersion, codeLocationName, aggregateBdioFile));
+            return Optional.of(UploadTarget.createDefault(projectNameVersion, codeLocationName, aggregateBdioFile));
         } else {
             logger.warn("The aggregate contained no dependencies, will not upload aggregate at this time.");
             return Optional.empty();

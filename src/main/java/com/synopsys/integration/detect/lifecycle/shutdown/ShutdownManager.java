@@ -117,6 +117,9 @@ public class ShutdownManager {
                         logger.debug("Skipping cleanup for: " + file.getAbsolutePath());
                     } else {
                         logger.debug("Cleaning up: " + file.getAbsolutePath());
+                        if (file.getName().contains("status")) {
+                            logger.info("Status file has been deleted.  To preserve status file, turn off cleanup actions.");
+                        }
                         FileUtils.forceDelete(file);
                     }
                 } catch (final IOException ioe) {

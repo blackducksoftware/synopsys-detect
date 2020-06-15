@@ -24,41 +24,49 @@ package com.synopsys.integration.detect.workflow.report.output;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.synopsys.integration.configuration.util.Bds;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
-import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.util.NameVersion;
 
 public class FormattedOutputManager {
     private DetectorToolResult detectorToolResult = null;
-    private BdioCodeLocationResult bdioCodeLocationResult = null;
+    private Set<String> codeLocations = new HashSet<>();
     private NameVersion projectNameVersion = null;
     private final List<Status> statusSummaries = new ArrayList<>();
     private final List<DetectResult> detectResults = new ArrayList<>();
     private final List<DetectIssue> detectIssues = new ArrayList<>();
+    private final Map<String, List<File>> unrecognizedPaths = new HashMap<>();
 
     public FormattedOutputManager(final EventSystem eventSystem) {
         eventSystem.registerListener(Event.DetectorsComplete, this::detectorsComplete);
         eventSystem.registerListener(Event.StatusSummary, this::addStatusSummary);
         eventSystem.registerListener(Event.Issue, this::addIssue);
         eventSystem.registerListener(Event.ResultProduced, this::addDetectResult);
-        eventSystem.registerListener(Event.CodeLocationsCalculated, this::codeLocationsCalculated);
+        eventSystem.registerListener(Event.CodeLocationNamesAdded, this::codeLocationsAdded);
+        eventSystem.registerListener(Event.UnrecognizedPaths, this::addUnrecognizedPaths);
         eventSystem.registerListener(Event.ProjectNameVersionChosen, this::projectNameVersionChosen);
     }
 
     public FormattedOutput createFormattedOutput(DetectInfo detectInfo) {
         FormattedOutput formattedOutput = new FormattedOutput();
-        formattedOutput.formatVersion = "0.2.0";
+        formattedOutput.formatVersion = "0.3.0";
         formattedOutput.detectVersion = detectInfo.getDetectVersion();
 
         formattedOutput.results = Bds.of(detectResults)
@@ -85,11 +93,14 @@ public class FormattedOutputManager {
             formattedOutput.projectVersion = projectNameVersion.getVersion();
         }
 
-        if (bdioCodeLocationResult != null && bdioCodeLocationResult.getCodeLocationNames() != null) {
-            formattedOutput.codeLocations = Bds.of(bdioCodeLocationResult.getCodeLocationNames().values())
+        formattedOutput.codeLocations = Bds.of(this.codeLocations)
                                                 .map(FormattedCodeLocationOutput::new)
                                                 .toList();
-        }
+
+        formattedOutput.unrecognizedPaths = new HashMap<>();
+        unrecognizedPaths.keySet().forEach(key -> {
+            formattedOutput.unrecognizedPaths.put(key, unrecognizedPaths.get(key).stream().map(File::toString).collect(Collectors.toList()));
+        });
 
         return formattedOutput;
     }
@@ -130,8 +141,8 @@ public class FormattedOutputManager {
         this.detectorToolResult = detectorToolResult;
     }
 
-    private void codeLocationsCalculated(final BdioCodeLocationResult bdioCodeLocationResult) {
-        this.bdioCodeLocationResult = bdioCodeLocationResult;
+    private void codeLocationsAdded(final Collection<String> codeLocations) {
+        this.codeLocations.addAll(codeLocations);
     }
 
     private void projectNameVersionChosen(final NameVersion nameVersion) {
@@ -150,4 +161,10 @@ public class FormattedOutputManager {
         detectResults.add(detectResult);
     }
 
+    public void addUnrecognizedPaths(final UnrecognizedPaths unrecognizedPaths) {
+        if (!this.unrecognizedPaths.containsKey(unrecognizedPaths.getGroup())) {
+            this.unrecognizedPaths.put(unrecognizedPaths.getGroup(), new ArrayList<>());
+        }
+        this.unrecognizedPaths.get(unrecognizedPaths.getGroup()).addAll(unrecognizedPaths.getPaths());
+    }
 }

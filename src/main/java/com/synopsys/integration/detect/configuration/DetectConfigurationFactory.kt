@@ -195,6 +195,15 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
         val polarisServerConfigBuilder = PolarisServerConfig.newBuilder()
         val allPolarisKeys = polarisServerConfigBuilder.propertyKeys
         val polarisProperties = detectConfiguration.getRaw(allPolarisKeys)
+
+        // Detect and polaris-common use different property keys for the Polaris URL,
+        // so we need to pull it from they Detect config using Detect's key,
+        // and write it to the polaris-common config using the polaris-common key.
+        val polarisUrlValue = detectConfiguration.getRaw(DetectProperties.POLARIS_URL)
+        if (StringUtils.isNotBlank(polarisUrlValue.orElse(null))) {
+            polarisProperties.put(PolarisServerConfigBuilder.URL_KEY.key, polarisUrlValue.orElse(null))
+        }
+
         polarisServerConfigBuilder.logger = SilentIntLogger()
 
         polarisServerConfigBuilder.setProperties(polarisProperties.entries)
@@ -417,7 +426,8 @@ open class DetectConfigurationFactory(private val detectConfiguration: PropertyC
                 detectConfiguration.getValue(DetectProperties.DETECT_DOTNET_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
                 detectConfiguration.getValue(DetectProperties.DETECT_GIT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
                 detectConfiguration.getValue(DetectProperties.DETECT_GO_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
-                detectConfiguration.getValue(DetectProperties.DETECT_SWIFT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
+                detectConfiguration.getValue(DetectProperties.DETECT_SWIFT_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null),
+                detectConfiguration.getValue(DetectProperties.DETECT_LERNA_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
         )
     }
 }
