@@ -2,6 +2,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.5'
     implementation 'org.freemarker:freemarker:2.3.26-incubating'
     implementation 'com.moandjiezana.toml:toml4j:0.7.1'
+    implementation 'org.tomlj:tomlj:1.0.0'
     implementation 'org.codehaus.groovy:groovy-all:2.4.12'
 
     testImplementation 'org.skyscreamer:jsonassert:1.5.0'

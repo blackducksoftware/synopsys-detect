@@ -26,19 +26,27 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.util.NameVersion;
 
 public class CodeLocationWaitController {
+    @Nullable
     private NotificationTaskRange notificationRange;
-    private Set<String> codeLocationNames = new HashSet<>();
+    @Nullable
+    private NameVersion projectNameVersion;
+    private final Set<String> codeLocationNames = new HashSet<>();
     private int expectedNotificationCount = 0;
 
     public void addWaitForCreationData(CodeLocationCreationData codeLocationCreationData, EventSystem eventSystem) {
         expectedNotificationCount += codeLocationCreationData.getOutput().getExpectedNotificationCount();
-
+        if (null == projectNameVersion) {
+            projectNameVersion = codeLocationCreationData.getOutput().getProjectAndVersion();
+        }
         Set<String> codeLocationNames = codeLocationCreationData.getOutput().getSuccessfulCodeLocationNames();
         this.codeLocationNames.addAll(codeLocationNames);
         eventSystem.publishEvent(Event.CodeLocationNamesAdded, codeLocationNames);
@@ -66,8 +74,14 @@ public class CodeLocationWaitController {
         return d2;
     }
 
+    @Nullable
     public NotificationTaskRange getNotificationRange() {
         return notificationRange;
+    }
+
+    @Nullable
+    public NameVersion getProjectNameVersion() {
+        return projectNameVersion;
     }
 
     public Set<String> getCodeLocationNames() {
