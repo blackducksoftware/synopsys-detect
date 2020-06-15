@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 
+// TODO: Have this class produce success an failure objects for a clearer API.
 public class YarnResult {
     @Nullable
     private final String projectName;
