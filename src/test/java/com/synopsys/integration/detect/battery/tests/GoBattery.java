@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.battery.BatteryTest;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
 public class GoBattery {
@@ -51,7 +52,8 @@ public class GoBattery {
 
     @Test
     void mod() {
-        final BatteryTest test = new BatteryTest("go-mod");
+        BatteryTest test = new BatteryTest("go-mod");
+        test.executableFromResourceFiles(DetectProperties.Companion.getDETECT_GO_PATH(), "go-list.xout", "go-list-u-json.xout", "go-mod-graph.xout");
         test.sourceDirectoryNamed("source");
         test.sourceFileFromResource("go.mod");
         test.expectBdioResources();
