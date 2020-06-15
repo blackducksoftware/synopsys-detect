@@ -48,5 +48,14 @@ public class GoBattery {
         test.expectBdioResources();
         test.run();
     }
+
+    @Test
+    void mod() {
+        final BatteryTest test = new BatteryTest("go-mod");
+        test.sourceDirectoryNamed("source");
+        test.sourceFileFromResource("go.mod");
+        test.expectBdioResources();
+        test.run();
+    }
 }
 
