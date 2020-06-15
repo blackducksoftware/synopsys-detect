@@ -64,6 +64,7 @@ public enum DetectGroup implements Group {
     GO("go", DETECTORS),
     GRADLE("gradle", DETECTORS),
     HEX("hex", DETECTORS),
+    LERNA("lerna", DETECTORS),
     MAVEN("maven", DETECTORS),
     NPM("npm", DETECTORS),
     NUGET("nuget", DETECTORS),
@@ -89,11 +90,11 @@ public enum DetectGroup implements Group {
     private final String name;
     private final Group superGroup;
 
-    DetectGroup(@NotNull final String name) {
+    DetectGroup(@NotNull String name) {
         this(name, null);
     }
 
-    DetectGroup(@NotNull final String name, @Nullable final Group superGroup) {
+    DetectGroup(@NotNull String name, @Nullable Group superGroup) {
         this.name = name;
         this.superGroup = superGroup;
     }
