@@ -4,6 +4,7 @@ As of ${solution_name} versions 5.2.0 and higher, ${solution_name} provides limi
 
 As of ${solution_name} version 5.2.0, ${solution_name} supports dependencies specified in *maven_jar* workspace rules.
 As of ${solution_name} version 6.0.0, ${solution_name} also supports dependencies specified in *maven_install* workspace rules.
+As of ${solution_name} version 6.4.0, ${solution_name} also supports dependencies specified in *haskell_cabal_library* workspace rules.
 
 The Bazel tool attempts to run on your project if you provide a Bazel build target using the Bazel target property.
 
@@ -17,7 +18,8 @@ Refer to [Properties](../../../properties/detectors/bazel/) for details.
 
 The Bazel tool runs a bazel cquery on the given target to produce output from which it can parse artifact details such as group, artifact, and version for dependencies.
 
-The following is an example using commands similar to those that ${solution_name} runs, but from the command line of how ${solution_name}'s Bazel detector currently identifies components.
+${solution_name}'s Bazel detector uses commands very similar to the following
+to discover *maven_install* dependencies.
 ```
 $ bazel cquery --noimplicit_deps 'kind(j.*import, deps(//tests/integration:ArtifactExclusionsTest))' --output build 2>&1 | grep maven_coordinates
 tags = ["maven_coordinates=com.google.guava:guava:27.0-jre"],
@@ -59,3 +61,71 @@ INFO: Invocation ID: 0a320967-b2a8-4b36-ab47-e183bc4d4781
 Loading: 0 packages loaded
 ```
 Finally, it parses the group/artifact/version details from the value of the string element using the name of artifact.
+
+## Processing for the *haskell_cabal_library* workspace rule
+
+Requires Bazel 2.1.0 or later.
+
+${solution_name}'s Bazel detector runs a bazel cquery on the given target to produce output from which it can
+extract artifact project and version for dependencies.
+
+The Bazel detector uses a command very similar to the following
+to discover *haskell_cabal_library* dependencies.
+```
+$ bazel cquery --noimplicit_deps 'kind(haskell_cabal_library, deps(//cat_hs/lib/args:args))' --output jsonproto
+{
+"results": [{
+"target": {
+"type": "RULE",
+"rule": {
+...
+"attribute": [{
+...
+}, {
+"name": "name",
+"type": "STRING",
+"stringValue": "hspec",
+"explicitlySpecified": true,
+"nodep": false
+}, {
+"name": "version",
+"type": "STRING",
+"stringValue": "2.7.1",
+"explicitlySpecified": true,
+"nodep": false
+}, {
+...
+```
+
+It then uses Gson to parse the JSON output into a parse tree,
+and extracts the name and version from the corresponding rule attributes.
+
+## Examples
+
+### mvn_install rule example
+
+The following example will (if you add your ${blackduck_product_name} connection details
+to the ${solution_name} command line) run the Bazel tool on the
+*//tests/integration:ArtifactExclusionsTest* target in the
+rules_jvm_external project and discover dependencies defined with the
+maven_install repository rule:
+
+````
+git clone https://github.com/bazelbuild/rules_jvm_external
+cd rules_jvm_external/
+bash <(curl -s -L https://detect.synopsys.com/detect.sh) --detect.bazel.target='//tests/integration:ArtifactExclusionsTest'
+````
+
+### haskell_cabal_library rule example
+
+The following example will (if you add your ${blackduck_product_name} connection details
+to the ${solution_name} command line) run the Bazel tool on the
+*//cat_hs/lib/args:args* target in the
+rules_haskell/examples project and discover dependencies defined with the
+haskell_cabal_library repository rule:
+
+````
+git clone https://github.com/tweag/rules_haskell.git
+cd rules_haskell/examples
+bash <(curl -s -L https://detect.synopsys.com/detect.sh) --detect.bazel.target='//cat_hs/lib/args:args'
+````

@@ -43,10 +43,11 @@ public class DetectExecutableOptions {
     private final Path gitUserPath;
     private final Path goUserPath;
     private final Path swiftUserPath;
+    private final Path lernaUserPath;
 
     public DetectExecutableOptions(final Path bashUserPath, final Path bazelUserPath, final Path condaUserPath, final Path cpanUserPath, final Path cpanmUserPath, final Path gradleUserPath, final Path mavenUserPath,
         final Path npmUserPath, final Path pearUserPath, final Path pipenvUserPath, final Path pythonUserPath, final Path rebarUserPath, final Path javaUserPath, final Path dockerUserPath, final Path dotnetUserPath,
-        final Path gitUserPath, final Path goUserPath, final Path swiftUserPath) {
+        final Path gitUserPath, final Path goUserPath, final Path swiftUserPath, final Path lernaUserPath) {
         this.bashUserPath = bashUserPath;
         this.bazelUserPath = bazelUserPath;
         this.condaUserPath = condaUserPath;
@@ -65,6 +66,7 @@ public class DetectExecutableOptions {
         this.gitUserPath = gitUserPath;
         this.goUserPath = goUserPath;
         this.swiftUserPath = swiftUserPath;
+        this.lernaUserPath = lernaUserPath;
     }
 
     public Path getBashUserPath() {
@@ -137,5 +139,9 @@ public class DetectExecutableOptions {
 
     public Path getSwiftUserPath() {
         return swiftUserPath;
+    }
+
+    public Path getLernaUserPath() {
+        return lernaUserPath;
     }
 }

@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.misc.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
@@ -144,7 +144,7 @@ public class CodeLocationNameGenerator {
     }
 
     private String shortenPiece(final String piece) {
-        if (piece.length() <= 40) {
+        if (piece == null || piece.length() <= 40) {
             return piece;
         } else {
             return piece.substring(0, 19) + "..." + piece.substring(piece.length() - 18);

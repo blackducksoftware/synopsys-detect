@@ -38,11 +38,15 @@ public class BlackDuckRunData {
         return new BlackDuckRunData(false, null, null, null);
     }
 
-    public static BlackDuckRunData online(final BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, final BlackDuckServerConfig blackDuckServerConfig) {
+    public static BlackDuckRunData online(BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
         return new BlackDuckRunData(true, blackDuckServicesFactory, phoneHomeManager, blackDuckServerConfig);
     }
 
-    private BlackDuckRunData(final boolean isOnline, final BlackDuckServicesFactory blackDuckServicesFactory, final PhoneHomeManager phoneHomeManager, final BlackDuckServerConfig blackDuckServerConfig) {
+    public static BlackDuckRunData onlineNoPhoneHome(BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig) {
+        return new BlackDuckRunData(true, blackDuckServicesFactory, null, blackDuckServerConfig);
+    }
+
+    private BlackDuckRunData(boolean isOnline, BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
         this.isOnline = isOnline;
         this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.phoneHomeManager = phoneHomeManager;

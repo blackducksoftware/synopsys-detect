@@ -87,7 +87,7 @@ public class DetectStatusLogger {
             previousSummaryClass = status.getClass();
         }
 
-        logger.info(String.format("Overall Status: %s", exitCodeType.toString()));
+        logger.info(String.format("Overall Status: %s - %s", exitCodeType.toString(), exitCodeType.getDescription()));
         logger.info("");
         logger.info("===============================");
         logger.info("");

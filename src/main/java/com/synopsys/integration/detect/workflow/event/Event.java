@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.workflow.event;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Set;
 
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -32,6 +33,7 @@ import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.Status;
+import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
@@ -57,6 +59,7 @@ public class Event {
     public static final EventType<DetectorEvaluation> DiscoveryStarted = new EventType<>(DetectorEvaluation.class);
     public static final EventType<DetectorEvaluation> DiscoveryEnded = new EventType<>(DetectorEvaluation.class);
     public static final EventType<BdioCodeLocationResult> CodeLocationsCalculated = new EventType<>(BdioCodeLocationResult.class);
+    public static final EventType<Collection<String>> CodeLocationNamesAdded = new EventType(Collection.class);
     public static final EventType<ExitCodeRequest> ExitCode = new EventType<>(ExitCodeRequest.class);
     public static final EventType<Status> StatusSummary = new EventType<>(Status.class);
     public static final EventType<DetectIssue> Issue = new EventType<>(DetectIssue.class);
@@ -64,4 +67,5 @@ public class Event {
     public static final EventType<File> CustomerFileOfInterest = new EventType<>(File.class);
     public static final EventType<NameVersion> ProjectNameVersionChosen = new EventType<>(NameVersion.class);
     public static final EventType<ExecutableOutput> Executable = new EventType<>(ExecutableOutput.class);
+    public static final EventType<UnrecognizedPaths> UnrecognizedPaths = new EventType<>(UnrecognizedPaths.class);
 }

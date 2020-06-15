@@ -141,3 +141,40 @@ The Black Duck server certificate is not in Java's keystore.
 1. Run [keytool](https://docs.oracle.com/en/java/javase/11/tools/keytool.html) to install the Black Duck server certificate into the keystore in that Java home directory.
 
 Although not recommended, it is possible to disable the certificate check with the [trust cert property](../../../properties/configuration/blackduck server/#trust-all-ssl-certificates-advanced).
+
+## Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException
+
+### Symptom
+
+Running ${solution_name} on a NuGet project on Windows, a message similar to the following appears in the ${solution_name} log:
+
+````
+Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException: Illegal char <:> at index 2: C:\...
+````
+
+### Possible cause
+
+The value of $PATH contains a whitespace character after a semicolon and the path mentioned in the log message.
+
+### Solution
+
+Remove spaces immediately following semicolons in the value of $PATH.
+
+## No project name/version provided or derived
+
+### Symptom
+
+Upload to ${blackduck_product_name} fails with a message similar to the following in the log:
+
+````
+ERROR [main] -- createProject.arg0.name can't be blank [HTTP Error]: There was a problem trying to POST https://.../api/projects, response was 412 Precondition Failed.
+````
+
+### Possible cause
+
+No project name and version were provided via properties and no ${solution_name} tool capable of deriving a project name and version was included in the run. For example,
+you will get this (or a similar) error if you run with --detect.tools.BINARY_SCANNER and do not set --detect.project.name or --detect.project.version.name.
+
+### Solution
+
+Set --detect.project.name and --detect.project.version.name.

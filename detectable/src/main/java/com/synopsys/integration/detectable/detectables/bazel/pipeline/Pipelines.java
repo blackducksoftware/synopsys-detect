@@ -22,47 +22,63 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.EnumMap;
 
+import com.google.gson.Gson;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelCommandExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.BazelVariableSubstitutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorReplaceInEach;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorExecuteBazelOnEach;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorFilter;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorParseEachXml;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.stepexecutor.StepExecutorSplitEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepColonSeparatedGavs;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepJsonProtoHaskellCabalLibraries;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.HaskellCabalLibraryJsonProtoParser;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepExecuteBazelOnEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepFilter;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepParseEachXml;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepReplaceInEach;
+import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepSplitEach;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class Pipelines {
-    private final Map<WorkspaceRule, List<StepExecutor>> availablePipelines = new HashMap<>();
+    private final EnumMap<WorkspaceRule, Pipeline> availablePipelines = new EnumMap<>(WorkspaceRule.class);
+    private final Gson gson = new Gson();
 
-    public Pipelines(final BazelCommandExecutor bazelCommandExecutor, final BazelVariableSubstitutor bazelVariableSubstitutor) {
-        final List<StepExecutor> mavenJarPipeline = new ArrayList<>();
-        mavenJarPipeline.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "filter('@.*:jar', deps(${detect.bazel.target}))")));
-        mavenJarPipeline.add(new StepExecutorSplitEach("\\s+"));
-        mavenJarPipeline.add(new StepExecutorReplaceInEach("^@", ""));
-        mavenJarPipeline.add(new StepExecutorReplaceInEach("//.*", ""));
-        mavenJarPipeline.add(new StepExecutorReplaceInEach("^", "//external:"));
-        mavenJarPipeline.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "kind(maven_jar, ${input.item})", "--output", "xml")));
-        mavenJarPipeline.add(new StepExecutorParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value"));
+    public Pipelines(BazelCommandExecutor bazelCommandExecutor, BazelVariableSubstitutor bazelVariableSubstitutor,
+        ExternalIdFactory externalIdFactory) {
+        Pipeline mavenJarPipeline = (new PipelineBuilder())
+                                        .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "filter('@.*:jar', deps(${detect.bazel.target}))")))
+                                        .addIntermediateStep(new IntermediateStepSplitEach("\\s+"))
+                                        .addIntermediateStep(new IntermediateStepReplaceInEach("^@", ""))
+                                        .addIntermediateStep(new IntermediateStepReplaceInEach("//.*", ""))
+                                        .addIntermediateStep(new IntermediateStepReplaceInEach("^", "//external:"))
+                                        .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "kind(maven_jar, ${input.item})", "--output", "xml")))
+                                        .addIntermediateStep(new IntermediateStepParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value"))
+                                        .setFinalStep(new FinalStepColonSeparatedGavs(externalIdFactory))
+                                        .build();
         availablePipelines.put(WorkspaceRule.MAVEN_JAR, mavenJarPipeline);
 
-        final List<StepExecutor> mavenInstallPipeline = new ArrayList<>();
-        mavenInstallPipeline.add(new StepExecutorExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("cquery", "--noimplicit_deps", "${detect.bazel.cquery.options}", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")));
-        mavenInstallPipeline.add(new StepExecutorSplitEach("\n"));
-        mavenInstallPipeline.add(new StepExecutorFilter(".*maven_coordinates=.*"));
-        mavenInstallPipeline.add(new StepExecutorReplaceInEach(".*\"maven_coordinates=", ""));
-        mavenInstallPipeline.add(new StepExecutorReplaceInEach("\".*", ""));
+        Pipeline mavenInstallPipeline = (new PipelineBuilder())
+                                            .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
+                                                Arrays.asList("cquery", "--noimplicit_deps", "${detect.bazel.cquery.options}", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build")))
+                                            .addIntermediateStep(new IntermediateStepSplitEach("\n"))
+                                            .addIntermediateStep(new IntermediateStepFilter(".*maven_coordinates=.*"))
+                                            .addIntermediateStep(new IntermediateStepReplaceInEach(".*\"maven_coordinates=", ""))
+                                            .addIntermediateStep(new IntermediateStepReplaceInEach("\".*", ""))
+                                            .setFinalStep(new FinalStepColonSeparatedGavs(externalIdFactory))
+                                            .build();
         availablePipelines.put(WorkspaceRule.MAVEN_INSTALL, mavenInstallPipeline);
+
+        HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser = new HaskellCabalLibraryJsonProtoParser(gson);
+        Pipeline haskellCabalLibraryPipeline = (new PipelineBuilder())
+                                                   .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
+                                                       Arrays.asList("cquery", "--noimplicit_deps", "${detect.bazel.cquery.options}", "kind(haskell_cabal_library, deps(${detect.bazel.target}))", "--output", "jsonproto")))
+                                                   .setFinalStep(new FinalStepJsonProtoHaskellCabalLibraries(haskellCabalLibraryJsonProtoParser, externalIdFactory))
+                                                   .build();
+        availablePipelines.put(WorkspaceRule.HASKELL_CABAL_LIBRARY, haskellCabalLibraryPipeline);
     }
 
-    public List<StepExecutor> get(final WorkspaceRule bazelDependencyType) throws IntegrationException {
+    public Pipeline get(WorkspaceRule bazelDependencyType) throws IntegrationException {
         if (!availablePipelines.containsKey(bazelDependencyType)) {
             throw new IntegrationException(String.format("No pipeline found for dependency type %s", bazelDependencyType.getName()));
         }

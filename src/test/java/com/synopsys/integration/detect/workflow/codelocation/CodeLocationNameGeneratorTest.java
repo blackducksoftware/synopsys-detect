@@ -90,11 +90,36 @@ public class CodeLocationNameGeneratorTest {
         final File sourcePath = new File("/Users/ekerwin/Documents/source/functional/common-rest");
         final File codeLocationPath = new File("/Users/ekerwin/Documents/source/functional/common-rest/child");
 
-        final String prefix = "";
-        final String suffix = "";
+        final String prefix = null;
+        final String suffix = null;
         final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, "projectName", "projectVersion", detectCodeLocation, prefix, suffix);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testBomCodeLocationNameOversized() {
+        final String projectNameStart = "really really ";
+        final String projectName = projectNameStart + "really really really really really really really really really really really really really really really really really really really really really really really really really really long projectName";
+        final String expected = projectName + "/projectVersion/child/group/name/version npm/bom";
+        // = path/externalId tool/type
+
+        final ExternalIdFactory factory = new ExternalIdFactory();
+        final ExternalId externalId = factory.createMavenExternalId("group", "name", "version");
+        final CodeLocationNameGenerator codeLocationNameGenerator = new CodeLocationNameGenerator(null);
+
+        final DetectCodeLocation detectCodeLocation = Mockito.mock(DetectCodeLocation.class);
+        Mockito.when(detectCodeLocation.getExternalId()).thenReturn(externalId);
+        Mockito.when(detectCodeLocation.getCreatorName()).thenReturn(Optional.of("NPM"));
+
+        final File sourcePath = new File("/Users/ekerwin/Documents/source/functional/common-rest");
+        final File codeLocationPath = new File("/Users/ekerwin/Documents/source/functional/common-rest/child");
+
+        final String prefix = null;
+        final String suffix = null;
+        final String actual = codeLocationNameGenerator.createBomCodeLocationName(sourcePath, codeLocationPath, projectName, "projectVersion", detectCodeLocation, prefix, suffix);
+
+        assertTrue(actual.startsWith(projectNameStart));
     }
 
     @Test
