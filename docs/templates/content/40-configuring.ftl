@@ -8,7 +8,7 @@ One method for configuring ${solution_name} is by setting [${solution_name} prop
 When setting a property value on the command line, prefix the property name with two hyphens ("--"). For example,
 to set property *detect.project.value*:
 ```
-    bash <(curl -s -L https://detect.synopsys.com/detect.sh) --detect.project.name=MyProject
+bash <(curl -s -L https://detect.synopsys.com/detect.sh) --detect.project.name=MyProject
 ```
 
 ## Using environment variables
@@ -19,16 +19,16 @@ On Linux, when setting a property value using an environment variable, the envir
 is the property name converted to uppercase, with period characters (".") converted to underscore
 characters ("_"). For example:
 ```
-    export DETECT_PROJECT_NAME=MyProject
-    bash <(curl -s -L https://detect.synopsys.com/detect.sh)
+export DETECT_PROJECT_NAME=MyProject
+bash <(curl -s -L https://detect.synopsys.com/detect.sh)
 ```
 
 On Windows, the environment variable name can either be the original property
 name, or the property name converted to uppercase with period characters (".") converted to underscore
 characters ("_"). For example:
 ```
-    $Env:DETECT_PROJECT_NAME = MyProject
-    powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+$Env:DETECT_PROJECT_NAME = MyProject
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 ```
 
 ## Using a configuration file
@@ -36,8 +36,20 @@ characters ("_"). For example:
 Another commonly-used method of configuring ${solution_name} is to provide a configuration file. The configuration file
 can be a Java properties (.properties) file, or a YAML (.yml) file.
 
-The most common location for a configuration file is in a file named application.properties or application.yml
-in the current working directory, or a ./config subdirectory.
+Spring will look for a configuration file named application.properties or application.yml
+in the current working directory, or a ./config subdirectory. If it exists, it will read
+property values from it.
+
+For example, if you wanted to set property *detect.project.name* using a configuration (.properties) file, you
+could do it as follows:
+````
+echo "detect.project.name=myproject" > application.properties
+bash <(curl -s -L https://detect.synopsys.com/detect.sh) --detect.source.path=/opt/projects/project1
+````
+Because the configuration file has one of the file names that Spring looks for by default
+(in this case, application.properties) and exists in one of the locations
+that Spring looks in by default (in this case, the current directory), there is no need to specify the path
+to the configuration file on the command line.
 
 ### Properties file
 
@@ -65,7 +77,7 @@ Populate it with property assignments as previously described.
 To select one or more profiles on the ${solution_name} command line, assign the the comma-separated list of profiles
 to the Spring Boot property *spring.profiles.active*:
 ```
-    bash <(curl -s -L https://detect.synopsys.com/detect.sh) --spring.profiles.active={profilename}
+bash <(curl -s -L https://detect.synopsys.com/detect.sh) --spring.profiles.active={profilename}
 ```
 
 This capability is provided by Spring Boot. For more information, refer to
@@ -81,25 +93,25 @@ The most common methods used to pass a property value to ${solution_name} are li
 
 * Using a command line argument (#4 in Spring Boot's order of precedence):
 ````
-    --blackduck.url=https://blackduck.yourdomain.com
+--blackduck.url=https://blackduck.yourdomain.com
 ````
 * Using one environment variable per property (#10 in Spring Boot's order of precedence):
 ````
-    export BLACKDUCK_URL=https://blackduck.yourdomain.com
+export BLACKDUCK_URL=https://blackduck.yourdomain.com
 ````
 * Using property assignments in a .properties configuration file (#14 in Spring Boot's order of precedence):
 ````
-    blackduck.url=https://blackduck.yourdomain.com
-    blackduck.api.token=yourtokenvalue
+blackduck.url=https://blackduck.yourdomain.com
+blackduck.api.token=yourtokenvalue
 ````
 * Using property assignments in a .yml configuration file (also #14 in Spring Boot's order of precedence, but .properties takes precedence over .yml):
 ````
-    blackduck.url: https://blackduck.yourdomain.com
-    blackduck.api.token: yourtokenvalue
+blackduck.url: https://blackduck.yourdomain.com
+blackduck.api.token: yourtokenvalue
 ````
 * Using the SPRING_APPLICATION_JSON environment variable with a set of properties set using JSON format (#5 in Spring Boot's order of precedence):
 ````
-    export SPRING_APPLICATION_JSON='{"blackduck.url":"https://blackduck.yourdomain.com","blackduck.api.token":"yourgeneratedtoken"}'
+export SPRING_APPLICATION_JSON='{"blackduck.url":"https://blackduck.yourdomain.com","blackduck.api.token":"yourgeneratedtoken"}'
 ````
 
 Refer to the [Spring Boot documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config)
