@@ -4,6 +4,7 @@
 ### New features
 * Bazel detector: added support for Bazel projects that specify dependencies using the haskell_cabal_library repository rule.
 * NuGet detector: added support for DotNet 3.1 runtime.
+* ${solution_name} now supports projects managed by the Lerna package manager.
 * ${solution_name} now supports projects managed by the Cargo package manager.
 * ${solution_name} now supports projects managed by the Poetry package manager.
 

@@ -42,21 +42,21 @@ public class YarnTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
 
-    public YarnTransformer(final ExternalIdFactory externalIdFactory) {
+    public YarnTransformer(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(final PackageJson packageJson, final YarnLock yarnLock, final boolean productionOnly) throws MissingExternalIdException {
-        final LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
+    public DependencyGraph transform(YarnLockResult yarnLockResult, boolean productionOnly) throws MissingExternalIdException {
+        LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
-        addRootNodesToGraph(graphBuilder, packageJson, productionOnly);
+        addRootNodesToGraph(graphBuilder, yarnLockResult.getPackageJson(), productionOnly);
 
-        for (final YarnLockEntry entry : yarnLock.getEntries()) {
-            for (final YarnLockEntryId entryId : entry.getIds()) {
-                final StringDependencyId id = new StringDependencyId(entryId.getName() + "@" + entryId.getVersion());
+        for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
+            for (YarnLockEntryId entryId : entry.getIds()) {
+                StringDependencyId id = new StringDependencyId(entryId.getName() + "@" + entryId.getVersion());
                 graphBuilder.setDependencyInfo(id, entryId.getName(), entry.getVersion(), externalIdFactory.createNameVersionExternalId(Forge.NPMJS, entryId.getName(), entry.getVersion()));
-                for (final YarnLockDependency dependency : entry.getDependencies()) {
-                    final StringDependencyId stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());
+                for (YarnLockDependency dependency : entry.getDependencies()) {
+                    StringDependencyId stringDependencyId = new StringDependencyId(dependency.getName() + "@" + dependency.getVersion());
                     if (!productionOnly || !dependency.isOptional()) {
                         graphBuilder.addChildWithParent(stringDependencyId, id);
                     } else {
@@ -66,25 +66,25 @@ public class YarnTransformer {
             }
         }
 
-        return graphBuilder.build(this::handleMissingExternalIds);
+        return graphBuilder.build((dependencyId, lazyDependencyInfo) -> handleMissingExternalIds(dependencyId, lazyDependencyInfo, yarnLockResult.getYarnLockFilePath()));
     }
 
-    private ExternalId handleMissingExternalIds(final DependencyId dependencyId, final LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo) {
-        final DependencyId dependencyIdToLog = Optional.ofNullable(lazyDependencyInfo)
-                                                   .map(LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo::getAliasId)
-                                                   .orElse(dependencyId);
+    private ExternalId handleMissingExternalIds(DependencyId dependencyId, LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo, String yarnLockFilePath) {
+        DependencyId dependencyIdToLog = Optional.ofNullable(lazyDependencyInfo)
+                                             .map(LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo::getAliasId)
+                                             .orElse(dependencyId);
 
-        logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from yarn.lock.", dependencyIdToLog));
+        logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from %s.", dependencyIdToLog, yarnLockFilePath));
         return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, dependencyId.toString());
     }
 
     private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, PackageJson packageJson, boolean productionOnly) {
-        for (final Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
+        for (Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
             graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
         }
 
         if (!productionOnly) {
-            for (final Map.Entry<String, String> packageDependency : packageJson.devDependencies.entrySet()) {
+            for (Map.Entry<String, String> packageDependency : packageJson.devDependencies.entrySet()) {
                 graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
             }
         }

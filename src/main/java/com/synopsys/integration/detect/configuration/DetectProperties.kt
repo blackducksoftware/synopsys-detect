@@ -974,6 +974,18 @@ class DetectProperties {
             setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
         }
 
+        val DETECT_LERNA_PATH = NullablePathProperty("detect.lerna.path").apply {
+            setInfo("Lerna Executable", "6.0.0")
+            setHelp("Path of the lerna executable.")
+            setGroups(DetectGroup.LERNA, DetectGroup.PATHS, DetectGroup.GLOBAL)
+        }
+
+        val DETECT_LERNA_INCLUDE_PRIVATE = BooleanProperty("detect.lerna.include.private", false).apply {
+            setInfo("Include Lerna Packages defined as private.", "6.0.0")
+            setHelp("Lerna allows for private packages that do not get published. Set this to true to include all packages including private packages.")
+            setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
+        }
+
         //#endregion Active Properties
 
         //#region Deprecated Properties

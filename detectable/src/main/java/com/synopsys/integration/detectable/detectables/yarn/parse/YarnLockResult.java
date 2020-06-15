@@ -1,5 +1,5 @@
 /**
- * detector
+ * detectable
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,43 +20,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.base;
+package com.synopsys.integration.detectable.detectables.yarn.parse;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
-public enum DetectorType {
-    BITBAKE,
-    CARGO,
-    COCOAPODS,
-    CONDA,
-    CPAN,
-    CRAN,
-    GIT,
-    GO_MOD,
-    GO_DEP,
-    GO_VNDR,
-    GO_VENDOR,
-    GO_GRADLE,
-    GRADLE,
-    HEX,
-    LERNA,
-    MAVEN,
-    NPM,
-    NUGET,
-    PACKAGIST,
-    PEAR,
-    PIP,
-    RUBYGEMS,
-    SBT,
-    SWIFT,
-    YARN,
-    CLANG;
+public class YarnLockResult {
+    private final PackageJson packageJson;
+    private final String yarnLockFilePath;
+    private final YarnLock yarnLock;
 
-    protected static final List<String> POSSIBLE_NAMES = Arrays.stream(DetectorType.values()).map(DetectorType::name).collect(Collectors.toList());
+    public YarnLockResult(PackageJson packageJson, String yarnLockFilePath, YarnLock yarnLock) {
+        this.packageJson = packageJson;
+        this.yarnLockFilePath = yarnLockFilePath;
+        this.yarnLock = yarnLock;
+    }
 
-    public static List<String> getPossibleNames() {
-        return POSSIBLE_NAMES;
+    public String getYarnLockFilePath() {
+        return yarnLockFilePath;
+    }
+
+    public YarnLock getYarnLock() {
+        return yarnLock;
+    }
+
+    public PackageJson getPackageJson() {
+        return packageJson;
     }
 }

@@ -10,12 +10,15 @@ The file includes status codes, issues encountered and results produced. As addi
 ```
 {
 "formatVersion": The version of the status file format. Will change as new features are introduced.
-"detectVersion": The version of detect that created the status file.
-"detectors": [ List of Detectors, see format below. ]
-"status": [ List of Status, see format below. ]
-"issues": [ List of Issues, see format below. ]
-"results": [ List of Results, see format below. ]
-"unrecognizedPaths": [ List of Unrecognized Paths, see format and details below. ]
+"detectVersion": The version of ${solution_name} that created the status file.
+"projectName": The project name.
+"projectVersion": The project version.
+"detectors": [ List of Detectors, see details below. ]
+"status": [ List of Status, see details below. ]
+"issues": [ List of Issues, see details below. ]
+"results": [ List of Results, see details below. ]
+"unrecognizedPaths": [ List of Unrecognized Paths, see details below. ]
+"codeLocations": [ List of code locations produced, see details below. ]
 }
 ```
 
@@ -58,6 +61,8 @@ The file includes status codes, issues encountered and results produced. As addi
 ```
 
 ##Results
+
+A result is a URL or file path to output produced by the ${solution_name} run: a Black Duck Bill Of Materials, Risk Report, Notices Report, or Air Gap zip.
 ```
 {
 "location": The path to the result.
@@ -72,5 +77,12 @@ For those detectors that support it (currently, only CLANG), a list of file path
 ````
 {
 "<Detector type>": [ A list of file paths to unrecognized dependencies ]
+}
+````
+
+## Code Locations
+````
+{
+"codeLocationName": The name of a code location produced by this run of ${solution_name}.
 }
 ````
