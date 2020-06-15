@@ -1072,6 +1072,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../advanced/package-managers/lerna/" title="Lerna support" class="md-nav__link">
+      Lerna support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../advanced/package-managers/maven/" title="Maven support" class="md-nav__link">
       Maven support
     </a>
@@ -1602,6 +1614,18 @@
   <li class="md-nav__item">
     <a href="../properties/detectors/hex/" title="hex" class="md-nav__link">
       hex
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../properties/detectors/lerna/" title="lerna" class="md-nav__link">
+      lerna
     </a>
   </li>
 
@@ -2287,8 +2311,10 @@
 <h3 id="new-features">New features<a class="headerlink" href="#new-features" title="Permanent link">#</a></h3>
 <ul>
 <li>Bazel detector: added support for Bazel projects that specify dependencies using the haskell_cabal_library repository rule.</li>
-<li>Detect now supports projects managed by the Cargo package manager.</li>
-<li>Detect now supports projects managed by the Poetry package manager.</li>
+<li>NuGet detector: added support for DotNet 3.1 runtime.</li>
+<li>Synopsys Detect now supports projects managed by the Lerna package manager.</li>
+<li>Synopsys Detect now supports projects managed by the Cargo package manager.</li>
+<li>Synopsys Detect now supports projects managed by the Poetry package manager.</li>
 </ul>
 <h3 id="changed-features">Changed features<a class="headerlink" href="#changed-features" title="Permanent link">#</a></h3>
 <ul>
@@ -2302,6 +2328,7 @@ and writes them to the status.json file.</li>
 <ul>
 <li>(IDETECT-2019) Resolved an issue where the pip inspector would not be able to parse the requirements.txt file if pip's version was &gt;= 20.1.</li>
 <li>(IDETECT-2034) Resolved an issue that would cause a NullPointerException when Synopsys Detect's initial attempt at generating a code location name produced a code location name greater than 250 characters and either code location prefix or code location suffix is not set.</li>
+<li>(IDETECT-1979) Resolved an issue that could cause the CLANG detector to miss some dependencies because it failed to correctly parse complex nested quoted strings within compile_commands.json values.</li>
 </ul>
 <h2 id="version-630">Version 6.3.0<a class="headerlink" href="#version-630" title="Permanent link">#</a></h2>
 <h3 id="new-features_1">New features<a class="headerlink" href="#new-features_1" title="Permanent link">#</a></h3>

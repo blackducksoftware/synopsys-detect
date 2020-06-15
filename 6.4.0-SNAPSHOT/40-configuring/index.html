@@ -645,6 +645,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../advanced/package-managers/lerna/" title="Lerna support" class="md-nav__link">
+      Lerna support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../advanced/package-managers/maven/" title="Maven support" class="md-nav__link">
       Maven support
     </a>
@@ -1185,6 +1197,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../properties/detectors/lerna/" title="lerna" class="md-nav__link">
+      lerna
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../properties/detectors/maven/" title="maven" class="md-nav__link">
       maven
     </a>
@@ -1434,7 +1458,7 @@
 <p>One method for configuring Synopsys Detect is by setting <a href="../properties/all-properties/">Synopsys Detect property values</a> on the command line.
 When setting a property value on the command line, prefix the property name with two hyphens ("--"). For example,
 to set property <em>detect.project.value</em>:</p>
-<pre><code>    bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --detect.project.name=MyProject
+<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --detect.project.name=MyProject
 </code></pre>
 
 <h2 id="using-environment-variables">Using environment variables<a class="headerlink" href="#using-environment-variables" title="Permanent link">#</a></h2>
@@ -1442,22 +1466,33 @@ to set property <em>detect.project.value</em>:</p>
 <p>On Linux, when setting a property value using an environment variable, the environment variable name
 is the property name converted to uppercase, with period characters (".") converted to underscore
 characters ("_"). For example:</p>
-<pre><code>    export DETECT_PROJECT_NAME=MyProject
-    bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
+<pre><code>export DETECT_PROJECT_NAME=MyProject
+bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
 </code></pre>
 
 <p>On Windows, the environment variable name can either be the original property
 name, or the property name converted to uppercase with period characters (".") converted to underscore
 characters ("_"). For example:</p>
-<pre><code>    $Env:DETECT_PROJECT_NAME = MyProject
-    powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot;
+<pre><code>$Env:DETECT_PROJECT_NAME = MyProject
+powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot;
 </code></pre>
 
 <h2 id="using-a-configuration-file">Using a configuration file<a class="headerlink" href="#using-a-configuration-file" title="Permanent link">#</a></h2>
 <p>Another commonly-used method of configuring Synopsys Detect is to provide a configuration file. The configuration file
 can be a Java properties (.properties) file, or a YAML (.yml) file.</p>
-<p>The most common location for a configuration file is in a file named application.properties or application.yml
-in the current working directory, or a ./config subdirectory.</p>
+<p>Spring will look for a configuration file named application.properties or application.yml
+in the current working directory, or a ./config subdirectory. If it exists, it will read
+property values from it.</p>
+<p>For example, if you wanted to set property <em>detect.project.name</em> using a configuration (.properties) file, you
+could do it as follows:</p>
+<pre><code>echo &quot;detect.project.name=myproject&quot; &gt; application.properties
+bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --detect.source.path=/opt/projects/project1
+</code></pre>
+
+<p>Because the configuration file has one of the file names that Spring looks for by default
+(in this case, application.properties) and exists in one of the locations
+that Spring looks in by default (in this case, the current directory), there is no need to specify the path
+to the configuration file on the command line.</p>
 <h3 id="properties-file">Properties file<a class="headerlink" href="#properties-file" title="Permanent link">#</a></h3>
 <p>When setting a property value in a .properties file, do not prefix the property name with hyphens, and adhere to Java .properties
 file syntax: <code>propertyName=propertyValue</code>, one per line.</p>
@@ -1474,7 +1509,7 @@ Populate it with property assignments as previously described.</p>
 <h3 id="selecting-a-profile-on-the-command-line">Selecting a profile on the command line<a class="headerlink" href="#selecting-a-profile-on-the-command-line" title="Permanent link">#</a></h3>
 <p>To select one or more profiles on the Synopsys Detect command line, assign the the comma-separated list of profiles
 to the Spring Boot property <em>spring.profiles.active</em>:</p>
-<pre><code>    bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --spring.profiles.active={profilename}
+<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --spring.profiles.active={profilename}
 </code></pre>
 
 <p>This capability is provided by Spring Boot. For more information, refer to
@@ -1487,33 +1522,33 @@ which provides capabilities beyond those described on this page.</p>
 <ul>
 <li>Using a command line argument (#4 in Spring Boot's order of precedence):</li>
 </ul>
-<pre><code>    --blackduck.url=https://blackduck.yourdomain.com
+<pre><code>--blackduck.url=https://blackduck.yourdomain.com
 </code></pre>
 
 <ul>
 <li>Using one environment variable per property (#10 in Spring Boot's order of precedence):</li>
 </ul>
-<pre><code>    export BLACKDUCK_URL=https://blackduck.yourdomain.com
+<pre><code>export BLACKDUCK_URL=https://blackduck.yourdomain.com
 </code></pre>
 
 <ul>
 <li>Using property assignments in a .properties configuration file (#14 in Spring Boot's order of precedence):</li>
 </ul>
-<pre><code>    blackduck.url=https://blackduck.yourdomain.com
-    blackduck.api.token=yourtokenvalue
+<pre><code>blackduck.url=https://blackduck.yourdomain.com
+blackduck.api.token=yourtokenvalue
 </code></pre>
 
 <ul>
 <li>Using property assignments in a .yml configuration file (also #14 in Spring Boot's order of precedence, but .properties takes precedence over .yml):</li>
 </ul>
-<pre><code>    blackduck.url: https://blackduck.yourdomain.com
-    blackduck.api.token: yourtokenvalue
+<pre><code>blackduck.url: https://blackduck.yourdomain.com
+blackduck.api.token: yourtokenvalue
 </code></pre>
 
 <ul>
 <li>Using the SPRING_APPLICATION_JSON environment variable with a set of properties set using JSON format (#5 in Spring Boot's order of precedence):</li>
 </ul>
-<pre><code>    export SPRING_APPLICATION_JSON='{&quot;blackduck.url&quot;:&quot;https://blackduck.yourdomain.com&quot;,&quot;blackduck.api.token&quot;:&quot;yourgeneratedtoken&quot;}'
+<pre><code>export SPRING_APPLICATION_JSON='{&quot;blackduck.url&quot;:&quot;https://blackduck.yourdomain.com&quot;,&quot;blackduck.api.token&quot;:&quot;yourgeneratedtoken&quot;}'
 </code></pre>
 
 <p>Refer to the <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config">Spring Boot documentation</a>

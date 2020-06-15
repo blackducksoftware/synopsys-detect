@@ -463,6 +463,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#code-locations" class="md-nav__link">
+    Code Locations
+  </a>
+  
+</li>
+      
       
       
       
@@ -597,6 +604,18 @@
   <li class="md-nav__item">
     <a href="../package-managers/hex/" title="Erlang/Hex/Rebar support" class="md-nav__link">
       Erlang/Hex/Rebar support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../package-managers/lerna/" title="Lerna support" class="md-nav__link">
+      Lerna support
     </a>
   </li>
 
@@ -1147,6 +1166,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../properties/detectors/lerna/" title="lerna" class="md-nav__link">
+      lerna
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../properties/detectors/maven/" title="maven" class="md-nav__link">
       maven
     </a>
@@ -1333,6 +1364,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#code-locations" class="md-nav__link">
+    Code Locations
+  </a>
+  
+</li>
+      
       
       
       
@@ -1359,12 +1397,15 @@
 <h2 id="body">Body<a class="headerlink" href="#body" title="Permanent link">#</a></h2>
 <pre><code>{
 &quot;formatVersion&quot;: The version of the status file format. Will change as new features are introduced.
-&quot;detectVersion&quot;: The version of detect that created the status file.
-&quot;detectors&quot;: [ List of Detectors, see format below. ]
-&quot;status&quot;: [ List of Status, see format below. ]
-&quot;issues&quot;: [ List of Issues, see format below. ]
-&quot;results&quot;: [ List of Results, see format below. ]
-&quot;unrecognizedPaths&quot;: [ List of Unrecognized Paths, see format and details below. ]
+&quot;detectVersion&quot;: The version of Synopsys Detect that created the status file.
+&quot;projectName&quot;: The project name.
+&quot;projectVersion&quot;: The project version.
+&quot;detectors&quot;: [ List of Detectors, see details below. ]
+&quot;status&quot;: [ List of Status, see details below. ]
+&quot;issues&quot;: [ List of Issues, see details below. ]
+&quot;results&quot;: [ List of Results, see details below. ]
+&quot;unrecognizedPaths&quot;: [ List of Unrecognized Paths, see details below. ]
+&quot;codeLocations&quot;: [ List of code locations produced, see details below. ]
 }
 </code></pre>
 
@@ -1404,6 +1445,7 @@
 </code></pre>
 
 <h2 id="results">Results<a class="headerlink" href="#results" title="Permanent link">#</a></h2>
+<p>A result is a URL or file path to output produced by the Synopsys Detect run: a Black Duck Bill Of Materials, Risk Report, Notices Report, or Air Gap zip.</p>
 <pre><code>{
 &quot;location&quot;: The path to the result.
 &quot;message&quot;: A string describing the result.
@@ -1415,6 +1457,12 @@
 (a) were not recognized by the package manager, and (b) reside outside the source directory.</p>
 <pre><code>{
 &quot;&lt;Detector type&gt;&quot;: [ A list of file paths to unrecognized dependencies ]
+}
+</code></pre>
+
+<h2 id="code-locations">Code Locations<a class="headerlink" href="#code-locations" title="Permanent link">#</a></h2>
+<pre><code>{
+&quot;codeLocationName&quot;: The name of a code location produced by this run of Synopsys Detect.
 }
 </code></pre>
                 
