@@ -41,7 +41,11 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
             "",
             "{",
             "\t\"Path\": \"github.com/sirupsen/logrus\",",
-            "\t\"Version\": \"v1.1.1\"",
+            "\t\"Version\": \"v1.1.1\",",
+            "\t\"Replace\": {",
+            "\t\t\"Path\": \"github.com/sirupsen/logrus\",",
+            "\t\t\"Version\": \"v2.0.0\"",
+            "\t}",
             "}",
             "",
             "{",
@@ -78,7 +82,7 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(2);
         graphAssert.hasRootDependency("github.com/codegangsta/negroni", "v1.0.0");
-        graphAssert.hasRootDependency("github.com/sirupsen/logrus", "v1.1.1");
-        graphAssert.hasParentChildRelationship("github.com/sirupsen/logrus", "v1.1.1", "github.com/davecgh/go-spew", "v1.1.1");
+        graphAssert.hasRootDependency("github.com/sirupsen/logrus", "v2.0.0");
+        graphAssert.hasParentChildRelationship("github.com/sirupsen/logrus", "v2.0.0", "github.com/davecgh/go-spew", "v1.1.1");
     }
 }
