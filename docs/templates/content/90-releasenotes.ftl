@@ -11,6 +11,7 @@
 and writes them to the status.json file.
 * Added the property [detect.blackduck.signature.scanner.copyright.search](../properties/configuration/signature scanner/#signature-scanner-copyright-search-advanced).
 * Removed PipEnv from the list of buildless detectors as it was never buildless.
+* Improved output for signature scanner status, and included descriptions for exit codes when reporting overall status.
 
 ### Resolved issues
 * (IDETECT-2019) Resolved an issue where the pip inspector would not be able to parse the requirements.txt file if pip's version was >= 20.1.
