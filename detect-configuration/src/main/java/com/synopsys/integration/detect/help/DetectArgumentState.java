@@ -39,9 +39,8 @@ public class DetectArgumentState {
 
     private final boolean isGenerateAirGapZip;
 
-    public DetectArgumentState(boolean isHelp, boolean isHelpJsonDocument, boolean isInteractive, boolean isVerboseHelp, boolean isDeprecatedHelp, @Nullable String parsedValue,
-        boolean isDiagnostic,
-        boolean isDiagnosticExtended, boolean isGenerateAirGapZip) {
+    public DetectArgumentState(boolean isHelp, boolean isHelpJsonDocument, boolean isInteractive, boolean isVerboseHelp, boolean isDeprecatedHelp, @Nullable String parsedValue, boolean isDiagnostic, boolean isDiagnosticExtended,
+        boolean isGenerateAirGapZip) {
         this.isHelp = isHelp;
         this.isHelpJsonDocument = isHelpJsonDocument;
         this.isInteractive = isInteractive;
