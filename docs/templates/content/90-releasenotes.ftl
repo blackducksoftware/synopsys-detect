@@ -1,5 +1,13 @@
 # Release notes
 
+## Version 6.5.0
+### New features
+Added [properties](../properties/configuration/debug/#diagnostic-mode) for enabling diagnostic mode.
+
+### Changed features
+
+### Resolved issues
+
 ## Version 6.4.0
 ### New features
 * Bazel detector: added support for Bazel projects that specify dependencies using the haskell_cabal_library repository rule.
