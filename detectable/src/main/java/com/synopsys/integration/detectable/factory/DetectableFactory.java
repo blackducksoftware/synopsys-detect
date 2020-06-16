@@ -125,6 +125,7 @@ import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrExtractor;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorExtractor;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleRunner;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
@@ -396,7 +397,7 @@ public class DetectableFactory {
     //#region Utility
 
     private BazelExtractor bazelExtractor() {
-        final WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
+        WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
         return new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
     }
 
@@ -684,8 +685,12 @@ public class DetectableFactory {
         return new ClangPackageManagerRunner();
     }
 
+    private GradleRunner gradleRunner() {
+        return new GradleRunner(executableRunner);
+    }
+
     private GradleInspectorExtractor gradleInspectorExtractor() {
-        return new GradleInspectorExtractor(executableRunner, fileFinder, gradleReportParser(), gradleReportTransformer(), gradleRootMetadataParser());
+        return new GradleInspectorExtractor(fileFinder, gradleRunner(), gradleReportParser(), gradleReportTransformer(), gradleRootMetadataParser());
     }
 
     private DockerExtractor dockerExtractor() {
