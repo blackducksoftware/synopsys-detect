@@ -25,38 +25,43 @@ package com.synopsys.integration.detectable.detectables.npm.lockfile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
-import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfileParser;
+import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfilePackager;
 
 public class NpmLockfileExtractor {
-    private final NpmLockfileParser npmLockfileParser;
+    private final NpmLockfilePackager npmLockfileParser;
 
-    public NpmLockfileExtractor(final NpmLockfileParser npmLockfileParser) {
+    public NpmLockfileExtractor(NpmLockfilePackager npmLockfileParser) {
         this.npmLockfileParser = npmLockfileParser;
     }
 
     /*
     packageJson is optional
      */
-    public Extraction extract(final File lockfile, final File packageJson, final boolean includeDevDependencies) {
+    public Extraction extract(File lockfile, File packageJson, boolean includeDevDependencies) {
         try {
-            final String lockText = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
-            Optional<String> packageText = Optional.empty();
+            String lockText = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
+            String packageText = null;
             if (packageJson != null) {
-                packageText = Optional.of(FileUtils.readFileToString(packageJson, StandardCharsets.UTF_8));
+                packageText = FileUtils.readFileToString(packageJson, StandardCharsets.UTF_8);
             }
 
-            final NpmParseResult result = npmLockfileParser.parse(packageText, lockText, includeDevDependencies);
+            NpmParseResult result = npmLockfileParser.parse(packageText, lockText, includeDevDependencies);
 
-            return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
+            return new Extraction.Builder()
+                       .success(result.getCodeLocation())
+                       .projectName(result.getProjectName())
+                       .projectVersion(result.getProjectVersion())
+                       .build();
 
-        } catch (final IOException e) {
-            return new Extraction.Builder().exception(e).build();
+        } catch (IOException e) {
+            return new Extraction.Builder()
+                       .exception(e)
+                       .build();
         }
     }
 }

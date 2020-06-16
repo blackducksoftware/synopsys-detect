@@ -24,9 +24,12 @@ package com.synopsys.integration.detect.lifecycle.run;
 
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 import org.apache.commons.lang3.StringUtils;
@@ -81,7 +84,7 @@ import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostActions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
-import com.synopsys.integration.detect.workflow.blackduck.CodeLocationWaitData;
+import com.synopsys.integration.detect.workflow.blackduck.CodeLocationWaitController;
 import com.synopsys.integration.detect.workflow.blackduck.DetectBdioUploadService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCodeLocationUnmapService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
@@ -150,7 +153,7 @@ public class RunManager {
             logger.info("Polaris tools will not be run.");
         }
 
-        final UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, detectDetectableFactory, runResult, runOptions, detectToolFilter);
+        final UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, detectDetectableFactory, runResult, runOptions, detectToolFilter, codeLocationNameManager);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
             final AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName().orElse(null), runOptions.getAggregateMode(), universalToolsResult);
@@ -180,7 +183,7 @@ public class RunManager {
 
     private UniversalToolsResult runUniversalProjectTools(final PropertyConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory,
         final DirectoryManager directoryManager, final EventSystem eventSystem, final DetectDetectableFactory detectDetectableFactory,
-        final RunResult runResult, final RunOptions runOptions, final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
+        final RunResult runResult, final RunOptions runOptions, final DetectToolFilter detectToolFilter, final CodeLocationNameManager codeLocationNameManager) throws DetectUserFriendlyException {
         final ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         final CodeLocationConverter codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
 
@@ -201,6 +204,7 @@ public class RunManager {
                 }
             }
             runResult.addDetectableToolResult(detectableToolResult);
+            eventSystem.publishEvent(Event.CodeLocationNamesAdded, createCodeLocationNames(detectableToolResult, codeLocationNameManager, directoryManager));
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
             logger.info("Docker actions finished.");
         } else {
@@ -215,6 +219,7 @@ public class RunManager {
                 eventSystem);
             final DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
             runResult.addDetectableToolResult(detectableToolResult);
+            eventSystem.publishEvent(Event.CodeLocationNamesAdded, createCodeLocationNames(detectableToolResult, codeLocationNameManager, directoryManager));
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
             logger.info("Bazel actions finished.");
         } else {
@@ -326,7 +331,7 @@ public class RunManager {
         final BdioManager bdioManager = new BdioManager(detectInfo, new SimpleBdioFactory(), new Bdio2Factory(), new IntegrationEscapeUtil(), codeLocationNameManager, bdioCodeLocationCreator, directoryManager, eventSystem);
         final BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations(), runOptions.shouldUseBdio2());
 
-        final CodeLocationWaitData codeLocationWaitData = new CodeLocationWaitData();
+        final CodeLocationWaitController codeLocationWaitController = new CodeLocationWaitController();
         if (bdioResult.getUploadTargets().size() > 0) {
             logger.info("Created " + bdioResult.getUploadTargets().size() + " BDIO files.");
             if (null != blackDuckServicesFactory) {
@@ -347,7 +352,7 @@ public class RunManager {
                                                 .map(URL::toExternalForm)
                                                 .orElse("Unknown Host");
                 uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(blackDuckUrl, bdioResult.getUploadTargets(), bdioUploader);
-                codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
+                codeLocationWaitController.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData, eventSystem);
             }
         } else {
             logger.debug("Did not create any BDIO files.");
@@ -362,7 +367,7 @@ public class RunManager {
             final BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
             final SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar());
             if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
-                codeLocationWaitData.addWaitForCreationData(signatureScannerToolResult.getCreationData().get());
+                codeLocationWaitController.addWaitForCreationData(signatureScannerToolResult.getCreationData().get(), eventSystem);
             } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
                 eventSystem.publishEvent(Event.StatusSummary, new Status("SIGNATURE_SCAN", StatusType.FAILURE));
                 eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(signatureScannerToolResult.getResult().toString())));
@@ -381,7 +386,7 @@ public class RunManager {
                 if (blackDuckBinaryScanner.shouldRun()) {
                     final BinaryScanToolResult result = blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
                     if (result.isSuccessful()) {
-                        codeLocationWaitData.addWaitForCreationData(result.getCodeLocationCreationData());
+                        codeLocationWaitController.addWaitForCreationData(result.getCodeLocationCreationData(), eventSystem);
                     }
                 }
             }
@@ -395,7 +400,7 @@ public class RunManager {
             logger.info("Will perform Black Duck post actions.");
             final BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
             final BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory, eventSystem);
-            blackDuckPostActions.perform(blackDuckPostOptions, codeLocationWaitData, projectVersionWrapper, detectConfigurationFactory.findTimeoutInSeconds());
+            blackDuckPostActions.perform(blackDuckPostOptions, codeLocationWaitController, projectVersionWrapper, detectConfigurationFactory.findTimeoutInSeconds());
 
             if ((bdioResult.getUploadTargets().size() > 0 || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
                 final Optional<String> componentsLink = Optional.ofNullable(projectVersionWrapper)
@@ -411,6 +416,16 @@ public class RunManager {
         } else {
             logger.debug("Will not perform Black Duck post actions: Detect is not online.");
         }
+    }
+
+    private Set<String> createCodeLocationNames(DetectableToolResult detectableToolResult, CodeLocationNameManager codeLocationNameManager, DirectoryManager directoryManager) {
+        if (detectableToolResult.getDetectToolProjectInfo().isPresent()) {
+            NameVersion projectNameVersion = detectableToolResult.getDetectToolProjectInfo().get().getSuggestedNameVersion();
+            return detectableToolResult.getDetectCodeLocations().stream()
+                       .map(detectCodeLocation -> codeLocationNameManager.createCodeLocationName(detectCodeLocation, directoryManager.getSourceDirectory(), projectNameVersion.getName(), projectNameVersion.getVersion(), null, null))
+                       .collect(Collectors.toSet());
+        }
+        return new HashSet<>();
     }
 
 }

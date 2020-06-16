@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,30 +46,30 @@ public class CodeLocationConverter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
 
-    public CodeLocationConverter(final ExternalIdFactory externalIdFactory) {
+    public CodeLocationConverter(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Map<CodeLocation, DetectCodeLocation> toDetectCodeLocation(final File detectSourcePath, final DetectorEvaluation evaluation) {
-        final Map<CodeLocation, DetectCodeLocation> detectCodeLocations = new HashMap<>();
+    public Map<CodeLocation, DetectCodeLocation> toDetectCodeLocation(File detectSourcePath, DetectorEvaluation evaluation) {
+        Map<CodeLocation, DetectCodeLocation> detectCodeLocations = new HashMap<>();
         if (evaluation.wasExtractionSuccessful()) {
-            final Extraction extraction = evaluation.getExtraction();
-            final String name = evaluation.getDetectorRule().getDetectorType().toString();
+            Extraction extraction = evaluation.getExtraction();
+            String name = evaluation.getDetectorRule().getDetectorType().toString();
             return toDetectCodeLocation(detectSourcePath, extraction, evaluation.getDetectableEnvironment().getDirectory(), name);
         }
         return detectCodeLocations;
     }
 
-    public Map<CodeLocation, DetectCodeLocation> toDetectCodeLocation(final File detectSourcePath, final Extraction extraction, final File overridePath, final String overrideName) {
-        final Map<CodeLocation, DetectCodeLocation> detectCodeLocations = new HashMap<>();
+    public Map<CodeLocation, DetectCodeLocation> toDetectCodeLocation(File detectSourcePath, Extraction extraction, File overridePath, String overrideName) {
+        Map<CodeLocation, DetectCodeLocation> detectCodeLocations = new HashMap<>();
 
-        for (final CodeLocation codeLocation : extraction.getCodeLocations()) {
-            final File sourcePath = codeLocation.getSourcePath().orElse(overridePath);
-            final ExternalId externalId;
+        for (CodeLocation codeLocation : extraction.getCodeLocations()) {
+            File sourcePath = codeLocation.getSourcePath().orElse(overridePath);
+            ExternalId externalId;
             if (!codeLocation.getExternalId().isPresent()) {
                 logger.debug("The detector was unable to determine an external id for this code location, so an external id will be created using the file path.");
-                final Forge detectForge = new Forge("/", "Detect");
-                final String relativePath = FileNameUtils.relativize(detectSourcePath.getAbsolutePath(), sourcePath.getAbsolutePath());
+                Forge detectForge = new Forge("/", "Detect");
+                String relativePath = FileNameUtils.relativize(detectSourcePath.getAbsolutePath(), sourcePath.getAbsolutePath());
                 if (StringUtils.isNotBlank(relativePath)) {
                     externalId = externalIdFactory.createPathExternalId(detectForge, relativePath);
                 } else {// Relativize from the parent.
@@ -80,8 +80,8 @@ public class CodeLocationConverter {
             } else {
                 externalId = codeLocation.getExternalId().get();
             }
-            final Optional<String> dockerImageName = extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA);
-            final DetectCodeLocation detectCodeLocation;
+            Optional<String> dockerImageName = extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA);
+            DetectCodeLocation detectCodeLocation;
             if (dockerImageName.isPresent()) {
                 detectCodeLocation = DetectCodeLocation.forDocker(codeLocation.getDependencyGraph(), sourcePath, externalId, dockerImageName.get());
             } else {

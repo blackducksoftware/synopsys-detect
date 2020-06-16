@@ -1,0 +1,37 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "source/Default Detect Version/github.com/sagikazarmark/modern-go-application go_mod/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-6.4.0-SNAPSHOT",
+        "Tool: IntegrationBdio-21.1.0"
+      ],
+      "spdx:created": "2020-06-15T22:03:51.364Z"
+    },
+    "@id": "uuid:868da3f5-f6a5-4fea-a49d-7c8545c7b190",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "source",
+    "revision": "Default Detect Version",
+    "@id": "http:golang/github.com%2Fsagikazarmark%2Fmodern-go-application",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "golang",
+      "externalId": "github.com/sagikazarmark/modern-go-application",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "golang",
+          "separator": ":"
+        },
+        "pieces": [
+          "github.com/sagikazarmark/modern-go-application",
+          null
+        ]
+      }
+    },
+    "relationship": []
+  }
+]
