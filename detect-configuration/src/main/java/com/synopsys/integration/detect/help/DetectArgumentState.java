@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detect.help;
 
+import org.jetbrains.annotations.Nullable;
+
 public class DetectArgumentState {
     private final boolean isHelp;
     private final boolean isHelpJsonDocument;
@@ -29,6 +31,7 @@ public class DetectArgumentState {
 
     private final boolean isVerboseHelp;
     private final boolean isDeprecatedHelp;
+    @Nullable
     private final String parsedValue;
 
     private final boolean isDiagnostic;
@@ -36,9 +39,9 @@ public class DetectArgumentState {
 
     private final boolean isGenerateAirGapZip;
 
-    public DetectArgumentState(final boolean isHelp, final boolean isHelpJsonDocument, final boolean isInteractive, final boolean isVerboseHelp, final boolean isDeprecatedHelp, final String parsedValue,
-        final boolean isDiagnostic,
-        final boolean isDiagnosticExtended, final boolean isGenerateAirGapZip) {
+    public DetectArgumentState(boolean isHelp, boolean isHelpJsonDocument, boolean isInteractive, boolean isVerboseHelp, boolean isDeprecatedHelp, @Nullable String parsedValue,
+        boolean isDiagnostic,
+        boolean isDiagnosticExtended, boolean isGenerateAirGapZip) {
         this.isHelp = isHelp;
         this.isHelpJsonDocument = isHelpJsonDocument;
         this.isInteractive = isInteractive;
@@ -78,6 +81,7 @@ public class DetectArgumentState {
         return isDiagnosticExtended;
     }
 
+    @Nullable
     public String getParsedValue() {
         return parsedValue;
     }
