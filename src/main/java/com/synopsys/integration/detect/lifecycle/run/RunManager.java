@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.lifecycle.run;
 
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,6 +98,8 @@ import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOption
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.result.BlackDuckBomDetectResult;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
+import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
@@ -362,6 +365,7 @@ public class RunManager {
                 codeLocationWaitData.addWaitForCreationData(signatureScannerToolResult.getCreationData().get());
             } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
                 eventSystem.publishEvent(Event.StatusSummary, new Status("SIGNATURE_SCAN", StatusType.FAILURE));
+                eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(signatureScannerToolResult.getResult().toString())));
             }
             logger.info("Signature scanner actions finished.");
         } else {

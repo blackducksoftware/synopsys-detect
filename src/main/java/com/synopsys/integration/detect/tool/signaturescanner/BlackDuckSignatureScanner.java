@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -49,6 +50,8 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameMan
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
+import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.SignatureScanStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -114,22 +117,30 @@ public class BlackDuckSignatureScanner {
                                                                  .findFirst();
 
             final StatusType scanStatus;
+            String errorMessage;
             if (!targetOutput.isPresent()) {
                 scanStatus = StatusType.FAILURE;
-                logger.info(String.format("Scanning target %s was never scanned by the BlackDuck CLI.", target.getTargetCanonicalPath()));
+                errorMessage = String.format("Scanning target %s was never scanned by the BlackDuck CLI.", target.getTargetCanonicalPath());
+                logger.info(errorMessage);
+                eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(errorMessage)));
             } else {
                 final ScanCommandOutput output = targetOutput.get();
                 if (output.getResult() == Result.FAILURE) {
                     scanStatus = StatusType.FAILURE;
 
                     if (output.getException().isPresent() && output.getErrorMessage().isPresent()) {
-                        logger.error(String.format("Scanning target %s failed: %s", target.getTargetCanonicalPath(), output.getErrorMessage().get()));
-                        logger.debug(output.getErrorMessage().get(), output.getException().get());
+                        errorMessage = output.getErrorMessage().get();
+                        logger.error(String.format("Scanning target %s failed: %s", target.getTargetCanonicalPath(), errorMessage));
+                        logger.debug(errorMessage, output.getException().get());
                     } else if (output.getErrorMessage().isPresent()) {
-                        logger.error(String.format("Scanning target %s failed: %s", target.getTargetCanonicalPath(), output.getErrorMessage().get()));
+                        errorMessage = output.getErrorMessage().get();
+                        logger.error(String.format("Scanning target %s failed: %s", target.getTargetCanonicalPath(), errorMessage));
                     } else {
-                        logger.error(String.format("Scanning target %s failed for an unknown reason.", target.getTargetCanonicalPath()));
+                        errorMessage = String.format("Scanning target %s failed for an unknown reason.", target.getTargetCanonicalPath());
+                        logger.error(errorMessage);
                     }
+
+                    eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(errorMessage)));
 
                     if (output.getScanExitCode().isPresent()) {
                         anyExitCodeIs64 = anyExitCodeIs64 || output.getScanExitCode().get() == 64;

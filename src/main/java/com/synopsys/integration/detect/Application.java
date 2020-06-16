@@ -159,25 +159,6 @@ public class Application implements ApplicationRunner {
             }
         }
 
-        //Create status output file.
-        logger.info("");
-        try {
-            if (detectBootResultOptional.isPresent() && detectBootResultOptional.get().getDirectoryManager().isPresent()) {
-                DirectoryManager directoryManager = detectBootResultOptional.get().getDirectoryManager().get();
-
-                File statusFile = new File(directoryManager.getStatusOutputDirectory(), "status.json");
-                logger.info(String.format("Creating status file: %s", statusFile.toString()));
-
-                String json = gson.toJson(formattedOutputManager.createFormattedOutput(detectInfo));
-                FileUtils.writeStringToFile(statusFile, json, Charset.defaultCharset());
-            } else {
-                logger.info("Will not create status file, detect did not boot.");
-            }
-        } catch (Exception e) {
-            logger.warn("There was a problem writing the status output file. The detect run was not affected.");
-            logger.debug("The problem creating the status file was: ", e);
-        }
-
         try {
             logger.debug("Detect shutdown begin.");
             final ShutdownManager shutdownManager = new ShutdownManager();
@@ -208,6 +189,25 @@ public class Application implements ApplicationRunner {
         if (printOutput) {
             reportManager.printDetectorIssues();
             statusManager.logDetectResults(new Slf4jIntLogger(logger), finalExitCode);
+        }
+
+        //Create status output file.
+        logger.info("");
+        try {
+            if (detectBootResultOptional.isPresent() && detectBootResultOptional.get().getDirectoryManager().isPresent()) {
+                DirectoryManager directoryManager = detectBootResultOptional.get().getDirectoryManager().get();
+
+                File statusFile = new File(directoryManager.getStatusOutputDirectory(), "status.json");
+                logger.info(String.format("Creating status file: %s", statusFile.toString()));
+
+                String json = gson.toJson(formattedOutputManager.createFormattedOutput(detectInfo));
+                FileUtils.writeStringToFile(statusFile, json, Charset.defaultCharset());
+            } else {
+                logger.info("Will not create status file, detect did not boot.");
+            }
+        } catch (Exception e) {
+            logger.warn("There was a problem writing the status output file. The detect run was not affected.");
+            logger.debug("The problem creating the status file was: ", e);
         }
 
         //Print duration of run
