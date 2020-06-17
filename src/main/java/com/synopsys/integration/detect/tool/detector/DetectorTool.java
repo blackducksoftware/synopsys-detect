@@ -68,12 +68,15 @@ public class DetectorTool {
     private final ExtractionEnvironmentProvider extractionEnvironmentProvider;
     private final EventSystem eventSystem;
     private final CodeLocationConverter codeLocationConverter;
+    private final DetectorIssuePublisher detectorIssuePublisher;
 
-    public DetectorTool(final DetectorFinder detectorFinder, final ExtractionEnvironmentProvider extractionEnvironmentProvider, final EventSystem eventSystem, final CodeLocationConverter codeLocationConverter) {
+    public DetectorTool(final DetectorFinder detectorFinder, final ExtractionEnvironmentProvider extractionEnvironmentProvider, final EventSystem eventSystem, final CodeLocationConverter codeLocationConverter,
+        final DetectorIssuePublisher detectorIssuePublisher) {
         this.detectorFinder = detectorFinder;
         this.extractionEnvironmentProvider = extractionEnvironmentProvider;
         this.eventSystem = eventSystem;
         this.codeLocationConverter = codeLocationConverter;
+        this.detectorIssuePublisher = detectorIssuePublisher;
     }
 
     public DetectorToolResult performDetectors(final File directory, final DetectorRuleSet detectorRuleSet, final DetectorFinderOptions detectorFinderOptions, final DetectorEvaluationOptions evaluationOptions, final String projectDetector,
@@ -178,6 +181,8 @@ public class DetectorTool {
                 }
             }
         }
+
+        detectorIssuePublisher.publishEvents(eventSystem, rootEvaluation);
 
         Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(detectorEvaluations, directory);
 

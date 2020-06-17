@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.workflow.report;
 
 import java.util.Map;
 
+import com.synopsys.integration.detect.tool.detector.DetectorIssuePublisher;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -43,7 +44,6 @@ public class ReportManager {
     private final PreparationSummaryReporter preparationSummaryReporter;
     private final ExtractionSummaryReporter extractionSummaryReporter;
     private final DiscoverySummaryReporter discoverySummaryReporter;
-    private final DetectorIssuePublisher detectorIssuePublisher;
 
     private final ReportWriter traceLogWriter = new TraceLogReportWriter();
     private final ReportWriter debugLogWriter = new DebugLogReportWriter();
@@ -64,7 +64,6 @@ public class ReportManager {
         this.extractionSummaryReporter = extractionSummaryReporter;
         this.searchSummaryReporter = searchSummaryReporter;
         this.discoverySummaryReporter = discoverySummaryReporter;
-        this.detectorIssuePublisher = detectorIssuePublisher;
         this.extractionLogger = extractionLogger;
         this.discoveryLogger = discoveryLogger;
 
@@ -133,12 +132,6 @@ public class ReportManager {
     public void codeLocationsCompleted(final Map<DetectCodeLocation, String> codeLocationNameMap) {
         if (detectorToolResult != null && detectorToolResult.getRootDetectorEvaluationTree().isPresent()) {
             extractionSummaryReporter.writeSummary(debugLogWriter, detectorToolResult.getRootDetectorEvaluationTree().get(), detectorToolResult.getCodeLocationMap(), codeLocationNameMap, false);
-        }
-    }
-
-    public void printDetectorIssues() {
-        if (detectorToolResult != null && detectorToolResult.getRootDetectorEvaluationTree().isPresent()) {
-            detectorIssuePublisher.publishEvents(eventSystem, detectorToolResult.getRootDetectorEvaluationTree().get());
         }
     }
 }
