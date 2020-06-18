@@ -49,6 +49,7 @@ public class GoModCliExtractor {
 
     private ReplacementDataExtractorA replacementDataExtractorA = new ReplacementDataExtractorA(replacementData, gson);
     private ReplacementDataExtractorB replacementDataExtractorB = new ReplacementDataExtractorB(replacementData);
+    private ReplacementDataExtractorC replacementDataExtractorC = new ReplacementDataExtractorC(replacementData, gson);
 
     public GoModCliExtractor(final ExecutableRunner executableRunner, final GoModGraphParser goModGraphParser) {
         this.executableRunner = executableRunner;
@@ -80,7 +81,7 @@ public class GoModCliExtractor {
     private List<String> modGraphOutputWithReplacements(File directory, File goExe, List<String> listUJsonOutput) throws ExecutableRunnerException, DetectableException {
         final List<String> modGraphOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "mod", "graph");
 
-        replacementDataExtractorB.extractReplacementData(listUJsonOutput);
+        replacementDataExtractorC.extractReplacementData(listUJsonOutput);
 
         for (String line : modGraphOutput) {
             for (String original : replacementData.keySet()) {
