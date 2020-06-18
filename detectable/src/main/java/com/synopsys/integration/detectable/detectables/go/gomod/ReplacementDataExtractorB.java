@@ -77,18 +77,18 @@ public class ReplacementDataExtractorB {
     }
 
     private String extractVersionFromLine(String line, int beginIndex) throws DetectableException {
-        int indexOfLastDigit = getIndexOfLastDigitInVersion(line, beginIndex);
+        int indexOfLastDigit = getIndexOfEndOfVersion(line, beginIndex);
         try {
-            return line.substring(beginIndex, indexOfLastDigit+1);
+            return line.substring(beginIndex, indexOfLastDigit);
         } catch (IndexOutOfBoundsException e) {
             throw new DetectableException("Unexpected format in `go list -m -u -json all` output");
         }
     }
 
-    private int getIndexOfLastDigitInVersion(String line, int beginIndex) {
+    private int getIndexOfEndOfVersion(String line, int beginIndex) {
         for (int index = beginIndex; index < line.length(); index++) {
-            // Version will always conclude with: <digit>"
-            if (Character.isDigit(line.charAt(index)) && line.charAt(index+1) == '"') {
+            // Version will always conclude with terminating '"' since we already skipped the first one
+            if (line.charAt(index) == '"') {
                 return index;
             }
         }
