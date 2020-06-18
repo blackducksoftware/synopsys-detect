@@ -72,6 +72,7 @@ public class ReplacementDataExtractorB {
     }
 
     private String extractPathFromLine(String line, int beginIndex) {
+        // Path will always conclude with ",\n"
         return line.substring(beginIndex, line.length() - 2);
     }
 
