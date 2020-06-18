@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detectable.Extraction;
@@ -48,6 +46,9 @@ public class GoModCliExtractor {
     private final GoModGraphParser goModGraphParser;
     private final Gson gson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().setLenient().create();
     private final Map<String, String> replacementData = new HashMap<>();
+
+    private ReplacementDataExtractorA replacementDataExtractorA = new ReplacementDataExtractorA(replacementData, gson);
+    private ReplacementDataExtractorB replacementDataExtractorB = new ReplacementDataExtractorB(replacementData);
 
     public GoModCliExtractor(final ExecutableRunner executableRunner, final GoModGraphParser goModGraphParser) {
         this.executableRunner = executableRunner;
@@ -78,20 +79,8 @@ public class GoModCliExtractor {
 
     private List<String> modGraphOutputWithReplacements(File directory, File goExe, List<String> listUJsonOutput) throws ExecutableRunnerException, DetectableException {
         final List<String> modGraphOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "mod", "graph");
-        String jsonString = convertOutputToJsonString(listUJsonOutput);
 
-        Type goListUJsonEntryType = new TypeToken<List<GoListUJsonData>>() {}.getType();
-        List<GoListUJsonData> data = gson.fromJson(jsonString, goListUJsonEntryType);
-
-        for (final GoListUJsonData entry : data) {
-            ReplaceData replace = entry.getReplace();
-            if (replace != null) {
-                String path = entry.getPath();
-                String originalVersion = entry.getVersion();
-                String replaceVersion = replace.getVersion();
-                replacementData.put(String.format("%s@%s", path, originalVersion), String.format("%s@%s", path, replaceVersion));
-            }
-        }
+        replacementDataExtractorB.extractReplacementData(listUJsonOutput);
 
         for (String line : modGraphOutput) {
             for (String original : replacementData.keySet()) {
@@ -101,20 +90,5 @@ public class GoModCliExtractor {
             }
         }
         return modGraphOutput;
-    }
-
-    private String convertOutputToJsonString(List<String> listUJsonOutput) {
-        // go list -u -json does not provide data in a format that can be consumed by gson
-        Collections.replaceAll(listUJsonOutput, "}", "},");
-        String goModGraphAsString = String.join(System.lineSeparator(), listUJsonOutput);
-        int lastCloseBrace = goModGraphAsString.lastIndexOf("},");
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("[" + System.lineSeparator());
-        stringBuilder.append(goModGraphAsString.substring(0, lastCloseBrace));
-        stringBuilder.append("}");
-        stringBuilder.append(goModGraphAsString.substring(lastCloseBrace + 2));
-        stringBuilder.append(System.lineSeparator() + "]");
-
-        return stringBuilder.toString();
     }
 }
