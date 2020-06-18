@@ -43,7 +43,7 @@ public class HelpTextWriter {
     
     public void printColumns(String... columns) {
         final List<String> headerColumns = Arrays.asList(columns);
-        final String headerText = formatColumns(headerColumns, 51, 30, 95);
+        final String headerText = formatColumns(headerColumns, 69, 30, 77);
         pieces.add(headerText);
     }
     
