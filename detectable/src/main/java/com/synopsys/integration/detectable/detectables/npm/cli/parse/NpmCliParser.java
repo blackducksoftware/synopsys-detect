@@ -23,6 +23,8 @@
 package com.synopsys.integration.detectable.detectables.npm.cli.parse;
 
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -51,11 +53,11 @@ public class NpmCliParser {
 
     public final ExternalIdFactory externalIdFactory;
 
-    public NpmCliParser(final ExternalIdFactory externalIdFactory) {
+    public NpmCliParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public NpmParseResult generateCodeLocation(final String npmLsOutput) {
+    public NpmParseResult generateCodeLocation(String npmLsOutput) {
         if (StringUtils.isBlank(npmLsOutput)) {
             logger.error("Ran into an issue creating and writing to file");
             return null;
@@ -66,12 +68,12 @@ public class NpmCliParser {
         return convertNpmJsonFileToCodeLocation(npmLsOutput);
     }
 
-    public NpmParseResult convertNpmJsonFileToCodeLocation(final String npmLsOutput) {
-        final JsonObject npmJson = new JsonParser().parse(npmLsOutput).getAsJsonObject();
-        final MutableDependencyGraph graph = new MutableMapDependencyGraph();
+    public NpmParseResult convertNpmJsonFileToCodeLocation(String npmLsOutput) {
+        JsonObject npmJson = JsonParser.parseString(npmLsOutput).getAsJsonObject();
+        MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
-        final JsonElement projectNameElement = npmJson.getAsJsonPrimitive(JSON_NAME);
-        final JsonElement projectVersionElement = npmJson.getAsJsonPrimitive(JSON_VERSION);
+        JsonElement projectNameElement = npmJson.getAsJsonPrimitive(JSON_NAME);
+        JsonElement projectVersionElement = npmJson.getAsJsonPrimitive(JSON_VERSION);
         String projectName = null;
         String projectVersion = null;
         if (projectNameElement != null) {
@@ -83,44 +85,47 @@ public class NpmCliParser {
 
         populateChildren(graph, null, npmJson.getAsJsonObject(JSON_DEPENDENCIES), true);
 
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, projectName, projectVersion);
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, projectName, projectVersion);
 
-        final CodeLocation codeLocation = new CodeLocation(graph, externalId);
+        CodeLocation codeLocation = new CodeLocation(graph, externalId);
 
         return new NpmParseResult(projectName, projectVersion, codeLocation);
 
     }
 
-    private void populateChildren(final MutableDependencyGraph graph, final Dependency parentDependency, final JsonObject parentNodeChildren, final Boolean root) {
+    private void populateChildren(MutableDependencyGraph graph, Dependency parentDependency, JsonObject parentNodeChildren, boolean isRootDependency) {
         if (parentNodeChildren == null) {
             return;
         }
-        final Set<Entry<String, JsonElement>> elements = parentNodeChildren.entrySet();
-        elements.forEach(it -> {
-            if (it.getValue() != null && it.getValue().isJsonObject()) {
-                final JsonObject element = it.getValue().getAsJsonObject();
-                final String name = it.getKey();
-                String version = null;
-                final JsonPrimitive versionPrimitive = element.getAsJsonPrimitive(JSON_VERSION);
-                if (versionPrimitive != null && versionPrimitive.isString()) {
-                    version = versionPrimitive.getAsString();
-                }
-                final JsonObject children = element.getAsJsonObject(JSON_DEPENDENCIES);
+        Set<Entry<String, JsonElement>> elements = parentNodeChildren.entrySet();
+        elements.stream()
+            .filter(Objects::nonNull)
+            .filter(elementEntry -> elementEntry.getValue().isJsonObject())
+            .forEach(elementEntry -> {
+                    JsonObject element = elementEntry.getValue().getAsJsonObject();
+                    String name = elementEntry.getKey();
+                    String version = Optional.ofNullable(element.getAsJsonPrimitive(JSON_VERSION))
+                                         .filter(Objects::nonNull)
+                                         .filter(JsonPrimitive::isString)
+                                         .map(JsonPrimitive::getAsString)
+                                         .orElse(null);
 
-                if (name != null && version != null) {
-                    final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
-                    final Dependency child = new Dependency(name, version, externalId);
+                    JsonObject children = element.getAsJsonObject(JSON_DEPENDENCIES);
 
-                    populateChildren(graph, child, children, false);
-                    if (root) {
-                        graph.addChildToRoot(child);
+                    if (name != null && version != null) {
+                        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
+                        Dependency child = new Dependency(name, version, externalId);
+
+                        populateChildren(graph, child, children, false);
+                        if (isRootDependency) {
+                            graph.addChildToRoot(child);
+                        } else {
+                            graph.addParentWithChild(parentDependency, child);
+                        }
                     } else {
-                        graph.addParentWithChild(parentDependency, child);
+                        logger.trace(String.format("Excluding Json Element missing name or version: { name: %s, version: %s }", name, version));
                     }
                 }
-            } else {
-                // TODO: Log?
-            }
-        });
+            );
     }
 }
