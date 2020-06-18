@@ -28,7 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListUJsonData;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.ReplaceData;
 
@@ -42,20 +44,25 @@ public class ReplacementDataExtractorA {
         this.gson = gson;
     }
 
-    public void extractReplacementData(List<String> listUJsonOutput) {
+    public void extractReplacementData(List<String> listUJsonOutput) throws DetectableException {
         String jsonString = convertOutputToJsonString(listUJsonOutput);
 
         Type goListUJsonEntryType = new TypeToken<List<GoListUJsonData>>() {}.getType();
-        List<GoListUJsonData> data = gson.fromJson(jsonString, goListUJsonEntryType);
 
-        for (final GoListUJsonData entry : data) {
-            ReplaceData replace = entry.getReplace();
-            if (replace != null) {
-                String path = entry.getPath();
-                String originalVersion = entry.getVersion();
-                String replaceVersion = replace.getVersion();
-                replacementData.put(String.format("%s@%s", path, originalVersion), String.format("%s@%s", path, replaceVersion));
+        try {
+            List<GoListUJsonData> data = gson.fromJson(jsonString, goListUJsonEntryType);
+
+            for (final GoListUJsonData entry : data) {
+                ReplaceData replace = entry.getReplace();
+                if (replace != null) {
+                    String path = entry.getPath();
+                    String originalVersion = entry.getVersion();
+                    String replaceVersion = replace.getVersion();
+                    replacementData.put(String.format("%s@%s", path, originalVersion), String.format("%s@%s", path, replaceVersion));
+                }
             }
+        } catch (JsonSyntaxException e) {
+            throw new DetectableException(e.getMessage());
         }
     }
 
