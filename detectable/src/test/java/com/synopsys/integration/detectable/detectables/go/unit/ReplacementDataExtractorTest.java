@@ -25,7 +25,7 @@ public class ReplacementDataExtractorTest {
             "\t\"Version\": \"v1.1.1\",\n",
             "\t\"Replace\": {\n",
             "\t\t\"Path\": \"github.com/sirupsen/logrus\",\n",
-            "\t\t\"Version\": \"v2.0.0v\"\n",
+            "\t\t\"Version\": \"v1.1.1\n",
             "\t}\n",
             "}\n"
         );
