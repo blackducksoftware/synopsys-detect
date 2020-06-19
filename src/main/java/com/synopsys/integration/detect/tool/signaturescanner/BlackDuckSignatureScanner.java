@@ -26,12 +26,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,23 +109,24 @@ public class BlackDuckSignatureScanner {
     private void reportResults(List<SignatureScanPath> signatureScanPaths, List<ScanCommandOutput> scanCommandOutputList) {
         boolean anyFailed = false;
         boolean anyExitCodeIs64 = false;
-        for (final SignatureScanPath target : signatureScanPaths) {
-            final Optional<ScanCommandOutput> targetOutput = scanCommandOutputList.stream()
-                                                                 .filter(output -> output.getScanTarget().equals(target.getTargetCanonicalPath()))
-                                                                 .findFirst();
 
-            final StatusType scanStatus;
-            String errorMessage;
+        for (SignatureScanPath target : signatureScanPaths) {
+            Optional<ScanCommandOutput> targetOutput = scanCommandOutputList.stream()
+                                                           .filter(output -> output.getScanTarget().equals(target.getTargetCanonicalPath()))
+                                                           .findFirst();
+
+            StatusType scanStatus;
             if (!targetOutput.isPresent()) {
                 scanStatus = StatusType.FAILURE;
-                errorMessage = String.format("Scanning target %s was never scanned by the BlackDuck CLI.", target.getTargetCanonicalPath());
+                String errorMessage = String.format("Scanning target %s was never scanned by the BlackDuck CLI.", target.getTargetCanonicalPath());
                 logger.info(errorMessage);
-                eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(errorMessage)));
+                eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Collections.singletonList(errorMessage)));
             } else {
-                final ScanCommandOutput output = targetOutput.get();
+                ScanCommandOutput output = targetOutput.get();
                 if (output.getResult() == Result.FAILURE) {
                     scanStatus = StatusType.FAILURE;
 
+                    String errorMessage;
                     if (output.getException().isPresent() && output.getErrorMessage().isPresent()) {
                         errorMessage = output.getErrorMessage().get();
                         logger.error(String.format("Scanning target %s failed: %s", target.getTargetCanonicalPath(), errorMessage));
@@ -138,8 +138,8 @@ public class BlackDuckSignatureScanner {
                         errorMessage = String.format("Scanning target %s failed for an unknown reason.", target.getTargetCanonicalPath());
                         logger.error(errorMessage);
                     }
-
-                    eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(errorMessage)));
+                    
+                    eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Collections.singletonList(errorMessage)));
 
                     if (output.getScanExitCode().isPresent()) {
                         anyExitCodeIs64 = anyExitCodeIs64 || output.getScanExitCode().get() == 64;
@@ -158,6 +158,7 @@ public class BlackDuckSignatureScanner {
         if (anyFailed) {
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_SCAN));
         }
+    }
 
     private List<SignatureScanPath> determinePathsAndExclusions(NameVersion projectNameVersion, Integer maxDepth, File dockerTarFile) throws IOException {
         List<Path> providedSignatureScanPaths = signatureScannerOptions.getSignatureScannerPaths();
