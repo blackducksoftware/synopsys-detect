@@ -34,7 +34,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatch;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchBuilder;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
@@ -53,7 +52,6 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.SignatureScanStatus;
-import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -107,56 +105,57 @@ public class BlackDuckSignatureScanner {
 
     //TODO: Possibly promote this to the Tool. Ideally it would return some object describing these results and the Tool translates that into detect nonsense -jp.
     private void reportResults(List<SignatureScanPath> signatureScanPaths, List<ScanCommandOutput> scanCommandOutputList) {
-        boolean anyFailed = false;
-        boolean anyExitCodeIs64 = false;
-
-        for (SignatureScanPath target : signatureScanPaths) {
-            Optional<ScanCommandOutput> targetOutput = scanCommandOutputList.stream()
-                                                           .filter(output -> output.getScanTarget().equals(target.getTargetCanonicalPath()))
-                                                           .findFirst();
-
-            StatusType scanStatus;
-            if (!targetOutput.isPresent()) {
-                scanStatus = StatusType.FAILURE;
-                String errorMessage = String.format("Scanning target %s was never scanned by the BlackDuck CLI.", target.getTargetCanonicalPath());
-                logger.info(errorMessage);
-                eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Collections.singletonList(errorMessage)));
-            } else {
-                ScanCommandOutput output = targetOutput.get();
-                if (output.getResult() == Result.FAILURE) {
-                    scanStatus = StatusType.FAILURE;
-
-                    String errorMessage;
-                    if (output.getException().isPresent() && output.getErrorMessage().isPresent()) {
-                        errorMessage = output.getErrorMessage().get();
-                        logger.error(String.format("Scanning target %s failed: %s", target.getTargetCanonicalPath(), errorMessage));
-                        logger.debug(errorMessage, output.getException().get());
-                    } else if (output.getErrorMessage().isPresent()) {
-                        errorMessage = output.getErrorMessage().get();
-                        logger.error(String.format("Scanning target %s failed: %s", target.getTargetCanonicalPath(), errorMessage));
-                    } else {
-                        errorMessage = String.format("Scanning target %s failed for an unknown reason.", target.getTargetCanonicalPath());
-                        logger.error(errorMessage);
-                    }
-                    
-                    eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Collections.singletonList(errorMessage)));
-
-                    if (output.getScanExitCode().isPresent()) {
-                        anyExitCodeIs64 = anyExitCodeIs64 || output.getScanExitCode().get() == 64;
-                    }
-
-                } else {
-                    scanStatus = StatusType.SUCCESS;
-                    logger.info(String.format("%s was successfully scanned by the BlackDuck CLI.", target.getTargetCanonicalPath()));
-                }
-            }
-
-            anyFailed = anyFailed || scanStatus == StatusType.FAILURE;
-            eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(target.getTargetCanonicalPath(), scanStatus));
+        List<SignatureScannerReport> signatureScannerReports = new ArrayList<>();
+        for (SignatureScanPath signatureScanPath : signatureScanPaths) {
+            Optional<ScanCommandOutput> scanCommandOutput = scanCommandOutputList.stream()
+                                                                .filter(output -> output.getScanTarget().equals(signatureScanPath.getTargetCanonicalPath()))
+                                                                .findFirst();
+            SignatureScannerReport signatureScannerReport = SignatureScannerReport.create(signatureScanPath, scanCommandOutput.orElse(null));
+            signatureScannerReports.add(signatureScannerReport);
         }
 
-        if (anyFailed) {
-            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_SCAN));
+        signatureScannerReports.forEach(this::reportErrors);
+
+        signatureScannerReports.stream()
+            .filter(SignatureScannerReport::isFailure)
+            .forEach(signatureScannerReport -> eventSystem.publishEvent(Event.StatusSummary,
+                new SignatureScanStatus(
+                    signatureScannerReport.getSignatureScanPath().getTargetCanonicalPath(),
+                    signatureScannerReport.getStatusType()
+                ))
+            );
+
+        signatureScannerReports.stream()
+            .map(SignatureScannerReport::getExitCode)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .filter(code -> code == 64)
+            .findAny()
+            .ifPresent(code -> {
+                logger.error("");
+                logger.error("Signature scanner returned 64. The most likely cause is you are using an unsupported version of Black Duck (<5.0.0).");
+                logger.error("You should update your Black Duck or downgrade your version of detect.");
+                logger.error("If you are using the detect scripts, you can use DETECT_LATEST_RELEASE_VERSION.");
+                logger.error("");
+
+                eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED));
+            });
+    }
+
+    private void reportErrors(SignatureScannerReport signatureScannerReport) {
+        String scanTargetPath = signatureScannerReport.getSignatureScanPath().getTargetCanonicalPath();
+        if (signatureScannerReport.isFailure() && signatureScannerReport.hasOutput()) {
+            String errorMessage = String.format("Scanning target %s was never scanned by the BlackDuck CLI.", scanTargetPath);
+            logger.info(errorMessage);
+            eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Collections.singletonList(errorMessage)));
+        } else if (signatureScannerReport.isFailure()) {
+            String errorMessage = signatureScannerReport.getErrorMessage()
+                                      .map(message -> String.format("Scanning target %s failed: %s", scanTargetPath, message))
+                                      .orElse(String.format("Scanning target %s failed for an unknown reason.", scanTargetPath));
+            logger.error(errorMessage);
+            signatureScannerReport.getException().ifPresent(exception -> logger.debug(errorMessage, exception));
+
+            eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Collections.singletonList(errorMessage)));
         }
     }
 
