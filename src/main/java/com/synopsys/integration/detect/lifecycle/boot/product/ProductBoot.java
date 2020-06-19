@@ -80,7 +80,7 @@ public class ProductBoot {
     private BlackDuckRunData getBlackDuckRunData(ProductDecision productDecision, ProductBootFactory productBootFactory, BlackDuckConnectivityChecker blackDuckConnectivityChecker, ProductBootOptions productBootOptions,
         AnalyticsConfigurationService analyticsConfigurationService) throws DetectUserFriendlyException {
 
-        if (productDecision.getBlackDuckDecision().shouldRun()) {
+        if (!productDecision.getBlackDuckDecision().shouldRun()) {
             return null;
         }
 
