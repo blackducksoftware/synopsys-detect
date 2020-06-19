@@ -25,5 +25,7 @@ package com.synopsys.integration.detect.workflow.status;
 public enum DetectIssueType {
     EXCEPTION,
     DEPRECATION,
-    DETECTOR
+    DETECTOR,
+    SIGNATURE_SCANNER,
+    BINARY_SCAN
 }

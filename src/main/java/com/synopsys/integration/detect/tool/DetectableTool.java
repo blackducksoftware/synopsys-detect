@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.tool;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,8 @@ import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
+import com.synopsys.integration.detect.workflow.status.DetectIssue;
+import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.Detectable;
@@ -100,6 +103,7 @@ public class DetectableTool {
         if (!extractable.getPassed()) {
             logger.error("Was not extractable: " + extractable.toDescription());
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.FAILURE));
+            eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.DETECTOR, Arrays.asList(extractable.toDescription())));
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
             return DetectableToolResult.failed(extractable);
         }
@@ -112,6 +116,7 @@ public class DetectableTool {
         if (!extraction.isSuccess()) {
             logger.error("Extraction was not success.");
             eventSystem.publishEvent(Event.StatusSummary, new Status(name, StatusType.FAILURE));
+            eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.DETECTOR, Arrays.asList(extraction.getDescription())));
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_GENERAL_ERROR, extractable.toDescription()));
             return DetectableToolResult.failed();
         } else {
