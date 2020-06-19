@@ -117,15 +117,6 @@ public class BlackDuckSignatureScanner {
         signatureScannerReports.forEach(this::reportErrors);
 
         signatureScannerReports.stream()
-            .filter(SignatureScannerReport::isFailure)
-            .forEach(signatureScannerReport -> eventSystem.publishEvent(Event.StatusSummary,
-                new SignatureScanStatus(
-                    signatureScannerReport.getSignatureScanPath().getTargetCanonicalPath(),
-                    signatureScannerReport.getStatusType()
-                ))
-            );
-
-        signatureScannerReports.stream()
             .map(SignatureScannerReport::getExitCode)
             .filter(Optional::isPresent)
             .map(Optional::get)
@@ -156,6 +147,10 @@ public class BlackDuckSignatureScanner {
             signatureScannerReport.getException().ifPresent(exception -> logger.debug(errorMessage, exception));
 
             eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Collections.singletonList(errorMessage)));
+        }
+        
+        if (signatureScannerReport.isFailure()) {
+            eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(signatureScannerReport.getSignatureScanPath().getTargetCanonicalPath(), signatureScannerReport.getStatusType()));
         }
     }
 
