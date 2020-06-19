@@ -52,6 +52,7 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.SignatureScanStatus;
+import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
@@ -134,12 +135,16 @@ public class BlackDuckSignatureScanner {
     }
 
     private void reportErrors(SignatureScannerReport signatureScannerReport) {
+        if (signatureScannerReport.isSuccessful()) {
+            return;
+        }
+
         String scanTargetPath = signatureScannerReport.getSignatureScanPath().getTargetCanonicalPath();
-        if (signatureScannerReport.isFailure() && signatureScannerReport.hasOutput()) {
+        if (signatureScannerReport.hasOutput()) {
             String errorMessage = String.format("Scanning target %s was never scanned by the BlackDuck CLI.", scanTargetPath);
             logger.info(errorMessage);
             eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Collections.singletonList(errorMessage)));
-        } else if (signatureScannerReport.isFailure()) {
+        } else {
             String errorMessage = signatureScannerReport.getErrorMessage()
                                       .map(message -> String.format("Scanning target %s failed: %s", scanTargetPath, message))
                                       .orElse(String.format("Scanning target %s failed for an unknown reason.", scanTargetPath));
@@ -148,10 +153,8 @@ public class BlackDuckSignatureScanner {
 
             eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Collections.singletonList(errorMessage)));
         }
-        
-        if (signatureScannerReport.isFailure()) {
-            eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(signatureScannerReport.getSignatureScanPath().getTargetCanonicalPath(), signatureScannerReport.getStatusType()));
-        }
+
+        eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(signatureScannerReport.getSignatureScanPath().getTargetCanonicalPath(), StatusType.FAILURE));
     }
 
     private List<SignatureScanPath> determinePathsAndExclusions(NameVersion projectNameVersion, Integer maxDepth, File dockerTarFile) throws IOException {
