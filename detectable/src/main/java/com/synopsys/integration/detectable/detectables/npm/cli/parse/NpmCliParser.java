@@ -101,31 +101,32 @@ public class NpmCliParser {
         elements.stream()
             .filter(Objects::nonNull)
             .filter(elementEntry -> elementEntry.getValue().isJsonObject())
-            .forEach(elementEntry -> {
-                    JsonObject element = elementEntry.getValue().getAsJsonObject();
-                    String name = elementEntry.getKey();
-                    String version = Optional.ofNullable(element.getAsJsonPrimitive(JSON_VERSION))
-                                         .filter(Objects::nonNull)
-                                         .filter(JsonPrimitive::isString)
-                                         .map(JsonPrimitive::getAsString)
-                                         .orElse(null);
+            .forEach(elementEntry -> processChild(elementEntry, graph, parentDependency, isRootDependency));
+    }
 
-                    JsonObject children = element.getAsJsonObject(JSON_DEPENDENCIES);
+    private void processChild(Entry<String, JsonElement> elementEntry, MutableDependencyGraph graph, Dependency parentDependency, boolean isRootDependency) {
+        JsonObject element = elementEntry.getValue().getAsJsonObject();
+        String name = elementEntry.getKey();
+        String version = Optional.ofNullable(element.getAsJsonPrimitive(JSON_VERSION))
+                             .filter(Objects::nonNull)
+                             .filter(JsonPrimitive::isString)
+                             .map(JsonPrimitive::getAsString)
+                             .orElse(null);
 
-                    if (name != null && version != null) {
-                        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
-                        Dependency child = new Dependency(name, version, externalId);
+        JsonObject children = element.getAsJsonObject(JSON_DEPENDENCIES);
 
-                        populateChildren(graph, child, children, false);
-                        if (isRootDependency) {
-                            graph.addChildToRoot(child);
-                        } else {
-                            graph.addParentWithChild(parentDependency, child);
-                        }
-                    } else {
-                        logger.trace(String.format("Excluding Json Element missing name or version: { name: %s, version: %s }", name, version));
-                    }
-                }
-            );
+        if (name != null && version != null) {
+            ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, name, version);
+            Dependency child = new Dependency(name, version, externalId);
+
+            populateChildren(graph, child, children, false);
+            if (isRootDependency) {
+                graph.addChildToRoot(child);
+            } else {
+                graph.addParentWithChild(parentDependency, child);
+            }
+        } else {
+            logger.trace(String.format("Excluding Json Element missing name or version: { name: %s, version: %s }", name, version));
+        }
     }
 }
