@@ -22,21 +22,42 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class WorkspaceRuleChooser {
+
     @NotNull
-    public WorkspaceRule choose(final WorkspaceRule ruleFromWorkspaceFile, final WorkspaceRule providedBazelDependencyType) throws IntegrationException {
-        if (providedBazelDependencyType != null && providedBazelDependencyType != WorkspaceRule.UNSPECIFIED) {
-            return providedBazelDependencyType;
-        } else if (ruleFromWorkspaceFile != WorkspaceRule.UNSPECIFIED) {
-            return ruleFromWorkspaceFile;
+    public Set<WorkspaceRule> choose(Set<WorkspaceRule> rulesFromWorkspaceFile, List<WorkspaceRule> userProvidedRules) throws IntegrationException {
+        Set<WorkspaceRule> cleanedUserProvidedRules = clean(userProvidedRules);
+        if (!cleanedUserProvidedRules.isEmpty()) {
+            return cleanedUserProvidedRules;
+        } else if (!rulesFromWorkspaceFile.isEmpty()) {
+            return rulesFromWorkspaceFile;
         } else {
             throw new IntegrationException("Unable to determine BazelWorkspace dependency rule; try setting it via the property");
         }
+    }
+
+    // Though it's a nuisance, we continue to support UNSPECIFIED to avoid making a breaking change
+    private Set<WorkspaceRule> clean(List<WorkspaceRule> userProvidedRules) {
+        Set<WorkspaceRule> cleanedRulesList = new HashSet<>();
+        if (userProvidedRules == null || userProvidedRules.isEmpty() ||
+                (userProvidedRules.size() == 1 && userProvidedRules.get(0) == WorkspaceRule.UNSPECIFIED)) {
+            return cleanedRulesList;
+        } else {
+            for (WorkspaceRule givenRule : userProvidedRules) {
+                if (givenRule != WorkspaceRule.UNSPECIFIED) {
+                    cleanedRulesList.add(givenRule);
+                }
+            }
+        }
+        return cleanedRulesList;
     }
 }

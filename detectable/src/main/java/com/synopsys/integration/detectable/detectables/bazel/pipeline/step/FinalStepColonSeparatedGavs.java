@@ -22,13 +22,12 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
@@ -38,32 +37,32 @@ public class FinalStepColonSeparatedGavs implements FinalStep {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
 
-    public FinalStepColonSeparatedGavs(final ExternalIdFactory externalIdFactory) {
+    public FinalStepColonSeparatedGavs(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
     @Override
-    public MutableDependencyGraph finish(final List<String> gavStrings) throws IntegrationException {
-        final MutableDependencyGraph dependencyGraph  = new MutableMapDependencyGraph();
+    public List<Dependency> finish(List<String> gavStrings) throws IntegrationException {
+        List<Dependency> dependencies = new ArrayList<>();
         for (String gavString : gavStrings) {
-            final Dependency artifactDependency = gavStringToDependency(gavString, ":");
+            Dependency artifactDependency = gavStringToDependency(gavString, ":");
             try {
-                dependencyGraph.addChildToRoot(artifactDependency);
-            } catch (final Exception e) {
+                dependencies.add(artifactDependency);
+            } catch (Exception e) {
                 logger.error(String.format("Unable to create dependency from %s", gavString));
             }
         }
-        return dependencyGraph;
+        return dependencies;
     }
 
-    private Dependency gavStringToDependency(final String artifactString, final String separatorRegex) {
-        final String[] gavParts = artifactString.split(separatorRegex);
-        final String group = gavParts[0];
-        final String artifact = gavParts[1];
-        final String version = gavParts[2];
+    private Dependency gavStringToDependency(String artifactString, String separatorRegex) {
+        String[] gavParts = artifactString.split(separatorRegex);
+        String group = gavParts[0];
+        String artifact = gavParts[1];
+        String version = gavParts[2];
 
         logger.debug(String.format("Adding dependency from external id: %s:%s:%s", group, artifact, version));
-        final ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
+        ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
         return new Dependency(artifact, version, externalId);
     }
 }

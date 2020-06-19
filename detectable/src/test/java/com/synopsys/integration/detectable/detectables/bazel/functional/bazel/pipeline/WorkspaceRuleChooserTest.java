@@ -25,9 +25,13 @@ package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.p
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.common.collect.Sets;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.exception.IntegrationException;
@@ -36,25 +40,30 @@ public class WorkspaceRuleChooserTest {
 
     @Test
     public void testDerivedBazelDependencyRule() throws IntegrationException {
-        final WorkspaceRule chosenWorkspaceRule = run(null);
-        assertEquals("maven_install", chosenWorkspaceRule.getName());
+        Set<WorkspaceRule> chosenWorkspaceRules = run(null);
+        assertEquals(1, chosenWorkspaceRules.size());
+        assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
     public void testProvidedBazelDependencyRule() throws IOException, IntegrationException {
-        final WorkspaceRule chosenWorkspaceRule = run(WorkspaceRule.MAVEN_INSTALL);
-        assertEquals("maven_install", chosenWorkspaceRule.getName());
+        Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(WorkspaceRule.MAVEN_INSTALL));
+        assertEquals(1, chosenWorkspaceRules.size());
+        assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
     public void testOverriddenBazelDependencyRule() throws IOException, IntegrationException {
-        final WorkspaceRule chosenWorkspaceRule = run(WorkspaceRule.MAVEN_JAR);
-        assertEquals("maven_jar", chosenWorkspaceRule.getName());
+        Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(WorkspaceRule.MAVEN_JAR));
+        assertEquals(1, chosenWorkspaceRules.size());
+        assertEquals("maven_jar", chosenWorkspaceRules.iterator().next().getName());
     }
 
-    private WorkspaceRule run(final WorkspaceRule providedBazelDependencyRule) throws IntegrationException {
-        final WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
-        final WorkspaceRule chosenWorkspaceRule = workspaceRuleChooser.choose(WorkspaceRule.MAVEN_INSTALL, providedBazelDependencyRule);
-        return chosenWorkspaceRule;
+    private Set<WorkspaceRule> run(List<WorkspaceRule> providedBazelDependencyRule) throws IntegrationException {
+        WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
+        Set<WorkspaceRule> chosenWorkspaceRules = workspaceRuleChooser.choose(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL), providedBazelDependencyRule);
+        return chosenWorkspaceRules;
     }
+
+    // TODO test list of given rules, and list of found rules, and mixed combos
 }

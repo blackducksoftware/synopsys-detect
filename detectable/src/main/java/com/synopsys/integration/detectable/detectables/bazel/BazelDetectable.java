@@ -48,8 +48,8 @@ public class BazelDetectable extends Detectable {
     private File bazelExe;
     private BazelWorkspace bazelWorkspace;
 
-    public BazelDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final BazelExtractor bazelExtractor,
-        final BazelResolver bazelResolver, final BazelDetectableOptions bazelDetectableOptions) {
+    public BazelDetectable(DetectableEnvironment environment, FileFinder fileFinder, BazelExtractor bazelExtractor,
+        BazelResolver bazelResolver, BazelDetectableOptions bazelDetectableOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.bazelExtractor = bazelExtractor;
@@ -67,7 +67,7 @@ public class BazelDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        final File workspaceFile = fileFinder.findFile(environment.getDirectory(), WORKSPACE_FILENAME);
+        File workspaceFile = fileFinder.findFile(environment.getDirectory(), WORKSPACE_FILENAME);
         if (workspaceFile == null) {
             return new FilesNotFoundDetectableResult(WORKSPACE_FILENAME);
         }
@@ -80,10 +80,10 @@ public class BazelDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        final BazelProjectNameGenerator projectNameGenerator = new BazelProjectNameGenerator();
-        @SuppressWarnings("OptionalGetWithoutIsPresent") // Checked in applicable.
-        final Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), bazelWorkspace, bazelDetectableOptions.getTargetName().get(), projectNameGenerator, bazelDetectableOptions.getBazelDependencyRule(),
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+        BazelProjectNameGenerator projectNameGenerator = new BazelProjectNameGenerator();
+        // Checked in applicable.
+        Extraction extractResult = bazelExtractor.extract(bazelExe, environment.getDirectory(), bazelWorkspace, bazelDetectableOptions.getTargetName().get(), projectNameGenerator, bazelDetectableOptions.getBazelDependencyRules(),
             bazelDetectableOptions.getBazelCqueryAdditionalOptions());
         return extractResult;
     }

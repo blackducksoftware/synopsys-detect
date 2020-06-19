@@ -28,6 +28,7 @@ import java.io.File;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.common.collect.Sets;
 import com.synopsys.integration.detectable.detectables.bazel.BazelWorkspace;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 
@@ -35,9 +36,10 @@ public class BazelWorkspaceTest {
 
     @Test
     public void test() {
-        final File workspaceFile = new File("src/test/resources/detectables/functional/bazel/WORKSPACE");
-        final BazelWorkspace bazelWorkspace = new BazelWorkspace(workspaceFile);
+        File workspaceFile = new File("src/test/resources/detectables/functional/bazel/WORKSPACE");
+        BazelWorkspace bazelWorkspace = new BazelWorkspace(workspaceFile);
 
-        assertEquals(WorkspaceRule.MAVEN_INSTALL, bazelWorkspace.getDependencyRule());
+        assertEquals(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL), bazelWorkspace.getDependencyRules());
     }
+    // TODO test multiple rules
 }

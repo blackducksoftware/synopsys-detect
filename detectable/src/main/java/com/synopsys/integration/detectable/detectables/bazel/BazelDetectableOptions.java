@@ -27,13 +27,13 @@ import java.util.Optional;
 
 public class BazelDetectableOptions {
     private final String targetName;
-    private final WorkspaceRule bazelDependencyRule;
+    private final List<WorkspaceRule> bazelDependencyRules;
     private final List<String> bazelCqueryAdditionalOptions;
 
-    public BazelDetectableOptions(final String targetName, final WorkspaceRule bazelDependencyRule,
-        final List<String> bazelCqueryAdditionalOptions) {
+    public BazelDetectableOptions(String targetName, List<WorkspaceRule> bazelDependencyRules,
+        List<String> bazelCqueryAdditionalOptions) {
         this.targetName = targetName;
-        this.bazelDependencyRule = bazelDependencyRule;
+        this.bazelDependencyRules = bazelDependencyRules;
         this.bazelCqueryAdditionalOptions = bazelCqueryAdditionalOptions;
     }
 
@@ -41,8 +41,8 @@ public class BazelDetectableOptions {
         return Optional.ofNullable(targetName);
     }
 
-    public WorkspaceRule getBazelDependencyRule() {
-        return bazelDependencyRule;
+    public List<WorkspaceRule> getBazelDependencyRules() {
+        return bazelDependencyRules;
     }
 
     public List<String> getBazelCqueryAdditionalOptions() {

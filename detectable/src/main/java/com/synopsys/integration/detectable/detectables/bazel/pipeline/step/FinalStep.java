@@ -24,9 +24,9 @@ package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
 import java.util.List;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.exception.IntegrationException;
 
 public interface FinalStep {
-    MutableDependencyGraph finish(final List<String> input) throws IntegrationException;
+    List<Dependency> finish(List<String> input) throws IntegrationException;
 }
