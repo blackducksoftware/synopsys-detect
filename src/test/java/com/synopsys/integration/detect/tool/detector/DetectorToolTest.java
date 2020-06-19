@@ -50,8 +50,9 @@ public class DetectorToolTest {
         final DetectorFinder detectorFinder = Mockito.mock(DetectorFinder.class);
         final EventSystem eventSystem = Mockito.mock(EventSystem.class);
         final CodeLocationConverter codeLocationConverter = Mockito.mock(CodeLocationConverter.class);
+        final DetectorIssuePublisher detectorIssuePublisher = Mockito.mock(DetectorIssuePublisher.class);
 
-        final DetectorTool tool = new DetectorTool(detectorFinder, extractionEnvironmentProvider, eventSystem, codeLocationConverter);
+        final DetectorTool tool = new DetectorTool(detectorFinder, extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher);
 
         final File directory = new File(".");
         final DetectorRuleSet detectorRuleSet = Mockito.mock(DetectorRuleSet.class);

@@ -206,7 +206,6 @@ public class Application implements ApplicationRunner {
 
         //Print detect's status
         if (printOutput) {
-            reportManager.printDetectorIssues();
             statusManager.logDetectResults(new Slf4jIntLogger(logger), finalExitCode);
         }
 
