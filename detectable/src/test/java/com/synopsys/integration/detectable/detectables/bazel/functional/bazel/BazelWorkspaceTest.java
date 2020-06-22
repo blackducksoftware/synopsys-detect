@@ -40,7 +40,7 @@ public class BazelWorkspaceTest {
         File workspaceFile = new File("src/test/resources/detectables/functional/bazel/WORKSPACE");
         BazelWorkspace bazelWorkspace = new BazelWorkspace(workspaceFile);
 
-        assertEquals(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL), bazelWorkspace.getDependencyRules());
+        assertEquals(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL), bazelWorkspace.getDependencyRuleTypes());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class BazelWorkspaceTest {
         File workspaceFile = new File("src/test/resources/detectables/functional/bazel/WORKSPACE_multipleRules");
         BazelWorkspace bazelWorkspace = new BazelWorkspace(workspaceFile);
 
-        Set<WorkspaceRule> rulesFound = bazelWorkspace.getDependencyRules();
+        Set<WorkspaceRule> rulesFound = bazelWorkspace.getDependencyRuleTypes();
         assertEquals(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL, WorkspaceRule.HASKELL_CABAL_LIBRARY), rulesFound);
     }
 }

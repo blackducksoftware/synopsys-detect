@@ -51,8 +51,4 @@ public class BazelDetectableTest {
 
         assertTrue(detectable.applicable().getPassed());
     }
-
-    // test list of given rules
-
-    // test list of given rules consisting only of UNSPECIFIED
 }

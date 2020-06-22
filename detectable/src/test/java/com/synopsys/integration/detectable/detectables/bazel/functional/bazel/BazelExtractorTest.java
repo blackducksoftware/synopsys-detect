@@ -85,7 +85,7 @@ public class BazelExtractorTest {
         File workspaceDir = new File(".");
         ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         BazelWorkspace bazelWorkspace = Mockito.mock(BazelWorkspace.class);
-        Mockito.when(bazelWorkspace.getDependencyRules()).thenReturn(Sets.newHashSet(WorkspaceRule.MAVEN_JAR));
+        Mockito.when(bazelWorkspace.getDependencyRuleTypes()).thenReturn(Sets.newHashSet(WorkspaceRule.MAVEN_JAR));
         WorkspaceRuleChooser workspaceRuleChooser = Mockito.mock(WorkspaceRuleChooser.class);
         Mockito.when(workspaceRuleChooser.choose(Mockito.eq(Sets.newHashSet(WorkspaceRule.MAVEN_JAR)), Mockito.isNull())).thenReturn(Sets.newHashSet(WorkspaceRule.MAVEN_JAR));
         BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
@@ -153,7 +153,7 @@ public class BazelExtractorTest {
         File workspaceDir = new File(".");
         ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         BazelWorkspace bazelWorkspace = Mockito.mock(BazelWorkspace.class);
-        Mockito.when(bazelWorkspace.getDependencyRules()).thenReturn(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL));
+        Mockito.when(bazelWorkspace.getDependencyRuleTypes()).thenReturn(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL));
         WorkspaceRuleChooser workspaceRuleChooser = Mockito.mock(WorkspaceRuleChooser.class);
         Mockito.when(workspaceRuleChooser.choose(Mockito.eq(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL)), Mockito.isNull())).thenReturn(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL));
         BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
@@ -204,7 +204,7 @@ public class BazelExtractorTest {
         File workspaceDir = new File(".");
         ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         BazelWorkspace bazelWorkspace = Mockito.mock(BazelWorkspace.class);
-        Mockito.when(bazelWorkspace.getDependencyRules()).thenReturn(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL,
+        Mockito.when(bazelWorkspace.getDependencyRuleTypes()).thenReturn(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL,
             WorkspaceRule.HASKELL_CABAL_LIBRARY));
         WorkspaceRuleChooser workspaceRuleChooser = Mockito.mock(WorkspaceRuleChooser.class);
         Mockito.when(workspaceRuleChooser.choose(

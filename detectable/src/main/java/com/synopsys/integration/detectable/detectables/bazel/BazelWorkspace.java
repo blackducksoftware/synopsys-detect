@@ -42,7 +42,7 @@ public class BazelWorkspace {
         this.workspaceFile = workspaceFile;
     }
 
-    public Set<WorkspaceRule> getDependencyRules() {
+    public Set<WorkspaceRule> getDependencyRuleTypes() {
         List<String> workspaceFileLines;
         try {
             // Assumes ascii or UTF-8, like other detectors

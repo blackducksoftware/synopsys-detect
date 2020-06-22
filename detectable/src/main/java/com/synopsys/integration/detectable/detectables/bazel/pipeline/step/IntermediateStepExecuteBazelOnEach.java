@@ -54,6 +54,7 @@ public class IntermediateStepExecuteBazelOnEach implements IntermediateStep {
         }
         List<String> adjustedInput;
         if (input.isEmpty()) {
+            // Empty pipeline is normal when this is first step in pipeline, but we need one item to enter the loop below
             adjustedInput = new ArrayList<>(1);
             adjustedInput.add(null);
         } else {
