@@ -16,10 +16,11 @@ class DiagnosticsDeciderTest {
         Mockito.when(propertyConfiguration.getValueOrDefault(Mockito.any())).thenReturn(false);
 
         DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState, propertyConfiguration);
+        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide();
 
-        Assertions.assertTrue(diagnosticsDecider.isConfiguredForDiagnostic());
-        Assertions.assertTrue(diagnosticsDecider.isDiagnostic());
-        Assertions.assertFalse(diagnosticsDecider.isDiagnosticExtended());
+        Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
+        Assertions.assertTrue(diagnosticsDecision.isDiagnostic);
+        Assertions.assertFalse(diagnosticsDecision.isDiagnosticExtended);
     }
 
     @Test
@@ -29,10 +30,11 @@ class DiagnosticsDeciderTest {
         Mockito.when(propertyConfiguration.getValueOrDefault(Mockito.any())).thenReturn(false);
 
         DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState, propertyConfiguration);
+        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide();
 
-        Assertions.assertTrue(diagnosticsDecider.isConfiguredForDiagnostic());
-        Assertions.assertFalse(diagnosticsDecider.isDiagnostic());
-        Assertions.assertTrue(diagnosticsDecider.isDiagnosticExtended());
+        Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
+        Assertions.assertFalse(diagnosticsDecision.isDiagnostic);
+        Assertions.assertTrue(diagnosticsDecision.isDiagnosticExtended);
     }
 
     @Test
@@ -43,10 +45,11 @@ class DiagnosticsDeciderTest {
         Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DIAGNOSTIC_EXTENDED())).thenReturn(false);
 
         DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState, propertyConfiguration);
+        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide();
 
-        Assertions.assertTrue(diagnosticsDecider.isConfiguredForDiagnostic());
-        Assertions.assertTrue(diagnosticsDecider.isDiagnostic());
-        Assertions.assertFalse(diagnosticsDecider.isDiagnosticExtended());
+        Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
+        Assertions.assertTrue(diagnosticsDecision.isDiagnostic);
+        Assertions.assertFalse(diagnosticsDecision.isDiagnosticExtended);
     }
 
     @Test
@@ -57,10 +60,11 @@ class DiagnosticsDeciderTest {
         Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DIAGNOSTIC_EXTENDED())).thenReturn(true);
 
         DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState, propertyConfiguration);
+        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide();
 
-        Assertions.assertTrue(diagnosticsDecider.isConfiguredForDiagnostic());
-        Assertions.assertFalse(diagnosticsDecider.isDiagnostic());
-        Assertions.assertTrue(diagnosticsDecider.isDiagnosticExtended());
+        Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
+        Assertions.assertFalse(diagnosticsDecision.isDiagnostic);
+        Assertions.assertTrue(diagnosticsDecision.isDiagnosticExtended);
     }
 
     @Test
@@ -70,10 +74,11 @@ class DiagnosticsDeciderTest {
         Mockito.when(propertyConfiguration.getValueOrDefault(Mockito.any())).thenReturn(false);
 
         DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState, propertyConfiguration);
+        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide();
 
-        Assertions.assertFalse(diagnosticsDecider.isConfiguredForDiagnostic());
-        Assertions.assertFalse(diagnosticsDecider.isDiagnostic());
-        Assertions.assertFalse(diagnosticsDecider.isDiagnosticExtended());
+        Assertions.assertFalse(diagnosticsDecision.isConfiguredForDiagnostic);
+        Assertions.assertFalse(diagnosticsDecision.isDiagnostic);
+        Assertions.assertFalse(diagnosticsDecision.isDiagnosticExtended);
     }
 
     private DetectArgumentState createDetectArgumentState(boolean isDiagnostic, boolean isDiagnosticExtended) {
