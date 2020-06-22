@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +52,11 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
     @Override
     public List<Dependency> finish(List<String> input) throws IntegrationException {
         List<Dependency> dependencies = new ArrayList<>();
-        String jsonString = extractJsonString(input);
-        List<NameVersion> dependencyDetailsList = parser.parse(jsonString);
+        Optional<String> jsonString = extractJsonString(input);
+        if (!jsonString.isPresent()) {
+            return dependencies;
+        }
+        List<NameVersion> dependencyDetailsList = parser.parse(jsonString.get());
         for (NameVersion dependencyDetails : dependencyDetailsList) {
             Dependency dependency = hackageCompNameVersionToDependency(dependencyDetails.getName(), dependencyDetails.getVersion());
             dependencies.add(dependency);
@@ -60,11 +64,14 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
         return dependencies;
     }
 
-    private String extractJsonString(List<String> input) throws IntegrationException {
-        if (input.size() != 1) {
+    private Optional<String> extractJsonString(List<String> input) throws IntegrationException {
+        if (input.size() > 1) {
             throw new IntegrationException(String.format("Input size is %d; expected 1", input.size()));
         }
-        return input.get(0);
+        if (input.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(input.get(0));
     }
 
     private Dependency hackageCompNameVersionToDependency(String compName, String compVersion) {
