@@ -93,7 +93,4 @@ public class WorkspaceRuleChooserTest {
         Set<WorkspaceRule> chosenWorkspaceRules = workspaceRuleChooser.choose(parsedWorkspaceRules, providedBazelDependencyRule);
         return chosenWorkspaceRules;
     }
-
-    // TODO test list of given rules, and list of found rules, and mixed combos
-    // and user requests UNSPECIFIED
 }
