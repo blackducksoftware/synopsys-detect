@@ -73,6 +73,7 @@ public class BazelExtractor {
                 logger.info(String.format("Running processing pipeline for rule %s", workspaceRule));
                 Pipeline pipeline = pipelines.get(workspaceRule);
                 List<Dependency> ruleDependencies = pipeline.run();
+                logger.info(String.format("Number of dependencies discovered for rule %s: %d", workspaceRule, ruleDependencies.size()));
                 logger.debug(String.format("Dependencies discovered for rule %s: %s", workspaceRule, ruleDependencies));
                 aggregatedDependencies.addAll(ruleDependencies);
             }
