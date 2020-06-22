@@ -47,7 +47,8 @@ public class Pipelines {
     public Pipelines(BazelCommandExecutor bazelCommandExecutor, BazelVariableSubstitutor bazelVariableSubstitutor,
         ExternalIdFactory externalIdFactory) {
         Pipeline mavenJarPipeline = (new PipelineBuilder())
-                                        .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "filter('@.*:jar', deps(${detect.bazel.target}))")))
+                                        .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
+                                            Arrays.asList("cquery", "${detect.bazel.cquery.options}", "filter('@.*:jar', deps(${detect.bazel.target}))")))
                                         .addIntermediateStep(new IntermediateStepSplitEach("\\s+"))
                                         .addIntermediateStep(new IntermediateStepReplaceInEach("^@", ""))
                                         .addIntermediateStep(new IntermediateStepReplaceInEach("//.*", ""))

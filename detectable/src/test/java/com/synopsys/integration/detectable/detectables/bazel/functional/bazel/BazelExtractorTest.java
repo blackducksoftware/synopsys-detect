@@ -93,7 +93,7 @@ public class BazelExtractorTest {
 
         // bazel query 'filter("@.*:jar", deps(//:ProjectRunner))'
         List<String> bazelArgsGetDependencies = new ArrayList<>();
-        bazelArgsGetDependencies.add("query");
+        bazelArgsGetDependencies.add("cquery");
         bazelArgsGetDependencies.add("filter('@.*:jar', deps(//:ProjectRunner))");
         ExecutableOutput bazelCmdExecutableOutputGetDependencies = Mockito.mock(ExecutableOutput.class);
         Mockito.when(bazelCmdExecutableOutputGetDependencies.getReturnCode()).thenReturn(0);

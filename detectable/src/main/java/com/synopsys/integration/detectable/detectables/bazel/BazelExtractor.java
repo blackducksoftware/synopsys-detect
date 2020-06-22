@@ -70,6 +70,7 @@ public class BazelExtractor {
             Set<WorkspaceRule> workspaceRules = workspaceRuleChooser.choose(rulesFromWorkspaceFile, providedBazelDependencyTypes);
             List<Dependency> aggregatedDependencies = new ArrayList<>();
             for (WorkspaceRule workspaceRule : workspaceRules) {
+                logger.info(String.format("Running processing pipeline for rule %s", workspaceRule));
                 Pipeline pipeline = pipelines.get(workspaceRule);
                 List<Dependency> ruleDependencies = pipeline.run();
                 aggregatedDependencies.addAll(ruleDependencies);
