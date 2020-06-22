@@ -102,6 +102,7 @@ import com.synopsys.integration.detect.workflow.airgap.NugetAirGapCreator;
 import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsConfigurationService;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticsDecider;
+import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticsDecision;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -171,7 +172,6 @@ public class DetectBoot {
             propertySources.add(0, interactivePropertySource);
         }
         PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
-        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState, detectConfiguration);
 
         logger.debug("Configuration processed completely.");
 
@@ -193,8 +193,11 @@ public class DetectBoot {
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver);
         DirectoryManager directoryManager = new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
 
-        DiagnosticSystem diagnosticSystem = createDiagnostics(detectConfiguration, detectRun, detectInfo, diagnosticsDecider, eventSystem, directoryManager)
-                                                .orElse(null);
+        DiagnosticsDecision diagnosticsDecision = new DiagnosticsDecider(detectArgumentState, detectConfiguration).decide();
+        DiagnosticSystem diagnosticSystem = null;
+        if (diagnosticsDecision.isConfiguredForDiagnostic) {
+            diagnosticSystem = new DiagnosticSystem(diagnosticsDecision.isDiagnosticExtended, detectConfiguration, detectRun, detectInfo, directoryManager, eventSystem);
+        }
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
@@ -394,9 +397,6 @@ public class DetectBoot {
     private Optional<DiagnosticSystem> createDiagnostics(PropertyConfiguration propertyConfiguration, DetectRun detectRun, DetectInfo detectInfo, DiagnosticsDecider diagnosticsDecider, EventSystem eventSystem,
         DirectoryManager directoryManager) {
         DiagnosticSystem diagnosticSystem = null;
-        if (diagnosticsDecider.isConfiguredForDiagnostic()) {
-            diagnosticSystem = new DiagnosticSystem(diagnosticsDecider.isDiagnosticExtended(), propertyConfiguration, detectRun, detectInfo, directoryManager, eventSystem);
-        }
 
         return Optional.ofNullable(diagnosticSystem);
     }

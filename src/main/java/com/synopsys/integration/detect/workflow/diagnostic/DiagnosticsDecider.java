@@ -35,15 +35,11 @@ public class DiagnosticsDecider {
         this.propertyConfiguration = propertyConfiguration;
     }
 
-    public boolean isDiagnostic() {
-        return detectArgumentState.isDiagnostic() || propertyConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DIAGNOSTIC());
-    }
+    public DiagnosticsDecision decide() {
+        boolean diagnostic = detectArgumentState.isDiagnostic() || propertyConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DIAGNOSTIC());
+        boolean diagnosticExtended = detectArgumentState.isDiagnosticExtended() || propertyConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DIAGNOSTIC_EXTENDED());
+        boolean configuredForDiagnostic = diagnostic || diagnosticExtended;
 
-    public boolean isDiagnosticExtended() {
-        return detectArgumentState.isDiagnosticExtended() || propertyConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DIAGNOSTIC_EXTENDED());
-    }
-
-    public boolean isConfiguredForDiagnostic() {
-        return isDiagnostic() || isDiagnosticExtended();
+        return new DiagnosticsDecision(diagnostic, diagnosticExtended, configuredForDiagnostic);
     }
 }
