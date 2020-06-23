@@ -893,6 +893,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../../properties/configuration/debug/" title="debug" class="md-nav__link">
+      debug
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../../properties/configuration/detector/" title="detector" class="md-nav__link">
       detector
     </a>
@@ -1324,37 +1336,51 @@
 <h2 id="troubleshooting-best-practices">Troubleshooting best practices<a class="headerlink" href="#troubleshooting-best-practices" title="Permanent link">#</a></h2>
 <ol>
 <li>Run Synopsys Detect with <code>--logging.level.com.synopsys.integration=DEBUG</code> (the default logging level, INFO, is insufficient for troubleshooting) and read through the entire log for clues.</li>
-<li>For more troubleshooting information: Run Synopsys Detect with <code>-d</code>. This will generate a diagnostic zip that contains many useful intermediate files and logs, including the generated BDIO (.jsonld) files and Black Duck Signature Scanner logs.</li>
-<li>For even more troubleshooting information: Run Synopsys Detect with <code>-de</code>. This will generate an extended diagnostic zip that will also include lock files and build artifacts when appropriate.</li>
+<li>For more troubleshooting information: Run Synopsys Detect with <code>--detect.diagnostic=true</code>. This will generate a diagnostic zip that contains many useful intermediate files and logs, including the generated BDIO (.jsonld) files and Black Duck Signature Scanner logs.</li>
+<li>For even more troubleshooting information: Run Synopsys Detect with <code>--detect.diagnostic.extended=true</code>. This will generate an extended diagnostic zip that will also include lock files and build artifacts when appropriate.</li>
 <li>See if you can reproduce the problem using the latest version of Synopsys Detect with the latest version of Black Duck. If not, the problem may be either fixed, or due to incompatible Synopsys Detect / Black Duck versions.</li>
 <li>Remember to consider the possibility that the Black Duck user lacks the necessary permissions (to create the project, update the BOM, receive notifications, etc.) in Black Duck. For more information, see <a href="../../BD-user-role-requirements/">Black Duck user role requirements</a>.</li>
 <li>Remember to consider the possibility that the Black Duck server (registration key) may not have required capabilities enabled (binary upload, snippet scanning, etc.).</li>
 <li>For issues related to tools invoked by Synopsys Detect (Black Duck Signature Scanner, Docker Inspector, etc.), please check that tool's documentation.</li>
 <li>For issues related to incorrect components in the Black Duck BOM: Synopsys Detect has a great deal of control over matches produced by detectors (that are written to BDIO/.jsonld files), but no control over matches produced by the Black Duck Signature Scanner. When investigating an incorrect component in a Black Duck BOM, you need to determine whether the component was contributed by a detector, or by the Black Duck Signature Scanner: On the Black Duck Components tab for the project/version: Click on the "N Matches" link next to the component. The next screen lists the matches on the right side. Matches from the Black Duck Signature Scanner have a filename in the Name column. Matches from detectors have an external ID (such as "org.hamcrest:hamcrest-core:1.3") in the Name column.</li>
-<li>For issues related to components missing from or or incorrectly categorized in the Black Duck BOM: Synopsys Detect has a great deal of control over the production of .jsonld files (use -d to save these), but no control over how they are converted into a BOM by Black Duck. A good first step is to determine whether the .jsonld files produced are correct. If they are incorrect, the problem is related to what Synopsys Detect is doing. If they are correct, but the BOM is incorrect, the problem is related to what Black Duck is doing. Similarly, Synopsys Detect is responsible for passing the correct arguments to the Black Duck Signature Scanner, but has little control over the results it produces.</li>
+<li>For issues related to components missing from or or incorrectly categorized in the Black Duck BOM: Synopsys Detect has a great deal of control over the production of .jsonld files (use <a href="../../../properties/configuration/debug/#diagnostic-mode">--detect.diagnostic</a> to save these), but no control over how they are converted into a BOM by Black Duck. A good first step is to determine whether the .jsonld files produced are correct. If they are incorrect, the problem is related to what Synopsys Detect is doing. If they are correct, but the BOM is incorrect, the problem is related to what Black Duck is doing. Similarly, Synopsys Detect is responsible for passing the correct arguments to the Black Duck Signature Scanner, but has little control over the results it produces.</li>
 <li>Synopsys Detect is a Spring Boot application, and leverages Spring Boot to provide various mechanism to configure it through property settings: https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html. This flexibility comes with a risk: it's possible for Synopsys Detect to be influenced by files (application.properties, application.xml) that may exist in the directory from which Synopsys Detect is run that are intended for some other application. This can produce some strange results. If properties have unexpected values (see the Synopsys Detect log), this is a possibility worth considering. The best solution may be simply to run Synopsys Detect from a different (ideally empty) directory (use the --detect.source.path argument).</li>
 <li>Similarly, Synopsys Detect can be influenced by environment variables via the same Spring Boot mechanism, so it's worth checking the environment for variables that correspond to Synopsys Detect property names.</li>
 </ol>
 <h2 id="diagnostic-mode">Diagnostic mode<a class="headerlink" href="#diagnostic-mode" title="Permanent link">#</a></h2>
 <p>Synopsys Detect's diagnostic mode automatically enabled debug logging (where possible), saves all output (logs and inspector files) to a zip file, and notifies you of the location of the zip.</p>
-<p>Diagnostic mode options are:</p>
-<p>-d: When enabled, diagnostic mode collects all files generated by Synopsys Detect and zips the files using a unique run ID. It includes logs, BDIO files, extraction files, and reports.
--de --diagnosticExtended: When diagnosticExtended is enabled, Synopsys Detect collects relevant files such as lock files and build artifacts.
-The zip file is created inside the Synopsys Detect output directory, and must be provided when support issues are opened.</p>
+<p>Diagnostic mode properties are:</p>
+<p><a href="../../../properties/configuration/debug/#diagnostic-mode">--detect.diagnostic</a>: When enabled, diagnostic mode collects all files generated by Synopsys Detect and zips the files using a unique run ID. It includes logs, BDIO files, extraction files, and reports.</p>
+<p><a href="../../../properties/configuration/debug/#diagnostic-mode-extended">--detect.diagnostic.extended</a>: When enabled, Synopsys Detect collects relevant files such as lock files and build artifacts.</p>
+<p>The zip file is created inside the Synopsys Detect output directory, and must be provided when support issues are opened.</p>
 <p>Synopsys does not recommend keeping this option on, as it does not clean up the zip file(s); regardless of the Synopsys Detect cleanup flag.</p>
 <p>Diagnostic mode:</p>
 <ul>
-<li>Sets the output log level to DEBUG.</li>
-<li>Zips the entire run directory of Synopsys Detect which includes:</li>
-<li>All BDIO files created by Synopsys Detect.</li>
-<li>Any intermediary files generated by Synopsys Detect, such as Gradle inspector output files.</li>
-<li>Includes any additional reports Synopsys Detect might make such as dependency counts.</li>
-<li>Additionally -de or -diagnosticExtended includes additional relevant files such as:</li>
+<li>
+<p>Sets the output log level to DEBUG.</p>
+</li>
+<li>
+<p>Zips the entire run directory of Synopsys Detect which includes:</p>
+</li>
+<li>
+<p>All BDIO files created by Synopsys Detect.</p>
+</li>
+<li>
+<p>Any intermediary files generated by Synopsys Detect, such as Gradle inspector output files.</p>
+</li>
+<li>
+<p>Includes any additional reports Synopsys Detect might make such as dependency counts.</p>
+</li>
+<li>
+<p>Additionally --detect.diagnostic or --detect.diagnostic.extended includes additional relevant files such as:</p>
+<ul>
 <li>Npm package locks.</li>
 <li>vendor.config.</li>
 <li>C/C++ compilation database.</li>
 </ul>
-<p>The option -de enables the collection of relevant files that are not generated by Synopsys Detect; for example, lock files. By default, diagnostic mode only includes files generated by Synopsys Detect where -de might include files it finds.  For example, a package.lock that is too deep for Synopsys Detect's search depth is not included, or a package.lock that was not parsed due to exclusion.</p>
+</li>
+</ul>
+<p>The property --detect.diagnostic.extended, when set to true, enables the collection of relevant files that are not generated by Synopsys Detect; for example, lock files. By default, diagnostic mode only includes files generated by Synopsys Detect where --detect.diagnostic.extended might include files it finds.  For example, a package.lock that is too deep for Synopsys Detect's search depth is not included, or a package.lock that was not parsed due to exclusion.</p>
 <p>After running a scan with diagnostic mode, results similar to the following display in your output.</p>
 <pre><code>2019-03-29 09:32:02 INFO  [main] --- Creating diagnostics zip.
 2019-03-29 09:32:02 INFO  [main] --- Diagnostics zip location: C:\detect\blackduck\runs\detect-run-2019-03-29-13-31-50-492.zip
