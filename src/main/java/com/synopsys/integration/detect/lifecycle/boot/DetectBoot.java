@@ -101,6 +101,8 @@ import com.synopsys.integration.detect.workflow.airgap.GradleAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.NugetAirGapCreator;
 import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsConfigurationService;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
+import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticsDecider;
+import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticsDecision;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -190,7 +192,12 @@ public class DetectBoot {
         }
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver);
         DirectoryManager directoryManager = new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
-        Optional<DiagnosticSystem> diagnosticSystem = createDiagnostics(detectConfiguration, detectRun, detectInfo, detectArgumentState, eventSystem, directoryManager);
+
+        DiagnosticsDecision diagnosticsDecision = new DiagnosticsDecider(detectArgumentState, detectConfiguration).decide();
+        DiagnosticSystem diagnosticSystem = null;
+        if (diagnosticsDecision.isConfiguredForDiagnostic) {
+            diagnosticSystem = new DiagnosticSystem(diagnosticsDecision.isDiagnosticExtended, detectConfiguration, detectRun, detectInfo, directoryManager, eventSystem);
+        }
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
@@ -387,15 +394,11 @@ public class DetectBoot {
         return detectArgumentState;
     }
 
-    private Optional<DiagnosticSystem> createDiagnostics(
-        PropertyConfiguration propertyConfiguration, DetectRun detectRun, DetectInfo detectInfo, DetectArgumentState detectArgumentState, EventSystem eventSystem, DirectoryManager directoryManager) {
-        if (detectArgumentState.isDiagnostic() || detectArgumentState.isDiagnosticExtended()) {
-            boolean extendedMode = detectArgumentState.isDiagnosticExtended();
-            DiagnosticSystem diagnosticSystem = new DiagnosticSystem(extendedMode, propertyConfiguration, detectRun, detectInfo, directoryManager, eventSystem);
-            return Optional.of(diagnosticSystem);
-        } else {
-            return Optional.empty();
-        }
+    private Optional<DiagnosticSystem> createDiagnostics(PropertyConfiguration propertyConfiguration, DetectRun detectRun, DetectInfo detectInfo, DiagnosticsDecider diagnosticsDecider, EventSystem eventSystem,
+        DirectoryManager directoryManager) {
+        DiagnosticSystem diagnosticSystem = null;
+
+        return Optional.ofNullable(diagnosticSystem);
     }
 
     private File createAirGapZip(DetectFilter inspectorFilter, PropertyConfiguration detectConfiguration, PathResolver pathResolver, DirectoryManager directoryManager, Gson gson,

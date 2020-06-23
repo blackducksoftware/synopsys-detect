@@ -52,9 +52,8 @@ import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions
 import com.synopsys.integration.rest.proxy.ProxyInfo
 import org.apache.commons.lang3.StringUtils
 import org.slf4j.LoggerFactory
-import java.util.*
 
-class DetectableOptionFactory(private val detectConfiguration: PropertyConfiguration, private val diagnosticSystemOptional: Optional<DiagnosticSystem>, private val pathResolver: PathResolver, private val proxyInfo: ProxyInfo) {
+class DetectableOptionFactory(private val detectConfiguration: PropertyConfiguration, private val diagnosticSystem: DiagnosticSystem?, private val pathResolver: PathResolver, private val proxyInfo: ProxyInfo) {
     private val logger = LoggerFactory.getLogger(this.javaClass)
 
     fun createBazelDetectableOptions(): BazelDetectableOptions {
@@ -101,7 +100,7 @@ class DetectableOptionFactory(private val detectConfiguration: PropertyConfigura
         val dockerInspectorLoggingLevel = detectConfiguration.getValue(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION)
         val dockerInspectorVersion = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_INSPECTOR_VERSION).orElse(null)
         val additionalDockerProperties = detectConfiguration.getRaw(DetectProperties.DOCKER_PASSTHROUGH).toMutableMap()
-        diagnosticSystemOptional.ifPresent { diagnosticSystem -> additionalDockerProperties.putAll(diagnosticSystem.additionalDockerProperties) }
+        diagnosticSystem?.let { diagnosticSystem -> additionalDockerProperties.putAll(diagnosticSystem.additionalDockerProperties) }
         val dockerInspectorPath = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_INSPECTOR_PATH).map { path -> path.resolvePath(pathResolver) }.orElse(null)
         val dockerPlatformTopLayerId = detectConfiguration.getValue(DetectProperties.DETECT_DOCKER_PLATFORM_TOP_LAYER_ID).orElse(null)
         return DockerDetectableOptions(dockerPathRequired, suppliedDockerImage, dockerImageId, suppliedDockerTar, dockerInspectorLoggingLevel, dockerInspectorVersion, additionalDockerProperties, dockerInspectorPath, dockerPlatformTopLayerId)
