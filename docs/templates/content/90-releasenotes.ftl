@@ -2,9 +2,14 @@
 
 ## Version 6.5.0
 ### New features
-Added [properties](../properties/configuration/debug/#diagnostic-mode) for enabling diagnostic mode.
+* Added [properties](../properties/configuration/debug/#diagnostic-mode) for enabling diagnostic mode.
 
 ### Changed features
+* Enabling diagnostic mode is now controlled through two new properties.
+    * [--detect.diagnostic](../properties/configuration/debug/#diagnostic-mode)
+    * [--detect.diagnostic.extended](../properties/configuration/debug/#diagnostic-mode-extended)
+* The `-d` and `--diagnostic` options are now deprecated.
+* The `-de` and `--diagnosticExtended` options are now deprecated.
 
 ### Resolved issues
 
