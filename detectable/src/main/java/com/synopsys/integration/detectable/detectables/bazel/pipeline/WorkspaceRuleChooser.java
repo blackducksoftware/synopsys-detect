@@ -27,14 +27,19 @@ import java.util.List;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils;
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class WorkspaceRuleChooser {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @NotNull
-    public Set<WorkspaceRule> choose(Set<WorkspaceRule> rulesFromWorkspaceFile, List<WorkspaceRule> userProvidedRules) throws IntegrationException {
+    public Set<WorkspaceRule> choose(Set<WorkspaceRule> rulesFromWorkspaceFile, List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) throws IntegrationException {
         Set<WorkspaceRule> cleanedUserProvidedRules = clean(userProvidedRules);
         if (!cleanedUserProvidedRules.isEmpty()) {
             return cleanedUserProvidedRules;
@@ -45,19 +50,46 @@ public class WorkspaceRuleChooser {
         }
     }
 
-    // Though it's a nuisance, we continue to support UNSPECIFIED to avoid making a breaking change
-    private Set<WorkspaceRule> clean(List<WorkspaceRule> userProvidedRules) {
+    // We continue to support UNSPECIFIED to avoid making a breaking change
+    private Set<WorkspaceRule> clean(List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
+        logger.info(String.format("*** Cleaning given bazel rule types: %s", userProvidedRules));
         Set<WorkspaceRule> cleanedRulesList = new HashSet<>();
+        /////////////////////
+        if (userProvidedRules != null && userProvidedRules.isEmpty()) {
+            logger.info("\tisEmpty");
+            logger.info("\tlist size: %d", userProvidedRules.size());
+        }
+        if (userProvidedRules != null && !userProvidedRules.isEmpty() && userProvidedRules.get(0).getValue().isPresent()) {
+            logger.info("\tisPresent");
+            logger.info("\tvalue: %d", userProvidedRules.get(0).getValue().get());
+        }
+        if (userProvidedRules != null && !userProvidedRules.isEmpty() && !userProvidedRules.get(0).getValue().isPresent()) {
+            logger.info("\tnotPresent");
+        }
+        ////////////////////
         if (userProvidedRules == null || userProvidedRules.isEmpty() ||
-                (userProvidedRules.size() == 1 && userProvidedRules.get(0) == WorkspaceRule.UNSPECIFIED)) {
-            return cleanedRulesList;
+                FilterableEnumUtils.containsNone(userProvidedRules) ||
+                (userProvidedRules.size() == 1 && ((!FilterableEnumUtils.containsAll(userProvidedRules)) && !userProvidedRules.get(0).getValue().isPresent())) ||
+                (userProvidedRules.size() == 1 && userProvidedRules.get(0).getValue().isPresent() &&
+                     userProvidedRules.get(0).getValue().get() == WorkspaceRule.UNSPECIFIED)) {
+            logger.info("*** User did not specify any bazel rule types");
+            // Leave cleanedRulesList empty
+        } else if (FilterableEnumUtils.containsAll(userProvidedRules)) {
+            for (WorkspaceRule rule : WorkspaceRule.values()) {
+                if (rule != rule.UNSPECIFIED) {
+                    logger.info(String.format("\tAdding %s", rule));
+                    cleanedRulesList.add(rule);
+                }
+            }
         } else {
-            for (WorkspaceRule givenRule : userProvidedRules) {
-                if (givenRule != WorkspaceRule.UNSPECIFIED) {
-                    cleanedRulesList.add(givenRule);
+            for (FilterableEnumValue<WorkspaceRule> givenRule : userProvidedRules) {
+                if (givenRule.getValue().isPresent() && givenRule.getValue().get() != WorkspaceRule.UNSPECIFIED) {
+                    logger.info(String.format("\tAdding %s", givenRule.getValue().get()));
+                    cleanedRulesList.add(givenRule.getValue().get());
                 }
             }
         }
+        logger.info(String.format("****** Cleaned %s to %s", userProvidedRules, cleanedRulesList));
         return cleanedRulesList;
     }
 }

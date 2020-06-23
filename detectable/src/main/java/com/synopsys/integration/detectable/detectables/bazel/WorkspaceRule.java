@@ -22,21 +22,29 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel;
 
-import com.synopsys.integration.exception.IntegrationException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public enum WorkspaceRule {
     MAVEN_JAR("maven_jar"),
     MAVEN_INSTALL("maven_install"),
     HASKELL_CABAL_LIBRARY("haskell_cabal_library"),
-    UNSPECIFIED(null); //changed to UNSPECIFIED so property is simpler, if this causes confusion willing to discuss - jp
+    UNSPECIFIED(null); // leaving here to avoid a breaking change
 
-    private String name;
+    private final String name;
 
-    WorkspaceRule(final String name) {
+    WorkspaceRule(String name) {
         this.name = name;
     }
 
     public String getName() {
         return name;
+    }
+
+    protected static final List<String> POSSIBLE_NAMES = Arrays.stream(WorkspaceRule.values()).map(WorkspaceRule::name).collect(Collectors.toList());
+
+    public static List<String> getPossibleNames() {
+        return POSSIBLE_NAMES;
     }
 }

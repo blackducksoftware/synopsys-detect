@@ -169,7 +169,7 @@ class DetectProperties {
             setHelp("A comma-separated list of additional options to pass to the bazel cquery command.")
             setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
         }
-        val DETECT_BAZEL_DEPENDENCY_RULE = EnumListProperty("detect.bazel.dependency.type", emptyList(), WorkspaceRule::class.java).apply {
+        val DETECT_BAZEL_DEPENDENCY_RULE = FilterableEnumListProperty("detect.bazel.dependency.type", emptyList(), WorkspaceRule::class.java).apply {
             setInfo("Bazel workspace external dependency rule", "6.0.0")
             setHelp("The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
             setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
