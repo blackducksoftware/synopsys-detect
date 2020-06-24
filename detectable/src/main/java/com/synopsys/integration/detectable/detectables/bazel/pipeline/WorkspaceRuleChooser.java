@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,40 +48,22 @@ public class WorkspaceRuleChooser {
         }
     }
 
-    // We continue to support UNSPECIFIED to avoid making a breaking change
     private Set<WorkspaceRule> clean(List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
         Set<WorkspaceRule> cleanedRulesList = new HashSet<>();
         if (noneSpecified(userProvidedRules)) {
             // Leave cleanedRulesList empty
         } else if (allSpecified(userProvidedRules)) {
-            addAllRuleTypes(cleanedRulesList);
+            cleanedRulesList.addAll(Arrays.asList(WorkspaceRule.values()));
         } else {
-            addUserProvidedOmittingUnspecified(cleanedRulesList, userProvidedRules);
+            cleanedRulesList.addAll(FilterableEnumUtils.toPresentValues(userProvidedRules));
         }
         return cleanedRulesList;
     }
 
-    private void addUserProvidedOmittingUnspecified(Set<WorkspaceRule> cleanedRulesList, List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
-        for (FilterableEnumValue<WorkspaceRule> givenRule : userProvidedRules) {
-            // TODO use utils getPresent()
-            if (givenRule.getValue().isPresent()) {
-                cleanedRulesList.add(givenRule.getValue().get());
-            }
-        }
-    }
-
-    private void addAllRuleTypes(Set<WorkspaceRule> cleanedRulesList) {
-        // TODO can't utils do this??
-        for (WorkspaceRule rule : WorkspaceRule.values()) {
-            cleanedRulesList.add(rule);
-        }
-    }
-
     private boolean noneSpecified(List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
         if (userProvidedRules == null ||
-                userProvidedRules.isEmpty() ||
                 FilterableEnumUtils.containsNone(userProvidedRules) ||
-                (userProvidedRules.size() == 1 && ((!FilterableEnumUtils.containsAll(userProvidedRules)) && !userProvidedRules.get(0).getValue().isPresent()))) {
+                FilterableEnumUtils.toPresentValues(userProvidedRules).isEmpty()) {
             return true;
         }
         return false;
@@ -92,6 +75,4 @@ public class WorkspaceRuleChooser {
         }
         return false;
     }
-
-    // TODO take advantage of FilterableEnumUtils.toPresentValues() and populatedValues() (and others?)
 }
