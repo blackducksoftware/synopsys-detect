@@ -63,7 +63,7 @@ public class WorkspaceRuleChooser {
     private boolean noneSpecified(List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
         if (userProvidedRules == null ||
                 FilterableEnumUtils.containsNone(userProvidedRules) ||
-                FilterableEnumUtils.toPresentValues(userProvidedRules).isEmpty()) {
+                (FilterableEnumUtils.toPresentValues(userProvidedRules).isEmpty() && !FilterableEnumUtils.containsAll(userProvidedRules))) {
             return true;
         }
         return false;
