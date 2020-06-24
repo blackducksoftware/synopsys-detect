@@ -94,4 +94,6 @@ public class WorkspaceRuleChooser {
         }
         return false;
     }
+
+    // TODO take advantage of FilterableEnumUtils.toPresentValues() and populatedValues() (and others?)
 }

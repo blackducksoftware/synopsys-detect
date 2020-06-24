@@ -40,59 +40,67 @@ import com.synopsys.integration.exception.IntegrationException;
 public class WorkspaceRuleChooserTest {
 
     private static final Set<WorkspaceRule> PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL = Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL);
-    private static final Set<WorkspaceRule> PARSED_WORKSPACE_RULES_ALL = Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL,
+    private static final Set<WorkspaceRule> PARSED_WORKSPACE_RULES_THREE = Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL,
         WorkspaceRule.HASKELL_CABAL_LIBRARY, WorkspaceRule.MAVEN_JAR);
 
     @Test
-    public void testDerivedBazelDependencyRule() throws IntegrationException {
+    public void testOneRuleParsed() throws IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(null, PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(1, chosenWorkspaceRules.size());
         assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
-    public void testDerivedBazelDependencyRulesAll() throws IntegrationException {
-        Set<WorkspaceRule> chosenWorkspaceRules = run(null, PARSED_WORKSPACE_RULES_ALL);
+    public void testThreeRulesParsed() throws IntegrationException {
+        Set<WorkspaceRule> chosenWorkspaceRules = run(null, PARSED_WORKSPACE_RULES_THREE);
         assertEquals(3, chosenWorkspaceRules.size());
     }
 
     @Test
-    public void testProvidedBazelDependencyRule() throws IOException, IntegrationException {
+    public void testOneProvidedSameOneParsed() throws IOException, IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_INSTALL)), PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(1, chosenWorkspaceRules.size());
         assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
-    public void testOverriddenBazelDependencyRule() throws IOException, IntegrationException {
+    public void testOneRuleProvidedDifferentOneParsed() throws IOException, IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_JAR)), PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(1, chosenWorkspaceRules.size());
         assertEquals("maven_jar", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
-    public void testMultipleRules() throws IOException, IntegrationException {
+    public void testThreeProvidedOneParsed() throws IOException, IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_JAR), FilterableEnumValue.value(WorkspaceRule.MAVEN_INSTALL), FilterableEnumValue.value(WorkspaceRule.HASKELL_CABAL_LIBRARY)),
             PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(3, chosenWorkspaceRules.size());
     }
 
     @Test
-    public void testAllRules() throws IOException, IntegrationException {
+    public void testAllValueProvidedOneParsed() throws IOException, IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_JAR), FilterableEnumValue.allValue(), FilterableEnumValue.value(WorkspaceRule.HASKELL_CABAL_LIBRARY)),
             PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(3, chosenWorkspaceRules.size());
     }
 
     @Test
-    public void testOverriddenWithUnspecified() throws IOException, IntegrationException {
+    public void testNoneValueProvidedOneParsed() throws IOException, IntegrationException {
+        Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.noneValue()),
+            PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL);
+        assertEquals(1, chosenWorkspaceRules.size());
+        assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
+    }
+
+    @Test
+    public void testProvidedOnlyUnspecified() throws IOException, IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.value(WorkspaceRule.UNSPECIFIED)), PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(1, chosenWorkspaceRules.size());
         assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
-    public void testOverriddenWithUnspecifiedAndSpecified() throws IOException, IntegrationException {
+    public void testProvidedIncludesUnspecified() throws IOException, IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_JAR), FilterableEnumValue.value(WorkspaceRule.UNSPECIFIED), FilterableEnumValue.value(WorkspaceRule.MAVEN_INSTALL),
             FilterableEnumValue.value(WorkspaceRule.HASKELL_CABAL_LIBRARY)), PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(3, chosenWorkspaceRules.size());
