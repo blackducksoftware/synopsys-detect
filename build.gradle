@@ -18,6 +18,10 @@ buildscript {
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
+    repositories {
+        mavenLocal()
+    }
+
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
 
@@ -59,6 +63,7 @@ allprojects {
         implementation 'com.paypal.digraph:digraph-parser:1.0'
         implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0'
         implementation 'com.fasterxml.jackson.core:jackson-core:2.10.0'
+        implementation 'com.synopsys:method-analyzer-core:0.1.0-SNAPSHOT'
 
         testImplementation 'org.mockito:mockito-core:2.+'
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
