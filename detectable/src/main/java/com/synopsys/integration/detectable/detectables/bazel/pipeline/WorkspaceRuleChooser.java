@@ -62,17 +62,17 @@ public class WorkspaceRuleChooser {
 
     private void addUserProvidedOmittingUnspecified(Set<WorkspaceRule> cleanedRulesList, List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
         for (FilterableEnumValue<WorkspaceRule> givenRule : userProvidedRules) {
-            if (givenRule.getValue().isPresent() && givenRule.getValue().get() != WorkspaceRule.UNSPECIFIED) {
+            // TODO use utils getPresent()
+            if (givenRule.getValue().isPresent()) {
                 cleanedRulesList.add(givenRule.getValue().get());
             }
         }
     }
 
     private void addAllRuleTypes(Set<WorkspaceRule> cleanedRulesList) {
+        // TODO can't utils do this??
         for (WorkspaceRule rule : WorkspaceRule.values()) {
-            if (rule != rule.UNSPECIFIED) {
-                cleanedRulesList.add(rule);
-            }
+            cleanedRulesList.add(rule);
         }
     }
 
@@ -80,9 +80,7 @@ public class WorkspaceRuleChooser {
         if (userProvidedRules == null ||
                 userProvidedRules.isEmpty() ||
                 FilterableEnumUtils.containsNone(userProvidedRules) ||
-                (userProvidedRules.size() == 1 && ((!FilterableEnumUtils.containsAll(userProvidedRules)) && !userProvidedRules.get(0).getValue().isPresent())) ||
-                (userProvidedRules.size() == 1 && userProvidedRules.get(0).getValue().isPresent() &&
-                     userProvidedRules.get(0).getValue().get() == WorkspaceRule.UNSPECIFIED)) {
+                (userProvidedRules.size() == 1 && ((!FilterableEnumUtils.containsAll(userProvidedRules)) && !userProvidedRules.get(0).getValue().isPresent()))) {
             return true;
         }
         return false;

@@ -29,8 +29,7 @@ import java.util.stream.Collectors;
 public enum WorkspaceRule {
     MAVEN_JAR("maven_jar"),
     MAVEN_INSTALL("maven_install"),
-    HASKELL_CABAL_LIBRARY("haskell_cabal_library"),
-    UNSPECIFIED(null); // leaving here to avoid a breaking change
+    HASKELL_CABAL_LIBRARY("haskell_cabal_library");
 
     private final String name;
 
