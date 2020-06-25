@@ -403,8 +403,8 @@ public class RunManager {
         if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS)) {
             logger.info("Will include the Vulnerability Impact Analysis tool.");
             if (null != blackDuckServicesFactory) {
-                BlackDuckImpactAnalysisTool blackDuckImpactAnalysisTool = new BlackDuckImpactAnalysisTool(directoryManager);
-                blackDuckImpactAnalysisTool.run(projectNameVersion.getName());
+                BlackDuckImpactAnalysisTool blackDuckImpactAnalysisTool = new BlackDuckImpactAnalysisTool(directoryManager, codeLocationNameManager);
+                blackDuckImpactAnalysisTool.run(projectNameVersion);
             }
             logger.info("Vulnerability Impact Analysis tool actions finished.");
         } else {

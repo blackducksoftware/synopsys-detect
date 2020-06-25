@@ -23,8 +23,8 @@
 package com.synopsys.integration.detect.workflow.codelocation;
 
 public enum CodeLocationNameType {
-    SCAN,
     BOM,
-    DOCKER;
-
+    DOCKER,
+    IMPACT_ANALYSIS,
+    SCAN
 }
