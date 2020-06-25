@@ -79,10 +79,10 @@ public class LernaPackager {
             logger.debug(String.format("Now extracting Lerna package %s.", lernaPackageDetails));
             File lernaLocation = new File(lernaPackage.getLocation());
             File lernaDirectory;
-            if (lernaLocation.isAbsolute()) {
+            if (lernaLocation.isAbsolute() && lernaLocation.exists()) {
                 lernaDirectory = lernaLocation;
             } else {
-                lernaDirectory = new File(sourceDirectory.getAbsolutePath(), lernaPackage.getLocation());
+                lernaDirectory = new File(sourceDirectory.getParentFile(), lernaPackage.getLocation());
             }
 
             LernaResult lernaResult = extractLernaPackage(sourceDirectory, lernaDirectory);
