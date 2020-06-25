@@ -76,13 +76,13 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
             "    \"name\": \"@lerna/packageA\",",
             "    \"version\": \"1.2.3\",",
             "    \"private\": false,",
-            "    \"location\": \"/source/packages/packageA\"",
+            "    \"location\": \"" + getSourceDirectory() + "/packages/packageA\"",
             "  },",
             "  {",
             "    \"name\": \"@lerna/packageB\",",
             "    \"version\": \"3.2.1\",",
             "    \"private\": true,",
-            "    \"location\": \"/source/packages/packageB\"",
+            "    \"location\": \"" + getSourceDirectory() + "/source/packages/packageB\"",
             "  }",
             "]"
         );
