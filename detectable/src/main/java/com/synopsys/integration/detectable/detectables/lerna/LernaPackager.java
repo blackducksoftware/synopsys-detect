@@ -77,14 +77,19 @@ public class LernaPackager {
             }
 
             logger.debug(String.format("Now extracting Lerna package %s.", lernaPackageDetails));
-            File lernaPackageDirectory = new File(sourceDirectory.getParent(), lernaPackage.getLocation());
+            File lernaLocation = new File(lernaPackage.getLocation());
+            File lernaDirectory;
+            if (lernaLocation.isAbsolute()) {
+                lernaDirectory = lernaLocation;
+            } else {
+                lernaDirectory = new File(sourceDirectory.getAbsolutePath(), lernaPackage.getLocation());
+            }
 
-            LernaResult lernaResult = extractLernaPackage(sourceDirectory, lernaPackageDirectory);
+            LernaResult lernaResult = extractLernaPackage(sourceDirectory, lernaDirectory);
             if (lernaResult.isSuccess()) {
                 logger.debug(String.format("Extraction completed successfully on %s.", lernaPackageDetails));
-
                 lernaResult.getCodeLocations().stream()
-                    .map(codeLocation -> new CodeLocation(codeLocation.getDependencyGraph(), codeLocation.getExternalId().orElse(null), lernaPackageDirectory))
+                    .map(codeLocation -> new CodeLocation(codeLocation.getDependencyGraph(), codeLocation.getExternalId().orElse(null), lernaDirectory))
                     .forEach(codeLocations::add);
             } else {
                 String extractionErrorMessage = lernaResult.getException().map(Throwable::getMessage).orElse("Error message not found.");
