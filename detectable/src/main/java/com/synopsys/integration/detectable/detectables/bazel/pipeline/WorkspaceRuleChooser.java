@@ -37,8 +37,8 @@ import com.synopsys.integration.exception.IntegrationException;
 public class WorkspaceRuleChooser {
 
     @NotNull
-    public Set<WorkspaceRule> choose(Set<WorkspaceRule> rulesFromWorkspaceFile, List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) throws IntegrationException {
-        Set<WorkspaceRule> cleanedUserProvidedRules = clean(userProvidedRules);
+    public Set<WorkspaceRule> choose(Set<WorkspaceRule> rulesFromWorkspaceFile, List<FilterableEnumValue<WorkspaceRule>> rulesPropertyValues) throws IntegrationException {
+        Set<WorkspaceRule> cleanedUserProvidedRules = translateToRules(rulesPropertyValues);
         if (!cleanedUserProvidedRules.isEmpty()) {
             return cleanedUserProvidedRules;
         } else if (!rulesFromWorkspaceFile.isEmpty()) {
@@ -48,22 +48,22 @@ public class WorkspaceRuleChooser {
         }
     }
 
-    private Set<WorkspaceRule> clean(List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
+    private Set<WorkspaceRule> translateToRules(List<FilterableEnumValue<WorkspaceRule>> rulesPropertyValues) {
         Set<WorkspaceRule> cleanedRulesList = new HashSet<>();
-        if (noneSpecified(userProvidedRules)) {
+        if (noneSpecified(rulesPropertyValues)) {
             // Leave cleanedRulesList empty
-        } else if (allSpecified(userProvidedRules)) {
+        } else if (allSpecified(rulesPropertyValues)) {
             cleanedRulesList.addAll(Arrays.asList(WorkspaceRule.values()));
         } else {
-            cleanedRulesList.addAll(FilterableEnumUtils.toPresentValues(userProvidedRules));
+            cleanedRulesList.addAll(FilterableEnumUtils.toPresentValues(rulesPropertyValues));
         }
         return cleanedRulesList;
     }
 
-    private boolean noneSpecified(List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
-        if (userProvidedRules == null ||
-                FilterableEnumUtils.containsNone(userProvidedRules) ||
-                (FilterableEnumUtils.toPresentValues(userProvidedRules).isEmpty() && !FilterableEnumUtils.containsAll(userProvidedRules))) {
+    private boolean noneSpecified(List<FilterableEnumValue<WorkspaceRule>> rulesPropertyValues) {
+        if (rulesPropertyValues == null ||
+                FilterableEnumUtils.containsNone(rulesPropertyValues) ||
+                (FilterableEnumUtils.toPresentValues(rulesPropertyValues).isEmpty() && !FilterableEnumUtils.containsAll(rulesPropertyValues))) {
             return true;
         }
         return false;
