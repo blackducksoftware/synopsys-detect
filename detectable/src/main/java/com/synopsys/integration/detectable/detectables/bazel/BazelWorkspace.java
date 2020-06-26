@@ -25,7 +25,9 @@ package com.synopsys.integration.detectable.detectables.bazel;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
@@ -36,35 +38,35 @@ public class BazelWorkspace {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final File workspaceFile;
 
-    public BazelWorkspace(final File workspaceFile) {
+    public BazelWorkspace(File workspaceFile) {
         this.workspaceFile = workspaceFile;
     }
 
-    public WorkspaceRule getDependencyRule() {
-        final List<String> workspaceFileLines;
+    public Set<WorkspaceRule> getDependencyRuleTypes() {
+        List<String> workspaceFileLines;
         try {
             // Assumes ascii or UTF-8, like other detectors
             workspaceFileLines = FileUtils.readLines(workspaceFile, StandardCharsets.UTF_8);
         } catch (IOException e) {
             logger.debug(String.format("Unable to parse dependency rule from %s: %s", workspaceFile.getAbsolutePath(), e.getMessage()));
-            return WorkspaceRule.UNSPECIFIED;
+            return new HashSet<>(0);
         }
-        final WorkspaceRule dependencyRule = parseDependencyRuleFromWorkspaceFileLines(workspaceFileLines);
-        return dependencyRule;
+        Set<WorkspaceRule> dependencyRules = parseDependencyRulesFromWorkspaceFileLines(workspaceFileLines);
+        return dependencyRules;
     }
 
     @Nullable
-    public WorkspaceRule parseDependencyRuleFromWorkspaceFileLines(final List<String> workspaceFileLines) {
-        for (final String workspaceFileLine : workspaceFileLines) {
-            for (final WorkspaceRule workspaceRuleCandidate : WorkspaceRule.values()) {
+    public Set<WorkspaceRule> parseDependencyRulesFromWorkspaceFileLines(List<String> workspaceFileLines) {
+        Set<WorkspaceRule> rulesDiscovered = new HashSet<>();
+        for (String workspaceFileLine : workspaceFileLines) {
+            for (WorkspaceRule workspaceRuleCandidate : WorkspaceRule.values()) {
                 if (workspaceFileLine.matches(String.format("^\\s*%s\\s*\\(", workspaceRuleCandidate.getName()))) {
-                    final WorkspaceRule parsedDependencyRule = workspaceRuleCandidate;
+                    WorkspaceRule parsedDependencyRule = workspaceRuleCandidate;
                     logger.debug(String.format("Found workspace dependency rule: %s", parsedDependencyRule.getName()));
-                    return parsedDependencyRule;
+                    rulesDiscovered.add(parsedDependencyRule);
                 }
             }
         }
-        logger.debug("Unable to derive dependency rule from WORKSPACE file");
-        return WorkspaceRule.UNSPECIFIED;
+        return rulesDiscovered;
     }
 }

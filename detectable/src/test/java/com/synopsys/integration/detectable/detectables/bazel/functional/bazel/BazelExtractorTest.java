@@ -24,18 +24,24 @@ package com.synopsys.integration.detectable.detectables.bazel.functional.bazel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.google.common.collect.Sets;
+import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
+import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
@@ -46,22 +52,19 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelExtractor;
 import com.synopsys.integration.detectable.detectables.bazel.BazelProjectNameGenerator;
 import com.synopsys.integration.detectable.detectables.bazel.BazelWorkspace;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
-import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
+import com.synopsys.integration.detectable.util.graph.GraphAssert;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BazelExtractorTest {
 
     @Test
     public void testMavenJar() throws ExecutableRunnerException, IntegrationException {
-        final BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
-        final BazelVariableSubstitutor bazelVariableSubstitutor = Mockito.mock(BazelVariableSubstitutor.class);
-        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final Pipelines pipelines = new Pipelines(bazelCommandExecutor,  bazelVariableSubstitutor, externalIdFactory);
+        BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
+        BazelVariableSubstitutor bazelVariableSubstitutor = Mockito.mock(BazelVariableSubstitutor.class);
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
         final String commonsIoXml = "<?xml version=\"1.1\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
                                         + "<query version=\"2\">\n"
@@ -79,55 +82,55 @@ public class BazelExtractorTest {
                                     + "    </rule>\n"
                                     + "</query>";
 
-        final File workspaceDir = new File(".");
-        final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        final BazelWorkspace bazelWorkspace = Mockito.mock(BazelWorkspace.class);
-        Mockito.when(bazelWorkspace.getDependencyRule()).thenReturn(WorkspaceRule.MAVEN_JAR);
-        final WorkspaceRuleChooser workspaceRuleChooser = Mockito.mock(WorkspaceRuleChooser.class);
-        Mockito.when(workspaceRuleChooser.choose(Mockito.eq(WorkspaceRule.MAVEN_JAR), Mockito.isNull())).thenReturn(WorkspaceRule.MAVEN_JAR);
-        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
-        final File bazelExe = new File("/usr/bin/bazel");
+        File workspaceDir = new File(".");
+        ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        BazelWorkspace bazelWorkspace = Mockito.mock(BazelWorkspace.class);
+        Mockito.when(bazelWorkspace.getDependencyRuleTypes()).thenReturn(Sets.newHashSet(WorkspaceRule.MAVEN_JAR));
+        WorkspaceRuleChooser workspaceRuleChooser = Mockito.mock(WorkspaceRuleChooser.class);
+        Mockito.when(workspaceRuleChooser.choose(Mockito.eq(Sets.newHashSet(WorkspaceRule.MAVEN_JAR)), Mockito.isNull())).thenReturn(Sets.newHashSet(WorkspaceRule.MAVEN_JAR));
+        BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
+        File bazelExe = new File("/usr/bin/bazel");
 
         // bazel query 'filter("@.*:jar", deps(//:ProjectRunner))'
-        final List<String> bazelArgsGetDependencies = new ArrayList<>();
-        bazelArgsGetDependencies.add("query");
+        List<String> bazelArgsGetDependencies = new ArrayList<>();
+        bazelArgsGetDependencies.add("cquery");
         bazelArgsGetDependencies.add("filter('@.*:jar', deps(//:ProjectRunner))");
-        final ExecutableOutput bazelCmdExecutableOutputGetDependencies = Mockito.mock(ExecutableOutput.class);
+        ExecutableOutput bazelCmdExecutableOutputGetDependencies = Mockito.mock(ExecutableOutput.class);
         Mockito.when(bazelCmdExecutableOutputGetDependencies.getReturnCode()).thenReturn(0);
         Mockito.when(bazelCmdExecutableOutputGetDependencies.getStandardOutput()).thenReturn("@org_apache_commons_commons_io//jar:jar\n@com_google_guava_guava//jar:jar");
         Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgsGetDependencies)).thenReturn(bazelCmdExecutableOutputGetDependencies);
 
         // bazel query 'kind(maven_jar, //external:org_apache_commons_commons_io)' --output xml
-        final List<String> bazelArgsGetDependencyDetailsCommonsIo = new ArrayList<>();
+        List<String> bazelArgsGetDependencyDetailsCommonsIo = new ArrayList<>();
         bazelArgsGetDependencyDetailsCommonsIo.add("query");
         bazelArgsGetDependencyDetailsCommonsIo.add("kind(maven_jar, //external:org_apache_commons_commons_io)");
         bazelArgsGetDependencyDetailsCommonsIo.add("--output");
         bazelArgsGetDependencyDetailsCommonsIo.add("xml");
-        final ExecutableOutput bazelCmdExecutableOutputGetDependencyDetailsCommonsIo = Mockito.mock(ExecutableOutput.class);
+        ExecutableOutput bazelCmdExecutableOutputGetDependencyDetailsCommonsIo = Mockito.mock(ExecutableOutput.class);
         Mockito.when(bazelCmdExecutableOutputGetDependencyDetailsCommonsIo.getReturnCode()).thenReturn(0);
         Mockito.when(bazelCmdExecutableOutputGetDependencyDetailsCommonsIo.getStandardOutput()).thenReturn(commonsIoXml);
         Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgsGetDependencyDetailsCommonsIo)).thenReturn(bazelCmdExecutableOutputGetDependencyDetailsCommonsIo);
 
         // bazel query 'kind(maven_jar, //external:com_google_guava_guava)' --output xml
-        final List<String> bazelArgsGetDependencyDetailsGuava = new ArrayList<>();
+        List<String> bazelArgsGetDependencyDetailsGuava = new ArrayList<>();
         bazelArgsGetDependencyDetailsGuava.add("query");
         bazelArgsGetDependencyDetailsGuava.add("kind(maven_jar, //external:com_google_guava_guava)");
         bazelArgsGetDependencyDetailsGuava.add("--output");
         bazelArgsGetDependencyDetailsGuava.add("xml");
-        final ExecutableOutput bazelCmdExecutableOutputGetDependencyDetailsGuava = Mockito.mock(ExecutableOutput.class);
+        ExecutableOutput bazelCmdExecutableOutputGetDependencyDetailsGuava = Mockito.mock(ExecutableOutput.class);
         Mockito.when(bazelCmdExecutableOutputGetDependencyDetailsGuava.getReturnCode()).thenReturn(0);
         Mockito.when(bazelCmdExecutableOutputGetDependencyDetailsGuava.getStandardOutput()).thenReturn(guavaXml);
         Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgsGetDependencyDetailsGuava)).thenReturn(bazelCmdExecutableOutputGetDependencyDetailsGuava);
 
-        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", new BazelProjectNameGenerator(), null,
+        Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", new BazelProjectNameGenerator(), null,
             null);
 
         assertEquals(1, result.getCodeLocations().size());
-        final Set<Dependency> dependencies = result.getCodeLocations().get(0).getDependencyGraph().getRootDependencies();
+        Set<Dependency> dependencies = result.getCodeLocations().get(0).getDependencyGraph().getRootDependencies();
         assertEquals(2, dependencies.size());
         boolean foundCommonsIo = false;
         boolean foundGuava = false;
-        for (final Dependency dep : dependencies) {
+        for (Dependency dep : dependencies) {
             System.out.printf("externalId: %s\n", dep.getExternalId());
             if ("commons-io".equals(dep.getExternalId().getName())) {
                 foundCommonsIo = true;
@@ -144,27 +147,26 @@ public class BazelExtractorTest {
     public void testMavenInstall() throws ExecutableRunnerException, IntegrationException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        final BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
-        final BazelVariableSubstitutor bazelVariableSubstitutor = Mockito.mock(BazelVariableSubstitutor.class);
-        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory);
-        final File workspaceDir = new File(".");
-        final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        final BazelWorkspace bazelWorkspace = Mockito.mock(BazelWorkspace.class);
-        Mockito.when(bazelWorkspace.getDependencyRule()).thenReturn(WorkspaceRule.MAVEN_INSTALL);
-        final WorkspaceRuleChooser workspaceRuleChooser = Mockito.mock(WorkspaceRuleChooser.class);
-        Mockito.when(workspaceRuleChooser.choose(Mockito.eq(WorkspaceRule.MAVEN_INSTALL), Mockito.isNull())).thenReturn(WorkspaceRule.MAVEN_INSTALL);
-        final BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
-        final File bazelExe = new File("/usr/bin/bazel");
+        BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
+        BazelVariableSubstitutor bazelVariableSubstitutor = Mockito.mock(BazelVariableSubstitutor.class);
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        File workspaceDir = new File(".");
+        ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        BazelWorkspace bazelWorkspace = Mockito.mock(BazelWorkspace.class);
+        Mockito.when(bazelWorkspace.getDependencyRuleTypes()).thenReturn(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL));
+        WorkspaceRuleChooser workspaceRuleChooser = Mockito.mock(WorkspaceRuleChooser.class);
+        Mockito.when(workspaceRuleChooser.choose(Mockito.eq(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL)), Mockito.isNull())).thenReturn(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL));
+        BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
+        File bazelExe = new File("/usr/bin/bazel");
 
         // bazel cquery --noimplicit_deps "kind(j.*import, deps(//:ProjectRunner))" --output build
-        final List<String> bazelArgsGetDependencies = new ArrayList<>();
+        List<String> bazelArgsGetDependencies = new ArrayList<>();
         bazelArgsGetDependencies.add("cquery");
         bazelArgsGetDependencies.add("--noimplicit_deps");
         bazelArgsGetDependencies.add("kind(j.*import, deps(//:ProjectRunner))");
         bazelArgsGetDependencies.add("--output");
         bazelArgsGetDependencies.add("build");
-        final ExecutableOutput bazelCmdExecutableOutputGetDependencies = Mockito.mock(ExecutableOutput.class);
+        ExecutableOutput bazelCmdExecutableOutputGetDependencies = Mockito.mock(ExecutableOutput.class);
         Mockito.when(bazelCmdExecutableOutputGetDependencies.getReturnCode()).thenReturn(0);
         Mockito.when(bazelCmdExecutableOutputGetDependencies.getStandardOutput()).thenReturn(
             "jvm_import(\n  name = \"com_google_guava_failureaccess\",\n" +
@@ -172,14 +174,14 @@ public class BazelExtractorTest {
                 "  tags = [\"maven_coordinates=com.google.errorprone:error_prone_annotations:2.2.0\"],");
         Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgsGetDependencies)).thenReturn(bazelCmdExecutableOutputGetDependencies);
 
-        final Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", new BazelProjectNameGenerator(), null, null);
+        Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", new BazelProjectNameGenerator(), null, null);
 
         assertEquals(1, result.getCodeLocations().size());
-        final Set<Dependency> dependencies = result.getCodeLocations().get(0).getDependencyGraph().getRootDependencies();
+        Set<Dependency> dependencies = result.getCodeLocations().get(0).getDependencyGraph().getRootDependencies();
         assertEquals(2, dependencies.size());
         boolean foundFailureAccess = false;
         boolean foundErrorProneAnnotations = false;
-        for (final Dependency dep : dependencies) {
+        for (Dependency dep : dependencies) {
             System.out.printf("externalId: %s\n", dep.getExternalId());
             if ("failureaccess".equals(dep.getExternalId().getName())) {
                 foundFailureAccess = true;
@@ -190,5 +192,71 @@ public class BazelExtractorTest {
         }
         assertTrue(foundFailureAccess);
         assertTrue(foundErrorProneAnnotations);
+    }
+
+    @Test
+    public void testMultipleRuleTypes() throws ExecutableRunnerException, IntegrationException, IOException {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+
+        BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
+        BazelVariableSubstitutor bazelVariableSubstitutor = Mockito.mock(BazelVariableSubstitutor.class);
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        File workspaceDir = new File(".");
+        ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        BazelWorkspace bazelWorkspace = Mockito.mock(BazelWorkspace.class);
+        Mockito.when(bazelWorkspace.getDependencyRuleTypes()).thenReturn(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL,
+            WorkspaceRule.HASKELL_CABAL_LIBRARY));
+        WorkspaceRuleChooser workspaceRuleChooser = Mockito.mock(WorkspaceRuleChooser.class);
+        Mockito.when(workspaceRuleChooser.choose(
+            Mockito.eq(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL, WorkspaceRule.HASKELL_CABAL_LIBRARY)),
+            Mockito.isNull())).thenReturn(Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL, WorkspaceRule.HASKELL_CABAL_LIBRARY));
+        BazelExtractor bazelExtractor = new BazelExtractor(executableRunner, externalIdFactory, workspaceRuleChooser);
+        File bazelExe = new File("/usr/bin/bazel");
+
+        // bazel cquery --noimplicit_deps "kind(j.*import, deps(//:ProjectRunner))" --output build
+        List<String> bazelArgsGetDependenciesMavenInstall = new ArrayList<>();
+        bazelArgsGetDependenciesMavenInstall.add("cquery");
+        bazelArgsGetDependenciesMavenInstall.add("--noimplicit_deps");
+        bazelArgsGetDependenciesMavenInstall.add("kind(j.*import, deps(//:ProjectRunner))");
+        bazelArgsGetDependenciesMavenInstall.add("--output");
+        bazelArgsGetDependenciesMavenInstall.add("build");
+        ExecutableOutput bazelCmdExecutableOutputGetDependenciesMavenInstall = Mockito.mock(ExecutableOutput.class);
+        Mockito.when(bazelCmdExecutableOutputGetDependenciesMavenInstall.getReturnCode()).thenReturn(0);
+        Mockito.when(bazelCmdExecutableOutputGetDependenciesMavenInstall.getStandardOutput()).thenReturn(
+            "jvm_import(\n  name = \"com_google_guava_failureaccess\",\n" +
+                "  tags = [\"maven_coordinates=com.google.guava:failureaccess:1.0\"],\n" +
+                "  tags = [\"maven_coordinates=com.google.errorprone:error_prone_annotations:2.2.0\"],");
+        Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgsGetDependenciesMavenInstall)).thenReturn(bazelCmdExecutableOutputGetDependenciesMavenInstall);
+
+        // bazel cquery --noimplicit_deps "kind(haskell_cabal_library, deps(//:ProjectRunner))" --output jsonproto
+        List<String> bazelArgsGetDependenciesHaskellCabalLibrary = new ArrayList<>();
+        bazelArgsGetDependenciesHaskellCabalLibrary.add("cquery");
+        bazelArgsGetDependenciesHaskellCabalLibrary.add("--noimplicit_deps");
+        bazelArgsGetDependenciesHaskellCabalLibrary.add("kind(haskell_cabal_library, deps(//:ProjectRunner))");
+        bazelArgsGetDependenciesHaskellCabalLibrary.add("--output");
+        bazelArgsGetDependenciesHaskellCabalLibrary.add("jsonproto");
+        ExecutableOutput bazelCmdExecutableOutputGetDependenciesHaskellCabalLibrary = Mockito.mock(ExecutableOutput.class);
+        Mockito.when(bazelCmdExecutableOutputGetDependenciesHaskellCabalLibrary.getReturnCode()).thenReturn(0);
+        File jsonProtoFile = new File("src/test/resources/detectables/functional/bazel/jsonProtoForHaskellCabalLibraries.txt");
+        String jsonProtoHaskellCabalLibrary = FileUtils.readFileToString(jsonProtoFile, StandardCharsets.UTF_8);
+        Mockito.when(bazelCmdExecutableOutputGetDependenciesHaskellCabalLibrary.getStandardOutput()).thenReturn(jsonProtoHaskellCabalLibrary);
+        Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgsGetDependenciesHaskellCabalLibrary)).thenReturn(bazelCmdExecutableOutputGetDependenciesHaskellCabalLibrary);
+
+        Extraction result = bazelExtractor.extract(bazelExe, workspaceDir, bazelWorkspace, "//:ProjectRunner", new BazelProjectNameGenerator(), null, null);
+
+        assertEquals(1, result.getCodeLocations().size());
+        Set<Dependency> dependencies = result.getCodeLocations().get(0).getDependencyGraph().getRootDependencies();
+
+        // Build a graph for easy verification
+        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        for (Dependency dependency : dependencies) {
+            dependencyGraph.addChildToRoot(dependency);
+        }
+        Forge hackageForge = new Forge("/", "hackage");
+        GraphAssert graphAssert = new GraphAssert(hackageForge, dependencyGraph);
+        graphAssert.hasRootSize(3);
+        graphAssert.hasRootDependency(new ExternalIdFactory().createMavenExternalId("com.google.guava", "failureaccess", "1.0"));
+        graphAssert.hasRootDependency(new ExternalIdFactory().createMavenExternalId("com.google.errorprone", "error_prone_annotations", "2.2.0"));
+        graphAssert.hasRootDependency(new ExternalIdFactory().createNameVersionExternalId(hackageForge, "colour", "2.3.5"));
     }
 }

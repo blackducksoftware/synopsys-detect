@@ -22,21 +22,57 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.jetbrains.annotations.NotNull;
 
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils;
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class WorkspaceRuleChooser {
+
     @NotNull
-    public WorkspaceRule choose(final WorkspaceRule ruleFromWorkspaceFile, final WorkspaceRule providedBazelDependencyType) throws IntegrationException {
-        if (providedBazelDependencyType != null && providedBazelDependencyType != WorkspaceRule.UNSPECIFIED) {
-            return providedBazelDependencyType;
-        } else if (ruleFromWorkspaceFile != WorkspaceRule.UNSPECIFIED) {
-            return ruleFromWorkspaceFile;
+    public Set<WorkspaceRule> choose(Set<WorkspaceRule> rulesFromWorkspaceFile, List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) throws IntegrationException {
+        Set<WorkspaceRule> cleanedUserProvidedRules = clean(userProvidedRules);
+        if (!cleanedUserProvidedRules.isEmpty()) {
+            return cleanedUserProvidedRules;
+        } else if (!rulesFromWorkspaceFile.isEmpty()) {
+            return rulesFromWorkspaceFile;
         } else {
-            throw new IntegrationException("Unable to determine BazelWorkspace dependency rule; try setting it via the property");
+            throw new IntegrationException("Unable to determine BazelWorkspace dependency rule type; try setting it via the property");
         }
+    }
+
+    private Set<WorkspaceRule> clean(List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
+        Set<WorkspaceRule> cleanedRulesList = new HashSet<>();
+        if (noneSpecified(userProvidedRules)) {
+            // Leave cleanedRulesList empty
+        } else if (allSpecified(userProvidedRules)) {
+            cleanedRulesList.addAll(Arrays.asList(WorkspaceRule.values()));
+        } else {
+            cleanedRulesList.addAll(FilterableEnumUtils.toPresentValues(userProvidedRules));
+        }
+        return cleanedRulesList;
+    }
+
+    private boolean noneSpecified(List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
+        if (userProvidedRules == null ||
+                FilterableEnumUtils.containsNone(userProvidedRules) ||
+                (FilterableEnumUtils.toPresentValues(userProvidedRules).isEmpty() && !FilterableEnumUtils.containsAll(userProvidedRules))) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean allSpecified(List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
+        if (userProvidedRules != null && FilterableEnumUtils.containsAll(userProvidedRules)) {
+            return true;
+        }
+        return false;
     }
 }

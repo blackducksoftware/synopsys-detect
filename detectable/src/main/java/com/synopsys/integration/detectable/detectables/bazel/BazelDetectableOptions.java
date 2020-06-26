@@ -25,15 +25,17 @@ package com.synopsys.integration.detectable.detectables.bazel;
 import java.util.List;
 import java.util.Optional;
 
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
+
 public class BazelDetectableOptions {
     private final String targetName;
-    private final WorkspaceRule bazelDependencyRule;
+    private final List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRules;
     private final List<String> bazelCqueryAdditionalOptions;
 
-    public BazelDetectableOptions(final String targetName, final WorkspaceRule bazelDependencyRule,
-        final List<String> bazelCqueryAdditionalOptions) {
+    public BazelDetectableOptions(String targetName, List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRules,
+        List<String> bazelCqueryAdditionalOptions) {
         this.targetName = targetName;
-        this.bazelDependencyRule = bazelDependencyRule;
+        this.bazelDependencyRules = bazelDependencyRules;
         this.bazelCqueryAdditionalOptions = bazelCqueryAdditionalOptions;
     }
 
@@ -41,8 +43,8 @@ public class BazelDetectableOptions {
         return Optional.ofNullable(targetName);
     }
 
-    public WorkspaceRule getBazelDependencyRule() {
-        return bazelDependencyRule;
+    public List<FilterableEnumValue<WorkspaceRule>> getBazelDependencyRules() {
+        return bazelDependencyRules;
     }
 
     public List<String> getBazelCqueryAdditionalOptions() {

@@ -22,13 +22,13 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -50,31 +50,28 @@ public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
     }
 
     @Override
-    public MutableDependencyGraph finish(List<String> input) throws IntegrationException {
-        String jsonString = extractJsonString(input);
-        List<NameVersion> dependencyList = parser.parse(jsonString);
-        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        for (NameVersion dependencyDetails : dependencyList) {
-            addDependencyToGraph(dependencyGraph, dependencyDetails);
+    public List<Dependency> finish(List<String> input) throws IntegrationException {
+        List<Dependency> dependencies = new ArrayList<>();
+        Optional<String> jsonString = extractJsonString(input);
+        if (!jsonString.isPresent()) {
+            return dependencies;
         }
-        return dependencyGraph;
+        List<NameVersion> dependencyDetailsList = parser.parse(jsonString.get());
+        for (NameVersion dependencyDetails : dependencyDetailsList) {
+            Dependency dependency = hackageCompNameVersionToDependency(dependencyDetails.getName(), dependencyDetails.getVersion());
+            dependencies.add(dependency);
+        }
+        return dependencies;
     }
 
-    private String extractJsonString(List<String> input) throws IntegrationException {
-        if (input.size() != 1) {
+    private Optional<String> extractJsonString(List<String> input) throws IntegrationException {
+        if (input.size() > 1) {
             throw new IntegrationException(String.format("Input size is %d; expected 1", input.size()));
         }
-        return input.get(0);
-    }
-
-    private void addDependencyToGraph(MutableDependencyGraph dependencyGraph, NameVersion dependencyDetails) {
-        Dependency artifactDependency = hackageCompNameVersionToDependency(dependencyDetails.getName(), dependencyDetails.getVersion());
-        try {
-            logger.debug(String.format("Adding %s to graph", artifactDependency.getExternalId().toString()));
-            dependencyGraph.addChildToRoot(artifactDependency);
-        } catch (Exception e) {
-            logger.error(String.format("Unable to create dependency from %s/%s", dependencyDetails.getName(), dependencyDetails.getVersion()));
+        if (input.isEmpty()) {
+            return Optional.empty();
         }
+        return Optional.of(input.get(0));
     }
 
     private Dependency hackageCompNameVersionToDependency(String compName, String compVersion) {

@@ -42,15 +42,19 @@ public class BazelCommandExecutor {
     private final File workspaceDir;
     private final File bazelExe;
 
-    public BazelCommandExecutor(final ExecutableRunner executableRunner, final File workspaceDir, final File bazelExe) {
+    public BazelCommandExecutor(ExecutableRunner executableRunner, File workspaceDir, File bazelExe) {
         this.executableRunner = executableRunner;
         this.workspaceDir = workspaceDir;
         this.bazelExe = bazelExe;
     }
 
-    public Optional<String> executeToString(final List<String> args) throws IntegrationException {
-        final ExecutableOutput executableOutput = execute(args);
-        final String cmdStdOut = executableOutput.getStandardOutput();
+    public Optional<String> executeToString(List<String> args) throws IntegrationException {
+        ExecutableOutput executableOutput = execute(args);
+        String cmdStdErr = executableOutput.getErrorOutput();
+        if (cmdStdErr != null && cmdStdErr.contains("ERROR")) {
+            logger.warn(String.format("Bazel error: %s", cmdStdErr.trim()));
+        }
+        String cmdStdOut = executableOutput.getStandardOutput();
         if ((StringUtils.isBlank(cmdStdOut))) {
             logger.debug("bazel command produced no output");
             return Optional.empty();
@@ -59,17 +63,17 @@ public class BazelCommandExecutor {
     }
 
     @NotNull
-    private ExecutableOutput execute(final List<String> args) throws IntegrationException {
+    private ExecutableOutput execute(List<String> args) throws IntegrationException {
         logger.debug(String.format("Executing bazel with args: %s", args));
-        final ExecutableOutput targetDependenciesQueryResults;
+        ExecutableOutput targetDependenciesQueryResults;
         try {
             targetDependenciesQueryResults = executableRunner.execute(workspaceDir, bazelExe, args);
         } catch (ExecutableRunnerException e) {
-            final String msg = String.format("Error executing %s with args: %s", bazelExe, args);
+            String msg = String.format("Error executing %s with args: %s", bazelExe, args);
             logger.debug(msg);
             throw new IntegrationException(msg, e);
         }
-        final int targetDependenciesQueryReturnCode = targetDependenciesQueryResults.getReturnCode();
+        int targetDependenciesQueryReturnCode = targetDependenciesQueryResults.getReturnCode();
         if (targetDependenciesQueryReturnCode != 0) {
             String msg = String.format("Error executing bazel with args: %s: Return code: %d; stderr: %s", args,
                 targetDependenciesQueryReturnCode,
