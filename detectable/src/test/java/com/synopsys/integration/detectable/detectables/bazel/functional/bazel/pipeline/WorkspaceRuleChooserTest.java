@@ -25,74 +25,56 @@ package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.p
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Sets;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class WorkspaceRuleChooserTest {
 
-    private static final Set<WorkspaceRule> PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL = Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL);
-    private static final Set<WorkspaceRule> PARSED_WORKSPACE_RULES_THREE = Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL,
+    private static final Set<WorkspaceRule> WORKSPACE_RULES_JUST_MAVEN_INSTALL = Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL);
+    private static final Set<WorkspaceRule> WORKSPACE_RULES_JUST_MAVEN_JAR = Sets.newHashSet(WorkspaceRule.MAVEN_JAR);
+    private static final Set<WorkspaceRule> WORKSPACE_RULES_THREE = Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL,
         WorkspaceRule.HASKELL_CABAL_LIBRARY, WorkspaceRule.MAVEN_JAR);
 
     @Test
     public void testOneRuleParsed() throws IntegrationException {
-        Set<WorkspaceRule> chosenWorkspaceRules = run(null, PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL);
+        Set<WorkspaceRule> chosenWorkspaceRules = run(null, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(1, chosenWorkspaceRules.size());
         assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
     public void testThreeRulesParsed() throws IntegrationException {
-        Set<WorkspaceRule> chosenWorkspaceRules = run(null, PARSED_WORKSPACE_RULES_THREE);
+        Set<WorkspaceRule> chosenWorkspaceRules = run(null, WORKSPACE_RULES_THREE);
         assertEquals(3, chosenWorkspaceRules.size());
     }
 
     @Test
     public void testOneProvidedSameOneParsed() throws IOException, IntegrationException {
-        Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_INSTALL)), PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL);
+        Set<WorkspaceRule> chosenWorkspaceRules = run(WORKSPACE_RULES_JUST_MAVEN_INSTALL, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(1, chosenWorkspaceRules.size());
         assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
     public void testOneRuleProvidedDifferentOneParsed() throws IOException, IntegrationException {
-        Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_JAR)), PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL);
+        Set<WorkspaceRule> chosenWorkspaceRules = run(WORKSPACE_RULES_JUST_MAVEN_JAR, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(1, chosenWorkspaceRules.size());
         assertEquals("maven_jar", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
     public void testThreeProvidedOneParsed() throws IOException, IntegrationException {
-        Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_JAR), FilterableEnumValue.value(WorkspaceRule.MAVEN_INSTALL), FilterableEnumValue.value(WorkspaceRule.HASKELL_CABAL_LIBRARY)),
-            PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL);
+        Set<WorkspaceRule> chosenWorkspaceRules = run(WORKSPACE_RULES_THREE, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(3, chosenWorkspaceRules.size());
     }
 
-    @Test
-    public void testAllValueProvidedOneParsed() throws IOException, IntegrationException {
-        Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_JAR), FilterableEnumValue.allValue(), FilterableEnumValue.value(WorkspaceRule.HASKELL_CABAL_LIBRARY)),
-            PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL);
-        assertEquals(3, chosenWorkspaceRules.size());
-    }
-
-    @Test
-    public void testNoneValueProvidedOneParsed() throws IOException, IntegrationException {
-        Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.noneValue()),
-            PARSED_WORKSPACE_RULES_JUST_MAVEN_INSTALL);
-        assertEquals(1, chosenWorkspaceRules.size());
-        assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
-    }
-
-    private Set<WorkspaceRule> run(List<FilterableEnumValue<WorkspaceRule>> providedBazelDependencyRule, Set<WorkspaceRule> parsedWorkspaceRules) throws IntegrationException {
+    private Set<WorkspaceRule> run(Set<WorkspaceRule> providedBazelDependencyRule, Set<WorkspaceRule> parsedWorkspaceRules) throws IntegrationException {
         WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
         Set<WorkspaceRule> chosenWorkspaceRules = workspaceRuleChooser.choose(parsedWorkspaceRules, providedBazelDependencyRule);
         return chosenWorkspaceRules;

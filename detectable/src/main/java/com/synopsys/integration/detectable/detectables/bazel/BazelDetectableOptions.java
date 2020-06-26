@@ -22,20 +22,24 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils;
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
 
 public class BazelDetectableOptions {
     private final String targetName;
-    private final List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRules;
+    private final List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRulesPropertyValues;
     private final List<String> bazelCqueryAdditionalOptions;
 
-    public BazelDetectableOptions(String targetName, List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRules,
+    public BazelDetectableOptions(String targetName, List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRulesPropertyValues,
         List<String> bazelCqueryAdditionalOptions) {
         this.targetName = targetName;
-        this.bazelDependencyRules = bazelDependencyRules;
+        this.bazelDependencyRulesPropertyValues = bazelDependencyRulesPropertyValues;
         this.bazelCqueryAdditionalOptions = bazelCqueryAdditionalOptions;
     }
 
@@ -43,11 +47,35 @@ public class BazelDetectableOptions {
         return Optional.ofNullable(targetName);
     }
 
-    public List<FilterableEnumValue<WorkspaceRule>> getBazelDependencyRules() {
+    public List<String> getBazelCqueryAdditionalOptions() {
+        return bazelCqueryAdditionalOptions;
+    }
+
+    public Set<WorkspaceRule> getBazelDependencyRules() {
+        Set<WorkspaceRule> bazelDependencyRules = new HashSet<>();
+        if (noneSpecified(bazelDependencyRulesPropertyValues)) {
+            // Leave bazelDependencyRules empty
+        } else if (allSpecified(bazelDependencyRulesPropertyValues)) {
+            bazelDependencyRules.addAll(Arrays.asList(WorkspaceRule.values()));
+        } else {
+            bazelDependencyRules.addAll(FilterableEnumUtils.toPresentValues(bazelDependencyRulesPropertyValues));
+        }
         return bazelDependencyRules;
     }
 
-    public List<String> getBazelCqueryAdditionalOptions() {
-        return bazelCqueryAdditionalOptions;
+    private boolean noneSpecified(List<FilterableEnumValue<WorkspaceRule>> rulesPropertyValues) {
+        if (rulesPropertyValues == null ||
+                FilterableEnumUtils.containsNone(rulesPropertyValues) ||
+                (FilterableEnumUtils.toPresentValues(rulesPropertyValues).isEmpty() && !FilterableEnumUtils.containsAll(rulesPropertyValues))) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean allSpecified(List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
+        if (userProvidedRules != null && FilterableEnumUtils.containsAll(userProvidedRules)) {
+            return true;
+        }
+        return false;
     }
 }
