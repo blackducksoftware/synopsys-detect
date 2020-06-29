@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.impactanalysis;
+package com.synopsys.integration.detect.tool.impactanalysis.service;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -40,5 +40,5 @@ public class ImpactAnalysisErrorResult {
         this.timeToPersistMs = timeToPersistMs;
         this.errorMessage = errorMessage;
     }
-    
+
 }

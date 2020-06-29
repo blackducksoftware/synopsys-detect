@@ -74,9 +74,9 @@ import com.synopsys.integration.detect.tool.detector.DetectorTool;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
-import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisService;
-import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisUploadResult;
 import com.synopsys.integration.detect.tool.impactanalysis.VulnerabilityImpactAnalysisTool;
+import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisService;
+import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadResult;
 import com.synopsys.integration.detect.tool.polaris.PolarisTool;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
@@ -417,6 +417,7 @@ public class RunManager {
                         logger.debug(String.format("Code Location Id: %s Status: %s Status Message: %s", result.codeLocationId, result.status, result.statusMessage));
                     });
                     impactAnalysisUploadResult.getImpactAnalysisErrorResult().ifPresent(result -> {
+                        // TODO: Verify whether or not the 201 success is sufficient. These messages may not be of concern to Detect users.
                         logger.info(String.format("Impact Analysis upload status: %s", result.status));
                         logger.debug(String.format("Black Duck error message:%s", result.errorMessage));
                     });
