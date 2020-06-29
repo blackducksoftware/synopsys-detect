@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.lifecycle.run;
 
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -73,7 +74,9 @@ import com.synopsys.integration.detect.tool.detector.DetectorTool;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
-import com.synopsys.integration.detect.tool.impactanalysis.BlackDuckImpactAnalysisTool;
+import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisService;
+import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisUploadResult;
+import com.synopsys.integration.detect.tool.impactanalysis.VulnerabilityImpactAnalysisTool;
 import com.synopsys.integration.detect.tool.polaris.PolarisTool;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
@@ -161,7 +164,7 @@ public class RunManager {
         if (productRunData.shouldUseBlackDuckProduct()) {
             AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName().orElse(null), runOptions.getAggregateMode(), universalToolsResult);
             runBlackDuckProduct(productRunData, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
-                universalToolsResult.getNameVersion(), aggregateOptions);
+                universalToolsResult.getNameVersion(), aggregateOptions, gson);
         } else {
             logger.info("Black Duck tools will not be run.");
         }
@@ -297,7 +300,7 @@ public class RunManager {
 
     private void runBlackDuckProduct(ProductRunData productRunData, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem,
         CodeLocationNameManager codeLocationNameManager, BdioCodeLocationCreator bdioCodeLocationCreator, DetectInfo detectInfo, RunResult runResult, RunOptions runOptions,
-        DetectToolFilter detectToolFilter, NameVersion projectNameVersion, AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException {
+        DetectToolFilter detectToolFilter, NameVersion projectNameVersion, AggregateOptions aggregateOptions, Gson gson) throws IntegrationException, DetectUserFriendlyException {
 
         logger.debug("Black Duck tools will run.");
 
@@ -402,9 +405,26 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS)) {
             logger.info("Will include the Vulnerability Impact Analysis tool.");
-            if (null != blackDuckServicesFactory) {
-                BlackDuckImpactAnalysisTool blackDuckImpactAnalysisTool = new BlackDuckImpactAnalysisTool(directoryManager, codeLocationNameManager);
-                blackDuckImpactAnalysisTool.run(projectNameVersion);
+            try {
+                VulnerabilityImpactAnalysisTool blackDuckImpactAnalysisTool = new VulnerabilityImpactAnalysisTool(directoryManager, codeLocationNameManager);
+                Path impactAnalysisReportPath = blackDuckImpactAnalysisTool.generateReport(projectNameVersion);
+
+                if (null != blackDuckServicesFactory) {
+                    ImpactAnalysisService impactAnalysisService = new ImpactAnalysisService(blackDuckServicesFactory.createBlackDuckService(), gson);
+                    ImpactAnalysisUploadResult impactAnalysisUploadResult = blackDuckImpactAnalysisTool.uploadReport(impactAnalysisReportPath, impactAnalysisService);
+                    impactAnalysisUploadResult.getImpactAnalysisSuccessResult().ifPresent(result -> {
+                        logger.info(String.format("Impact Analysis upload complete: %s", result.codeLocationName));
+                        logger.debug(String.format("Code Location Id: %s Status: %s Status Message: %s", result.codeLocationId, result.status, result.statusMessage));
+                    });
+                    impactAnalysisUploadResult.getImpactAnalysisErrorResult().ifPresent(result -> {
+                        logger.info(String.format("Impact Analysis upload status: %s", result.status));
+                        logger.debug(String.format("Black Duck error message:%s", result.errorMessage));
+                    });
+                } else {
+                    logger.debug("Skipping report upload.");
+                }
+            } catch (IOException exception) {
+                logger.error("Vulnerability Impact Analysis failed.", exception);
             }
             logger.info("Vulnerability Impact Analysis tool actions finished.");
         } else {
