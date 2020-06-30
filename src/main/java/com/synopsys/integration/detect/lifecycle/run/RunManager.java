@@ -187,9 +187,18 @@ public class RunManager {
         }
     }
 
-    private UniversalToolsResult runUniversalProjectTools(PropertyConfiguration detectConfiguration, DetectConfigurationFactory detectConfigurationFactory,
-        DirectoryManager directoryManager, EventSystem eventSystem, DetectDetectableFactory detectDetectableFactory,
-        RunResult runResult, RunOptions runOptions, DetectToolFilter detectToolFilter, CodeLocationNameManager codeLocationNameManager) throws DetectUserFriendlyException {
+    private UniversalToolsResult runUniversalProjectTools(
+        PropertyConfiguration detectConfiguration,
+        DetectConfigurationFactory detectConfigurationFactory,
+        DirectoryManager directoryManager,
+        EventSystem eventSystem,
+        DetectDetectableFactory detectDetectableFactory,
+        RunResult runResult,
+        RunOptions runOptions,
+        DetectToolFilter detectToolFilter,
+        CodeLocationNameManager codeLocationNameManager
+    ) throws DetectUserFriendlyException {
+
         ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         CodeLocationConverter codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
 
@@ -201,14 +210,10 @@ public class RunManager {
             DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createDockerDetectable,
                 extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
                 eventSystem);
+
             DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
-            if (detectableToolResult.getFailedExtractableResult().isPresent()) {
-                //TODO: Remove hack when windows docker support added. This workaround allows docker to throw a user friendly exception when not-extractable due to operating system.
-                DetectableResult extractable = detectableToolResult.getFailedExtractableResult().get();
-                if (WrongOperatingSystemResult.class.isAssignableFrom(extractable.getClass())) {
-                    throw new DetectUserFriendlyException("Docker currently requires a non-Windows OS to run. Attempting to run Docker on Windows is not currently supported.", ExitCodeType.FAILURE_CONFIGURATION);
-                }
-            }
+            assertValidOperatingSystem(detectableToolResult);
+
             runResult.addDetectableToolResult(detectableToolResult);
             eventSystem.publishEvent(Event.CodeLocationNamesAdded, createCodeLocationNames(detectableToolResult, codeLocationNameManager, directoryManager));
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
@@ -271,8 +276,8 @@ public class RunManager {
         ProjectNameVersionDecider projectNameVersionDecider = new ProjectNameVersionDecider(projectNameVersionOptions);
         NameVersion projectNameVersion = projectNameVersionDecider.decideProjectNameVersion(runOptions.getPreferredTools(), runResult.getDetectToolProjectInfo());
 
-        logger.info("Project name: " + projectNameVersion.getName());
-        logger.info("Project version: " + projectNameVersion.getVersion());
+        logger.info(String.format("Project name: %s", projectNameVersion.getName()));
+        logger.info(String.format("Project version: %s", projectNameVersion.getVersion()));
 
         eventSystem.publishEvent(Event.ProjectNameVersionChosen, projectNameVersion);
 
@@ -280,6 +285,16 @@ public class RunManager {
             return UniversalToolsResult.failure(projectNameVersion);
         } else {
             return UniversalToolsResult.success(projectNameVersion);
+        }
+    }
+
+    //TODO: Remove hack when windows docker support added. This workaround allows docker to throw a user friendly exception when not-extractable due to operating system.
+    private void assertValidOperatingSystem(DetectableToolResult detectableToolResult) throws DetectUserFriendlyException {
+        if (detectableToolResult.getFailedExtractableResult().isPresent()) {
+            DetectableResult extractable = detectableToolResult.getFailedExtractableResult().get();
+            if (WrongOperatingSystemResult.class.isAssignableFrom(extractable.getClass())) {
+                throw new DetectUserFriendlyException("Docker currently requires a non-Windows OS to run. Attempting to run Docker on Windows is not currently supported.", ExitCodeType.FAILURE_CONFIGURATION);
+            }
         }
     }
 
@@ -339,8 +354,8 @@ public class RunManager {
         BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations(), runOptions.shouldUseBdio2());
 
         CodeLocationWaitController codeLocationWaitController = new CodeLocationWaitController();
-        if (bdioResult.getUploadTargets().size() > 0) {
-            logger.info("Created " + bdioResult.getUploadTargets().size() + " BDIO files.");
+        if (!bdioResult.getUploadTargets().isEmpty()) {
+            logger.info(String.format("Created %d BDIO files.", bdioResult.getUploadTargets().size()));
             if (null != blackDuckServicesFactory) {
                 DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService();
 
@@ -439,7 +454,7 @@ public class RunManager {
             BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory, eventSystem);
             blackDuckPostActions.perform(blackDuckPostOptions, codeLocationWaitController, projectVersionWrapper, detectConfigurationFactory.findTimeoutInSeconds());
 
-            if ((bdioResult.getUploadTargets().size() > 0 || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
+            if ((!bdioResult.getUploadTargets().isEmpty() || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
                 Optional<String> componentsLink = Optional.ofNullable(projectVersionWrapper)
                                                       .map(ProjectVersionWrapper::getProjectVersionView)
                                                       .flatMap(projectVersionView -> projectVersionView.getFirstLink(ProjectVersionView.COMPONENTS_LINK));
