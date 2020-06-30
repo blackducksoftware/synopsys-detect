@@ -64,18 +64,20 @@ public class BazelDetectableOptions {
     }
 
     private boolean noneSpecified(List<FilterableEnumValue<WorkspaceRule>> rulesPropertyValues) {
+        boolean noneWasSpecified = false;
         if (rulesPropertyValues == null ||
                 FilterableEnumUtils.containsNone(rulesPropertyValues) ||
                 (FilterableEnumUtils.toPresentValues(rulesPropertyValues).isEmpty() && !FilterableEnumUtils.containsAll(rulesPropertyValues))) {
-            return true;
+            noneWasSpecified = true;
         }
-        return false;
+        return noneWasSpecified;
     }
 
     private boolean allSpecified(List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
+        boolean allWasSpecified = false;
         if (userProvidedRules != null && FilterableEnumUtils.containsAll(userProvidedRules)) {
-            return true;
+            allWasSpecified = true;
         }
-        return false;
+        return allWasSpecified;
     }
 }

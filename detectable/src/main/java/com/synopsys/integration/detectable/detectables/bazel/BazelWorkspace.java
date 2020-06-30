@@ -51,8 +51,7 @@ public class BazelWorkspace {
             logger.debug(String.format("Unable to parse dependency rule from %s: %s", workspaceFile.getAbsolutePath(), e.getMessage()));
             return new HashSet<>(0);
         }
-        Set<WorkspaceRule> dependencyRules = parseDependencyRulesFromWorkspaceFileLines(workspaceFileLines);
-        return dependencyRules;
+        return parseDependencyRulesFromWorkspaceFileLines(workspaceFileLines);
     }
 
     @Nullable

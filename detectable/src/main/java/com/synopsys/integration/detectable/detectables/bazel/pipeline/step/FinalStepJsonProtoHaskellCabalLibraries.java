@@ -26,9 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
@@ -39,7 +36,6 @@ import com.synopsys.integration.util.NameVersion;
 public class FinalStepJsonProtoHaskellCabalLibraries implements FinalStep {
     private static final String FORGE_NAME = "hackage";
     private static final String FORGE_SEPARATOR = "/";
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Forge hackageForge = new Forge(FORGE_SEPARATOR, FORGE_NAME);
     private final HaskellCabalLibraryJsonProtoParser parser;
     private final ExternalIdFactory externalIdFactory;

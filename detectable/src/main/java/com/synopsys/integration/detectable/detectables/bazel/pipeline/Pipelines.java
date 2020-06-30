@@ -41,6 +41,9 @@ import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.Inter
 import com.synopsys.integration.exception.IntegrationException;
 
 public class Pipelines {
+    private static final String CQUERY_OPTIONS_PLACEHOLDER = "${detect.bazel.cquery.options}";
+    private static final String CQUERY_COMMAND = "cquery";
+    private static final String OUTPUT_FLAG = "--output";
     private final EnumMap<WorkspaceRule, Pipeline> availablePipelines = new EnumMap<>(WorkspaceRule.class);
     private final Gson gson = new Gson();
 
@@ -48,13 +51,13 @@ public class Pipelines {
         ExternalIdFactory externalIdFactory) {
         Pipeline mavenJarPipeline = (new PipelineBuilder())
                                         .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
-                                            Arrays.asList("cquery", "${detect.bazel.cquery.options}", "filter('@.*:jar', deps(${detect.bazel.target}))"), false))
+                                            Arrays.asList(CQUERY_COMMAND, CQUERY_OPTIONS_PLACEHOLDER, "filter('@.*:jar', deps(${detect.bazel.target}))"), false))
                                         .addIntermediateStep(new IntermediateStepReplaceInEach(" \\([0-9a-f]+\\)", ""))
                                         .addIntermediateStep(new IntermediateStepSplitEach("\\s+"))
                                         .addIntermediateStep(new IntermediateStepReplaceInEach("^@", ""))
                                         .addIntermediateStep(new IntermediateStepReplaceInEach("//.*", ""))
                                         .addIntermediateStep(new IntermediateStepReplaceInEach("^", "//external:"))
-                                        .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "kind(maven_jar, ${input.item})", "--output", "xml"), true))
+                                        .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "kind(maven_jar, ${input.item})", OUTPUT_FLAG, "xml"), true))
                                         .addIntermediateStep(new IntermediateStepParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value"))
                                         .setFinalStep(new FinalStepColonSeparatedGavs(externalIdFactory))
                                         .build();
@@ -62,7 +65,7 @@ public class Pipelines {
 
         Pipeline mavenInstallPipeline = (new PipelineBuilder())
                                             .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
-                                                Arrays.asList("cquery", "--noimplicit_deps", "${detect.bazel.cquery.options}", "kind(j.*import, deps(${detect.bazel.target}))", "--output", "build"), false))
+                                                Arrays.asList(CQUERY_COMMAND, "--noimplicit_deps", CQUERY_OPTIONS_PLACEHOLDER, "kind(j.*import, deps(${detect.bazel.target}))", OUTPUT_FLAG, "build"), false))
                                             .addIntermediateStep(new IntermediateStepSplitEach("\n"))
                                             .addIntermediateStep(new IntermediateStepFilter(".*maven_coordinates=.*"))
                                             .addIntermediateStep(new IntermediateStepReplaceInEach(".*\"maven_coordinates=", ""))
@@ -74,7 +77,7 @@ public class Pipelines {
         HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser = new HaskellCabalLibraryJsonProtoParser(gson);
         Pipeline haskellCabalLibraryPipeline = (new PipelineBuilder())
                                                    .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
-                                                       Arrays.asList("cquery", "--noimplicit_deps", "${detect.bazel.cquery.options}", "kind(haskell_cabal_library, deps(${detect.bazel.target}))", "--output", "jsonproto"), false))
+                                                       Arrays.asList(CQUERY_COMMAND, "--noimplicit_deps", CQUERY_OPTIONS_PLACEHOLDER, "kind(haskell_cabal_library, deps(${detect.bazel.target}))", OUTPUT_FLAG, "jsonproto"), false))
                                                    .setFinalStep(new FinalStepJsonProtoHaskellCabalLibraries(haskellCabalLibraryJsonProtoParser, externalIdFactory))
                                                    .build();
         availablePipelines.put(WorkspaceRule.HASKELL_CABAL_LIBRARY, haskellCabalLibraryPipeline);
