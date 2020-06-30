@@ -6,12 +6,13 @@
 
 ### Changed features
 * Enabling diagnostic mode is now controlled through two new properties.
-    * [--detect.diagnostic](../properties/configuration/debug/#diagnostic-mode)
-    * [--detect.diagnostic.extended](../properties/configuration/debug/#diagnostic-mode-extended)
+* [--detect.diagnostic](../properties/configuration/debug/#diagnostic-mode)
+* [--detect.diagnostic.extended](../properties/configuration/debug/#diagnostic-mode-extended)
 * The `-d` and `--diagnostic` options are now deprecated.
 * The `-de` and `--diagnosticExtended` options are now deprecated.
 
 ### Resolved issues
+* (IDETECT-2054) Resolved an issue that caused the Gradle Inspector to fail when detect.output.path is set to a relative path.
 
 ## Version 6.4.0
 ### New features
