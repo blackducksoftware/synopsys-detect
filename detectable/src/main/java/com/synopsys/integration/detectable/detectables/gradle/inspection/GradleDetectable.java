@@ -53,8 +53,8 @@ public class GradleDetectable extends Detectable {
     private File gradleExe;
     private File gradleInspector;
 
-    public GradleDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GradleResolver gradleResolver, final GradleInspectorResolver gradleInspectorResolver,
-        final GradleInspectorExtractor gradleInspectorExtractor, final GradleInspectorOptions gradleInspectorOptions) {
+    public GradleDetectable(DetectableEnvironment environment, FileFinder fileFinder, GradleResolver gradleResolver, GradleInspectorResolver gradleInspectorResolver,
+        GradleInspectorExtractor gradleInspectorExtractor, GradleInspectorOptions gradleInspectorOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.gradleResolver = gradleResolver;
@@ -65,12 +65,12 @@ public class GradleDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        final File buildGradle = fileFinder.findFile(environment.getDirectory(), BUILD_GRADLE_FILENAME);
+        File buildGradle = fileFinder.findFile(environment.getDirectory(), BUILD_GRADLE_FILENAME);
         if (buildGradle != null) {
             return new PassedDetectableResult();
         }
 
-        final File kotlinBuildGradle = fileFinder.findFile(environment.getDirectory(), KOTLIN_BUILD_GRADLE_FILENAME);
+        File kotlinBuildGradle = fileFinder.findFile(environment.getDirectory(), KOTLIN_BUILD_GRADLE_FILENAME);
         if (kotlinBuildGradle != null) {
             return new PassedDetectableResult();
         }
@@ -94,8 +94,8 @@ public class GradleDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        String gradleCommand = gradleInspectorOptions.getGradleBuildCommand().orElse(""); // TODO: Nullable.
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+        String gradleCommand = gradleInspectorOptions.getGradleBuildCommand().orElse(null);
         return gradleInspectorExtractor.extract(environment.getDirectory(), gradleExe, gradleCommand, gradleInspectorOptions.getproxyInfo(), gradleInspector, extractionEnvironment.getOutputDirectory());
     }
 }

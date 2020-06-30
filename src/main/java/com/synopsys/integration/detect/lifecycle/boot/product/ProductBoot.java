@@ -24,15 +24,16 @@ package com.synopsys.integration.detect.lifecycle.boot.product;
 
 import java.io.IOException;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -75,49 +76,51 @@ public class ProductBoot {
         return new ProductRunData(polarisRunData, blackDuckRunData);
     }
 
+    @Nullable
     private BlackDuckRunData getBlackDuckRunData(ProductDecision productDecision, ProductBootFactory productBootFactory, BlackDuckConnectivityChecker blackDuckConnectivityChecker, ProductBootOptions productBootOptions,
-        AnalyticsConfigurationService analyticsConfigurationService)
-        throws DetectUserFriendlyException {
-        BlackDuckRunData blackDuckRunData = null;
-        BlackDuckDecision blackDuckDecision = productDecision.getBlackDuckDecision();
-        if (blackDuckDecision.shouldRun()) {
-            logger.debug("Will boot Black Duck product.");
-            if (blackDuckDecision.isOffline()) {
-                blackDuckRunData = BlackDuckRunData.offline();
+        AnalyticsConfigurationService analyticsConfigurationService) throws DetectUserFriendlyException {
+
+        if (!productDecision.getBlackDuckDecision().shouldRun()) {
+            return null;
+        }
+
+        if (productDecision.getBlackDuckDecision().isOffline()) {
+            return BlackDuckRunData.offline();
+        }
+
+        logger.debug("Will boot Black Duck product.");
+        BlackDuckServerConfig blackDuckServerConfig = productBootFactory.createBlackDuckServerConfig();
+        BlackDuckConnectivityResult blackDuckConnectivityResult = blackDuckConnectivityChecker.determineConnectivity(blackDuckServerConfig);
+
+        if (blackDuckConnectivityResult.isSuccessfullyConnected()) {
+            BlackDuckServicesFactory blackDuckServicesFactory = blackDuckConnectivityResult.getBlackDuckServicesFactory();
+
+            if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.createBlackDuckService())) {
+                PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
+                return BlackDuckRunData.online(blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
             } else {
-                BlackDuckServerConfig blackDuckServerConfig = productBootFactory.createBlackDuckServerConfig();
-                BlackDuckConnectivityResult blackDuckConnectivityResult = blackDuckConnectivityChecker.determineConnectivity(blackDuckServerConfig);
-
-                if (blackDuckConnectivityResult.isSuccessfullyConnected()) {
-                    BlackDuckServicesFactory blackDuckServicesFactory = blackDuckConnectivityResult.getBlackDuckServicesFactory();
-
-                    boolean usePhoneHome;
-                    try {
-                        AnalyticsSetting analyticsSetting = analyticsConfigurationService.fetchAnalyticsSetting(blackDuckServicesFactory.createBlackDuckService());
-                        usePhoneHome = analyticsSetting.isEnabled();
-                    } catch (IntegrationException | IOException e) {
-                        logger.trace("Failed to check analytics setting on Black Duck. Likely this Black Duck instance does not support it.", e);
-                        usePhoneHome = true; // Skip phone home will be applied at the library level.
-                    }
-
-                    if (usePhoneHome) {
-                        PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
-                        blackDuckRunData = BlackDuckRunData.online(blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
-                    } else {
-                        logger.debug("Skipping phone home due to Black Duck global settings.");
-                        blackDuckRunData = BlackDuckRunData.onlineNoPhoneHome(blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig());
-                    }
-                } else {
-                    if (productBootOptions.isIgnoreConnectionFailures()) {
-                        logger.info("Failed to connect to Black Duck: " + blackDuckConnectivityResult.getFailureReason());
-                        logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.", DetectProperties.Companion.getDETECT_IGNORE_CONNECTION_FAILURES().getName()));
-                    } else {
-                        throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + blackDuckConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
-                    }
-                }
+                logger.debug("Skipping phone home due to Black Duck global settings.");
+                return BlackDuckRunData.onlineNoPhoneHome(blackDuckServicesFactory, blackDuckConnectivityResult.getBlackDuckServerConfig());
+            }
+        } else {
+            if (productBootOptions.isIgnoreConnectionFailures()) {
+                logger.info(String.format("Failed to connect to Black Duck: %s", blackDuckConnectivityResult.getFailureReason()));
+                logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.", DetectProperties.Companion.getDETECT_IGNORE_CONNECTION_FAILURES().getName()));
+                return null;
+            } else {
+                throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + blackDuckConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
             }
         }
-        return blackDuckRunData;
+    }
+
+    private boolean shouldUsePhoneHome(AnalyticsConfigurationService analyticsConfigurationService, BlackDuckService blackDuckService) {
+        try {
+            AnalyticsSetting analyticsSetting = analyticsConfigurationService.fetchAnalyticsSetting(blackDuckService);
+            return analyticsSetting.isEnabled();
+        } catch (IntegrationException | IOException e) {
+            logger.trace("Failed to check analytics setting on Black Duck. Likely this Black Duck instance does not support it.", e);
+            return true; // Skip phone home will be applied at the library level.
+        }
     }
 
     private PolarisRunData getPolarisRunData(ProductDecision productDecision, PolarisConnectivityChecker polarisConnectivityChecker) throws DetectUserFriendlyException {
