@@ -1480,7 +1480,13 @@
 <p>Synopsys Detect is configured by assigning values to properties.</p>
 <h2 id="on-the-command-line">On the command line<a class="headerlink" href="#on-the-command-line" title="Permanent link">#</a></h2>
 <p>One method for configuring Synopsys Detect is by setting <a href="../properties/all-properties/">Synopsys Detect property values</a> on the command line.
-When setting a property value on the command line, prefix the property name with two hyphens ("--"). For example,
+When setting a property value on the command line, prefix the property name with two hyphens (--).</p>
+<p>To add one property setting to the command line, add the following at the end:</p>
+<pre><code>{space}--{property name}={value}
+</code></pre>
+
+<p>There is a space before and between each complete property setting, but there are no spaces around the equals sign (=).</p>
+<p>For example,
 to set property <em>detect.project.value</em>:</p>
 <pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --detect.project.name=MyProject
 </code></pre>
