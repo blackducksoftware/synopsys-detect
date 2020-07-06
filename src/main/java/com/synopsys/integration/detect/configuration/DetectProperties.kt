@@ -520,7 +520,7 @@ class DetectProperties {
         }
         val DETECT_GRADLE_BUILD_COMMAND = NullableStringProperty("detect.gradle.build.command").apply {
             setInfo("Gradle Build Command", "3.0.0")
-            setHelp("Gradle command line arguments to add to the mvn/mvnw command line.", "By default, Detect runs the gradle (or gradlew) command with one task: dependencies. You can use this property to insert one or more additional gradle command line arguments (options or tasks) before the dependencies argument.")
+            setHelp("Gradle command line arguments to add to the gradle/gradlew command line.", "By default, Detect runs the gradle (or gradlew) command with one task: dependencies. You can use this property to insert one or more additional gradle command line arguments (options or tasks) before the dependencies argument.")
             setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
         }
         val DETECT_GRADLE_EXCLUDED_CONFIGURATIONS = NullableStringProperty("detect.gradle.excluded.configurations").apply {
