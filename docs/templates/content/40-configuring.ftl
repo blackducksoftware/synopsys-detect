@@ -5,7 +5,7 @@ ${solution_name} is configured by assigning values to properties.
 ## On the command line
 
 One method for configuring ${solution_name} is by setting [${solution_name} property values](../properties/all-properties/) on the command line.
-When setting a property value on the command line, prefix the property name with two hyphens ("--").
+When setting a property value on the command line, prefix the property name with two hyphens (--).
 
 To add one property setting to the command line, add the following at the end:
 ```
