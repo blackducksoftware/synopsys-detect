@@ -145,7 +145,7 @@ public class DetectConfigurationFactoryJava {
     }
 
     @Nullable
-    public IndividualFileMatching findIndividualFileMatching() throws InvalidPropertyException {
+    private IndividualFileMatching findIndividualFileMatching() throws InvalidPropertyException {
         ExtendedEnumValue<ExtendedIndividualFileMatchingMode, IndividualFileMatching> individualFileMatching = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING());
 
         if (individualFileMatching.getBaseValue().isPresent()) {
@@ -158,7 +158,7 @@ public class DetectConfigurationFactoryJava {
     //#endregion
 
     //#region Creating Connections
-    public ProxyInfo createBlackDuckProxyInfo() throws DetectUserFriendlyException{
+    private ProxyInfo createBlackDuckProxyInfo() throws DetectUserFriendlyException{
         String proxyUsername = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_USERNAME(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_USERNAME()).orElse(null);
         String proxyPassword = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_PASSWORD(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_PASSWORD()).orElse(null);
         String proxyHost = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_HOST(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_HOST()).orElse(null);
@@ -196,7 +196,7 @@ public class DetectConfigurationFactoryJava {
         return new ProductBootOptions(ignoreFailures, testConnections);
     }
 
-    public ConnectionDetails createConnectionDetails() throws DetectUserFriendlyException, InvalidPropertyException {
+    private ConnectionDetails createConnectionDetails() throws DetectUserFriendlyException, InvalidPropertyException {
         Boolean alwaysTrust = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_TRUST_CERT(), DetectProperties.Companion.getBLACKDUCK_HUB_TRUST_CERT());
         List<String> proxyIgnoredHosts = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_IGNORED_HOSTS(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_IGNORED_HOSTS());
         List<Pattern> proxyPatterns = proxyIgnoredHosts.stream()
@@ -210,7 +210,7 @@ public class DetectConfigurationFactoryJava {
         Boolean offline = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_OFFLINE_MODE(), DetectProperties.Companion.getBLACKDUCK_HUB_OFFLINE_MODE());
         String blackduckUrl = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_URL(), DetectProperties.Companion.getBLACKDUCK_HUB_URL()).orElse(null);
         Set<String> allBlackDuckKeys = new BlackDuckServerConfigBuilder().getPropertyKeys().stream()
-                                           .filter(it -> !(it .contains("proxy")))
+                                           .filter(it -> !(it.toLowerCase().contains("proxy")))
                                            .collect(Collectors.toSet());
         Map<String, String> blackDuckProperties = detectConfiguration.getRaw(allBlackDuckKeys);
 
