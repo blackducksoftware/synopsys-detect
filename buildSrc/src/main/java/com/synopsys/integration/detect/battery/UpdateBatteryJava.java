@@ -26,7 +26,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.regex.Pattern;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
@@ -83,7 +83,7 @@ public class UpdateBatteryJava extends DefaultTask {
     }
 
     private String extractChunk(String line) {
-        String chunk = line.split("\\*\\*\\*BDIO BATTERY TEST\\|")[1];
-        return chunk.split("\\*\\*\\*")[0];
+        String chunk = line.split(Pattern.quote("***BDIO BATTERY TEST|"))[1];
+        return chunk.split(Pattern.quote("***"))[0];
     }
 }
