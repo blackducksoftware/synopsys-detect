@@ -1,14 +1,33 @@
+/**
+ * synopsys-detect
+ *
+ * Copyright (c) 2020 Synopsys, Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.synopsys.integration.detect;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toSet;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,7 +39,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.Nullable;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.synopsys.integration.blackduck.api.generated.enumeration.LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
@@ -30,10 +48,10 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils;
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
+import com.synopsys.integration.configuration.property.types.path.NullablePathProperty;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.property.types.path.PathValue;
 import com.synopsys.integration.detect.configuration.DetectCustomFieldParser;
@@ -54,7 +72,6 @@ import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableOption
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
-import com.synopsys.integration.detect.util.filter.DetectFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
@@ -76,10 +93,6 @@ import com.synopsys.integration.rest.credentials.Credentials;
 import com.synopsys.integration.rest.credentials.CredentialsBuilder;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.proxy.ProxyInfoBuilder;
-import com.synopsys.integration.util.ExcludedIncludedFilter;
-import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
-
-import kotlin.jvm.Throws;
 
 public class DetectConfigurationFactoryJava {
 
@@ -127,7 +140,7 @@ public class DetectConfigurationFactoryJava {
         ExtendedEnumValue<ExtendedSnippetMode, SnippetMatching> snippetMatching = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING());
 
         SnippetMatching deprecatedSnippetMatching;
-        if (detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE())) {
+        if (Boolean.TRUE.equals(detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE()))) {
             deprecatedSnippetMatching = SnippetMatching.SNIPPET_MATCHING;
         } else {
             deprecatedSnippetMatching = null;
@@ -226,9 +239,9 @@ public class DetectConfigurationFactoryJava {
         // Detect and polaris-common use different property keys for the Polaris URL,
         // so we need to pull it from they Detect config using Detect's key,
         // and write it to the polaris-common config using the polaris-common key.
-        Optional<String> polarisUrlValue = detectConfiguration.getRaw(DetectProperties.Companion.getPOLARIS_URL());
-        if (StringUtils.isNotBlank(polarisUrlValue.orElse(null))) {
-            polarisProperties.put(PolarisServerConfigBuilder.URL_KEY.getKey(), polarisUrlValue.orElse(null));
+        String polarisUrlValue = detectConfiguration.getRaw(DetectProperties.Companion.getPOLARIS_URL()).orElse(null);
+        if (StringUtils.isNotBlank(polarisUrlValue)) {
+            polarisProperties.put(PolarisServerConfigBuilder.URL_KEY.getKey(), polarisUrlValue);
         }
 
         polarisServerConfigBuilder.setLogger(new SilentIntLogger());
@@ -264,19 +277,19 @@ public class DetectConfigurationFactoryJava {
     }
 
     public DirectoryOptions createDirectoryOptions() throws InvalidPropertyException {
-        Path sourcePath = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_SOURCE_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null);
-        Path outputPath = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_OUTPUT_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null);
-        Path bdioPath = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BDIO_OUTPUT_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null);
-        Path scanPath = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_SCAN_OUTPUT_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null);
-        Path toolsOutputPath = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_TOOLS_OUTPUT_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null);
+        Path sourcePath = getPathOrNull(DetectProperties.Companion.getDETECT_SOURCE_PATH());
+        Path outputPath = getPathOrNull(DetectProperties.Companion.getDETECT_OUTPUT_PATH());
+        Path bdioPath = getPathOrNull(DetectProperties.Companion.getDETECT_BDIO_OUTPUT_PATH());
+        Path scanPath = getPathOrNull(DetectProperties.Companion.getDETECT_SCAN_OUTPUT_PATH());
+        Path toolsOutputPath = getPathOrNull(DetectProperties.Companion.getDETECT_TOOLS_OUTPUT_PATH());
 
         return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath);
     }
 
     public AirGapOptions createAirGapOptions() throws InvalidPropertyException {
-        Path gradleOverride = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_GRADLE_INSPECTOR_AIR_GAP_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null);
-        Path nugetOverride = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_NUGET_INSPECTOR_AIR_GAP_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null);
-        Path dockerOverride = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_DOCKER_INSPECTOR_AIR_GAP_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null);
+        Path gradleOverride = getPathOrNull(DetectProperties.Companion.getDETECT_GRADLE_INSPECTOR_AIR_GAP_PATH());
+        Path nugetOverride = getPathOrNull(DetectProperties.Companion.getDETECT_NUGET_INSPECTOR_AIR_GAP_PATH());
+        Path dockerOverride = getPathOrNull(DetectProperties.Companion.getDETECT_DOCKER_INSPECTOR_AIR_GAP_PATH());
 
         return new AirGapOptions(dockerOverride, gradleOverride, nugetOverride);
     }
@@ -431,7 +444,7 @@ public class DetectConfigurationFactoryJava {
     }
 
     public BinaryScanOptions createBinaryScanOptions() throws InvalidPropertyException {
-        Path singleTarget = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BINARY_SCAN_FILE()).map(path -> path.resolvePath(pathResolver)).orElse(null);
+        Path singleTarget = getPathOrNull(DetectProperties.Companion.getDETECT_BINARY_SCAN_FILE());
         List<String> mutlipleTargets = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BINARY_SCAN_FILE_NAME_PATTERNS());
         String codeLocationPrefix = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PROJECT_CODELOCATION_PREFIX()).orElse(null);
         String codeLocationSuffix = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PROJECT_CODELOCATION_SUFFIX()).orElse(null);
@@ -440,26 +453,30 @@ public class DetectConfigurationFactoryJava {
 
     public DetectExecutableOptions createExecutablePaths() throws InvalidPropertyException {
         return new DetectExecutableOptions(
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BASH_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BAZEL_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_CONDA_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_CPAN_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_CPANM_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_GRADLE_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_MAVEN_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_NPM_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PEAR_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PIPENV_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PYTHON_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_HEX_REBAR3_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_JAVA_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_DOCKER_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_DOTNET_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_GIT_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_GO_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_SWIFT_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null),
-            detectConfiguration.getValue(DetectProperties.Companion.getDETECT_LERNA_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null)
+            getPathOrNull(DetectProperties.Companion.getDETECT_BASH_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_BAZEL_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_CONDA_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_CPAN_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_CPANM_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_GRADLE_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_MAVEN_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_NPM_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_PEAR_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_PIPENV_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_PYTHON_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_HEX_REBAR3_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_JAVA_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_DOCKER_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_DOTNET_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_GIT_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_GO_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_SWIFT_PATH()),
+            getPathOrNull(DetectProperties.Companion.getDETECT_LERNA_PATH())
         );
+    }
+
+    private Path getPathOrNull(NullablePathProperty property) throws InvalidPropertyException {
+        return detectConfiguration.getValue(property).map(path -> path.resolvePath(pathResolver)).orElse(null);
     }
 
 
