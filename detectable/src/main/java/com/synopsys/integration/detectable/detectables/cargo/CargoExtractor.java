@@ -23,26 +23,31 @@
 package com.synopsys.integration.detectable.detectables.cargo;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 
-import com.moandjiezana.toml.Toml;
+import javax.print.attribute.standard.MediaSize;
+
+import org.tomlj.Toml;
+import org.tomlj.TomlParseResult;
+import org.tomlj.TomlTable;
+
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectables.cargo.model.CargoToml;
-import com.synopsys.integration.detectable.detectables.cargo.model.Package;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
 import com.synopsys.integration.util.NameVersion;
 
 public class CargoExtractor {
+
+    private static final String NAME_KEY = "name";
+    private static final String VERSION_KEY = "version";
+    private static final String PACKAGE_KEY = "package";
 
     private CargoLockParser cargoLockParser;
 
@@ -52,22 +57,16 @@ public class CargoExtractor {
 
     public Extraction extract(File cargoLock, Optional<File> cargoToml) {
         try {
-            String cargoLockAsString = getCargoLockAsString(cargoLock, StandardCharsets.UTF_8);
-            DependencyGraph graph = cargoLockParser.parseLockFile(cargoLockAsString);
+            DependencyGraph graph = cargoLockParser.parseLockFile(getFileAsString(cargoLock, Charset.defaultCharset()));
             CodeLocation codeLocation = new CodeLocation(graph);
 
-            if (cargoToml.isPresent()) {
-                CargoToml cargoTomlObject = new Toml().read(cargoToml.get()).to(CargoToml.class);
-                if (cargoTomlObject.getPackage().isPresent()) {
-                    Package cargoTomlPackageInfo = cargoTomlObject.getPackage().get();
-                    if (cargoTomlPackageInfo.getName().isPresent() && cargoTomlPackageInfo.getVersion().isPresent()) {
+            Optional<NameVersion> cargoNameVersion = extractNameVersionFromCargoToml(cargoToml);
+            if (cargoNameVersion.isPresent()) {
                         return new Extraction.Builder()
                                    .success(codeLocation)
-                                   .projectName(cargoTomlPackageInfo.getName().get())
-                                   .projectVersion(cargoTomlPackageInfo.getVersion().get())
+                                   .projectName(cargoNameVersion.get().getName())
+                                   .projectVersion(cargoNameVersion.get().getVersion())
                                    .build();
-                    }
-                }
             }
             return new Extraction.Builder().success(codeLocation).build();
         } catch (IOException | DetectableException e) {
@@ -75,8 +74,21 @@ public class CargoExtractor {
         }
     }
 
-    private String getCargoLockAsString(File cargoLock, Charset encoding) throws IOException {
+    private String getFileAsString(File cargoLock, Charset encoding) throws IOException {
        List<String> goLockAsList = Files.readAllLines(cargoLock.toPath(), encoding);
        return String.join(System.lineSeparator(), goLockAsList);
+    }
+
+    private Optional<NameVersion> extractNameVersionFromCargoToml(Optional<File> cargoToml) throws IOException {
+        if (cargoToml.isPresent()) {
+            TomlParseResult cargoTomlObject = Toml.parse(getFileAsString(cargoToml.get(), Charset.defaultCharset()));
+            if (cargoTomlObject.get(PACKAGE_KEY) != null) {
+                TomlTable cargoTomlPackageInfo = cargoTomlObject.getTable(PACKAGE_KEY);
+                if (cargoTomlPackageInfo.get(NAME_KEY) != null && cargoTomlPackageInfo.get(VERSION_KEY) != null) {
+                    return Optional.of(new NameVersion(cargoTomlPackageInfo.getString(NAME_KEY), cargoTomlPackageInfo.getString(VERSION_KEY)));
+                }
+            }
+        }
+        return Optional.empty();
     }
 }
