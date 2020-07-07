@@ -56,18 +56,13 @@ public class CargoExtractor {
             DependencyGraph graph = cargoLockParser.parseLockFile(cargoLockAsString);
             CodeLocation codeLocation = new CodeLocation(graph);
 
-            if (cargoToml.isPresent()) {
-                CargoToml cargoTomlObject = new Toml().read(cargoToml.get()).to(CargoToml.class);
-                if (cargoTomlObject.getPackage().isPresent()) {
-                    Package cargoTomlPackageInfo = cargoTomlObject.getPackage().get();
-                    if (cargoTomlPackageInfo.getName().isPresent() && cargoTomlPackageInfo.getVersion().isPresent()) {
+            Optional<NameVersion> cargoNameVersion = extractCargoNameVersion(cargoToml);
+            if (cargoNameVersion.isPresent()) {
                         return new Extraction.Builder()
                                    .success(codeLocation)
-                                   .projectName(cargoTomlPackageInfo.getName().get())
-                                   .projectVersion(cargoTomlPackageInfo.getVersion().get())
+                                   .projectName(cargoNameVersion.get().getName())
+                                   .projectVersion(cargoNameVersion.get().getVersion())
                                    .build();
-                    }
-                }
             }
             return new Extraction.Builder().success(codeLocation).build();
         } catch (IOException | DetectableException e) {
@@ -78,5 +73,18 @@ public class CargoExtractor {
     private String getCargoLockAsString(File cargoLock, Charset encoding) throws IOException {
        List<String> goLockAsList = Files.readAllLines(cargoLock.toPath(), encoding);
        return String.join(System.lineSeparator(), goLockAsList);
+    }
+
+    private Optional<NameVersion> extractCargoNameVersion(Optional<File> cargoToml) {
+        if (cargoToml.isPresent()) {
+            CargoToml cargoTomlObject = new Toml().read(cargoToml.get()).to(CargoToml.class);
+            if (cargoTomlObject.getPackage().isPresent()) {
+                Package cargoTomlPackageInfo = cargoTomlObject.getPackage().get();
+                if (cargoTomlPackageInfo.getName().isPresent() && cargoTomlPackageInfo.getVersion().isPresent()) {
+                    return Optional.ofNullable(new NameVersion(cargoTomlPackageInfo.getName().get(), cargoTomlPackageInfo.getVersion().get()));
+                }
+            }
+        }
+        return Optional.empty();
     }
 }
