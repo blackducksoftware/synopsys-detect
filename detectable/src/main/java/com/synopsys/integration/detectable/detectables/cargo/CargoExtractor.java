@@ -30,34 +30,53 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Optional;
 
+import com.moandjiezana.toml.Toml;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectables.cargo.model.CargoToml;
+import com.synopsys.integration.detectable.detectables.cargo.model.Package;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
+import com.synopsys.integration.util.NameVersion;
 
 public class CargoExtractor {
 
-    private final CargoLockParser cargoLockParser;
+    private CargoLockParser cargoLockParser;
 
-    public CargoExtractor(final CargoLockParser cargoLockParser) {
+    public CargoExtractor(CargoLockParser cargoLockParser) {
         this.cargoLockParser = cargoLockParser;
     }
 
-    public Extraction extract(final File cargoLock) {
+    public Extraction extract(File cargoLock, Optional<File> cargoToml) {
         try {
-            final String cargoLockAsString = getCargoLockAsString(cargoLock, StandardCharsets.UTF_8);
-            final DependencyGraph graph = cargoLockParser.parseLockFile(cargoLockAsString);
-            final CodeLocation codeLocation = new CodeLocation(graph);
+            String cargoLockAsString = getCargoLockAsString(cargoLock, StandardCharsets.UTF_8);
+            DependencyGraph graph = cargoLockParser.parseLockFile(cargoLockAsString);
+            CodeLocation codeLocation = new CodeLocation(graph);
+
+            if (cargoToml.isPresent()) {
+                CargoToml cargoTomlObject = new Toml().read(cargoToml.get()).to(CargoToml.class);
+                if (cargoTomlObject.getPackage().isPresent()) {
+                    Package cargoTomlPackageInfo = cargoTomlObject.getPackage().get();
+                    if (cargoTomlPackageInfo.getName().isPresent() && cargoTomlPackageInfo.getVersion().isPresent()) {
+                        return new Extraction.Builder()
+                                   .success(codeLocation)
+                                   .projectName(cargoTomlPackageInfo.getName().get())
+                                   .projectVersion(cargoTomlPackageInfo.getVersion().get())
+                                   .build();
+                    }
+                }
+            }
             return new Extraction.Builder().success(codeLocation).build();
-        } catch (final IOException | DetectableException e) {
+        } catch (IOException | DetectableException e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
     private String getCargoLockAsString(File cargoLock, Charset encoding) throws IOException {
-       final List<String> goLockAsList = Files.readAllLines(cargoLock.toPath(), encoding);
+       List<String> goLockAsList = Files.readAllLines(cargoLock.toPath(), encoding);
        return String.join(System.lineSeparator(), goLockAsList);
     }
 }
