@@ -61,7 +61,7 @@ import com.synopsys.integration.exception.IntegrationException;
 public class BazelExtractorTest {
 
     @Test
-    public void testMavenJar() throws ExecutableRunnerException, IntegrationException {
+    void testMavenJar() throws ExecutableRunnerException, IntegrationException {
         BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
         BazelVariableSubstitutor bazelVariableSubstitutor = Mockito.mock(BazelVariableSubstitutor.class);
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
@@ -144,7 +144,7 @@ public class BazelExtractorTest {
     }
 
     @Test
-    public void testMavenInstall() throws ExecutableRunnerException, IntegrationException {
+    void testMavenInstall() throws ExecutableRunnerException, IntegrationException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
@@ -195,7 +195,7 @@ public class BazelExtractorTest {
     }
 
     @Test
-    public void testMultipleRuleTypes() throws ExecutableRunnerException, IntegrationException, IOException {
+    void testMultipleRuleTypes() throws ExecutableRunnerException, IntegrationException, IOException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
         BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);

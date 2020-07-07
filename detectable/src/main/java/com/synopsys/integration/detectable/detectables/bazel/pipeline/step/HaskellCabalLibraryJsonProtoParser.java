@@ -83,8 +83,7 @@ public class HaskellCabalLibraryJsonProtoParser {
                 dependencyVersion = attributeItem.getStringValue();
             }
             if (dependencyName != null && dependencyVersion != null) {
-                NameVersion dependencyNameVersion = new NameVersion(dependencyName, dependencyVersion);
-                return dependencyNameVersion;
+                return new NameVersion(dependencyName, dependencyVersion);
             }
         }
         throw new IntegrationException(String.format("Dependency name/version not found in attribute list: %s", attributes.toString()));

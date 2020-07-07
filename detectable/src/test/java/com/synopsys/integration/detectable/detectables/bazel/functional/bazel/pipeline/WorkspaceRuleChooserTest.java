@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class WorkspaceRuleChooserTest {
+class WorkspaceRuleChooserTest {
 
     private static final Set<WorkspaceRule> WORKSPACE_RULES_JUST_MAVEN_INSTALL = Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL);
     private static final Set<WorkspaceRule> WORKSPACE_RULES_JUST_MAVEN_JAR = Sets.newHashSet(WorkspaceRule.MAVEN_JAR);
@@ -42,34 +42,34 @@ public class WorkspaceRuleChooserTest {
         WorkspaceRule.HASKELL_CABAL_LIBRARY, WorkspaceRule.MAVEN_JAR);
 
     @Test
-    public void testOneRuleParsed() throws IntegrationException {
+    void testOneRuleParsed() throws IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(null, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(1, chosenWorkspaceRules.size());
         assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
-    public void testThreeRulesParsed() throws IntegrationException {
+    void testThreeRulesParsed() throws IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(null, WORKSPACE_RULES_THREE);
         assertEquals(3, chosenWorkspaceRules.size());
     }
 
     @Test
-    public void testOneProvidedSameOneParsed() throws IOException, IntegrationException {
+    void testOneProvidedSameOneParsed() throws IOException, IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(WORKSPACE_RULES_JUST_MAVEN_INSTALL, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(1, chosenWorkspaceRules.size());
         assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
-    public void testOneRuleProvidedDifferentOneParsed() throws IOException, IntegrationException {
+    void testOneRuleProvidedDifferentOneParsed() throws IOException, IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(WORKSPACE_RULES_JUST_MAVEN_JAR, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(1, chosenWorkspaceRules.size());
         assertEquals("maven_jar", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
-    public void testThreeProvidedOneParsed() throws IOException, IntegrationException {
+    void testThreeProvidedOneParsed() throws IOException, IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(WORKSPACE_RULES_THREE, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
         assertEquals(3, chosenWorkspaceRules.size());
     }

@@ -14,36 +14,36 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOpti
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class BazelDetectableOptionsTest {
+class BazelDetectableOptionsTest {
 
     @Test
-    public void testOneProvided() throws IntegrationException {
+    void testOneProvided() throws IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_INSTALL)));
         assertEquals(1, chosenWorkspaceRules.size());
         assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
-    public void testThreeProvided() throws IntegrationException {
+    void testThreeProvided() throws IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(
             Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_JAR), FilterableEnumValue.value(WorkspaceRule.MAVEN_INSTALL), FilterableEnumValue.value(WorkspaceRule.HASKELL_CABAL_LIBRARY)));
         assertEquals(3, chosenWorkspaceRules.size());
     }
 
     @Test
-    public void testAllValue() throws IOException, IntegrationException {
+    void testAllValue() throws IOException, IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_JAR), FilterableEnumValue.allValue(), FilterableEnumValue.value(WorkspaceRule.HASKELL_CABAL_LIBRARY)));
         assertEquals(3, chosenWorkspaceRules.size());
     }
 
     @Test
-    public void testNoneValue() throws IOException, IntegrationException {
+    void testNoneValue() throws IOException, IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.noneValue()));
         assertEquals(0, chosenWorkspaceRules.size());
     }
 
     @Test
-    public void testNoneValueWithARealValue() throws IOException, IntegrationException {
+    void testNoneValueWithARealValue() throws IOException, IntegrationException {
         Set<WorkspaceRule> chosenWorkspaceRules = run(Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_JAR), FilterableEnumValue.noneValue()));
         assertEquals(0, chosenWorkspaceRules.size());
     }

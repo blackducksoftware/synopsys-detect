@@ -33,10 +33,10 @@ import com.google.common.collect.Sets;
 import com.synopsys.integration.detectable.detectables.bazel.BazelWorkspace;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 
-public class BazelWorkspaceTest {
+class BazelWorkspaceTest {
 
     @Test
-    public void testSingleRule() {
+    void testSingleRule() {
         File workspaceFile = new File("src/test/resources/detectables/functional/bazel/WORKSPACE");
         BazelWorkspace bazelWorkspace = new BazelWorkspace(workspaceFile);
 
@@ -44,7 +44,7 @@ public class BazelWorkspaceTest {
     }
 
     @Test
-    public void testMultipleRules() {
+    void testMultipleRules() {
         File workspaceFile = new File("src/test/resources/detectables/functional/bazel/WORKSPACE_multipleRules");
         BazelWorkspace bazelWorkspace = new BazelWorkspace(workspaceFile);
 
