@@ -40,13 +40,14 @@ import com.google.gson.JsonParser;
 // Occasionally changes to BDIO or other integral systems require mass changes to the battery. This facilitates that work.
 public class UpdateBatteryJava extends DefaultTask {
 
+    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX").setPrettyPrinting().create();
+
     @TaskAction
     public void updateBattery() throws IOException {
         File batteryBuild = new File("build/battery/");
-        //battery.listFiles()
         File batteryResources = new File("src/test/resources/battery/");
-
         File batteryReports = new File("build/reports/tests/testBattery/classes/");
+
         for(File report : batteryReports.listFiles()) {
             for (String line : Files.readAllLines(report.toPath())) {
                 if (line.contains("***BDIO BATTERY TEST|")) {
@@ -59,19 +60,15 @@ public class UpdateBatteryJava extends DefaultTask {
                     File testFolder = new File(batteryResources, resourcePrefix);
                     File bdioFolder = new File(testFolder, "bdio");
                     File bdioFile = new File(bdioFolder, bdioName);
-                    //println(bdioFile.toString() + ":" + bdioFile.exists())
 
                     File actualTestFolder = new File(batteryBuild, testName);
                     File actualBdioFolder = new File(actualTestFolder, "bdio");
                     File actualBdioFile = new File(actualBdioFolder, bdioName);
 
-                    //println(actualBdioFile.toString() + ":" + actualBdioFile.exists())
-
                     JsonArray json = JsonParser.parseString(new String(Files.readAllBytes(actualBdioFile.toPath()))).getAsJsonArray();
                     JsonObject headerElement = json.get(0).getAsJsonObject();
                     headerElement.remove("@id");
                     headerElement.remove("creationInfo");
-                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX").setPrettyPrinting().create();
                     FileWriter fileWriter = new FileWriter(bdioFile);
                     fileWriter.write(gson.toJson(json));
 
