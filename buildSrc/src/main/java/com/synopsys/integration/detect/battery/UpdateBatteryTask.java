@@ -38,7 +38,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 // Occasionally changes to BDIO or other integral systems require mass changes to the battery. This facilitates that work.
-public class UpdateBatteryJava extends DefaultTask {
+public class UpdateBatteryTask extends DefaultTask {
 
     Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX").setPrettyPrinting().create();
 
