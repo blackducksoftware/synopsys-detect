@@ -1291,7 +1291,8 @@
 <li>Cargo.toml</li>
 <li>Cargo.lock</li>
 </ul>
-<p>The Cargo detector parses the Cargo.lock file for information on your project's dependencies. If the detector discovers a Cargo.toml file but not a Cargo.lock file, it will prompt the user to generate a Cargo.lock by running <code>cargo generate-lockfile</code> and then run Detect again.</p>
+<p>The Cargo detector parses the Cargo.lock file for information on your project's dependencies. If the detector discovers a Cargo.toml file but not a Cargo.lock file, it will prompt the user to generate a Cargo.lock by running <code>cargo generate-lockfile</code> and then run Detect again.
+If the Cargo detector extracts the project's name and version from the Cargo.toml file.  If it does not find a Cargo.toml file, it will defer to values derived by git, from the project's directory, or defaults.</p>
                 
                   
                 
