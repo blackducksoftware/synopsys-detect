@@ -10,6 +10,9 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 class BazelBattery {
     private static final String BAZEL_MAVEN_INSTALL_OUTPUT_RESOURCE = "bazel-maven-install-query.xout";
     private static final String BAZEL_HASKELL_CABAL_LIBRARY_OUTPUT_RESOURCE = "bazel-haskell-cabal-library-query.xout";
+    private static final String BAZEL_MAVEN_JAR_OUTPUT1_RESOURCE = "bazel-maven-jar-query1.xout";
+    private static final String BAZEL_MAVEN_JAR_OUTPUT2_RESOURCE = "bazel-maven-jar-query2.xout";
+    private static final String BAZEL_MAVEN_JAR_OUTPUT3_RESOURCE = "bazel-maven-jar-query3.xout";
 
     @Test
     void bazelMavenInstall() {
@@ -32,6 +35,20 @@ class BazelBattery {
         test.property("detect.bazel.dependency.type", "HASKELL_CABAL_LIBRARY");
         test.executableFromResourceFiles(DetectProperties.Companion.getDETECT_BAZEL_PATH(), BAZEL_HASKELL_CABAL_LIBRARY_OUTPUT_RESOURCE);
         test.sourceDirectoryNamed("bazel-haskell-cabal-library");
+        test.sourceFileNamed("WORKSPACE");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void bazelMavenJar() {
+        BatteryTest test = new BatteryTest("bazel-maven-jar", "bazel/maven-jar");
+        test.withToolsValue("BAZEL");
+        test.property("detect.bazel.target", "//:ProjectRunner");
+        test.property("detect.bazel.dependency.type", "MAVEN_JAR");
+        test.executableFromResourceFiles(DetectProperties.Companion.getDETECT_BAZEL_PATH(),
+            BAZEL_MAVEN_JAR_OUTPUT1_RESOURCE, BAZEL_MAVEN_JAR_OUTPUT2_RESOURCE, BAZEL_MAVEN_JAR_OUTPUT3_RESOURCE);
+        test.sourceDirectoryNamed("bazel-maven-jar");
         test.sourceFileNamed("WORKSPACE");
         test.expectBdioResources();
         test.run();
