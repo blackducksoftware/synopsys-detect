@@ -25,12 +25,14 @@ package com.synopsys.integration.detectable.detectables.bazel;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,21 +53,16 @@ public class BazelWorkspace {
             logger.debug(String.format("Unable to parse dependency rule from %s: %s", workspaceFile.getAbsolutePath(), e.getMessage()));
             return new HashSet<>(0);
         }
-        return parseDependencyRulesFromWorkspaceFileLines(workspaceFileLines);
+
+        return workspaceFileLines.stream()
+                   .flatMap(this::parseDependencyRulesFromWorkspaceFileLine)
+                   .collect(Collectors.toSet());
     }
 
-    @Nullable
-    public Set<WorkspaceRule> parseDependencyRulesFromWorkspaceFileLines(List<String> workspaceFileLines) {
-        Set<WorkspaceRule> rulesDiscovered = new HashSet<>();
-        for (String workspaceFileLine : workspaceFileLines) {
-            for (WorkspaceRule workspaceRuleCandidate : WorkspaceRule.values()) {
-                if (workspaceFileLine.matches(String.format("^\\s*%s\\s*\\(", workspaceRuleCandidate.getName()))) {
-                    WorkspaceRule parsedDependencyRule = workspaceRuleCandidate;
-                    logger.debug(String.format("Found workspace dependency rule: %s", parsedDependencyRule.getName()));
-                    rulesDiscovered.add(parsedDependencyRule);
-                }
-            }
-        }
-        return rulesDiscovered;
+    @SuppressWarnings("java:S3864") // Sonar deems peek useful for debugging.
+    public Stream<WorkspaceRule> parseDependencyRulesFromWorkspaceFileLine(String workspaceFileLine) {
+        return Arrays.stream(WorkspaceRule.values())
+                   .filter(workspaceRule -> workspaceFileLine.matches(String.format("^\\s*%s\\s*\\(", workspaceRule.getName())))
+                   .peek(workspaceRule -> logger.debug(String.format("Found workspace dependency rule: %s", workspaceRule.getName())));
     }
 }
