@@ -25,8 +25,10 @@ package com.synopsys.integration.detectable.detectables.bazel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -91,7 +93,12 @@ public class BazelExtractor {
     @NotNull
     private List<Dependency> collectDependencies(Pipelines pipelines, Set<WorkspaceRule> workspaceRules) throws IntegrationException {
         List<Dependency> aggregatedDependencies = new ArrayList<>();
-        for (WorkspaceRule workspaceRule : workspaceRules) {
+        // Make sure the order of processing deterministic
+        List<WorkspaceRule> sortedWorkspaceRules = workspaceRules.stream()
+                                                       .sorted(Comparator.naturalOrder())
+                                                       .collect(Collectors.toList());
+
+        for (WorkspaceRule workspaceRule : sortedWorkspaceRules) {
             logger.info(String.format("Running processing pipeline for rule %s", workspaceRule));
             Pipeline pipeline = pipelines.get(workspaceRule);
             List<Dependency> ruleDependencies = pipeline.run();
