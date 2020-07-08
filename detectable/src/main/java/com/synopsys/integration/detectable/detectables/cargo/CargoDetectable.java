@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.cargo;
 
 import java.io.File;
+import java.util.Optional;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -56,11 +57,9 @@ public class CargoDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         cargoLock = fileFinder.findFile(environment.getDirectory(), CARGO_LOCK_FILENAME);
-        if (cargoLock == null) {
-            cargoToml = fileFinder.findFile(environment.getDirectory(), CARGO_TOML_FILENAME);
-            if (cargoToml == null) {
+        cargoToml = fileFinder.findFile(environment.getDirectory(), CARGO_TOML_FILENAME);
+        if (cargoLock == null && cargoToml == null) {
                 return new FilesNotFoundDetectableResult(CARGO_LOCK_FILENAME, CARGO_TOML_FILENAME);
-            }
         }
         return new PassedDetectableResult();
     }
@@ -75,6 +74,6 @@ public class CargoDetectable extends Detectable {
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        return cargoExtractor.extract(cargoLock);
+        return cargoExtractor.extract(cargoLock, Optional.ofNullable(cargoToml));
     }
 }

@@ -49,25 +49,30 @@ Several aspects of script functionality can be configured, including:
 
 Information on how to configure the scripts is in [Shell script configuration](../advanced/script-configuration/).
 
-#### Linux or Mac (Bash)
+#### Linux or Mac
+
+On Linux or Mac, execute the ${solution_name} script (${bash_script_name}, which is a Bash script) from Bash.
 
 To download and run the latest version of ${solution_name} in a single command:
 
-    bash <(curl -s -L https://detect.synopsys.com/detect.sh)
+bash <(curl -s -L https://detect.synopsys.com/detect.sh)
 
 Append any command line arguments to the end, separated by spaces. For example:
 
-    bash <(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
+bash <(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
 
-#### Windows (PowerShell)
+#### Windows
+
+On Windows, execute the ${solution_name} script (${powershell_script_name}, which is a PowerShell script) from
+the [Command Prompt](https://en.wikipedia.org/wiki/Cmd.exe).
 
 To download and run the latest version of ${solution_name} in a single command:
 
-    powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 
 Append any command line arguments to the end, separated by spaces. For example:
 
-    powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect" --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect" --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
 
 ### Running a specific version of ${solution_name}
 
@@ -75,25 +80,25 @@ Append any command line arguments to the end, separated by spaces. For example:
 
 To run a specific version of ${solution_name}:
 
-    export DETECT_LATEST_RELEASE_VERSION={${solution_name} version}
-    bash <(curl -s -L https://detect.synopsys.com/detect.sh)
+export DETECT_LATEST_RELEASE_VERSION={${solution_name} version}
+bash <(curl -s -L https://detect.synopsys.com/detect.sh)
 
 For example, to run ${solution_name} version 5.5.0:
 
-    export DETECT_LATEST_RELEASE_VERSION=5.5.0
-    bash <(curl -s -L https://detect.synopsys.com/detect.sh)
+export DETECT_LATEST_RELEASE_VERSION=5.5.0
+bash <(curl -s -L https://detect.synopsys.com/detect.sh)
 
 #### Windows (PowerShell)
 
 To run a specific version of ${solution_name}:
 
-    $Env:DETECT_LATEST_RELEASE_VERSION = {${solution_name} version}
-    powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+$Env:DETECT_LATEST_RELEASE_VERSION = {${solution_name} version}
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 
 For example, to run ${solution_name} version 5.5.0:
 
-    $Env:DETECT_LATEST_RELEASE_VERSION = 5.5.0
-    powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+$Env:DETECT_LATEST_RELEASE_VERSION = 5.5.0
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 
 ## Running the ${solution_name} .jar
 
@@ -101,17 +106,17 @@ Recent versions of the ${solution_name} .jar file are available for download fro
 
 To run ${solution_name} by invoking the .jar file:
 
-    java -jar {path to .jar file}
+java -jar {path to .jar file}
 
 For example:
 
-    curl -O ${binary_repo_url_base}/${binary_repo_repo}/com/synopsys/integration/${project_name}/5.6.2/synopsys-detect-5.6.2.jar
-    java -jar synopsys-detect-5.6.2.jar
+curl -O ${binary_repo_url_base}/${binary_repo_repo}/com/synopsys/integration/${project_name}/5.6.2/synopsys-detect-5.6.2.jar
+java -jar synopsys-detect-5.6.2.jar
 
 You can use the ${solution_name} Bash script (${bash_script_name}) to download the ${solution_name} .jar file:
 
-    export DETECT_DOWNLOAD_ONLY=1
-    ./${bash_script_name}
+export DETECT_DOWNLOAD_ONLY=1
+./${bash_script_name}
 
 ## Including and excluding tools and detectors
 
@@ -124,11 +129,11 @@ By default, all tools are eligible to run; the set of tools that actually run
 depends on the properties you set.
 To limit the eligible tools to a given list, use:
 
-    --detect.tools={comma-separated list of tool names, all uppercase}
+--detect.tools={comma-separated list of tool names, all uppercase}
 
 To exclude specific tools, use:
 
-    --detect.tools.excluded={comma-separated list of tool names, all uppercase}
+--detect.tools.excluded={comma-separated list of tool names, all uppercase}
 
 Exclusions take precedence over inclusions.
 
@@ -142,11 +147,11 @@ By default, all detectors are eligible to run.  The set of detectors that actual
 run depends on the files existing in your project directory.
 To limit the eligible detectors to a given list, use:
 
-    --detect.included.detector.types={comma-separated list of detector names}
+--detect.included.detector.types={comma-separated list of detector names}
 
 To exclude specific detectors, use:
 
-    --detect.excluded.detector.types={comma-separated list of detector names}
+--detect.excluded.detector.types={comma-separated list of detector names}
 
 Exclusions take precedence over inclusions.
 
