@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
@@ -54,7 +55,7 @@ public class ProductBoot {
         PolarisConnectivityChecker polarisConnectivityChecker,
         ProductBootFactory productBootFactory,
         AnalyticsConfigurationService analyticsConfigurationService
-    ) throws DetectUserFriendlyException {
+    ) throws DetectUserFriendlyException, InvalidPropertyException {
 
         if (!productDecision.willRunAny()) {
             throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
@@ -77,7 +78,7 @@ public class ProductBoot {
 
     private BlackDuckRunData getBlackDuckRunData(ProductDecision productDecision, ProductBootFactory productBootFactory, BlackDuckConnectivityChecker blackDuckConnectivityChecker, ProductBootOptions productBootOptions,
         AnalyticsConfigurationService analyticsConfigurationService)
-        throws DetectUserFriendlyException {
+        throws DetectUserFriendlyException, InvalidPropertyException {
         BlackDuckRunData blackDuckRunData = null;
         BlackDuckDecision blackDuckDecision = productDecision.getBlackDuckDecision();
         if (blackDuckDecision.shouldRun()) {

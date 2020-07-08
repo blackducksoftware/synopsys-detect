@@ -38,6 +38,7 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
+import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -61,7 +62,7 @@ public class BlackDuckSignatureScannerTool {
     }
 
     // TODO: Don't accept an Optional as a parameter.
-    public SignatureScannerToolResult runScanTool(final BlackDuckRunData blackDuckRunData, final NameVersion projectNameVersion, final Optional<File> dockerTar) throws DetectUserFriendlyException {
+    public SignatureScannerToolResult runScanTool(final BlackDuckRunData blackDuckRunData, final NameVersion projectNameVersion, final Optional<File> dockerTar) throws DetectUserFriendlyException, InvalidPropertyException {
         final DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         final ConnectionFactory connectionFactory = detectContext.getBean(ConnectionFactory.class);
         final DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);

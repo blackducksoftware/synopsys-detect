@@ -30,6 +30,7 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
@@ -74,7 +75,7 @@ public class ProductBootTest {
     }
 
     @Test
-    public void blackDuckFailureWithIgnoreReturnsFalse() throws DetectUserFriendlyException, IOException, IntegrationException {
+    public void blackDuckFailureWithIgnoreReturnsFalse() throws DetectUserFriendlyException, IOException, IntegrationException, InvalidPropertyException {
         BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.failure("Failed to connect");
 
         ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), new ProductBootOptions(true, false), connectivityResult, null);
@@ -102,7 +103,7 @@ public class ProductBootTest {
     }
 
     @Test
-    public void blackDuckConnectionSuccessWithTestReturnsNull() throws DetectUserFriendlyException, IOException, IntegrationException {
+    public void blackDuckConnectionSuccessWithTestReturnsNull() throws DetectUserFriendlyException, IOException, IntegrationException, InvalidPropertyException {
         BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.success(Mockito.mock(BlackDuckServicesFactory.class), Mockito.mock(BlackDuckServerConfig.class));
 
         ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), new ProductBootOptions(false, true), connectivityResult, null);
@@ -111,7 +112,7 @@ public class ProductBootTest {
     }
 
     @Test
-    public void polarisConnectionSuccessWithTestReturnsNull() throws DetectUserFriendlyException, IOException, IntegrationException {
+    public void polarisConnectionSuccessWithTestReturnsNull() throws DetectUserFriendlyException, IOException, IntegrationException, InvalidPropertyException {
         PolarisConnectivityResult connectivityResult = PolarisConnectivityResult.success();
 
         ProductRunData productRunData = testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), new ProductBootOptions(false, true), null, connectivityResult);
@@ -120,7 +121,7 @@ public class ProductBootTest {
     }
 
     @Test
-    public void blackDuckOnlyWorks() throws DetectUserFriendlyException, IOException, IntegrationException {
+    public void blackDuckOnlyWorks() throws DetectUserFriendlyException, IOException, IntegrationException, InvalidPropertyException {
         BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.success(Mockito.mock(BlackDuckServicesFactory.class), Mockito.mock(BlackDuckServerConfig.class));
         ProductRunData productRunData = testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), new ProductBootOptions(false, false), connectivityResult, null);
 
@@ -129,7 +130,7 @@ public class ProductBootTest {
     }
 
     @Test
-    public void polarisOnlyWorks() throws DetectUserFriendlyException, IOException, IntegrationException {
+    public void polarisOnlyWorks() throws DetectUserFriendlyException, IOException, IntegrationException, InvalidPropertyException {
         PolarisDecision polarisDecision = PolarisDecision.runOnline(Mockito.mock(PolarisServerConfig.class));
 
         PolarisConnectivityResult polarisConnectivityResult = Mockito.mock(PolarisConnectivityResult.class);
@@ -141,12 +142,13 @@ public class ProductBootTest {
         Assertions.assertTrue(productRunData.shouldUsePolarisProduct());
     }
 
-    private ProductRunData testBoot(BlackDuckDecision blackDuckDecision, PolarisDecision polarisDecision, ProductBootOptions productBootOptions) throws DetectUserFriendlyException, IOException, IntegrationException {
+    private ProductRunData testBoot(BlackDuckDecision blackDuckDecision, PolarisDecision polarisDecision, ProductBootOptions productBootOptions) throws DetectUserFriendlyException, IOException, IntegrationException,
+                                                                                                                                                            InvalidPropertyException {
         return testBoot(blackDuckDecision, polarisDecision, productBootOptions, null, null);
     }
 
     private ProductRunData testBoot(BlackDuckDecision blackDuckDecision, PolarisDecision polarisDecision, ProductBootOptions productBootOptions, BlackDuckConnectivityResult blackDuckconnectivityResult,
-        PolarisConnectivityResult polarisConnectivityResult) throws DetectUserFriendlyException, IOException, IntegrationException {
+        PolarisConnectivityResult polarisConnectivityResult) throws DetectUserFriendlyException, IOException, IntegrationException, InvalidPropertyException {
         ProductBootFactory productBootFactory = Mockito.mock(ProductBootFactory.class);
         Mockito.when(productBootFactory.createPhoneHomeManager(Mockito.any())).thenReturn(null);
 

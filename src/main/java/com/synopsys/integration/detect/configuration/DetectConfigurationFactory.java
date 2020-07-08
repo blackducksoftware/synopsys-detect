@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect;
+package com.synopsys.integration.detect.configuration;
 
 import static java.util.Collections.emptyList;
 
@@ -54,6 +54,8 @@ import com.synopsys.integration.configuration.property.types.enumfilterable.Filt
 import com.synopsys.integration.configuration.property.types.path.NullablePathProperty;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.property.types.path.PathValue;
+import com.synopsys.integration.detect.DetectTool;
+import com.synopsys.integration.detect.PropertyConfigUtils;
 import com.synopsys.integration.detect.configuration.DetectCustomFieldParser;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectorSearchExcludedDirectories;
@@ -94,10 +96,15 @@ import com.synopsys.integration.rest.credentials.CredentialsBuilder;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.proxy.ProxyInfoBuilder;
 
-public class DetectConfigurationFactoryJava {
+public class DetectConfigurationFactory {
 
     private PropertyConfiguration detectConfiguration;
     private PathResolver pathResolver;
+
+    public DetectConfigurationFactory(final PropertyConfiguration detectConfiguration, final PathResolver pathResolver) {
+        this.detectConfiguration = detectConfiguration;
+        this.pathResolver = pathResolver;
+    }
 
     //#region Prefer These Over Any Property
     public Long findTimeoutInSeconds() throws InvalidPropertyException {
@@ -110,7 +117,7 @@ public class DetectConfigurationFactoryJava {
     }
 
     public int findParallelProcessors() throws InvalidPropertyException {
-        int provided = 0;
+        int provided;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.Companion.getDETECT_PARALLEL_PROCESSORS())) {
             provided = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PARALLEL_PROCESSORS());
         }
@@ -131,7 +138,7 @@ public class DetectConfigurationFactoryJava {
         }
     }
 
-    private int findRuntimeProcessors() {
+    public int findRuntimeProcessors() {
         return Runtime.getRuntime().availableProcessors();
     }
 
@@ -171,7 +178,7 @@ public class DetectConfigurationFactoryJava {
     //#endregion
 
     //#region Creating Connections
-    private ProxyInfo createBlackDuckProxyInfo() throws DetectUserFriendlyException{
+    public ProxyInfo createBlackDuckProxyInfo() throws DetectUserFriendlyException{
         String proxyUsername = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_USERNAME(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_USERNAME()).orElse(null);
         String proxyPassword = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_PASSWORD(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_PASSWORD()).orElse(null);
         String proxyHost = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_HOST(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_HOST()).orElse(null);
@@ -209,7 +216,7 @@ public class DetectConfigurationFactoryJava {
         return new ProductBootOptions(ignoreFailures, testConnections);
     }
 
-    private ConnectionDetails createConnectionDetails() throws DetectUserFriendlyException, InvalidPropertyException {
+    public ConnectionDetails createConnectionDetails() throws DetectUserFriendlyException, InvalidPropertyException {
         Boolean alwaysTrust = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_TRUST_CERT(), DetectProperties.Companion.getBLACKDUCK_HUB_TRUST_CERT());
         List<String> proxyIgnoredHosts = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_IGNORED_HOSTS(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_IGNORED_HOSTS());
         List<Pattern> proxyPatterns = proxyIgnoredHosts.stream()

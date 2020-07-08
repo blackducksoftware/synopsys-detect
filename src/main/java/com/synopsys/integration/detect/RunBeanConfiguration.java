@@ -36,11 +36,13 @@ import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.tool.detector.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
@@ -126,12 +128,12 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public ConnectionFactory connectionFactory() {
+    public ConnectionFactory connectionFactory() throws DetectUserFriendlyException, InvalidPropertyException {
         return new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
     }
 
     @Bean
-    public ArtifactResolver artifactResolver() {
+    public ArtifactResolver artifactResolver() throws DetectUserFriendlyException, InvalidPropertyException {
         return new ArtifactResolver(connectionFactory(), gson);
     }
 
@@ -157,7 +159,7 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public AirGapInspectorPaths airGapManager() {
+    public AirGapInspectorPaths airGapManager() throws InvalidPropertyException {
         final AirGapOptions airGapOptions = detectConfigurationFactory.createAirGapOptions();
         return new AirGapInspectorPaths(airGapPathFinder(), airGapOptions);
     }
@@ -193,25 +195,25 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public DetectExecutableResolver detectExecutableResolver() {
+    public DetectExecutableResolver detectExecutableResolver() throws InvalidPropertyException {
         return new DetectExecutableResolver(simpleExecutableResolver(), detectConfigurationFactory.createExecutablePaths());
     }
 
     //#region Detectables
     @Bean
-    public DockerInspectorResolver dockerInspectorResolver() {
+    public DockerInspectorResolver dockerInspectorResolver() throws DetectUserFriendlyException, InvalidPropertyException {
         final DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver());
         return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fullFileFinder(), dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
     }
 
     @Bean()
-    public GradleInspectorResolver gradleInspectorResolver() {
+    public GradleInspectorResolver gradleInspectorResolver() throws DetectUserFriendlyException, InvalidPropertyException {
         final GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver());
         return new ArtifactoryGradleInspectorResolver(gradleInspectorInstaller, configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapManager(), directoryManager);
     }
 
     @Bean()
-    public NugetInspectorResolver nugetInspectorResolver() {
+    public NugetInspectorResolver nugetInspectorResolver() throws InvalidPropertyException, DetectUserFriendlyException {
         final NugetLocatorOptions installerOptions = detectableOptionFactory.createNugetInstallerOptions();
         final NugetInspectorLocator locator;
         final Optional<File> nugetAirGapPath = airGapManager().getNugetInspectorAirGapFile();
@@ -245,7 +247,7 @@ public class RunBeanConfiguration {
     }
 
     @Bean()
-    public DetectDetectableFactory detectDetectableFactory() {
+    public DetectDetectableFactory detectDetectableFactory() throws InvalidPropertyException, DetectUserFriendlyException {
         return new DetectDetectableFactory(detectableFactory(), detectableOptionFactory, detectExecutableResolver(), dockerInspectorResolver(), gradleInspectorResolver(), nugetInspectorResolver(), pipInspectorResolver());
     }
 

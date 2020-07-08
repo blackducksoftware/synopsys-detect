@@ -48,6 +48,7 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectTool;
@@ -130,7 +131,7 @@ public class RunManager {
         this.detectContext = detectContext;
     }
 
-    public RunResult run(final ProductRunData productRunData) throws DetectUserFriendlyException, IntegrationException {
+    public RunResult run(final ProductRunData productRunData) throws DetectUserFriendlyException, IntegrationException, InvalidPropertyException {
         //TODO: Better way for run manager to get dependencies so he can be tested. (And better ways of creating his objects)
         final Gson gson = detectContext.getBean(Gson.class);
         final PropertyConfiguration detectConfiguration = detectContext.getBean(PropertyConfiguration.class);
@@ -185,7 +186,7 @@ public class RunManager {
 
     private UniversalToolsResult runUniversalProjectTools(final PropertyConfiguration detectConfiguration, final DetectConfigurationFactory detectConfigurationFactory,
         final DirectoryManager directoryManager, final EventSystem eventSystem, final DetectDetectableFactory detectDetectableFactory,
-        final RunResult runResult, final RunOptions runOptions, final DetectToolFilter detectToolFilter, final CodeLocationNameManager codeLocationNameManager) throws DetectUserFriendlyException {
+        final RunResult runResult, final RunOptions runOptions, final DetectToolFilter detectToolFilter, final CodeLocationNameManager codeLocationNameManager) throws DetectUserFriendlyException, InvalidPropertyException {
         final ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
         final CodeLocationConverter codeLocationConverter = new CodeLocationConverter(new ExternalIdFactory());
 
@@ -296,7 +297,7 @@ public class RunManager {
 
     private void runBlackDuckProduct(final ProductRunData productRunData, final DetectConfigurationFactory detectConfigurationFactory, final DirectoryManager directoryManager, final EventSystem eventSystem,
         final CodeLocationNameManager codeLocationNameManager, final BdioCodeLocationCreator bdioCodeLocationCreator, final DetectInfo detectInfo, final RunResult runResult, final RunOptions runOptions,
-        final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion, final AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException {
+        final DetectToolFilter detectToolFilter, final NameVersion projectNameVersion, final AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException, InvalidPropertyException {
 
         logger.debug("Black Duck tools will run.");
 

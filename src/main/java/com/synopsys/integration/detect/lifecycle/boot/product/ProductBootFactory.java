@@ -28,6 +28,7 @@ import java.util.concurrent.Executors;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConfigFactory;
@@ -56,7 +57,7 @@ public class ProductBootFactory {
         return phoneHomeManager;
     }
 
-    public BlackDuckServerConfig createBlackDuckServerConfig() throws DetectUserFriendlyException {
+    public BlackDuckServerConfig createBlackDuckServerConfig() throws DetectUserFriendlyException, InvalidPropertyException {
         BlackDuckConnectionDetails connectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
         BlackDuckConfigFactory blackDuckConfigFactory = new BlackDuckConfigFactory(connectionDetails);
         return blackDuckConfigFactory.createServerConfig(new SilentIntLogger());

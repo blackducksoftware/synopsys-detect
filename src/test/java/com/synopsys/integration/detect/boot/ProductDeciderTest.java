@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.builder.BuilderStatus;
+import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.configuration.util.Bds;
 import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
@@ -45,7 +46,7 @@ class ProductDeciderTest {
     private String VALID_URL = "http://example";
 
     @Test
-    public void shouldRunPolarisWhenConfigValid() {
+    public void shouldRunPolarisWhenConfigValid() throws InvalidPropertyException {
         File userHome = Mockito.mock(File.class);
         DetectToolFilter detectToolFilter = mockToolFilterForPolaris(true);
         DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(true);
@@ -55,7 +56,7 @@ class ProductDeciderTest {
     }
 
     @Test
-    public void shouldNotRunPolarisWhenConfigInvalid() {
+    public void shouldNotRunPolarisWhenConfigInvalid() throws InvalidPropertyException {
         File userHome = Mockito.mock(File.class);
         DetectToolFilter detectToolFilter = mockToolFilterForPolaris(true);
         DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(false);
@@ -65,7 +66,7 @@ class ProductDeciderTest {
     }
 
     @Test
-    public void shouldNotRunPolarisWhenExcluded() {
+    public void shouldNotRunPolarisWhenExcluded() throws InvalidPropertyException {
         File userHome = Mockito.mock(File.class);
         DetectToolFilter detectToolFilter = mockToolFilterForPolaris(false);
         DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(true);
@@ -128,7 +129,7 @@ class ProductDeciderTest {
         return new BlackDuckConnectionDetails(offline, blackduckUrl, null, null, null);
     }
 
-    private DetectConfigurationFactory mockDetectConfigurationFactoryForPolaris(boolean returnsValid) {
+    private DetectConfigurationFactory mockDetectConfigurationFactoryForPolaris(boolean returnsValid) throws InvalidPropertyException {
         PolarisServerConfigBuilder polarisServerConfigBuilder = new MockPolarisServerConfigBuilder(returnsValid);
         DetectConfigurationFactory detectConfigurationFactory = Mockito.mock(DetectConfigurationFactory.class);
         Mockito.when(detectConfigurationFactory.createPolarisServerConfigBuilder(Mockito.any())).thenReturn(

@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
+import com.synopsys.integration.configuration.config.InvalidPropertyException;
 import com.synopsys.integration.configuration.util.Bdo;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.rest.credentials.Credentials;
@@ -57,24 +58,24 @@ public class DetectConfigurationFactoryTests {
 
     //#region Parallel Processors
     @Test
-    public void parallelProcessorsDefaultsToOne() {
+    public void parallelProcessorsDefaultsToOne() throws InvalidPropertyException {
         // Using the property default is the safe choice. See IDETECT-1970 - JM
         final DetectConfigurationFactory factory = spyFactoryOf();
         final Integer defaultValue = DetectProperties.Companion.getDETECT_PARALLEL_PROCESSORS().getDefaultValue();
 
         Assertions.assertEquals(defaultValue.intValue(), factory.findParallelProcessors());
-        Mockito.verifyNoInteractions(factory);
+        Mockito.verify(factory, Mockito.never()).findRuntimeProcessors();
     }
 
     @Test
-    public void parallelProcessorsPrefersProperty() {
+    public void parallelProcessorsPrefersProperty() throws InvalidPropertyException {
         final DetectConfigurationFactory factory = factoryOf(Pair.of(DetectProperties.Companion.getDETECT_PARALLEL_PROCESSORS(), "3"));
 
         Assertions.assertEquals(3, factory.findParallelProcessors());
     }
 
     @Test
-    public void parallelProcessorsPrefersNewProperty() {
+    public void parallelProcessorsPrefersNewProperty() throws InvalidPropertyException {
         final DetectConfigurationFactory factory = factoryOf(
             Pair.of(DetectProperties.Companion.getDETECT_PARALLEL_PROCESSORS(), "5"),
             Pair.of(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS(), "4")
@@ -84,7 +85,7 @@ public class DetectConfigurationFactoryTests {
     }
 
     @Test
-    public void parallelProcessorsFallsBackToOldProperty() {
+    public void parallelProcessorsFallsBackToOldProperty() throws InvalidPropertyException {
         final DetectConfigurationFactory factory = factoryOf(
             Pair.of(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS(), "5")
         );
@@ -95,7 +96,7 @@ public class DetectConfigurationFactoryTests {
 
     //#region Snippet Matching
     @Test
-    public void snippetMatchingDeprecatedPropertyEnablesSnippets() {
+    public void snippetMatchingDeprecatedPropertyEnablesSnippets() throws InvalidPropertyException {
         final DetectConfigurationFactory factory = factoryOf(
             Pair.of(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE(), "true")
         );
@@ -104,7 +105,7 @@ public class DetectConfigurationFactoryTests {
     }
 
     @Test
-    public void snippetMatchingPrefersNewerProperty() {
+    public void snippetMatchingPrefersNewerProperty() throws InvalidPropertyException {
         final DetectConfigurationFactory factory = factoryOf(
             Pair.of(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE(), "true"),
             Pair.of(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING(), SnippetMatching.FULL_SNIPPET_MATCHING_ONLY.name())
