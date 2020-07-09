@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,15 +37,14 @@ import com.synopsys.integration.detectable.detectables.go.gomod.model.ReplaceDat
 
 public class ReplacementDataExtractorA {
 
-    private Map<String, String> replacementData;
     private Gson gson;
 
-    public ReplacementDataExtractorA(Map<String, String> replacementData, Gson gson) {
-        this.replacementData = replacementData;
+    public ReplacementDataExtractorA(Gson gson) {
         this.gson = gson;
     }
 
-    public void extractReplacementData(List<String> listUJsonOutput) throws DetectableException {
+    public Map<String, String> extractReplacementData(List<String> listUJsonOutput) throws DetectableException {
+        Map<String, String> replacementData = new HashMap<>();
         String jsonString = convertOutputToJsonString(listUJsonOutput);
 
         Type goListUJsonEntryType = new TypeToken<List<GoListUJsonData>>() {}.getType();
@@ -64,6 +64,7 @@ public class ReplacementDataExtractorA {
         } catch (JsonSyntaxException e) {
             throw new DetectableException(e.getMessage());
         }
+        return replacementData;
     }
 
     private String convertOutputToJsonString(List<String> listUJsonOutput) {

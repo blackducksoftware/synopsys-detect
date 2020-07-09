@@ -45,11 +45,8 @@ public class GoModCliExtractor {
     private final ExecutableRunner executableRunner;
     private final GoModGraphParser goModGraphParser;
     private final Gson gson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().setLenient().create();
-    private final Map<String, String> replacementData = new HashMap<>();
 
-    private ReplacementDataExtractorA replacementDataExtractorA = new ReplacementDataExtractorA(replacementData, gson);
-    private ReplacementDataExtractorB replacementDataExtractorB = new ReplacementDataExtractorB(replacementData);
-    private ReplacementDataExtractorC replacementDataExtractorC = new ReplacementDataExtractorC(replacementData, gson);
+    private ReplacementDataExtractorC replacementDataExtractorC = new ReplacementDataExtractorC(gson);
 
     public GoModCliExtractor(final ExecutableRunner executableRunner, final GoModGraphParser goModGraphParser) {
         this.executableRunner = executableRunner;
@@ -81,7 +78,7 @@ public class GoModCliExtractor {
     private List<String> modGraphOutputWithReplacements(File directory, File goExe, List<String> listUJsonOutput) throws ExecutableRunnerException, DetectableException {
         final List<String> modGraphOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "mod", "graph");
 
-        replacementDataExtractorC.extractReplacementData(listUJsonOutput);
+        Map<String,String> replacementData = replacementDataExtractorC.extractReplacementData(listUJsonOutput);
 
         for (String line : modGraphOutput) {
             for (String original : replacementData.keySet()) {

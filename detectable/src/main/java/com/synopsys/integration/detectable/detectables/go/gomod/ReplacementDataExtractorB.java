@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,19 +30,14 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 
 public class ReplacementDataExtractorB {
 
-    private Map<String, String> replacementData;
-
     private String REPLACE_TOKEN = "\t\"Replace\": {";
     private String PATH_TOKEN = "\t\"Path\": \"";
     private String VERSION_TOKEN = "\t\"Version\": \"";
     private String VERSION_IN_REPLACE_BLOCK_TOKEN = "\t\t\"Version\": \"";
 
-    public ReplacementDataExtractorB(Map<String, String> replacementData) {
-        this.replacementData = replacementData;
-    }
-
-    public void extractReplacementData(List<String> listUJsonOutput) throws DetectableException {
+    public Map<String, String> extractReplacementData(List<String> listUJsonOutput) throws DetectableException {
         // Just parse replacement blocks, don't worry about the rest
+        Map<String, String> replacementData = new HashMap<>();
         boolean inReplaceBlock = false;
         String path = "";
         String currentVersion = "";
@@ -69,6 +65,7 @@ public class ReplacementDataExtractorB {
                 replaceVersion = "";
             }
         }
+        return replacementData;
     }
 
     private String extractPathFromLine(String line, int beginIndex) {

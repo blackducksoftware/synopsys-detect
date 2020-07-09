@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,17 +14,15 @@ import com.synopsys.integration.detectable.detectables.go.gomod.model.ReplaceDat
 
 public class ReplacementDataExtractorC {
 
-    private Map<String, String> replacementData;
     private Gson gson;
 
-    public ReplacementDataExtractorC(Map<String, String> replacementData, Gson gson) {
-        this.replacementData = replacementData;
+    public ReplacementDataExtractorC(Gson gson) {
         this.gson = gson;
     }
 
-    public void extractReplacementData(List<String> listUJsonOutput) throws DetectableException {
+    public Map<String, String> extractReplacementData(List<String> listUJsonOutput) throws DetectableException {
         // Similar to Extractor A in that we're going to delegate parsing to Gson, but we're only going to convert elements one at a time
-
+        Map<String, String> replacementData = new HashMap<>();
         StringBuilder rawEntry = new StringBuilder();
         for (String line : listUJsonOutput) {
             rawEntry.append(line);
@@ -46,5 +45,6 @@ public class ReplacementDataExtractorC {
                 }
             }
         }
+        return replacementData;
     }
 }
