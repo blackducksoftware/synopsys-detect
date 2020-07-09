@@ -37,7 +37,7 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
-@DetectableInfo(language = "Rust", forge = "crates", requirementsMarkdown = "File: Cargo.lock")
+@DetectableInfo(language = "Rust", forge = "crates", requirementsMarkdown = "Files: Cargo.lock, Cargo.toml")
 public class CargoDetectable extends Detectable {
     public static final String CARGO_LOCK_FILENAME = "Cargo.lock";
     public static final String CARGO_TOML_FILENAME = "Cargo.toml";

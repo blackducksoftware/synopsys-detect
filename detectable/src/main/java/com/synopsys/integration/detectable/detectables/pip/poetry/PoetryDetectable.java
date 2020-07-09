@@ -32,6 +32,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
@@ -39,6 +40,7 @@ import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetect
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PoetryRunPoetryInstallDetectResult;
 
+@DetectableInfo(language = "Python", forge = "pypi", requirementsMarkdown = "Files: Poetry.lock, pyproject.toml")
 public class PoetryDetectable extends Detectable {
     private static final String PYPROJECT_TOML_FILE_NAME = "pyproject.toml";
     private static final String POETRY_LOCK = "poetry.lock";
