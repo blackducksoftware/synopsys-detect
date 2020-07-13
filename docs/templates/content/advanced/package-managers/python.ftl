@@ -27,7 +27,6 @@ Ramifications of this approach:
 
 * Because pip-inspector.py uses the pkg_resources library to discover dependencies, only those packages which have been installed; using, for example, `pip install`, into the pip cache; in other words, appearing in the output of `pip list`, are included in the output. There must be a match between the package version on which your project depends and the package version installed in the pip cache. Additional details are available in the [pkg_resources library documentation](https://setuptools.readthedocs.io/en/latest/pkg_resources.html).
 * If the packages are installed into a virtual environment for your project, you must run ${solution_name} from within that virtual environment.
-* If you are using a tool such as Poetry that sets up a Python virtual environment, you must run ${solution_name} from within that virtual environment.
 
 Recommendations:
 
@@ -72,3 +71,4 @@ The Poetry detector attempts to run on your project if either of the following i
 2. A pyproject.toml file is found.
 
 The Poetry detector parses poetry.lock for dependency information. If the detector discovers a pyproject.toml file but not a poetry.lock file, it will prompt the user to generate a poetry.lock by running `poetry install` and then run Detect again.
+If the Poetry detector extracts the project's name and version from the pyproject.toml file.  If it does not find a pyproject.toml file, it will defer to values derived by git, from the project's directory, or defaults.
