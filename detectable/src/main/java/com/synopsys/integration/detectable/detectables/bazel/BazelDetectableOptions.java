@@ -22,24 +22,19 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
-
 public class BazelDetectableOptions {
     private final String targetName;
-    private final List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRulesPropertyValues;
+    private final Set<WorkspaceRule> bazelDependencyRules;
     private final List<String> bazelCqueryAdditionalOptions;
 
-    public BazelDetectableOptions(String targetName, List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRulesPropertyValues,
+    public BazelDetectableOptions(String targetName, Set<WorkspaceRule> bazelDependencyRules,
         List<String> bazelCqueryAdditionalOptions) {
         this.targetName = targetName;
-        this.bazelDependencyRulesPropertyValues = bazelDependencyRulesPropertyValues;
+        this.bazelDependencyRules = bazelDependencyRules;
         this.bazelCqueryAdditionalOptions = bazelCqueryAdditionalOptions;
     }
 
@@ -52,32 +47,6 @@ public class BazelDetectableOptions {
     }
 
     public Set<WorkspaceRule> getBazelDependencyRules() {
-        Set<WorkspaceRule> bazelDependencyRules = new HashSet<>();
-        if (noneSpecified(bazelDependencyRulesPropertyValues)) {
-            // Leave bazelDependencyRules empty
-        } else if (allSpecified(bazelDependencyRulesPropertyValues)) {
-            bazelDependencyRules.addAll(Arrays.asList(WorkspaceRule.values()));
-        } else {
-            bazelDependencyRules.addAll(FilterableEnumUtils.toPresentValues(bazelDependencyRulesPropertyValues));
-        }
         return bazelDependencyRules;
-    }
-
-    private boolean noneSpecified(List<FilterableEnumValue<WorkspaceRule>> rulesPropertyValues) {
-        boolean noneWasSpecified = false;
-        if (rulesPropertyValues == null ||
-                FilterableEnumUtils.containsNone(rulesPropertyValues) ||
-                (FilterableEnumUtils.toPresentValues(rulesPropertyValues).isEmpty() && !FilterableEnumUtils.containsAll(rulesPropertyValues))) {
-            noneWasSpecified = true;
-        }
-        return noneWasSpecified;
-    }
-
-    private boolean allSpecified(List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
-        boolean allWasSpecified = false;
-        if (userProvidedRules != null && FilterableEnumUtils.containsAll(userProvidedRules)) {
-            allWasSpecified = true;
-        }
-        return allWasSpecified;
     }
 }

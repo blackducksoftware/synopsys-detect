@@ -23,8 +23,11 @@
 package com.synopsys.integration.detect.configuration;
 
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils;
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
@@ -86,7 +90,8 @@ public class DetectableOptionFactory {
         List<String> bazelCqueryAdditionalOptions = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BAZEL_CQUERY_OPTIONS());
 
         List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRulesPropertyValues = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BAZEL_DEPENDENCY_RULE());
-        return new BazelDetectableOptions(targetName, bazelDependencyRulesPropertyValues, bazelCqueryAdditionalOptions);
+        Set<WorkspaceRule> bazelDependencyRules = deriveBazelDependencyRules(bazelDependencyRulesPropertyValues);
+        return new BazelDetectableOptions(targetName, bazelDependencyRules, bazelCqueryAdditionalOptions);
     }
 
     public BitbakeDetectableOptions createBitbakeDetectableOptions() {
@@ -240,5 +245,35 @@ public class DetectableOptionFactory {
     public CachedExecutableResolverOptions createCachedExecutableResolverOptions() {
         Boolean python3 = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PYTHON_PYTHON3());
         return new CachedExecutableResolverOptions(python3);
+    }
+
+    private Set<WorkspaceRule> deriveBazelDependencyRules(List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRulesPropertyValues) {
+        Set<WorkspaceRule> bazelDependencyRules = new HashSet<>();
+        if (noneSpecified(bazelDependencyRulesPropertyValues)) {
+            // Leave bazelDependencyRules empty
+        } else if (allSpecified(bazelDependencyRulesPropertyValues)) {
+            bazelDependencyRules.addAll(Arrays.asList(WorkspaceRule.values()));
+        } else {
+            bazelDependencyRules.addAll(FilterableEnumUtils.toPresentValues(bazelDependencyRulesPropertyValues));
+        }
+        return bazelDependencyRules;
+    }
+
+    private boolean noneSpecified(List<FilterableEnumValue<WorkspaceRule>> rulesPropertyValues) {
+        boolean noneWasSpecified = false;
+        if (rulesPropertyValues == null ||
+                FilterableEnumUtils.containsNone(rulesPropertyValues) ||
+                (FilterableEnumUtils.toPresentValues(rulesPropertyValues).isEmpty() && !FilterableEnumUtils.containsAll(rulesPropertyValues))) {
+            noneWasSpecified = true;
+        }
+        return noneWasSpecified;
+    }
+
+    private boolean allSpecified(List<FilterableEnumValue<WorkspaceRule>> userProvidedRules) {
+        boolean allWasSpecified = false;
+        if (userProvidedRules != null && FilterableEnumUtils.containsAll(userProvidedRules)) {
+            allWasSpecified = true;
+        }
+        return allWasSpecified;
     }
 }
