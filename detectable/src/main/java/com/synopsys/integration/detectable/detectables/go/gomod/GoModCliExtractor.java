@@ -97,7 +97,9 @@ public class GoModCliExtractor {
             for (String original : replacementData.keySet()) {
                 String newLine = line.replace(original, replacementData.get(original));
                 int indexOfLine = modGraphOutput.indexOf(line);
-                modGraphOutput.set(indexOfLine, newLine);
+                if (!line.equals(newLine)) {
+                    modGraphOutput.set(indexOfLine, newLine);
+                }
             }
         }
         return modGraphOutput;
