@@ -34,23 +34,23 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         addExecutableOutput(goListOutput, "go", "list", "-m");
 
         ExecutableOutput goListUJsonOutput = createStandardOutput(
-            "{",
-            "\t\"Path\": \"github.com/codegangsta/negroni\",",
-            "\t\"Version\": \"v1.0.0\"",
-            "}",
+            "{\n",
+            "\t\"Path\": \"github.com/codegangsta/negroni\",\n",
+            "\t\"Version\": \"v1.0.0\"\n",
+            "}\n",
             "",
-            "{",
-            "\t\"Path\": \"github.com/sirupsen/logrus\",",
-            "\t\"Version\": \"v1.1.1\",",
-            "\t\"Replace\": {",
-            "\t\t\"Path\": \"github.com/sirupsen/logrus\",",
-            "\t\t\"Version\": \"v2.0.0\"",
-            "\t}",
-            "}",
+            "{\n",
+            "\t\"Path\": \"github.com/sirupsen/logrus\",\n",
+            "\t\"Version\": \"v1.1.1\",\n",
+            "\t\"Replace\": {\n",
+            "\t\t\"Path\": \"github.com/sirupsen/logrus\",\n",
+            "\t\t\"Version\": \"v2.0.0\"\n",
+            "\t}\n",
+            "}\n",
             "",
-            "{",
-            "\t\"Path\": \"github.com/davecgh/go-spew\",",
-            "\t\"Version\": \"v1.1.1\"",
+            "{\n",
+            "\t\"Path\": \"github.com/davecgh/go-spew\",\n",
+            "\t\"Version\": \"v1.1.1\"\n",
             "}"
         );
         addExecutableOutput(goListUJsonOutput, "go", "list", "-m", "-u", "-json", "all");
