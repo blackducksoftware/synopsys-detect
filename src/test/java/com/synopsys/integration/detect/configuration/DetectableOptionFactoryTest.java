@@ -14,10 +14,10 @@ import com.synopsys.integration.configuration.property.types.enumfilterable.Filt
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 
-public class DetectableOptionFactoryTest {
+class DetectableOptionFactoryTest {
 
     @Test
-    public void testBazelDependencyRulesNone() {
+    void testBazelDependencyRulesNone() {
         List<FilterableEnumValue<WorkspaceRule>> userProvidedRulesValue =
             Arrays.asList(FilterableEnumValue.noneValue());
         Set<WorkspaceRule> derivedRules = doBazelDependencyRulesTest(userProvidedRulesValue);
@@ -25,7 +25,7 @@ public class DetectableOptionFactoryTest {
     }
 
     @Test
-    public void testBazelDependencyRulesAll() {
+    void testBazelDependencyRulesAll() {
         List<FilterableEnumValue<WorkspaceRule>> userProvidedRulesValue =
             Arrays.asList(FilterableEnumValue.allValue());
         Set<WorkspaceRule> derivedRules = doBazelDependencyRulesTest(userProvidedRulesValue);
@@ -35,7 +35,7 @@ public class DetectableOptionFactoryTest {
     }
 
     @Test
-    public void testBazelDependencyRulesOne() {
+    void testBazelDependencyRulesOne() {
         List<FilterableEnumValue<WorkspaceRule>> userProvidedRulesValue =
             Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_INSTALL));
         Set<WorkspaceRule> derivedRules = doBazelDependencyRulesTest(userProvidedRulesValue);
@@ -44,7 +44,7 @@ public class DetectableOptionFactoryTest {
     }
 
     @Test
-    public void testBazelDependencyRulesTwo() {
+    void testBazelDependencyRulesTwo() {
         List<FilterableEnumValue<WorkspaceRule>> userProvidedRulesValue =
             Arrays.asList(FilterableEnumValue.value(WorkspaceRule.MAVEN_INSTALL),
                 FilterableEnumValue.value(WorkspaceRule.HASKELL_CABAL_LIBRARY));
