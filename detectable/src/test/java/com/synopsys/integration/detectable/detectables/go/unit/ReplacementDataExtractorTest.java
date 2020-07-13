@@ -8,14 +8,13 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.google.gson.GsonBuilder;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectables.go.gomod.ReplacementDataExtractorB;
+import com.synopsys.integration.detectable.detectables.go.gomod.ReplacementDataExtractor;
 
 public class ReplacementDataExtractorTest {
 
-    private Map<String, String> replaceMentData = new HashMap<>();
-
-    private ReplacementDataExtractorB replacementDataExtractorB = new ReplacementDataExtractorB(replaceMentData);
+    private ReplacementDataExtractor replacementDataExtractor = new ReplacementDataExtractor(new GsonBuilder().setPrettyPrinting().create());
 
     @Test
     public void extractorThrowsExceptionIfVersionFormatIsOdd() {
@@ -33,7 +32,7 @@ public class ReplacementDataExtractorTest {
         boolean threwException = false;
 
         try {
-            replacementDataExtractorB.extractReplacementData(input);
+            replacementDataExtractor.extractReplacementData(input);
         } catch (DetectableException e) {
             threwException = true;
         }
