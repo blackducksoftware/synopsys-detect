@@ -42,7 +42,7 @@ import com.synopsys.integration.log.LogLevel;
 
 import java.lang.Deprecated;
 
-public class DetectPropertiesJava {
+public class DetectProperties {
 
    public static final NullableStringProperty BLACKDUCK_API_TOKEN = new PropertyBuilder<>(new NullableStringProperty("blackduck.api.token")).build(property -> {
         property.setInfo("Black Duck API Token", "4.2.0");
@@ -1565,5 +1565,5 @@ public class DetectPropertiesJava {
         property.setDeprecated(POLARIS_CLI_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
     });
 
-    public DetectPropertiesJava() throws InstantiationException, IllegalAccessException {}
+    public DetectProperties() throws InstantiationException, IllegalAccessException {}
 }
