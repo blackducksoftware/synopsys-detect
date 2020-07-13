@@ -1390,9 +1390,11 @@ build detectors, but buildless detectors can run without accessing the tools req
 buildless detectors using the <a href="../../properties/configuration/general/#buildless-mode">buildless mode property</a>.</p>
 <p>The following tables show which detectors run in the default (build) mode, and which detectors run in buildless mode. There is some overlap across the two lists.</p>
 <h2 id="build-detectors">Build detectors<a class="headerlink" href="#build-detectors" title="Permanent link">#</a></h2>
-<p>Build detectors run package manager commands; for example: <em>mvn dependency:tree</em>, and/or inspectors; for example, the <a href="../inspectors/#gradle-inspector">Gradle inspector</a> to derive dependency information. Inspectors
-act as extensions to Synopsys Detect, and are downloaded automatically if needed. The required commands as shown in the following table must be present and findable on your system. Synopsys Detect uses
-the system PATH to find commands. In some cases as an alternative to the system PATH, the location of a command can be provided through a property.</p>
+<p>By default, Synopsys Detect requires that you are able to build the project you are scanning. This allows Synopsys Detect to get the most accurate results possible.
+Build detectors can communicate with package managers and run commands for example: <em>mvn dependency:tree</em>, and/or inspectors; such as the <a href="../inspectors/#gradle-inspector">Gradle inspector</a> to derive dependency information.
+Not all build detectors run external commands or communicate with external systems but all build detectors return accurate results.</p>
+<p>Each applicable detector's required executables (as shown in the following table) must be present and findable on your system. Synopsys Detect uses
+the system PATH to find executables. In some cases as an alternative to the system PATH, the location of an executable can be provided through a property.</p>
 <table>
 <thead>
 <tr>
@@ -1410,6 +1412,13 @@ the system PATH to find commands. In some cases as an alternative to the system 
 <td>various</td>
 <td>YOCTO</td>
 <td>Properties: Package names <br /><br /> File: build env script.<br /><br /> Executable: bash</td>
+</tr>
+<tr>
+<td>CARGO</td>
+<td>Cargo</td>
+<td>Rust</td>
+<td>crates</td>
+<td>Files: Cargo.lock, Cargo.toml</td>
 </tr>
 <tr>
 <td>CLANG</td>
@@ -1594,6 +1603,13 @@ the system PATH to find commands. In some cases as an alternative to the system 
 <td>A setup.py file, or one or more requirements.txt files.<br/><br/> Executables: python and pip, or python3 and pip3.</td>
 </tr>
 <tr>
+<td>PIP</td>
+<td>Poetry</td>
+<td>Python</td>
+<td>pypi</td>
+<td>Files: Poetry.lock, pyproject.toml</td>
+</tr>
+<tr>
 <td>RUBYGEMS</td>
 <td>Gemlock</td>
 <td>Ruby</td>
@@ -1624,7 +1640,9 @@ the system PATH to find commands. In some cases as an alternative to the system 
 </tbody>
 </table>
 <h2 id="buildless-detectors">Buildless detectors<a class="headerlink" href="#buildless-detectors" title="Permanent link">#</a></h2>
-<p>Buildless detectors parse package manager files; for example, <em>pom.xml</em>, to derive dependency information.</p>
+<p>When in buildless mode, only detectors that do not communicate with external systems are run. Typically these detectors just parse available package mananger files such as <em>pom.xml</em> to derive dependency information.
+It is generally not recommended to run in buildless mode as the results are not guaranteed to be accurate - for example Synopsys Detect may report dependencies with fuzzy versions.
+However if the project can not be built, buildless mode still allows some insight into the dependencies of a project.</p>
 <table>
 <thead>
 <tr>
