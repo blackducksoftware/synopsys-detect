@@ -24,16 +24,17 @@ package com.synopsys.integration.detectable.detectables.bazel;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class BazelDetectableOptions {
     private final String targetName;
-    private final WorkspaceRule bazelDependencyRule;
+    private final Set<WorkspaceRule> bazelDependencyRules;
     private final List<String> bazelCqueryAdditionalOptions;
 
-    public BazelDetectableOptions(final String targetName, final WorkspaceRule bazelDependencyRule,
-        final List<String> bazelCqueryAdditionalOptions) {
+    public BazelDetectableOptions(String targetName, Set<WorkspaceRule> bazelDependencyRules,
+        List<String> bazelCqueryAdditionalOptions) {
         this.targetName = targetName;
-        this.bazelDependencyRule = bazelDependencyRule;
+        this.bazelDependencyRules = bazelDependencyRules;
         this.bazelCqueryAdditionalOptions = bazelCqueryAdditionalOptions;
     }
 
@@ -41,11 +42,11 @@ public class BazelDetectableOptions {
         return Optional.ofNullable(targetName);
     }
 
-    public WorkspaceRule getBazelDependencyRule() {
-        return bazelDependencyRule;
-    }
-
     public List<String> getBazelCqueryAdditionalOptions() {
         return bazelCqueryAdditionalOptions;
+    }
+
+    public Set<WorkspaceRule> getBazelDependencyRules() {
+        return bazelDependencyRules;
     }
 }

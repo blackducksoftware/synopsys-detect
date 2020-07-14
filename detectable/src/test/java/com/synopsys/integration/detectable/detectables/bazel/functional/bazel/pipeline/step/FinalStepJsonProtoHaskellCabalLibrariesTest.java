@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
+import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.FinalStepJsonProtoHaskellCabalLibraries;
@@ -31,10 +33,13 @@ public class FinalStepJsonProtoHaskellCabalLibrariesTest {
         List<String> input = new ArrayList<>(1);
         input.add(jsonProtoHaskellCabalLibrary);
 
-        MutableDependencyGraph graph = step.finish(input);
-
+        List<Dependency> dependencies = step.finish(input);
+        MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        for (Dependency dependency : dependencies) {
+            dependencyGraph.addChildToRoot(dependency);
+        }
         Forge hackageForge = new Forge("/", "hackage");
-        GraphAssert graphAssert = new GraphAssert(hackageForge, graph);
+        GraphAssert graphAssert = new GraphAssert(hackageForge, dependencyGraph);
         graphAssert.hasRootSize(1);
         ExternalId expectedExternalId = new ExternalIdFactory().createNameVersionExternalId(hackageForge, "colour", "2.3.5");
         graphAssert.hasRootDependency(expectedExternalId);

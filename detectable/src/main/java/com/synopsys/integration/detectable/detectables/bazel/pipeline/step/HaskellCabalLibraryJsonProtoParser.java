@@ -48,7 +48,8 @@ public class HaskellCabalLibraryJsonProtoParser {
         List<NameVersion> dependencies = new ArrayList<>();
         Proto proto = gson.fromJson(jsonProtoString, Proto.class);
         if (proto == null || proto.getResults() == null || proto.getResults().isEmpty()) {
-            throw new IntegrationException(String.format("Unable to parse results from JSON proto string: %s", jsonProtoString));
+            logger.debug(String.format("Unable to parse results from JSON proto string: %s", jsonProtoString));
+            return dependencies;
         }
         for (ResultItem result : proto.getResults()) {
             extractAddDependencies(jsonProtoString, dependencies, result);
@@ -82,8 +83,7 @@ public class HaskellCabalLibraryJsonProtoParser {
                 dependencyVersion = attributeItem.getStringValue();
             }
             if (dependencyName != null && dependencyVersion != null) {
-                NameVersion dependencyNameVersion = new NameVersion(dependencyName, dependencyVersion);
-                return dependencyNameVersion;
+                return new NameVersion(dependencyName, dependencyVersion);
             }
         }
         throw new IntegrationException(String.format("Dependency name/version not found in attribute list: %s", attributes.toString()));
