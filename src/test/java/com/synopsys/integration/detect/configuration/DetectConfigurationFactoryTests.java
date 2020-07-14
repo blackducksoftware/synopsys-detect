@@ -63,7 +63,7 @@ public class DetectConfigurationFactoryTests {
         final Integer defaultValue = DetectProperties.Companion.getDETECT_PARALLEL_PROCESSORS().getDefaultValue();
 
         Assertions.assertEquals(defaultValue.intValue(), factory.findParallelProcessors());
-        Mockito.verifyNoInteractions(factory);
+        Mockito.verify(factory, Mockito.never()).findRuntimeProcessors();
     }
 
     @Test

@@ -25,6 +25,8 @@ package com.synopsys.integration.detect.lifecycle.boot;
 import java.io.File;
 import java.util.Optional;
 
+import org.jetbrains.annotations.Nullable;
+
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
@@ -35,17 +37,29 @@ public class DetectBootResult {
 
     //No matter what type of boot occurs, the following should be provided to the best effort of the Boot.
     //Shutdown and cleanup will do best effort with the following dependencies.
+    @Nullable
     private final PropertyConfiguration detectConfiguration;
+    @Nullable
     private final DirectoryManager directoryManager;
+    @Nullable
     private final ProductRunData productRunData;
+    @Nullable
     private final File airGapZip;
+    @Nullable
     private final DiagnosticSystem diagnosticSystem;
 
     //And in the case of an exception, this should be populated so the proper exit code can be thrown.
     private final Exception exception;
 
-    private DetectBootResult(final BootType bootType, final PropertyConfiguration detectConfiguration, final DirectoryManager directoryManager, final File airGapZip, final DiagnosticSystem diagnosticSystem,
-        final ProductRunData productRunData, final Exception exception) {
+    private DetectBootResult(
+        BootType bootType,
+        @Nullable PropertyConfiguration detectConfiguration,
+        @Nullable DirectoryManager directoryManager,
+        @Nullable File airGapZip,
+        @Nullable DiagnosticSystem diagnosticSystem,
+        @Nullable ProductRunData productRunData,
+        @Nullable Exception exception
+    ) {
         this.bootType = bootType;
         this.detectConfiguration = detectConfiguration;
         this.directoryManager = directoryManager;
@@ -89,27 +103,27 @@ public class DetectBootResult {
         EXCEPTION
     }
 
-    public static DetectBootResult run(final PropertyConfiguration detectConfiguration, final ProductRunData productRunData, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
-        return new DetectBootResult(BootType.RUN, detectConfiguration, directoryManager, null, diagnosticSystem.orElse(null), productRunData, null);
+    public static DetectBootResult run(PropertyConfiguration detectConfiguration, ProductRunData productRunData, DirectoryManager directoryManager, @Nullable DiagnosticSystem diagnosticSystem) {
+        return new DetectBootResult(BootType.RUN, detectConfiguration, directoryManager, null, diagnosticSystem, productRunData, null);
     }
 
-    public static DetectBootResult exit(final PropertyConfiguration detectConfiguration) {
+    public static DetectBootResult exit(PropertyConfiguration detectConfiguration) {
         return new DetectBootResult(BootType.EXIT, detectConfiguration, null, null, null, null, null);
     }
 
-    public static DetectBootResult exit(final PropertyConfiguration detectConfiguration, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
-        return new DetectBootResult(BootType.EXIT, detectConfiguration, directoryManager, null, diagnosticSystem.orElse(null), null, null);
+    public static DetectBootResult exit(PropertyConfiguration detectConfiguration, DirectoryManager directoryManager, @Nullable DiagnosticSystem diagnosticSystem) {
+        return new DetectBootResult(BootType.EXIT, detectConfiguration, directoryManager, null, diagnosticSystem, null, null);
     }
 
-    public static DetectBootResult exit(final PropertyConfiguration detectConfiguration, final File airGapZip, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
-        return new DetectBootResult(BootType.EXIT, detectConfiguration, directoryManager, airGapZip, diagnosticSystem.orElse(null), null, null);
+    public static DetectBootResult exit(PropertyConfiguration detectConfiguration, File airGapZip, DirectoryManager directoryManager, @Nullable DiagnosticSystem diagnosticSystem) {
+        return new DetectBootResult(BootType.EXIT, detectConfiguration, directoryManager, airGapZip, diagnosticSystem, null, null);
     }
 
-    public static DetectBootResult exception(final Exception exception, final PropertyConfiguration detectConfiguration) {
+    public static DetectBootResult exception(Exception exception, PropertyConfiguration detectConfiguration) {
         return new DetectBootResult(BootType.EXCEPTION, detectConfiguration, null, null, null, null, exception);
     }
 
-    public static DetectBootResult exception(final Exception exception, final PropertyConfiguration detectConfiguration, final DirectoryManager directoryManager, final Optional<DiagnosticSystem> diagnosticSystem) {
-        return new DetectBootResult(BootType.EXCEPTION, detectConfiguration, directoryManager, null, diagnosticSystem.orElse(null), null, exception);
+    public static DetectBootResult exception(Exception exception, PropertyConfiguration detectConfiguration, DirectoryManager directoryManager, @Nullable DiagnosticSystem diagnosticSystem) {
+        return new DetectBootResult(BootType.EXCEPTION, detectConfiguration, directoryManager, null, diagnosticSystem, null, exception);
     }
 }

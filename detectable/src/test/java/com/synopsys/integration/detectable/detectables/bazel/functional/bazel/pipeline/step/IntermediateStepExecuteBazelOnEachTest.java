@@ -45,22 +45,22 @@ public class IntermediateStepExecuteBazelOnEachTest {
 
     @Test
     public void testNoInput() throws ExecutableRunnerException, IntegrationException {
-        final File workspaceDir = new File(".");
-        final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        final File bazelExe = new File("/usr/bin/bazel");
-        final List<String> bazelArgs = new ArrayList<>();
-        bazelArgs.add("query");
+        File workspaceDir = new File(".");
+        ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        File bazelExe = new File("/usr/bin/bazel");
+        List<String> bazelArgs = new ArrayList<>();
+        bazelArgs.add("cquery");
         bazelArgs.add("filter(\\\"@.*:jar\\\", deps(//:ProjectRunner))");
-        final ExecutableOutput bazelCmdExecutableOutput = Mockito.mock(ExecutableOutput.class);
+        ExecutableOutput bazelCmdExecutableOutput = Mockito.mock(ExecutableOutput.class);
         Mockito.when(bazelCmdExecutableOutput.getReturnCode()).thenReturn(0);
         Mockito.when(bazelCmdExecutableOutput.getStandardOutput()).thenReturn("@org_apache_commons_commons_io//jar:jar\n@com_google_guava_guava//jar:jar");
         Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgs)).thenReturn(bazelCmdExecutableOutput);
-        final BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
-        final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("//:ProjectRunner", null);
-        final IntermediateStep executor = new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("query", "filter(\\\"@.*:jar\\\", deps(${detect.bazel.target}))"));
-        final List<String> input = new ArrayList<>(0);
+        BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
+        BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("//:ProjectRunner", null);
+        IntermediateStep executor = new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("cquery", "filter(\\\"@.*:jar\\\", deps(${detect.bazel.target}))"), false);
+        List<String> input = new ArrayList<>(0);
 
-        final List<String> output = executor.process(input);
+        List<String> output = executor.process(input);
 
         assertEquals(1, output.size());
         assertEquals("@org_apache_commons_commons_io//jar:jar\n@com_google_guava_guava//jar:jar", output.get(0));

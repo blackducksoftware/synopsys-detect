@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.configuration.enums.DefaultVersionNameScheme;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.util.NameVersion;
 
 public class ProjectNameVersionDecider {
@@ -42,71 +41,52 @@ public class ProjectNameVersionDecider {
 
     private final ProjectNameVersionOptions projectVersionOptions;
 
-    public ProjectNameVersionDecider(final ProjectNameVersionOptions projectVersionOptions) {
+    public ProjectNameVersionDecider(ProjectNameVersionOptions projectVersionOptions) {
         this.projectVersionOptions = projectVersionOptions;
     }
 
-    public NameVersion decideProjectNameVersion(final List<DetectTool> preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
-        Optional<String> decidedProjectName = Optional.empty();
-        Optional<String> decidedProjectVersion = Optional.empty();
+    public NameVersion decideProjectNameVersion(List<DetectTool> preferredDetectTools, List<DetectToolProjectInfo> detectToolProjectInfo) {
+        Optional<DetectToolProjectInfo> chosenTool = decideToolProjectInfo(preferredDetectTools, detectToolProjectInfo);
+        Optional<String> chosenToolName = chosenTool.map(DetectToolProjectInfo::getSuggestedNameVersion).map(NameVersion::getName);
+        Optional<String> chosenToolVersion = chosenTool.map(DetectToolProjectInfo::getSuggestedNameVersion).map(NameVersion::getVersion);
 
+        String decidedProjectName;
         if (StringUtils.isNotBlank(projectVersionOptions.overrideProjectName)) {
-            decidedProjectName = Optional.of(projectVersionOptions.overrideProjectName);
-        }
-
-        if (StringUtils.isNotBlank(projectVersionOptions.overrideProjectVersionName)) {
-            decidedProjectVersion = Optional.of(projectVersionOptions.overrideProjectVersionName);
-        }
-
-        final Optional<DetectToolProjectInfo> chosenTool = decideToolProjectInfo(preferredDetectTools, detectToolProjectInfo);
-        if (chosenTool.isPresent()) {
-            if (!decidedProjectName.isPresent()) {
-                final String suggestedName = chosenTool.get().getSuggestedNameVersion().getName();
-                if (StringUtils.isNotBlank(suggestedName)) {
-                    decidedProjectName = Optional.of(suggestedName);
-                }
-            }
-            if (!decidedProjectVersion.isPresent()) {
-                final String suggestedVersion = chosenTool.get().getSuggestedNameVersion().getVersion();
-                if (StringUtils.isNotBlank(suggestedVersion)) {
-                    decidedProjectVersion = Optional.of(suggestedVersion);
-                }
-            }
-        }
-
-        if (!decidedProjectName.isPresent()) {
+            decidedProjectName = projectVersionOptions.overrideProjectName;
+        } else if (chosenToolName.isPresent()) {
+            decidedProjectName = chosenToolName.get();
+        } else {
             logger.debug("A project name could not be decided. Using the name of the source path.");
-            decidedProjectName = Optional.of(projectVersionOptions.sourcePathName);
+            decidedProjectName = projectVersionOptions.sourcePathName;
         }
 
-        if (!decidedProjectVersion.isPresent()) {
-            if (DefaultVersionNameScheme.TIMESTAMP.equals(projectVersionOptions.defaultProjectVersionScheme)) {
-                logger.debug("A project version name could not be decided. Using the current timestamp.");
-                final String timeformat = projectVersionOptions.defaultProjectVersionFormat;
-                final String timeString = DateTimeFormatter.ofPattern(timeformat).withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
-                decidedProjectVersion = Optional.of(timeString);
-            } else {
-                logger.debug("A project version name could not be decided. Using the default version text.");
-                decidedProjectVersion = Optional.of(projectVersionOptions.defaultProjectVersionText);
-            }
+        String decidedProjectVersionName;
+        if (StringUtils.isNotBlank(projectVersionOptions.overrideProjectVersionName)) {
+            decidedProjectVersionName = projectVersionOptions.overrideProjectVersionName;
+        } else if (chosenToolVersion.isPresent()) {
+            decidedProjectVersionName = chosenToolVersion.get();
+        } else if (DefaultVersionNameScheme.TIMESTAMP.equals(projectVersionOptions.defaultProjectVersionScheme)) {
+            logger.debug("A project version name could not be decided. Using the current timestamp.");
+            String timeformat = projectVersionOptions.defaultProjectVersionFormat;
+            decidedProjectVersionName = DateTimeFormatter.ofPattern(timeformat).withZone(ZoneOffset.UTC).format(Instant.now().atZone(ZoneOffset.UTC));
+        } else {
+            logger.debug("A project version name could not be decided. Using the default version text.");
+            decidedProjectVersionName = projectVersionOptions.defaultProjectVersionText;
         }
 
-        return new NameVersion(decidedProjectName.get(), decidedProjectVersion.get());
+        return new NameVersion(decidedProjectName, decidedProjectVersionName);
     }
 
-    private Optional<DetectToolProjectInfo> findProjectInfoForTool(final DetectTool tool, final List<DetectToolProjectInfo> detectToolProjectInfo) {
-        return detectToolProjectInfo.stream()
-                   .filter(it -> it.getDetectTool().equals(tool))
-                   .findFirst();
-    }
-
-    private Optional<DetectToolProjectInfo> decideToolProjectInfo(final List<DetectTool> preferredDetectTools, final List<DetectToolProjectInfo> detectToolProjectInfo) throws DetectUserFriendlyException {
+    private Optional<DetectToolProjectInfo> decideToolProjectInfo(List<DetectTool> preferredDetectTools, List<DetectToolProjectInfo> detectToolProjectInfo) {
         Optional<DetectToolProjectInfo> chosenTool = Optional.empty();
-        for (final DetectTool tool : preferredDetectTools) {
-            chosenTool = findProjectInfoForTool(tool, detectToolProjectInfo);
+
+        for (DetectTool tool : preferredDetectTools) {
+            chosenTool = detectToolProjectInfo.stream()
+                             .filter(it -> it.getDetectTool().equals(tool))
+                             .findFirst();
 
             if (chosenTool.isPresent()) {
-                logger.debug("Using the first ordered tool with project info: " + tool.toString());
+                logger.debug(String.format("Using the first ordered tool with project info: %s", tool.toString()));
                 break;
             }
         }

@@ -22,17 +22,14 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel;
 
-import com.synopsys.integration.exception.IntegrationException;
-
 public enum WorkspaceRule {
     MAVEN_JAR("maven_jar"),
     MAVEN_INSTALL("maven_install"),
-    HASKELL_CABAL_LIBRARY("haskell_cabal_library"),
-    UNSPECIFIED(null); //changed to UNSPECIFIED so property is simpler, if this causes confusion willing to discuss - jp
+    HASKELL_CABAL_LIBRARY("haskell_cabal_library");
 
-    private String name;
+    private final String name;
 
-    WorkspaceRule(final String name) {
+    WorkspaceRule(String name) {
         this.name = name;
     }
 

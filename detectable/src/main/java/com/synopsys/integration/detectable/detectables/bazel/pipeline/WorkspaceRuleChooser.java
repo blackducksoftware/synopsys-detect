@@ -22,21 +22,24 @@
  */
 package com.synopsys.integration.detectable.detectables.bazel.pipeline;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.Set;
+
 import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class WorkspaceRuleChooser {
+
     @NotNull
-    public WorkspaceRule choose(final WorkspaceRule ruleFromWorkspaceFile, final WorkspaceRule providedBazelDependencyType) throws IntegrationException {
-        if (providedBazelDependencyType != null && providedBazelDependencyType != WorkspaceRule.UNSPECIFIED) {
-            return providedBazelDependencyType;
-        } else if (ruleFromWorkspaceFile != WorkspaceRule.UNSPECIFIED) {
-            return ruleFromWorkspaceFile;
+    public Set<WorkspaceRule> choose(Set<WorkspaceRule> rulesFromWorkspaceFile, Set<WorkspaceRule> rulesPropertyValues) throws IntegrationException {
+        if (rulesPropertyValues != null && !rulesPropertyValues.isEmpty()) {
+            return rulesPropertyValues;
+        } else if (!rulesFromWorkspaceFile.isEmpty()) {
+            return rulesFromWorkspaceFile;
         } else {
-            throw new IntegrationException("Unable to determine BazelWorkspace dependency rule; try setting it via the property");
+            throw new IntegrationException("Unable to determine BazelWorkspace dependency rule type; try setting it via the property");
         }
     }
+
 }

@@ -25,36 +25,58 @@ package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.p
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import com.google.common.collect.Sets;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class WorkspaceRuleChooserTest {
+class WorkspaceRuleChooserTest {
+
+    private static final Set<WorkspaceRule> WORKSPACE_RULES_JUST_MAVEN_INSTALL = Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL);
+    private static final Set<WorkspaceRule> WORKSPACE_RULES_JUST_MAVEN_JAR = Sets.newHashSet(WorkspaceRule.MAVEN_JAR);
+    private static final Set<WorkspaceRule> WORKSPACE_RULES_THREE = Sets.newHashSet(WorkspaceRule.MAVEN_INSTALL,
+        WorkspaceRule.HASKELL_CABAL_LIBRARY, WorkspaceRule.MAVEN_JAR);
 
     @Test
-    public void testDerivedBazelDependencyRule() throws IntegrationException {
-        final WorkspaceRule chosenWorkspaceRule = run(null);
-        assertEquals("maven_install", chosenWorkspaceRule.getName());
+    void testOneRuleParsed() throws IntegrationException {
+        Set<WorkspaceRule> chosenWorkspaceRules = run(null, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
+        assertEquals(1, chosenWorkspaceRules.size());
+        assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
     }
 
     @Test
-    public void testProvidedBazelDependencyRule() throws IOException, IntegrationException {
-        final WorkspaceRule chosenWorkspaceRule = run(WorkspaceRule.MAVEN_INSTALL);
-        assertEquals("maven_install", chosenWorkspaceRule.getName());
+    void testThreeRulesParsed() throws IntegrationException {
+        Set<WorkspaceRule> chosenWorkspaceRules = run(null, WORKSPACE_RULES_THREE);
+        assertEquals(3, chosenWorkspaceRules.size());
     }
 
     @Test
-    public void testOverriddenBazelDependencyRule() throws IOException, IntegrationException {
-        final WorkspaceRule chosenWorkspaceRule = run(WorkspaceRule.MAVEN_JAR);
-        assertEquals("maven_jar", chosenWorkspaceRule.getName());
+    void testOneProvidedSameOneParsed() throws IOException, IntegrationException {
+        Set<WorkspaceRule> chosenWorkspaceRules = run(WORKSPACE_RULES_JUST_MAVEN_INSTALL, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
+        assertEquals(1, chosenWorkspaceRules.size());
+        assertEquals("maven_install", chosenWorkspaceRules.iterator().next().getName());
     }
 
-    private WorkspaceRule run(final WorkspaceRule providedBazelDependencyRule) throws IntegrationException {
-        final WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
-        final WorkspaceRule chosenWorkspaceRule = workspaceRuleChooser.choose(WorkspaceRule.MAVEN_INSTALL, providedBazelDependencyRule);
-        return chosenWorkspaceRule;
+    @Test
+    void testOneRuleProvidedDifferentOneParsed() throws IOException, IntegrationException {
+        Set<WorkspaceRule> chosenWorkspaceRules = run(WORKSPACE_RULES_JUST_MAVEN_JAR, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
+        assertEquals(1, chosenWorkspaceRules.size());
+        assertEquals("maven_jar", chosenWorkspaceRules.iterator().next().getName());
+    }
+
+    @Test
+    void testThreeProvidedOneParsed() throws IOException, IntegrationException {
+        Set<WorkspaceRule> chosenWorkspaceRules = run(WORKSPACE_RULES_THREE, WORKSPACE_RULES_JUST_MAVEN_INSTALL);
+        assertEquals(3, chosenWorkspaceRules.size());
+    }
+
+    private Set<WorkspaceRule> run(Set<WorkspaceRule> providedBazelDependencyRule, Set<WorkspaceRule> parsedWorkspaceRules) throws IntegrationException {
+        WorkspaceRuleChooser workspaceRuleChooser = new WorkspaceRuleChooser();
+        Set<WorkspaceRule> chosenWorkspaceRules = workspaceRuleChooser.choose(parsedWorkspaceRules, providedBazelDependencyRule);
+        return chosenWorkspaceRules;
     }
 }

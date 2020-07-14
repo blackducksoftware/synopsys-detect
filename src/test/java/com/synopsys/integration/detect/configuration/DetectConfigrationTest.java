@@ -34,6 +34,7 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 
 //import com.synopsys.integration.detect.DetectInfo;
@@ -61,7 +62,7 @@ public class DetectConfigrationTest {
     }
 
     @Test
-    public void testDeprecated() {
+    public void testDeprecated() throws DetectUserFriendlyException {
         final HashMap<String, String> values = new HashMap<>();
         values.put(DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS().getKey(), "2");
         final List<PropertySource> propertySources = new ArrayList<>();

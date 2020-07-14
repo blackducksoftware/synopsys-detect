@@ -32,9 +32,12 @@ The following tables show which detectors run in the default (build) mode, and w
 
 ## Build detectors
 
-Build detectors run package manager commands; for example: *mvn dependency:tree*, and/or inspectors; for example, the [Gradle inspector](../inspectors/#gradle-inspector) to derive dependency information. Inspectors
-act as extensions to ${solution_name}, and are downloaded automatically if needed. The required commands as shown in the following table must be present and findable on your system. ${solution_name} uses
-the system PATH to find commands. In some cases as an alternative to the system PATH, the location of a command can be provided through a property.
+By default, ${solution_name} requires that you are able to build the project you are scanning. This allows ${solution_name} to get the most accurate results possible.
+Build detectors can communicate with package managers and run commands for example: *mvn dependency:tree*, and/or inspectors; such as the [Gradle inspector](../inspectors/#gradle-inspector) to derive dependency information.
+Not all build detectors run external commands or communicate with external systems but all build detectors return accurate results.
+
+Each applicable detector's required executables (as shown in the following table) must be present and findable on your system. ${solution_name} uses
+the system PATH to find executables. In some cases as an alternative to the system PATH, the location of an executable can be provided through a property.
 
 |Type|Name|Language|Forge|Requirements
 |---|---|---|---|---|
@@ -44,7 +47,9 @@ the system PATH to find commands. In some cases as an alternative to the system 
 
 ## Buildless detectors
 
-Buildless detectors parse package manager files; for example, *pom.xml*, to derive dependency information.
+When in buildless mode, only detectors that do not communicate with external systems are run. Typically these detectors just parse available package mananger files such as *pom.xml* to derive dependency information.
+It is generally not recommended to run in buildless mode as the results are not guaranteed to be accurate - for example ${solution_name} may report dependencies with fuzzy versions.
+However if the project can not be built, buildless mode still allows some insight into the dependencies of a project.
 
 |Type|Name|Language|Forge|Requirements
 |---|---|---|---|---|

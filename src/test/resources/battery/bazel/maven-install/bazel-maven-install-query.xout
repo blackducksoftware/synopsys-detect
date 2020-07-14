@@ -1,0 +1,64 @@
+# /root/.cache/bazel/_bazel_root/896e039de1e50d7e2de0b14a9acf4028/external/maven/BUILD:150:1
+jvm_import(
+  name = "org_hamcrest_hamcrest_core",
+  tags = ["maven_coordinates=org.hamcrest:hamcrest-core:2.1"],
+  jars = ["@maven//:v1/https/jcenter.bintray.com/org/hamcrest/hamcrest-core/2.1/hamcrest-core-2.1.jar"],
+  deps = ["@maven//:org_hamcrest_hamcrest"],
+)
+
+# /root/.cache/bazel/_bazel_root/896e039de1e50d7e2de0b14a9acf4028/external/exclusion_testing/BUILD:40:1
+jvm_import(
+  name = "com_google_guava_guava",
+  tags = ["maven_coordinates=com.google.guava:guava:27.0-jre"],
+  jars = ["@exclusion_testing//:v1/https/repo1.maven.org/maven2/com/google/guava/guava/27.0-jre/guava-27.0-jre.jar"],
+  deps = ["@exclusion_testing//:com_google_guava_listenablefuture", "@exclusion_testing//:com_google_code_findbugs_jsr305", "@exclusion_testing//:com_google_guava_failureaccess", "@exclusion_testing//:com_google_errorprone_error_prone_annotations", "@exclusion_testing//:org_checkerframework_checker_qual"],
+)
+
+# /root/.cache/bazel/_bazel_root/896e039de1e50d7e2de0b14a9acf4028/external/maven/BUILD:168:1
+jvm_import(
+  name = "org_hamcrest_hamcrest",
+  tags = ["maven_coordinates=org.hamcrest:hamcrest:2.1"],
+  jars = ["@maven//:v1/https/jcenter.bintray.com/org/hamcrest/hamcrest/2.1/hamcrest-2.1.jar"],
+  deps = [],
+)
+
+# /root/.cache/bazel/_bazel_root/896e039de1e50d7e2de0b14a9acf4028/external/exclusion_testing/BUILD:18:1
+jvm_import(
+  name = "com_google_errorprone_error_prone_annotations",
+  tags = ["maven_coordinates=com.google.errorprone:error_prone_annotations:2.2.0"],
+  jars = ["@exclusion_testing//:v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.2.0/error_prone_annotations-2.2.0.jar"],
+  deps = [],
+)
+
+# /root/.cache/bazel/_bazel_root/896e039de1e50d7e2de0b14a9acf4028/external/exclusion_testing/BUILD:56:1
+jvm_import(
+  name = "com_google_guava_listenablefuture",
+  tags = ["maven_coordinates=com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava"],
+  jars = ["@exclusion_testing//:v1/https/repo1.maven.org/maven2/com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar"],
+  deps = [],
+)
+
+# /root/.cache/bazel/_bazel_root/896e039de1e50d7e2de0b14a9acf4028/external/exclusion_testing/BUILD:29:1
+jvm_import(
+  name = "com_google_guava_failureaccess",
+  tags = ["maven_coordinates=com.google.guava:failureaccess:1.0"],
+  jars = ["@exclusion_testing//:v1/https/repo1.maven.org/maven2/com/google/guava/failureaccess/1.0/failureaccess-1.0.jar"],
+  deps = [],
+)
+
+# /root/.cache/bazel/_bazel_root/896e039de1e50d7e2de0b14a9acf4028/external/exclusion_testing/BUILD:67:1
+jvm_import(
+  name = "org_checkerframework_checker_qual",
+  tags = ["maven_coordinates=org.checkerframework:checker-qual:2.5.2"],
+  jars = ["@exclusion_testing//:v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/2.5.2/checker-qual-2.5.2.jar"],
+  deps = [],
+)
+
+# /root/.cache/bazel/_bazel_root/896e039de1e50d7e2de0b14a9acf4028/external/exclusion_testing/BUILD:7:1
+jvm_import(
+  name = "com_google_code_findbugs_jsr305",
+  tags = ["maven_coordinates=com.google.code.findbugs:jsr305:3.0.2"],
+  jars = ["@exclusion_testing//:v1/https/repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar"],
+  deps = [],
+)
+

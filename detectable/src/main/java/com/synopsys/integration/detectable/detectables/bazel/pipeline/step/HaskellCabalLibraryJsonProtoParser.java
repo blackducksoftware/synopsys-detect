@@ -24,7 +24,6 @@ package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +48,8 @@ public class HaskellCabalLibraryJsonProtoParser {
         List<NameVersion> dependencies = new ArrayList<>();
         Proto proto = gson.fromJson(jsonProtoString, Proto.class);
         if (proto == null || proto.getResults() == null || proto.getResults().isEmpty()) {
-            throw new IntegrationException(String.format("Unable to parse results from JSON proto string: %s", jsonProtoString));
+            logger.debug(String.format("Unable to parse results from JSON proto string: %s", jsonProtoString));
+            return dependencies;
         }
         for (ResultItem result : proto.getResults()) {
             extractAddDependencies(jsonProtoString, dependencies, result);
@@ -67,17 +67,13 @@ public class HaskellCabalLibraryJsonProtoParser {
                 throw new IntegrationException(String.format("Unable to parse attributes from rule inJSON proto string: %s", jsonProtoString));
             }
             List<AttributeItem> attributes = target.getRule().getAttribute();
-            Optional<NameVersion> dependency = extractDependency(attributes);
-            if (dependency.isPresent()) {
-                logger.debug(String.format("Adding dependency %s/%s", dependency.get().getName(), dependency.get().getVersion()));
-                dependencies.add(dependency.get());
-            } else {
-                logger.debug(String.format("No dependency was extractable from attributes: %s", attributes.toString()));
-            }
+            NameVersion dependency = extractDependency(attributes);
+            logger.debug(String.format("Adding dependency %s/%s", dependency.getName(), dependency.getVersion()));
+            dependencies.add(dependency);
         }
     }
 
-    private Optional<NameVersion> extractDependency(List<AttributeItem> attributes) throws IntegrationException {
+    private NameVersion extractDependency(List<AttributeItem> attributes) throws IntegrationException {
         String dependencyName = null;
         String dependencyVersion = null;
         for (AttributeItem attributeItem : attributes) {
@@ -87,8 +83,7 @@ public class HaskellCabalLibraryJsonProtoParser {
                 dependencyVersion = attributeItem.getStringValue();
             }
             if (dependencyName != null && dependencyVersion != null) {
-                NameVersion dependencyNameVersion = new NameVersion(dependencyName, dependencyVersion);
-                return Optional.of(dependencyNameVersion);
+                return new NameVersion(dependencyName, dependencyVersion);
             }
         }
         throw new IntegrationException(String.format("Dependency name/version not found in attribute list: %s", attributes.toString()));
