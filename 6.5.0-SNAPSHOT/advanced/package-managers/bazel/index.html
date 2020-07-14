@@ -1419,7 +1419,7 @@ As of Synopsys Detect version 6.0.0, Synopsys Detect also supports dependencies 
 As of Synopsys Detect version 6.4.0, Synopsys Detect also supports dependencies specified in <em>haskell_cabal_library</em> workspace rules.</p>
 <p>The Bazel tool attempts to run on your project if you provide a Bazel build target using the Bazel target property.</p>
 <p>The Bazel tool also requires a bazel executable on $PATH.</p>
-<p>Synopsys Detect attempts to determine the workspace dependency rule (<em>maven_jar</em> or <em>maven_install</em>) from the WORKSPACE file.
+<p>Synopsys Detect attempts to determine the workspace dependency rule (<em>maven_install</em>, <em>maven_jar</em>, or <em>haskell_cabal_library</em>) from the WORKSPACE file.
 In case it cannot, you can specify which rule you use with the Bazel dependency type property.
 Refer to <a href="../../../properties/detectors/bazel/">Properties</a> for details.</p>
 <h2 id="processing-for-the-maven_install-workspace-rule">Processing for the <em>maven_install</em> workspace rule<a class="headerlink" href="#processing-for-the-maven_install-workspace-rule" title="Permanent link">#</a></h2>
@@ -1442,7 +1442,7 @@ tags = [&quot;maven_coordinates=com.google.code.findbugs:jsr305:3.0.2&quot;],
 <p>The Bazel tool runs a bazel query on the given target to get a list of jar dependencies. On each jar dependency, the Bazel tool runs another bazel query to get its artifact details: group, artifact, and version.</p>
 <p>The following is an example using the equivalent commands that Synopsys Detect runs, but from the command line of how Synopsys Detect's Bazel detector currently identifies components.
 First, it gets a list of dependencies:</p>
-<pre><code>$ bazel query 'filter(&quot;@.*:jar&quot;, deps(//:ProjectRunner))'
+<pre><code>$ bazel cquery 'filter(&quot;@.*:jar&quot;, deps(//:ProjectRunner))'
 INFO: Invocation ID: dfe8718d-b4db-4bd9-b9b9-57842cca3fb4
 @org_apache_commons_commons_io//jar:jar
 @com_google_guava_guava//jar:jar

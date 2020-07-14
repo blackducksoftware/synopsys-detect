@@ -1417,10 +1417,10 @@
 </tbody>
 </table>
 <h2 id="bazel-workspace-external-dependency-rule">Bazel workspace external dependency rule<a class="headerlink" href="#bazel-workspace-external-dependency-rule" title="Permanent link">#</a></h2>
-<pre><code>--detect.bazel.dependency.type=MAVEN_JAR,MAVEN_INSTALL,HASKELL_CABAL_LIBRARY,UNSPECIFIED 
+<pre><code>--detect.bazel.dependency.type=ALL,NONE,MAVEN_JAR,MAVEN_INSTALL,HASKELL_CABAL_LIBRARY 
 </code></pre>
 
-<p>The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.</p>
+<p>The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.</p>
 <table>
 <thead>
 <tr>
@@ -1435,15 +1435,15 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>WorkspaceRule</td>
+<td>WorkspaceRule List</td>
 </tr>
 <tr>
 <td>Default Value</td>
-<td>UNSPECIFIED</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>
-<td>No</td>
+<td>Yes</td>
 </tr>
 <tr>
 <td>Case Sensitive</td>
@@ -1451,7 +1451,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>MAVEN_JAR, MAVEN_INSTALL, HASKELL_CABAL_LIBRARY, UNSPECIFIED</td>
+<td>ALL, NONE, MAVEN_JAR, MAVEN_INSTALL, HASKELL_CABAL_LIBRARY</td>
 </tr>
 <tr>
 <td>Strict</td>
