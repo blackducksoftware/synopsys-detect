@@ -34,6 +34,7 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -79,12 +80,13 @@ public class ProductBoot {
     @Nullable
     private BlackDuckRunData getBlackDuckRunData(ProductDecision productDecision, ProductBootFactory productBootFactory, BlackDuckConnectivityChecker blackDuckConnectivityChecker, ProductBootOptions productBootOptions,
         AnalyticsConfigurationService analyticsConfigurationService) throws DetectUserFriendlyException {
+        BlackDuckDecision blackDuckDecision = productDecision.getBlackDuckDecision();
 
-        if (!productDecision.getBlackDuckDecision().shouldRun()) {
+        if (!blackDuckDecision.shouldRun()) {
             return null;
         }
 
-        if (productDecision.getBlackDuckDecision().isOffline()) {
+        if (blackDuckDecision.isOffline()) {
             return BlackDuckRunData.offline();
         }
 

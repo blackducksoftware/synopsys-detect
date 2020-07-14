@@ -41,6 +41,7 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.tool.detector.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
@@ -126,12 +127,12 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public ConnectionFactory connectionFactory() {
+    public ConnectionFactory connectionFactory() throws DetectUserFriendlyException{
         return new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
     }
 
     @Bean
-    public ArtifactResolver artifactResolver() {
+    public ArtifactResolver artifactResolver() throws DetectUserFriendlyException{
         return new ArtifactResolver(connectionFactory(), gson);
     }
 
@@ -199,19 +200,19 @@ public class RunBeanConfiguration {
 
     //#region Detectables
     @Bean
-    public DockerInspectorResolver dockerInspectorResolver() {
+    public DockerInspectorResolver dockerInspectorResolver() throws DetectUserFriendlyException {
         final DockerInspectorInstaller dockerInspectorInstaller = new DockerInspectorInstaller(artifactResolver());
         return new ArtifactoryDockerInspectorResolver(directoryManager, airGapManager(), fullFileFinder(), dockerInspectorInstaller, detectableOptionFactory.createDockerDetectableOptions());
     }
 
     @Bean()
-    public GradleInspectorResolver gradleInspectorResolver() {
+    public GradleInspectorResolver gradleInspectorResolver() throws DetectUserFriendlyException {
         final GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver());
         return new ArtifactoryGradleInspectorResolver(gradleInspectorInstaller, configuration, detectableOptionFactory.createGradleInspectorOptions().getGradleInspectorScriptOptions(), airGapManager(), directoryManager);
     }
 
     @Bean()
-    public NugetInspectorResolver nugetInspectorResolver() {
+    public NugetInspectorResolver nugetInspectorResolver() throws DetectUserFriendlyException {
         final NugetLocatorOptions installerOptions = detectableOptionFactory.createNugetInstallerOptions();
         final NugetInspectorLocator locator;
         final Optional<File> nugetAirGapPath = airGapManager().getNugetInspectorAirGapFile();
@@ -245,7 +246,7 @@ public class RunBeanConfiguration {
     }
 
     @Bean()
-    public DetectDetectableFactory detectDetectableFactory() {
+    public DetectDetectableFactory detectDetectableFactory() throws DetectUserFriendlyException {
         return new DetectDetectableFactory(detectableFactory(), detectableOptionFactory, detectExecutableResolver(), dockerInspectorResolver(), gradleInspectorResolver(), nugetInspectorResolver(), pipInspectorResolver());
     }
 

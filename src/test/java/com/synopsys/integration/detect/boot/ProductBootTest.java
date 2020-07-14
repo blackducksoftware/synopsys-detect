@@ -114,7 +114,7 @@ public class ProductBootTest {
     public void polarisConnectionSuccessWithTestReturnsNull() throws DetectUserFriendlyException, IOException, IntegrationException {
         PolarisConnectivityResult connectivityResult = PolarisConnectivityResult.success();
 
-        ProductRunData productRunData = testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), new ProductBootOptions(false, true), null, connectivityResult);
+        ProductRunData productRunData = testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), new ProductBootOptions (false, true), null, connectivityResult);
 
         Assertions.assertNull(productRunData);
     }

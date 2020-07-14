@@ -134,7 +134,7 @@ public class DetectBoot {
         this.detectBootFactory = detectBootFactory;
     }
 
-    public DetectBootResult boot(DetectRun detectRun, String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) {
+    public DetectBootResult boot(DetectRun detectRun, String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) throws DetectUserFriendlyException {
         ObjectMapper objectMapper = detectBootFactory.createObjectMapper();
         DocumentBuilder xml = detectBootFactory.createXmlDocumentBuilder();
         Configuration configuration = detectBootFactory.createConfiguration();

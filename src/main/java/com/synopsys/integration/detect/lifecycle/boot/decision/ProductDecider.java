@@ -35,6 +35,7 @@ import com.synopsys.integration.builder.BuilderStatus;
 import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
+import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfigBuilder;
@@ -42,7 +43,7 @@ import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
 public class ProductDecider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public ProductDecision decide(DetectConfigurationFactory detectConfigurationFactory, final File userHome, final DetectToolFilter detectToolFilter) {
+    public ProductDecision decide(DetectConfigurationFactory detectConfigurationFactory, final File userHome, final DetectToolFilter detectToolFilter) throws DetectUserFriendlyException {
         BlackDuckConnectionDetails blackDuckConnectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
         return new ProductDecision(determineBlackDuck(blackDuckConnectionDetails, blackDuckSignatureScannerOptions), determinePolaris(detectConfigurationFactory, userHome, detectToolFilter));
