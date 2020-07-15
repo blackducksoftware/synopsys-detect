@@ -1012,6 +1012,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#black-duck-signature-scanner-fails-on-alpine-linux" class="md-nav__link">
+    Black Duck Signature Scanner fails on Alpine Linux
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#symptom_9" class="md-nav__link">
+    Symptom
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#possible-cause_9" class="md-nav__link">
+    Possible cause
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solution_8" class="md-nav__link">
+    Solution
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -1911,6 +1945,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#black-duck-signature-scanner-fails-on-alpine-linux" class="md-nav__link">
+    Black Duck Signature Scanner fails on Alpine Linux
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#symptom_9" class="md-nav__link">
+    Symptom
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#possible-cause_9" class="md-nav__link">
+    Possible cause
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solution_8" class="md-nav__link">
+    Solution
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -2028,7 +2096,8 @@ or application.xml that are written for any application other than Synopsys Dete
 <h2 id="not-extractable-nuget-solution-info-main-exception-occurred-javaniofileinvalidpathexception">Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException<a class="headerlink" href="#not-extractable-nuget-solution-info-main-exception-occurred-javaniofileinvalidpathexception" title="Permanent link">#</a></h2>
 <h3 id="symptom_7">Symptom<a class="headerlink" href="#symptom_7" title="Permanent link">#</a></h3>
 <p>Running Synopsys Detect on a NuGet project on Windows, a message similar to the following appears in the Synopsys Detect log:</p>
-<pre><code>Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException: Illegal char &lt;:&gt; at index 2: C:\...
+<pre><code>Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException: Illegal char
+&lt;:&gt; at index 2: C:\...
 </code></pre>
 
 <h3 id="possible-cause_7">Possible cause<a class="headerlink" href="#possible-cause_7" title="Permanent link">#</a></h3>
@@ -2046,6 +2115,25 @@ or application.xml that are written for any application other than Synopsys Dete
 you will get this (or a similar) error if you run with --detect.tools.BINARY_SCANNER and do not set --detect.project.name or --detect.project.version.name.</p>
 <h3 id="solution_7">Solution<a class="headerlink" href="#solution_7" title="Permanent link">#</a></h3>
 <p>Set --detect.project.name and --detect.project.version.name.</p>
+<h2 id="black-duck-signature-scanner-fails-on-alpine-linux">Black Duck Signature Scanner fails on Alpine Linux<a class="headerlink" href="#black-duck-signature-scanner-fails-on-alpine-linux" title="Permanent link">#</a></h2>
+<h3 id="symptom_9">Symptom<a class="headerlink" href="#symptom_9" title="Permanent link">#</a></h3>
+<p>The Black Duck Signature Scanner fails on Alpine Linux with an error similar to:</p>
+<pre><code>There was a problem scanning target '/opt/projects/myproject': Cannot run program &quot;/home/me/blackduck/tools/Black_Duck_Scan_Installation/scan.cli-2020.6.0/jre/bin/java&quot;: error=2, No such
+file or directory
+</code></pre>
+
+<h3 id="possible-cause_9">Possible cause<a class="headerlink" href="#possible-cause_9" title="Permanent link">#</a></h3>
+<p>The Java bundled with the Black Duck Signature Scanner does not work on Alpine Linux (it relies on libraries not usually present on an Alpine system).</p>
+<h3 id="solution_8">Solution<a class="headerlink" href="#solution_8" title="Permanent link">#</a></h3>
+<p>Install an appropriate version of Java and tell Synopsys Detect to invoke the Black Duck Signature Scanner using that
+version of Java by setting environment variable BDS_JAVA_HOME to the JAVA_HOME value for that Java installation.</p>
+<p>For example:</p>
+<pre><code>export BDS_JAVA_HOME=$JAVA_HOME
+</code></pre>
+
+<p>Or:</p>
+<pre><code>export BDS_JAVA_HOME=/usr/lib/jvm/java-11-openjdk/jre
+</code></pre>
                 
                   
                 
