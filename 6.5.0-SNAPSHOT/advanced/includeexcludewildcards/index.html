@@ -1284,7 +1284,7 @@
                 
                 
                 <h1 id="property-wildcard-support">Property wildcard support<a class="headerlink" href="#property-wildcard-support" title="Permanent link">#</a></h1>
-<p>The values of the following Synopsys Detect properties can utilize the wildcards described below:</p>
+<p>The values of the following Synopsys Detect properties can utilize filename globbing-style wildcards described below:</p>
 <ul>
 <li>detect.maven.included.scopes</li>
 <li>detect.maven.excluded.scopes</li>
@@ -1292,21 +1292,26 @@
 <li>detect.maven.excluded.modules</li>
 <li>detect.sbt.included.configurations</li>
 <li>detect.sbt.excluded.configurations</li>
-<li>detect.tools</li>
-<li>detect.tools.excluded</li>
-<li>detect.included.detector.types</li>
-<li>detect.excluded.detector.types</li>
 <li>detect.gradle.included.configurations</li>
 <li>detect.gradle.excluded.configurations</li>
 <li>detect.gradle.included.projects</li>
 <li>detect.gradle.excluded.projects</li>
+<li>detect.blackduck.signature.scanner.exclusion.name.patterns</li>
+<li>detect.binary.scan.file.name.patterns</li>
 </ul>
 <p>The supported wildcards and their effect are:</p>
 <ul>
 <li>An asterisk (*) matches any sequence of zero or more characters</li>
 <li>A question mark (?) matches any single character</li>
 </ul>
+<p>For example:</p>
+<ul>
+<li>*.jpg matches someimage.jpg, but not somedocument.doc</li>
+<li>*.??? matches someimage.jpg and somedocument.doc, but not somedocument.docx</li>
+</ul>
 <p>Wildcard evaluation in these values is similar to Linux command line file globbing, and different from regular expression matching.</p>
+<p>Synopsys Detect uses the Apache Commons IO FilenameUtils.wildcardMatch() method to determine whether a string matches the given pattern.
+More details can be found <a href="https://commons.apache.org/proper/commons-io/javadocs/api-release/org/apache/commons/io/FilenameUtils.html#wildcardMatch-java.lang.String-java.lang.String-">here</a>.</p>
                 
                   
                 

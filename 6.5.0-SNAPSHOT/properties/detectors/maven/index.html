@@ -1478,7 +1478,7 @@
 </code></pre>
 
 <p>A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).</p>
-<p>If set, Detect will include only dependencies outside of the given Maven scope.</p>
+<p>If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
 <table>
 <thead>
 <tr>
@@ -1522,7 +1522,7 @@
 </code></pre>
 
 <p>A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).</p>
-<p>If set, Detect will include only dependencies of the given Maven scope.</p>
+<p>If set, Detect will include only dependencies of the given Maven scope. This property accepts filename globbing-style wildcards. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
 <table>
 <thead>
 <tr>
@@ -1610,7 +1610,7 @@
 </code></pre>
 
 <p>A comma-separated list of Maven modules (sub-projects) to exclude.</p>
-<p>As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property.</p>
+<p>As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
 <table>
 <thead>
 <tr>
@@ -1654,7 +1654,7 @@
 </code></pre>
 
 <p>A comma-separated list of Maven modules (sub-projects) to include.</p>
-<p>As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.</p>
+<p>As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
 <table>
 <thead>
 <tr>
