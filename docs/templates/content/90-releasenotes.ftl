@@ -10,6 +10,7 @@
 * [--detect.diagnostic.extended](../properties/configuration/debug/#diagnostic-mode-extended)
 * The `-d` and `--diagnostic` options are now deprecated.
 * The `-de` and `--diagnosticExtended` options are now deprecated.
+* The *detect.bazel.dependency.type* property now accepts a comma-separated list of dependency types, or the value *NONE*, or the value *ALL*.
 
 ### Resolved issues
 * (IDETECT-2054) Resolved an issue that caused the Gradle Inspector to fail when detect.output.path is set to a relative path.
