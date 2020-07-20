@@ -58,7 +58,7 @@ class DetectableOptionFactoryTest {
         PropertyConfiguration detectConfiguration = Mockito.mock(PropertyConfiguration.class);
         DetectableOptionFactory factory = new DetectableOptionFactory(detectConfiguration,
             null, null, null);
-        Mockito.when(detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE()))
+        Mockito.when(detectConfiguration.getValue(DetectProperties.DETECT_BAZEL_DEPENDENCY_RULE.getProperty()))
             .thenReturn(userProvidedRulesValue);
         BazelDetectableOptions options = factory.createBazelDetectableOptions();
         return options.getBazelDependencyRules();

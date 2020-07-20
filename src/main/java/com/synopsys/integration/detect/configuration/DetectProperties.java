@@ -1,3 +1,25 @@
+/**
+ * synopsys-detect
+ *
+ * Copyright (c) 2020 Synopsys, Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.synopsys.integration.detect.configuration;
 
 import static java.util.Collections.emptyList;
@@ -40,6 +62,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndiv
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
+import com.synopsys.integration.detectable.detectables.go.godep.model.Project;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
 
@@ -174,8 +197,8 @@ public class DetectProperties {
             .setHelp("A comma-separated list of additional options to pass to the bazel cquery command.")
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN);
 
-    public static DetectProperty<FilterableEnumListProperty> DETECT_BAZEL_DEPENDENCY_RULE =
-        new DetectProperty<>(new FilterableEnumListProperty("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class))
+    public static DetectProperty<FilterableEnumListProperty<WorkspaceRule>> DETECT_BAZEL_DEPENDENCY_RULE =
+        new DetectProperty<>(new FilterableEnumListProperty<>("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class))
             .setInfo("Bazel workspace external dependency rule", "6.0.0")
             .setHelp(
                 "The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.")
@@ -273,9 +296,9 @@ public class DetectProperties {
                 "Each pattern provided is passed to the signature scanner (Black Duck scan CLI) as a value for an --exclude option. The signature scanner requires that these exclusion patterns start and end with a forward slash (/) and may not contain double asterisks (**). These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude from signature scanning. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns= / blackduck - common /, --detect.blackduck.signature.scanner.exclusion.patterns ='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns ='/blackduck-*/'.Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
 
-    public static DetectProperty<ExtendedEnumProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING =
+    public static DetectProperty<ExtendedEnumProperty<ExtendedIndividualFileMatchingMode, IndividualFileMatching>> DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING =
         new DetectProperty<>(
-            new ExtendedEnumProperty("detect.blackduck.signature.scanner.individual.file.matching", ExtendedEnumValue.ofExtendedValue(ExtendedIndividualFileMatchingMode.NONE), ExtendedIndividualFileMatchingMode.class,
+            new ExtendedEnumProperty<>("detect.blackduck.signature.scanner.individual.file.matching", ExtendedEnumValue.ofExtendedValue(ExtendedIndividualFileMatchingMode.NONE), ExtendedIndividualFileMatchingMode.class,
                 IndividualFileMatching.class))
             .setInfo("Individual File Matching", "6.2.0")
             .setHelp("Users may set this property to indicate what types of files they want to match")
@@ -323,9 +346,9 @@ public class DetectProperties {
             .setHelp("These paths and only these paths will be scanned.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL);
 
-    public static DetectProperty<ExtendedEnumProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING =
+    public static DetectProperty<ExtendedEnumProperty<ExtendedSnippetMode, SnippetMatching>> DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING =
         new DetectProperty<>(
-            new ExtendedEnumProperty("detect.blackduck.signature.scanner.snippet.matching", ExtendedEnumValue.ofExtendedValue(ExtendedSnippetMode.NONE), ExtendedSnippetMode.class, SnippetMatching.class))
+            new ExtendedEnumProperty<>("detect.blackduck.signature.scanner.snippet.matching", ExtendedEnumValue.ofExtendedValue(ExtendedSnippetMode.NONE), ExtendedSnippetMode.class, SnippetMatching.class))
             .setInfo("Snippet Matching", "5.5.0")
             .setHelp(
                 "Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help.")
@@ -346,8 +369,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
-    public static DetectProperty<EnumProperty> DETECT_BOM_AGGREGATE_REMEDIATION_MODE =
-        new DetectProperty<>(new EnumProperty("detect.bom.aggregate.remediation.mode", AggregateMode.TRANSITIVE, AggregateMode.class))
+    public static DetectProperty<EnumProperty<AggregateMode>> DETECT_BOM_AGGREGATE_REMEDIATION_MODE =
+        new DetectProperty<>(new EnumProperty<>("detect.bom.aggregate.remediation.mode", AggregateMode.TRANSITIVE, AggregateMode.class))
             .setInfo("BDIO Aggregate Remediation Mode", "6.1.0")
             .setHelp(
                 "If an aggregate BDIO file is being generated and this property is set to DIRECT, the aggregate BDIO file will exclude code location nodes from the top layer of the dependency tree to preserve the correct identification of direct dependencies in the resulting Black Duck BOM. When this property is set to TRANSITIVE (the default), component source information is preserved by including code location nodes at the top of the dependency tree, but all components will appear as TRANSITIVE in the BOM.")
@@ -418,8 +441,8 @@ public class DetectProperties {
             .setHelp("The path to the cpanm executable.")
             .setGroups(DetectGroup.CPAN, DetectGroup.GLOBAL);
 
-    public static DetectProperty<EnumProperty> DETECT_DEFAULT_PROJECT_VERSION_SCHEME =
-        new DetectProperty<>(new EnumProperty("detect.default.project.version.scheme", DefaultVersionNameScheme.TEXT, DefaultVersionNameScheme.class))
+    public static DetectProperty<EnumProperty<DefaultVersionNameScheme>> DETECT_DEFAULT_PROJECT_VERSION_SCHEME =
+        new DetectProperty<>(new EnumProperty<>("detect.default.project.version.scheme", DefaultVersionNameScheme.TEXT, DefaultVersionNameScheme.class))
             .setInfo("Default Project Version Name Scheme", "3.0.0")
             .setHelp("The scheme to use when the package managers can not determine a version. See detailed help for more information.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
@@ -602,8 +625,8 @@ public class DetectProperties {
             .setHelp("The path to the dotnet executable.")
             .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL);
 
-    public static DetectProperty<FilterableEnumListProperty> DETECT_EXCLUDED_DETECTOR_TYPES =
-        new DetectProperty<>(new FilterableEnumListProperty("detect.excluded.detector.types", emptyList(), DetectorType.class))
+    public static DetectProperty<FilterableEnumListProperty<DetectorType>> DETECT_EXCLUDED_DETECTOR_TYPES =
+        new DetectProperty<>(new FilterableEnumListProperty<>("detect.excluded.detector.types", emptyList(), DetectorType.class))
             .setInfo("Detector Types Excluded", "3.0.0")
             .setHelp(
                 "By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win.",
@@ -698,8 +721,8 @@ public class DetectProperties {
             .setHelp("The path to the rebar3 executable.")
             .setGroups(DetectGroup.HEX, DetectGroup.GLOBAL);
 
-    public static DetectProperty<FilterableEnumListProperty> DETECT_INCLUDED_DETECTOR_TYPES =
-        new DetectProperty<>(new FilterableEnumListProperty("detect.included.detector.types", emptyList(), DetectorType.class))
+    public static DetectProperty<FilterableEnumListProperty<DetectorType>> DETECT_INCLUDED_DETECTOR_TYPES =
+        new DetectProperty<>(new FilterableEnumListProperty<>("detect.included.detector.types", emptyList(), DetectorType.class))
             .setInfo("Detector Types Included", "3.0.0")
             .setHelp(
                 "By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.",
@@ -922,9 +945,9 @@ public class DetectProperties {
             .setHelp("Path of the swift executable.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
-    public static DetectProperty<FilterableEnumListProperty> DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES =
+    public static DetectProperty<FilterableEnumListProperty<PolicyRuleSeverityType>> DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES =
         new DetectProperty<>(
-            new FilterableEnumListProperty("detect.policy.check.fail.on.severities", FilterableEnumUtils.noneList(), PolicyRuleSeverityType.class))
+            new FilterableEnumListProperty<>("detect.policy.check.fail.on.severities", FilterableEnumUtils.noneList(), PolicyRuleSeverityType.class))
             .setInfo("Fail on Policy Violation Severities", "3.0.0")
             .setHelp(
                 "A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE.")
@@ -953,9 +976,9 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
-    public static DetectProperty<EnumListProperty> DETECT_PROJECT_CLONE_CATEGORIES =
+    public static DetectProperty<EnumListProperty<ProjectCloneCategoriesType>> DETECT_PROJECT_CLONE_CATEGORIES =
         new DetectProperty<>(
-            new EnumListProperty("detect.project.clone.categories", Arrays.asList(ProjectCloneCategoriesType.COMPONENT_DATA, ProjectCloneCategoriesType.VULN_DATA), ProjectCloneCategoriesType.class))
+            new EnumListProperty<>("detect.project.clone.categories", Arrays.asList(ProjectCloneCategoriesType.COMPONENT_DATA, ProjectCloneCategoriesType.VULN_DATA), ProjectCloneCategoriesType.class))
             .setInfo("Clone Project Categories", "4.2.0")
             .setHelp(
                 "An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set.")
@@ -1045,17 +1068,17 @@ public class DetectProperties {
             .setHelp("If a Black Duck project tier is specified, your project will be created with this tier.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING);
 
-    public static DetectProperty<EnumListProperty> DETECT_PROJECT_TOOL =
-        new DetectProperty<>(new EnumListProperty("detect.project.tool", Arrays.asList(DetectTool.DOCKER, DetectTool.DETECTOR, DetectTool.BAZEL), DetectTool.class))
+    public static DetectProperty<EnumListProperty<DetectTool>> DETECT_PROJECT_TOOL =
+        new DetectProperty<>(new EnumListProperty<>("detect.project.tool", Arrays.asList(DetectTool.DOCKER, DetectTool.DETECTOR, DetectTool.BAZEL), DetectTool.class))
             .setInfo("Detector Tool Priority", "5.0.0")
             .setHelp("The tool priority for project name and version. The project name and version will be determined by the first tool in this list that provides them.",
                 "This allows you to control which tool provides the project name and version when more than one tool are capable of providing it.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
-    public static DetectProperty<EnumProperty> DETECT_PROJECT_VERSION_DISTRIBUTION =
+    public static DetectProperty<EnumProperty<LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType>> DETECT_PROJECT_VERSION_DISTRIBUTION =
         new DetectProperty<>(
-            new EnumProperty("detect.project.version.distribution", LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType.EXTERNAL, LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType.class))
+            new EnumProperty<>("detect.project.version.distribution", LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType.EXTERNAL, LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType.class))
             .setInfo("Version Distribution", "3.0.0")
             .setHelp("An override for the Project Version distribution")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
@@ -1080,8 +1103,8 @@ public class DetectProperties {
             .setHelp("If project version notes are specified, your project version will be created with these notes.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING);
 
-    public static DetectProperty<EnumProperty> DETECT_PROJECT_VERSION_PHASE =
-        new DetectProperty<>(new EnumProperty("detect.project.version.phase", ProjectVersionPhaseType.DEVELOPMENT, ProjectVersionPhaseType.class))
+    public static DetectProperty<EnumProperty<ProjectVersionPhaseType>> DETECT_PROJECT_VERSION_PHASE =
+        new DetectProperty<>(new EnumProperty<>("detect.project.version.phase", ProjectVersionPhaseType.DEVELOPMENT, ProjectVersionPhaseType.class))
             .setInfo("Version Phase", "3.0.0")
             .setHelp("An override for the Project Version phase.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING);
@@ -1114,8 +1137,8 @@ public class DetectProperties {
                 "The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.GLOBAL);
 
-    public static DetectProperty<EnumListProperty> DETECT_REQUIRED_DETECTOR_TYPES =
-        new DetectProperty<>(new EnumListProperty("detect.required.detector.types", emptyList(), DetectorType.class))
+    public static DetectProperty<EnumListProperty<DetectorType>> DETECT_REQUIRED_DETECTOR_TYPES =
+        new DetectProperty<>(new EnumListProperty<>("detect.required.detector.types", emptyList(), DetectorType.class))
             .setInfo("Required Detect Types", "4.3.0")
             .setHelp("The set of required detectors.",
                 "If you want one or more detectors to be required (must be found to apply), use this property to specify the set of required detectors. If this property is set, and one (or more) of the given detectors is not found to apply, Detect will fail.")
@@ -1191,16 +1214,15 @@ public class DetectProperties {
             .setHelp("Test the connection to Black Duck with the current configuration.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.GLOBAL);
 
-    public static DetectProperty<FilterableEnumListProperty> DETECT_TOOLS =
-        new DetectProperty<>(new FilterableEnumListProperty("detect.tools", emptyList(), DetectTool.class))
+    public static DetectProperty<FilterableEnumListProperty<DetectTool>> DETECT_TOOLS =
+        new DetectProperty<>(new FilterableEnumListProperty<>("detect.tools", emptyList(), DetectTool.class))
             .setInfo("Detect Tools Included", "5.0.0")
-            .setHelp(
-                "The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.",
+            .setHelp("The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.",
                 "This property and detect.tools.excluded provide control over which tools Detect runs.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
-    public static DetectProperty<FilterableEnumListProperty> DETECT_TOOLS_EXCLUDED =
-        new DetectProperty<>(new FilterableEnumListProperty("detect.tools.excluded", emptyList(), DetectTool.class))
+    public static DetectProperty<FilterableEnumListProperty<DetectTool>> DETECT_TOOLS_EXCLUDED =
+        new DetectProperty<>(new FilterableEnumListProperty<>("detect.tools.excluded", emptyList(), DetectTool.class))
             .setInfo("Detect Tools Excluded", "5.0.0")
             .setHelp(
                 "The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.",
@@ -1213,8 +1235,8 @@ public class DetectProperties {
             .setHelp("Set this to true to only scan production dependencies.")
             .setGroups(DetectGroup.YARN, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
-    public static DetectProperty<EnumProperty> LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION =
-        new DetectProperty<>(new EnumProperty("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class))
+    public static DetectProperty<EnumProperty<LogLevel>> LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION =
+        new DetectProperty<>(new EnumProperty<>("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class))
             .setInfo("Logging Level", "5.3.0")
             .setHelp("The logging level of Detect.")
             .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL);

@@ -63,8 +63,8 @@ class DiagnosticsDeciderTest {
     void propertyDecision() {
         DetectArgumentState detectArgumentState = createDetectArgumentState(false, false);
         PropertyConfiguration propertyConfiguration = Mockito.mock(PropertyConfiguration.class);
-        Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC())).thenReturn(true);
-        Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED())).thenReturn(false);
+        Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC.getProperty())).thenReturn(true);
+        Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty())).thenReturn(false);
 
         DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState, propertyConfiguration);
         DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide();
@@ -78,8 +78,8 @@ class DiagnosticsDeciderTest {
     void propertyDecisionExtended() {
         DetectArgumentState detectArgumentState = createDetectArgumentState(false, false);
         PropertyConfiguration propertyConfiguration = Mockito.mock(PropertyConfiguration.class);
-        Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC())).thenReturn(false);
-        Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED())).thenReturn(true);
+        Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC.getProperty())).thenReturn(false);
+        Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty())).thenReturn(true);
 
         DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState, propertyConfiguration);
         DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide();

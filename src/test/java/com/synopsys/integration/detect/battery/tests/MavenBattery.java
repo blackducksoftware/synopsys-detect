@@ -35,7 +35,7 @@ public class MavenBattery {
     @Test
     void mavenFromProperty() {
         final BatteryTest test = new BatteryTest("maven-property", "maven-cli");
-        test.executableFromResourceFiles(DetectProperties.DETECT_MAVEN_PATH(), MAVEN_OUTPUT_RESOURCE);
+        test.executableFromResourceFiles(DetectProperties.DETECT_MAVEN_PATH.getProperty(), MAVEN_OUTPUT_RESOURCE);
         test.sourceDirectoryNamed("linux-maven");
         test.sourceFileNamed("pom.xml");
         test.git("https://github.com/BlackDuckCoPilot/example-maven-travis", "master");
