@@ -66,7 +66,7 @@ public class ArbitraryNameVersionDecision extends NameVersionDecision {
         logger.info(String.format("Chose to use %s at depth %d for project name and version. Override with %s.",
             chosenDetector.getDetectorType().name(),
             chosenDetector.getDepth(),
-            DetectProperties.Companion.getDETECT_PROJECT_DETECTOR().getKey()
+             DetectProperties.DETECT_PROJECT_DETECTOR.getProperty().getKey()
         ));
 
     }

@@ -145,7 +145,7 @@ public class AggregateBdioCreator {
                 aggregateDependencyGraph.addGraphAsChildrenToParent(codeLocationDependency, detectCodeLocation.getDependencyGraph());
             } else {
                 throw new DetectUserFriendlyException(
-                    String.format("The %s property was set to an unsupported aggregation mode, will not aggregate at this time.", DetectProperties.Companion.getDETECT_BOM_AGGREGATE_REMEDIATION_MODE().getKey()),
+                    String.format("The %s property was set to an unsupported aggregation mode, will not aggregate at this time.",  DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE.getProperty().getKey()),
                     ExitCodeType.FAILURE_GENERAL_ERROR);
             }
         }

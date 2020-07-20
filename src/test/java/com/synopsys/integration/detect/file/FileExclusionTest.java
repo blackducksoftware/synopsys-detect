@@ -79,13 +79,13 @@ public class FileExclusionTest {
 
     @Test
     public void testDefaultsFindAll() throws IOException {
-        FileFinder finder = fileFinderFromProperty(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS(), "true");
+        FileFinder finder = fileFinderFromProperty(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS(), "true");
         Assert.assertEquals(4, finder.findFiles(sourceFile, "*", 2).size());
     }
 
     @Test
     public void testFirstFileExcluded() throws IOException {
-        FileFinder finder = fileFinderFromProperty(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_FILES(), firstFileDotTxt);
+        FileFinder finder = fileFinderFromProperty(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_FILES(), firstFileDotTxt);
         Assert.assertEquals(3, finder.findFiles(sourceFile, "*", 2).size());
     }
 }

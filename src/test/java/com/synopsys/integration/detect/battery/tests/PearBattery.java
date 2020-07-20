@@ -35,7 +35,7 @@ public class PearBattery {
         final BatteryTest test = new BatteryTest("pear-cli");
         test.sourceDirectoryNamed("linux-pear");
         test.sourceFileFromResource("package.xml");
-        test.executableFromResourceFiles(DetectProperties.Companion.getDETECT_PEAR_PATH(), "pear-list.xout", "pear-package.xout");
+        test.executableFromResourceFiles(DetectProperties.DETECT_PEAR_PATH(), "pear-list.xout", "pear-package.xout");
         test.expectBdioResources();
         test.run();
     }

@@ -100,7 +100,7 @@ public class DirectoryManager {
             logger.warn("You appear to be running in 'systemprofile' which can happen when detect is invoked by a system account or as a service.");
             logger.warn("If detect has full access to the output directory, no further action is necessary.");
             logger.warn("However, this folder typically has restricted access and may cause exceptions in detect.");
-            logger.warn("To ensure continued operation, supply an output directory using " + DetectProperties.Companion.getDETECT_OUTPUT_PATH().getName() + " in the future.");
+            logger.warn("To ensure continued operation, supply an output directory using " +  DetectProperties.DETECT_OUTPUT_PATH.getProperty().getName() + " in the future.");
         }
         logger.info("Output directory: " + outputDirectory.getAbsolutePath());
 

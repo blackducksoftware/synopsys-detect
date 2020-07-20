@@ -143,7 +143,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public CodeLocationNameGenerator codeLocationNameService() {
-        final String codeLocationNameOverride = detectConfiguration.getValueOrEmpty(DetectProperties.Companion.getDETECT_CODE_LOCATION_NAME()).orElse(null);
+        final String codeLocationNameOverride = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_CODE_LOCATION_NAME.getProperty()).orElse(null);
         return new CodeLocationNameGenerator(codeLocationNameOverride);
     }
 

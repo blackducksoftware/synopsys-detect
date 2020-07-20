@@ -36,8 +36,8 @@ public class DiagnosticsDecider {
     }
 
     public DiagnosticsDecision decide() {
-        boolean diagnostic = detectArgumentState.isDiagnostic() || propertyConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DIAGNOSTIC());
-        boolean diagnosticExtended = detectArgumentState.isDiagnosticExtended() || propertyConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DIAGNOSTIC_EXTENDED());
+        boolean diagnostic = detectArgumentState.isDiagnostic() || propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC.getProperty());
+        boolean diagnosticExtended = detectArgumentState.isDiagnosticExtended() || propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty());
         boolean configuredForDiagnostic = diagnostic || diagnosticExtended;
 
         return new DiagnosticsDecision(diagnostic, diagnosticExtended, configuredForDiagnostic);

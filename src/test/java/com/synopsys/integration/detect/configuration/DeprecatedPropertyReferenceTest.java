@@ -53,7 +53,7 @@ public class DeprecatedPropertyReferenceTest {
         this.getClass()
     )).map(Class::getSimpleName).toList();
 
-    private List<String> deprecatedPropertyReferenceStrings = Bds.of(DetectProperties.Companion.getProperties())
+    private List<String> deprecatedPropertyReferenceStrings = Bds.of(DetectProperties.Properties())
                                                                   .filter(it -> it.getPropertyDeprecationInfo() != null)
                                                                   .map(Property::getKey)
                                                                   .map(String::toUpperCase)

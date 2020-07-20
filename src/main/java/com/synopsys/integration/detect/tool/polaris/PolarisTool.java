@@ -67,7 +67,7 @@ public class PolarisTool {
 
     public void runPolaris(final IntLogger logger, final File projectDirectory) {
         logger.info("Polaris determined it should attempt to run.");
-        final String polarisUrl = detectConfiguration.getValueOrEmpty(DetectProperties.Companion.getPOLARIS_URL()).orElse(null);
+        final String polarisUrl = detectConfiguration.getValueOrEmpty(DetectProperties.POLARIS_URL.getProperty()).orElse(null);
         logger.info("Will use the following polaris url: " + polarisUrl);
 
         final AccessTokenPolarisHttpClient polarisHttpClient = polarisServerConfig.createPolarisHttpClient(logger);
@@ -85,8 +85,8 @@ public class PolarisTool {
 
             logger.info("Found polaris cli: " + polarisCliPath.get());
 
-            final String additionalArgs = detectConfiguration.getValueOrEmpty(DetectProperties.Companion.getPOLARIS_ARGUMENTS()).orElse(null);
-            final String commandOverride = detectConfiguration.getValueOrEmpty(DetectProperties.Companion.getPOLARIS_COMMAND()).orElse(null);
+            final String additionalArgs = detectConfiguration.getValueOrEmpty(DetectProperties.POLARIS_ARGUMENTS.getProperty()).orElse(null);
+            final String commandOverride = detectConfiguration.getValueOrEmpty(DetectProperties.POLARIS_COMMAND.getProperty()).orElse(null);
             final List<String> arguments = new ArrayList<>();
             if (StringUtils.isNotBlank(commandOverride)) {
                 if (StringUtils.isNotBlank(additionalArgs)) {
