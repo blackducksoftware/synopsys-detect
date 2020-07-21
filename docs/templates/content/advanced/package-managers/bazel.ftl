@@ -10,7 +10,7 @@ The Bazel tool attempts to run on your project if you provide a Bazel build targ
 
 The Bazel tool also requires a bazel executable on $PATH.
 
-${solution_name} attempts to determine the workspace dependency rule (*maven_jar* or *maven_install*) from the WORKSPACE file.
+${solution_name} attempts to determine the workspace dependency rule (*maven_install*, *maven_jar*, or *haskell_cabal_library*) from the WORKSPACE file.
 In case it cannot, you can specify which rule you use with the Bazel dependency type property.
 Refer to [Properties](../../../properties/detectors/bazel/) for details.
 
@@ -41,7 +41,7 @@ The Bazel tool runs a bazel query on the given target to get a list of jar depen
 The following is an example using the equivalent commands that ${solution_name} runs, but from the command line of how ${solution_name}'s Bazel detector currently identifies components.
 First, it gets a list of dependencies:
 ```
-$ bazel query 'filter("@.*:jar", deps(//:ProjectRunner))'
+$ bazel cquery 'filter("@.*:jar", deps(//:ProjectRunner))'
 INFO: Invocation ID: dfe8718d-b4db-4bd9-b9b9-57842cca3fb4
 @org_apache_commons_commons_io//jar:jar
 @com_google_guava_guava//jar:jar

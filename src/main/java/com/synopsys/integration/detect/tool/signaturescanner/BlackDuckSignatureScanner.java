@@ -140,7 +140,7 @@ public class BlackDuckSignatureScanner {
         }
 
         String scanTargetPath = signatureScannerReport.getSignatureScanPath().getTargetCanonicalPath();
-        if (signatureScannerReport.hasOutput()) {
+        if (!signatureScannerReport.hasOutput()) {
             String errorMessage = String.format("Scanning target %s was never scanned by the BlackDuck CLI.", scanTargetPath);
             logger.info(errorMessage);
             eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Collections.singletonList(errorMessage)));

@@ -79,6 +79,8 @@ public class DetectorRuleFactory {
         final DetectorRuleSetBuilder ruleSet = new DetectorRuleSetBuilder();
 
         //TODO: Verify we still need to pass detector name here. We may now be able to get it from the detectable class - before we could not as it was not instantiated.
+        ruleSet.addDetector(DetectorType.CARGO, "Cargo", CargoDetectable.class, detectableFactory::createCargoDetectable).defaults().build();
+
         ruleSet.addDetector(DetectorType.BITBAKE, "Bitbake", BitbakeDetectable.class, detectableFactory::createBitbakeDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
@@ -128,9 +130,9 @@ public class DetectorRuleFactory {
 
         final DetectorRule pipEnv = ruleSet.addDetector(DetectorType.PIP, "Pip Env", PipenvDetectable.class, detectableFactory::createPipenvDetectable).defaults().build();
         final DetectorRule pipInspector = ruleSet.addDetector(DetectorType.PIP, "Pip Inspector", PipInspectorDetectable.class, detectableFactory::createPipInspectorDetectable).defaults().build();
-        final DetectorRule poetry = ruleSet.addDetector(DetectorType.PIP, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
-
         ruleSet.yield(pipInspector).to(pipEnv);
+
+        ruleSet.addDetector(DetectorType.PIP, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", GemlockDetectable.class, detectableFactory::createGemlockDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", SbtResolutionCacheDetectable.class, detectableFactory::createSbtResolutionCacheDetectable).defaults().build();
@@ -139,8 +141,6 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.CLANG, "Clang", ClangDetectable.class, detectableFactory::createClangDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.SWIFT, "Swift", SwiftCliDetectable.class, detectableFactory::createSwiftCliDetectable).defaults().build();
-
-        ruleSet.addDetector(DetectorType.CARGO, "Cargo", CargoDetectable.class, detectableFactory::createCargoDetectable).defaults().build();
 
         final DetectorRule gitParse = ruleSet.addDetector(DetectorType.GIT, "Git Parse", GitParseDetectable.class, detectableFactory::createGitParseDetectable).defaults().build();
         final DetectorRule gitCli = ruleSet.addDetector(DetectorType.GIT, "Git Cli", GitCliDetectable.class, detectableFactory::createGitCliDetectable).defaults().build();
@@ -151,6 +151,8 @@ public class DetectorRuleFactory {
 
     private DetectorRuleSet createBuildlessRules(final DetectDetectableFactory detectableFactory) {
         final DetectorRuleSetBuilder ruleSet = new DetectorRuleSetBuilder();
+
+        ruleSet.addDetector(DetectorType.CARGO, "Cargo", CargoDetectable.class, detectableFactory::createCargoDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.COCOAPODS, "Pod Lock", PodlockDetectable.class, detectableFactory::createPodLockDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.PACKAGIST, "Packrat Lock", PackratLockDetectable.class, detectableFactory::createPackratLockDetectable).defaults().build();
@@ -163,6 +165,9 @@ public class DetectorRuleFactory {
         ruleSet.addDetector(DetectorType.GO_GRADLE, "Go Gradle", GoGradleDetectable.class, detectableFactory::createGoGradleDetectable).defaults().build();
 
         ruleSet.addDetector(DetectorType.MAVEN, "Maven Pom Parse", MavenParseDetectable.class, detectableFactory::createMavenParseDetectable).defaults().build();
+
+        ruleSet.addDetector(DetectorType.PIP, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
+
 
         final DetectorRule yarnLock = ruleSet.addDetector(DetectorType.YARN, "Yarn Lock", YarnLockDetectable.class, detectableFactory::createYarnLockDetectable).defaults().build();
         final DetectorRule npmPackageLock = ruleSet.addDetector(DetectorType.NPM, "Package Lock", NpmPackageLockDetectable.class, detectableFactory::createNpmPackageLockDetectable).defaults().build();

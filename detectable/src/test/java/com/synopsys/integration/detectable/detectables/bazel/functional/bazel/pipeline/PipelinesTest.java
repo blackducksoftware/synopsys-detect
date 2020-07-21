@@ -23,7 +23,6 @@
 package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.pipeline;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +33,6 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
@@ -155,55 +153,55 @@ public class PipelinesTest {
 
     private static final String HASKELL_CABAL_LIBRARY_JSONPROTO = createStandardOutput(
         "{",
-          "  \"results\": [{",
-          "    \"target\": {",
-          "      \"type\": \"RULE\",",
-          "      \"rule\": {",
-          "        \"name\": \"@stackage//:optparse-applicative\",",
-          "        \"ruleClass\": \"haskell_cabal_library\",",
-          "        \"location\": \"/root/.cache/bazel/_bazel_root/cc59a4f96db0d7083a7d7596a883ccd0/external/stackage/BUILD.bazel:528:1\",",
-          "        \"attribute\": [{",
-          "          \"name\": \"generator_location\",",
-          "          \"type\": \"STRING\",",
-          "          \"stringValue\": \"\",",
-          "          \"explicitlySpecified\": false,",
-          "          \"nodep\": false",
-          "        }, {",
-          "          \"name\": \"name\",",
-          "          \"type\": \"STRING\",",
-          "          \"stringValue\": \"optparse-applicative\",",
-          "          \"explicitlySpecified\": true,",
-          "          \"nodep\": false",
-          "        }, {",
-          "          \"name\": \"version\",",
-          "          \"type\": \"STRING\",",
-          "          \"stringValue\": \"0.14.3.0\",",
-          "          \"explicitlySpecified\": true,",
-          "          \"nodep\": false",
-          "        }, {",
-          "          \"name\": \"$rule_implementation_hash\",",
-          "          \"type\": \"STRING\",",
-          "          \"stringValue\": \"1b75caf6fa81d9febe4bf63485fc3b7e3a1c6bef5637ec66e6ffbf9590a8c41f\"",
-          "        }],",
-          "        \"ruleInput\": [\"@stackage//:ansi-wl-pprint\", \"@stackage//:base\", \"@stackage//:transformers\", \"@stackage//:transformers-compat\"]",
-          "      }",
-          "    },",
-          "    \"configuration\": {",
-          "      \"checksum\": \"113f3ed6a7eba369dbe1453fe1da149ce5b6faa1129ed584fd4ad044389cc463\"",
-          "    }",
-          "  }]",
-          "}");
+        "  \"results\": [{",
+        "    \"target\": {",
+        "      \"type\": \"RULE\",",
+        "      \"rule\": {",
+        "        \"name\": \"@stackage//:optparse-applicative\",",
+        "        \"ruleClass\": \"haskell_cabal_library\",",
+        "        \"location\": \"/root/.cache/bazel/_bazel_root/cc59a4f96db0d7083a7d7596a883ccd0/external/stackage/BUILD.bazel:528:1\",",
+        "        \"attribute\": [{",
+        "          \"name\": \"generator_location\",",
+        "          \"type\": \"STRING\",",
+        "          \"stringValue\": \"\",",
+        "          \"explicitlySpecified\": false,",
+        "          \"nodep\": false",
+        "        }, {",
+        "          \"name\": \"name\",",
+        "          \"type\": \"STRING\",",
+        "          \"stringValue\": \"optparse-applicative\",",
+        "          \"explicitlySpecified\": true,",
+        "          \"nodep\": false",
+        "        }, {",
+        "          \"name\": \"version\",",
+        "          \"type\": \"STRING\",",
+        "          \"stringValue\": \"0.14.3.0\",",
+        "          \"explicitlySpecified\": true,",
+        "          \"nodep\": false",
+        "        }, {",
+        "          \"name\": \"$rule_implementation_hash\",",
+        "          \"type\": \"STRING\",",
+        "          \"stringValue\": \"1b75caf6fa81d9febe4bf63485fc3b7e3a1c6bef5637ec66e6ffbf9590a8c41f\"",
+        "        }],",
+        "        \"ruleInput\": [\"@stackage//:ansi-wl-pprint\", \"@stackage//:base\", \"@stackage//:transformers\", \"@stackage//:transformers-compat\"]",
+        "      }",
+        "    },",
+        "    \"configuration\": {",
+        "      \"checksum\": \"113f3ed6a7eba369dbe1453fe1da149ce5b6faa1129ed584fd4ad044389cc463\"",
+        "    }",
+        "  }]",
+        "}");
 
     @Test
     public void testMavenInstall() throws IntegrationException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        final List<String> userProvidedCqueryAdditionalOptions = null;
+        List<String> userProvidedCqueryAdditionalOptions = null;
 
-        final MutableDependencyGraph dependencyGraph = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_CQUERY_OUTPUT_SIMPLE);
-        assertEquals(8, dependencyGraph.getRootDependencies().size());
+        List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_CQUERY_OUTPUT_SIMPLE);
+        assertEquals(8, dependencies.size());
         int foundCount = 0;
-        for (final Dependency dependency : dependencyGraph.getRootDependencies()) {
+        for (Dependency dependency : dependencies) {
             if ("com.google.guava".equals(dependency.getExternalId().getGroup()) &&
                     "guava".equals(dependency.getExternalId().getName()) &&
                     "27.0-jre".equals(dependency.getExternalId().getVersion())) {
@@ -222,12 +220,12 @@ public class PipelinesTest {
     public void testMavenInstallMixedTags() throws IntegrationException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        final List<String> userProvidedCqueryAdditionalOptions = null;
+        List<String> userProvidedCqueryAdditionalOptions = null;
 
-        final MutableDependencyGraph dependencyGraph = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_OUTPUT_MIXED_TAGS);
-        assertEquals(2, dependencyGraph.getRootDependencies().size());
+        List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_OUTPUT_MIXED_TAGS);
+        assertEquals(2, dependencies.size());
         int foundCount = 0;
-        for (final Dependency dependency : dependencyGraph.getRootDependencies()) {
+        for (Dependency dependency : dependencies) {
             if ("com.company.thing".equals(dependency.getExternalId().getGroup()) &&
                     "thing-common-client".equals(dependency.getExternalId().getName()) &&
                     "2.100.0".equals(dependency.getExternalId().getVersion())) {
@@ -246,12 +244,12 @@ public class PipelinesTest {
     public void testMavenInstallMixedTagsReversedOrder() throws IntegrationException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        final List<String> userProvidedCqueryAdditionalOptions = null;
+        List<String> userProvidedCqueryAdditionalOptions = null;
 
-        final MutableDependencyGraph dependencyGraph = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_OUTPUT_MIXED_TAGS_REVERSED_ORDER);
-        assertEquals(1, dependencyGraph.getRootDependencies().size());
+        List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, MAVEN_INSTALL_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_OUTPUT_MIXED_TAGS_REVERSED_ORDER);
+        assertEquals(1, dependencies.size());
         int foundCount = 0;
-        for (final Dependency dependency : dependencyGraph.getRootDependencies()) {
+        for (Dependency dependency : dependencies) {
             if ("com.company.thing".equals(dependency.getExternalId().getGroup()) &&
                     "thing-common-client".equals(dependency.getExternalId().getName()) &&
                     "2.100.0".equals(dependency.getExternalId().getVersion())) {
@@ -265,13 +263,13 @@ public class PipelinesTest {
     public void testMavenInstallCqueryAdditionalOptions() throws IntegrationException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        final List<String> userProvidedCqueryAdditionalOptions = Arrays.asList("--option1=a", "--option2=b");
-        final List<String> expectedBazelCommandArgs = Arrays.asList("cquery", "--noimplicit_deps", "--option1=a", "--option2=b", "kind(j.*import, deps(/:testTarget))", "--output", "build");
+        List<String> userProvidedCqueryAdditionalOptions = Arrays.asList("--option1=a", "--option2=b");
+        List<String> expectedBazelCommandArgs = Arrays.asList("cquery", "--noimplicit_deps", "--option1=a", "--option2=b", "kind(j.*import, deps(/:testTarget))", "--output", "build");
 
-        final MutableDependencyGraph dependencyGraph = doTest(WorkspaceRule.MAVEN_INSTALL, expectedBazelCommandArgs, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_CQUERY_OUTPUT_SIMPLE);
-        assertEquals(8, dependencyGraph.getRootDependencies().size());
+        List<Dependency> dependencies = doTest(WorkspaceRule.MAVEN_INSTALL, expectedBazelCommandArgs, userProvidedCqueryAdditionalOptions, MAVEN_INSTALL_CQUERY_OUTPUT_SIMPLE);
+        assertEquals(8, dependencies.size());
         int foundCount = 0;
-        for (final Dependency dependency : dependencyGraph.getRootDependencies()) {
+        for (Dependency dependency : dependencies) {
             if ("com.google.guava".equals(dependency.getExternalId().getGroup()) &&
                     "guava".equals(dependency.getExternalId().getName()) &&
                     "27.0-jre".equals(dependency.getExternalId().getVersion())) {
@@ -290,13 +288,13 @@ public class PipelinesTest {
     public void haskellCabalLibraryTest() throws IntegrationException {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
 
-        final List<String> userProvidedCqueryAdditionalOptions = null;
+        List<String> userProvidedCqueryAdditionalOptions = null;
 
-        final MutableDependencyGraph dependencyGraph = doTest(WorkspaceRule.HASKELL_CABAL_LIBRARY,
+        List<Dependency> dependencies = doTest(WorkspaceRule.HASKELL_CABAL_LIBRARY,
             HASKELL_CABAL_LIBRARY_STANDARD_BAZEL_COMMAND_ARGS, userProvidedCqueryAdditionalOptions, HASKELL_CABAL_LIBRARY_JSONPROTO);
-        assertEquals(1, dependencyGraph.getRootDependencies().size());
+        assertEquals(1, dependencies.size());
         int foundCount = 0;
-        for (final Dependency dependency : dependencyGraph.getRootDependencies()) {
+        for (Dependency dependency : dependencies) {
             if ("optparse-applicative".equals(dependency.getExternalId().getName()) &&
                     "0.14.3.0".equals(dependency.getExternalId().getVersion())) {
                 foundCount++;
@@ -305,20 +303,19 @@ public class PipelinesTest {
         assertEquals(1, foundCount);
     }
 
-
-    private MutableDependencyGraph doTest(final WorkspaceRule workspaceRule, final List<String> expectedBazelCommandArgs, final List<String> userProvidedCqueryAdditionalOptions, final String input) throws IntegrationException {
-        final BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
+    private List<Dependency> doTest(WorkspaceRule workspaceRule, List<String> expectedBazelCommandArgs, List<String> userProvidedCqueryAdditionalOptions, String input) throws IntegrationException {
+        BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
         Mockito.when(bazelCommandExecutor.executeToString(expectedBazelCommandArgs)).thenReturn(Optional.of(input));
-        final BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("/:testTarget", userProvidedCqueryAdditionalOptions);
+        BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("/:testTarget", userProvidedCqueryAdditionalOptions);
 
-        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory);
-        final Pipeline pipeline = pipelines.get(workspaceRule);
-        final MutableDependencyGraph dependencyGraph = pipeline.run();
-        return dependencyGraph;
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory);
+        Pipeline pipeline = pipelines.get(workspaceRule);
+        List<Dependency> dependencies = pipeline.run();
+        return dependencies;
     }
 
-    private static String createStandardOutput(final String... outputLines) {
+    private static String createStandardOutput(String... outputLines) {
         return String.join(System.lineSeparator(), outputLines);
     }
 }

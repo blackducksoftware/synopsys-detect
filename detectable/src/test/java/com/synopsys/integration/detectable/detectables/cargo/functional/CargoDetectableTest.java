@@ -21,7 +21,11 @@ public class CargoDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("Cargo.toml"));
+        addFile(Paths.get("Cargo.toml"),
+            "[package]",
+            "name        = \"cargo-audit\"",
+            "version     = \"0.12.0\""
+        );
 
         addFile(Paths.get("Cargo.lock"),
             "[[package]]",

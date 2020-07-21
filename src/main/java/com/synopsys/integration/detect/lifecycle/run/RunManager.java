@@ -230,7 +230,6 @@ public class RunManager {
                 eventSystem);
             DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
             runResult.addDetectableToolResult(detectableToolResult);
-            eventSystem.publishEvent(Event.CodeLocationNamesAdded, createCodeLocationNames(detectableToolResult, codeLocationNameManager, directoryManager));
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
             logger.info("Bazel actions finished.");
         } else {

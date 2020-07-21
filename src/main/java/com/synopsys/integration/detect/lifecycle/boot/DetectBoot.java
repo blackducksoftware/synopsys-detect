@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.lifecycle.boot;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -134,7 +135,7 @@ public class DetectBoot {
         this.detectBootFactory = detectBootFactory;
     }
 
-    public DetectBootResult boot(DetectRun detectRun, String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) {
+    public DetectBootResult boot(DetectRun detectRun, String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) throws DetectUserFriendlyException, IOException {
         ObjectMapper objectMapper = detectBootFactory.createObjectMapper();
         DocumentBuilder xml = detectBootFactory.createXmlDocumentBuilder();
         Configuration configuration = detectBootFactory.createConfiguration();

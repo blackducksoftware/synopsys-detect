@@ -149,7 +149,8 @@ Although not recommended, it is possible to disable the certificate check with t
 Running ${solution_name} on a NuGet project on Windows, a message similar to the following appears in the ${solution_name} log:
 
 ````
-Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException: Illegal char <:> at index 2: C:\...
+Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException: Illegal char
+<:> at index 2: C:\...
 ````
 
 ### Possible cause
@@ -178,3 +179,35 @@ you will get this (or a similar) error if you run with --detect.tools.BINARY_SCA
 ### Solution
 
 Set --detect.project.name and --detect.project.version.name.
+
+## ${blackduck_signature_scanner_name} fails on Alpine Linux
+
+### Symptom
+
+The ${blackduck_signature_scanner_name} fails on Alpine Linux with an error similar to:
+
+````
+There was a problem scanning target '/opt/projects/myproject': Cannot run program "/home/me/blackduck/tools/Black_Duck_Scan_Installation/scan.cli-2020.6.0/jre/bin/java": error=2, No such
+file or directory
+````
+
+### Possible cause
+
+The Java bundled with the ${blackduck_signature_scanner_name} does not work on Alpine Linux (it relies on libraries not usually present on an Alpine system).
+
+### Solution
+
+Install an appropriate version of Java and tell ${solution_name} to invoke the ${blackduck_signature_scanner_name} using that
+version of Java by setting environment variable BDS_JAVA_HOME to the JAVA_HOME value for that Java installation.
+
+For example:
+
+````
+export BDS_JAVA_HOME=$JAVA_HOME
+````
+
+Or:
+
+````
+export BDS_JAVA_HOME=/usr/lib/jvm/java-11-openjdk/jre
+````

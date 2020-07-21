@@ -9,4 +9,4 @@ INDEX=`cat ${dataFile}`
 cat ${r"${ARRAY[${INDEX}]}"}
 
 NEXT_INDEX=$((INDEX+1))
-echo ${r"${NEXT_INDEX}"} >> ${dataFile}
+echo ${r"${NEXT_INDEX}"} > ${dataFile}

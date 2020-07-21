@@ -32,26 +32,33 @@ public class IntermediateStepExecuteBazelOnEach implements IntermediateStep {
     private final BazelCommandExecutor bazelCommandExecutor;
     private final BazelVariableSubstitutor bazelVariableSubstitutor;
     private final List<String> bazelCommandArgs;
+    private final boolean inputIsExpected;
 
-    public IntermediateStepExecuteBazelOnEach(final BazelCommandExecutor bazelCommandExecutor, final BazelVariableSubstitutor bazelVariableSubstitutor, final List<String> bazelCommandArgs) {
+    public IntermediateStepExecuteBazelOnEach(BazelCommandExecutor bazelCommandExecutor,
+        BazelVariableSubstitutor bazelVariableSubstitutor, List<String> bazelCommandArgs, boolean inputIsExpected) {
         this.bazelCommandExecutor = bazelCommandExecutor;
         this.bazelVariableSubstitutor = bazelVariableSubstitutor;
         this.bazelCommandArgs = bazelCommandArgs;
+        this.inputIsExpected = inputIsExpected;
     }
 
     @Override
-    public List<String> process(final List<String> input) throws IntegrationException {
-        final List<String> adjustedInput;
+    public List<String> process(List<String> input) throws IntegrationException {
+        List<String> results = new ArrayList<>();
+        if (inputIsExpected && input.isEmpty()) {
+            return results;
+        }
+        List<String> adjustedInput;
         if (input.isEmpty()) {
+            // Empty pipeline is normal when this is first step in pipeline, but we need one item to enter the loop below
             adjustedInput = new ArrayList<>(1);
             adjustedInput.add(null);
         } else {
             adjustedInput = input;
         }
-        final List<String> results = new ArrayList<>();
-        for (final String inputItem : adjustedInput) {
-            final List<String> finalizedArgs = bazelVariableSubstitutor.substitute(bazelCommandArgs, inputItem);
-            final Optional<String> cmdOutput = bazelCommandExecutor.executeToString(finalizedArgs);
+        for (String inputItem : adjustedInput) {
+            List<String> finalizedArgs = bazelVariableSubstitutor.substitute(bazelCommandArgs, inputItem);
+            Optional<String> cmdOutput = bazelCommandExecutor.executeToString(finalizedArgs);
             if (cmdOutput.isPresent()) {
                 results.add(cmdOutput.get());
             }

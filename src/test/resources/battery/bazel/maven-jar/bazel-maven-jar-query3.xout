@@ -1,0 +1,7 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<query version="2">
+    <rule class="maven_jar" location="/root/home/steve/examples/maven_jar/WORKSPACE:1:1" name="//external:com_google_guava_guava">
+        <string name="name" value="com_google_guava_guava"/>
+        <string name="artifact" value="com.google.guava:guava:18.0"/>
+    </rule>
+</query>

@@ -169,9 +169,9 @@ class DetectProperties {
             setHelp("A comma-separated list of additional options to pass to the bazel cquery command.")
             setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
         }
-        val DETECT_BAZEL_DEPENDENCY_RULE = EnumProperty("detect.bazel.dependency.type", WorkspaceRule.UNSPECIFIED, WorkspaceRule::class.java).apply {
+        val DETECT_BAZEL_DEPENDENCY_RULE = FilterableEnumListProperty("detect.bazel.dependency.type", emptyList(), WorkspaceRule::class.java).apply {
             setInfo("Bazel workspace external dependency rule", "6.0.0")
-            setHelp("The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.")
+            setHelp("The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
             setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
         }
         val DETECT_BDIO_OUTPUT_PATH = NullablePathProperty("detect.bdio.output.path").apply {
@@ -191,7 +191,7 @@ class DetectProperties {
         }
         val DETECT_BINARY_SCAN_FILE_NAME_PATTERNS = StringListProperty("detect.binary.scan.file.name.patterns", emptyList()).apply {
             setInfo("Binary Scan Filename Patterns", "6.0.0")
-            setHelp("If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified.")
+            setHelp("If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_PATH)
         }
         val DETECT_BITBAKE_BUILD_ENV_NAME = StringProperty("detect.bitbake.build.env.name", "oe-init-build-env").apply {
@@ -231,7 +231,7 @@ class DetectProperties {
         }
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS = StringListProperty("detect.blackduck.signature.scanner.exclusion.name.patterns", listOf("node_modules")).apply {
             setInfo("Directory Name Exclusion Patterns", "4.2.0")
-            setHelp("A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.", "These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). Detect will recursively search within the scan targets for files/directories that match these patterns and will create the corresponding exclusion patterns (paths relative to the scan target directory) for the signature scanner (Black Duck scan CLI). Please note that the signature scanner will only exclude directories; matched filenames will be passed to the signature scanner but will have no effect. These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns and passed as --exclude values. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.name.patterns=blackduck-common, --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-common', --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-*'. Use this property when you want Detect to convert the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns to pass patterns directly to the signature scanner as-is.")
+            setHelp("A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.", "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details. Detect will recursively search within the scan targets for files/directories that match these patterns and will create the corresponding exclusion patterns (paths relative to the scan target directory) for the signature scanner (Black Duck scan CLI). Please note that the signature scanner will only exclude directories; matched filenames will be passed to the signature scanner but will have no effect. These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns and passed as --exclude values. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.name.patterns=blackduck-common, --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-common', --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-*'. Use this property when you want Detect to convert the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns to pass patterns directly to the signature scanner as-is.")
             setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
         }
         val DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH = IntegerProperty("detect.blackduck.signature.scanner.exclusion.pattern.search.depth", 4).apply {
@@ -520,30 +520,30 @@ class DetectProperties {
         }
         val DETECT_GRADLE_BUILD_COMMAND = NullableStringProperty("detect.gradle.build.command").apply {
             setInfo("Gradle Build Command", "3.0.0")
-            setHelp("Gradle command line arguments to add to the mvn/mvnw command line.", "By default, Detect runs the gradle (or gradlew) command with one task: dependencies. You can use this property to insert one or more additional gradle command line arguments (options or tasks) before the dependencies argument.")
+            setHelp("Gradle command line arguments to add to the gradle/gradlew command line.", "By default, Detect runs the gradle (or gradlew) command with one task: dependencies. You can use this property to insert one or more additional gradle command line arguments (options or tasks) before the dependencies argument.")
             setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
         }
         val DETECT_GRADLE_EXCLUDED_CONFIGURATIONS = NullableStringProperty("detect.gradle.excluded.configurations").apply {
             setInfo("Gradle Exclude Configurations", "3.0.0")
-            setHelp("A comma-separated list of Gradle configurations to exclude.", "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property.")
+            setHelp("A comma-separated list of Gradle configurations to exclude.", "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             setCategory(DetectCategory.Advanced)
         }
         val DETECT_GRADLE_EXCLUDED_PROJECTS = NullableStringProperty("detect.gradle.excluded.projects").apply {
             setInfo("Gradle Exclude Projects", "3.0.0")
-            setHelp("A comma-separated list of Gradle sub-projects to exclude.", "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property.")
+            setHelp("A comma-separated list of Gradle sub-projects to exclude.", "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             setCategory(DetectCategory.Advanced)
         }
         val DETECT_GRADLE_INCLUDED_CONFIGURATIONS = NullableStringProperty("detect.gradle.included.configurations").apply {
             setInfo("Gradle Include Configurations", "3.0.0")
-            setHelp("A comma-separated list of Gradle configurations to include.", "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.")
+            setHelp("A comma-separated list of Gradle configurations to include.", "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             setCategory(DetectCategory.Advanced)
         }
         val DETECT_GRADLE_INCLUDED_PROJECTS = NullableStringProperty("detect.gradle.included.projects").apply {
             setInfo("Gradle Include Projects", "3.0.0")
-            setHelp("A comma-separated list of Gradle sub-projects to include.", "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.")
+            setHelp("A comma-separated list of Gradle sub-projects to include.", "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             setCategory(DetectCategory.Advanced)
         }
@@ -587,13 +587,13 @@ class DetectProperties {
         }
         val DETECT_MAVEN_EXCLUDED_MODULES = NullableStringProperty("detect.maven.excluded.modules").apply {
             setInfo("Maven Modules Excluded", "3.0.0")
-            setHelp("A comma-separated list of Maven modules (sub-projects) to exclude.", "As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property.")
+            setHelp("A comma-separated list of Maven modules (sub-projects) to exclude.", "As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             setCategory(DetectCategory.Advanced)
         }
         val DETECT_MAVEN_INCLUDED_MODULES = NullableStringProperty("detect.maven.included.modules").apply {
             setInfo("Maven Modules Included", "3.0.0")
-            setHelp("A comma-separated list of Maven modules (sub-projects) to include.", "As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win.")
+            setHelp("A comma-separated list of Maven modules (sub-projects) to include.", "As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             setCategory(DetectCategory.Advanced)
         }
@@ -604,12 +604,12 @@ class DetectProperties {
         }
         val DETECT_MAVEN_INCLUDED_SCOPES = NullableStringProperty("detect.maven.included.scopes").apply {
             setInfo("Dependency Scope Included", "6.0.0")
-            setHelp("A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).", "If set, Detect will include only dependencies of the given Maven scope.")
+            setHelp("A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).", "If set, Detect will include only dependencies of the given Maven scope. This property accepts filename globbing-style wildcards. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
         }
         val DETECT_MAVEN_EXCLUDED_SCOPES = NullableStringProperty("detect.maven.excluded.scopes").apply {
             setInfo("Dependency Scope Excluded", "6.0.0")
-            setHelp("A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).", "If set, Detect will include only dependencies outside of the given Maven scope.")
+            setHelp("A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).", "If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
         }
         val DETECT_MAVEN_INCLUDE_PLUGINS = BooleanProperty("detect.maven.include.plugins", false).apply {
@@ -922,13 +922,13 @@ class DetectProperties {
         }
         val DETECT_SBT_EXCLUDED_CONFIGURATIONS = NullableStringProperty("detect.sbt.excluded.configurations").apply {
             setInfo("SBT Configurations Excluded", "3.0.0")
-            setHelp("The names of the sbt configurations to exclude.")
+            setHelp("The names of the sbt configurations to exclude.", "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
             setCategory(DetectCategory.Advanced)
         }
         val DETECT_SBT_INCLUDED_CONFIGURATIONS = NullableStringProperty("detect.sbt.included.configurations").apply {
             setInfo("SBT Configurations Included", "3.0.0")
-            setHelp("The names of the sbt configurations to include.")
+            setHelp("The names of the sbt configurations to include.", "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
             setCategory(DetectCategory.Advanced)
         }
