@@ -24,6 +24,9 @@ and writes them to the status.json file.
 * (IDETECT-1979) Resolved an issue that could cause the CLANG detector to miss some dependencies because it failed to correctly parse complex nested quoted strings within compile_commands.json values.
 * (IDETECT-1966) Resolved an issue that would cause Detect to ignore replacement directives for Go Mod projects.
 
+### Known Issues
+* When a Lerna package depends on another Lerna package within the project, an error may appear indicating a missing dependency on that package. This is normal and no dependencies are missing. This will be fixed in a future release.
+
 ## Version 6.3.0
 ### New features
 * The Yarn detector now extracts project information from package.json files. Git is no longer the default supplier of project information for Yarn projects.
