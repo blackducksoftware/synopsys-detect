@@ -1693,41 +1693,63 @@ Several aspects of script functionality can be configured, including:</p>
 <h4 id="linux-or-mac">Linux or Mac<a class="headerlink" href="#linux-or-mac" title="Permanent link">#</a></h4>
 <p>On Linux or Mac, execute the Synopsys Detect script (detect.sh, which is a Bash script) from Bash.</p>
 <p>To download and run the latest version of Synopsys Detect in a single command:</p>
-<p>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)</p>
+<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
+</code></pre>
+
 <p>Append any command line arguments to the end, separated by spaces. For example:</p>
-<p>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername</p>
+<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
+</code></pre>
+
 <h4 id="windows">Windows<a class="headerlink" href="#windows" title="Permanent link">#</a></h4>
 <p>On Windows, execute the Synopsys Detect script (detect.ps1, which is a PowerShell script) from
 the <a href="https://en.wikipedia.org/wiki/Cmd.exe">Command Prompt</a>.</p>
 <p>To download and run the latest version of Synopsys Detect in a single command:</p>
-<p>powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"</p>
+<pre><code>powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot;
+</code></pre>
+
 <p>Append any command line arguments to the end, separated by spaces. For example:</p>
-<p>powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect" --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername</p>
+<pre><code>powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot; --blackduck.url=https://blackduck.mydomain.com --blackduck.username=myusername
+</code></pre>
+
 <h3 id="running-a-specific-version-of-synopsys-detect">Running a specific version of Synopsys Detect<a class="headerlink" href="#running-a-specific-version-of-synopsys-detect" title="Permanent link">#</a></h3>
 <h4 id="linux-or-mac-bash">Linux or Mac (Bash)<a class="headerlink" href="#linux-or-mac-bash" title="Permanent link">#</a></h4>
 <p>To run a specific version of Synopsys Detect:</p>
-<p>export DETECT_LATEST_RELEASE_VERSION={Synopsys Detect version}
-bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)</p>
+<pre><code>export DETECT_LATEST_RELEASE_VERSION={Synopsys Detect version}
+bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
+</code></pre>
+
 <p>For example, to run Synopsys Detect version 5.5.0:</p>
-<p>export DETECT_LATEST_RELEASE_VERSION=5.5.0
-bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)</p>
+<pre><code>export DETECT_LATEST_RELEASE_VERSION=5.5.0
+bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
+</code></pre>
+
 <h4 id="windows-powershell">Windows (PowerShell)<a class="headerlink" href="#windows-powershell" title="Permanent link">#</a></h4>
 <p>To run a specific version of Synopsys Detect:</p>
-<p>$Env:DETECT_LATEST_RELEASE_VERSION = {Synopsys Detect version}
-powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"</p>
+<pre><code>$Env:DETECT_LATEST_RELEASE_VERSION = {Synopsys Detect version}
+powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot;
+</code></pre>
+
 <p>For example, to run Synopsys Detect version 5.5.0:</p>
-<p>$Env:DETECT_LATEST_RELEASE_VERSION = 5.5.0
-powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"</p>
+<pre><code>$Env:DETECT_LATEST_RELEASE_VERSION = 5.5.0
+powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot;
+</code></pre>
+
 <h2 id="running-the-synopsys-detect-jar">Running the Synopsys Detect .jar<a class="headerlink" href="#running-the-synopsys-detect-jar" title="Permanent link">#</a></h2>
 <p>Recent versions of the Synopsys Detect .jar file are available for download from https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect.</p>
 <p>To run Synopsys Detect by invoking the .jar file:</p>
-<p>java -jar {path to .jar file}</p>
+<pre><code>java -jar {path to .jar file}
+</code></pre>
+
 <p>For example:</p>
-<p>curl -O https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect/5.6.2/synopsys-detect-5.6.2.jar
-java -jar synopsys-detect-5.6.2.jar</p>
+<pre><code>curl -O https://sig-repo.synopsys.com/bds-integrations-release/com/synopsys/integration/synopsys-detect/5.6.2/synopsys-detect-5.6.2.jar
+java -jar synopsys-detect-5.6.2.jar
+</code></pre>
+
 <p>You can use the Synopsys Detect Bash script (detect.sh) to download the Synopsys Detect .jar file:</p>
-<p>export DETECT_DOWNLOAD_ONLY=1
-./detect.sh</p>
+<pre><code>export DETECT_DOWNLOAD_ONLY=1
+./detect.sh
+</code></pre>
+
 <h2 id="including-and-excluding-tools-and-detectors">Including and excluding tools and detectors<a class="headerlink" href="#including-and-excluding-tools-and-detectors" title="Permanent link">#</a></h2>
 <p><a href="../properties/all-properties/">Properties</a> provide a variety of options for configuring Synopsys Detect behavior. One of the
 most fundamental ways to modify Synopsys Detect is by including and excluding <a href="../components/tools/">tools</a> and <a href="../components/detectors/">detectors</a>.</p>
@@ -1737,7 +1759,9 @@ depends on the properties you set.
 To limit the eligible tools to a given list, use:</p>
 <p>--detect.tools={comma-separated list of tool names, all uppercase}</p>
 <p>To exclude specific tools, use:</p>
-<p>--detect.tools.excluded={comma-separated list of tool names, all uppercase}</p>
+<pre><code>--detect.tools.excluded={comma-separated list of tool names, all uppercase}
+</code></pre>
+
 <p>Exclusions take precedence over inclusions.</p>
 <p>Refer to <a href="../components/tools/">Tools</a> for the list of tool names.</p>
 <p>Refer to <a href="../properties/all-properties/">Properties</a> for details.</p>
@@ -1745,9 +1769,13 @@ To limit the eligible tools to a given list, use:</p>
 <p>By default, all detectors are eligible to run.  The set of detectors that actually
 run depends on the files existing in your project directory.
 To limit the eligible detectors to a given list, use:</p>
-<p>--detect.included.detector.types={comma-separated list of detector names}</p>
+<pre><code>--detect.included.detector.types={comma-separated list of detector names}
+</code></pre>
+
 <p>To exclude specific detectors, use:</p>
-<p>--detect.excluded.detector.types={comma-separated list of detector names}</p>
+<pre><code>--detect.excluded.detector.types={comma-separated list of detector names}
+</code></pre>
+
 <p>Exclusions take precedence over inclusions.</p>
 <p>Refer to <a href="../components/detectors/">Detectors</a> for the list of detector names.</p>
 <p>Refer to <a href="../properties/all-properties/">Properties</a> for details.</p>
