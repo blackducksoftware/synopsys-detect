@@ -57,16 +57,11 @@ public class ImpactAnalysisService {
                               .build();
 
         try (Response response = blackDuckService.execute(request)) {
-            ImpactAnalysisSuccessResult impactAnalysisSuccessResult = null;
-            ImpactAnalysisErrorResult impactAnalysisErrorResult = null;
-
             if (response.isStatusCodeSuccess()) {
-                impactAnalysisSuccessResult = gson.fromJson(response.getContentString(), ImpactAnalysisSuccessResult.class);
+                return ImpactAnalysisUploadResult.success(gson.fromJson(response.getContentString(), ImpactAnalysisSuccessResult.class));
             } else {
-                impactAnalysisErrorResult = gson.fromJson(response.getContentString(), ImpactAnalysisErrorResult.class);
+                return ImpactAnalysisUploadResult.failure(gson.fromJson(response.getContentString(), ImpactAnalysisErrorResult.class));
             }
-
-            return new ImpactAnalysisUploadResult(impactAnalysisSuccessResult, impactAnalysisErrorResult);
         }
     }
 }

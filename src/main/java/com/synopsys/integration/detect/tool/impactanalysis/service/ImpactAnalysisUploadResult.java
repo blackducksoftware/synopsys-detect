@@ -33,6 +33,14 @@ public class ImpactAnalysisUploadResult {
     @Nullable
     private final ImpactAnalysisErrorResult impactAnalysisErrorResult;
 
+    public static ImpactAnalysisUploadResult success(ImpactAnalysisSuccessResult impactAnalysisSuccessResult) {
+        return new ImpactAnalysisUploadResult(impactAnalysisSuccessResult, null);
+    }
+
+    public static ImpactAnalysisUploadResult failure(ImpactAnalysisErrorResult impactAnalysisErrorResult) {
+        return new ImpactAnalysisUploadResult(null, impactAnalysisErrorResult);
+    }
+
     public ImpactAnalysisUploadResult(@Nullable ImpactAnalysisSuccessResult impactAnalysisSuccessResult, @Nullable ImpactAnalysisErrorResult impactAnalysisErrorResult) {
         this.impactAnalysisSuccessResult = impactAnalysisSuccessResult;
         this.impactAnalysisErrorResult = impactAnalysisErrorResult;
