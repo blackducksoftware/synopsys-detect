@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.lifecycle.run;
 
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
@@ -72,6 +74,9 @@ import com.synopsys.integration.detect.tool.detector.DetectorTool;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
+import com.synopsys.integration.detect.tool.impactanalysis.VulnerabilityImpactAnalysisTool;
+import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisService;
+import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadResult;
 import com.synopsys.integration.detect.tool.polaris.PolarisTool;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
@@ -129,6 +134,7 @@ public class RunManager {
 
     public RunResult run(ProductRunData productRunData) throws DetectUserFriendlyException, IntegrationException {
         //TODO: Better way for run manager to get dependencies so he can be tested. (And better ways of creating his objects)
+        Gson gson = detectContext.getBean(Gson.class);
         PropertyConfiguration detectConfiguration = detectContext.getBean(PropertyConfiguration.class);
         DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
@@ -156,7 +162,7 @@ public class RunManager {
         if (productRunData.shouldUseBlackDuckProduct()) {
             AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName().orElse(null), runOptions.getAggregateMode(), universalToolsResult);
             runBlackDuckProduct(productRunData, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
-                universalToolsResult.getNameVersion(), aggregateOptions);
+                universalToolsResult.getNameVersion(), aggregateOptions, gson);
         } else {
             logger.info("Black Duck tools will not be run.");
         }
@@ -295,7 +301,7 @@ public class RunManager {
 
     private void runBlackDuckProduct(ProductRunData productRunData, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem,
         CodeLocationNameManager codeLocationNameManager, BdioCodeLocationCreator bdioCodeLocationCreator, DetectInfo detectInfo, RunResult runResult, RunOptions runOptions,
-        DetectToolFilter detectToolFilter, NameVersion projectNameVersion, AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException {
+        DetectToolFilter detectToolFilter, NameVersion projectNameVersion, AggregateOptions aggregateOptions, Gson gson) throws IntegrationException, DetectUserFriendlyException {
 
         logger.debug("Black Duck tools will run.");
 
@@ -395,6 +401,36 @@ public class RunManager {
             logger.info("Binary scanner actions finished.");
         } else {
             logger.info("Binary scan tool will not be run.");
+        }
+
+        logger.info(ReportConstants.RUN_SEPARATOR);
+        if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS)) {
+            logger.info("Will include the Vulnerability Impact Analysis tool.");
+            try {
+                VulnerabilityImpactAnalysisTool blackDuckImpactAnalysisTool = new VulnerabilityImpactAnalysisTool(directoryManager, codeLocationNameManager);
+                Path impactAnalysisReportPath = blackDuckImpactAnalysisTool.generateReport(projectNameVersion);
+
+                if (null != blackDuckServicesFactory) {
+                    ImpactAnalysisService impactAnalysisService = new ImpactAnalysisService(blackDuckServicesFactory.createBlackDuckService(), gson);
+                    ImpactAnalysisUploadResult impactAnalysisUploadResult = blackDuckImpactAnalysisTool.uploadReport(impactAnalysisReportPath, impactAnalysisService);
+                    impactAnalysisUploadResult.getImpactAnalysisSuccessResult().ifPresent(result -> {
+                        logger.info(String.format("Impact Analysis upload complete: %s", result.codeLocationName));
+                        logger.debug(String.format("Code Location Id: %s Status: %s Status Message: %s", result.codeLocationId, result.status, result.statusMessage));
+                    });
+                    impactAnalysisUploadResult.getImpactAnalysisErrorResult().ifPresent(result -> {
+                        // TODO: Verify whether or not the 201 success is sufficient. These messages may not be of concern to Detect users.
+                        logger.info(String.format("Impact Analysis upload status: %s", result.status));
+                        logger.debug(String.format("Black Duck error message:%s", result.errorMessage));
+                    });
+                } else {
+                    logger.debug("Skipping report upload.");
+                }
+            } catch (IOException exception) {
+                logger.error("Vulnerability Impact Analysis failed.", exception);
+            }
+            logger.info("Vulnerability Impact Analysis tool actions finished.");
+        } else {
+            logger.info("Vulnerability Impact Analysis tool will not be run.");
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);

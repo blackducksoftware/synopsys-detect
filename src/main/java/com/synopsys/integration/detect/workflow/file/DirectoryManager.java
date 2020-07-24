@@ -44,7 +44,7 @@ public class DirectoryManager {
 
         private final String directoryName;
 
-        OutputDirectory(final String directoryName) {
+        OutputDirectory(String directoryName) {
             this.directoryName = directoryName;
         }
 
@@ -57,6 +57,7 @@ public class DirectoryManager {
         BDIO("bdio"),
         BINARY("binary"),
         EXTRACTION("extractions"),
+        IMPACT_ANALYSIS("impact-analysis"),
         LOG("logs"),
         EXECUTABLES("executables"),
         RELEVANT("relevant"),
@@ -67,7 +68,7 @@ public class DirectoryManager {
 
         private final String directoryName;
 
-        RunDirectory(final String directoryName) {
+        RunDirectory(String directoryName) {
             this.directoryName = directoryName;
         }
 
@@ -85,7 +86,7 @@ public class DirectoryManager {
 
     private final Map<ExtractionId, File> extractionDirectories = new HashMap<>();
 
-    public DirectoryManager(final DirectoryOptions directoryOptions, final DetectRun detectRun) {
+    public DirectoryManager(DirectoryOptions directoryOptions, DetectRun detectRun) {
         sourceDirectory = directoryOptions.getSourcePathOverride()
                               .map(Path::toFile)
                               .orElse(new File(System.getProperty("user.dir")));
@@ -93,9 +94,9 @@ public class DirectoryManager {
 
         userHome = new File(System.getProperty("user.home"));
 
-        final File outputDirectory = directoryOptions.getOutputPathOverride()
-                                         .map(Path::toFile)
-                                         .orElse(new File(userHome, "blackduck"));
+        File outputDirectory = directoryOptions.getOutputPathOverride()
+                                   .map(Path::toFile)
+                                   .orElse(new File(userHome, "blackduck"));
         if (outputDirectory.getAbsolutePath().contains("systemprofile")) {
             logger.warn("You appear to be running in 'systemprofile' which can happen when detect is invoked by a system account or as a service.");
             logger.warn("If detect has full access to the output directory, no further action is necessary.");
@@ -141,12 +142,12 @@ public class DirectoryManager {
         return userHome;
     }
 
-    public File getExtractionOutputDirectory(final ExtractionId extractionId) {
+    public File getExtractionOutputDirectory(ExtractionId extractionId) {
         if (extractionDirectories.containsKey(extractionId)) {
             return extractionDirectories.get(extractionId);
         } else {
-            final String directoryName = extractionId.toUniqueString();
-            final File newDirectory = new File(getRunDirectory(RunDirectory.EXTRACTION), directoryName);
+            String directoryName = extractionId.toUniqueString();
+            File newDirectory = new File(getRunDirectory(RunDirectory.EXTRACTION), directoryName);
             newDirectory.mkdir();
             extractionDirectories.put(extractionId, newDirectory);
             return newDirectory;
@@ -173,6 +174,10 @@ public class DirectoryManager {
         return getRunDirectory(RunDirectory.BINARY);
     }
 
+    public File getImpactAnalysisOutputDirectory() {
+        return getRunDirectory(RunDirectory.IMPACT_ANALYSIS);
+    }
+
     public File getRelevantOutputDirectory() {
         return getRunDirectory(RunDirectory.RELEVANT);
     }
@@ -197,29 +202,29 @@ public class DirectoryManager {
         return runDirectory;
     }
 
-    private File getOutputDirectory(final OutputDirectory directory) {
-        final File actualDirectory = outputDirectories.get(directory);
+    private File getOutputDirectory(OutputDirectory directory) {
+        File actualDirectory = outputDirectories.get(directory);
         if (!actualDirectory.exists()) {
             actualDirectory.mkdirs();
         }
         return actualDirectory;
     }
 
-    private File getRunDirectory(final RunDirectory directory) {
-        final File actualDirectory = runDirectories.get(directory);
+    private File getRunDirectory(RunDirectory directory) {
+        File actualDirectory = runDirectories.get(directory);
         if (!actualDirectory.exists()) {
             actualDirectory.mkdirs();
         }
         return actualDirectory;
     }
 
-    public File getSharedDirectory(final String name) { // shared across this invocation of detect (inspectors), returns 'shared/name'
-        final File newSharedFile = new File(getRunDirectory(RunDirectory.SHARED), name);
+    public File getSharedDirectory(String name) { // shared across this invocation of detect (inspectors), returns 'shared/name'
+        File newSharedFile = new File(getRunDirectory(RunDirectory.SHARED), name);
         newSharedFile.mkdirs();
         return newSharedFile;
     }
 
-    public File getSharedFile(final String sharedDirectory, final String fileName) { // helper method for shared files, returns 'shared/name/file'
+    public File getSharedFile(String sharedDirectory, String fileName) { // helper method for shared files, returns 'shared/name/file'
         return new File(getSharedDirectory(sharedDirectory), fileName);
     }
 
@@ -227,7 +232,7 @@ public class DirectoryManager {
         return getOutputDirectory(OutputDirectory.TOOLS);
     }
 
-    public File getPermanentDirectory(final String name) { // shared across all invocations of detect (scan cli)
+    public File getPermanentDirectory(String name) { // shared across all invocations of detect (scan cli)
         return new File(getOutputDirectory(OutputDirectory.TOOLS), name);
     }
 
