@@ -47,20 +47,18 @@ public class DockerDetectable extends Detectable {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DockerInspectorResolver dockerInspectorResolver;
     private final JavaResolver javaResolver;
-    private final BashResolver bashResolver;
     private final DockerResolver dockerResolver;
     private final DockerExtractor dockerExtractor;
     private final DockerDetectableOptions dockerDetectableOptions;
 
     private File javaExe;
-    private File bashExe;
+    private File dockerExe;
     private DockerInspectorInfo dockerInspectorInfo;
 
     public DockerDetectable(DetectableEnvironment environment, DockerInspectorResolver dockerInspectorResolver, JavaResolver javaResolver, BashResolver bashResolver, DockerResolver dockerResolver,
         DockerExtractor dockerExtractor, DockerDetectableOptions dockerDetectableOptions) {
         super(environment);
         this.javaResolver = javaResolver;
-        this.bashResolver = bashResolver;
         this.dockerResolver = dockerResolver;
         this.dockerExtractor = dockerExtractor;
         this.dockerInspectorResolver = dockerInspectorResolver;
@@ -81,11 +79,6 @@ public class DockerDetectable extends Detectable {
         if (javaExe == null) {
             return new ExecutableNotFoundDetectableResult("java");
         }
-        bashExe = bashResolver.resolveBash();
-        if (bashExe == null) {
-            logger.warn("Bash executable not found. Docker Inspector will not work in air gap mode.");
-        }
-        File dockerExe;
         try {
             dockerExe = dockerResolver.resolveDocker();
         } catch (Exception e) {
@@ -95,7 +88,7 @@ public class DockerDetectable extends Detectable {
             if (dockerDetectableOptions.isDockerPathRequired()) {
                 return new ExecutableNotFoundDetectableResult("docker");
             } else {
-                logger.debug("Docker executable not found, but it has been configured as not-required; proceeding with execution of Docker tool");
+                logger.debug("Docker executable not found, but it has been configured as not-required; proceeding with execution of Docker tool. Running in air-gap mode will not work without a Docker executable.");
             }
         }
         dockerInspectorInfo = dockerInspectorResolver.resolveDockerInspector();
@@ -110,7 +103,7 @@ public class DockerDetectable extends Detectable {
         String image = dockerDetectableOptions.getSuppliedDockerImage().orElse("");
         String imageId = dockerDetectableOptions.getSuppliedDockerImageId().orElse("");
         String tar = dockerDetectableOptions.getSuppliedDockerTar().orElse("");
-        return dockerExtractor.extract(environment.getDirectory(), extractionEnvironment.getOutputDirectory(), bashExe, javaExe, image, imageId, tar, dockerInspectorInfo,
+        return dockerExtractor.extract(environment.getDirectory(), extractionEnvironment.getOutputDirectory(), dockerExe, javaExe, image, imageId, tar, dockerInspectorInfo,
             new DockerProperties(dockerDetectableOptions)); //TODO, doesn't feel right to construct properties here. -jp
     }
 }
