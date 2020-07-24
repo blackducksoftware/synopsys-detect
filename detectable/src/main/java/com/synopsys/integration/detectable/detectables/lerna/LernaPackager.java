@@ -77,12 +77,11 @@ public class LernaPackager {
             }
 
             logger.debug(String.format("Now extracting Lerna package %s.", lernaPackageDetails));
-            File lernaPackageDirectory = new File(sourceDirectory.getParent(), lernaPackage.getLocation());
+            File lernaPackageDirectory = new File(lernaPackage.getLocation());
 
             LernaResult lernaResult = extractLernaPackage(sourceDirectory, lernaPackageDirectory);
             if (lernaResult.isSuccess()) {
                 logger.debug(String.format("Extraction completed successfully on %s.", lernaPackageDetails));
-
                 lernaResult.getCodeLocations().stream()
                     .map(codeLocation -> new CodeLocation(codeLocation.getDependencyGraph(), codeLocation.getExternalId().orElse(null), lernaPackageDirectory))
                     .forEach(codeLocations::add);
