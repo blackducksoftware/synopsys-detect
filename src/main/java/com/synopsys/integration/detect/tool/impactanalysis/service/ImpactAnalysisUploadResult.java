@@ -41,7 +41,7 @@ public class ImpactAnalysisUploadResult {
         return new ImpactAnalysisUploadResult(null, impactAnalysisErrorResult);
     }
 
-    public ImpactAnalysisUploadResult(@Nullable ImpactAnalysisSuccessResult impactAnalysisSuccessResult, @Nullable ImpactAnalysisErrorResult impactAnalysisErrorResult) {
+    private ImpactAnalysisUploadResult(@Nullable ImpactAnalysisSuccessResult impactAnalysisSuccessResult, @Nullable ImpactAnalysisErrorResult impactAnalysisErrorResult) {
         this.impactAnalysisSuccessResult = impactAnalysisSuccessResult;
         this.impactAnalysisErrorResult = impactAnalysisErrorResult;
     }
