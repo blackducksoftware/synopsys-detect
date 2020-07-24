@@ -2176,7 +2176,7 @@
 </tbody>
 </table>
 <h2 id="detect-tools-included">Detect Tools Included<a class="headerlink" href="#detect-tools-included" title="Permanent link">#</a></h2>
-<pre><code>--detect.tools=ALL,NONE,DETECTOR,SIGNATURE_SCAN,BINARY_SCAN,POLARIS,DOCKER,BAZEL 
+<pre><code>--detect.tools=ALL,NONE,DETECTOR,SIGNATURE_SCAN,BINARY_SCAN,IMPACT_ANALYSIS,POLARIS,DOCKER,BAZEL 
 </code></pre>
 
 <p>The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.</p>
@@ -2211,7 +2211,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>ALL, NONE, DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL</td>
+<td>ALL, NONE, DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, IMPACT_ANALYSIS, POLARIS, DOCKER, BAZEL</td>
 </tr>
 <tr>
 <td>Strict</td>
@@ -2220,7 +2220,7 @@
 </tbody>
 </table>
 <h2 id="detect-tools-excluded">Detect Tools Excluded<a class="headerlink" href="#detect-tools-excluded" title="Permanent link">#</a></h2>
-<pre><code>--detect.tools.excluded=ALL,NONE,DETECTOR,SIGNATURE_SCAN,BINARY_SCAN,POLARIS,DOCKER,BAZEL 
+<pre><code>--detect.tools.excluded=ALL,NONE,DETECTOR,SIGNATURE_SCAN,BINARY_SCAN,IMPACT_ANALYSIS,POLARIS,DOCKER,BAZEL 
 </code></pre>
 
 <p>The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.</p>
@@ -2255,7 +2255,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>ALL, NONE, DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL</td>
+<td>ALL, NONE, DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, IMPACT_ANALYSIS, POLARIS, DOCKER, BAZEL</td>
 </tr>
 <tr>
 <td>Strict</td>
@@ -2571,7 +2571,7 @@
 </tbody>
 </table>
 <h2 id="detector-tool-priority-advanced">Detector Tool Priority (Advanced)<a class="headerlink" href="#detector-tool-priority-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.project.tool=DETECTOR,SIGNATURE_SCAN,BINARY_SCAN,POLARIS,DOCKER,BAZEL 
+<pre><code>--detect.project.tool=DETECTOR,SIGNATURE_SCAN,BINARY_SCAN,IMPACT_ANALYSIS,POLARIS,DOCKER,BAZEL 
 </code></pre>
 
 <p>The tool priority for project name and version. The project name and version will be determined by the first tool in this list that provides them.</p>
@@ -2606,7 +2606,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL</td>
+<td>DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, IMPACT_ANALYSIS, POLARIS, DOCKER, BAZEL</td>
 </tr>
 <tr>
 <td>Strict</td>

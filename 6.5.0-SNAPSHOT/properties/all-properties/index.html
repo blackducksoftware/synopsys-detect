@@ -2202,11 +2202,11 @@
 </tr>
 <tr>
 <td><a href="../configuration/paths/#detect-tools-included">detect.tools</a></td>
-<td>Acceptable Values: ALL, NONE, DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL <br /><br />Detect Tools Included: The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win. <br /><br /></td>
+<td>Acceptable Values: ALL, NONE, DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, IMPACT_ANALYSIS, POLARIS, DOCKER, BAZEL <br /><br />Detect Tools Included: The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/paths/#detect-tools-excluded">detect.tools.excluded</a></td>
-<td>Acceptable Values: ALL, NONE, DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL <br /><br />Detect Tools Excluded: The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win. <br /><br /></td>
+<td>Acceptable Values: ALL, NONE, DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, IMPACT_ANALYSIS, POLARIS, DOCKER, BAZEL <br /><br />Detect Tools Excluded: The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/paths/#detector-search-continue-advanced">detect.detector.search.continue</a> <br /> (Advanced)</td>
@@ -2238,7 +2238,7 @@
 </tr>
 <tr>
 <td><a href="../configuration/paths/#detector-tool-priority-advanced">detect.project.tool</a> <br /> (Advanced)</td>
-<td>default: DOCKER,DETECTOR,BAZEL <br /><br />  Acceptable Values: DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, POLARIS, DOCKER, BAZEL <br /><br />Detector Tool Priority: The tool priority for project name and version. The project name and version will be determined by the first tool in this list that provides them. <br /><br /></td>
+<td>default: DOCKER,DETECTOR,BAZEL <br /><br />  Acceptable Values: DETECTOR, SIGNATURE_SCAN, BINARY_SCAN, IMPACT_ANALYSIS, POLARIS, DOCKER, BAZEL <br /><br />Detector Tool Priority: The tool priority for project name and version. The project name and version will be determined by the first tool in this list that provides them. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/paths/#detect-tools-output-path-advanced">detect.tools.output.path</a> <br /> (Advanced)</td>
