@@ -204,6 +204,7 @@ project directory.
 ${solution_name} can be configured to perform additional tasks, including the following:
 
 * Enable any of the supported snippet matching modes in the [${blackduck_signature_scanner_name}](../properties/configuration/signature scanner/).
+* Enable the [${impact_analysis_name}](../components/tools/) on any Java project.
 * Run [${blackduck_binary_scan_capability}](../properties/configuration/signature scanner/#binary-scan-target) on a given binary files.
 * Run the ${dockerinspector_name} on a given [Docker image](../advanced/package-managers/docker-images/).
 * Generate a [report](../properties/configuration/report/).

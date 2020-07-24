@@ -54,9 +54,10 @@ public class Terms {
         termMap.put("polaris_product_name", "Polaris");
         termMap.put("dockerinspector_name", "Black Duck Docker Inspector");
         termMap.put("blackduck_kb", "Black Duck KnowledgeBase");
+        termMap.put("impact_analysis_name", "Vulnerability Impact Analysis Tool");
     }
 
-    public String put(final String termKey, final String replacementString) {
+    public String put(String termKey, String replacementString) {
         return termMap.put(termKey, replacementString);
     }
 
