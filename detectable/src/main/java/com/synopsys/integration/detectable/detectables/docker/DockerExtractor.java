@@ -120,25 +120,25 @@ public class DockerExtractor {
     private void importTars(List<File> importTars, File directory, Map<String, String> environmentVariables, File dockerExe) {
         try {
             for (File imageToImport : importTars) {
-                // The -c is a bash option, the following String is the command we want to run
-                List<String> dockerImportArguments = Arrays.asList(
-                    "load",
-                    "-i",
-                    imageToImport.getCanonicalPath());
-
-                Executable dockerImportImageExecutable = new Executable(directory, environmentVariables, dockerExe.toString(), dockerImportArguments);
-                ExecutableOutput exeOut = executableRunner.execute(dockerImportImageExecutable);
-                if (exeOut.getReturnCode() != 0) {
-                    throw new IntegrationException(String.format("Command %s %s returned %d: %s",
-                        dockerExe.getAbsolutePath(),
-                        dockerImportArguments,
-                        exeOut.getReturnCode(),
-                        exeOut.getErrorOutput()));
-                }
+                loadDockerImage(directory, environmentVariables, dockerExe, imageToImport);
             }
         } catch (Exception e) {
-            logger.debug("Exception encountered when resolving paths for docker air gap, running in online mode instead");
-            logger.debug(e.getMessage());
+            logger.debug(String.format("Exception encountered when resolving paths for docker air gap: %s", e.getMessage()));
+            logger.debug("Running in online mode instead");
+        }
+    }
+
+    private void loadDockerImage(File directory, Map<String, String> environmentVariables, File dockerExe, File imageToImport) throws IOException, ExecutableRunnerException, IntegrationException {
+        List<String> dockerImportArguments = Arrays.asList(
+            "load",
+            "-i",
+            imageToImport.getCanonicalPath());
+        Executable dockerImportImageExecutable = new Executable(directory, environmentVariables, dockerExe.toString(), dockerImportArguments);
+        ExecutableOutput exeOut = executableRunner.execute(dockerImportImageExecutable);
+        if (exeOut.getReturnCode() != 0) {
+            throw new IntegrationException(String.format("Command %s %s returned %d: %s",
+                dockerExe.getAbsolutePath(), dockerImportArguments,
+                exeOut.getReturnCode(), exeOut.getErrorOutput()));
         }
     }
 
