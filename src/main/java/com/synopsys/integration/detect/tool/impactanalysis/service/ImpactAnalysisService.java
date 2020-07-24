@@ -37,7 +37,7 @@ import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
 
 public class ImpactAnalysisService {
-    private static final BlackDuckPath IMPACT_ANALYSIS_PATH = new BlackDuckPath("/api/scans/vulnerability-impact");
+    public static final BlackDuckPath IMPACT_ANALYSIS_PATH = new BlackDuckPath("/api/scans/vulnerability-impact");
 
     private final BlackDuckService blackDuckService;
     private final Gson gson;
@@ -48,14 +48,7 @@ public class ImpactAnalysisService {
     }
 
     public ImpactAnalysisUploadResult uploadImpactAnalysisReport(Path reportPath) throws IntegrationException, IOException {
-        String uri = blackDuckService.getUri(IMPACT_ANALYSIS_PATH);
-
-        Map<String, File> fileMap = new HashMap<>();
-        fileMap.put("file", reportPath.toFile());
-        Request request = RequestFactory.createCommonPostRequestBuilder(fileMap, new HashMap<>())
-                              .uri(uri)
-                              .build();
-
+        Request request = createRequest(reportPath);
         try (Response response = blackDuckService.execute(request)) {
             if (response.isStatusCodeSuccess()) {
                 return ImpactAnalysisUploadResult.success(gson.fromJson(response.getContentString(), ImpactAnalysisSuccessResult.class));
@@ -63,5 +56,14 @@ public class ImpactAnalysisService {
                 return ImpactAnalysisUploadResult.failure(gson.fromJson(response.getContentString(), ImpactAnalysisErrorResult.class));
             }
         }
+    }
+
+    public Request createRequest(Path reportPath) throws IntegrationException {
+        String uri = blackDuckService.getUri(IMPACT_ANALYSIS_PATH);
+        Map<String, File> fileMap = new HashMap<>();
+        fileMap.put("file", reportPath.toFile());
+        return RequestFactory.createCommonPostRequestBuilder(fileMap, new HashMap<>())
+                   .uri(uri)
+                   .build();
     }
 }
