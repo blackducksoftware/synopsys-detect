@@ -1,0 +1,19 @@
+# This generates the website for  https://blackducksoftware.github.io/synopsys-detect/latest/, so
+# it points to the Confluence doc.
+#
+# To generate the site:
+# 1. Make any updates you want in markdown/index.md
+# 2. Build: mkdocs build
+# 4. Render: mkdocs serve --no-livereload
+# 5. Review: Point your browser to http://localhost:8000 
+# 6. On the gh-pages branch of Detect, overwrite the contents of the "latest" dir with the contents of your generated site dir.
+# 7. Commit/push the updated gh-pages branch.
+# 8. Wait for github gh-pages to update.
+# 9. Review: Point your browser to: https://blackducksoftware.github.io/synopsys-detect/latest/
+site_name: Synopsys Detect
+theme:
+  name: 'material'
+docs_dir: 'markdown'
+markdown_extensions:
+  - toc:
+      permalink: "#"
