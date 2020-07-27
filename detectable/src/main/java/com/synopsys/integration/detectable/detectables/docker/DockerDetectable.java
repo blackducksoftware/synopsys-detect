@@ -33,7 +33,6 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -55,7 +54,7 @@ public class DockerDetectable extends Detectable {
     private File dockerExe;
     private DockerInspectorInfo dockerInspectorInfo;
 
-    public DockerDetectable(DetectableEnvironment environment, DockerInspectorResolver dockerInspectorResolver, JavaResolver javaResolver, BashResolver bashResolver, DockerResolver dockerResolver,
+    public DockerDetectable(DetectableEnvironment environment, DockerInspectorResolver dockerInspectorResolver, JavaResolver javaResolver, DockerResolver dockerResolver,
         DockerExtractor dockerExtractor, DockerDetectableOptions dockerDetectableOptions) {
         super(environment);
         this.javaResolver = javaResolver;
