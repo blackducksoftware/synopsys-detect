@@ -67,6 +67,7 @@ import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.detector.DetectFileFinder;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFileFilter;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableOptions;
+import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
@@ -449,6 +450,11 @@ public class DetectConfigurationFactory {
         String codeLocationPrefix = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PROJECT_CODELOCATION_PREFIX()).orElse(null);
         String codeLocationSuffix = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PROJECT_CODELOCATION_SUFFIX()).orElse(null);
         return new BinaryScanOptions(singleTarget, mutlipleTargets, codeLocationPrefix, codeLocationSuffix);
+    }
+
+    public ImpactAnalysisOptions createImpactAnalysisOptions() {
+        Boolean enabled = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_IMPACT_ANALYSIS_ENABLED());
+        return new ImpactAnalysisOptions(enabled);
     }
 
     public DetectExecutableOptions createExecutablePaths()  {

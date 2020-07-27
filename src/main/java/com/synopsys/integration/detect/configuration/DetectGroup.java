@@ -53,6 +53,7 @@ public enum DetectGroup implements Group {
     DETECTOR("detector"),
     POLARIS("polaris"),
     SIGNATURE_SCANNER("signature scanner"),
+    IMPACT_ANALYSIS("impact.analysis"),
 
     //Detector Groups
     BAZEL("bazel", DETECTORS),

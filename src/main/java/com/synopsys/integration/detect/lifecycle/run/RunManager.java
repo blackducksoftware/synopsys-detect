@@ -74,6 +74,7 @@ import com.synopsys.integration.detect.tool.detector.DetectorTool;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
+import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
 import com.synopsys.integration.detect.tool.impactanalysis.VulnerabilityImpactAnalysisTool;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisService;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadResult;
@@ -163,8 +164,9 @@ public class RunManager {
 
         if (productRunData.shouldUseBlackDuckProduct()) {
             AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName().orElse(null), runOptions.getAggregateMode(), universalToolsResult);
+            ImpactAnalysisOptions impactAnalysisOptions = detectConfigurationFactory.createImpactAnalysisOptions();
             runBlackDuckProduct(productRunData, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
-                universalToolsResult.getNameVersion(), aggregateOptions, gson);
+                universalToolsResult.getNameVersion(), aggregateOptions, impactAnalysisOptions, gson);
         } else {
             logger.info("Black Duck tools will not be run.");
         }
@@ -314,7 +316,7 @@ public class RunManager {
 
     private void runBlackDuckProduct(ProductRunData productRunData, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem,
         CodeLocationNameManager codeLocationNameManager, BdioCodeLocationCreator bdioCodeLocationCreator, DetectInfo detectInfo, RunResult runResult, RunOptions runOptions,
-        DetectToolFilter detectToolFilter, NameVersion projectNameVersion, AggregateOptions aggregateOptions, Gson gson) throws IntegrationException, DetectUserFriendlyException {
+        DetectToolFilter detectToolFilter, NameVersion projectNameVersion, AggregateOptions aggregateOptions, ImpactAnalysisOptions impactAnalysisOptions, Gson gson) throws IntegrationException, DetectUserFriendlyException {
 
         logger.debug("Black Duck tools will run.");
 
@@ -417,7 +419,7 @@ public class RunManager {
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS)) {
+        if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS) && impactAnalysisOptions.isEnabled()) {
             logger.info("Will include the Vulnerability Impact Analysis tool.");
             try {
                 VulnerabilityImpactAnalysisTool blackDuckImpactAnalysisTool = new VulnerabilityImpactAnalysisTool(directoryManager, codeLocationNameManager);
@@ -442,6 +444,8 @@ public class RunManager {
                 logger.error("Vulnerability Impact Analysis failed.", exception);
             }
             logger.info("Vulnerability Impact Analysis tool actions finished.");
+        } else if (impactAnalysisOptions.isEnabled()) {
+            logger.info("Vulnerability Impact Analysis tool is enabled but will not run due to tool configuration.");
         } else {
             logger.info("Vulnerability Impact Analysis tool will not be run.");
         }
