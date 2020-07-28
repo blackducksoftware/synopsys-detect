@@ -149,7 +149,7 @@ tasks['testBattery'].doFirst {
 
 task updateBattery(type: UpdateBatteryTask) {}
 task updateArtifactoryProperties(type: UpdateArtifactoryPropertiesTask) {
-    dependsOn artifactoryPublish
+    dependsOn artifactoryDeploy
 }
 
 task runDetect(type: JavaExec) {
