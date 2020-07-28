@@ -27,9 +27,19 @@ Running ${solution_name} in offline mode eliminates the need to provide
 connection details to ${blackduck_product_name} or ${polaris_product_name},
 while giving you an opportunity to see what ${solution_name} does on a project.
 
-At the top level of the project directory (junit4), run ${solution_name} in offline mode:
+At the top level of the project directory (junit4), run ${solution_name} in offline mode.
 
-    bash <(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.offline.mode=true
+On Linux or Mac:
+
+````
+bash <(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.offline.mode=true
+````
+
+On Windows:
+
+````
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect" --blackduck.offline.mode=true
+````
 
 The operations performed by ${solution_name} depends on what it finds in your source directory.
 By default, ${solution_name} considers the current working directory to be your source directory.
@@ -58,7 +68,17 @@ with the following three arguments that provide login details for your ${blackdu
 
 The command you run looks like this:
 
-    bash <(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.url={your Black Duck server URL} --blackduck.username={your Black Duck username} --blackduck.password={your Black Duck password}
+On Linux or Mac:
+
+````
+bash <(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.url={your Black Duck server URL} --blackduck.username={your Black Duck username} --blackduck.password={your Black Duck password}
+````
+
+On Windows:
+
+````
+powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect" --blackduck.url={your Black Duck server URL} --blackduck.username={your Black Duck username} --blackduck.password={your Black Duck password}
+````
 
 In this way, ${solution_name} performs the same steps it did in the offline run, plus
 the following:
