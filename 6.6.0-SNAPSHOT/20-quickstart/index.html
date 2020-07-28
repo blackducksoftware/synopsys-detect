@@ -1390,9 +1390,15 @@ added to the project by any means other than the package manager.</p>
 <p>Running Synopsys Detect in offline mode eliminates the need to provide
 connection details to Black Duck or Polaris,
 while giving you an opportunity to see what Synopsys Detect does on a project.</p>
-<p>At the top level of the project directory (junit4), run Synopsys Detect in offline mode:</p>
+<p>At the top level of the project directory (junit4), run Synopsys Detect in offline mode.</p>
+<p>On Linux or Mac:</p>
 <pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.offline.mode=true
 </code></pre>
+
+<p>On Windows:</p>
+<pre><code>powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot; --blackduck.offline.mode=true
+</code></pre>
+
 <p>The operations performed by Synopsys Detect depends on what it finds in your source directory.
 By default, Synopsys Detect considers the current working directory to be your source directory.</p>
 <p>In the junit4 case, Synopsys Detect will:</p>
@@ -1414,8 +1420,14 @@ with the following three arguments that provide login details for your Black Duc
 <li><code>--blackduck.password={your Black Duck password}</code></li>
 </ul>
 <p>The command you run looks like this:</p>
+<p>On Linux or Mac:</p>
 <pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.url={your Black Duck server URL} --blackduck.username={your Black Duck username} --blackduck.password={your Black Duck password}
 </code></pre>
+
+<p>On Windows:</p>
+<pre><code>powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot; --blackduck.url={your Black Duck server URL} --blackduck.username={your Black Duck username} --blackduck.password={your Black Duck password}
+</code></pre>
+
 <p>In this way, Synopsys Detect performs the same steps it did in the offline run, plus
 the following:</p>
 <ul>
