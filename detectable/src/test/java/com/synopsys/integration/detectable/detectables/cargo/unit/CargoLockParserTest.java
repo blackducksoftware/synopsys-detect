@@ -9,7 +9,6 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;
-import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class CargoLockParserTest {
@@ -17,7 +16,7 @@ public class CargoLockParserTest {
     @Test
     public void testParsesNamesAndVersionsSimple() throws DetectableException {
         String input = String.join(System.lineSeparator(), Arrays.asList(
-            "[[package]]", 
+            "[[package]]",
             "name = \"test1\"", "version = \"1.0.0\"",
             "",
             "[[package]]",

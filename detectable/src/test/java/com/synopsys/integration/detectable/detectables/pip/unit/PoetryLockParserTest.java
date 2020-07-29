@@ -1,8 +1,6 @@
 package com.synopsys.integration.detectable.detectables.pip.unit;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
@@ -41,7 +39,7 @@ public class PoetryLockParserTest {
             "[[package]]",
             "name = \"pytest-cov\"",
             "python-versions = \">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*\"",
-            "version = \"2.8.1\"", 
+            "version = \"2.8.1\"",
             "",
             "[package.dependencies]",
             "coverage = \">=4.4\"",
@@ -84,7 +82,7 @@ public class PoetryLockParserTest {
     }
 
     @Test
-    public void testParseComplexDependencyHierarchy() throws IOException{
+    public void testParseComplexDependencyHierarchy() throws IOException {
         String input = String.join(System.lineSeparator(), Arrays.asList(
             "[[package]]",
             "name = \"test1\"",

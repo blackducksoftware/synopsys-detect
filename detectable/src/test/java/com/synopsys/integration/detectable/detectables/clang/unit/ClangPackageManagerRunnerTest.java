@@ -1,14 +1,12 @@
 package com.synopsys.integration.detectable.detectables.clang.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-
 import org.mockito.Mockito;
 
 import com.google.gson.Gson;

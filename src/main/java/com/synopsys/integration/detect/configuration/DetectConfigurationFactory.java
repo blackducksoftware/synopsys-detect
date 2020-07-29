@@ -116,14 +116,11 @@ public class DetectConfigurationFactory {
         int provided;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.Companion.getDETECT_PARALLEL_PROCESSORS())) {
             provided = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PARALLEL_PROCESSORS());
-        }
-        else if (detectConfiguration.wasPropertyProvided(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS())) {
+        } else if (detectConfiguration.wasPropertyProvided(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS())) {
             provided = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS());
-        }
-        else if (detectConfiguration.wasPropertyProvided(DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS())) {
+        } else if (detectConfiguration.wasPropertyProvided(DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS())) {
             provided = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS());
-        }
-        else {
+        } else {
             provided = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PARALLEL_PROCESSORS());
         }
 
@@ -179,8 +176,11 @@ public class DetectConfigurationFactory {
         String proxyPassword = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_PASSWORD(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_PASSWORD()).orElse(null);
         String proxyHost = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_HOST(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_HOST()).orElse(null);
         String proxyPort = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_PORT(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_PORT()).orElse(null);
-        String proxyNtlmDomain = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_NTLM_DOMAIN(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_NTLM_DOMAIN()).orElse(null);
-        String proxyNtlmWorkstation = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_NTLM_WORKSTATION(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_NTLM_WORKSTATION()).orElse(null);
+        String proxyNtlmDomain = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_NTLM_DOMAIN(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_NTLM_DOMAIN())
+                                     .orElse(null);
+        String proxyNtlmWorkstation = PropertyConfigUtils
+                                          .getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_NTLM_WORKSTATION(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_NTLM_WORKSTATION())
+                                          .orElse(null);
 
         CredentialsBuilder proxyCredentialsBuilder = new CredentialsBuilder();
         proxyCredentialsBuilder.setUsername(proxyUsername);
@@ -214,10 +214,11 @@ public class DetectConfigurationFactory {
 
     public ConnectionDetails createConnectionDetails() throws DetectUserFriendlyException {
         Boolean alwaysTrust = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_TRUST_CERT(), DetectProperties.Companion.getBLACKDUCK_HUB_TRUST_CERT());
-        List<String> proxyIgnoredHosts = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_IGNORED_HOSTS(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_IGNORED_HOSTS());
+        List<String> proxyIgnoredHosts = PropertyConfigUtils
+                                             .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.Companion.getBLACKDUCK_PROXY_IGNORED_HOSTS(), DetectProperties.Companion.getBLACKDUCK_HUB_PROXY_IGNORED_HOSTS());
         List<Pattern> proxyPatterns = proxyIgnoredHosts.stream()
-        .map(it -> Pattern.compile(it))
-            .collect(Collectors.toList());
+                                          .map(it -> Pattern.compile(it))
+                                          .collect(Collectors.toList());
         ProxyInfo proxyInformation = createBlackDuckProxyInfo();
         return new ConnectionDetails(proxyInformation, proxyPatterns, findTimeoutInSeconds(), alwaysTrust);
     }
@@ -260,9 +261,10 @@ public class DetectConfigurationFactory {
         return new PhoneHomeOptions(phoneHomePassthrough);
     }
 
-    public RunOptions createRunOptions()  {
+    public RunOptions createRunOptions() {
         // This is because it is double deprecated so we must check if either property is set.
-        Optional<Boolean> sigScanDisabled = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED(), DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_DISABLED());
+        Optional<Boolean> sigScanDisabled = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED(),
+            DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_DISABLED());
         Optional<Boolean> polarisEnabled = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_SWIP_ENABLED());
 
         List<FilterableEnumValue<DetectTool>> includedTools = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_TOOLS());
@@ -289,7 +291,7 @@ public class DetectConfigurationFactory {
         return new DirectoryOptions(sourcePath, outputPath, bdioPath, scanPath, toolsOutputPath);
     }
 
-    public AirGapOptions createAirGapOptions()  {
+    public AirGapOptions createAirGapOptions() {
         Path gradleOverride = getPathOrNull(DetectProperties.Companion.getDETECT_GRADLE_INSPECTOR_AIR_GAP_PATH());
         Path nugetOverride = getPathOrNull(DetectProperties.Companion.getDETECT_NUGET_INSPECTOR_AIR_GAP_PATH());
         Path dockerOverride = getPathOrNull(DetectProperties.Companion.getDETECT_DOCKER_INSPECTOR_AIR_GAP_PATH());
@@ -302,7 +304,7 @@ public class DetectConfigurationFactory {
         return new DetectFileFinder(userProvidedExcludedFiles);
     }
 
-    public DetectorFinderOptions createSearchOptions(Path sourcePath)  {
+    public DetectorFinderOptions createSearchOptions(Path sourcePath) {
         //Normal settings
         Integer maxDepth = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_DEPTH());
 
@@ -315,8 +317,8 @@ public class DetectConfigurationFactory {
         excludedDirectories.addAll(userProvidedExcludedDirectories);
         if (detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS())) {
             List<String> defaultExcluded = Arrays.stream(DetectorSearchExcludedDirectories.values())
-                                      .map(DetectorSearchExcludedDirectories::getDirectoryName)
-                                      .collect(Collectors.toList());
+                                               .map(DetectorSearchExcludedDirectories::getDirectoryName)
+                                               .collect(Collectors.toList());
             excludedDirectories.addAll(defaultExcluded);
         }
 
@@ -325,7 +327,7 @@ public class DetectConfigurationFactory {
         return new DetectorFinderOptions(fileFilter, maxDepth);
     }
 
-    public DetectorEvaluationOptions createDetectorEvaluationOptions()  {
+    public DetectorEvaluationOptions createDetectorEvaluationOptions() {
         Boolean forceNestedSearch = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_DETECTOR_SEARCH_CONTINUE());
 
         //Detector Filter
@@ -336,13 +338,13 @@ public class DetectConfigurationFactory {
         return new DetectorEvaluationOptions(forceNestedSearch, (rule -> detectorFilter.shouldInclude(rule.getDetectorType())));
     }
 
-    public BdioOptions createBdioOptions()  {
+    public BdioOptions createBdioOptions() {
         String prefix = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PROJECT_CODELOCATION_PREFIX()).orElse(null);
         String suffix = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PROJECT_CODELOCATION_SUFFIX()).orElse(null);
         return new BdioOptions(prefix, suffix);
     }
 
-    public ProjectNameVersionOptions createProjectNameVersionOptions(String sourceDirectoryName)  {
+    public ProjectNameVersionOptions createProjectNameVersionOptions(String sourceDirectoryName) {
         String overrideProjectName = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PROJECT_NAME()).orElse(null);
         String overrideProjectVersionName = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PROJECT_VERSION_NAME()).orElse(null);
         String defaultProjectVersionText = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_DEFAULT_PROJECT_VERSION_TEXT());
@@ -377,30 +379,39 @@ public class DetectConfigurationFactory {
     }
 
     public BlackDuckSignatureScannerOptions createBlackDuckSignatureScannerOptions() throws DetectUserFriendlyException {
-        List<PathValue> signatureScannerPathValues = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS(), DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_PATHS()).orElse(null);
+        List<PathValue> signatureScannerPathValues = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS(),
+            DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_PATHS()).orElse(null);
         List<Path> signatureScannerPaths;
         if (signatureScannerPathValues != null) {
             signatureScannerPaths = signatureScannerPathValues.stream()
-                .map(it -> it.resolvePath(pathResolver))
-                .collect(Collectors.toList());
+                                        .map(it -> it.resolvePath(pathResolver))
+                                        .collect(Collectors.toList());
         } else {
             signatureScannerPaths = emptyList();
         }
-        List<String> exclusionPatterns = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS(), DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS()).orElse(emptyList());
-        List<String> exclusionNamePatterns = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS(), DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS());
+        List<String> exclusionPatterns = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS(),
+            DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_PATTERNS()).orElse(emptyList());
+        List<String> exclusionNamePatterns = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS(),
+            DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS());
 
-        Integer scanMemory = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY(), DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_MEMORY());
-        Boolean dryRun = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN(), DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_DRY_RUN());
+        Integer scanMemory = PropertyConfigUtils
+                                 .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY(), DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_MEMORY());
+        Boolean dryRun = PropertyConfigUtils
+                             .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN(), DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_DRY_RUN());
         Boolean uploadSource = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE());
         Boolean licenseSearch = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH());
         Boolean copyrightSearch = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_COPYRIGHT_SEARCH());
         String codeLocationPrefix = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PROJECT_CODELOCATION_PREFIX()).orElse(null);
         String codeLocationSuffix = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PROJECT_CODELOCATION_SUFFIX()).orElse(null);
-        String additionalArguments = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS(), DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS()).orElse(null);
+        String additionalArguments = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS(),
+            DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_ARGUMENTS()).orElse(null);
         Integer maxDepth = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH());
-        Path offlineLocalScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH(), DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null);
-        Path onlineLocalScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH(), DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null);
-        String userProvidedScannerInstallUrl = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL(), DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_HOST_URL()).orElse(null);
+        Path offlineLocalScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH(),
+            DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null);
+        Path onlineLocalScannerInstallPath = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH(),
+            DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_LOCAL_PATH()).map(path -> path.resolvePath(pathResolver)).orElse(null);
+        String userProvidedScannerInstallUrl = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration, DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL(),
+            DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_HOST_URL()).orElse(null);
 
         if (offlineLocalScannerInstallPath != null && StringUtils.isNotBlank(userProvidedScannerInstallUrl)) {
             throw new DetectUserFriendlyException(
@@ -431,7 +442,7 @@ public class DetectConfigurationFactory {
         );
     }
 
-    public BlackDuckPostOptions createBlackDuckPostOptions()  {
+    public BlackDuckPostOptions createBlackDuckPostOptions() {
         Boolean waitForResults = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_WAIT_FOR_RESULTS());
         Boolean runRiskReport = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_RISK_REPORT_PDF());
         Boolean runNoticesReport = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_NOTICES_REPORT());
@@ -443,7 +454,7 @@ public class DetectConfigurationFactory {
         return new BlackDuckPostOptions(waitForResults, runRiskReport, runNoticesReport, riskReportPdfPath, noticesReportPath, severitiesToFailPolicyCheck);
     }
 
-    public BinaryScanOptions createBinaryScanOptions()  {
+    public BinaryScanOptions createBinaryScanOptions() {
         Path singleTarget = getPathOrNull(DetectProperties.Companion.getDETECT_BINARY_SCAN_FILE());
         List<String> mutlipleTargets = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_BINARY_SCAN_FILE_NAME_PATTERNS());
         String codeLocationPrefix = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PROJECT_CODELOCATION_PREFIX()).orElse(null);
@@ -451,7 +462,7 @@ public class DetectConfigurationFactory {
         return new BinaryScanOptions(singleTarget, mutlipleTargets, codeLocationPrefix, codeLocationSuffix);
     }
 
-    public DetectExecutableOptions createExecutablePaths()  {
+    public DetectExecutableOptions createExecutablePaths() {
         return new DetectExecutableOptions(
             getPathOrNull(DetectProperties.Companion.getDETECT_BASH_PATH()),
             getPathOrNull(DetectProperties.Companion.getDETECT_BAZEL_PATH()),
@@ -475,9 +486,8 @@ public class DetectConfigurationFactory {
         );
     }
 
-    private Path getPathOrNull(NullablePathProperty property)  {
+    private Path getPathOrNull(NullablePathProperty property) {
         return detectConfiguration.getValue(property).map(path -> path.resolvePath(pathResolver)).orElse(null);
     }
-
 
 }

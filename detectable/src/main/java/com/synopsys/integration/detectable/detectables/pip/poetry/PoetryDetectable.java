@@ -23,9 +23,6 @@
 package com.synopsys.integration.detectable.detectables.pip.poetry;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.Detectable;
@@ -35,7 +32,6 @@ import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PoetryRunPoetryInstallDetectResult;
@@ -51,7 +47,7 @@ public class PoetryDetectable extends Detectable {
     private File pyprojectToml;
     private File poetryLock;
 
-    public PoetryDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PoetryExtractor poetryExtractor) {
+    public PoetryDetectable(DetectableEnvironment environment, FileFinder fileFinder, PoetryExtractor poetryExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.poetryExtractor = poetryExtractor;
@@ -62,7 +58,7 @@ public class PoetryDetectable extends Detectable {
         poetryLock = fileFinder.findFile(environment.getDirectory(), POETRY_LOCK);
         pyprojectToml = fileFinder.findFile(environment.getDirectory(), PYPROJECT_TOML_FILE_NAME);
         if (poetryLock == null && pyprojectToml == null) {
-                return new FilesNotFoundDetectableResult(PYPROJECT_TOML_FILE_NAME, POETRY_LOCK);
+            return new FilesNotFoundDetectableResult(PYPROJECT_TOML_FILE_NAME, POETRY_LOCK);
         }
         return new PassedDetectableResult();
     }
@@ -76,7 +72,7 @@ public class PoetryDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-            return poetryExtractor.extract(poetryLock, Optional.ofNullable(pyprojectToml));
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+        return poetryExtractor.extract(poetryLock, Optional.ofNullable(pyprojectToml));
     }
 }

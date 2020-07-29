@@ -100,7 +100,8 @@ public class CodeLocationNameGeneratorTest {
     @Test
     public void testBomCodeLocationNameOversized() {
         final String projectNameStart = "really really ";
-        final String projectName = projectNameStart + "really really really really really really really really really really really really really really really really really really really really really really really really really really long projectName";
+        final String projectName =
+            projectNameStart + "really really really really really really really really really really really really really really really really really really really really really really really really really really long projectName";
         final String expected = projectName + "/projectVersion/child/group/name/version npm/bom";
         // = path/externalId tool/type
 

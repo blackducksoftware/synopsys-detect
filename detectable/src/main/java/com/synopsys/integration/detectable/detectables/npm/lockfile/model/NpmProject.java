@@ -35,20 +35,20 @@ public class NpmProject {
 
     private final List<NpmDependency> resolvedDependencies = new ArrayList<>();
 
-    public NpmProject(final String name, final String version) {
+    public NpmProject(String name, String version) {
         this.name = name;
         this.version = version;
     }
 
-    public void addAllDevDependencies(final Collection<NpmRequires> requires) {
+    public void addAllDevDependencies(Collection<NpmRequires> requires) {
         this.declaredDevDependencies.addAll(requires);
     }
 
-    public void addAllDependencies(final Collection<NpmRequires> requires) {
+    public void addAllDependencies(Collection<NpmRequires> requires) {
         this.declaredDependencies.addAll(requires);
     }
 
-    public void addAllResolvedDependencies(final Collection<NpmDependency> resolvedDependencies) {
+    public void addAllResolvedDependencies(Collection<NpmDependency> resolvedDependencies) {
         this.resolvedDependencies.addAll(resolvedDependencies);
     }
 
@@ -60,15 +60,15 @@ public class NpmProject {
         return version;
     }
 
-    public List<NpmRequires> getDeclaredDependencies(){
+    public List<NpmRequires> getDeclaredDependencies() {
         return declaredDependencies;
     }
 
-    public List<NpmRequires> getDeclaredDevDependencies(){
+    public List<NpmRequires> getDeclaredDevDependencies() {
         return declaredDevDependencies;
     }
 
-    public List<NpmDependency> getResolvedDependencies(){
+    public List<NpmDependency> getResolvedDependencies() {
         return resolvedDependencies;
     }
 }

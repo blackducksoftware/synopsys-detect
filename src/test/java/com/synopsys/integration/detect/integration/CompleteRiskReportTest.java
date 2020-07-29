@@ -22,11 +22,8 @@
  */
 package com.synopsys.integration.detect.integration;
 
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
-import com.synopsys.integration.detect.Application;
-import org.apache.commons.io.FileUtils;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -36,8 +33,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.detect.Application;
 
 @Tag("integration")
 public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
@@ -94,8 +95,8 @@ public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
         final File[] files = directory.listFiles();
         if (files != null) {
             return Arrays.stream(files)
-                    .filter(file -> file.getName().endsWith(".pdf"))
-                    .collect(Collectors.toList());
+                       .filter(file -> file.getName().endsWith(".pdf"))
+                       .collect(Collectors.toList());
         } else {
             return Collections.emptyList();
         }

@@ -47,7 +47,7 @@ public class CargoExtractor {
     private static final String VERSION_KEY = "version";
     private static final String PACKAGE_KEY = "package";
 
-    private CargoLockParser cargoLockParser;
+    private final CargoLockParser cargoLockParser;
 
     public CargoExtractor(CargoLockParser cargoLockParser) {
         this.cargoLockParser = cargoLockParser;
@@ -61,11 +61,11 @@ public class CargoExtractor {
 
             Optional<NameVersion> cargoNameVersion = extractNameVersionFromCargoToml(cargoToml);
             if (cargoNameVersion.isPresent()) {
-                        return new Extraction.Builder()
-                                   .success(codeLocation)
-                                   .projectName(cargoNameVersion.get().getName())
-                                   .projectVersion(cargoNameVersion.get().getVersion())
-                                   .build();
+                return new Extraction.Builder()
+                           .success(codeLocation)
+                           .projectName(cargoNameVersion.get().getName())
+                           .projectVersion(cargoNameVersion.get().getVersion())
+                           .build();
             }
             return new Extraction.Builder().success(codeLocation).build();
         } catch (IOException | DetectableException e) {
@@ -74,8 +74,8 @@ public class CargoExtractor {
     }
 
     private String getFileAsString(File cargoLock, Charset encoding) throws IOException {
-       List<String> goLockAsList = Files.readAllLines(cargoLock.toPath(), encoding);
-       return String.join(System.lineSeparator(), goLockAsList);
+        List<String> goLockAsList = Files.readAllLines(cargoLock.toPath(), encoding);
+        return String.join(System.lineSeparator(), goLockAsList);
     }
 
     private Optional<NameVersion> extractNameVersionFromCargoToml(Optional<File> cargoToml) throws IOException {

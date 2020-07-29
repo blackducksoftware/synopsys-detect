@@ -96,8 +96,8 @@ public class DetectorNameVersionHandler {
 
     private NameVersionDecision decideProjectNameVersionArbitrarily(List<DetectorProjectInfo> allPossibilities) {
         List<DetectorProjectInfo> normalPossibilities = Bds.of(allPossibilities)
-                                                                  .filterNot(it -> lowPriorityDetectorTypes.contains(it.getDetectorType()))
-                                                                  .toList();
+                                                            .filterNot(it -> lowPriorityDetectorTypes.contains(it.getDetectorType()))
+                                                            .toList();
 
         List<DetectorProjectInfo> chosenPossibilities;
         if (normalPossibilities.isEmpty()) {
@@ -119,7 +119,7 @@ public class DetectorNameVersionHandler {
     // Return only project info whose detector types appear exactly once.
     protected List<DetectorProjectInfo> filterUniqueDetectorsOnly(List<DetectorProjectInfo> projectNamePossibilities) {
         Map<DetectorType, List<DetectorProjectInfo>> grouped = Bds.of(projectNamePossibilities)
-                                                                         .groupBy(DetectorProjectInfo::getDetectorType);
+                                                                   .groupBy(DetectorProjectInfo::getDetectorType);
 
         return grouped.values().stream()
                    .filter(it -> it.size() == 1)

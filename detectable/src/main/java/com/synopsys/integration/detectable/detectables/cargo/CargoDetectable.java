@@ -30,7 +30,6 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.CargoGenerateLockfileDetectResult;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -48,7 +47,7 @@ public class CargoDetectable extends Detectable {
     private File cargoLock;
     private File cargoToml;
 
-    public CargoDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final CargoExtractor cargoExtractor) {
+    public CargoDetectable(DetectableEnvironment environment, FileFinder fileFinder, CargoExtractor cargoExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.cargoExtractor = cargoExtractor;
@@ -59,7 +58,7 @@ public class CargoDetectable extends Detectable {
         cargoLock = fileFinder.findFile(environment.getDirectory(), CARGO_LOCK_FILENAME);
         cargoToml = fileFinder.findFile(environment.getDirectory(), CARGO_TOML_FILENAME);
         if (cargoLock == null && cargoToml == null) {
-                return new FilesNotFoundDetectableResult(CARGO_LOCK_FILENAME, CARGO_TOML_FILENAME);
+            return new FilesNotFoundDetectableResult(CARGO_LOCK_FILENAME, CARGO_TOML_FILENAME);
         }
         return new PassedDetectableResult();
     }
@@ -73,7 +72,7 @@ public class CargoDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return cargoExtractor.extract(cargoLock, Optional.ofNullable(cargoToml));
     }
 }

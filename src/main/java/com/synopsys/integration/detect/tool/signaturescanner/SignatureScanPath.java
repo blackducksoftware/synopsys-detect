@@ -39,7 +39,7 @@ public class SignatureScanPath {
 
     public void setTargetPath(final File targetPath) {
         this.targetPath = targetPath;
-        this.targetCanonicalPath  = DetectFileUtils.tryGetCanonicalPath(targetPath);
+        this.targetCanonicalPath = DetectFileUtils.tryGetCanonicalPath(targetPath);
     }
 
     public Set<String> getExclusions() {

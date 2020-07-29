@@ -22,7 +22,11 @@
  */
 package com.synopsys.integration.detectable.detectables.maven.parsing.parse;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -50,13 +54,13 @@ public class PomDependenciesHandler extends DefaultHandler {
 
     private final List<Dependency> dependencies = new ArrayList<>();
 
-    public PomDependenciesHandler(final ExternalIdFactory externalIdFactory, boolean includePluginDependencies) {
+    public PomDependenciesHandler(ExternalIdFactory externalIdFactory, boolean includePluginDependencies) {
         this.externalIdFactory = externalIdFactory;
         this.includePluginDependencies = includePluginDependencies;
     }
 
     @Override
-    public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) throws SAXException {
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         super.startElement(uri, localName, qName, attributes);
         if (isDependencyQName(qName)) {
             parsingDependency = true;
@@ -70,12 +74,12 @@ public class PomDependenciesHandler extends DefaultHandler {
     }
 
     @Override
-    public void endElement(final String uri, final String localName, final String qName) throws SAXException {
+    public void endElement(String uri, String localName, String qName) throws SAXException {
         super.endElement(uri, localName, qName);
         if (isDependencyQName(qName)) {
             parsingDependency = false;
 
-            final ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
+            ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
             dependencies.add(new Dependency(artifact, version, externalId));
         } else {
             parsingNothingImportant();
@@ -83,7 +87,7 @@ public class PomDependenciesHandler extends DefaultHandler {
     }
 
     @Override
-    public void characters(final char[] ch, final int start, final int length) throws SAXException {
+    public void characters(char[] ch, int start, int length) throws SAXException {
         super.characters(ch, start, length);
         if (parsingGroup) {
             group = new String(ch, start, length);
