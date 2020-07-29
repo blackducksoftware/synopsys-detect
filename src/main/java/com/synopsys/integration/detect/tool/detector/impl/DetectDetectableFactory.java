@@ -92,7 +92,7 @@ public class DetectDetectableFactory {
     }
 
     public DockerDetectable createDockerDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createDockerDetectable(environment, detectableOptionFactory.createDockerDetectableOptions(), dockerInspectorResolver, detectExecutableResolver, detectExecutableResolver, detectExecutableResolver);
+        return detectableFactory.createDockerDetectable(environment, detectableOptionFactory.createDockerDetectableOptions(), dockerInspectorResolver, detectExecutableResolver, detectExecutableResolver);
     }
 
     public BazelDetectable createBazelDetectable(DetectableEnvironment environment) {

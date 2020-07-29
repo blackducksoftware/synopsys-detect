@@ -112,8 +112,6 @@ import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
-import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.WrongOperatingSystemResult;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
@@ -212,7 +210,6 @@ public class RunManager {
                 eventSystem);
 
             DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
-            assertValidOperatingSystem(detectableToolResult);
 
             runResult.addDetectableToolResult(detectableToolResult);
             eventSystem.publishEvent(Event.CodeLocationNamesAdded, createCodeLocationNames(detectableToolResult, codeLocationNameManager, directoryManager));
@@ -284,16 +281,6 @@ public class RunManager {
             return UniversalToolsResult.failure(projectNameVersion);
         } else {
             return UniversalToolsResult.success(projectNameVersion);
-        }
-    }
-
-    //TODO: Remove hack when windows docker support added. This workaround allows docker to throw a user friendly exception when not-extractable due to operating system.
-    private void assertValidOperatingSystem(DetectableToolResult detectableToolResult) throws DetectUserFriendlyException {
-        if (detectableToolResult.getFailedExtractableResult().isPresent()) {
-            DetectableResult extractable = detectableToolResult.getFailedExtractableResult().get();
-            if (WrongOperatingSystemResult.class.isAssignableFrom(extractable.getClass())) {
-                throw new DetectUserFriendlyException("Docker currently requires a non-Windows OS to run. Attempting to run Docker on Windows is not currently supported.", ExitCodeType.FAILURE_CONFIGURATION);
-            }
         }
     }
 

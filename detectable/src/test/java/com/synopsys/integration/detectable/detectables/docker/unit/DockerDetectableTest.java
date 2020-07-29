@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -42,20 +41,19 @@ public class DockerDetectableTest {
 
     @Test
     public void testApplicable() {
-        final DetectableEnvironment environment = null;
-        final DockerInspectorResolver dockerInspectorResolver = null;
-        final JavaResolver javaResolver = null;
-        final BashResolver bashResolver = null;
-        final DockerResolver dockerResolver = null;
-        final DockerExtractor dockerExtractor = null;
-        final DockerDetectableOptions dockerDetectableOptions = Mockito.mock(DockerDetectableOptions.class);
+        DetectableEnvironment environment = null;
+        DockerInspectorResolver dockerInspectorResolver = null;
+        JavaResolver javaResolver = null;
+        DockerResolver dockerResolver = null;
+        DockerExtractor dockerExtractor = null;
+        DockerDetectableOptions dockerDetectableOptions = Mockito.mock(DockerDetectableOptions.class);
 
         Mockito.when(dockerDetectableOptions.hasDockerImageOrTar()).thenReturn(Boolean.TRUE);
-
-        final DockerDetectable detectable = new DockerDetectable(environment, dockerInspectorResolver, javaResolver, bashResolver, dockerResolver,
+        
+        DockerDetectable detectable = new DockerDetectable(environment, dockerInspectorResolver, javaResolver, dockerResolver,
             dockerExtractor, dockerDetectableOptions);
 
-        final DetectableResult result = detectable.applicable();
+        DetectableResult result = detectable.applicable();
 
         assertTrue(result.getPassed() || result instanceof WrongOperatingSystemResult);
     }
