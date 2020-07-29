@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.cargo.parse;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -49,9 +47,9 @@ public class CargoLockParser {
 
     private final Map<String, Dependency> packageMap = new HashMap<>();
 
-    public DependencyGraph parseLockFile(final String lockFile) throws DetectableException {
+    public DependencyGraph parseLockFile(String lockFile) throws DetectableException {
         try {
-            final CargoLock cargoLock = new Toml().read(lockFile).to(CargoLock.class);
+            CargoLock cargoLock = new Toml().read(lockFile).to(CargoLock.class);
             if (cargoLock.getPackages().isPresent()) {
                 return parseDependencies(cargoLock.getPackages().get());
             }
@@ -61,21 +59,21 @@ public class CargoLockParser {
         return new MutableMapDependencyGraph();
     }
 
-    private DependencyGraph parseDependencies(final List<Package> lockPackages) {
+    private DependencyGraph parseDependencies(List<Package> lockPackages) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         Set<String> rootPackages = determineRootPackages(lockPackages);
 
-        for (final String rootPackage : rootPackages) {
+        for (String rootPackage : rootPackages) {
             graph.addChildToRoot(packageMap.get(rootPackage));
         }
 
-        for (final Package lockPackage : lockPackages) {
+        for (Package lockPackage : lockPackages) {
             if (!lockPackage.getDependencies().isPresent()) {
                 continue;
             }
             List<String> trimmedDependencies = extractDependencyNames(lockPackage.getDependencies().get());
-            for (final String dependency : trimmedDependencies) {
+            for (String dependency : trimmedDependencies) {
                 Dependency child = packageMap.get(dependency);
                 Dependency parent = packageMap.get(lockPackage.getName().orElse(""));
                 if (child != null && parent != null) {
@@ -90,9 +88,9 @@ public class CargoLockParser {
         Set<String> rootPackages = new HashSet<>();
         Set<String> dependencyPackages = new HashSet<>();
 
-        for (final Package lockPackage : lockPackages) {
-            final String projectName = lockPackage.getName().orElse("");
-            final String projectVersion = lockPackage.getVersion().orElse("");
+        for (Package lockPackage : lockPackages) {
+            String projectName = lockPackage.getName().orElse("");
+            String projectVersion = lockPackage.getVersion().orElse("");
 
             packageMap.put(projectName, createCargoDependency(projectName, projectVersion));
             rootPackages.add(projectName);
@@ -111,8 +109,8 @@ public class CargoLockParser {
                    .collect(Collectors.toList());
     }
 
-    private Dependency createCargoDependency(final String name, final String version) {
-        final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.CRATES, name, version);
+    private Dependency createCargoDependency(String name, String version) {
+        ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.CRATES, name, version);
         return new Dependency(name, version, dependencyExternalId);
     }
 }

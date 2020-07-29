@@ -121,7 +121,7 @@ public class ArtifactoryDockerInspectorResolver implements DockerInspectorResolv
 
     private DockerInspectorInfo findProvidedJar(@NotNull final Path providedJarPath) {
         File providedJar = null;
-        
+
         logger.debug(String.format("Using user-provided docker inspector jar path: %s", providedJarPath));
         final File providedJarCandidate = providedJarPath.toFile();
         if (providedJarCandidate.isFile()) {

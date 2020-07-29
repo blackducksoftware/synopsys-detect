@@ -1,9 +1,7 @@
 package com.synopsys.integration.detectable.detectables.go.unit;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

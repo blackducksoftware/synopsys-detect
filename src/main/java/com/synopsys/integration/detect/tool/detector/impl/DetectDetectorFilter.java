@@ -28,7 +28,7 @@ import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class DetectDetectorFilter extends DetectOverrideableFilter implements Predicate<DetectorRule> {
-    public DetectDetectorFilter(String excluded, String included){
+    public DetectDetectorFilter(String excluded, String included) {
         super(excluded, included);
     }
 

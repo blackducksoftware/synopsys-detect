@@ -94,8 +94,8 @@ public class FormattedOutputManager {
         }
 
         formattedOutput.codeLocations = Bds.of(this.codeLocations)
-                                                .map(FormattedCodeLocationOutput::new)
-                                                .toList();
+                                            .map(FormattedCodeLocationOutput::new)
+                                            .toList();
 
         formattedOutput.unrecognizedPaths = new HashMap<>();
         unrecognizedPaths.keySet().forEach(key -> {

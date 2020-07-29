@@ -36,12 +36,12 @@ public class ApkArchitectureResolver {
     private boolean hasAttemptedResolution = false;
 
     public Optional<String> resolveArchitecture(ClangPackageManagerInfo currentPackageManager, File workingDirectory, ExecutableRunner executableRunner) throws ExecutableRunnerException {
-        if (hasAttemptedResolution){
+        if (hasAttemptedResolution) {
             return architecture;
         }
 
         hasAttemptedResolution = true;
-        if (currentPackageManager.getPkgArchitectureArgs().isPresent()){
+        if (currentPackageManager.getPkgArchitectureArgs().isPresent()) {
             List<String> args = currentPackageManager.getPkgArchitectureArgs().get();
             String cmd = currentPackageManager.getPkgMgrCmdString();
             ExecutableOutput architectureOutput = executableRunner.execute(workingDirectory, cmd, args);

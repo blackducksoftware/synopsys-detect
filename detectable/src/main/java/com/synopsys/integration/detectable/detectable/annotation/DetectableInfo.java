@@ -31,6 +31,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface DetectableInfo {
     String forge();
+
     String language();
+
     String requirementsMarkdown();
 }

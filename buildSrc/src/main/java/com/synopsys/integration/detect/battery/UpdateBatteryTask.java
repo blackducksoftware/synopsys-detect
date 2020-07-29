@@ -48,7 +48,7 @@ public class UpdateBatteryTask extends DefaultTask {
         File batteryResources = new File("src/test/resources/battery/");
         File batteryReports = new File("build/reports/tests/testBattery/classes/");
 
-        for(File report : batteryReports.listFiles()) {
+        for (File report : batteryReports.listFiles()) {
             for (String line : Files.readAllLines(report.toPath())) {
                 if (line.contains("***BDIO BATTERY TEST|")) {
                     String chunk = extractChunk(line);

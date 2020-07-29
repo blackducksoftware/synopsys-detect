@@ -132,10 +132,10 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         final File toolsFolder = new File(nupkgFolder, "tools");
         logger.debug("Searching in: " + toolsFolder.getAbsolutePath());
         final File foundExecutable = fileFinder.findFiles(toolsFolder, inspectorName, 3)
-                                   .stream()
-                                   .findFirst()
-                                   .filter(File::exists)
-                                   .orElseThrow(() -> new DetectableException(String.format("Unable to find nuget inspector, looking for %s in %s", inspectorName, toolsFolder.toString())));
+                                         .stream()
+                                         .findFirst()
+                                         .filter(File::exists)
+                                         .orElseThrow(() -> new DetectableException(String.format("Unable to find nuget inspector, looking for %s in %s", inspectorName, toolsFolder.toString())));
         final String inspectorExecutable = foundExecutable.getAbsolutePath();
         logger.debug("Found nuget inspector: {}", inspectorExecutable);
         return inspectorInitializer.apply(inspectorExecutable);

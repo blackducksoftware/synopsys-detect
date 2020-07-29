@@ -25,8 +25,6 @@ package com.synopsys.integration.detectable.detectable.util;
 import java.util.Deque;
 import java.util.LinkedList;
 
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-
 public class ParentStack<T> {
     private final Deque<T> stack = new LinkedList<>();
 

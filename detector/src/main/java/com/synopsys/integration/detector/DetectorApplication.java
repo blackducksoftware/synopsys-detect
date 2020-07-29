@@ -20,7 +20,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector; /**
+package com.synopsys.integration.detector;
+
+/**
  * detectable
  *
  * Copyright (C) 2019 Black Duck Software, Inc.

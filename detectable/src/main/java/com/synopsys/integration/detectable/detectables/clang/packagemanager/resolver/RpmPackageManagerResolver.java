@@ -40,24 +40,25 @@ public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
     private static final String NO_VALUE = "(none)";
     private final Gson gson;
 
-    public RpmPackageManagerResolver(final Gson gson) {
+    public RpmPackageManagerResolver(Gson gson) {
         this.gson = gson;
     }
 
     @Override
-    public List<PackageDetails> resolvePackages(final ClangPackageManagerInfo currentPackageManager, final ExecutableRunner executableRunner, final File workingDirectory, final String queryPackageOutput) throws ExecutableRunnerException, NotOwnedByAnyPkgException {
-        final List<PackageDetails> packageDetailsList = new ArrayList<>();
-        final String[] packageLines = queryPackageOutput.split("\n");
-        for (final String packageLine : packageLines) {
+    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput)
+        throws ExecutableRunnerException, NotOwnedByAnyPkgException {
+        List<PackageDetails> packageDetailsList = new ArrayList<>();
+        String[] packageLines = queryPackageOutput.split("\n");
+        for (String packageLine : packageLines) {
             logger.trace(String.format("packageLine: %s", packageLine));
             if (!valid(packageLine)) {
                 logger.debug(String.format("Skipping line: %s", packageLine));
                 continue;
             }
-            final RpmPackage rpmPackage = gson.fromJson(packageLine, RpmPackage.class);
-            final String packageName = rpmPackage.getName();
+            RpmPackage rpmPackage = gson.fromJson(packageLine, RpmPackage.class);
+            String packageName = rpmPackage.getName();
             String packageVersion = rpmPackage.getVersion();
-            final String epoch = rpmPackage.getEpoch();
+            String epoch = rpmPackage.getEpoch();
             if (!NO_VALUE.equals(epoch)) {
                 packageVersion = String.format("%s:%s", epoch, packageVersion);
             }
@@ -65,13 +66,13 @@ public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
             if (!NO_VALUE.equals(rpmPackage.getArch())) {
                 arch = rpmPackage.getArch();
             }
-            final PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion, arch);
+            PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion, arch);
             packageDetailsList.add(dependencyDetails);
         }
         return packageDetailsList;
     }
 
-    private boolean valid(final String packageLine) throws NotOwnedByAnyPkgException {
+    private boolean valid(String packageLine) throws NotOwnedByAnyPkgException {
         if (packageLine.contains(" is not owned by ")) {
             throw new NotOwnedByAnyPkgException(packageLine);
         }
