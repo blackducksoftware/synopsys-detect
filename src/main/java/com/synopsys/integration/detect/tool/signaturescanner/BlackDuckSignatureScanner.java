@@ -115,7 +115,7 @@ public class BlackDuckSignatureScanner {
             signatureScannerReports.add(signatureScannerReport);
         }
 
-        signatureScannerReports.forEach(this::reportErrors);
+        signatureScannerReports.forEach(this::publishResults);
 
         signatureScannerReports.stream()
             .map(SignatureScannerReport::getExitCode)
@@ -134,8 +134,9 @@ public class BlackDuckSignatureScanner {
             });
     }
 
-    private void reportErrors(SignatureScannerReport signatureScannerReport) {
+    private void publishResults(SignatureScannerReport signatureScannerReport) {
         if (signatureScannerReport.isSuccessful()) {
+            eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(signatureScannerReport.getSignatureScanPath().getTargetCanonicalPath(), StatusType.SUCCESS));
             return;
         }
 
