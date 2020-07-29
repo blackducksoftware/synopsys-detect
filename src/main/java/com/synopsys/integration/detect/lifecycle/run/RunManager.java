@@ -419,7 +419,7 @@ public class RunManager {
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS) && impactAnalysisOptions.isEnabled()) {
+        if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS) && Boolean.TRUE.equals(impactAnalysisOptions.isEnabled())) {
             logger.info("Will include the Vulnerability Impact Analysis tool.");
             try {
                 VulnerabilityImpactAnalysisTool blackDuckImpactAnalysisTool = new VulnerabilityImpactAnalysisTool(directoryManager, codeLocationNameManager);
@@ -444,7 +444,7 @@ public class RunManager {
                 logger.error("Vulnerability Impact Analysis failed.", exception);
             }
             logger.info("Vulnerability Impact Analysis tool actions finished.");
-        } else if (impactAnalysisOptions.isEnabled()) {
+        } else if (Boolean.TRUE.equals(impactAnalysisOptions.isEnabled())) {
             logger.info("Vulnerability Impact Analysis tool is enabled but will not run due to tool configuration.");
         } else {
             logger.info("Vulnerability Impact Analysis tool will not be run.");
