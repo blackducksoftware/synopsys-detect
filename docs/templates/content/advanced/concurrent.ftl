@@ -1,33 +1,25 @@
 # Concurrent execution
 
-Executing multiple ${solution_name} runs in parallel requires additional configuration.
+Concurrent execution of ${solution_name} by the same user can result in collisions as the ${solution_name} script,
+the ${solution_name} .jar, the ${solution_name} inspectors, and the ${blackduck_signature_scanner_name}
+are each downloaded to the same default location during execution.
 
-When the same user executes multiple runs of ${solution_name} in parallel, there is (when
-using default settings) contention over the following resources:
+Concurrent execution of ${solution_name} runs that include Docker image inspection involves additional
+challenges. For that scenario, we recommend engaging ${professional_services} for a solution tailored to your environment.
+The rest of this page addresses scenarios that do not involved inspecting Docker images.
 
-1. The location to which your curl command (if you use one) downloads ${bash_script_name} or ${powershell_script_name},
-which can be controlled via your curl command.
-1. The location to which ${bash_script_name} or ${powershell_script_name} (if you use one of them) downloads the
-${solution_name} .jar, which can be
-controlled via environment variable DETECT_JAR_DOWNLOAD_DIR.
-1. The location to which the ${solution_name} .jar downloads files like the signature scanner, which can be
-controlled via the property --detect.output.path.
+The recommended way for a single user to execute multiple ${solution_name} runs concurrently and
+avoid the collisions mentioned above is to:
 
-Solutions available for #1 include:
+1. Run ${solution_name} using the air gap capability. This avoids downloading the ${solution_name} script, .jar, or inspectors during execution.
+1. Manually download and install the ${blackduck_signature_scanner_name}, and point ${solution_name} to it. This avoids downloading the ${blackduck_signature_scanner_name} during execution.
 
-* Download the script only once in advance, or
-* Download the script to a unique location for each run.
+To do this:
 
-The simplest solution to #2 and #3 is to assign each run a unique pair of download locations
-using environment variable DETECT_JAR_DOWNLOAD_DIR and property --detect.output.path. Here is
-a very simple bash script that demonstrates this approach:
-```
-#!/bin/bash
-curl -O https://detect.synopsys.com/detect.sh
-chmod +x detect.sh
-for i in {1..10}; do
-echo "==================== Starting run $i ====================="
-export DETECT_JAR_DOWNLOAD_DIR=/tmp/rundir/detectjardownload${r"${i}"}
-./detect.sh --detect.source.path=/projects/integration-common --detect.output.path=/tmp/rundir/detectoutput${r"${i}"} | tee /tmp/rundir/log${r"${i}"}.txt &
-done
-```
+1. Log into ${blackduck_product_name}, and under Tools > Legacy Downloads, download and unzip the ${blackduck_signature_scanner_name}.
+1. Download the ${solution_name} gradle-nuget air gap zip from [${division_name} ${binary_repo_type} server](${binary_repo_ui_url_base}/${binary_repo_repo}/${binary_repo_pkg_path}/${project_name}) and unzip it.
+1. Run ${solution_name} as shown in this example:
+
+````
+java -jar {airgap dir}/synopsys-detect-6.4.0.jar --detect.nuget.inspector.air.gap.path={airgap dir}/packaged-inspectors/nuget/ --detect.gradle.inspector.air.gap.path={airgap dir}/packaged-inspectors/gradle/ --detect.blackduck.signature.scanner.local.path={scan.cli-yourBlackDuckVersion dir}
+````
