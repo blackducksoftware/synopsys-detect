@@ -22,14 +22,12 @@
  */
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.MalformedJsonException;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.GoListUJsonData;
 import com.synopsys.integration.detectable.detectables.go.gomod.model.ReplaceData;

@@ -45,27 +45,27 @@ public class GemspecParser {
     private final ExternalIdFactory externalIdFactory;
     private final GemspecLineParser gemspecLineParser;
 
-    public GemspecParser(final ExternalIdFactory externalIdFactory, final GemspecLineParser gemspecLineParser) {
+    public GemspecParser(ExternalIdFactory externalIdFactory, GemspecLineParser gemspecLineParser) {
         this.externalIdFactory = externalIdFactory;
         this.gemspecLineParser = gemspecLineParser;
     }
 
-    public DependencyGraph parse(final InputStream inputStream, final boolean includeRuntimeDependencies, final boolean includeDevelopmentDependencies) throws IOException {
-        final MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        
-        try (final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+    public DependencyGraph parse(InputStream inputStream, boolean includeRuntimeDependencies, boolean includeDevelopmentDependencies) throws IOException {
+        MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 if (!gemspecLineParser.shouldParseLine(line)) {
                     continue;
                 }
 
-                final Optional<GemspecDependency> gemspecDependencyOptional = gemspecLineParser.parseLine(line);
+                Optional<GemspecDependency> gemspecDependencyOptional = gemspecLineParser.parseLine(line);
                 if (!gemspecDependencyOptional.isPresent()) {
                     continue;
                 }
 
-                final GemspecDependency gemspecDependency = gemspecDependencyOptional.get();
+                GemspecDependency gemspecDependency = gemspecDependencyOptional.get();
 
                 if (!includeRuntimeDependencies && gemspecDependency.getGemspecDependencyType() == GemspecDependencyType.RUNTIME) {
                     logger.debug(String.format("Excluding component '%s' from graph because it is a runtime dependency", gemspecDependency.getName()));
@@ -74,11 +74,11 @@ public class GemspecParser {
                     logger.debug(String.format("Excluding component '%s' from graph because it is a development dependency", gemspecDependency.getName()));
                     continue;
                 }
-                final String name = gemspecDependency.getName();
-                final String version = gemspecDependency.getVersion().orElse("No version");
+                String name = gemspecDependency.getName();
+                String version = gemspecDependency.getVersion().orElse("No version");
 
-                final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, name, version);
-                final Dependency dependency = new Dependency(name, version, externalId);
+                ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, name, version);
+                Dependency dependency = new Dependency(name, version, externalId);
 
                 dependencyGraph.addChildrenToRoot(dependency);
             }

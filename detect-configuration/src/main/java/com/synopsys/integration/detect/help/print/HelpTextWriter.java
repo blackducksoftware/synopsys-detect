@@ -32,39 +32,39 @@ import org.apache.commons.lang3.StringUtils;
 public class HelpTextWriter {
 
     private final List<String> pieces = new ArrayList<>();
-    
+
     public void println() {
         println("");
     }
-    
+
     public void println(String line) {
         pieces.add(line);
     }
-    
+
     public void printColumns(String... columns) {
-        final List<String> headerColumns = Arrays.asList(columns);
-        final String headerText = formatColumns(headerColumns, 69, 30, 77);
+        List<String> headerColumns = Arrays.asList(columns);
+        String headerText = formatColumns(headerColumns, 69, 30, 77);
         pieces.add(headerText);
     }
-    
+
     public void printSeperator() {
         println(StringUtils.repeat('_', 175));
     }
-    
-    public void write(final PrintStream printStream) {
+
+    public void write(PrintStream printStream) {
         printStream.println(String.join(System.lineSeparator(), pieces));
     }
 
-    private String formatColumns(final List<String> columns, final int... columnWidths) {
-        final StringBuilder createColumns = new StringBuilder();
-        final List<String> columnfirstRow = new ArrayList<>();
-        final List<String> columnRemainingRows = new ArrayList<>();
+    private String formatColumns(List<String> columns, int... columnWidths) {
+        StringBuilder createColumns = new StringBuilder();
+        List<String> columnfirstRow = new ArrayList<>();
+        List<String> columnRemainingRows = new ArrayList<>();
         for (int i = 0; i < columns.size(); i++) {
             if (columns.get(i).length() < columnWidths[i]) {
                 columnfirstRow.add(columns.get(i));
                 columnRemainingRows.add("");
             } else {
-                final String firstRow = columns.get(i).substring(0, columnWidths[i]);
+                String firstRow = columns.get(i).substring(0, columnWidths[i]);
                 int endOfWordIndex = firstRow.lastIndexOf(' ');
                 if (endOfWordIndex == -1) {
                     endOfWordIndex = columnWidths[i] - 1;
@@ -87,13 +87,13 @@ public class HelpTextWriter {
         return createColumns.toString();
     }
 
-    private boolean allColumnsEmpty(final List<String> columns) {
-        for (final String column : columns) {
+    private boolean allColumnsEmpty(List<String> columns) {
+        for (String column : columns) {
             if (!column.isEmpty()) {
                 return false;
             }
         }
         return true;
     }
-    
+
 }

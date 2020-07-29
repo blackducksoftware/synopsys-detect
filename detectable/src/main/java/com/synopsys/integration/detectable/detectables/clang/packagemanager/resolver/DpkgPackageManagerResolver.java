@@ -45,27 +45,28 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
     }
 
     @Override
-    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput) throws ExecutableRunnerException, NotOwnedByAnyPkgException {
+    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput)
+        throws ExecutableRunnerException, NotOwnedByAnyPkgException {
         List<PackageDetails> packageDetailsList = new ArrayList<>();
-        final String[] packageLines = queryPackageOutput.split("\n");
-        for (final String packageLine : packageLines) {
+        String[] packageLines = queryPackageOutput.split("\n");
+        for (String packageLine : packageLines) {
             if (!valid(packageLine)) {
                 logger.debug(String.format("Skipping line: %s", packageLine));
                 continue;
             }
-            final String[] queryPackageOutputParts = packageLine.split("\\s+");
-            final String[] packageNameArchParts = queryPackageOutputParts[0].split(":");
-            final String packageName = packageNameArchParts[0];
-            final String packageArch = packageNameArchParts[1];
+            String[] queryPackageOutputParts = packageLine.split("\\s+");
+            String[] packageNameArchParts = queryPackageOutputParts[0].split(":");
+            String packageName = packageNameArchParts[0];
+            String packageArch = packageNameArchParts[1];
             logger.debug(String.format("package name: %s; arch: %s", packageName, packageArch));
-            final Optional<String> packageVersion = versionResolver.resolvePackageVersion(currentPackageManager, executableRunner, workingDirectory, packageName);
-            final PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion.orElse(null), packageArch);
+            Optional<String> packageVersion = versionResolver.resolvePackageVersion(currentPackageManager, executableRunner, workingDirectory, packageName);
+            PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion.orElse(null), packageArch);
             packageDetailsList.add(dependencyDetails);
         }
         return packageDetailsList;
     }
 
-    private boolean valid(final String packageLine) throws NotOwnedByAnyPkgException {
+    private boolean valid(String packageLine) throws NotOwnedByAnyPkgException {
         if (packageLine.contains("no path found matching pattern")) {
             throw new NotOwnedByAnyPkgException(packageLine);
         }

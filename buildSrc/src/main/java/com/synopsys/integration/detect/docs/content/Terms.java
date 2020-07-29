@@ -55,6 +55,7 @@ public class Terms {
         termMap.put("dockerinspector_name", "Black Duck Docker Inspector");
         termMap.put("blackduck_kb", "Black Duck KnowledgeBase");
         termMap.put("impact_analysis_name", "Vulnerability Impact Analysis Tool");
+        termMap.put("professional_services", "Synopsys Software Integrity Group Client Services");
     }
 
     public String put(String termKey, String replacementString) {

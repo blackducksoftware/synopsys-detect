@@ -752,13 +752,13 @@ class DetectProperties {
         }
         val DETECT_CUSTOM_FIELDS_PROJECT = NullableStringProperty("detect.custom.fields.project").apply {
             setInfo("Custom Fields", "5.6.0")
-            setHelp("A  list of custom fields with a label and comma-separated value starting from index 0. For example detect.custom.fields.project[0].label='example' and detect.custom.fields.project[0].value='one,two'. Note that these will not show up in the detect configuration log.")
+            setHelp("A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example, to set a custom field with label 'example' to 'one,two': detect.custom.fields.project[0].label='example' and detect.custom.fields.project[0].value='one,two'. To set another field, use index 1. Note that these will not show up in the detect configuration log.")
             setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             setCategory(DetectCategory.Advanced)
         }
         val DETECT_CUSTOM_FIELDS_VERSION = NullableStringProperty("detect.custom.fields.version").apply {
             setInfo("Custom Fields", "5.6.0")
-            setHelp("A  list of custom fields with a label and comma-separated value starting from index 0. For example detect.custom.fields.version[0].label='example' and detect.custom.fields.version[0].value='one,two'. Note that these will not show up in the detect configuration log.")
+            setHelp("A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example , to set a custom field with label 'example' to 'one,two': detect.custom.fields.version[0].label='example' and detect.custom.fields.version[0].value='one,two'. To set another field, use index 1. Note that these will not show up in the detect configuration log.")
             setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             setCategory(DetectCategory.Advanced)
         }

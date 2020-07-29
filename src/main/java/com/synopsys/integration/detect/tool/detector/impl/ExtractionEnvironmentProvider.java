@@ -33,11 +33,11 @@ public class ExtractionEnvironmentProvider {
     private final DirectoryManager directoryManager;
     private int count = 0;
 
-    public ExtractionEnvironmentProvider(DirectoryManager directoryManager){
+    public ExtractionEnvironmentProvider(DirectoryManager directoryManager) {
         this.directoryManager = directoryManager;
     }
 
-    public ExtractionEnvironment createExtractionEnvironment(DetectorEvaluation detectorEvaluation){
+    public ExtractionEnvironment createExtractionEnvironment(DetectorEvaluation detectorEvaluation) {
         ExtractionId extractionId = new ExtractionId(detectorEvaluation.getDetectorRule().getDetectorType(), count);
         count = count + 1;
 
@@ -45,7 +45,7 @@ public class ExtractionEnvironmentProvider {
         return new DetectExtractionEnvironment(outputDirectory, extractionId);
     }
 
-    public ExtractionEnvironment createExtractionEnvironment(String name){
+    public ExtractionEnvironment createExtractionEnvironment(String name) {
         ExtractionId extractionId = new ExtractionId(name, count);
         count = count + 1;
 

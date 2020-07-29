@@ -22,16 +22,15 @@
  */
 package com.synopsys.integration.detectable.detectables.gradle.unit;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleGav;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleTreeNode;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportLineParser;
-import com.synopsys.integration.util.NameVersion;
 
 public class GradleReportParserTest {
     //private final TestUtil testUtil = new TestUtil();

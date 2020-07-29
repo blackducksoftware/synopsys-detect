@@ -24,8 +24,8 @@ package com.synopsys.integration.detect.tool.detector;
 
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detector.evaluation.DetectorEvaluatorListener;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
+import com.synopsys.integration.detector.evaluation.DetectorEvaluatorListener;
 
 public class DetectorEvaluatorBroadcaster implements DetectorEvaluatorListener {
     private final EventSystem eventSystem;
