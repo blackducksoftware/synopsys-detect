@@ -25,6 +25,8 @@ package com.synopsys.integration.detectable.detectables.go.gomod;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
@@ -50,8 +52,23 @@ public class GoModCliExtractor {
     public Extraction extract(File directory, File goExe) {
         try {
             List<String> listOutput = execute(directory, goExe, "Querying go for the list of modules failed: ", "list", "-m");
-            List<String> listUJsonOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "list", "-m", "-u", "-json", "all");
-            List<String> modGraphOutput = modGraphOutputWithReplacements(directory, goExe, listUJsonOutput);
+            List<String> versionOutput = execute(directory, goExe, "Querying for the version failed: ", "version");
+            Pattern pattern = Pattern.compile("\\d+\\.[\\d.]+");
+            Matcher matcher = pattern.matcher(versionOutput.get(0));
+            List<String> modGraphOutput;
+            if (matcher.find()) {
+                String version = matcher.group();
+                String[] parts = version.split("\\.");
+                List<String> listUJsonOutput;
+                if (Integer.parseInt(parts[0]) > 1 || Integer.parseInt(parts[1]) >= 14) {
+                    listUJsonOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "list", "-mod=readonly", "-m", "-u", "-json", "all");
+                } else {
+                    listUJsonOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "list", "-m", "-u", "-json", "all");
+                }
+                modGraphOutput = modGraphOutputWithReplacements(directory, goExe, listUJsonOutput);
+            } else {
+                modGraphOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "mod", "graph");
+            }
             List<CodeLocation> codeLocations = goModGraphParser.parseListAndGoModGraph(listOutput, modGraphOutput);
             return new Extraction.Builder().success(codeLocations).build();//no project info - hoping git can help with that.
         } catch (Exception e) {
