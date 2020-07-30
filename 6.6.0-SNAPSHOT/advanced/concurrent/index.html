@@ -1284,34 +1284,25 @@
                 
                 
                 <h1 id="concurrent-execution">Concurrent execution<a class="headerlink" href="#concurrent-execution" title="Permanent link">#</a></h1>
-<p>Executing multiple Synopsys Detect runs in parallel requires additional configuration.</p>
-<p>When the same user executes multiple runs of Synopsys Detect in parallel, there is (when
-using default settings) contention over the following resources:</p>
+<p>Concurrent execution of Synopsys Detect by the same user can result in collisions as the Synopsys Detect script,
+the Synopsys Detect .jar, the Synopsys Detect inspectors, and the Black Duck Signature Scanner
+are each downloaded to the same default location during execution.</p>
+<p>Concurrent execution of Synopsys Detect runs that include Docker image inspection involves additional
+challenges. For that scenario, we recommend engaging Synopsys Software Integrity Group Client Services for a solution tailored to your environment.
+The rest of this page addresses scenarios that do not involved inspecting Docker images.</p>
+<p>The recommended way for a single user to execute multiple Synopsys Detect runs concurrently and
+avoid the collisions mentioned above is to:</p>
 <ol>
-<li>The location to which your curl command (if you use one) downloads detect.sh or detect.ps1,
-which can be controlled via your curl command.</li>
-<li>The location to which detect.sh or detect.ps1 (if you use one of them) downloads the
-Synopsys Detect .jar, which can be
-controlled via environment variable DETECT_JAR_DOWNLOAD_DIR.</li>
-<li>The location to which the Synopsys Detect .jar downloads files like the signature scanner, which can be
-controlled via the property --detect.output.path.</li>
+<li>Run Synopsys Detect using the air gap capability. This avoids downloading the Synopsys Detect script, .jar, or inspectors during execution.</li>
+<li>Manually download and install the Black Duck Signature Scanner, and point Synopsys Detect to it. This avoids downloading the Black Duck Signature Scanner during execution.</li>
 </ol>
-<p>Solutions available for #1 include:</p>
-<ul>
-<li>Download the script only once in advance, or</li>
-<li>Download the script to a unique location for each run.</li>
-</ul>
-<p>The simplest solution to #2 and #3 is to assign each run a unique pair of download locations
-using environment variable DETECT_JAR_DOWNLOAD_DIR and property --detect.output.path. Here is
-a very simple bash script that demonstrates this approach:</p>
-<pre><code>#!/bin/bash
-curl -O https://detect.synopsys.com/detect.sh
-chmod +x detect.sh
-for i in {1..10}; do
-echo &quot;==================== Starting run $i =====================&quot;
-export DETECT_JAR_DOWNLOAD_DIR=/tmp/rundir/detectjardownload${i}
-./detect.sh --detect.source.path=/projects/integration-common --detect.output.path=/tmp/rundir/detectoutput${i} | tee /tmp/rundir/log${i}.txt &amp;
-done
+<p>To do this:</p>
+<ol>
+<li>Log into Black Duck, and under Tools &gt; Legacy Downloads, download and unzip the Black Duck Signature Scanner.</li>
+<li>Download the Synopsys Detect gradle-nuget air gap zip from <a href="https://sig-repo.synopsys.com/webapp/#/artifacts/browse/tree/General/bds-integrations-release/com/synopsys/integration/synopsys-detect">Synopsys SIG Artifactory server</a> and unzip it.</li>
+<li>Run Synopsys Detect as shown in this example:</li>
+</ol>
+<pre><code>java -jar {airgap dir}/synopsys-detect-6.4.0.jar --detect.nuget.inspector.air.gap.path={airgap dir}/packaged-inspectors/nuget/ --detect.gradle.inspector.air.gap.path={airgap dir}/packaged-inspectors/gradle/ --detect.blackduck.signature.scanner.local.path={scan.cli-yourBlackDuckVersion dir}
 </code></pre>
                 
                   
