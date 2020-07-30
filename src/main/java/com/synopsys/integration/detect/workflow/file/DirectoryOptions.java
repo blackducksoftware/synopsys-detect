@@ -68,6 +68,6 @@ public class DirectoryOptions {
         if (rawPath == null) {
             return null;
         }
-        return rawPath.toRealPath();
+        return rawPath.toAbsolutePath();
     }
 }
