@@ -52,6 +52,7 @@ public class Pipelines {
         Pipeline mavenJarPipeline = (new PipelineBuilder())
                                         .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
                                             Arrays.asList(CQUERY_COMMAND, CQUERY_OPTIONS_PLACEHOLDER, "filter('@.*:jar', deps(${detect.bazel.target}))"), false))
+                                        // The trailing parens may contain a hex number, or "null"; the pattern below handles either
                                         .addIntermediateStep(new IntermediateStepReplaceInEach(" \\([0-9a-z]+\\)", ""))
                                         .addIntermediateStep(new IntermediateStepSplitEach("\\s+"))
                                         .addIntermediateStep(new IntermediateStepReplaceInEach("^@", ""))
