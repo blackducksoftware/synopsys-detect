@@ -40,7 +40,6 @@ import com.synopsys.integration.blackduck.service.UserGroupService;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.client.ConnectionResult;
 
@@ -52,11 +51,10 @@ public class BlackDuckConnectivityChecker {
 
         logger.debug("Detect will check communication with the Black Duck server.");
 
-        final ConnectionResult connectionResult = blackDuckServerConfig.attemptConnection(new SilentIntLogger());
+        final ConnectionResult connectionResult = blackDuckServerConfig.attemptConnection(new Slf4jIntLogger(logger));
 
         if (connectionResult.isFailure()) {
             logger.error("Failed to connect to the Black Duck server");
-            logger.debug(String.format("The Black Duck server responded with a status code of %d", connectionResult.getHttpStatusCode()));
             return BlackDuckConnectivityResult.failure(connectionResult.getFailureMessage().orElse("Could not reach the Black Duck server or the credentials were invalid."));
         }
 
