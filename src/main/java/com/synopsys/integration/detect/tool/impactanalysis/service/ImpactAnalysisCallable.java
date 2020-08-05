@@ -61,14 +61,9 @@ public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
     }
 
     public Request.Builder createRequestBuilder(Path reportPath) {
-        Map<String, String> projectInfoMap = new HashMap<>();
-        projectInfoMap.put("project", impactAnalysis.getProjectName());
-        projectInfoMap.put("project-version", impactAnalysis.getProjectVersion());
-        //        projectInfoMap.put("codeLocationName", impactAnalysis.getCodeLocationName());
-
         Map<String, File> fileMap = new HashMap<>();
         fileMap.put("file", reportPath.toFile());
-        return RequestFactory.createCommonPostRequestBuilder(fileMap, projectInfoMap);
+        return RequestFactory.createCommonPostRequestBuilder(fileMap, new HashMap<>());
     }
 
 }

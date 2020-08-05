@@ -88,7 +88,7 @@ public class BlackDuckImpactAnalysisTool {
             if (impactAnalysisPath != null && impactAnalysisPath.toFile().isFile() && impactAnalysisPath.toFile().canRead()) {
                 CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData = uploadImpactAnalysis(impactAnalysisPath, projectNameAndVersion, codeLocationName, ImpactAnalysisUploadService.create(blackDuckServicesFactory));
                 // TODO: Manually map code locations.
-
+                
                 return ImpactAnalysisToolResult.SUCCESS(codeLocationCreationData, impactAnalysisPath);
             } else {
                 return failImpactAnalysis("Impact analysis file did not exist, is not a file or can't be read.");
