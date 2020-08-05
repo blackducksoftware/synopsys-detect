@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * blackduck-common
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,13 +20,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.status;
+package com.synopsys.integration.detect.tool.impactanalysis.service;
 
-public enum DetectIssueType {
-    EXCEPTION,
-    DEPRECATION,
-    DETECTOR,
-    SIGNATURE_SCANNER,
-    BINARY_SCAN,
-    IMPACT_ANALYSIS
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class ImpactAnalysisBatch {
+    private final List<ImpactAnalysis> impactAnalyses = new ArrayList<>();
+
+    public ImpactAnalysisBatch() {
+    }
+
+    public ImpactAnalysisBatch(ImpactAnalysis... impactAnalyses) {
+        this.impactAnalyses.addAll(Arrays.asList(impactAnalyses));
+    }
+
+    public void addBinaryScan(ImpactAnalysis binaryScan) {
+        impactAnalyses.add(binaryScan);
+    }
+
+    public List<ImpactAnalysis> getImpactAnalyses() {
+        return impactAnalyses;
+    }
+
 }
