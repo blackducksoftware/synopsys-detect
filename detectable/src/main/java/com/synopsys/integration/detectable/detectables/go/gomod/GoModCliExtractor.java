@@ -75,11 +75,21 @@ public class GoModCliExtractor {
         Map<String, String> replacementData = replacementDataExtractor.extractReplacementData(listUJsonOutput);
 
         for (String line : modGraphOutput) {
-            for (String original : replacementData.keySet()) {
-                String newLine = line.replace(original, replacementData.get(original));
-                int indexOfLine = modGraphOutput.indexOf(line);
-                if (!line.equals(newLine)) {
+            int indexOfLine = modGraphOutput.indexOf(line);
+            boolean hasBeenModified = false;
+            for (Map.Entry<String, String> replacement : replacementData.entrySet()) {
+                String newLine;
+                boolean shouldModify;
+                if (hasBeenModified) {
+                    newLine = modGraphOutput.get(indexOfLine).replace(replacement.getKey(), replacement.getValue());
+                    shouldModify = !modGraphOutput.get(indexOfLine).equals(newLine);
+                } else {
+                    newLine = line.replace(replacement.getKey(), replacement.getValue());
+                    shouldModify = !line.equals(newLine);
+                }
+                if (shouldModify) {
                     modGraphOutput.set(indexOfLine, newLine);
+                    hasBeenModified = true;
                 }
             }
         }
