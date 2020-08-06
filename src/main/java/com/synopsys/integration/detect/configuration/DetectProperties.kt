@@ -825,6 +825,7 @@ class DetectProperties {
             setHelp("When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version. The specified parent project and parent project version must exist on Black Duck.")
             setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             setCategory(DetectCategory.Advanced)
+        }
         val DETECT_PARENT_PROJECT_VERSION_NAME = NullableStringProperty("detect.parent.project.version.name").apply {
             setInfo("Parent Project Version Name", "3.0.0")
             setHelp("When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version. The specified parent project and parent project version must exist on Black Duck.")
