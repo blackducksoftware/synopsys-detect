@@ -28,6 +28,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.log.IntLogger;
@@ -36,11 +37,13 @@ public class ImpactAnalysisBatchRunner {
     private final IntLogger logger;
     private final BlackDuckService blackDuckService;
     private final ExecutorService executorService;
+    private final Gson gson;
 
-    public ImpactAnalysisBatchRunner(IntLogger logger, BlackDuckService blackDuckService, ExecutorService executorService) {
+    public ImpactAnalysisBatchRunner(IntLogger logger, BlackDuckService blackDuckService, ExecutorService executorService, Gson gson) {
         this.logger = logger;
         this.blackDuckService = blackDuckService;
         this.executorService = executorService;
+        this.gson = gson;
     }
 
     public ImpactAnalysisBatchOutput executeUploads(ImpactAnalysisBatch impactAnalysisBatch) throws BlackDuckIntegrationException {
@@ -73,7 +76,7 @@ public class ImpactAnalysisBatchRunner {
 
     private List<ImpactAnalysisCallable> createCallables(ImpactAnalysisBatch impactAnalysisBatch) {
         return impactAnalysisBatch.getImpactAnalyses().stream()
-                   .map(impactAnalysis -> new ImpactAnalysisCallable(blackDuckService, impactAnalysis))
+                   .map(impactAnalysis -> new ImpactAnalysisCallable(gson, blackDuckService, impactAnalysis))
                    .collect(Collectors.toList());
     }
 

@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.model.RequestFactory;
 import com.synopsys.integration.rest.request.Request;
@@ -35,15 +36,17 @@ import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
 
 public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
+    private final Gson gson;
     private final BlackDuckService blackDuckService;
     private final ImpactAnalysis impactAnalysis;
     private final NameVersion projectAndVersion;
     private final String codeLocationName;
 
-    public ImpactAnalysisCallable(BlackDuckService blackDuckService, ImpactAnalysis impactAnalysis) {
+    public ImpactAnalysisCallable(Gson gson, BlackDuckService blackDuckService, ImpactAnalysis impactAnalysis) {
+        this.gson = gson;
         this.blackDuckService = blackDuckService;
         this.impactAnalysis = impactAnalysis;
-        this.projectAndVersion = new NameVersion(impactAnalysis.getProjectName(), impactAnalysis.getProjectVersion());
+        this.projectAndVersion = impactAnalysis.getProjectAndVersion();
         this.codeLocationName = impactAnalysis.getCodeLocationName();
     }
 
@@ -52,7 +55,7 @@ public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
         try {
             Request.Builder requestBuilder = createRequestBuilder(impactAnalysis.getImpactAnalysisPath());
             try (Response response = blackDuckService.execute(ImpactAnalysisUploadService.IMPACT_ANALYSIS_PATH, requestBuilder)) {
-                return ImpactAnalysisOutput.FROM_RESPONSE(projectAndVersion, codeLocationName, response);
+                return ImpactAnalysisOutput.FROM_RESPONSE(gson, projectAndVersion, codeLocationName, response);
             }
         } catch (Exception e) {
             String errorMessage = String.format("Failed to impact analysis file: %s because %s", impactAnalysis.getImpactAnalysisPath().toAbsolutePath(), e.getMessage());

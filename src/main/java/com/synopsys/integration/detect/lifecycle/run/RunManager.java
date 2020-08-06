@@ -418,7 +418,7 @@ public class RunManager {
         BlackDuckImpactAnalysisTool blackDuckImpactAnalysisTool = new BlackDuckImpactAnalysisTool(directoryManager, codeLocationNameManager, impactAnalysisOptions, blackDuckServicesFactory, eventSystem);
         if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS) && blackDuckImpactAnalysisTool.shouldRun()) {
             logger.info("Will include the Vulnerability Impact Analysis tool.");
-            ImpactAnalysisToolResult impactAnalysisToolResult = blackDuckImpactAnalysisTool.performImpactAnalysisActions(projectNameVersion);
+            ImpactAnalysisToolResult impactAnalysisToolResult = blackDuckImpactAnalysisTool.performImpactAnalysisActions(projectNameVersion, projectVersionWrapper);
             if (impactAnalysisToolResult.isSuccessful() && impactAnalysisToolResult.getCodeLocationCreationData() != null) {
                 codeLocationWaitController.addWaitForCreationData(impactAnalysisToolResult.getCodeLocationCreationData(), eventSystem);
             }

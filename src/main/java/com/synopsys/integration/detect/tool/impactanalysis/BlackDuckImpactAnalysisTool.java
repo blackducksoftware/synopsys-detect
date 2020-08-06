@@ -25,19 +25,28 @@ package com.synopsys.integration.detect.tool.impactanalysis;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.blackduck.service.CodeLocationService;
+import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysis;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisBatchOutput;
+import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisOutput;
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
+import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadView;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -75,7 +84,11 @@ public class BlackDuckImpactAnalysisTool {
         return Boolean.TRUE.equals(impactAnalysisOptions.isEnabled());
     }
 
-    public ImpactAnalysisToolResult performImpactAnalysisActions(NameVersion projectNameAndVersion) throws DetectUserFriendlyException {
+    /**
+     * @param projectNameAndVersion is the Black Duck project name and version.
+     * @param projectVersionWrapper is Nullable, but is a pre-requisite for code location mapping.
+     */
+    public ImpactAnalysisToolResult performImpactAnalysisActions(NameVersion projectNameAndVersion, @Nullable ProjectVersionWrapper projectVersionWrapper) throws DetectUserFriendlyException {
         String codeLocationName = codeLocationNameManager.createImpactAnalysisCodeLocationName(directoryManager.getSourceDirectory(), projectNameAndVersion.getName(), projectNameAndVersion.getVersion(), null, null);
         Path impactAnalysisPath;
         try {
@@ -84,12 +97,10 @@ public class BlackDuckImpactAnalysisTool {
             return failImpactAnalysis(e.getMessage());
         }
 
-        if (blackDuckServicesFactory != null) {
+        if (blackDuckServicesFactory != null && projectVersionWrapper != null) {
             if (impactAnalysisPath != null && impactAnalysisPath.toFile().isFile() && impactAnalysisPath.toFile().canRead()) {
                 CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData = uploadImpactAnalysis(impactAnalysisPath, projectNameAndVersion, codeLocationName, ImpactAnalysisUploadService.create(blackDuckServicesFactory));
-                // TODO: Manually map code locations.
-                
-                return ImpactAnalysisToolResult.SUCCESS(codeLocationCreationData, impactAnalysisPath);
+                return mapCodeLocations(impactAnalysisPath, codeLocationCreationData, projectVersionWrapper);
             } else {
                 return failImpactAnalysis("Impact analysis file did not exist, is not a file or can't be read.");
             }
@@ -97,13 +108,42 @@ public class BlackDuckImpactAnalysisTool {
             logger.debug("Skipping report upload.");
             return ImpactAnalysisToolResult.SUCCESS(impactAnalysisPath);
         }
+    }
 
+    // TODO: Create a code location mapping service generic enough for all tools.
+    private ImpactAnalysisToolResult mapCodeLocations(Path impactAnalysisPath, CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData, ProjectVersionWrapper projectVersionWrapper) {
+        BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService();
+        CodeLocationService codeLocationService = blackDuckServicesFactory.createCodeLocationService();
+
+        for (ImpactAnalysisOutput output : codeLocationCreationData.getOutput().getOutputs()) {
+            ImpactAnalysisUploadView impactAnalysisUploadView = output.getImpactAnalysisUploadView();
+
+            try {
+                Optional<CodeLocationView> codeLocationViewOptional = blackDuckService.getResponse(impactAnalysisUploadView, ImpactAnalysisUploadView.CODE_LOCATION_LINK_RESPONSE);
+                if (codeLocationViewOptional.isPresent()) {
+                    CodeLocationView codeLocationView = codeLocationViewOptional.get();
+                    ProjectView projectView = projectVersionWrapper.getProjectView();
+                    ProjectVersionView projectVersionView = projectVersionWrapper.getProjectVersionView();
+                    logger.info(String.format("Mapping code location \"%s\".", codeLocationView.getName()));
+
+                    codeLocationService.mapCodeLocation(codeLocationView, projectVersionView);
+
+                    logger.info(String.format("Successfully mapped code location \"%s\" to project \"%s\" version \"%s\".", codeLocationView.getName(), projectView.getName(), projectVersionView.getVersionName()));
+                } else {
+                    throw new IntegrationException("Failed to map the code location.");
+                }
+            } catch (IntegrationException e) {
+                return failImpactAnalysis(e.getMessage());
+            }
+        }
+
+        return ImpactAnalysisToolResult.SUCCESS(codeLocationCreationData, impactAnalysisPath);
     }
 
     private ImpactAnalysisToolResult failImpactAnalysis(String issueMessage) {
         logger.warn(issueMessage);
         eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.FAILURE));
-        eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.BINARY_SCAN, Collections.singletonList(issueMessage)));
+        eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.IMPACT_ANALYSIS, Collections.singletonList(issueMessage)));
         eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY));
         return ImpactAnalysisToolResult.FAILURE();
     }
@@ -119,7 +159,7 @@ public class BlackDuckImpactAnalysisTool {
         throws DetectUserFriendlyException {
         ImpactAnalysis impactAnalysis = new ImpactAnalysis(impactAnalysisPath, projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocationName);
         try {
-            logger.info(String.format("Preparing to impact analysis file: %s", codeLocationName));
+            logger.info(String.format("Preparing to upload impact analysis file: %s", codeLocationName));
             CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData = impactAnalysisService.uploadImpactAnalysis(impactAnalysis);
 
             ImpactAnalysisBatchOutput impactAnalysisBatchOutput = codeLocationCreationData.getOutput();

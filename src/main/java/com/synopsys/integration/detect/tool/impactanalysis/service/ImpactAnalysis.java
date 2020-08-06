@@ -45,14 +45,6 @@ public class ImpactAnalysis {
         return projectAndVersion;
     }
 
-    public String getProjectName() {
-        return projectAndVersion.getName();
-    }
-
-    public String getProjectVersion() {
-        return projectAndVersion.getVersion();
-    }
-
     public String getCodeLocationName() {
         return codeLocationName;
     }

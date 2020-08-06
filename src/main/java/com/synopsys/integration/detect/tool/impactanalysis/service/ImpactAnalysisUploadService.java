@@ -41,7 +41,8 @@ public class ImpactAnalysisUploadService {
 
     // TODO: Move to BlackDuckServicesFactory in blackduck-common
     public static ImpactAnalysisUploadService create(BlackDuckServicesFactory blackDuckServicesFactory) {
-        ImpactAnalysisBatchRunner impactAnalysisBatchRunner = new ImpactAnalysisBatchRunner(blackDuckServicesFactory.getLogger(), blackDuckServicesFactory.createBlackDuckService(), new NoThreadExecutorService());
+        ImpactAnalysisBatchRunner impactAnalysisBatchRunner = new ImpactAnalysisBatchRunner(blackDuckServicesFactory.getLogger(), blackDuckServicesFactory.createBlackDuckService(), new NoThreadExecutorService(),
+            blackDuckServicesFactory.getGson());
         return new ImpactAnalysisUploadService(impactAnalysisBatchRunner, blackDuckServicesFactory.createCodeLocationCreationService());
     }
 
