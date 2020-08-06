@@ -1,5 +1,5 @@
 /**
- * blackduck-common
+ * synopsys-detect
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
