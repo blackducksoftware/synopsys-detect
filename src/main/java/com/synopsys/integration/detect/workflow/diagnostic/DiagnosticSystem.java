@@ -51,7 +51,7 @@ public class DiagnosticSystem {
     private final DirectoryManager directoryManager;
     private final EventSystem eventSystem;
 
-    public DiagnosticSystem(final boolean isExtendedMode, final PropertyConfiguration propertyConfiguration, final DetectRun detectRun, final DetectInfo detectInfo, final DirectoryManager directoryManager, final EventSystem eventSystem) {
+    public DiagnosticSystem(boolean isExtendedMode, PropertyConfiguration propertyConfiguration, DetectRun detectRun, DetectInfo detectInfo, DirectoryManager directoryManager, EventSystem eventSystem) {
         this.propertyConfiguration = propertyConfiguration;
         this.detectRun = detectRun;
         this.detectInfo = detectInfo;
@@ -61,14 +61,14 @@ public class DiagnosticSystem {
         init(isExtendedMode);
     }
 
-    private void init(final boolean isExtendedMode) {
+    private void init(boolean isExtendedMode) {
         System.out.println();
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("Diagnostic mode on.");
         System.out.println("A zip file will be created with logs and relevant Detect output files.");
         System.out.println("It is generally not recommended to leave diagnostic mode on as you must manually clean up the zip.");
         if (!isExtendedMode) {
-            System.out.println("Additional relevant files such as lock files can be collected automatically in extended diagnostics (-de) but will not be in this run.");
+            System.out.println("Additional relevant files such as lock files can be collected automatically in extended diagnostics (--detect.diagnostic.extended=true) but will not be in this run.");
         }
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println();
@@ -81,7 +81,7 @@ public class DiagnosticSystem {
             if (isExtendedMode) {
                 diagnosticFileCapture = new DiagnosticFileCapture(directoryManager.getRelevantOutputDirectory(), eventSystem);
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.error("Failed to process.", e);
         }
 
@@ -93,7 +93,7 @@ public class DiagnosticSystem {
     }
 
     public Map<String, String> getAdditionalDockerProperties() {
-        final Map<String, String> properties = new HashMap<>();
+        Map<String, String> properties = new HashMap<>();
         properties.put("logging.level.com.synopsys", "TRACE");
         return properties;
     }
@@ -104,21 +104,21 @@ public class DiagnosticSystem {
         try {
             logger.info("Finishing reports.");
             diagnosticReportHandler.finish();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.error(FAILED_TO_FINISH, e);
         }
 
         try {
             logger.info("Finishing logging.");
             diagnosticLogSystem.finish();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.error(FAILED_TO_FINISH, e);
         }
 
         try {
             logger.info("Finishing executable capture.");
             diagnosticExecutableCapture.finish();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.error(FAILED_TO_FINISH, e);
         }
 
@@ -126,7 +126,7 @@ public class DiagnosticSystem {
             try {
                 logger.info("Finishing file capture.");
                 diagnosticFileCapture.finish();
-            } catch (final Exception e) {
+            } catch (Exception e) {
                 logger.error(FAILED_TO_FINISH, e);
             }
         }
@@ -135,7 +135,7 @@ public class DiagnosticSystem {
         boolean zipCreated = false;
         try {
             zipCreated = createZip();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             logger.error("Failed to create diagnostic zip. Cleanup will not occur.", e);
         }
 
@@ -147,10 +147,10 @@ public class DiagnosticSystem {
     }
 
     private boolean createZip() {
-        final List<File> directoriesToCompress = new ArrayList<>();
+        List<File> directoriesToCompress = new ArrayList<>();
         directoriesToCompress.add(directoryManager.getRunHomeDirectory());
 
-        final DiagnosticZipCreator zipper = new DiagnosticZipCreator();
+        DiagnosticZipCreator zipper = new DiagnosticZipCreator();
         return zipper.createDiagnosticZip(detectRun.getRunId(), directoryManager.getRunsOutputDirectory(), directoriesToCompress);
     }
 }

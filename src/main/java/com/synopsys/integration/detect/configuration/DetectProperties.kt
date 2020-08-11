@@ -996,6 +996,12 @@ class DetectProperties {
             setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
         }
 
+        val DETECT_IMPACT_ANALYSIS_ENABLED = BooleanProperty("detect.impact.analysis.enabled", false).apply {
+            setInfo("Vulnerability Impact Analysis Enabled", "6.5.0")
+            setHelp("If set to true, Detect will attempt to look for *.class files and generate a Vulnerability Impact Analysis Report for upload to Black Duck.")
+            setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL)
+        }
+
         //#endregion Active Properties
 
         //#region Deprecated Properties
