@@ -211,12 +211,12 @@ public class GenerateDocsTask extends DefaultTask {
 
         final List<DeprecatedPropertyTableGroup> deprecatedPropertyTableData = new ArrayList<>();
         for (final SplitGroup splitGroupOption : splitGroupOptions) {
-            if (!splitGroupOption.getDeprecated().isEmpty()) {
+            if (splitGroupOption.getDeprecated().isEmpty()) {
                 continue;
             }
 
             final String groupLocation = getGroupLocation(groupLocations, splitGroupOption.getGroupName());
-            final DeprecatedPropertyTableGroup deprecatedPropertyTableGroup = new DeprecatedPropertyTableGroup(splitGroupOption.getGroupName(), groupLocation, splitGroupOption.getSimple());
+            final DeprecatedPropertyTableGroup deprecatedPropertyTableGroup = new DeprecatedPropertyTableGroup(splitGroupOption.getGroupName(), groupLocation, splitGroupOption.getDeprecated());
             deprecatedPropertyTableData.add(deprecatedPropertyTableGroup);
         }
 
