@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.tool.impactanalysis;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -108,8 +109,13 @@ public class BlackDuckImpactAnalysisTool {
      */
     @NotNull
     public ImpactAnalysisToolResult performImpactAnalysisActions(NameVersion projectNameAndVersion, @Nullable ProjectVersionWrapper projectVersionWrapper) throws DetectUserFriendlyException {
-        String codeLocationName = codeLocationNameManager
-                                      .createImpactAnalysisCodeLocationName(directoryManager.getSourceDirectory(), projectNameAndVersion.getName(), projectNameAndVersion.getVersion(), null, null); // TODO: Don't pass in null
+        File sourceDirectory = directoryManager.getSourceDirectory();
+        String projectName = projectNameAndVersion.getName();
+        String projectVersionName = projectNameAndVersion.getVersion();
+        String codeLocationPrefix = impactAnalysisOptions.getCodeLocationPrefix();
+        String codeLocationSuffix = impactAnalysisOptions.getCodeLocationSuffix();
+        String codeLocationName = codeLocationNameManager.createImpactAnalysisCodeLocationName(sourceDirectory, projectName, projectVersionName, codeLocationPrefix, codeLocationSuffix);
+        
         Path impactAnalysisPath;
         try {
             impactAnalysisPath = generateImpactAnalysis(codeLocationName);

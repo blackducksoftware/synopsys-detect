@@ -454,7 +454,9 @@ public class DetectConfigurationFactory {
 
     public ImpactAnalysisOptions createImpactAnalysisOptions() {
         Boolean enabled = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_IMPACT_ANALYSIS_ENABLED());
-        return new ImpactAnalysisOptions(enabled);
+        String codeLocationPrefix = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PROJECT_CODELOCATION_PREFIX()).orElse(null);
+        String codeLocationSuffix = detectConfiguration.getValue(DetectProperties.Companion.getDETECT_PROJECT_CODELOCATION_SUFFIX()).orElse(null);
+        return new ImpactAnalysisOptions(enabled, codeLocationPrefix, codeLocationSuffix);
     }
 
     public DetectExecutableOptions createExecutablePaths()  {
