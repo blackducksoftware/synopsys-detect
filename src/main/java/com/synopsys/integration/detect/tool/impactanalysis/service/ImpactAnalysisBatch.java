@@ -36,8 +36,8 @@ public class ImpactAnalysisBatch {
         this.impactAnalyses.addAll(Arrays.asList(impactAnalyses));
     }
 
-    public void addBinaryScan(ImpactAnalysis binaryScan) {
-        impactAnalyses.add(binaryScan);
+    public void addImpactAnalysis(ImpactAnalysis impactAnalysis) {
+        impactAnalyses.add(impactAnalysis);
     }
 
     public List<ImpactAnalysis> getImpactAnalyses() {
