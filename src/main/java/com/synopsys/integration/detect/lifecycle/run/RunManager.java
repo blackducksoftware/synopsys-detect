@@ -424,9 +424,9 @@ public class RunManager {
         if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS) && blackDuckImpactAnalysisTool.shouldRun()) {
             logger.info("Will include the Vulnerability Impact Analysis tool.");
             ImpactAnalysisToolResult impactAnalysisToolResult = blackDuckImpactAnalysisTool.performImpactAnalysisActions(projectNameVersion, projectVersionWrapper);
-            if (impactAnalysisToolResult.isSuccessful() && impactAnalysisToolResult.getCodeLocationCreationData() != null) {
-                codeLocationWaitController.addWaitForCreationData(impactAnalysisToolResult.getCodeLocationCreationData(), eventSystem);
-            }
+
+            // TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. JM - 08/2020
+
             if (impactAnalysisToolResult.isSuccessful()) {
                 logger.info("Vulnerability impact analysis successful.");
             }
