@@ -115,27 +115,20 @@ public class BlackDuckSignatureScanner {
             signatureScannerReports.add(signatureScannerReport);
         }
 
-        signatureScannerReports.forEach(this::reportErrors);
+        signatureScannerReports.forEach(this::publishResults);
 
         signatureScannerReports.stream()
-            .map(SignatureScannerReport::getExitCode)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .filter(code -> code == 64)
+            .filter(SignatureScannerReport::isFailure)
             .findAny()
-            .ifPresent(code -> {
-                logger.error("");
-                logger.error("Signature scanner returned 64. The most likely cause is you are using an unsupported version of Black Duck (<5.0.0).");
-                logger.error("You should update your Black Duck or downgrade your version of detect.");
-                logger.error("If you are using the detect scripts, you can use DETECT_LATEST_RELEASE_VERSION.");
-                logger.error("");
-
-                eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_VERSION_NOT_SUPPORTED));
+            .ifPresent(report -> {
+                logger.error(String.format("The Signature Scanner encountered an error%s. Please refer to Black Duck documentation or contact support.", report.getExitCode().map(code -> " (" + code + ")").orElse(".")));
+                eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_SCAN));
             });
     }
 
-    private void reportErrors(SignatureScannerReport signatureScannerReport) {
+    private void publishResults(SignatureScannerReport signatureScannerReport) {
         if (signatureScannerReport.isSuccessful()) {
+            eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(signatureScannerReport.getSignatureScanPath().getTargetCanonicalPath(), StatusType.SUCCESS));
             return;
         }
 
