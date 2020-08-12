@@ -25,14 +25,14 @@ package com.synopsys.integration.detect.workflow.blackduck;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.blackduck.api.core.BlackDuckPath;
-import com.synopsys.integration.blackduck.api.core.BlackDuckPathMultipleResponses;
 import com.synopsys.integration.blackduck.api.core.BlackDuckView;
+import com.synopsys.integration.blackduck.api.core.response.LinkMultipleResponses;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -41,6 +41,8 @@ import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectCustomFieldService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    public static final LinkMultipleResponses<CustomFieldView> CUSTOM_FIELDS_LINK = new LinkMultipleResponses<>("custom-fields", CustomFieldView.class);
+    public static final LinkMultipleResponses<CustomFieldOptionView> CUSTOM_FIELDS_OPTION_LIST_LINK = new LinkMultipleResponses<>("custom-field-option-list", CustomFieldOptionView.class);
 
     private List<CustomFieldOperation> determineOperations(final CustomFieldDocument customFieldDocument, final ProjectVersionWrapper projectVersionWrapper, final BlackDuckService blackDuckService) throws DetectUserFriendlyException {
         final List<CustomFieldView> projectFields = retrieveCustomFields(projectVersionWrapper.getProjectView(), blackDuckService);
@@ -88,8 +90,8 @@ public class DetectCustomFieldService {
                     final Optional<CustomFieldOptionView> option = options.stream()
                                                                        .filter(it -> it.getLabel().equals(value))
                                                                        .findFirst();
-                    if (option.isPresent() && option.get().getHref().isPresent()) {
-                        values.add(option.get().getHref().get());
+                    if (option.isPresent()) {
+                        values.add(option.get().getHref().string());
                     } else {
                         throw new DetectUserFriendlyException(String.format("Unable to update custom field '%s', unable to find option for value '%s'", element.getLabel(), value),
                             ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR);
@@ -103,25 +105,17 @@ public class DetectCustomFieldService {
     }
 
     private List<CustomFieldView> retrieveCustomFields(final BlackDuckView view, final BlackDuckService blackDuckService) {
-        final Optional<String> customFieldLink = view.getFirstLink("custom-fields");
-        if (!customFieldLink.isPresent()) {
-            return Collections.emptyList();
-        }
         try {
-            return blackDuckService.getAllResponses(new BlackDuckPathMultipleResponses<>(new BlackDuckPath(customFieldLink.get()), CustomFieldView.class));
-        } catch (final IntegrationException e) {
+            return blackDuckService.getAllResponses(view, CUSTOM_FIELDS_LINK);
+        } catch (final IntegrationException | NoSuchElementException e) {
             return Collections.emptyList();
         }
     }
 
     private List<CustomFieldOptionView> retrieveCustomFieldOptions(final BlackDuckView view, final BlackDuckService blackDuckService) {
-        final Optional<String> customFieldLink = view.getFirstLink("custom-field-option-list");
-        if (!customFieldLink.isPresent()) {
-            return Collections.emptyList();
-        }
         try {
-            return blackDuckService.getAllResponses(new BlackDuckPathMultipleResponses<>(new BlackDuckPath(customFieldLink.get()), CustomFieldOptionView.class));
-        } catch (final IntegrationException e) {
+            return blackDuckService.getAllResponses(view, CUSTOM_FIELDS_OPTION_LIST_LINK);
+        } catch (final IntegrationException | NoSuchElementException e) {
             return Collections.emptyList();
         }
     }

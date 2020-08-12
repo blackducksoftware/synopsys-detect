@@ -35,7 +35,7 @@ import com.synopsys.integration.blackduck.api.generated.view.ComponentPolicyRule
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
-import com.synopsys.integration.blackduck.service.ProjectBomService;
+import com.synopsys.integration.blackduck.service.dataservice.ProjectBomService;
 import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
 import com.synopsys.integration.configuration.util.Bdo;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;

@@ -30,9 +30,10 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.core.BlackDuckPath;
+import com.synopsys.integration.blackduck.http.RequestFactory;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
-import com.synopsys.integration.blackduck.service.model.RequestFactory;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
 
@@ -40,10 +41,12 @@ public class ImpactAnalysisService {
     public static final BlackDuckPath IMPACT_ANALYSIS_PATH = new BlackDuckPath("/api/scans/vulnerability-impact");
 
     private final BlackDuckService blackDuckService;
+    private final RequestFactory requestFactory;
     private final Gson gson;
 
-    public ImpactAnalysisService(BlackDuckService blackDuckService, Gson gson) {
+    public ImpactAnalysisService(BlackDuckService blackDuckService, RequestFactory requestFactory, Gson gson) {
         this.blackDuckService = blackDuckService;
+        this.requestFactory = requestFactory;
         this.gson = gson;
     }
 
@@ -59,11 +62,11 @@ public class ImpactAnalysisService {
     }
 
     public Request createRequest(Path reportPath) throws IntegrationException {
-        String uri = blackDuckService.getUri(IMPACT_ANALYSIS_PATH);
+        HttpUrl uri = blackDuckService.getUrl(IMPACT_ANALYSIS_PATH);
         Map<String, File> fileMap = new HashMap<>();
         fileMap.put("file", reportPath.toFile());
-        return RequestFactory.createCommonPostRequestBuilder(fileMap, new HashMap<>())
-                   .uri(uri)
+        return requestFactory.createCommonPostRequestBuilder(fileMap, new HashMap<>())
+                   .url(uri)
                    .build();
     }
 }

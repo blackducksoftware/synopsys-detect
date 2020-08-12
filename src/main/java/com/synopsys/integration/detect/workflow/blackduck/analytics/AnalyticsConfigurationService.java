@@ -29,8 +29,10 @@ import com.synopsys.integration.blackduck.api.core.BlackDuckPath;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpMethod;
+import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
+import com.synopsys.integration.rest.support.UrlSupport;
 
 public class AnalyticsConfigurationService {
     private static final BlackDuckPath INTEGRATION_SETTINGS_PATH = new BlackDuckPath("/api/internal/integration-settings");
@@ -43,12 +45,12 @@ public class AnalyticsConfigurationService {
     }
 
     public AnalyticsSetting fetchAnalyticsSetting(BlackDuckService blackDuckService) throws IntegrationException, IOException {
-        String uri = blackDuckService.getUri(INTEGRATION_SETTINGS_PATH) + "/analytics";
+        HttpUrl url = new UrlSupport().appendRelativeUrl(blackDuckService.getUrl(INTEGRATION_SETTINGS_PATH), "/analytics");
 
         Request request = new Request.Builder()
-                              .uri(uri)
+                              .url(url)
                               .method(HttpMethod.GET)
-                              .mimeType(MIME_TYPE)
+                              .acceptMimeType(MIME_TYPE)
                               .build();
         try (Response response = blackDuckService.execute(request)) {
             response.throwExceptionForError();

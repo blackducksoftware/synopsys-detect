@@ -34,7 +34,7 @@ import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationServi
 import com.synopsys.integration.blackduck.codelocation.CodeLocationWaitResult;
 import com.synopsys.integration.blackduck.exception.BlackDuckTimeoutExceededException;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.ReportService;
+import com.synopsys.integration.blackduck.service.dataservice.ReportService;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -105,7 +105,7 @@ public class BlackDuckPostActions {
 
     private void checkPolicy(BlackDuckPostOptions blackDuckPostOptions, ProjectVersionView projectVersionView) throws IntegrationException {
         logger.info("Detect will check policy for violations.");
-        PolicyChecker policyChecker = new PolicyChecker(eventSystem, blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createProjectBomService());
+        PolicyChecker policyChecker = new PolicyChecker(eventSystem, blackDuckServicesFactory.getBlackDuckService(), blackDuckServicesFactory.createProjectBomService());
         policyChecker.checkPolicy(blackDuckPostOptions.getSeveritiesToFailPolicyCheck(), projectVersionView);
     }
 

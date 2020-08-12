@@ -47,7 +47,7 @@ import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.ProjectMappingService;
+import com.synopsys.integration.blackduck.service.dataservice.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
@@ -120,6 +120,7 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
+import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
@@ -323,7 +324,7 @@ public class RunManager {
 
             if (null != projectVersionWrapper && runOptions.shouldUnmapCodeLocations()) {
                 logger.debug("Unmapping code locations.");
-                DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createCodeLocationService());
+                DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.getBlackDuckService(), blackDuckServicesFactory.createCodeLocationService());
                 detectCodeLocationUnmapService.unmapCodeLocations(projectVersionWrapper.getProjectVersionView());
             } else {
                 logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");
@@ -357,6 +358,7 @@ public class RunManager {
 
                 String blackDuckUrl = blackDuckRunData.getBlackDuckServerConfig()
                                           .map(BlackDuckServerConfig::getBlackDuckUrl)
+                                          .map(HttpUrl::url)
                                           .map(URL::toExternalForm)
                                           .orElse("Unknown Host");
                 uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(blackDuckUrl, bdioResult.getUploadTargets(), bdioUploader);
@@ -411,7 +413,7 @@ public class RunManager {
                 Path impactAnalysisReportPath = blackDuckImpactAnalysisTool.generateReport(projectNameVersion);
 
                 if (null != blackDuckServicesFactory) {
-                    ImpactAnalysisService impactAnalysisService = new ImpactAnalysisService(blackDuckServicesFactory.createBlackDuckService(), gson);
+                    ImpactAnalysisService impactAnalysisService = new ImpactAnalysisService(blackDuckServicesFactory.getBlackDuckService(), BlackDuckServicesFactory.createDefaultRequestFactory(), gson);
                     ImpactAnalysisUploadResult impactAnalysisUploadResult = blackDuckImpactAnalysisTool.uploadReport(impactAnalysisReportPath, impactAnalysisService);
                     impactAnalysisUploadResult.getImpactAnalysisSuccessResult().ifPresent(result -> {
                         logger.info(String.format("Impact Analysis upload complete: %s", result.codeLocationName));
@@ -443,7 +445,8 @@ public class RunManager {
             if ((!bdioResult.getUploadTargets().isEmpty() || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
                 Optional<String> componentsLink = Optional.ofNullable(projectVersionWrapper)
                                                       .map(ProjectVersionWrapper::getProjectVersionView)
-                                                      .flatMap(projectVersionView -> projectVersionView.getFirstLink(ProjectVersionView.COMPONENTS_LINK));
+                                                      .flatMap(projectVersionView -> projectVersionView.getFirstLinkSafely(ProjectVersionView.COMPONENTS_LINK))
+                                                      .map(HttpUrl::string);
 
                 if (componentsLink.isPresent()) {
                     DetectResult detectResult = new BlackDuckBomDetectResult(componentsLink.get());
