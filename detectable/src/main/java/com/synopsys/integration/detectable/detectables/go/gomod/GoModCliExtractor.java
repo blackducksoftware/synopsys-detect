@@ -61,7 +61,6 @@ public class GoModCliExtractor {
                 modGraphOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "mod", "graph");
             }
             final List<CodeLocation> codeLocations = goModGraphParser.parseListAndGoModGraph(listOutput, modGraphOutput);
-            return new Extraction.Builder().success(codeLocations).build();//no project info - hoping git can help with that.
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
