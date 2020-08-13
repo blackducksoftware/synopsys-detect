@@ -20,13 +20,35 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.status;
+package com.synopsys.integration.detect.tool.impactanalysis;
 
-public enum DetectIssueType {
-    EXCEPTION,
-    DEPRECATION,
-    DETECTOR,
-    SIGNATURE_SCANNER,
-    BINARY_SCAN,
-    IMPACT_ANALYSIS
+import org.jetbrains.annotations.Nullable;
+
+public class ImpactAnalysisOptions {
+    private final Boolean enabled;
+
+    @Nullable
+    private final String codeLocationPrefix;
+    @Nullable
+    private final String codeLocationSuffix;
+
+    public ImpactAnalysisOptions(Boolean enabled, @Nullable String codeLocationPrefix, @Nullable String codeLocationSuffix) {
+        this.enabled = enabled;
+        this.codeLocationPrefix = codeLocationPrefix;
+        this.codeLocationSuffix = codeLocationSuffix;
+    }
+
+    public Boolean isEnabled() {
+        return enabled;
+    }
+    
+    @Nullable
+    public String getCodeLocationPrefix() {
+        return codeLocationPrefix;
+    }
+
+    @Nullable
+    public String getCodeLocationSuffix() {
+        return codeLocationSuffix;
+    }
 }

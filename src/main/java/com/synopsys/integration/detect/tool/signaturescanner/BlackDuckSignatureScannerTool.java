@@ -79,7 +79,7 @@ public class BlackDuckSignatureScannerTool {
 
         final BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
         final ExecutorService executorService = Executors.newFixedThreadPool(blackDuckSignatureScannerOptions.getParallelProcessors());
-        final IntEnvironmentVariables intEnvironmentVariables = new IntEnvironmentVariables();
+        final IntEnvironmentVariables intEnvironmentVariables = IntEnvironmentVariables.empty();
 
         final ScanBatchRunnerFactory scanBatchRunnerFactory = new ScanBatchRunnerFactory(intEnvironmentVariables, executorService);
         final ScanBatchRunner scanBatchRunner;

@@ -822,13 +822,13 @@ class DetectProperties {
         }
         val DETECT_PARENT_PROJECT_NAME = NullableStringProperty("detect.parent.project.name").apply {
             setInfo("Parent Project Name", "3.0.0")
-            setHelp("When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version.")
+            setHelp("When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version. The specified parent project and parent project version must exist on Black Duck.")
             setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             setCategory(DetectCategory.Advanced)
         }
         val DETECT_PARENT_PROJECT_VERSION_NAME = NullableStringProperty("detect.parent.project.version.name").apply {
             setInfo("Parent Project Version Name", "3.0.0")
-            setHelp("When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version.")
+            setHelp("When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version. The specified parent project and parent project version must exist on Black Duck.")
             setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             setCategory(DetectCategory.Advanced)
         }
@@ -994,6 +994,12 @@ class DetectProperties {
             setInfo("Include Lerna Packages defined as private.", "6.0.0")
             setHelp("Lerna allows for private packages that do not get published. Set this to true to include all packages including private packages.")
             setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
+        }
+
+        val DETECT_IMPACT_ANALYSIS_ENABLED = BooleanProperty("detect.impact.analysis.enabled", false).apply {
+            setInfo("Vulnerability Impact Analysis Enabled", "6.5.0")
+            setHelp("If set to true, Detect will attempt to look for *.class files and generate a Vulnerability Impact Analysis Report for upload to Black Duck.")
+            setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL)
         }
 
         //#endregion Active Properties

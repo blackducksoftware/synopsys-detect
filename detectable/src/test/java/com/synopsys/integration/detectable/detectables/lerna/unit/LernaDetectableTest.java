@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 import com.synopsys.integration.util.NameVersion;
 
 public class LernaDetectableTest extends DetectableFunctionalTest {
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public LernaDetectableTest() throws IOException {
         super("lerna");
@@ -76,13 +77,13 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
             "    \"name\": \"@lerna/packageA\",",
             "    \"version\": \"1.2.3\",",
             "    \"private\": false,",
-            "    \"location\": \"" + getSourceDirectory() + "/packages/packageA\"",
+            "    \"location\": " + gson.toJson(getSourceDirectory() + "/packages/packageA"),
             "  },",
             "  {",
             "    \"name\": \"@lerna/packageB\",",
             "    \"version\": \"3.2.1\",",
             "    \"private\": true,",
-            "    \"location\": \"" + getSourceDirectory() + "/source/packages/packageB\"",
+            "    \"location\": " + gson.toJson(getSourceDirectory() + "/source/packages/packageB"),
             "  }",
             "]"
         );
@@ -108,8 +109,6 @@ public class LernaDetectableTest extends DetectableFunctionalTest {
         packageJson.version = packageVersion;
         packageJson.dependencies = Arrays.stream(dependencies)
                                        .collect(Collectors.toMap(NameVersion::getName, NameVersion::getVersion));
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         addFile(directory.resolve(LernaDetectable.PACKAGE_JSON), gson.toJson(packageJson));
     }

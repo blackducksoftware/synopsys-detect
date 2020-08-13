@@ -33,7 +33,6 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         );
         addExecutableOutput(goListOutput, "go", "list", "-m");
 
-
         ExecutableOutput goVersionOutput = createStandardOutput(
             "go version go1.14.5 darwin/amd64"
         );

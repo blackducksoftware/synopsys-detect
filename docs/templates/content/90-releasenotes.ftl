@@ -3,6 +3,7 @@
 ## Version 6.5.0
 ### New features
 * Added [properties](../properties/configuration/debug/#diagnostic-mode) for enabling diagnostic mode.
+* ${solution_name} now supports Vulnerability Impact Analysis. Enabled using [Vulnerability Impact Analysis Enabled](../properties/configuration/impact%20analysis/#vulnerability-impact-analysis-enabled) property.
 
 ### Changed features
 * Enabling diagnostic mode is now controlled through two new properties.

@@ -37,21 +37,21 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionCompo
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.api.generated.view.TagView;
+import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
+import com.synopsys.integration.blackduck.http.BlackDuckRequestFilter;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.ProjectBomService;
-import com.synopsys.integration.blackduck.service.ProjectMappingService;
-import com.synopsys.integration.blackduck.service.ProjectService;
-import com.synopsys.integration.blackduck.service.ProjectUsersService;
-import com.synopsys.integration.blackduck.service.TagService;
-import com.synopsys.integration.blackduck.service.model.BlackDuckRequestFilter;
+import com.synopsys.integration.blackduck.service.dataservice.ProjectBomService;
+import com.synopsys.integration.blackduck.service.dataservice.ProjectMappingService;
+import com.synopsys.integration.blackduck.service.dataservice.ProjectService;
+import com.synopsys.integration.blackduck.service.dataservice.ProjectUsersService;
+import com.synopsys.integration.blackduck.service.dataservice.TagService;
 import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
-import com.synopsys.integration.blackduck.service.model.RequestFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.rest.request.Request;
+import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
 
 public class DetectProjectService {
@@ -72,7 +72,7 @@ public class DetectProjectService {
 
     public ProjectVersionWrapper createOrUpdateBlackDuckProject(final NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException {
         final ProjectService projectService = blackDuckServicesFactory.createProjectService();
-        final BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService();
+        final BlackDuckService blackDuckService = blackDuckServicesFactory.getBlackDuckService();
         final ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion);
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
         final ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
@@ -91,7 +91,7 @@ public class DetectProjectService {
                 logger.debug(String.format("Version field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
             }
 
-            detectCustomFieldService.updateCustomFields(projectVersionWrapper, customFieldDocument, blackDuckServicesFactory.createBlackDuckService());
+            detectCustomFieldService.updateCustomFields(projectVersionWrapper, customFieldDocument, blackDuckServicesFactory.getBlackDuckService());
             logger.info("Successfully updated (" + (customFieldDocument.getVersion().size() + customFieldDocument.getProject().size()) + ") custom fields.");
         } else {
             logger.debug("No custom fields to set.");
@@ -118,8 +118,8 @@ public class DetectProjectService {
                 final Optional<ProjectVersionWrapper> parentWrapper = projectService.getProjectVersion(parentProjectName, parentVersionName);
                 if (parentWrapper.isPresent()) {
                     ProjectVersionView parentProjectVersionView = parentWrapper.get().getProjectVersionView();
-                    Request.Builder requestBuilder = new Request.Builder();
-                    RequestFactory.addBlackDuckFilter(requestBuilder, BlackDuckRequestFilter.createFilterWithSingleValue("bomComponentSource", "custom_project"));
+                    BlackDuckRequestBuilder requestBuilder = BlackDuckServicesFactory.createDefaultRequestFactory().createCommonGetRequestBuilder();
+                    requestBuilder.addBlackDuckFilter(BlackDuckRequestFilter.createFilterWithSingleValue("bomComponentSource", "custom_project"));
                     List<ProjectVersionComponentView> components = blackDuckService.getAllResponses(parentProjectVersionView, ProjectVersionView.COMPONENTS_LINK_RESPONSE, requestBuilder);
                     Optional<ProjectVersionComponentView> existingProjectComponent = components.stream()
                                                                                          .filter(component -> component.getComponentName().equals(projectName))
@@ -207,19 +207,19 @@ public class DetectProjectService {
             projectSyncModel.setNickname(nickname);
         }
 
-        final Optional<String> cloneUrl = findCloneUrl(projectNameVersion.getName()); //TODO: Be passed the clone url.
+        final Optional<HttpUrl> cloneUrl = findCloneUrl(projectNameVersion.getName()); //TODO: Be passed the clone url.
         if (cloneUrl.isPresent()) {
             logger.debug("Cloning project version from release url: " + cloneUrl.get());
-            projectSyncModel.setCloneFromReleaseUrl(cloneUrl.get());
+            projectSyncModel.setCloneFromReleaseUrl(cloneUrl.get().string());
         }
 
         return projectSyncModel;
     }
 
-    public Optional<String> findCloneUrl(final String projectName) throws DetectUserFriendlyException {
+    public Optional<HttpUrl> findCloneUrl(final String projectName) throws DetectUserFriendlyException {
         if (detectProjectServiceOptions.getCloneLatestProjectVersion()) {
             logger.debug("Cloning the most recent project version.");
-            return findLatestProjectVersionCloneUrl(blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createProjectService(), projectName);
+            return findLatestProjectVersionCloneUrl(blackDuckServicesFactory.getBlackDuckService(), blackDuckServicesFactory.createProjectService(), projectName);
         } else if (StringUtils.isNotBlank(detectProjectServiceOptions.getCloneVersionName())) {
             return findNamedCloneUrl(projectName, detectProjectServiceOptions.getCloneVersionName(), blackDuckServicesFactory.createProjectService());
         } else {
@@ -228,11 +228,11 @@ public class DetectProjectService {
         }
     }
 
-    public Optional<String> findNamedCloneUrl(final String cloneProjectName, final String cloneProjectVersionName, final ProjectService projectService) throws DetectUserFriendlyException {
+    public Optional<HttpUrl> findNamedCloneUrl(final String cloneProjectName, final String cloneProjectVersionName, final ProjectService projectService) throws DetectUserFriendlyException {
         try {
             final Optional<ProjectVersionWrapper> projectVersionWrapper = projectService.getProjectVersion(cloneProjectName, cloneProjectVersionName);
             if (projectVersionWrapper.isPresent()) {
-                return projectVersionWrapper.get().getProjectVersionView().getHref();
+                return Optional.of(projectVersionWrapper.get().getProjectVersionView().getHref());
             } else {
                 logger.warn(String.format("Project/version %s/%s not found for cloning", cloneProjectName, cloneProjectVersionName));
                 return Optional.empty();
@@ -242,7 +242,7 @@ public class DetectProjectService {
         }
     }
 
-    public Optional<String> findLatestProjectVersionCloneUrl(final BlackDuckService blackDuckService, final ProjectService projectService, final String projectName) throws DetectUserFriendlyException {
+    public Optional<HttpUrl> findLatestProjectVersionCloneUrl(final BlackDuckService blackDuckService, final ProjectService projectService, final String projectName) throws DetectUserFriendlyException {
         try {
             final Optional<ProjectView> projectView = projectService.getProjectByName(projectName);
             if (projectView.isPresent()) {
@@ -253,7 +253,7 @@ public class DetectProjectService {
                 } else {
                     return projectVersionViews.stream()
                                .max(Comparator.comparing(ProjectVersionView::getCreatedAt))
-                               .flatMap(BlackDuckView::getHref);
+                               .map(BlackDuckView::getHref);
                 }
             } else {
                 logger.warn("Could not find existing project to clone from. Ensure the project exists when using the latest clone flag.");

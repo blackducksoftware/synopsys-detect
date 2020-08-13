@@ -41,10 +41,10 @@ import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.CodeLocationService;
-import com.synopsys.integration.blackduck.service.ProjectBomService;
-import com.synopsys.integration.blackduck.service.ProjectService;
-import com.synopsys.integration.blackduck.service.ReportService;
+import com.synopsys.integration.blackduck.service.dataservice.CodeLocationService;
+import com.synopsys.integration.blackduck.service.dataservice.ProjectBomService;
+import com.synopsys.integration.blackduck.service.dataservice.ProjectService;
+import com.synopsys.integration.blackduck.service.dataservice.ReportService;
 import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.Application;
@@ -83,7 +83,7 @@ public abstract class BlackDuckIntegrationTest {
         blackDuckServerConfigBuilder.setTimeoutInSeconds(5 * 60);
 
         blackDuckServicesFactory = blackDuckServerConfigBuilder.build().createBlackDuckServicesFactory(logger);
-        blackDuckService = blackDuckServicesFactory.createBlackDuckService();
+        blackDuckService = blackDuckServicesFactory.getBlackDuckService();
         projectService = blackDuckServicesFactory.createProjectService();
         projectBomService = blackDuckServicesFactory.createProjectBomService();
         codeLocationService = blackDuckServicesFactory.createCodeLocationService();
