@@ -33,6 +33,11 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         );
         addExecutableOutput(goListOutput, "go", "list", "-m");
 
+        ExecutableOutput goVersionOutput = createStandardOutput(
+            "go version go1.14.5 darwin/amd64"
+        );
+        addExecutableOutput(goVersionOutput, "go", "version");
+
         ExecutableOutput goListUJsonOutput = createStandardOutput(
             "{",
             "\t\"Path\": \"github.com/codegangsta/negroni\",",
@@ -53,7 +58,7 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
             "\t\"Version\": \"v1.1.1\"",
             "}"
         );
-        addExecutableOutput(goListUJsonOutput, "go", "list", "-m", "-u", "-json", "all");
+        addExecutableOutput(goListUJsonOutput, "go", "list", "-mod=readonly", "-m", "-u", "-json", "all");
 
         ExecutableOutput goModGraphOutput = createStandardOutput(
             "github.com/gomods/athens github.com/codegangsta/negroni@v1.0.0",
