@@ -1,5 +1,9 @@
 # Release notes
 
+## Version 6.4.2
+### Resolved Issues
+* (IDETECT-2164) Resolved an issue with scanning Go applications when using the go list -m command, which couldn't determine available upgrades using the vendor directory.
+
 ## Version 6.4.0
 ### New features
 * Bazel detector: added support for Bazel projects that specify dependencies using the haskell_cabal_library repository rule.
