@@ -115,7 +115,7 @@ public class BlackDuckImpactAnalysisTool {
         String codeLocationPrefix = impactAnalysisOptions.getCodeLocationPrefix();
         String codeLocationSuffix = impactAnalysisOptions.getCodeLocationSuffix();
         String codeLocationName = codeLocationNameManager.createImpactAnalysisCodeLocationName(sourceDirectory, projectName, projectVersionName, codeLocationPrefix, codeLocationSuffix);
-        
+
         Path impactAnalysisPath;
         try {
             impactAnalysisPath = generateImpactAnalysis(codeLocationName);
@@ -170,20 +170,18 @@ public class BlackDuckImpactAnalysisTool {
     private ImpactAnalysisToolResult mapCodeLocations(Path impactAnalysisPath, CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData, ProjectVersionWrapper projectVersionWrapper) {
         for (ImpactAnalysisOutput output : codeLocationCreationData.getOutput().getOutputs()) {
             ImpactAnalysisUploadView impactAnalysisUploadView = output.getImpactAnalysisUploadView();
+            ProjectView projectView = projectVersionWrapper.getProjectView();
+            ProjectVersionView projectVersionView = projectVersionWrapper.getProjectVersionView();
+            Optional<String> projectVersionUrl = projectVersionView.getHref();
+            Optional<String> codeLocationUrl = impactAnalysisUploadView.getFirstLink(ImpactAnalysisUploadView.CODE_LOCATION_LINK);
 
             try {
-                Optional<CodeLocationView> codeLocationViewOptional = blackDuckService.getResponse(impactAnalysisUploadView, ImpactAnalysisUploadView.CODE_LOCATION_LINK_RESPONSE);
-                if (codeLocationViewOptional.isPresent()) {
-                    CodeLocationView codeLocationView = codeLocationViewOptional.get();
-                    ProjectView projectView = projectVersionWrapper.getProjectView();
-                    ProjectVersionView projectVersionView = projectVersionWrapper.getProjectVersionView();
-                    logger.info(String.format("Mapping code location \"%s\".", codeLocationView.getName()));
-
-                    codeLocationService.mapCodeLocation(codeLocationView, projectVersionView);
-
-                    logger.info(String.format("Successfully mapped code location \"%s\" to project \"%s\" version \"%s\".", codeLocationView.getName(), projectView.getName(), projectVersionView.getVersionName()));
+                if (projectVersionUrl.isPresent() && codeLocationUrl.isPresent()) {
+                    logger.info(String.format("Mapping code location %s to project \"%s\" version \"%s\".", codeLocationUrl.get(), projectView.getName(), projectVersionView.getVersionName()));
+                    mapCodeLocation(projectVersionUrl.get(), codeLocationUrl.get());
+                    logger.info("Successfully mapped code location");
                 } else {
-                    throw new IntegrationException("Failed to map the code location.");
+                    throw new IntegrationException("Failed to map the code location. Missing code location or project version url.");
                 }
             } catch (IntegrationException e) {
                 return failImpactAnalysis(e.getMessage());
@@ -191,6 +189,15 @@ public class BlackDuckImpactAnalysisTool {
         }
 
         return ImpactAnalysisToolResult.SUCCESS(codeLocationCreationData, impactAnalysisPath);
+    }
+
+    // TODO: Use the method provided in blackduck-common:49.2.0
+    private void mapCodeLocation(String projectVersionUrl, String codeLocationUrl) throws IntegrationException {
+        // Retrieving a Code Location with just the Project Code Scanner role is not possible so we must construct it ourselves.
+        CodeLocationView codeLocationView = new CodeLocationView();
+        codeLocationView.setUrl(codeLocationUrl);
+        codeLocationView.setMappedProjectVersion(projectVersionUrl);
+        blackDuckService.put(codeLocationView);
     }
 
     private ImpactAnalysisToolResult failImpactAnalysis(String issueMessage) {
