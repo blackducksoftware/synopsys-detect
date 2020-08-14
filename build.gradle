@@ -33,7 +33,7 @@ plugins {
 }
 
 group = 'com.synopsys.integration'
-version = '6.4.2'
+version = '6.4.2-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
