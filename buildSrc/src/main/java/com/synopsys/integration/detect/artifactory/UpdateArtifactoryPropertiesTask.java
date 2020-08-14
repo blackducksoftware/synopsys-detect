@@ -105,7 +105,7 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
         Request request = new Request.Builder()
                               .url(baseUrl)
                               .method(HttpMethod.PATCH)
-                              .mimeType("application/json")
+                              .acceptMimeType("application/json")
                               .bodyContent(bodyContent)
                               .build();
 

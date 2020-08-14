@@ -36,7 +36,7 @@ import com.synopsys.integration.blackduck.api.generated.view.UserView;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.UserGroupService;
+import com.synopsys.integration.blackduck.service.dataservice.UserGroupService;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
@@ -63,7 +63,7 @@ public class BlackDuckConnectivityChecker {
         final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new Slf4jIntLogger(logger));
 
         try {
-            final BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService();
+            final BlackDuckService blackDuckService = blackDuckServicesFactory.getBlackDuckService();
             final CurrentVersionView currentVersion = blackDuckService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
 
             logger.info(String.format("Successfully connected to Black Duck (version %s)!", currentVersion.getVersion()));
@@ -75,7 +75,7 @@ public class BlackDuckConnectivityChecker {
             final List<RoleAssignmentView> response = userGroupService.getRolesForUser(userView);
             logger.debug("Roles: " + response.stream().map(RoleAssignmentView::getName).distinct().collect(Collectors.joining(", ")));
 
-            final List<UserGroupView> groups = blackDuckService.getAllResponses(userView.getFirstLink("usergroups").get(), UserGroupView.class);
+            final List<UserGroupView> groups = blackDuckService.getAllResponses(userView.getFirstLink("usergroups"), UserGroupView.class);
             logger.debug("Group: " + groups.stream().map(UserGroupView::getName).distinct().collect(Collectors.joining(", ")));
 
         } catch (final IntegrationException e) {

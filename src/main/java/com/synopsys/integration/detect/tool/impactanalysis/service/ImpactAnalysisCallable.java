@@ -29,9 +29,9 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
+import com.synopsys.integration.blackduck.http.RequestFactory;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
-import com.synopsys.integration.blackduck.service.model.RequestFactory;
-import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
 
@@ -41,19 +41,21 @@ public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
     private final ImpactAnalysis impactAnalysis;
     private final NameVersion projectAndVersion;
     private final String codeLocationName;
+    private final RequestFactory requestFactory;
 
-    public ImpactAnalysisCallable(Gson gson, BlackDuckService blackDuckService, ImpactAnalysis impactAnalysis) {
+    public ImpactAnalysisCallable(Gson gson, BlackDuckService blackDuckService, ImpactAnalysis impactAnalysis, RequestFactory requestFactory) {
         this.gson = gson;
         this.blackDuckService = blackDuckService;
         this.impactAnalysis = impactAnalysis;
         this.projectAndVersion = impactAnalysis.getProjectAndVersion();
         this.codeLocationName = impactAnalysis.getCodeLocationName();
+        this.requestFactory = requestFactory;
     }
 
     @Override
     public ImpactAnalysisOutput call() {
         try {
-            Request.Builder requestBuilder = createRequestBuilder(impactAnalysis.getImpactAnalysisPath());
+            BlackDuckRequestBuilder requestBuilder = createRequestBuilder(impactAnalysis.getImpactAnalysisPath());
             try (Response response = blackDuckService.execute(ImpactAnalysisUploadService.IMPACT_ANALYSIS_PATH, requestBuilder)) {
                 return ImpactAnalysisOutput.FROM_RESPONSE(gson, projectAndVersion, codeLocationName, response);
             }
@@ -63,10 +65,10 @@ public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
         }
     }
 
-    public Request.Builder createRequestBuilder(Path reportPath) {
+    public BlackDuckRequestBuilder createRequestBuilder(Path reportPath) {
         Map<String, File> fileMap = new HashMap<>();
         fileMap.put("file", reportPath.toFile());
-        return RequestFactory.createCommonPostRequestBuilder(fileMap, new HashMap<>());
+        return requestFactory.createCommonPostRequestBuilder(fileMap, new HashMap<>());
     }
 
 }

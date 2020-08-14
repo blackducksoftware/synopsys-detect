@@ -39,7 +39,7 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.CodeLocationService;
+import com.synopsys.integration.blackduck.service.dataservice.CodeLocationService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
@@ -78,7 +78,7 @@ public class BlackDuckImpactAnalysisTool {
     public static BlackDuckImpactAnalysisTool ONLINE(DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager, ImpactAnalysisOptions impactAnalysisOptions, BlackDuckServicesFactory blackDuckServicesFactory,
         EventSystem eventSystem) {
         ImpactAnalysisUploadService impactAnalysisService = ImpactAnalysisUploadService.create(blackDuckServicesFactory);
-        BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService();
+        BlackDuckService blackDuckService = blackDuckServicesFactory.getBlackDuckService();
         CodeLocationService codeLocationService = blackDuckServicesFactory.createCodeLocationService();
         return new BlackDuckImpactAnalysisTool(directoryManager, codeLocationNameManager, impactAnalysisOptions, eventSystem, impactAnalysisService, blackDuckService, codeLocationService, true);
     }

@@ -134,8 +134,6 @@ public class DetectorRuleFactory {
         ruleSet.yield(pipInspector).to(pipEnv);
         ruleSet.yield(poetry).to(pipEnv);
 
-        ruleSet.addDetector(DetectorType.PIP, "Poetry", PoetryDetectable.class, detectableFactory::createPoetryDetectable).defaults().build();
-
         ruleSet.addDetector(DetectorType.RUBYGEMS, "Gemlock", GemlockDetectable.class, detectableFactory::createGemlockDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.SBT, "Sbt Resolution Cache", SbtResolutionCacheDetectable.class, detectableFactory::createSbtResolutionCacheDetectable).defaults().build();
         ruleSet.addDetector(DetectorType.PEAR, "Pear", PearCliDetectable.class, detectableFactory::createPearCliDetectable).defaults().build();

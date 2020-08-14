@@ -26,8 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.synopsys.integration.blackduck.api.core.BlackDuckView;
-import com.synopsys.integration.blackduck.api.core.LinkResponse;
-import com.synopsys.integration.blackduck.api.core.LinkSingleResponse;
+import com.synopsys.integration.blackduck.api.core.response.LinkResponse;
+import com.synopsys.integration.blackduck.api.core.response.LinkSingleResponse;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 
 public class ImpactAnalysisUploadView extends BlackDuckView {

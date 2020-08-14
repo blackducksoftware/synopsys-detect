@@ -29,4 +29,5 @@ dependencies {
     implementation("com.synopsys.integration:integration-common:20.0.0")
     implementation("com.synopsys.integration:integration-rest:3.0.0")
     implementation("com.synopsys.integration:common-gradle-plugin:1.2.3")
+    implementation("com.synopsys.integration:blackduck-common:49.1.0")
 }
