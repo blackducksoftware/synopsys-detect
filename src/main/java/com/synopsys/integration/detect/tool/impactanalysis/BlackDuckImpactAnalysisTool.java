@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
-import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,6 +57,7 @@ import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.method.analyzer.core.MethodUseAnalyzer;
 
@@ -72,7 +72,7 @@ public class BlackDuckImpactAnalysisTool {
     private final EventSystem eventSystem;
     private final ImpactAnalysisUploadService impactAnalysisUploadService;
     private final BlackDuckService blackDuckService;
-    private final CodeLocationService codeLocationService;
+    private final CodeLocationService codeLocationService; // TODO: Use this when upgrading to blackduck-common:49.2.0
     private final boolean online;
 
     public static BlackDuckImpactAnalysisTool ONLINE(DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager, ImpactAnalysisOptions impactAnalysisOptions, BlackDuckServicesFactory blackDuckServicesFactory,
@@ -172,17 +172,13 @@ public class BlackDuckImpactAnalysisTool {
             ImpactAnalysisUploadView impactAnalysisUploadView = output.getImpactAnalysisUploadView();
             ProjectView projectView = projectVersionWrapper.getProjectView();
             ProjectVersionView projectVersionView = projectVersionWrapper.getProjectVersionView();
-            Optional<String> projectVersionUrl = projectVersionView.getHref();
-            Optional<String> codeLocationUrl = impactAnalysisUploadView.getFirstLink(ImpactAnalysisUploadView.CODE_LOCATION_LINK);
+            HttpUrl projectVersionUrl = projectVersionView.getHref();
+            HttpUrl codeLocationUrl = impactAnalysisUploadView.getFirstLink(ImpactAnalysisUploadView.CODE_LOCATION_LINK);
 
             try {
-                if (projectVersionUrl.isPresent() && codeLocationUrl.isPresent()) {
-                    logger.info(String.format("Mapping code location %s to project \"%s\" version \"%s\".", codeLocationUrl.get(), projectView.getName(), projectVersionView.getVersionName()));
-                    mapCodeLocation(projectVersionUrl.get(), codeLocationUrl.get());
-                    logger.info("Successfully mapped code location");
-                } else {
-                    throw new IntegrationException("Failed to map the code location. Missing code location or project version url.");
-                }
+                logger.info(String.format("Mapping code location %s to project \"%s\" version \"%s\".", codeLocationUrl.string(), projectView.getName(), projectVersionView.getVersionName()));
+                mapCodeLocation(projectVersionUrl, codeLocationUrl);
+                logger.info("Successfully mapped code location");
             } catch (IntegrationException e) {
                 return failImpactAnalysis(e.getMessage());
             }
@@ -192,11 +188,11 @@ public class BlackDuckImpactAnalysisTool {
     }
 
     // TODO: Use the method provided in blackduck-common:49.2.0
-    private void mapCodeLocation(String projectVersionUrl, String codeLocationUrl) throws IntegrationException {
+    private void mapCodeLocation(HttpUrl projectVersionUrl, HttpUrl codeLocationUrl) throws IntegrationException {
         // Retrieving a Code Location with just the Project Code Scanner role is not possible so we must construct it ourselves.
         CodeLocationView codeLocationView = new CodeLocationView();
-        codeLocationView.setUrl(codeLocationUrl);
-        codeLocationView.setMappedProjectVersion(projectVersionUrl);
+        codeLocationView.setUrl(codeLocationUrl.string());
+        codeLocationView.setMappedProjectVersion(projectVersionUrl.string());
         blackDuckService.put(codeLocationView);
     }
 
