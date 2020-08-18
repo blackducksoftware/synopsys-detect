@@ -148,6 +148,31 @@ public class GenerateDocsTask extends DefaultTask {
         createFromFreemarker(templateProvider, outputDir, "detectors", new DetectorsPage(buildless, build));
     }
 
+    private String encodePropertyLocation(String propertyName) {
+        if (!propertyName.equals(propertyName.trim())) {
+            throw new RuntimeException("Property name should not include trim-able white space (" + propertyName + ") should be shortened to (" + propertyName.trim() + ") ");
+        }
+        Map<String, String> supportedCharacters = new HashMap<String, String>();
+        String literals = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        for (char literalCharacter : literals.toCharArray()) {
+            supportedCharacters.put(String.valueOf(literalCharacter), String.valueOf(literalCharacter));
+        }
+        supportedCharacters.put(" ", "_");
+        supportedCharacters.put(".", "46");
+        supportedCharacters.put("(", "40");
+        supportedCharacters.put(")", "41");
+        StringBuilder encoded = new StringBuilder();
+        for (char character : propertyName.toCharArray()) {
+            String charString = String.valueOf(character);
+            if (!supportedCharacters.containsKey(charString)) {
+                throw new RuntimeException("Unsupported character literal in property name, please add it to supported characters or remove the character (" + character + ") in (" + propertyName + ") ");
+            } else {
+                encoded.append(supportedCharacters.get(charString));
+            }
+        }
+        return encoded.toString();
+    }
+
     private void handleProperties(final TemplateProvider templateProvider, final File outputDir, final HelpJsonData helpJson) throws IntegrationException, IOException, TemplateException {
         final Map<String, String> superGroups = createSuperGroupLookup(helpJson);
 
@@ -158,8 +183,7 @@ public class GenerateDocsTask extends DefaultTask {
         // Updating the location on all the json options so that a new object with only 1 new property did not have to be created (and then populated) from the existing.
         for (final HelpJsonOption helpJsonOption : helpJson.getOptions()) {
             final String groupLocation = getGroupLocation(groupLocations, helpJsonOption.getGroup());
-            final String encodedPropertyLocation = helpJsonOption.getPropertyName().replace(" ", "-").toLowerCase();
-
+            final String encodedPropertyLocation = encodePropertyLocation(helpJsonOption.getPropertyName());
             helpJsonOption.setLocation(String.format("%s/#%s", groupLocation, encodedPropertyLocation)); //ex: superGroup/key/#property_name
         }
 

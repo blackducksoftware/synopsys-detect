@@ -399,20 +399,20 @@ class DetectProperties {
             setCategory(DetectCategory.Advanced)
         }
         val DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS = StringListProperty("detect.detector.search.exclusion.patterns", emptyList()).apply {
-            setInfo(" Detector Directory Patterns Exclusions", "3.2.0")
+            setInfo("Detector Directory Patterns Exclusions", "3.2.0")
             setHelp("A comma-separated list of directory name patterns to exclude from detector search.", "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters).For example, suppose you're running in bash on Linux, you've set--detect.detector.search.depth = 1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it:--detect.detector.search.exclusion.patterns = blackduck-common, --detect.detector.search.exclusion.patterns = 'blackduck-common', --detect.detector.search.exclusion.patterns = 'blackduck-*'")
             setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             setCategory(DetectCategory.Advanced)
         }
 
         val DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS = StringListProperty("detect.detector.search.exclusion.paths", emptyList()).apply {
-            setInfo(" Detector Directory Path Exclusions", "5.5.0")
+            setInfo("Detector Directory Path Exclusions", "5.5.0")
             setHelp("A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)", "This property performs the same basic function as detect.detector.search.exclusion, but lets you be more specific.")
             setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             setCategory(DetectCategory.Advanced)
         }
         val DETECT_DETECTOR_SEARCH_EXCLUSION_FILES = StringListProperty("detect.detector.search.exclusion.files", emptyList()).apply {
-            setInfo(" Detector File Exclusions", "6.0.0")
+            setInfo("Detector File Exclusions", "6.0.0")
             setHelp("A comma-separated list of file names to exclude from detector search.")
             setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             setCategory(DetectCategory.Advanced)
@@ -804,7 +804,7 @@ class DetectProperties {
             setCategory(DetectCategory.Advanced)
         }
         val DETECT_PROJECT_DETECTOR = NullableStringProperty("detect.project.detector").apply {
-            setInfo("Project Name/Version Detector", "4.0.0")
+            setInfo("Project Name and Version Detector", "4.0.0")
             setHelp("The detector that will be used to determine the project name and version when multiple detector types. This property should be used with the detect.project.tool.", "If Detect finds that multiple detectors apply, this property can be used to select the detector that will provide the project name and version. When using this property, you should also set detect.project.tool=DETECTOR")
             setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             setCategory(DetectCategory.Advanced)
