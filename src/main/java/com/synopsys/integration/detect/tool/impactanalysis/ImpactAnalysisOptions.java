@@ -28,7 +28,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class ImpactAnalysisOptions {
     private final Boolean enabled;
-
     @Nullable
     private final String codeLocationPrefix;
     @Nullable
