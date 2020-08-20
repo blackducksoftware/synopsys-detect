@@ -24,10 +24,13 @@ package com.synopsys.integration.detect.tool.impactanalysis;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -116,9 +119,15 @@ public class BlackDuckImpactAnalysisTool {
         String codeLocationSuffix = impactAnalysisOptions.getCodeLocationSuffix();
         String codeLocationName = codeLocationNameManager.createImpactAnalysisCodeLocationName(sourceDirectory, projectName, projectVersionName, codeLocationPrefix, codeLocationSuffix);
 
+        Path outputDirectory = directoryManager.getImpactAnalysisOutputDirectory().toPath();
+        if (null != impactAnalysisOptions.getOutputDirectory()) {
+            outputDirectory = impactAnalysisOptions.getOutputDirectory();
+        }
+
         Path impactAnalysisPath;
         try {
-            impactAnalysisPath = generateImpactAnalysis(codeLocationName);
+            impactAnalysisPath = generateImpactAnalysis(codeLocationName, outputDirectory);
+            moveTempFiles(outputDirectory);
         } catch (IOException e) {
             return failImpactAnalysis(e.getMessage());
         }
@@ -143,16 +152,31 @@ public class BlackDuckImpactAnalysisTool {
             eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.EXCEPTION, Collections.singletonList(exception.getMessage())));
             throw new DetectUserFriendlyException("Failed to upload impact analysis file.", exception, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         }
-
     }
 
-    public Path generateImpactAnalysis(String impactAnalysisCodeLocationName) throws IOException {
+    // TODO: Stop doing this once the impact analysis library allows us to specify a working directory. See IDETECT-2185.
+    private void moveTempFiles(Path outputDirectory) throws IOException {
+        // Impact Analysis generates temporary directories which need to be moved into directories under Detect control for cleanup.
+        String tempDirectoryPrefix = "blackduck-method-uses";
+        Path tempDirectory = Files.createTempDirectory(tempDirectoryPrefix);
+
+        try (Stream<Path> stream = Files.walk(tempDirectory.getParent(), 1)) {
+            stream.filter(tempPath -> tempPath.getFileName().toString().startsWith(tempDirectoryPrefix))
+                .forEach(tempPath -> {
+                    try {
+                        Path newTempDirectoryLocation = outputDirectory.resolve(tempPath.getFileName());
+                        FileUtils.moveDirectory(tempPath.toFile(), newTempDirectoryLocation.toFile());
+                    } catch (IOException ignore) {
+                    }
+                });
+        } catch (Exception ignore) {
+            // We won't notify the user that we failed to move a temp file for cleanup.
+        }
+    }
+
+    public Path generateImpactAnalysis(String impactAnalysisCodeLocationName, Path outputDirectory) throws IOException {
         MethodUseAnalyzer analyzer = new MethodUseAnalyzer();
         Path sourceDirectory = directoryManager.getSourceDirectory().toPath();
-        Path outputDirectory = directoryManager.getImpactAnalysisOutputDirectory().toPath();
-        if (null != impactAnalysisOptions.getOutputDirectory()) {
-            outputDirectory = impactAnalysisOptions.getOutputDirectory();
-        }
         Path outputReportFile = analyzer.analyze(sourceDirectory, outputDirectory, impactAnalysisCodeLocationName);
         logger.info(String.format("Vulnerability Impact Analysis generated report at %s", outputReportFile));
         return outputReportFile;
