@@ -123,17 +123,27 @@ public class BlackDuckImpactAnalysisTool {
             return failImpactAnalysis(e.getMessage());
         }
 
-        if (online && projectVersionWrapper != null) {
-            if (impactAnalysisPath != null && impactAnalysisPath.toFile().isFile() && impactAnalysisPath.toFile().canRead()) {
-                CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData = uploadImpactAnalysis(impactAnalysisPath, projectNameAndVersion, codeLocationName);
-                return mapCodeLocations(impactAnalysisPath, codeLocationCreationData, projectVersionWrapper);
-            } else {
-                return failImpactAnalysis("Impact analysis file did not exist, is not a file or can't be read.");
-            }
-        } else {
-            logger.debug("Skipping report upload.");
+        if (impactAnalysisPath == null || !impactAnalysisPath.toFile().isFile() || !impactAnalysisPath.toFile().canRead()) {
+            return failImpactAnalysis("Impact analysis file did not exist, is not a file or can't be read.");
+        }
+
+        if (!online || projectVersionWrapper == null) {
+            logger.debug("Not online. Skipping Impact Analysis report upload.");
             return ImpactAnalysisToolResult.SUCCESS(impactAnalysisPath);
         }
+
+        try {
+            CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData = uploadImpactAnalysis(impactAnalysisPath, projectNameAndVersion, codeLocationName);
+            ImpactAnalysisToolResult impactAnalysisToolResult = mapCodeLocations(impactAnalysisPath, codeLocationCreationData, projectVersionWrapper);
+            eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.SUCCESS));
+            return impactAnalysisToolResult;
+        } catch (IntegrationException exception) {
+            logger.error(String.format("Failed to upload and map the Impact Analysis code location: %s", exception.getMessage()));
+            eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.FAILURE));
+            eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.EXCEPTION, Collections.singletonList(exception.getMessage())));
+            throw new DetectUserFriendlyException("Failed to upload impact analysis file.", exception, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
+        }
+
     }
 
     public Path generateImpactAnalysis(String impactAnalysisCodeLocationName) throws IOException {
@@ -148,29 +158,22 @@ public class BlackDuckImpactAnalysisTool {
         return outputReportFile;
     }
 
-    public CodeLocationCreationData<ImpactAnalysisBatchOutput> uploadImpactAnalysis(Path impactAnalysisPath, NameVersion projectNameVersion, String codeLocationName)
-        throws DetectUserFriendlyException {
+    public CodeLocationCreationData<ImpactAnalysisBatchOutput> uploadImpactAnalysis(Path impactAnalysisPath, NameVersion projectNameVersion, String codeLocationName) throws IntegrationException {
         ImpactAnalysis impactAnalysis = new ImpactAnalysis(impactAnalysisPath, projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocationName);
-        try {
-            logger.info(String.format("Preparing to upload impact analysis file: %s", codeLocationName));
-            CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData = impactAnalysisUploadService.uploadImpactAnalysis(impactAnalysis);
 
-            ImpactAnalysisBatchOutput impactAnalysisBatchOutput = codeLocationCreationData.getOutput();
-            impactAnalysisBatchOutput.throwExceptionForError(logger);
+        logger.info(String.format("Preparing to upload impact analysis file: %s", codeLocationName));
+        CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData = impactAnalysisUploadService.uploadImpactAnalysis(impactAnalysis);
 
-            logger.info(String.format("Successfully uploaded impact analysis file: %s", codeLocationName));
-            eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.SUCCESS));
-            return codeLocationCreationData;
-        } catch (IntegrationException exception) {
-            logger.error(String.format("Failed to upload impact analysis file: %s", exception.getMessage()));
-            eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.FAILURE));
-            eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.EXCEPTION, Collections.singletonList(exception.getMessage())));
-            throw new DetectUserFriendlyException("Failed to upload impact analysis file.", exception, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
-        }
+        ImpactAnalysisBatchOutput impactAnalysisBatchOutput = codeLocationCreationData.getOutput();
+        impactAnalysisBatchOutput.throwExceptionForError(logger);
+
+        logger.info(String.format("Successfully uploaded impact analysis file: %s", codeLocationName));
+        return codeLocationCreationData;
+
     }
 
     // TODO: Create a code location mapping service generic enough for all tools.
-    private ImpactAnalysisToolResult mapCodeLocations(Path impactAnalysisPath, CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData, ProjectVersionWrapper projectVersionWrapper) {
+    private ImpactAnalysisToolResult mapCodeLocations(Path impactAnalysisPath, CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData, ProjectVersionWrapper projectVersionWrapper) throws IntegrationException {
         for (ImpactAnalysisOutput output : codeLocationCreationData.getOutput().getOutputs()) {
             ImpactAnalysisUploadView impactAnalysisUploadView = output.getImpactAnalysisUploadView();
             ProjectView projectView = projectVersionWrapper.getProjectView();
@@ -178,16 +181,12 @@ public class BlackDuckImpactAnalysisTool {
             Optional<String> projectVersionUrl = projectVersionView.getHref();
             Optional<String> codeLocationUrl = impactAnalysisUploadView.getFirstLink(ImpactAnalysisUploadView.CODE_LOCATION_LINK);
 
-            try {
-                if (projectVersionUrl.isPresent() && codeLocationUrl.isPresent()) {
-                    logger.info(String.format("Mapping code location %s to project \"%s\" version \"%s\".", codeLocationUrl.get(), projectView.getName(), projectVersionView.getVersionName()));
-                    mapCodeLocation(projectVersionUrl.get(), codeLocationUrl.get());
-                    logger.info("Successfully mapped code location");
-                } else {
-                    throw new IntegrationException("Failed to map the code location. Missing code location or project version url.");
-                }
-            } catch (IntegrationException e) {
-                return failImpactAnalysis(e.getMessage());
+            if (projectVersionUrl.isPresent() && codeLocationUrl.isPresent()) {
+                logger.info(String.format("Mapping code location %s to project \"%s\" version \"%s\".", codeLocationUrl.get(), projectView.getName(), projectVersionView.getVersionName()));
+                mapCodeLocation(projectVersionUrl.get(), codeLocationUrl.get());
+                logger.info("Successfully mapped code location");
+            } else {
+                throw new IntegrationException("Failed to map the code location. Missing code location or project version url.");
             }
         }
 
