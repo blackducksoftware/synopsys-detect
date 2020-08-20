@@ -799,7 +799,7 @@ class DetectProperties {
         }
         val DETECT_PROJECT_TAGS = StringListProperty("detect.project.tags", emptyList()).apply {
             setInfo("Project Tags", "5.6.0")
-            setHelp("A comma-separated list of tags to add to the project.")
+            setHelp("A comma-separated list of tags to add to the project. This property is not supported when using Synopsys Detect in offline mode.")
             setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             setCategory(DetectCategory.Advanced)
         }
