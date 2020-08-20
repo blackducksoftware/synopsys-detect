@@ -140,6 +140,9 @@ public class BlackDuckImpactAnalysisTool {
         MethodUseAnalyzer analyzer = new MethodUseAnalyzer();
         Path sourceDirectory = directoryManager.getSourceDirectory().toPath();
         Path outputDirectory = directoryManager.getImpactAnalysisOutputDirectory().toPath();
+        if (null != impactAnalysisOptions.getOutputDirectory()) {
+            outputDirectory = impactAnalysisOptions.getOutputDirectory();
+        }
         Path outputReportFile = analyzer.analyze(sourceDirectory, outputDirectory, impactAnalysisCodeLocationName);
         logger.info(String.format("Vulnerability Impact Analysis generated report at %s", outputReportFile));
         return outputReportFile;
