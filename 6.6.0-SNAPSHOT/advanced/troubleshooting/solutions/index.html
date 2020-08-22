@@ -1046,6 +1046,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#on-windows-error-trying-cleanup" class="md-nav__link">
+    On Windows: Error trying cleanup
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#symptom_10" class="md-nav__link">
+    Symptom
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#possible-cause_10" class="md-nav__link">
+    Possible cause
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solution_9" class="md-nav__link">
+    Solution
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -1991,6 +2025,40 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#on-windows-error-trying-cleanup" class="md-nav__link">
+    On Windows: Error trying cleanup
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#symptom_10" class="md-nav__link">
+    Symptom
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#possible-cause_10" class="md-nav__link">
+    Possible cause
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#solution_9" class="md-nav__link">
+    Solution
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
       
       
       
@@ -2146,6 +2214,28 @@ version of Java by setting environment variable BDS_JAVA_HOME to the JAVA_HOME v
 <p>Or:</p>
 <pre><code>export BDS_JAVA_HOME=/usr/lib/jvm/java-11-openjdk/jre
 </code></pre>
+
+<h2 id="on-windows-error-trying-cleanup">On Windows: Error trying cleanup<a class="headerlink" href="#on-windows-error-trying-cleanup" title="Permanent link">#</a></h2>
+<h3 id="symptom_10">Symptom<a class="headerlink" href="#symptom_10" title="Permanent link">#</a></h3>
+<p>When running on Windows, inspecting a Docker image (e.g. using --detect.docker.image or --detect.docker.tar),
+during shutdown, Synopsys Detect logs messages similar to the following:</p>
+<pre><code>2020-08-14 14:31:04 DEBUG [main] --- Error trying cleanup:
+
+java.io.IOException: Unable to delete file: C:\Users\Administrator\blackduck\runs\2020-08-14-21-28-40-106\extractions
+...
+Caused by: java.nio.file.FileSystemException: C:\Users\Administrator\blackduck\runs\2020-08-14-21-28-40-106\extractions\DOCKER-0\application.properties: The process cannot access the file because it is being used by another process.
+</code></pre>
+
+<h3 id="possible-cause_10">Possible cause<a class="headerlink" href="#possible-cause_10" title="Permanent link">#</a></h3>
+<p>This happens when Docker fails to release its lock on the volume mounted directory when it shuts down the image inspector service container
+due to <a href="https://github.com/docker/for-win/issues/394">Docker for Windows issue 394</a>.
+The result is that Synopsys Detect cannot fully clean up its output directory,
+and leaves behind empty subdirectories.
+The problem may be intermittent.</p>
+<h3 id="solution_9">Solution<a class="headerlink" href="#solution_9" title="Permanent link">#</a></h3>
+<p>There is no harm in leaving the directories behind in the short term,
+but we recommend periodically removing them if the problem occurs frequently.
+Restarting Docker will force Docker to release the locks, and enable you to remove the directories.</p>
                 
                   
                 

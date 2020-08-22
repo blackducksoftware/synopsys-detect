@@ -548,8 +548,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#inspecting-windows-images" class="md-nav__link">
-    Inspecting Windows images
+  <a href="#inspecting-windows-docker-images" class="md-nav__link">
+    Inspecting Windows Docker images
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspecting-docker-images-on-windows" class="md-nav__link">
+    Inspecting Docker images on Windows
   </a>
   
 </li>
@@ -1361,8 +1368,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#inspecting-windows-images" class="md-nav__link">
-    Inspecting Windows images
+  <a href="#inspecting-windows-docker-images" class="md-nav__link">
+    Inspecting Windows Docker images
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspecting-docker-images-on-windows" class="md-nav__link">
+    Inspecting Docker images on Windows
   </a>
   
 </li>
@@ -1387,7 +1401,7 @@
                 <h1 id="docker-image-support">Docker image support<a class="headerlink" href="#docker-image-support" title="Permanent link">#</a></h1>
 <p>On Linux and Mac, Synopsys Detect can invoke Docker Inspector to inspect Linux Docker images to discover packages installed by the Linux package manager.
 For simple use cases, add either <code>--detect.docker.image={repo}:{tag}</code> or <code>--detect.docker.tar={path to a Docker saved tarfile}</code> to the Synopsys Detect command line.</p>
-<p>The documentation for Docker Inspector is available <a href="https://blackducksoftware.github.io/blackduck-docker-inspector/latest/overview/">here</a>.</p>
+<p>The documentation for Docker Inspector is available <a href="https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/187596884/Black+Duck+Docker+Inspector">here</a>.</p>
 <p>When passed a value for either detect.docker.image or detect.docker.tar,
 Synopsys Detect runs Docker Inspector on given image (the "target image"),
 creating one code location. Synopsys Detect by default runs
@@ -1425,18 +1439,14 @@ Find the last element in the RootFS.Layers array. This is the platform top layer
 Set the value of the Docker Inspector property docker.platform.top.layer.id to the platform top layer ID. For example:</p>
 <p>./detect.sh ... --detect.docker.image={your application image} --detect.docker.platform.top.layer.id=sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c</p>
 <p>In this mode, there may be some loss in match accuracy from the Black Duck Signature Scanner because, in this scenario, the Black Duck Signature Scanner may be deprived of some contextual information, such as the operating system files that enable it to determine the Linux distribution, and that that may negatively affect its ability to accurately identify components.</p>
-<h3 id="inspecting-windows-images">Inspecting Windows images<a class="headerlink" href="#inspecting-windows-images" title="Permanent link">#</a></h3>
-<p>The Docker Inspector only runs on Linux and Mac. Running on these systems,
-Docker can neither pull nor build a Windows image.
-Consequently, you cannot run Synopsys Detect on a Windows Docker image
-using the either the <em>detect.docker.image</em> or <em>detect.docker.image.id</em> property.
-Instead, you must, using a Windows system,
-pull and save the target image as a .tar file, and pass that .tar file
-to Synopsys Detect using the <em>detect.docker.tar</em> property.</p>
+<h3 id="inspecting-windows-docker-images">Inspecting Windows Docker images<a class="headerlink" href="#inspecting-windows-docker-images" title="Permanent link">#</a></h3>
 <p>Given a Windows Image, Docker Inspector, since it can only discover packages using
 a Linux package manager will not contribute any components to the BOM, but will
 return the container filesystem (in the form of a squashed image),
-which Synopsys Detect will scan.</p>
+which Synopsys Detect will scan using the Black Duck Signature Scanner.</p>
+<h3 id="inspecting-docker-images-on-windows">Inspecting Docker images on Windows<a class="headerlink" href="#inspecting-docker-images-on-windows" title="Permanent link">#</a></h3>
+<p>For important information on a Docker for Windows bug that might affect Synopsys Detect, refer to the
+<a href="../../troubleshooting/solutions/#on-windows-error-trying-cleanup">troubleshooting page</a>.</p>
                 
                   
                 
