@@ -577,6 +577,7 @@ class DetectProperties {
         val DETECT_IMPACT_ANALYSIS_OUTPUT_PATH = NullablePathProperty("detect.impact.analysis.output.path").apply {
             setInfo("Impact Analysis Output Directory", "6.5.0")
             setHelp("The path to the output directory for Impact Analysis reports.", "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.")
+            setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL)
         }
         val DETECT_INCLUDED_DETECTOR_TYPES = FilterableEnumListProperty("detect.included.detector.types", emptyList(), DetectorType::class.java).apply {
             setInfo("Detector Types Included", "3.0.0")
