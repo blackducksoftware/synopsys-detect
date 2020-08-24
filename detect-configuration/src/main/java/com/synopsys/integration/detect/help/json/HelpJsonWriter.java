@@ -43,12 +43,12 @@ public class HelpJsonWriter {
 
     private final Gson gson;
 
-    public HelpJsonWriter(final Gson gson) {
+    public HelpJsonWriter(Gson gson) {
         this.gson = gson;
     }
 
-    public void writeGsonDocument(final String filename, final List<Property> detectOptions, final List<HelpJsonDetector> buildDetectors, final List<HelpJsonDetector> buildlessDetectors) {
-        final HelpJsonData data = new HelpJsonData();
+    public void writeGsonDocument(String filename, List<Property> detectOptions, List<HelpJsonDetector> buildDetectors, List<HelpJsonDetector> buildlessDetectors) {
+        HelpJsonData data = new HelpJsonData();
 
         data.getOptions().addAll(detectOptions.stream().map(this::convertOption).collect(Collectors.toList()));
         data.getExitCodes().addAll(Stream.of(ExitCodeType.values()).map(this::convertExitCode).collect(Collectors.toList()));
@@ -56,26 +56,30 @@ public class HelpJsonWriter {
         data.setBuildDetectors(buildDetectors);
 
         try {
-            try (final Writer writer = new FileWriter(filename)) {
+            try (Writer writer = new FileWriter(filename)) {
                 gson.toJson(data, writer);
             }
 
             logger.info(filename + " was created in your current directory.");
-        } catch (final IOException e) {
+        } catch (IOException e) {
             logger.error("There was an error when creating the html file", e);
         }
     }
 
-    public HelpJsonExitCode convertExitCode(final ExitCodeType exitCodeType) {
-        final HelpJsonExitCode helpJsonExitCode = new HelpJsonExitCode();
+    public HelpJsonExitCode convertExitCode(ExitCodeType exitCodeType) {
+        HelpJsonExitCode helpJsonExitCode = new HelpJsonExitCode();
         helpJsonExitCode.setExitCodeKey(exitCodeType.name());
         helpJsonExitCode.setExitCodeValue(exitCodeType.getExitCode());
         helpJsonExitCode.setExitCodeDescription(exitCodeType.getDescription());
         return helpJsonExitCode;
     }
 
-    public HelpJsonOption convertOption(final Property property) {
-        final HelpJsonOption helpJsonOption = new HelpJsonOption();
+    public HelpJsonOption convertOption(Property property) {
+        if (property.getPropertyGroupInfo() == null) {
+            throw new IllegalArgumentException("The property \"" + property.getKey() + "\" has no group information. Group is required.");
+        }
+
+        HelpJsonOption helpJsonOption = new HelpJsonOption();
 
         helpJsonOption.setPropertyName(property.getName());
         helpJsonOption.setPropertyKey(property.getKey());

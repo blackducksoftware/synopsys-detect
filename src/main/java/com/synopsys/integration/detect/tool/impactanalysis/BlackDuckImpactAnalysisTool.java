@@ -24,9 +24,13 @@ package com.synopsys.integration.detect.tool.impactanalysis;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.Optional;
+import java.util.stream.Stream;
 
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -116,58 +120,75 @@ public class BlackDuckImpactAnalysisTool {
         String codeLocationSuffix = impactAnalysisOptions.getCodeLocationSuffix();
         String codeLocationName = codeLocationNameManager.createImpactAnalysisCodeLocationName(sourceDirectory, projectName, projectVersionName, codeLocationPrefix, codeLocationSuffix);
 
+
+        Path outputDirectory = directoryManager.getImpactAnalysisOutputDirectory().toPath();
+        if (null != impactAnalysisOptions.getOutputDirectory()) {
+            outputDirectory = impactAnalysisOptions.getOutputDirectory();
+        }
+
         Path impactAnalysisPath;
         try {
-            impactAnalysisPath = generateImpactAnalysis(codeLocationName);
+            impactAnalysisPath = generateImpactAnalysis(codeLocationName, outputDirectory);
+            cleanupTempFiles();
         } catch (IOException e) {
             return failImpactAnalysis(e.getMessage());
         }
 
-        if (online && projectVersionWrapper != null) {
-            if (impactAnalysisPath != null && impactAnalysisPath.toFile().isFile() && impactAnalysisPath.toFile().canRead()) {
-                CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData = uploadImpactAnalysis(impactAnalysisPath, projectNameAndVersion, codeLocationName);
-                return mapCodeLocations(impactAnalysisPath, codeLocationCreationData, projectVersionWrapper);
-            } else {
-                return failImpactAnalysis("Impact analysis file did not exist, is not a file or can't be read.");
-            }
-        } else {
-            logger.debug("Skipping report upload.");
+        if (impactAnalysisPath == null || !impactAnalysisPath.toFile().isFile() || !impactAnalysisPath.toFile().canRead()) {
+            return failImpactAnalysis("Impact analysis file did not exist, is not a file or can't be read.");
+        }
+
+        if (!online || projectVersionWrapper == null) {
+            logger.debug("Not online. Skipping Impact Analysis report upload.");
             return ImpactAnalysisToolResult.SUCCESS(impactAnalysisPath);
         }
-    }
 
-    public Path generateImpactAnalysis(String impactAnalysisCodeLocationName) throws IOException {
-        MethodUseAnalyzer analyzer = new MethodUseAnalyzer();
-        Path sourceDirectory = directoryManager.getSourceDirectory().toPath();
-        Path outputDirectory = directoryManager.getImpactAnalysisOutputDirectory().toPath();
-        Path outputReportFile = analyzer.analyze(sourceDirectory, outputDirectory, impactAnalysisCodeLocationName);
-        logger.info(String.format("Vulnerability Impact Analysis generated report at %s", outputReportFile));
-        return outputReportFile;
-    }
-
-    public CodeLocationCreationData<ImpactAnalysisBatchOutput> uploadImpactAnalysis(Path impactAnalysisPath, NameVersion projectNameVersion, String codeLocationName)
-        throws DetectUserFriendlyException {
-        ImpactAnalysis impactAnalysis = new ImpactAnalysis(impactAnalysisPath, projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocationName);
         try {
-            logger.info(String.format("Preparing to upload impact analysis file: %s", codeLocationName));
-            CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData = impactAnalysisUploadService.uploadImpactAnalysis(impactAnalysis);
-
-            ImpactAnalysisBatchOutput impactAnalysisBatchOutput = codeLocationCreationData.getOutput();
-            impactAnalysisBatchOutput.throwExceptionForError(logger);
-
-            logger.info(String.format("Successfully uploaded impact analysis file: %s", codeLocationName));
+            CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData = uploadImpactAnalysis(impactAnalysisPath, projectNameAndVersion, codeLocationName);
+            ImpactAnalysisToolResult impactAnalysisToolResult = mapCodeLocations(impactAnalysisPath, codeLocationCreationData, projectVersionWrapper);
             eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.SUCCESS));
-            return codeLocationCreationData;
+            return impactAnalysisToolResult;
         } catch (IntegrationException exception) {
-            logger.error(String.format("Failed to upload impact analysis file: %s", exception.getMessage()));
+            logger.error(String.format("Failed to upload and map the Impact Analysis code location: %s", exception.getMessage()));
             eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.FAILURE));
             eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.EXCEPTION, Collections.singletonList(exception.getMessage())));
             throw new DetectUserFriendlyException("Failed to upload impact analysis file.", exception, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         }
     }
 
+    // TODO: Stop doing this once the impact analysis library allows us to specify a working directory. See IDETECT-2185.
+    private void cleanupTempFiles() throws IOException {
+        // Impact Analysis generates temporary directories which need to be moved into directories under Detect control for cleanup.
+        String tempDirectoryPrefix = "blackduck-method-uses";
+        Path tempDirectory = Files.createTempDirectory(tempDirectoryPrefix);
+
+        try (Stream<Path> stream = Files.walk(tempDirectory.getParent(), 1)) {
+            stream.filter(tempPath -> tempPath.getFileName().toString().startsWith(tempDirectoryPrefix))
+                .forEach(tempPath -> FileUtils.deleteQuietly(tempPath.toFile()));
+        } catch (Exception ignore) {
+            // We won't notify the user that we failed to move a temp file for cleanup.
+        }
+    }
+
+    public Path generateImpactAnalysis(String impactAnalysisCodeLocationName, Path outputDirectory) throws IOException {
+        MethodUseAnalyzer analyzer = new MethodUseAnalyzer();
+        Path sourceDirectory = directoryManager.getSourceDirectory().toPath();
+        Path outputReportFile = analyzer.analyze(sourceDirectory, outputDirectory, impactAnalysisCodeLocationName);
+        logger.info(String.format("Vulnerability Impact Analysis generated report at %s", outputReportFile));
+        return outputReportFile;
+    }
+
+    public CodeLocationCreationData<ImpactAnalysisBatchOutput> uploadImpactAnalysis(Path impactAnalysisPath, NameVersion projectNameVersion, String codeLocationName) throws IntegrationException {
+        ImpactAnalysis impactAnalysis = new ImpactAnalysis(impactAnalysisPath, projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocationName);
+        CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData = impactAnalysisUploadService.uploadImpactAnalysis(impactAnalysis);
+        ImpactAnalysisBatchOutput impactAnalysisBatchOutput = codeLocationCreationData.getOutput();
+        impactAnalysisBatchOutput.throwExceptionForError(logger);
+        return codeLocationCreationData;
+
+    }
+
     // TODO: Create a code location mapping service generic enough for all tools.
-    private ImpactAnalysisToolResult mapCodeLocations(Path impactAnalysisPath, CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData, ProjectVersionWrapper projectVersionWrapper) {
+    private ImpactAnalysisToolResult mapCodeLocations(Path impactAnalysisPath, CodeLocationCreationData<ImpactAnalysisBatchOutput> codeLocationCreationData, ProjectVersionWrapper projectVersionWrapper) throws IntegrationException {
         for (ImpactAnalysisOutput output : codeLocationCreationData.getOutput().getOutputs()) {
             ImpactAnalysisUploadView impactAnalysisUploadView = output.getImpactAnalysisUploadView();
             ProjectView projectView = projectVersionWrapper.getProjectView();
@@ -176,9 +197,9 @@ public class BlackDuckImpactAnalysisTool {
             HttpUrl codeLocationUrl = impactAnalysisUploadView.getFirstLink(ImpactAnalysisUploadView.CODE_LOCATION_LINK);
 
             try {
-                logger.info(String.format("Mapping code location %s to project \"%s\" version \"%s\".", codeLocationUrl.string(), projectView.getName(), projectVersionView.getVersionName()));
+                logger.info(String.format("Mapping code location to project \"%s\" version \"%s\".", projectView.getName(), projectVersionView.getVersionName()));
                 mapCodeLocation(projectVersionUrl, codeLocationUrl);
-                logger.info("Successfully mapped code location");
+                logger.info("Successfully mapped code location.");
             } catch (IntegrationException e) {
                 return failImpactAnalysis(e.getMessage());
             }
