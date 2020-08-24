@@ -127,7 +127,7 @@ public class BlackDuckImpactAnalysisTool {
         Path impactAnalysisPath;
         try {
             impactAnalysisPath = generateImpactAnalysis(codeLocationName, outputDirectory);
-            moveTempFiles(outputDirectory);
+            cleanupTempFiles();
         } catch (IOException e) {
             return failImpactAnalysis(e.getMessage());
         }
@@ -155,20 +155,14 @@ public class BlackDuckImpactAnalysisTool {
     }
 
     // TODO: Stop doing this once the impact analysis library allows us to specify a working directory. See IDETECT-2185.
-    private void moveTempFiles(Path outputDirectory) throws IOException {
+    private void cleanupTempFiles() throws IOException {
         // Impact Analysis generates temporary directories which need to be moved into directories under Detect control for cleanup.
         String tempDirectoryPrefix = "blackduck-method-uses";
         Path tempDirectory = Files.createTempDirectory(tempDirectoryPrefix);
 
         try (Stream<Path> stream = Files.walk(tempDirectory.getParent(), 1)) {
             stream.filter(tempPath -> tempPath.getFileName().toString().startsWith(tempDirectoryPrefix))
-                .forEach(tempPath -> {
-                    try {
-                        Path newTempDirectoryLocation = outputDirectory.resolve(tempPath.getFileName());
-                        FileUtils.moveDirectory(tempPath.toFile(), newTempDirectoryLocation.toFile());
-                    } catch (IOException ignore) {
-                    }
-                });
+                .forEach(tempPath -> FileUtils.deleteQuietly(tempPath.toFile()));
         } catch (Exception ignore) {
             // We won't notify the user that we failed to move a temp file for cleanup.
         }
