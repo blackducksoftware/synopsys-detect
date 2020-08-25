@@ -10,6 +10,9 @@ bin/
 *.iml
 out/
 
+# python
+venv/
+
 # build tool
 .gradle/
 build/
