@@ -28,10 +28,12 @@ public class DetectorResult {
     private final boolean passed;
     @NotNull
     private final String description;
+    private final String resultName;
 
-    public DetectorResult(final boolean passed, @NotNull final String description) {
+    public DetectorResult(final boolean passed, @NotNull final String description, final String resultName) {
         this.passed = passed;
         this.description = description;
+        this.resultName = resultName;
     }
 
     public boolean getPassed() {
@@ -41,5 +43,28 @@ public class DetectorResult {
     @NotNull
     public String getDescription() {
         return description;
+    }
+
+    public String getStatusCode() {
+        if (!passed) {
+            return formatResultNameToStatusCode(resultName);
+        }
+        return "PASSED";
+    }
+
+    private String formatResultNameToStatusCode(String resultName) {
+        // Regular Expression
+        String regex = "([a-z])([A-Z]+)";
+
+        // Replacement string
+        String replacement = "$1_$2";
+
+        // Strip fully qualified class name
+        String[] classnamePieces = resultName.split("\\.");
+        String actualResultName = classnamePieces[classnamePieces.length-1].replace("DetectResult", "");
+
+        return actualResultName
+                   .replaceAll(regex, replacement)
+                   .toUpperCase();
     }
 }

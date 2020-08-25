@@ -155,6 +155,45 @@ public class DetectorEvaluation {
         return getDetectorResultDescription(extractable).orElse(NO_MESSAGE);
     }
 
+    public DetectorStatusType getStatus() {
+        if (getStatusCode().equals("PASSED")) {
+            return DetectorStatusType.SUCCESS;
+        }
+        return DetectorStatusType.FAILURE;
+    }
+
+    public String getStatusCode() {
+        if (!isSearchable()) {
+            return searchable.getStatusCode();
+        }
+        if (!isApplicable()) {
+            return applicable.getStatusCode();
+        }
+        if (!isExtractable()) {
+            return extractable.getStatusCode();
+        }
+        if (extraction.getResult() != Extraction.ExtractionResultType.SUCCESS) {
+            return "EXTRACTION_UNSUCCESSFUL"; // TODO (IDETECT-2189)
+        }
+        return "PASSED";
+    }
+
+    public String getStatusReason() {
+        if (!isSearchable()) {
+            return searchable.getDescription();
+        }
+        if (!isApplicable()) {
+            return applicable.getDescription();
+        }
+        if (!isExtractable()) {
+            return extractable.getDescription();
+        }
+        if (extraction.getResult() != Extraction.ExtractionResultType.SUCCESS) {
+            return "See logs for further explanation"; // TODO (IDETECT-2189)
+        }
+        return "Passed";
+    }
+
     public Optional<DetectorEvaluation> getSuccessfullFallback() {
         if (fallbackTo != null) {
             if (fallbackTo.isExtractable()) {
@@ -224,5 +263,9 @@ public class DetectorEvaluation {
 
     public void setFallbackFrom(final DetectorEvaluation fallbackFrom) {
         this.fallbackFrom = fallbackFrom;
+    }
+
+    public enum DetectorStatusType {
+        SUCCESS, FAILURE
     }
 }

@@ -25,7 +25,7 @@ package com.synopsys.integration.detector.result;
 import org.jetbrains.annotations.NotNull;
 
 public class FailedDetectorResult extends DetectorResult {
-    public FailedDetectorResult(@NotNull final String description) {
-        super(false, description);
+    public FailedDetectorResult(@NotNull final String description, final String resultName) {
+        super(false, description, resultName);
     }
 }

@@ -112,15 +112,12 @@ public class FormattedOutputManager {
         detectorOutput.detectorName = evaluation.getDetectorRule().getName();
         detectorOutput.detectorType = evaluation.getDetectorRule().getDetectorType().toString();
 
-        detectorOutput.searchable = evaluation.isSearchable();
-        detectorOutput.applicable = evaluation.isApplicable();
-        detectorOutput.extractable = evaluation.isExtractable();
         detectorOutput.extracted = evaluation.wasExtractionSuccessful();
         detectorOutput.discoverable = evaluation.wasDiscoverySuccessful();
+        detectorOutput.status = evaluation.getStatus().name();
+        detectorOutput.statusCode = evaluation.getStatusCode();
+        detectorOutput.statusReason = evaluation.getStatusReason();
 
-        detectorOutput.searchableReason = evaluation.getSearchabilityMessage();
-        detectorOutput.applicableReason = evaluation.getApplicabilityMessage();
-        detectorOutput.extractableReason = evaluation.getExtractabilityMessage();
         if (evaluation.getDiscovery() != null) {
             detectorOutput.discoveryReason = evaluation.getDiscovery().getDescription();
         }

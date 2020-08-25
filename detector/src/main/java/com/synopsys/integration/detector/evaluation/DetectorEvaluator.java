@@ -85,7 +85,7 @@ public class DetectorEvaluator {
                 detectorEvaluation.setDetectable(detectable);
 
                 final DetectableResult applicable = detectable.applicable();
-                final DetectorResult applicableResult = new DetectorResult(applicable.getPassed(), applicable.toDescription());
+                final DetectorResult applicableResult = new DetectorResult(applicable.getPassed(), applicable.toDescription(), applicable.getClass().getName());
                 detectorEvaluation.setApplicable(applicableResult);
 
                 if (detectorEvaluation.isApplicable()) {
@@ -127,7 +127,7 @@ public class DetectorEvaluator {
                 logger.trace("Checking to see if this detector is a fallback detector.");
                 DetectableResult detectableExtractableResult = getDetectableExtractableResult(detectorEvaluationTree, detectorEvaluation);
 
-                final DetectorResult extractableResult = new DetectorResult(detectableExtractableResult.getPassed(), detectableExtractableResult.toDescription());
+                final DetectorResult extractableResult = new DetectorResult(detectableExtractableResult.getPassed(), detectableExtractableResult.toDescription(), detectableExtractableResult.getClass().getName());
                 detectorEvaluation.setExtractable(extractableResult);
                 if (detectorEvaluation.isExtractable()) {
                     logger.trace("Extractable passed. Done evaluating for now.");
