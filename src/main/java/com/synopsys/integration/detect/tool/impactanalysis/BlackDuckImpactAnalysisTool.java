@@ -37,10 +37,10 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.NullNode;
+import com.synopsys.integration.blackduck.api.core.ResourceMetadata;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
-import com.synopsys.integration.blackduck.api.manual.component.ResourceMetadata;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
@@ -215,13 +215,13 @@ public class BlackDuckImpactAnalysisTool {
         CodeLocationView codeLocationView = new CodeLocationView();
 
         ResourceMetadata resourceMetadata = new ResourceMetadata();
-        resourceMetadata.setHref(codeLocationUrl.string());
+        resourceMetadata.setHref(codeLocationUrl);
         codeLocationView.setMeta(resourceMetadata);
 
         NullNode pathJsonNode = new JsonNodeFactory(false).nullNode();
         codeLocationView.setPatch(pathJsonNode);
 
-        codeLocationView.setMappedProjectVersion(projectVersionUrl);
+        codeLocationView.setMappedProjectVersion(projectVersionUrl.string());
         blackDuckService.put(codeLocationView);
     }
 
