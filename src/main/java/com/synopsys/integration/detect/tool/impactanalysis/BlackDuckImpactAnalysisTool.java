@@ -35,9 +35,12 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.NullNode;
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
+import com.synopsys.integration.blackduck.api.manual.component.ResourceMetadata;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
@@ -118,7 +121,6 @@ public class BlackDuckImpactAnalysisTool {
         String codeLocationPrefix = impactAnalysisOptions.getCodeLocationPrefix();
         String codeLocationSuffix = impactAnalysisOptions.getCodeLocationSuffix();
         String codeLocationName = codeLocationNameManager.createImpactAnalysisCodeLocationName(sourceDirectory, projectName, projectVersionName, codeLocationPrefix, codeLocationSuffix);
-
 
         Path outputDirectory = directoryManager.getImpactAnalysisOutputDirectory().toPath();
         if (null != impactAnalysisOptions.getOutputDirectory()) {
@@ -211,8 +213,15 @@ public class BlackDuckImpactAnalysisTool {
     private void mapCodeLocation(HttpUrl projectVersionUrl, HttpUrl codeLocationUrl) throws IntegrationException {
         // Retrieving a Code Location with just the Project Code Scanner role is not possible so we must construct it ourselves.
         CodeLocationView codeLocationView = new CodeLocationView();
-        codeLocationView.setUrl(codeLocationUrl.string());
-        codeLocationView.setMappedProjectVersion(projectVersionUrl.string());
+
+        ResourceMetadata resourceMetadata = new ResourceMetadata();
+        resourceMetadata.setHref(codeLocationUrl.string());
+        codeLocationView.setMeta(resourceMetadata);
+
+        NullNode pathJsonNode = new JsonNodeFactory(false).nullNode();
+        codeLocationView.setPatch(pathJsonNode);
+
+        codeLocationView.setMappedProjectVersion(projectVersionUrl);
         blackDuckService.put(codeLocationView);
     }
 
