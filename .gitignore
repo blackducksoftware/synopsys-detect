@@ -22,3 +22,5 @@ docs/site/
 docs/generated/
 
 synopsys-detect-*-help.json
+
+docker-test/
