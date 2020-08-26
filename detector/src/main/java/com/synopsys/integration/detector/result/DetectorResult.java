@@ -53,18 +53,11 @@ public class DetectorResult {
     }
 
     private String formatResultNameToStatusCode(String resultName) {
-        // Regular Expression
-        String regex = "([a-z])([A-Z]+)";
-
-        // Replacement string
-        String replacement = "$1_$2";
-
-        // Strip fully qualified class name
         String[] classnamePieces = resultName.split("\\.");
         String actualResultName = classnamePieces[classnamePieces.length-1].replace("DetectResult", "");
 
         return actualResultName
-                   .replaceAll(regex, replacement)
+                   .replaceAll("([a-z])([A-Z]+)", "$1_$2")
                    .toUpperCase();
     }
 }
