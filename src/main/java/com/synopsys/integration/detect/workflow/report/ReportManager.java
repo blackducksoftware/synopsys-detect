@@ -72,7 +72,7 @@ public class ReportManager {
         eventSystem.registerListener(Event.DiscoveriesCompleted, this::discoveriesCompleted);
         eventSystem.registerListener(Event.DetectorsComplete, this::bomToolsComplete);
 
-        eventSystem.registerListener(Event.CodeLocationsCalculated, event -> codeLocationsCompleted(event.getCodeLocationNames()));
+        eventSystem.registerListener(Event.DetectCodeLocationNamesCalculated, event -> codeLocationsCompleted(event.getCodeLocationNames()));
 
         eventSystem.registerListener(Event.DiscoveryCount, this::discoveryCount);
         eventSystem.registerListener(Event.DiscoveryStarted, this::discoveryStarted);

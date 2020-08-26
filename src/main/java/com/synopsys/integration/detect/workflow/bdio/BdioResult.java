@@ -22,24 +22,19 @@
  */
 package com.synopsys.integration.detect.workflow.bdio;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
+import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationNamesResult;
 
 public class BdioResult {
     private final List<UploadTarget> uploadTargets;
+    private final DetectCodeLocationNamesResult codeLocationNamesResult;
     private final boolean isBdio2;
 
-    public BdioResult(final Optional<UploadTarget> uploadTarget, final boolean isBdio2) {
-        this.isBdio2 = isBdio2;
-        this.uploadTargets = new ArrayList<>();
-        uploadTarget.ifPresent(uploadTargets::add);
-    }
-
-    public BdioResult(final List<UploadTarget> uploadTargets, final boolean isBdio2) {
+    public BdioResult(final List<UploadTarget> uploadTargets, final DetectCodeLocationNamesResult codeLocationNamesResult, final boolean isBdio2) {
         this.uploadTargets = uploadTargets;
+        this.codeLocationNamesResult = codeLocationNamesResult;
         this.isBdio2 = isBdio2;
     }
 
@@ -49,5 +44,9 @@ public class BdioResult {
 
     public boolean isBdio2() {
         return isBdio2;
+    }
+
+    public DetectCodeLocationNamesResult getCodeLocationNamesResult() {
+        return codeLocationNamesResult;
     }
 }

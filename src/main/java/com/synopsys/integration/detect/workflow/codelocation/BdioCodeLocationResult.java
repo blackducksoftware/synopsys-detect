@@ -24,18 +24,13 @@ package com.synopsys.integration.detect.workflow.codelocation;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import com.synopsys.integration.detector.base.DetectorType;
 
 public class BdioCodeLocationResult {
     private final List<BdioCodeLocation> bdioCodeLocations;
     private final Map<DetectCodeLocation, String> codeLocationNames;
-    private final Set<DetectorType> failedBomToolGroups;
 
-    public BdioCodeLocationResult(final List<BdioCodeLocation> bdioCodeLocations, final Set<DetectorType> failedBomToolGroups, final Map<DetectCodeLocation, String> codeLocationNames) {
+    public BdioCodeLocationResult(final List<BdioCodeLocation> bdioCodeLocations, final Map<DetectCodeLocation, String> codeLocationNames) {
         this.bdioCodeLocations = bdioCodeLocations;
-        this.failedBomToolGroups = failedBomToolGroups;
         this.codeLocationNames = codeLocationNames;
     }
 
@@ -45,9 +40,5 @@ public class BdioCodeLocationResult {
 
     public List<BdioCodeLocation> getBdioCodeLocations() {
         return bdioCodeLocations;
-    }
-
-    public Set<DetectorType> getFailedBomToolGroupTypes() {
-        return failedBomToolGroups;
     }
 }
