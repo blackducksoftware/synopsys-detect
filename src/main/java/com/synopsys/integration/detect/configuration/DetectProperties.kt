@@ -569,6 +569,16 @@ class DetectProperties {
             setHelp("The path to the rebar3 executable.")
             setGroups(DetectGroup.HEX, DetectGroup.GLOBAL)
         }
+        val DETECT_IMPACT_ANALYSIS_ENABLED = BooleanProperty("detect.impact.analysis.enabled", false).apply {
+            setInfo("Vulnerability Impact Analysis Enabled", "6.5.0")
+            setHelp("If set to true, Detect will attempt to look for *.class files and generate a Vulnerability Impact Analysis Report for upload to Black Duck.")
+            setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL)
+        }
+        val DETECT_IMPACT_ANALYSIS_OUTPUT_PATH = NullablePathProperty("detect.impact.analysis.output.path").apply {
+            setInfo("Impact Analysis Output Directory", "6.5.0")
+            setHelp("The path to the output directory for Impact Analysis reports.", "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.")
+            setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL)
+        }
         val DETECT_INCLUDED_DETECTOR_TYPES = FilterableEnumListProperty("detect.included.detector.types", emptyList(), DetectorType::class.java).apply {
             setInfo("Detector Types Included", "3.0.0")
             setHelp("By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.", "If you want to limit Detect to a subset of its detectors, use this property to specify that subset.")
@@ -994,12 +1004,6 @@ class DetectProperties {
             setInfo("Include Lerna Packages defined as private.", "6.0.0")
             setHelp("Lerna allows for private packages that do not get published. Set this to true to include all packages including private packages.")
             setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
-        }
-
-        val DETECT_IMPACT_ANALYSIS_ENABLED = BooleanProperty("detect.impact.analysis.enabled", false).apply {
-            setInfo("Vulnerability Impact Analysis Enabled", "6.5.0")
-            setHelp("If set to true, Detect will attempt to look for *.class files and generate a Vulnerability Impact Analysis Report for upload to Black Duck.")
-            setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL)
         }
 
         //#endregion Active Properties

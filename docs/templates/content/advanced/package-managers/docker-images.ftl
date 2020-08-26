@@ -3,7 +3,7 @@
 On Linux and Mac, ${solution_name} can invoke Docker Inspector to inspect Linux Docker images to discover packages installed by the Linux package manager.
 For simple use cases, add either ```--detect.docker.image={repo}:{tag}``` or ```--detect.docker.tar={path to a Docker saved tarfile}``` to the ${solution_name} command line.
 
-The documentation for Docker Inspector is available [here](https://blackducksoftware.github.io/blackduck-docker-inspector/latest/overview/).
+The documentation for Docker Inspector is available [here](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/187596884/Black+Duck+Docker+Inspector).
 
 When passed a value for either detect.docker.image or detect.docker.tar,
 ${solution_name} runs Docker Inspector on given image (the "target image"),
@@ -58,17 +58,14 @@ Set the value of the Docker Inspector property docker.platform.top.layer.id to t
 
 In this mode, there may be some loss in match accuracy from the ${blackduck_signature_scanner_name} because, in this scenario, the ${blackduck_signature_scanner_name} may be deprived of some contextual information, such as the operating system files that enable it to determine the Linux distribution, and that that may negatively affect its ability to accurately identify components.
 
-### Inspecting Windows images
-
-The Docker Inspector only runs on Linux and Mac. Running on these systems,
-Docker can neither pull nor build a Windows image.
-Consequently, you cannot run ${solution_name} on a Windows Docker image
-using the either the *detect.docker.image* or *detect.docker.image.id* property.
-Instead, you must, using a Windows system,
-pull and save the target image as a .tar file, and pass that .tar file
-to ${solution_name} using the *detect.docker.tar* property.
+### Inspecting Windows Docker images
 
 Given a Windows Image, Docker Inspector, since it can only discover packages using
 a Linux package manager will not contribute any components to the BOM, but will
 return the container filesystem (in the form of a squashed image),
-which ${solution_name} will scan.
+which ${solution_name} will scan using the ${blackduck_signature_scanner_name}.
+
+### Inspecting Docker images on Windows
+
+For important information on a Docker for Windows bug that might affect ${solution_name}, refer to the
+[troubleshooting page](../../troubleshooting/solutions/#on-windows-error-trying-cleanup).

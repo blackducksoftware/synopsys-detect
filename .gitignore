@@ -10,6 +10,9 @@ bin/
 *.iml
 out/
 
+# python
+venv/
+
 # build tool
 .gradle/
 build/
@@ -22,3 +25,5 @@ docs/site/
 docs/generated/
 
 synopsys-detect-*-help.json
+
+docker-test/

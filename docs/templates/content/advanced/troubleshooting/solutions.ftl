@@ -211,3 +211,32 @@ Or:
 ````
 export BDS_JAVA_HOME=/usr/lib/jvm/java-11-openjdk/jre
 ````
+
+## On Windows: Error trying cleanup
+
+### Symptom
+
+When running on Windows, inspecting a Docker image (e.g. using --detect.docker.image or --detect.docker.tar),
+during shutdown, ${solution_name} logs messages similar to the following:
+````
+2020-08-14 14:31:04 DEBUG [main] --- Error trying cleanup:
+
+java.io.IOException: Unable to delete file: C:\Users\Administrator\blackduck\runs\2020-08-14-21-28-40-106\extractions
+...
+Caused by: java.nio.file.FileSystemException: C:\Users\Administrator\blackduck\runs\2020-08-14-21-28-40-106\extractions\DOCKER-0\application.properties: The process cannot access the file because it is being used by another process.
+````
+
+### Possible cause
+
+This happens when Docker fails to release its lock on the volume mounted directory when it shuts down the image inspector service container
+due to [Docker for Windows issue 394](https://github.com/docker/for-win/issues/394).
+The result is that ${solution_name} cannot fully clean up its output directory,
+and leaves behind empty subdirectories.
+The problem may be intermittent.
+
+### Solution
+
+There is no harm in leaving the directories behind in the short term,
+but we recommend periodically removing them if the problem occurs frequently.
+Restarting Docker will force Docker to release the locks, and enable you to remove the directories.
+

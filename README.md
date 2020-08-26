@@ -30,6 +30,6 @@ For AirGap, please use our [Artifactory](https://sig-repo.synopsys.com/webapp/#/
 
 ## Documentation
 
-The latest documentation is [here](https://blackducksoftware.github.io/synopsys-detect/latest/).
+The latest documentation is [here](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/62423113/Synopsys+Detect).
 
 Links to other versions can be found [here](https://detect.synopsys.com/docs).

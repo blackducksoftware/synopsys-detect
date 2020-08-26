@@ -402,7 +402,9 @@ public class RunManager {
             codeLocationWaitData.addCodeLocationNames(impactAnalysisToolResult.getCodeLocationNames()); */
 
             if (impactAnalysisToolResult.isSuccessful()) {
-                logger.info("Vulnerability impact analysis successful.");
+                logger.info("Vulnerability Impact Analysis successful.");
+            } else {
+                logger.warn("Something went wrong with the Vulnerability Impact Analysis tool.");
             }
 
             logger.info("Vulnerability Impact Analysis tool actions finished.");
