@@ -86,8 +86,8 @@ def main():
                         raise Exception()
                     project.children = project.children + [requirement]
                 except:
-                    if req is not None and req.req is not None:
-                        print('--' + req.req.name)
+                    if req is not None and package_name is not None:
+                        print('--' + package_name)
         except AssertionError:
             print('r?' + requirements_path)
         except:
