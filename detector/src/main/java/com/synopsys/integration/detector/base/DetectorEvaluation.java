@@ -36,7 +36,8 @@ import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class DetectorEvaluation {
-    public static final String NO_MESSAGE = "Unknown";
+    private static final String NO_MESSAGE = "Unknown";
+    private static final String PASSED_RESULT = "PassedDetectorResult";
 
     private final DetectorRule detectorRule;
     private Detectable detectable;
@@ -156,26 +157,26 @@ public class DetectorEvaluation {
     }
 
     public DetectorStatusType getStatus() {
-        if (getStatusCode().equals("PASSED")) {
+        if (getResultClassName().equals(PASSED_RESULT)) {
             return DetectorStatusType.SUCCESS;
         }
         return DetectorStatusType.FAILURE;
     }
 
-    public String getStatusCode() {
+    public String getResultClassName() {
         if (!isSearchable()) {
-            return searchable.getStatusCode();
+            return searchable.getResultClassName();
         }
         if (!isApplicable()) {
-            return applicable.getStatusCode();
+            return applicable.getResultClassName();
         }
         if (!isExtractable()) {
-            return extractable.getStatusCode();
+            return extractable.getResultClassName();
         }
         if (extraction.getResult() != Extraction.ExtractionResultType.SUCCESS) {
             return "EXTRACTION_UNSUCCESSFUL"; // TODO (IDETECT-2189)
         }
-        return "PASSED";
+        return PASSED_RESULT;
     }
 
     public String getStatusReason() {
