@@ -39,12 +39,14 @@ import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationWaitData;
 import com.synopsys.integration.detect.workflow.blackduck.policy.PolicyChecker;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.result.ReportDetectResult;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
+import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckPostActions {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -56,11 +58,11 @@ public class BlackDuckPostActions {
         this.eventSystem = eventSystem;
     }
 
-    public void perform(BlackDuckPostOptions blackDuckPostOptions, CodeLocationWaitData codeLocationWaitData, ProjectVersionWrapper projectVersionWrapper, long timeoutInSeconds)
+    public void perform(BlackDuckPostOptions blackDuckPostOptions, CodeLocationWaitData codeLocationWaitData, ProjectVersionWrapper projectVersionWrapper, NameVersion projectNameVersion, long timeoutInSeconds)
         throws DetectUserFriendlyException {
         try {
             if (blackDuckPostOptions.shouldWaitForResults()) {
-                waitForCodeLocations(codeLocationWaitData, timeoutInSeconds);
+                waitForCodeLocations(codeLocationWaitData, timeoutInSeconds, projectNameVersion);
             }
             if (blackDuckPostOptions.shouldPerformPolicyCheck()) {
                 checkPolicy(blackDuckPostOptions, projectVersionWrapper.getProjectVersionView());
@@ -81,18 +83,19 @@ public class BlackDuckPostActions {
         }
     }
 
-    private void waitForCodeLocations(CodeLocationWaitData codeLocationWaitData, long timeoutInSeconds) throws DetectUserFriendlyException, InterruptedException, IntegrationException {
+    private void waitForCodeLocations(CodeLocationWaitData codeLocationWaitData, long timeoutInSeconds, NameVersion projectNameVersion) throws DetectUserFriendlyException, InterruptedException, IntegrationException {
         logger.info("Detect must wait for bom tool calculations to finish.");
         CodeLocationCreationService codeLocationCreationService = blackDuckServicesFactory.createCodeLocationCreationService();
         if (codeLocationWaitData.getExpectedNotificationCount() > 0) {
             //TODO fix this when NotificationTaskRange doesn't include task start time
             //ekerwin - The start time of the task is the earliest time a code location was created.
             // In order to wait the full timeout, we have to not use that start time and instead use now().
+            //TODO: Handle the possible null pointer here.
             NotificationTaskRange notificationTaskRange = new NotificationTaskRange(System.currentTimeMillis(), codeLocationWaitData.getNotificationRange().getStartDate(),
                 codeLocationWaitData.getNotificationRange().getEndDate());
             CodeLocationWaitResult result = codeLocationCreationService.waitForCodeLocations(
                 notificationTaskRange,
-                codeLocationWaitData.getProjectNameVersion(),
+                projectNameVersion,
                 codeLocationWaitData.getCodeLocationNames(),
                 codeLocationWaitData.getExpectedNotificationCount(),
                 timeoutInSeconds

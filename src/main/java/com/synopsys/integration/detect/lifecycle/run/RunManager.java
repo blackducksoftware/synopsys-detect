@@ -85,12 +85,14 @@ import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostActions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
-import com.synopsys.integration.detect.workflow.blackduck.CodeLocationWaitData;
 import com.synopsys.integration.detect.workflow.blackduck.DetectBdioUploadService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCodeLocationUnmapService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
+import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
+import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResultCalculator;
+import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -337,14 +339,14 @@ public class RunManager {
         BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations(), runOptions.shouldUseBdio2());
         eventSystem.publishEvent(Event.DetectCodeLocationNamesCalculated, bdioResult.getCodeLocationNamesResult());
 
-        CodeLocationWaitData codeLocationWaitData = new CodeLocationWaitData();
+        CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
         if (!bdioResult.getUploadTargets().isEmpty()) {
             logger.info(String.format("Created %d BDIO files.", bdioResult.getUploadTargets().size()));
             if (null != blackDuckServicesFactory) {
                 logger.debug("Uploading BDIO files.");
                 DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService();
                 CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult, blackDuckServicesFactory);
-                codeLocationWaitData.addWaitForCreationData(uploadBatchOutputCodeLocationCreationData);
+                codeLocationAccumulator.addWaitableCodeLocation(uploadBatchOutputCodeLocationCreationData);
             }
         } else {
             logger.debug("Did not create any BDIO files.");
@@ -359,7 +361,7 @@ public class RunManager {
             BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
             SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar());
             if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
-                codeLocationWaitData.addWaitForCreationData(signatureScannerToolResult.getCreationData().get());
+                codeLocationAccumulator.addWaitableCodeLocation(signatureScannerToolResult.getCreationData().get());
             } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
                 eventSystem.publishEvent(Event.StatusSummary, new Status("SIGNATURE_SCAN", StatusType.FAILURE));
                 eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(signatureScannerToolResult.getResult().toString())));
@@ -378,7 +380,7 @@ public class RunManager {
                 if (blackDuckBinaryScanner.shouldRun()) {
                     BinaryScanToolResult result = blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
                     if (result.isSuccessful()) {
-                        codeLocationWaitData.addWaitForCreationData(result.getCodeLocationCreationData());
+                        codeLocationAccumulator.addWaitableCodeLocation(result.getCodeLocationCreationData());
                     }
                 }
             }
@@ -398,8 +400,8 @@ public class RunManager {
             logger.info("Will include the Vulnerability Impact Analysis tool.");
             ImpactAnalysisToolResult impactAnalysisToolResult = blackDuckImpactAnalysisTool.performImpactAnalysisActions(projectNameVersion, projectVersionWrapper);
 
-            /* TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020
-            codeLocationWaitData.addCodeLocationNames(impactAnalysisToolResult.getCodeLocationNames()); */
+            /* TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020 */
+            codeLocationAccumulator.addNonWaitableCodeLocation(impactAnalysisToolResult.getCodeLocationNames());
 
             if (impactAnalysisToolResult.isSuccessful()) {
                 logger.info("Vulnerability Impact Analysis successful.");
@@ -415,13 +417,16 @@ public class RunManager {
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        eventSystem.publishEvent(Event.CodeLocationsCompleted, codeLocationWaitData.getCodeLocationNames());
+        //We have finished code locations.
+        CodeLocationResultCalculator waitCalculator = new CodeLocationResultCalculator();
+        CodeLocationResults codeLocationResults = waitCalculator.calculateCodeLocationResults(codeLocationAccumulator);
+        eventSystem.publishEvent(Event.CodeLocationsCompleted, codeLocationResults.getAllCodeLocationNames());
 
         if (null != blackDuckServicesFactory) {
             logger.info("Will perform Black Duck post actions.");
             BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
             BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory, eventSystem);
-            blackDuckPostActions.perform(blackDuckPostOptions, codeLocationWaitData, projectVersionWrapper, detectConfigurationFactory.findTimeoutInSeconds());
+            blackDuckPostActions.perform(blackDuckPostOptions, codeLocationResults.getCodeLocationWaitData(), projectVersionWrapper, projectNameVersion, detectConfigurationFactory.findTimeoutInSeconds());
 
             if ((!bdioResult.getUploadTargets().isEmpty() || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
                 Optional<String> componentsLink = Optional.ofNullable(projectVersionWrapper)

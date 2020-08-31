@@ -35,7 +35,7 @@ import com.synopsys.integration.detect.workflow.report.writer.TraceLogReportWrit
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
-public class ReportManager {
+public class ReportListener {
     // all entry points to reporting
     private final EventSystem eventSystem;
 
@@ -50,12 +50,12 @@ public class ReportManager {
     private final ExtractionLogger extractionLogger;
     private final DiscoveryLogger discoveryLogger;
 
-    public static ReportManager createDefault(final EventSystem eventSystem) {
-        return new ReportManager(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new DiscoverySummaryReporter(), new DetectorIssuePublisher(), new ExtractionLogger(),
+    public static ReportListener createDefault(final EventSystem eventSystem) {
+        return new ReportListener(eventSystem, new PreparationSummaryReporter(), new ExtractionSummaryReporter(), new SearchSummaryReporter(), new DiscoverySummaryReporter(), new DetectorIssuePublisher(), new ExtractionLogger(),
             new DiscoveryLogger());
     }
 
-    public ReportManager(final EventSystem eventSystem,
+    public ReportListener(final EventSystem eventSystem,
         final PreparationSummaryReporter preparationSummaryReporter, final ExtractionSummaryReporter extractionSummaryReporter, final SearchSummaryReporter searchSummaryReporter,
         final DiscoverySummaryReporter discoverySummaryReporter, final DetectorIssuePublisher detectorIssuePublisher,
         final ExtractionLogger extractionLogger, final DiscoveryLogger discoveryLogger) {
