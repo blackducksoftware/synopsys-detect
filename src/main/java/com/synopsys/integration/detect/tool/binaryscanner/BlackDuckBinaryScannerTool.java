@@ -25,7 +25,9 @@ package com.synopsys.integration.detect.tool.binaryscanner;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,7 +45,9 @@ import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanU
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
+import com.synopsys.integration.detect.tool.DetectableToolResult;
 import com.synopsys.integration.detect.util.DetectZipUtil;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -79,24 +83,22 @@ public class BlackDuckBinaryScannerTool {
         this.eventSystem = eventSystem;
     }
 
-    public boolean shouldRun() {
+    public Map<File, NameVersion> determineBinaryScanPaths(DockerTargetData dockerTargetData, NameVersion binaryScanOptionsNameVersion) throws DetectUserFriendlyException {
+        Map<File, NameVersion> binaryScanFiles = new HashMap<>();
+        if (dockerTargetData.hasTarget()) {
+            NameVersion nameVersion = dockerTargetData.getNameVersion();
+            if (dockerTargetData.getUnsquashedDockerTar().isPresent()) {
+                binaryScanFiles.put(dockerTargetData.getUnsquashedDockerTar().get(), nameVersion);
+            }
+            if (dockerTargetData.getSquashedDockerTar().isPresent()) {
+                binaryScanFiles.put(dockerTargetData.getSquashedDockerTar().get(), nameVersion);
+            }
+        }
         if (binaryScanOptions.getSingleTargetFilePath().isPresent()) {
             logger.info("Binary scan will upload the single provided binary file path.");
-            return true;
+            binaryScanFiles.put(binaryScanOptions.getSingleTargetFilePath().get().toFile(), binaryScanOptionsNameVersion);
         } else if (binaryScanOptions.getMultipleTargetFileNamePatterns().stream().anyMatch(StringUtils::isNotBlank)) {
             logger.info("Binary scan will upload all files in the source directory that match the provided name patterns.");
-            return true;
-        }
-        return false;
-    }
-
-    public BinaryScanToolResult performBinaryScanActions(final NameVersion projectNameVersion) throws DetectUserFriendlyException {
-
-        File binaryUpload = null;
-        final Optional<Path> singleTargetFilePath = binaryScanOptions.getSingleTargetFilePath();
-        if (singleTargetFilePath.isPresent()) {
-            binaryUpload = singleTargetFilePath.get().toFile();
-        } else if (binaryScanOptions.getMultipleTargetFileNamePatterns().stream().anyMatch(StringUtils::isNotBlank)) {
             final List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), binaryScanOptions.getMultipleTargetFileNamePatterns(), 0);
             if (multipleTargets != null && multipleTargets.size() > 0) {
                 logger.info("Binary scan found {} files to archive for binary scan upload.", multipleTargets.size());
@@ -106,25 +108,36 @@ public class BlackDuckBinaryScannerTool {
                     final Map<String, Path> uploadTargets = multipleTargets.stream().collect(Collectors.toMap(File::getName, File::toPath));
                     DetectZipUtil.zip(zip, uploadTargets);
                     logger.info("Binary scan created the following zip for upload: " + zip.toPath());
-                    binaryUpload = zip;
+                    binaryScanFiles.put(zip, binaryScanOptionsNameVersion);
                 } catch (final IOException e) {
                     throw new DetectUserFriendlyException("Unable to create binary scan archive for upload.", e, ExitCodeType.FAILURE_UNKNOWN_ERROR);
                 }
             }
         }
+        return binaryScanFiles;
+    }
 
-        if (binaryUpload != null && binaryUpload.isFile() && binaryUpload.canRead()) {
-            final String name = projectNameVersion.getName();
-            final String version = projectNameVersion.getVersion();
-            final BinaryScanUploadService uploadService = blackDuckServicesFactory.createBinaryScanUploadService();
-            final CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData = uploadBinaryScanFile(uploadService, binaryUpload, name, version);
-            return BinaryScanToolResult.SUCCESS(codeLocationCreationData);
+    public List<BinaryScanToolResult> performBinaryScanActions(Map<File, NameVersion> binaryUploadTargets) throws DetectUserFriendlyException {
+        List<BinaryScanToolResult> results = new ArrayList<>();
+        for (Map.Entry<File, NameVersion> binaryUploadTarget : binaryUploadTargets.entrySet()) {
+            File binaryUpload = binaryUploadTarget.getKey();
+            NameVersion nameVersion = binaryUploadTarget.getValue();
+            if (binaryUpload != null && binaryUpload.isFile() && binaryUpload.canRead()) {
+                final String name = nameVersion.getName();
+                final String version = nameVersion.getVersion();
+                final BinaryScanUploadService uploadService = blackDuckServicesFactory.createBinaryScanUploadService();
+                CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData = uploadBinaryScanFile(uploadService, binaryUpload, name, version);
+                results.add(BinaryScanToolResult.SUCCESS(codeLocationCreationData));
+            }
+        }
+        if (!results.isEmpty()) {
+            return results;
         } else {
             logger.warn("Binary scan file did not exist, is not a file or can't be read.");
             eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.FAILURE));
             eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.BINARY_SCAN, Arrays.asList("Binary scan file did not exist, is not a file or can't be read.")));
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_BLACKDUCK_FEATURE_ERROR, STATUS_KEY));
-            return BinaryScanToolResult.FAILURE();
+            return Arrays.asList(BinaryScanToolResult.FAILURE());
         }
     }
 

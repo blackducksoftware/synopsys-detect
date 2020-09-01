@@ -43,6 +43,7 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.workflow.blackduck.ExclusionPatternCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -81,10 +82,10 @@ public class BlackDuckSignatureScanner {
         this.blackDuckServerConfig = blackDuckServerConfig;
     }
 
-    public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, File dockerTarFile) throws IntegrationException, IOException, DetectUserFriendlyException {
-        List<SignatureScanPath> signatureScanPaths = determinePathsAndExclusions(projectNameVersion, signatureScannerOptions.getMaxDepth(), dockerTarFile);
+    public ScanBatchOutput performScanActions(NameVersion projectNameVersion, File installDirectory, DockerTargetData dockerTargetData) throws IntegrationException, IOException, DetectUserFriendlyException {
+        List<SignatureScanPath> signatureScanPaths = determinePathsAndExclusions(projectNameVersion, signatureScannerOptions.getMaxDepth(), dockerTargetData);
 
-        ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTarFile);
+        ScanBatchBuilder scanJobBuilder = createDefaultScanBatchBuilder(projectNameVersion, installDirectory, signatureScanPaths, dockerTargetData);
         scanJobBuilder.fromBlackDuckServerConfig(blackDuckServerConfig);//when offline, we must still call this with 'null' as a workaround for library issues, so offline scanner must be created with this set to null.
         ScanBatch scanJob;
         try {
@@ -150,7 +151,7 @@ public class BlackDuckSignatureScanner {
         eventSystem.publishEvent(Event.StatusSummary, new SignatureScanStatus(signatureScannerReport.getSignatureScanPath().getTargetCanonicalPath(), StatusType.FAILURE));
     }
 
-    private List<SignatureScanPath> determinePathsAndExclusions(NameVersion projectNameVersion, Integer maxDepth, File dockerTarFile) throws IOException {
+    private List<SignatureScanPath> determinePathsAndExclusions(NameVersion projectNameVersion, Integer maxDepth, DockerTargetData dockerTargetData) throws IOException {
         List<Path> providedSignatureScanPaths = signatureScannerOptions.getSignatureScannerPaths();
         boolean userProvidedScanTargets = null != providedSignatureScanPaths && !providedSignatureScanPaths.isEmpty();
         List<String> providedExclusionPatterns = signatureScannerOptions.getExclusionPatterns();
@@ -163,9 +164,11 @@ public class BlackDuckSignatureScanner {
                 SignatureScanPath scanPath = createScanPath(path, maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
                 signatureScanPaths.add(scanPath);
             }
-        } else if (dockerTarFile != null) {
-            SignatureScanPath scanPath = createScanPath(dockerTarFile.getCanonicalFile().toPath(), maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
-            signatureScanPaths.add(scanPath);
+        } else if (dockerTargetData.hasTarget()) {
+            if (dockerTargetData.getSquashedDockerTar().isPresent()) {
+                SignatureScanPath scanPath = createScanPath(dockerTargetData.getSquashedDockerTar().get().getCanonicalFile().toPath(), maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
+                signatureScanPaths.add(scanPath);
+            }
         } else {
             Path sourcePath = directoryManager.getSourceDirectory().getAbsoluteFile().toPath();
             if (userProvidedScanTargets) {
@@ -193,7 +196,7 @@ public class BlackDuckSignatureScanner {
         return signatureScanPath;
     }
 
-    protected ScanBatchBuilder createDefaultScanBatchBuilder(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, File dockerTarFile) {
+    protected ScanBatchBuilder createDefaultScanBatchBuilder(NameVersion projectNameVersion, File installDirectory, List<SignatureScanPath> signatureScanPaths, DockerTargetData dockerTargetData) {
         ScanBatchBuilder scanJobBuilder = new ScanBatchBuilder();
         scanJobBuilder.scanMemoryInMegabytes(signatureScannerOptions.getScanMemory());
         scanJobBuilder.installDirectory(installDirectory);
@@ -221,7 +224,7 @@ public class BlackDuckSignatureScanner {
         String suffix = signatureScannerOptions.getCodeLocationSuffix().orElse(null);
 
         for (SignatureScanPath scanPath : signatureScanPaths) {
-            String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, scanPath.getTargetPath(), dockerTarFile, projectName, projectVersionName, prefix, suffix);
+            String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, scanPath.getTargetPath(), dockerTargetData, projectName, projectVersionName, prefix, suffix);
             scanJobBuilder.addTarget(ScanTarget.createBasicTarget(scanPath.getTargetCanonicalPath(), scanPath.getExclusions(), codeLocationName));
         }
 

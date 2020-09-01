@@ -26,6 +26,7 @@ import java.io.File;
 
 import org.springframework.lang.Nullable;
 
+import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.util.NameVersion;
 
 public class CodeLocationNameManager {
@@ -65,12 +66,12 @@ public class CodeLocationNameManager {
         return codeLocationName;
     }
 
-    public String createScanCodeLocationName(File sourcePath, File scanTargetPath, @Nullable File dockerTar, String projectName, String projectVersionName, String prefix, String suffix) {
+    public String createScanCodeLocationName(File sourcePath, File scanTargetPath, DockerTargetData dockerTargetData, String projectName, String projectVersionName, String prefix, String suffix) {
         String scanCodeLocationName;
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
             scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN);
-        } else if (dockerTar != null) {
-            scanCodeLocationName = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTar, projectName, projectVersionName, prefix, suffix);
+        } else if (dockerTargetData.getSquashedDockerTar().isPresent()) {
+            scanCodeLocationName = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTargetData.getSquashedDockerTar().get(), projectName, projectVersionName, prefix, suffix);
         } else {
             scanCodeLocationName = codeLocationNameGenerator.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
         }

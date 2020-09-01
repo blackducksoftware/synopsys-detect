@@ -43,6 +43,7 @@ import com.synopsys.integration.detect.configuration.connection.ConnectionFactor
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.SilentIntLogger;
@@ -60,8 +61,7 @@ public class BlackDuckSignatureScannerTool {
         this.detectContext = detectContext;
     }
 
-    // TODO: Don't accept an Optional as a parameter.
-    public SignatureScannerToolResult runScanTool(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, Optional<File> dockerTar) throws DetectUserFriendlyException {
+    public SignatureScannerToolResult runScanTool(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
         DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         ConnectionFactory connectionFactory = detectContext.getBean(ConnectionFactory.class);
         DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
@@ -114,13 +114,13 @@ public class BlackDuckSignatureScannerTool {
                 // Since we are online, we need to calculate the notification task range to wait for code locations.
                 CodeLocationCreationService codeLocationCreationService = blackDuckRunData.getBlackDuckServicesFactory().get().createCodeLocationCreationService();
                 NotificationTaskRange notificationTaskRange = codeLocationCreationService.calculateCodeLocationRange();
-                ScanBatchOutput scanBatchOutput = blackDuckSignatureScanner.performScanActions(projectNameVersion, installDirectory, dockerTar.orElse(null));
+                ScanBatchOutput scanBatchOutput = blackDuckSignatureScanner.performScanActions(projectNameVersion, installDirectory, dockerTargetData);
                 CodeLocationCreationData<ScanBatchOutput> codeLocationCreationData = new CodeLocationCreationData<>(notificationTaskRange, scanBatchOutput);
                 return SignatureScannerToolResult.createOnlineResult(codeLocationCreationData);
             } else {
                 logger.debug("Signature scan is offline.");
                 // Since we are offline, we can just perform the scan actions.
-                ScanBatchOutput scanBatchOutput = blackDuckSignatureScanner.performScanActions(projectNameVersion, installDirectory, dockerTar.orElse(null));
+                ScanBatchOutput scanBatchOutput = blackDuckSignatureScanner.performScanActions(projectNameVersion, installDirectory, dockerTargetData);
                 return SignatureScannerToolResult.createOfflineResult(scanBatchOutput);
             }
         } catch (IOException | IntegrationException e) {
