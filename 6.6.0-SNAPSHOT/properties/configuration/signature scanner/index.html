@@ -836,6 +836,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../binary scanner/" title="binary scanner" class="md-nav__link">
+      binary scanner
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../blackduck server/" title="blackduck server" class="md-nav__link">
       blackduck server
     </a>
@@ -1017,20 +1029,6 @@
   
     <label class="md-nav__title" for="__toc">Table of contents</label>
     <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#binary-scan-target" class="md-nav__link">
-    Binary Scan Target
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#binary-scan-filename-patterns" class="md-nav__link">
-    Binary Scan Filename Patterns
-  </a>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#signature-scanner-arguments" class="md-nav__link">
@@ -1536,20 +1534,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#binary-scan-target" class="md-nav__link">
-    Binary Scan Target
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#binary-scan-filename-patterns" class="md-nav__link">
-    Binary Scan Filename Patterns
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#signature-scanner-arguments" class="md-nav__link">
     Signature Scanner Arguments
   </a>
@@ -1777,92 +1761,6 @@
                 
                 
                 <h1 id="signature-scanner">signature scanner<a class="headerlink" href="#signature-scanner" title="Permanent link">#</a></h1>
-<h2 id="binary-scan-target">Binary Scan Target<a class="headerlink" href="#binary-scan-target" title="Permanent link">#</a></h2>
-<pre><code>--detect.binary.scan.file.path
-</code></pre>
-
-<p>If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns. The BINARY_SCAN tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the BINARY_SCAN tool is invoked.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.2.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional Path</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="binary-scan-filename-patterns">Binary Scan Filename Patterns<a class="headerlink" href="#binary-scan-filename-patterns" title="Permanent link">#</a></h2>
-<pre><code>--detect.binary.scan.file.name.patterns
-</code></pre>
-
-<p>If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String List</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="signature-scanner-arguments">Signature Scanner Arguments<a class="headerlink" href="#signature-scanner-arguments" title="Permanent link">#</a></h2>
 <pre><code>--detect.blackduck.signature.scanner.arguments
 </code></pre>

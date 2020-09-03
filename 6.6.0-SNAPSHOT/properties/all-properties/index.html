@@ -837,6 +837,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../configuration/binary scanner/" title="binary scanner" class="md-nav__link">
+      binary scanner
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../configuration/blackduck server/" title="blackduck server" class="md-nav__link">
       blackduck server
     </a>
@@ -1838,6 +1850,25 @@
 </tr>
 </tbody>
 </table>
+<p><a href="../configuration/binary scanner">binary scanner</a></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../configuration/binary scanner/#Binary_Scan_Target">detect.binary.scan.file.path</a></td>
+<td>Binary Scan Target: If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns. The BINARY_SCAN tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the BINARY_SCAN tool is invoked. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/binary scanner/#Binary_Scan_Filename_Patterns">detect.binary.scan.file.name.patterns</a></td>
+<td>Binary Scan Filename Patterns: If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details. <br /><br /></td>
+</tr>
+</tbody>
+</table>
 <p><a href="../detectors/maven">maven</a></p>
 <table>
 <thead>
@@ -2306,14 +2337,6 @@
 </tr>
 </thead>
 <tbody>
-<tr>
-<td><a href="../configuration/signature scanner/#Binary_Scan_Target">detect.binary.scan.file.path</a></td>
-<td>Binary Scan Target: If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns. The BINARY_SCAN tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the BINARY_SCAN tool is invoked. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../configuration/signature scanner/#Binary_Scan_Filename_Patterns">detect.binary.scan.file.name.patterns</a></td>
-<td>Binary Scan Filename Patterns: If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details. <br /><br /></td>
-</tr>
 <tr>
 <td><a href="../configuration/signature scanner/#Signature_Scanner_Arguments">detect.blackduck.signature.scanner.arguments</a></td>
 <td>Signature Scanner Arguments: Additional arguments to use when running the Black Duck signature scanner. <br /><br /></td>
