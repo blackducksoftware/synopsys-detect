@@ -187,12 +187,12 @@ class DetectProperties {
         val DETECT_BINARY_SCAN_FILE = NullablePathProperty("detect.binary.scan.file.path").apply {
             setInfo("Binary Scan Target", "4.2.0")
             setHelp("If specified, this file and this file only will be uploaded for binary scan analysis. This property takes precedence over detect.binary.scan.file.name.patterns. The BINARY_SCAN tool does not provide project and version name defaults to Detect, so you need to set project and version names via properties when only the BINARY_SCAN tool is invoked.")
-            setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_PATH)
+            setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH)
         }
         val DETECT_BINARY_SCAN_FILE_NAME_PATTERNS = StringListProperty("detect.binary.scan.file.name.patterns", emptyList()).apply {
             setInfo("Binary Scan Filename Patterns", "6.0.0")
             setHelp("If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
-            setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_PATH)
+            setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH)
         }
         val DETECT_BITBAKE_BUILD_ENV_NAME = StringProperty("detect.bitbake.build.env.name", "oe-init-build-env").apply {
             setInfo("BitBake Init Script Name", "4.4.0")
