@@ -59,7 +59,7 @@ public class FormattedOutputManager {
         eventSystem.registerListener(Event.StatusSummary, this::addStatusSummary);
         eventSystem.registerListener(Event.Issue, this::addIssue);
         eventSystem.registerListener(Event.ResultProduced, this::addDetectResult);
-        eventSystem.registerListener(Event.CodeLocationNamesAdded, this::codeLocationsAdded);
+        eventSystem.registerListener(Event.CodeLocationsCompleted, this::codeLocationsCompleted);
         eventSystem.registerListener(Event.UnrecognizedPaths, this::addUnrecognizedPaths);
         eventSystem.registerListener(Event.ProjectNameVersionChosen, this::projectNameVersionChosen);
     }
@@ -141,7 +141,7 @@ public class FormattedOutputManager {
         this.detectorToolResult = detectorToolResult;
     }
 
-    private void codeLocationsAdded(final Collection<String> codeLocations) {
+    private void codeLocationsCompleted(final Collection<String> codeLocations) {
         this.codeLocations.addAll(codeLocations);
     }
 

@@ -19,6 +19,10 @@
 # under the License.
 #
 
+# Uncomment for debugging. Can't use localhost. https://www.jetbrains.com/help/pycharm/remote-debugging-with-product.html#remote-debug-config
+# import pydevd_pycharm
+# pydevd_pycharm.settrace('<Host IP Address>', port=5002, stdoutToServer=True, stderrToServer=True)
+
 import getopt
 import os
 import pip
@@ -106,6 +110,11 @@ class DependencyNode(object):
 
 
 def get_package_by_name(package_name):
+    try:
+        # TODO: By using pkg_resources.Requirement.parse to get the correct key, we may not need to attempt the other methods. Robust tests are needed to confirm.
+        return pkg_resources.working_set.by_key[pkg_resources.Requirement.parse(package_name).key]
+    except:
+        pass
     try:
         return pkg_resources.working_set.by_key[package_name]
     except:

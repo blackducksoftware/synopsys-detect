@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,21 +31,29 @@ import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatch;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadOutput;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectBdioUploadService {
     private final Logger logger = LoggerFactory.getLogger(DetectBdioUploadService.class);
 
-    public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(String blackduckUrl, final List<UploadTarget> uploadTargets, final BdioUploader bdioUploader) throws DetectUserFriendlyException, IntegrationException {
+    public CodeLocationCreationData<UploadBatchOutput> uploadBdioFiles(final BdioResult bdioResult, final BlackDuckServicesFactory blackDuckServicesFactory) throws DetectUserFriendlyException, IntegrationException {
         final UploadBatch uploadBatch = new UploadBatch();
-        for (final UploadTarget uploadTarget : uploadTargets) {
-            logger.debug(String.format("Uploading %s to %s", uploadTarget.getUploadFile().getName(), blackduckUrl));
+        for (final UploadTarget uploadTarget : bdioResult.getUploadTargets()) {
+            logger.debug(String.format("Uploading %s", uploadTarget.getUploadFile().getName()));
             uploadBatch.addUploadTarget(uploadTarget);
         }
 
-        final CodeLocationCreationData<UploadBatchOutput> response = bdioUploader.uploadBdio(uploadBatch);
+        final CodeLocationCreationData<UploadBatchOutput> response;
+        if (bdioResult.isBdio2()) {
+            response = blackDuckServicesFactory.createBdio2UploadService().uploadBdio(uploadBatch);
+        } else {
+            response = blackDuckServicesFactory.createBdioUploadService().uploadBdio(uploadBatch);
+        }
+
         for (final UploadOutput uploadOutput : response.getOutput()) {
             if (uploadOutput.getResult() == Result.FAILURE) {
                 logger.error(String.format("Failed to upload code location: %s", uploadOutput.getCodeLocationName()));

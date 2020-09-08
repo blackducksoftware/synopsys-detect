@@ -67,7 +67,15 @@ public class CodeLocationBdioCreator {
         this.detectInfo = detectInfo;
     }
 
-    public List<UploadTarget> createBdio1Files(final File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    public List<UploadTarget> createBdioFiles(final File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, final NameVersion projectNameVersion, boolean bdio2) throws DetectUserFriendlyException {
+        if (bdio2) {
+            return createBdio2Files(bdioOutput, bdioCodeLocations, projectNameVersion);
+        } else {
+            return createBdio1Files(bdioOutput, bdioCodeLocations, projectNameVersion);
+        }
+    }
+
+    private List<UploadTarget> createBdio1Files(final File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
         final List<UploadTarget> uploadTargets = new ArrayList<>();
         for (final BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
             final String codeLocationName = bdioCodeLocation.getCodeLocationName();
@@ -84,7 +92,7 @@ public class CodeLocationBdioCreator {
         return uploadTargets;
     }
 
-    public List<UploadTarget> createBdio2Files(final File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
+    private List<UploadTarget> createBdio2Files(final File bdioOutput, final List<BdioCodeLocation> bdioCodeLocations, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
         final List<UploadTarget> uploadTargets = new ArrayList<>();
         for (final BdioCodeLocation bdioCodeLocation : bdioCodeLocations) {
             final String codeLocationName = bdioCodeLocation.getCodeLocationName();

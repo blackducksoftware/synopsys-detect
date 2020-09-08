@@ -56,7 +56,7 @@ import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detect.workflow.report.ReportManager;
+import com.synopsys.integration.detect.workflow.report.ReportListener;
 import com.synopsys.integration.detect.workflow.report.output.FormattedOutputManager;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
@@ -101,7 +101,7 @@ public class Application implements ApplicationRunner {
         final ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
         final ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
 
-        final ReportManager reportManager = ReportManager.createDefault(eventSystem);
+        ReportListener.createDefault(eventSystem);
         final FormattedOutputManager formattedOutputManager = new FormattedOutputManager(eventSystem);
 
         //Before boot even begins, we create a new Spring context for Detect to work within.

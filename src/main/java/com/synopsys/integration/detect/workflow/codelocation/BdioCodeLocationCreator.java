@@ -26,20 +26,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
@@ -58,8 +54,6 @@ public class BdioCodeLocationCreator {
     }
 
     public BdioCodeLocationResult createFromDetectCodeLocations(final List<DetectCodeLocation> detectCodeLocations, String prefix, String suffix, final NameVersion projectNameVersion) throws DetectUserFriendlyException {
-        final Set<DetectorType> failedBomToolGroups = new HashSet<>();
-
         final List<DetectCodeLocation> validDetectCodeLocations = findValidCodeLocations(detectCodeLocations);
         final Map<DetectCodeLocation, String> codeLocationsAndNames = createCodeLocationNameMap(validDetectCodeLocations, directoryManager.getSourceDirectory(), projectNameVersion, prefix, suffix);
 
@@ -67,10 +61,7 @@ public class BdioCodeLocationCreator {
 
         final List<BdioCodeLocation> bdioCodeLocations = createBdioCodeLocations(codeLocationsByName);
 
-        final BdioCodeLocationResult result = new BdioCodeLocationResult(bdioCodeLocations, failedBomToolGroups, codeLocationsAndNames);
-        eventSystem.publishEvent(Event.CodeLocationsCalculated, result);
-        eventSystem.publishEvent(Event.CodeLocationNamesAdded, result.getCodeLocationNames().values());
-        return result;
+        return new BdioCodeLocationResult(bdioCodeLocations, codeLocationsAndNames);
     }
 
     private Map<DetectCodeLocation, String> createCodeLocationNameMap(final List<DetectCodeLocation> codeLocations, final File detectSourcePath, final NameVersion projectNameVersion, final String prefix,

@@ -20,25 +20,37 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.codelocation;
+package com.synopsys.integration.detect.workflow.blackduck.codelocation;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
-public class BdioCodeLocationResult {
-    private final List<BdioCodeLocation> bdioCodeLocations;
-    private final Map<DetectCodeLocation, String> codeLocationNames;
+import org.jetbrains.annotations.Nullable;
 
-    public BdioCodeLocationResult(final List<BdioCodeLocation> bdioCodeLocations, final Map<DetectCodeLocation, String> codeLocationNames) {
-        this.bdioCodeLocations = bdioCodeLocations;
+import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
+
+public class CodeLocationWaitData {
+    @Nullable
+    private final NotificationTaskRange notificationRange;
+    private final Set<String> codeLocationNames;
+    private int expectedNotificationCount;
+
+    public CodeLocationWaitData(@Nullable final NotificationTaskRange notificationRange, final Set<String> codeLocationNames, final int expectedNotificationCount) {
+        this.notificationRange = notificationRange;
         this.codeLocationNames = codeLocationNames;
+        this.expectedNotificationCount = expectedNotificationCount;
     }
 
-    public Map<DetectCodeLocation, String> getCodeLocationNames() {
+    @Nullable
+    public NotificationTaskRange getNotificationRange() {
+        return notificationRange;
+    }
+
+    public Set<String> getCodeLocationNames() {
         return codeLocationNames;
     }
 
-    public List<BdioCodeLocation> getBdioCodeLocations() {
-        return bdioCodeLocations;
+    public int getExpectedNotificationCount() {
+        return expectedNotificationCount;
     }
+
 }

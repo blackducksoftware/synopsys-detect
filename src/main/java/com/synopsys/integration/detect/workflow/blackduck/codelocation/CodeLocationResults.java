@@ -20,25 +20,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.codelocation;
+package com.synopsys.integration.detect.workflow.blackduck.codelocation;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
-public class BdioCodeLocationResult {
-    private final List<BdioCodeLocation> bdioCodeLocations;
-    private final Map<DetectCodeLocation, String> codeLocationNames;
+public class CodeLocationResults {
+    private final Set<String> allCodeLocationNames;
+    private final CodeLocationWaitData codeLocationWaitData;
 
-    public BdioCodeLocationResult(final List<BdioCodeLocation> bdioCodeLocations, final Map<DetectCodeLocation, String> codeLocationNames) {
-        this.bdioCodeLocations = bdioCodeLocations;
-        this.codeLocationNames = codeLocationNames;
+    public CodeLocationResults(final Set<String> allCodeLocationNames, final CodeLocationWaitData codeLocationWaitData) {
+        this.allCodeLocationNames = allCodeLocationNames;
+        this.codeLocationWaitData = codeLocationWaitData;
     }
 
-    public Map<DetectCodeLocation, String> getCodeLocationNames() {
-        return codeLocationNames;
+    public Set<String> getAllCodeLocationNames() {
+        return allCodeLocationNames;
     }
 
-    public List<BdioCodeLocation> getBdioCodeLocations() {
-        return bdioCodeLocations;
+    public CodeLocationWaitData getCodeLocationWaitData() {
+        return codeLocationWaitData;
     }
 }

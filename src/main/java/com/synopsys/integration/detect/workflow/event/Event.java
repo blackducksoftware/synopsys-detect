@@ -28,7 +28,7 @@ import java.util.Set;
 
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
-import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
+import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationNamesResult;
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
@@ -58,8 +58,8 @@ public class Event {
     public static final EventType<Integer> DiscoveryCount = new EventType<>(Integer.class);
     public static final EventType<DetectorEvaluation> DiscoveryStarted = new EventType<>(DetectorEvaluation.class);
     public static final EventType<DetectorEvaluation> DiscoveryEnded = new EventType<>(DetectorEvaluation.class);
-    public static final EventType<BdioCodeLocationResult> CodeLocationsCalculated = new EventType<>(BdioCodeLocationResult.class);
-    public static final EventType<Collection<String>> CodeLocationNamesAdded = new EventType(Collection.class);
+    public static final EventType<DetectCodeLocationNamesResult> DetectCodeLocationNamesCalculated = new EventType<>(DetectCodeLocationNamesResult.class);
+    public static final EventType<Collection<String>> CodeLocationsCompleted = new EventType(Collection.class);
     public static final EventType<ExitCodeRequest> ExitCode = new EventType<>(ExitCodeRequest.class);
     public static final EventType<Status> StatusSummary = new EventType<>(Status.class);
     public static final EventType<DetectIssue> Issue = new EventType<>(DetectIssue.class);
