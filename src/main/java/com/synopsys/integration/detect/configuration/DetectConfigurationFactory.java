@@ -263,7 +263,7 @@ public class DetectConfigurationFactory {
         return new PhoneHomeOptions(phoneHomePassthrough);
     }
 
-    public RunOptions createRunOptions()  {
+    public RunOptions createRunOptions() {
         // This is because it is double deprecated so we must check if either property is set.
         Optional<Boolean> sigScanDisabled = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration,  DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DISABLED.getProperty(),  DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_DISABLED.getProperty());
         Optional<Boolean> polarisEnabled = PropertyConfigUtils.getFirstProvidedValueOrEmpty(detectConfiguration,  DetectProperties.DETECT_SWIP_ENABLED.getProperty());
@@ -305,7 +305,7 @@ public class DetectConfigurationFactory {
         return new DetectFileFinder(userProvidedExcludedFiles);
     }
 
-    public DetectorFinderOptions createSearchOptions(Path sourcePath)  {
+    public DetectorFinderOptions createSearchOptions(Path sourcePath) {
         //Normal settings
         Integer maxDepth = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_DEPTH);
 
@@ -486,7 +486,7 @@ public class DetectConfigurationFactory {
         );
     }
 
-    private Path getPathOrNull(NullablePathProperty property)  {
+    private Path getPathOrNull(NullablePathProperty property) {
         return detectConfiguration.getValue(property).map(path -> path.resolvePath(pathResolver)).orElse(null);
     }
 

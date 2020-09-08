@@ -22,23 +22,16 @@
  */
 package com.synopsys.integration.detect.workflow.codelocation;
 
-import java.util.List;
 import java.util.Map;
 
-public class BdioCodeLocationResult {
-    private final List<BdioCodeLocation> bdioCodeLocations;
+public class DetectCodeLocationNamesResult {
     private final Map<DetectCodeLocation, String> codeLocationNames;
 
-    public BdioCodeLocationResult(final List<BdioCodeLocation> bdioCodeLocations, final Map<DetectCodeLocation, String> codeLocationNames) {
-        this.bdioCodeLocations = bdioCodeLocations;
+    public DetectCodeLocationNamesResult(final Map<DetectCodeLocation, String> codeLocationNames) {
         this.codeLocationNames = codeLocationNames;
     }
 
     public Map<DetectCodeLocation, String> getCodeLocationNames() {
         return codeLocationNames;
-    }
-
-    public List<BdioCodeLocation> getBdioCodeLocations() {
-        return bdioCodeLocations;
     }
 }

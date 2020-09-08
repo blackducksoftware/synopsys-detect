@@ -93,7 +93,7 @@ public class DiagnosticReportHandler {
         createReports();
 
         eventSystem.registerListener(Event.DetectorsComplete, this::completedBomToolEvaluations);
-        eventSystem.registerListener(Event.CodeLocationsCalculated, event -> completedCodeLocations(event.getCodeLocationNames()));
+        eventSystem.registerListener(Event.DetectCodeLocationNamesCalculated, event -> completedCodeLocations(event.getCodeLocationNames()));
         eventSystem.registerListener(Event.DetectorsProfiled, this::detectorsProfiled);
     }
 
