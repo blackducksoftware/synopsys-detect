@@ -1,10 +1,17 @@
 # Docker image support
 
-On Linux and Mac, ${solution_name} can invoke Docker Inspector to inspect Docker images. For simple use cases, add either ```--detect.docker.image={repo}:{tag}``` or ```--detect.docker.tar={path to a Docker saved tarfile}``` to the ${solution_name} command line.
+On Linux and Mac, ${solution_name} can invoke Docker Inspector to inspect Linux Docker images to discover packages installed by the Linux package manager.
+For simple use cases, add either ```--detect.docker.image={repo}:{tag}``` or ```--detect.docker.tar={path to a Docker saved tarfile}``` to the ${solution_name} command line.
 
-The documentation for Docker Inspector is available [here](https://blackducksoftware.github.io/blackduck-docker-inspector/latest/overview/).
+The documentation for Docker Inspector is available [here](https://synopsys.atlassian.net/wiki/spaces/INTDOCS/pages/187596884/Black+Duck+Docker+Inspector).
 
-When passed a value for either detect.docker.image or detect.docker.tar, ${solution_name} runs Docker Inspector on the given image; in other words, the target image, creating one code location. ${solution_name} by default runs the ${blackduck_signature_scanner_name} on the image.  This is actually the file system a container created from the image has at startup time; refer to [${solution_name}'s scan target](#scantarget) for more details. This creates a second code location.
+When passed a value for either detect.docker.image or detect.docker.tar,
+${solution_name} runs Docker Inspector on given image (the "target image"),
+creating one code location. ${solution_name} by default runs
+the ${blackduck_signature_scanner_name} on the "container file system"
+(the file system a container created from the image has at startup time).
+Refer to [${solution_name}'s scan target](#scantarget) for more details.
+This creates a second code location.
 
 ### Passing Docker Inspector property values to Docker Inspector from ${solution_name}
 
@@ -47,6 +54,18 @@ Run the docker inspect command on the base image; in our example this is ubuntu:
 Find the last element in the RootFS.Layers array. This is the platform top layer ID. In the following example, this is sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c.
 Set the value of the Docker Inspector property docker.platform.top.layer.id to the platform top layer ID. For example:
 
-    ./detect.sh ... --detect.docker.image={your application image} --detect.docker.platform.top.layer.id=sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c
+./detect.sh ... --detect.docker.image={your application image} --detect.docker.platform.top.layer.id=sha256:b079b3fa8d1b4b30a71a6e81763ed3da1327abaf0680ed3ed9f00ad1d5de5e7c
 
 In this mode, there may be some loss in match accuracy from the ${blackduck_signature_scanner_name} because, in this scenario, the ${blackduck_signature_scanner_name} may be deprived of some contextual information, such as the operating system files that enable it to determine the Linux distribution, and that that may negatively affect its ability to accurately identify components.
+
+### Inspecting Windows Docker images
+
+Given a Windows Image, Docker Inspector, since it can only discover packages using
+a Linux package manager will not contribute any components to the BOM, but will
+return the container filesystem (in the form of a squashed image),
+which ${solution_name} will scan using the ${blackduck_signature_scanner_name}.
+
+### Inspecting Docker images on Windows
+
+For important information on a Docker for Windows bug that might affect ${solution_name}, refer to the
+[troubleshooting page](../../troubleshooting/solutions/#on-windows-error-trying-cleanup).

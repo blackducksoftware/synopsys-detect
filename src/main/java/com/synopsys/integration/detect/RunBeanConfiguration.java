@@ -127,12 +127,12 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public ConnectionFactory connectionFactory() throws DetectUserFriendlyException{
+    public ConnectionFactory connectionFactory() throws DetectUserFriendlyException {
         return new ConnectionFactory(detectConfigurationFactory.createConnectionDetails());
     }
 
     @Bean
-    public ArtifactResolver artifactResolver() throws DetectUserFriendlyException{
+    public ArtifactResolver artifactResolver() throws DetectUserFriendlyException {
         return new ArtifactResolver(connectionFactory(), gson);
     }
 

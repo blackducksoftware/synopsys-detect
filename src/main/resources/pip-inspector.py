@@ -75,7 +75,7 @@ def main():
                         package_name = req.req.name
                     if package_name is None:
                         import re
-                        package_name = re.split('==|>=', req.requirement)[0]
+                        package_name = re.split('==|>=|<=|>|<', req.requirement)[0]
 
                     requirement = resolve_package_by_name(package_name, [])
                     if requirement is None:
@@ -115,11 +115,11 @@ def get_package_by_name(package_name):
     except:
         pass
     try:
-        return pkg_resources.working_set.by_key[package_name.replace('-','_')]
+        return pkg_resources.working_set.by_key[package_name.replace('-', '_')]
     except:
         pass
     try:
-        return pkg_resources.working_set.by_key[package_name.replace('_','-')]
+        return pkg_resources.working_set.by_key[package_name.replace('_', '-')]
     except:
         pass
     return None

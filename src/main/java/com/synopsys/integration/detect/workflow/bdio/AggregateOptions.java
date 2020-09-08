@@ -24,8 +24,6 @@ package com.synopsys.integration.detect.workflow.bdio;
 
 import java.util.Optional;
 
-import javax.swing.text.html.Option;
-
 //TODO: Move inside Bdio options?
 public class AggregateOptions {
 
@@ -48,7 +46,7 @@ public class AggregateOptions {
     }
 
     public static AggregateOptions aggregateButSkipEmpty(String aggregateName, AggregateMode aggregateMode) {
-        return new AggregateOptions(Optional.of(aggregateName), aggregateMode,false);
+        return new AggregateOptions(Optional.of(aggregateName), aggregateMode, false);
     }
 
     public Optional<String> getAggregateName() {

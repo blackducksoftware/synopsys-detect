@@ -1,20 +1,12 @@
-import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView
-import com.synopsys.integration.blackduck.api.generated.view.VersionBomComponentView
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig
-import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder
-import com.synopsys.integration.blackduck.service.BlackDuckService
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory
-import com.synopsys.integration.blackduck.service.ProjectService
-import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper
 import com.synopsys.integration.detect.artifactory.UpdateArtifactoryPropertiesTask
 import com.synopsys.integration.detect.battery.UpdateBatteryTask
-import com.synopsys.integration.log.PrintStreamIntLogger
+import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
 buildscript {
     ext {
         springBootVersion = '2.2.4.RELEASE'
-        blackDuckCommonVersion = '48.1.0'
-        polarisCommonVersion = '0.20.0'
+        blackDuckCommonVersion = '49.1.0'
+        polarisCommonVersion = '0.21.0'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
@@ -33,7 +25,7 @@ plugins {
 }
 
 group = 'com.synopsys.integration'
-version = '6.5.0-SNAPSHOT'
+version = '6.6.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -59,6 +51,7 @@ allprojects {
         implementation 'com.paypal.digraph:digraph-parser:1.0'
         implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0'
         implementation 'com.fasterxml.jackson.core:jackson-core:2.10.0'
+        implementation 'com.synopsys:method-analyzer-core:0.1.0'
 
         testImplementation 'org.mockito:mockito-core:2.+'
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
@@ -148,7 +141,7 @@ tasks['testBattery'].doFirst {
 
 task updateBattery(type: UpdateBatteryTask) {}
 task updateArtifactoryProperties(type: UpdateArtifactoryPropertiesTask) {
-    dependsOn artifactoryPublish
+    dependsOn artifactoryDeploy
 }
 
 task runDetect(type: JavaExec) {
@@ -160,34 +153,8 @@ task runDetect(type: JavaExec) {
     args = ['--detect.risk.report.pdf=true']
 }
 
-task verifyBlackDuckDetect() {
+task verifyBlackDuckDetect(type: VerifyBlackDuckDetectTask) {
     dependsOn runDetect
-
-    doLast {
-        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder()
-        Set<String> environmentKeys = blackDuckServerConfigBuilder.getEnvironmentVariableKeys()
-        environmentKeys.each {
-            String value = System.getenv().get(it)
-            if (value) {
-                blackDuckServerConfigBuilder.setProperty(it, value)
-            }
-        }
-
-        BlackDuckServerConfig blackDuckServerConfig = blackDuckServerConfigBuilder.build()
-        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new PrintStreamIntLogger(System.out, com.synopsys.integration.log.LogLevel.INFO))
-        BlackDuckService blackDuckService = blackDuckServicesFactory.createBlackDuckService()
-        ProjectService projectService = blackDuckServicesFactory.createProjectService()
-
-        ProjectVersionWrapper projectVersionWrapper = projectService.getProjectVersion(project.name, version).get()
-        List<VersionBomComponentView> bomComponents = blackDuckService.getAllResponses(projectVersionWrapper.projectVersionView, ProjectVersionView.COMPONENTS_LINK_RESPONSE)
-        if (bomComponents.isEmpty()) {
-            throw new GradleException("No bom components were found for ${project.name} - ${version}");
-        }
-        bomComponents.each {
-            println "${it.componentName} - ${it.componentVersionName}"
-        }
-    }
-
     task verifyDetect() {
         dependsOn verifyBlackDuckDetect
     }

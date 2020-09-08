@@ -25,7 +25,6 @@ package com.synopsys.integration.detectable.detectables.conda;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -40,32 +39,32 @@ public class CondaCliExtractor {
     private final CondaListParser condaListParser;
     private final ExecutableRunner executableRunner;
 
-    public CondaCliExtractor(final CondaListParser condaListParser, final ExecutableRunner executableRunner) {
+    public CondaCliExtractor(CondaListParser condaListParser, ExecutableRunner executableRunner) {
         this.condaListParser = condaListParser;
         this.executableRunner = executableRunner;
     }
 
-    public Extraction extract(final File directory, final File condaExe, final File workingDirectory, String condaEnvironmentName) {
+    public Extraction extract(File directory, File condaExe, File workingDirectory, String condaEnvironmentName) {
         try {
-            final List<String> condaListOptions = new ArrayList<>();
+            List<String> condaListOptions = new ArrayList<>();
             condaListOptions.add("list");
             if (StringUtils.isNotBlank(condaEnvironmentName)) {
                 condaListOptions.add("-n");
                 condaListOptions.add(condaEnvironmentName);
             }
             condaListOptions.add("--json");
-            final ExecutableOutput condaListOutput = executableRunner.execute(directory, condaExe, condaListOptions);
+            ExecutableOutput condaListOutput = executableRunner.execute(directory, condaExe, condaListOptions);
 
-            final String listJsonText = condaListOutput.getStandardOutput();
+            String listJsonText = condaListOutput.getStandardOutput();
 
-            final ExecutableOutput condaInfoOutput = executableRunner.execute(workingDirectory, condaExe, "info", "--json");
-            final String infoJsonText = condaInfoOutput.getStandardOutput();
+            ExecutableOutput condaInfoOutput = executableRunner.execute(workingDirectory, condaExe, "info", "--json");
+            String infoJsonText = condaInfoOutput.getStandardOutput();
 
-            final DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText);
-            final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
+            DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText);
+            CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
 
             return new Extraction.Builder().success(detectCodeLocation).build();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }

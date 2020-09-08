@@ -33,8 +33,11 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanPathsUtility;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScannerZipInstaller;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.rest.BlackDuckHttpClient;
+import com.synopsys.integration.blackduck.http.client.BlackDuckHttpClient;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.util.CleanupZipExpander;
 import com.synopsys.integration.util.IntEnvironmentVariables;
@@ -61,7 +64,7 @@ public class ScanBatchRunnerFactory {
         // will will use the server to download/update the scanner - this is the most likely situation
         BlackDuckHttpClient blackDuckHttpClient = blackDuckServerConfig.createBlackDuckHttpClient(slf4jIntLogger);
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
-        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, blackDuckHttpClient, cleanupZipExpander, scanPathsUtility, blackDuckServerConfig.getBlackDuckUrl().toString(), operatingSystemType);
+        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, blackDuckHttpClient, cleanupZipExpander, scanPathsUtility, blackDuckServerConfig.getBlackDuckUrl(), operatingSystemType);
         final ScanBatchRunner scanBatchManager = ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
         return scanBatchManager;
     }
@@ -73,9 +76,15 @@ public class ScanBatchRunnerFactory {
     }
 
     public ScanBatchRunner withUserProvidedUrl(final String userProvidedScannerInstallUrl, final IntHttpClient restConnection) throws DetectUserFriendlyException {
+        HttpUrl url;
+        try {
+            url = new HttpUrl(userProvidedScannerInstallUrl);
+        } catch (IntegrationException e) {
+            throw new DetectUserFriendlyException("User provided scanner install url could not be parsed: " + userProvidedScannerInstallUrl, e, ExitCodeType.FAILURE_CONFIGURATION);
+        }
         // we will use the provided url to download/update the scanner
         final CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
-        final ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, restConnection, cleanupZipExpander, scanPathsUtility, userProvidedScannerInstallUrl, operatingSystemType);
+        final ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, restConnection, cleanupZipExpander, scanPathsUtility, url, operatingSystemType);
 
         return ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
     }

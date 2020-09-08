@@ -69,6 +69,7 @@ import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.detector.DetectFileFinder;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectorFileFilter;
 import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableOptions;
+import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
@@ -218,8 +219,8 @@ public class DetectConfigurationFactory {
         Boolean alwaysTrust = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration,  DetectProperties.BLACKDUCK_TRUST_CERT.getProperty(),  DetectProperties.BLACKDUCK_HUB_TRUST_CERT.getProperty());
         List<String> proxyIgnoredHosts = PropertyConfigUtils.getFirstProvidedValueOrDefault(detectConfiguration,  DetectProperties.BLACKDUCK_PROXY_IGNORED_HOSTS.getProperty(),  DetectProperties.BLACKDUCK_HUB_PROXY_IGNORED_HOSTS.getProperty());
         List<Pattern> proxyPatterns = proxyIgnoredHosts.stream()
-        .map(it -> Pattern.compile(it))
-            .collect(Collectors.toList());
+                                          .map(it -> Pattern.compile(it))
+                                          .collect(Collectors.toList());
         ProxyInfo proxyInformation = createBlackDuckProxyInfo();
         return new ConnectionDetails(proxyInformation, proxyPatterns, findTimeoutInSeconds(), alwaysTrust);
     }
@@ -453,7 +454,15 @@ public class DetectConfigurationFactory {
         return new BinaryScanOptions(singleTarget, mutlipleTargets, codeLocationPrefix, codeLocationSuffix);
     }
 
-    public DetectExecutableOptions createExecutablePaths()  {
+    public ImpactAnalysisOptions createImpactAnalysisOptions() {
+        Boolean enabled = detectConfiguration.getValue(DetectProperties.DETECT_IMPACT_ANALYSIS_ENABLED.getProperty());
+        Path outputDirectory = getPathOrNull(DetectProperties.DETECT_IMPACT_ANALYSIS_OUTPUT_PATH.getProperty());
+        String codeLocationPrefix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
+        String codeLocationSuffix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
+        return new ImpactAnalysisOptions(enabled, codeLocationPrefix, codeLocationSuffix, outputDirectory);
+    }
+
+    public DetectExecutableOptions createExecutablePaths() {
         return new DetectExecutableOptions(
             getPathOrNull(DetectProperties.DETECT_BASH_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_BAZEL_PATH.getProperty()),

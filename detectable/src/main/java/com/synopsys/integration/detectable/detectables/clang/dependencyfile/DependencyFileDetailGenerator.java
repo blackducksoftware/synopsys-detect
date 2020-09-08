@@ -38,16 +38,16 @@ public class DependencyFileDetailGenerator {
 
     private final FilePathGenerator filePathGenerator;
 
-    public DependencyFileDetailGenerator(final FilePathGenerator filePathGenerator) {this.filePathGenerator = filePathGenerator;}
+    public DependencyFileDetailGenerator(FilePathGenerator filePathGenerator) {this.filePathGenerator = filePathGenerator;}
 
     public Set<File> fromCompileCommands(List<CompileCommand> compileCommands, File outputDirectory, boolean cleanup) {
 
-        final Set<File> dependencyFiles = compileCommands.parallelStream()
-                                                                     .flatMap(command -> filePathGenerator.fromCompileCommand(outputDirectory, command, cleanup).stream())
-                                                                     .filter(StringUtils::isNotBlank)
-                                                                     .map(File::new)
-                                                                     .filter(File::exists)
-                                                                     .collect(Collectors.toSet());
+        Set<File> dependencyFiles = compileCommands.parallelStream()
+                                              .flatMap(command -> filePathGenerator.fromCompileCommand(outputDirectory, command, cleanup).stream())
+                                              .filter(StringUtils::isNotBlank)
+                                              .map(File::new)
+                                              .filter(File::exists)
+                                              .collect(Collectors.toSet());
 
         logger.trace("Found : " + dependencyFiles.size() + " files to process.");
 

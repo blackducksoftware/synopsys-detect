@@ -27,5 +27,6 @@ public enum DetectIssueType {
     DEPRECATION,
     DETECTOR,
     SIGNATURE_SCANNER,
-    BINARY_SCAN
+    BINARY_SCAN,
+    IMPACT_ANALYSIS
 }

@@ -45,7 +45,7 @@ import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.blackduck.service.ProjectMappingService;
+import com.synopsys.integration.blackduck.service.dataservice.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
@@ -72,6 +72,9 @@ import com.synopsys.integration.detect.tool.detector.DetectorTool;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
+import com.synopsys.integration.detect.tool.impactanalysis.BlackDuckImpactAnalysisTool;
+import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
+import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisToolResult;
 import com.synopsys.integration.detect.tool.polaris.PolarisTool;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
@@ -107,8 +110,6 @@ import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
-import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.WrongOperatingSystemResult;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
@@ -117,6 +118,7 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
+import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
@@ -157,8 +159,9 @@ public class RunManager {
 
         if (productRunData.shouldUseBlackDuckProduct()) {
             AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName().orElse(null), runOptions.getAggregateMode(), universalToolsResult);
+            ImpactAnalysisOptions impactAnalysisOptions = detectConfigurationFactory.createImpactAnalysisOptions();
             runBlackDuckProduct(productRunData, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
-                universalToolsResult.getNameVersion(), aggregateOptions);
+                universalToolsResult.getNameVersion(), aggregateOptions, impactAnalysisOptions);
         } else {
             logger.info("Black Duck tools will not be run.");
         }
@@ -206,7 +209,6 @@ public class RunManager {
                 eventSystem);
 
             DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
-            assertValidOperatingSystem(detectableToolResult);
 
             runResult.addDetectableToolResult(detectableToolResult);
             eventSystem.publishEvent(Event.CodeLocationNamesAdded, createCodeLocationNames(detectableToolResult, codeLocationNameManager, directoryManager));
@@ -281,16 +283,6 @@ public class RunManager {
         }
     }
 
-    //TODO: Remove hack when windows docker support added. This workaround allows docker to throw a user friendly exception when not-extractable due to operating system.
-    private void assertValidOperatingSystem(DetectableToolResult detectableToolResult) throws DetectUserFriendlyException {
-        if (detectableToolResult.getFailedExtractableResult().isPresent()) {
-            DetectableResult extractable = detectableToolResult.getFailedExtractableResult().get();
-            if (WrongOperatingSystemResult.class.isAssignableFrom(extractable.getClass())) {
-                throw new DetectUserFriendlyException("Docker currently requires a non-Windows OS to run. Attempting to run Docker on Windows is not currently supported.", ExitCodeType.FAILURE_CONFIGURATION);
-            }
-        }
-    }
-
     private void runPolarisProduct(ProductRunData productRunData, PropertyConfiguration detectConfiguration, DirectoryManager directoryManager, EventSystem eventSystem,
         DetectToolFilter detectToolFilter) {
         logger.info(ReportConstants.RUN_SEPARATOR);
@@ -308,7 +300,7 @@ public class RunManager {
 
     private void runBlackDuckProduct(ProductRunData productRunData, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem,
         CodeLocationNameManager codeLocationNameManager, BdioCodeLocationCreator bdioCodeLocationCreator, DetectInfo detectInfo, RunResult runResult, RunOptions runOptions,
-        DetectToolFilter detectToolFilter, NameVersion projectNameVersion, AggregateOptions aggregateOptions) throws IntegrationException, DetectUserFriendlyException {
+        DetectToolFilter detectToolFilter, NameVersion projectNameVersion, AggregateOptions aggregateOptions, ImpactAnalysisOptions impactAnalysisOptions) throws IntegrationException, DetectUserFriendlyException {
 
         logger.debug("Black Duck tools will run.");
 
@@ -330,7 +322,7 @@ public class RunManager {
 
             if (null != projectVersionWrapper && runOptions.shouldUnmapCodeLocations()) {
                 logger.debug("Unmapping code locations.");
-                DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.createBlackDuckService(), blackDuckServicesFactory.createCodeLocationService());
+                DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.getBlackDuckService(), blackDuckServicesFactory.createCodeLocationService());
                 detectCodeLocationUnmapService.unmapCodeLocations(projectVersionWrapper.getProjectVersionView());
             } else {
                 logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");
@@ -364,6 +356,7 @@ public class RunManager {
 
                 String blackDuckUrl = blackDuckRunData.getBlackDuckServerConfig()
                                           .map(BlackDuckServerConfig::getBlackDuckUrl)
+                                          .map(HttpUrl::url)
                                           .map(URL::toExternalForm)
                                           .orElse("Unknown Host");
                 uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(blackDuckUrl, bdioResult.getUploadTargets(), bdioUploader);
@@ -411,6 +404,32 @@ public class RunManager {
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);
+        BlackDuckImpactAnalysisTool blackDuckImpactAnalysisTool;
+        if (null != blackDuckServicesFactory) {
+            blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool.ONLINE(directoryManager, codeLocationNameManager, impactAnalysisOptions, blackDuckServicesFactory, eventSystem);
+        } else {
+            blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool.OFFLINE(directoryManager, codeLocationNameManager, impactAnalysisOptions, eventSystem);
+        }
+        if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS) && blackDuckImpactAnalysisTool.shouldRun()) {
+            logger.info("Will include the Vulnerability Impact Analysis tool.");
+            ImpactAnalysisToolResult impactAnalysisToolResult = blackDuckImpactAnalysisTool.performImpactAnalysisActions(projectNameVersion, projectVersionWrapper);
+
+            // TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020
+
+            if (impactAnalysisToolResult.isSuccessful()) {
+                logger.info("Vulnerability Impact Analysis successful.");
+            } else {
+                logger.warn("Something went wrong with the Vulnerability Impact Analysis tool.");
+            }
+
+            logger.info("Vulnerability Impact Analysis tool actions finished.");
+        } else if (blackDuckImpactAnalysisTool.shouldRun()) {
+            logger.info("Vulnerability Impact Analysis tool is enabled but will not run due to tool configuration.");
+        } else {
+            logger.info("Vulnerability Impact Analysis tool will not be run.");
+        }
+
+        logger.info(ReportConstants.RUN_SEPARATOR);
         if (null != blackDuckServicesFactory) {
             logger.info("Will perform Black Duck post actions.");
             BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
@@ -420,7 +439,8 @@ public class RunManager {
             if ((!bdioResult.getUploadTargets().isEmpty() || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
                 Optional<String> componentsLink = Optional.ofNullable(projectVersionWrapper)
                                                       .map(ProjectVersionWrapper::getProjectVersionView)
-                                                      .flatMap(projectVersionView -> projectVersionView.getFirstLink(ProjectVersionView.COMPONENTS_LINK));
+                                                      .flatMap(projectVersionView -> projectVersionView.getFirstLinkSafely(ProjectVersionView.COMPONENTS_LINK))
+                                                      .map(HttpUrl::string);
 
                 if (componentsLink.isPresent()) {
                     DetectResult detectResult = new BlackDuckBomDetectResult(componentsLink.get());

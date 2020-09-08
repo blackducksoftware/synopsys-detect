@@ -3,6 +3,7 @@
 ## Version 6.5.0
 ### New features
 * Added [properties](../properties/configuration/debug/#diagnostic-mode) for enabling diagnostic mode.
+* ${solution_name} now supports Vulnerability Impact Analysis. Enabled using [Vulnerability Impact Analysis Enabled](../properties/configuration/impact%20analysis/#vulnerability-impact-analysis-enabled) property.
 
 ### Changed features
 * Enabling diagnostic mode is now controlled through two new properties.
@@ -10,9 +11,14 @@
 * [--detect.diagnostic.extended](../properties/configuration/debug/#diagnostic-mode-extended)
 * The `-d` and `--diagnostic` options are now deprecated.
 * The `-de` and `--diagnosticExtended` options are now deprecated.
+* The *detect.bazel.dependency.type* property now accepts a comma-separated list of dependency types, or the value *NONE*, or the value *ALL*.
 
 ### Resolved issues
 * (IDETECT-2054) Resolved an issue that caused the Gradle Inspector to fail when detect.output.path is set to a relative path.
+
+## Version 6.4.2
+### Resolved Issues
+* (IDETECT-2164) Resolved an issue with scanning Go applications when using the go list -m command, which couldn't determine available upgrades using the vendor directory.
 
 ## Version 6.4.0
 ### New features
@@ -37,6 +43,9 @@ and writes them to the status.json file.
 * (IDETECT-2034) Resolved an issue that would cause a NullPointerException when ${solution_name}'s initial attempt at generating a code location name produced a code location name greater than 250 characters and either code location prefix or code location suffix is not set.
 * (IDETECT-1979) Resolved an issue that could cause the CLANG detector to miss some dependencies because it failed to correctly parse complex nested quoted strings within compile_commands.json values.
 * (IDETECT-1966) Resolved an issue that would cause Detect to ignore replacement directives for Go Mod projects.
+
+### Known Issues
+* When a Lerna package depends on another Lerna package within the project, an error may appear indicating a missing dependency on that package. This is normal and no dependencies are missing. This will be fixed in a future release.
 
 ## Version 6.3.0
 ### New features

@@ -92,6 +92,8 @@ public class ShutdownManager {
                 if (offline) {
                     logger.debug("Will not cleanup bdio folder.");
                     cleanupToSkip.add(directoryManager.getBdioOutputDirectory());
+                    logger.debug("Will not cleanup impact analysis folder.");
+                    cleanupToSkip.add(directoryManager.getImpactAnalysisOutputDirectory());
                 }
                 if (airgapZip.isPresent()) {
                     logger.debug("Will not cleanup Air Gap file.");

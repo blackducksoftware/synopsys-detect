@@ -29,8 +29,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.time.StopWatch;
 
-import com.synopsys.integration.detector.base.DetectorType;
-
 public class Timekeeper<T> {
 
     private final Map<T, StopWatch> stopWatches = new HashMap<>();

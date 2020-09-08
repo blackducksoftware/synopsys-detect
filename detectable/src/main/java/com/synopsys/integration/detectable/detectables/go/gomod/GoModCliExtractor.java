@@ -23,8 +23,11 @@
 package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
@@ -40,27 +43,32 @@ public class GoModCliExtractor {
     private final GoModGraphParser goModGraphParser;
     private final Gson gson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().setLenient().create();
 
-    private ReplacementDataExtractor replacementDataExtractor = new ReplacementDataExtractor(gson);
+    private final ReplacementDataExtractor replacementDataExtractor = new ReplacementDataExtractor(gson);
 
-    public GoModCliExtractor(final ExecutableRunner executableRunner, final GoModGraphParser goModGraphParser) {
+    public GoModCliExtractor(ExecutableRunner executableRunner, GoModGraphParser goModGraphParser) {
         this.executableRunner = executableRunner;
         this.goModGraphParser = goModGraphParser;
     }
 
-    public Extraction extract(final File directory, final File goExe) {
+    public Extraction extract(File directory, File goExe) {
         try {
             final List<String> listOutput = execute(directory, goExe, "Querying go for the list of modules failed: ", "list", "-m");
-            final List<String> listUJsonOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "list", "-m", "-u", "-json", "all");
-            final List<String> modGraphOutput = modGraphOutputWithReplacements(directory, goExe, listUJsonOutput);
+            final List<String> listUJsonOutput = goListUJsonOutput(directory, goExe);
+            List<String> modGraphOutput;
+            if (!listUJsonOutput.isEmpty()) {
+                modGraphOutput = modGraphOutputWithReplacements(directory, goExe, listUJsonOutput);
+            } else {
+                modGraphOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "mod", "graph");
+            }
             final List<CodeLocation> codeLocations = goModGraphParser.parseListAndGoModGraph(listOutput, modGraphOutput);
             return new Extraction.Builder().success(codeLocations).build();//no project info - hoping git can help with that.
-        } catch (final Exception e) {
+        } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    private List<String> execute(final File directory, final File goExe, final String failureMessage, final String... arguments) throws DetectableException, ExecutableRunnerException {
-        final ExecutableOutput output = executableRunner.execute(directory, goExe, arguments);
+    private List<String> execute(File directory, File goExe, String failureMessage, String... arguments) throws DetectableException, ExecutableRunnerException {
+        ExecutableOutput output = executableRunner.execute(directory, goExe, arguments);
 
         if (output.getReturnCode() == 0) {
             return output.getStandardOutputAsList();
@@ -69,17 +77,43 @@ public class GoModCliExtractor {
         }
     }
 
-    private List<String> modGraphOutputWithReplacements(File directory, File goExe, List<String> listUJsonOutput) throws ExecutableRunnerException, DetectableException {
-        final List<String> modGraphOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "mod", "graph");
+    private List<String> goListUJsonOutput(File directory, File goExe) throws ExecutableRunnerException, DetectableException {
+        List<String> versionOutput = execute(directory, goExe, "Querying for the version failed: ", "version");
+        Pattern pattern = Pattern.compile("\\d+\\.[\\d.]+");
+        Matcher matcher = pattern.matcher(versionOutput.get(0));
+        if (matcher.find()) {
+            String version = matcher.group();
+            String[] parts = version.split("\\.");
+            if (Integer.parseInt(parts[0]) > 1 || Integer.parseInt(parts[1]) >= 14) {
+                return execute(directory, goExe, "Querying for the go mod graph failed:", "list", "-mod=readonly", "-m", "-u", "-json", "all");
+            } else {
+                return execute(directory, goExe, "Querying for the go mod graph failed:", "list", "-m", "-u", "-json", "all");
+            }
+        }
+        return new ArrayList<>();
+    }
 
-        Map<String,String> replacementData = replacementDataExtractor.extractReplacementData(listUJsonOutput);
+    private List<String> modGraphOutputWithReplacements(File directory, File goExe, List<String> listUJsonOutput) throws ExecutableRunnerException, DetectableException {
+        List<String> modGraphOutput = execute(directory, goExe, "Querying for the go mod graph failed:", "mod", "graph");
+
+        Map<String, String> replacementData = replacementDataExtractor.extractReplacementData(listUJsonOutput);
 
         for (String line : modGraphOutput) {
-            for (String original : replacementData.keySet()) {
-                String newLine = line.replace(original, replacementData.get(original));
-                int indexOfLine = modGraphOutput.indexOf(line);
-                if (!line.equals(newLine)) {
+            int indexOfLine = modGraphOutput.indexOf(line);
+            boolean hasBeenModified = false;
+            for (Map.Entry<String, String> replacement : replacementData.entrySet()) {
+                String newLine;
+                boolean shouldModify;
+                if (hasBeenModified) {
+                    newLine = modGraphOutput.get(indexOfLine).replace(replacement.getKey(), replacement.getValue());
+                    shouldModify = !modGraphOutput.get(indexOfLine).equals(newLine);
+                } else {
+                    newLine = line.replace(replacement.getKey(), replacement.getValue());
+                    shouldModify = !line.equals(newLine);
+                }
+                if (shouldModify) {
                     modGraphOutput.set(indexOfLine, newLine);
+                    hasBeenModified = true;
                 }
             }
         }

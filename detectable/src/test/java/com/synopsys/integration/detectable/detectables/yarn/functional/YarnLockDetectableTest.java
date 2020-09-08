@@ -81,7 +81,7 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
         final CodeLocation codeLocation = extraction.getCodeLocations().get(0);
 
         Assertions.assertEquals("babel", extraction.getProjectName());
-        Assertions.assertEquals("1.2.3",  extraction.getProjectVersion());
+        Assertions.assertEquals("1.2.3", extraction.getProjectVersion());
 
         final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.NPMJS, codeLocation.getDependencyGraph());
         graphAssert.hasRootSize(2);

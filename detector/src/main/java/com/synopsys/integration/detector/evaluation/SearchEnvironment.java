@@ -24,6 +24,7 @@ package com.synopsys.integration.detector.evaluation;
 
 import java.util.Set;
 import java.util.function.Predicate;
+
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class SearchEnvironment {

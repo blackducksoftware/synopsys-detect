@@ -92,7 +92,7 @@ public class DetectDetectableFactory {
     }
 
     public DockerDetectable createDockerDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createDockerDetectable(environment, detectableOptionFactory.createDockerDetectableOptions(), dockerInspectorResolver, detectExecutableResolver, detectExecutableResolver, detectExecutableResolver);
+        return detectableFactory.createDockerDetectable(environment, detectableOptionFactory.createDockerDetectableOptions(), dockerInspectorResolver, detectExecutableResolver, detectExecutableResolver);
     }
 
     public BazelDetectable createBazelDetectable(DetectableEnvironment environment) {
@@ -223,11 +223,11 @@ public class DetectDetectableFactory {
         return detectableFactory.createPodLockDetectable(environment);
     }
 
-    public PoetryDetectable createPoetryDetectable( DetectableEnvironment environment) {
+    public PoetryDetectable createPoetryDetectable(DetectableEnvironment environment) {
         return detectableFactory.createPoetryDetectable(environment);
     }
 
-    public RebarDetectable createRebarDetectable( DetectableEnvironment environment) {
+    public RebarDetectable createRebarDetectable(DetectableEnvironment environment) {
         return detectableFactory.createRebarDetectable(environment, detectExecutableResolver);
     }
 
