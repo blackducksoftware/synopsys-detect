@@ -164,14 +164,12 @@ public class BlackDuckSignatureScanner {
                 SignatureScanPath scanPath = createScanPath(path, maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
                 signatureScanPaths.add(scanPath);
             }
-        } else if (dockerTargetData.hasTarget()) {
-            if (dockerTargetData.getSquashedImage().isPresent()) {
-                SignatureScanPath scanPath = createScanPath(dockerTargetData.getSquashedImage().get().getCanonicalFile().toPath(), maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
-                signatureScanPaths.add(scanPath);
-            } else if (dockerTargetData.getProvidedTar().isPresent()) {
-                SignatureScanPath scanPath = createScanPath(dockerTargetData.getProvidedTar().get().getCanonicalFile().toPath(), maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
-                signatureScanPaths.add(scanPath);
-            }
+        } else if (dockerTargetData.getSquashedImage().isPresent()) {
+            SignatureScanPath scanPath = createScanPath(dockerTargetData.getSquashedImage().get().getCanonicalFile().toPath(), maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
+            signatureScanPaths.add(scanPath);
+        } else if (dockerTargetData.getProvidedImageTar().isPresent()) {
+            SignatureScanPath scanPath = createScanPath(dockerTargetData.getProvidedImageTar().get().getCanonicalFile().toPath(), maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
+            signatureScanPaths.add(scanPath);
         } else {
             Path sourcePath = directoryManager.getSourceDirectory().getAbsoluteFile().toPath();
             if (userProvidedScanTargets) {

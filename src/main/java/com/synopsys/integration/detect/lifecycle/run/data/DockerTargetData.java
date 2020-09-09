@@ -35,31 +35,26 @@ public class DockerTargetData {
 
     private NameVersion nameVersion;
     @Nullable
-    File squashedImage;
+    private File squashedImage;
     @Nullable
-    File containerFilesystem;
+    private File containerFilesystem;
     @Nullable
-    File providedTar;
+    private File providedImageTar;
 
     public static DockerTargetData NO_DOCKER_TARGET = new DockerTargetData(null, null, null, null);
 
-    public DockerTargetData(final NameVersion nameVersion, @Nullable final File squashedImage, @Nullable final File containerFilesystem, @Nullable File providedTar) {
+    public DockerTargetData(final NameVersion nameVersion, @Nullable final File squashedImage, @Nullable final File containerFilesystem, @Nullable File providedImageTar) {
         this.nameVersion = nameVersion;
         this.squashedImage = squashedImage;
         this.containerFilesystem = containerFilesystem;
-        this.providedTar = providedTar;
+        this.providedImageTar = providedImageTar;
     }
 
     public DockerTargetData(Extraction extraction) {
-        NameVersion nameVersion = new NameVersion(extraction.getProjectName(), extraction.getProjectVersion());
-        File squashedImage = extraction.getMetaData(DockerExtractor.SQUASHED_IMAGE_META_DATA).orElse(null);
-        File containerFilesystem = extraction.getMetaData(DockerExtractor.CONTAINER_FILESYSTEM_META_DATA).orElse(null);
-        File dockerTar = extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).orElse(null);
-
-        this.nameVersion = nameVersion;
-        this.squashedImage = squashedImage;
-        this.containerFilesystem = containerFilesystem;
-        this.providedTar = dockerTar;
+        this.nameVersion = new NameVersion(extraction.getProjectName(), extraction.getProjectVersion());
+        this.squashedImage = extraction.getMetaData(DockerExtractor.SQUASHED_IMAGE_META_DATA).orElse(null);
+        this.containerFilesystem = extraction.getMetaData(DockerExtractor.CONTAINER_FILESYSTEM_META_DATA).orElse(null);
+        this.providedImageTar = extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).orElse(null);
     }
 
     public NameVersion getNameVersion() {
@@ -74,11 +69,7 @@ public class DockerTargetData {
         return Optional.ofNullable(containerFilesystem);
     }
 
-    public Optional<File> getProvidedTar() {
-        return Optional.ofNullable(providedTar);
-    }
-
-    public boolean hasTarget() {
-        return squashedImage != null || containerFilesystem != null;
+    public Optional<File> getProvidedImageTar() {
+        return Optional.ofNullable(providedImageTar);
     }
 }

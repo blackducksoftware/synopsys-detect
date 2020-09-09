@@ -83,14 +83,14 @@ public class BlackDuckBinaryScannerTool {
 
     public Map<File, NameVersion> determineBinaryScanPaths(DockerTargetData dockerTargetData, NameVersion binaryScanOptionsNameVersion) throws DetectUserFriendlyException {
         Map<File, NameVersion> binaryScanFiles = new HashMap<>();
-        if (dockerTargetData.hasTarget()) {
-            NameVersion nameVersion = dockerTargetData.getNameVersion();
-            if (dockerTargetData.getContainerFilesystem().isPresent()) {
-                binaryScanFiles.put(dockerTargetData.getContainerFilesystem().get(), nameVersion);
-            } else if (dockerTargetData.getProvidedTar().isPresent()) {
-                binaryScanFiles.put(dockerTargetData.getProvidedTar().get(), nameVersion);
-            }
+
+        NameVersion dockerTargetNameVersion = dockerTargetData.getNameVersion();
+        if (dockerTargetData.getContainerFilesystem().isPresent()) {
+            binaryScanFiles.put(dockerTargetData.getContainerFilesystem().get(), dockerTargetNameVersion);
+        } else if (dockerTargetData.getProvidedImageTar().isPresent()) {
+            binaryScanFiles.put(dockerTargetData.getProvidedImageTar().get(), dockerTargetNameVersion);
         }
+
         if (binaryScanOptions.getSingleTargetFilePath().isPresent()) {
             logger.info("Binary scan will upload the single provided binary file path.");
             binaryScanFiles.put(binaryScanOptions.getSingleTargetFilePath().get().toFile(), binaryScanOptionsNameVersion);
