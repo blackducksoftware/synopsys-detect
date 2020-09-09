@@ -1,0 +1,210 @@
+println """\
+Welcome to Gradle $gradle.gradleVersion - http://www.gradle.org
+Gradle home is set to: $gradle.gradleHomeDir
+Gradle user directory is set to: $gradle.gradleUserHomeDir
+
+Base directory: $projectDir
+Running script ${relativePath(buildFile)}
+"""
+
+apply plugin: 'codenarc'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'groovy'
+apply plugin: 'kotlin'
+apply plugin: 'maven'
+apply plugin: 'signing'
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.gradle.plugin-publish'
+apply plugin: 'com.github.ben-manes.versions'
+
+group = 'com.google.protobuf'
+version = '0.8.13-SNAPSHOT'
+
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
+buildscript {
+    repositories {
+        maven { url "https://plugins.gradle.org/m2/" } // Mirrors jcenter() and mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
+        classpath "com.gradle.publish:plugin-publish-plugin:0.11.0"
+        classpath "com.github.ben-manes:gradle-versions-plugin:0.12.0"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.20"
+    }
+}
+
+repositories {
+    maven { url "https://plugins.gradle.org/m2/" }
+    maven { url "https://repo.gradle.org/gradle/libs-releases-local/" }
+    google()
+    // Needed for resolving 'kotlinx-metadata-jvm'
+    // A transitive dependency of gradle Kotlin DSL
+    maven { url "https://kotlin.bintray.com/kotlinx/" }
+}
+
+configurations {
+    // Test projects may have runtime dependencies such as the kotlin plugin
+    testProjectRuntime
+}
+
+dependencies {
+    compileOnly "org.gradle:gradle-kotlin-dsl:1.0.4"
+
+    compile 'com.google.guava:guava:27.0.1-jre'
+    compile 'com.google.gradle:osdetector-gradle-plugin:1.6.2'
+    compile 'commons-lang:commons-lang:2.6'
+
+    testCompile 'junit:junit:4.12'
+    testCompile ('org.spockframework:spock-core:1.0-groovy-2.4') {
+        exclude module : 'groovy-all'
+    }
+    testCompile 'commons-io:commons-io:2.5'
+}
+
+test.inputs.files fileTree("$projectDir/testProject")
+test.inputs.files fileTree("$projectDir/testProjectLite")
+test.inputs.files fileTree("$projectDir/testProjectCustomProtoDir")
+test.inputs.files fileTree("$projectDir/testProjectDependent")
+test.inputs.files fileTree("$projectDir/testProjectAndroid")
+
+task sourcesJar(type: Jar, dependsOn:classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task groovydocJar(type: Jar, dependsOn:groovydoc) {
+    classifier = 'groovydoc'
+    from groovydoc.destinationDir
+}
+
+task javadocJar(type: Jar, dependsOn:javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives groovydocJar
+    archives javadocJar
+}
+
+// The Gradle plugin portal doesn't allow signature files.
+if (!gradle.startParameter.taskNames.intersect(['publishPlugins'])) {
+    signing {
+        required { isReleaseVersion }
+        sign configurations.archives
+    }
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                if (rootProject.hasProperty("ossrhUsername") && rootProject.hasProperty("ossrhPassword")) {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+            }
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                if (rootProject.hasProperty("ossrhUsername") && rootProject.hasProperty("ossrhPassword")) {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+            }
+            pom.project {
+                name project.name
+                description "Gradle build plugin to handle Protocol Buffers automated code generation and compilation"
+                url "https://github.com/google/protobuf-gradle-plugin"
+                licenses {
+                    license {
+                        name "BSD 3-Clause"
+                        url "http://opensource.org/licenses/BSD-3-Clause"
+                    }
+                }
+                developers {
+                    developer {
+                        id "zhangkun83"
+                        name "Kun Zhang"
+                        email "zhangkun@google.com"
+                    }
+                }
+                scm {
+                    connection "scm:git:git://github.com/google/protobuf-gradle-plugin.git"
+                    developerConnection "scm:git:git@github.com:google/protobuf-gradle-plugin.git"
+                    url "https://github.com/google/protobuf-gradle-plugin"
+                }
+            }
+        }
+    }
+}
+
+pluginBundle {
+    website = 'https://github.com/google/protobuf-gradle-plugin'
+    vcsUrl = 'https://github.com/google/protobuf-gradle-plugin'
+    description = 'The Protobuf plugin provides protobuf compilation to your project.'
+
+    plugins {
+        protobufPlugin {
+            id = 'com.google.protobuf'
+            displayName = 'Protobuf Plugin for Gradle'
+            tags = ['protobuf', 'protocol-buffers', 'protoc']
+        }
+    }
+}
+
+// Releases must be built on Java 1.8.
+tasks.create("checkJavaVersion").doLast {
+    JavaVersion javaVersion = JavaVersion.current()
+    if (!javaVersion.isJava8()) {
+        throw new GradleException(
+                "The plugin must be published under Java 1.8 but ${javaVersion} is found")
+    }
+}
+[uploadArchives, publishPlugins]*.dependsOn checkJavaVersion
+
+if (System.env.TRAVIS == 'true') {
+    // Normally html output is more user friendly,
+    // but we want a console printable file for Travis logs
+    project.codenarc.reportFormat = 'text'
+
+    // To limit the memory usage when running in Travis.
+    // Travis tend to kill tasks that use too much memory.
+    allprojects {
+        tasks.withType(GroovyCompile) {
+            groovyOptions.fork = false
+        }
+        tasks.withType(Test) {
+            // containers (currently) have 2 dedicated cores and 4GB of memory
+            maxParallelForks = 2
+            minHeapSize = '128m'
+        }
+    }
+    // The Android test takes longer than 10 minutes.  Travis kills the test if it has
+    // seen no output for 10 minutes, so we need to produced output.
+    test {
+        testLogging {
+            showStandardStreams = true
+            exceptionFormat = 'full'
+            showExceptions true
+            showCauses true
+            showStackTraces true
+        }
+    }
+}
+
+// Required in order to support building a mixed kotlin/groovy project. With out this,
+// we would get a cyclic dependency error, since both compileKotlin and compileGroovy
+// depend on compileJava.
+// https://discuss.gradle.org/t/kotlin-groovy-and-java-compilation/14903/10
+project.afterEvaluate {
+    compileGroovy.dependsOn = compileGroovy.taskDependencies.mutableValues - 'compileJava'
+    compileKotlin.dependsOn compileGroovy
+    compileKotlin.classpath += files(compileGroovy.destinationDir)
+    classes.dependsOn compileKotlin
+}
