@@ -87,6 +87,8 @@ public class BlackDuckBinaryScannerTool {
             NameVersion nameVersion = dockerTargetData.getNameVersion();
             if (dockerTargetData.getContainerFilesystem().isPresent()) {
                 binaryScanFiles.put(dockerTargetData.getContainerFilesystem().get(), nameVersion);
+            } else if (dockerTargetData.getProvidedTar().isPresent()) {
+                binaryScanFiles.put(dockerTargetData.getProvidedTar().get(), nameVersion);
             }
         }
         if (binaryScanOptions.getSingleTargetFilePath().isPresent()) {

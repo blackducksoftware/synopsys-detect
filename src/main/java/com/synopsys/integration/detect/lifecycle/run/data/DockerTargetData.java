@@ -74,8 +74,8 @@ public class DockerTargetData {
         return Optional.ofNullable(containerFilesystem);
     }
 
-    public File getProvidedTar() {
-        return providedTar;
+    public Optional<File> getProvidedTar() {
+        return Optional.ofNullable(providedTar);
     }
 
     public boolean hasTarget() {

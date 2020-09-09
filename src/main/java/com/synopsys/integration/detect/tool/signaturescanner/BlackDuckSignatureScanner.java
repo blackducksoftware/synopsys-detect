@@ -168,6 +168,9 @@ public class BlackDuckSignatureScanner {
             if (dockerTargetData.getSquashedImage().isPresent()) {
                 SignatureScanPath scanPath = createScanPath(dockerTargetData.getSquashedImage().get().getCanonicalFile().toPath(), maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
                 signatureScanPaths.add(scanPath);
+            } else if (dockerTargetData.getProvidedTar().isPresent()) {
+                SignatureScanPath scanPath = createScanPath(dockerTargetData.getProvidedTar().get().getCanonicalFile().toPath(), maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
+                signatureScanPaths.add(scanPath);
             }
         } else {
             Path sourcePath = directoryManager.getSourceDirectory().getAbsoluteFile().toPath();
