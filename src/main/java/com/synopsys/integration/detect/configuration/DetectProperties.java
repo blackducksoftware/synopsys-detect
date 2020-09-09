@@ -201,7 +201,7 @@ public class DetectProperties {
     public static final DetectProperty<FilterableEnumListProperty<WorkspaceRule>> DETECT_BAZEL_DEPENDENCY_RULE =
         new DetectProperty<>(new FilterableEnumListProperty<>("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class))
             .setInfo("Bazel workspace external dependency rule", "6.0.0")
-            .setHelp("The Bazel workspace rule used to pull in external dependencies. If not set, Detect will attempt to determine the rule from the contents of the WORKSPACE file.")
+            .setHelp("The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullablePathProperty> DETECT_BDIO_OUTPUT_PATH =
@@ -289,7 +289,7 @@ public class DetectProperties {
         new DetectProperty<>(new StringListProperty("detect.blackduck.signature.scanner.exclusion.patterns", emptyList()))
             .setInfo("Exclusion Patterns", "4.2.0")
             .setHelp("A comma-separated list of values to be used with the Signature Scanner --exclude flag.",
-                "Each pattern provided is passed to the signature scanner (Black Duck scan CLI) as a value for an --exclude option. The signature scanner requires that these exclusion patterns start and end with a forward slash (/) and may not contain double asterisks (**). These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude from signature scanning. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns= / blackduck - common /, --detect.blackduck.signature.scanner.exclusion.patterns ='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns ='/blackduck-*/'.Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.")
+                "Each pattern provided is passed to the signature scanner (Black Duck scan CLI) as a value for an --exclude option. The signature scanner requires that these exclusion patterns start and end with a forward slash (/) and may not contain double asterisks (**). These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude from signature scanning. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns=/blackduck-common/, --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-*/'. Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<ExtendedEnumProperty<ExtendedIndividualFileMatchingMode, IndividualFileMatching>> DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING =
@@ -475,15 +475,14 @@ public class DetectProperties {
 
     public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS =
         new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.patterns", emptyList()))
-            .setInfo(" Detector Directory Patterns Exclusions", "3.2.0")
-            .setHelp("A comma-separated list of directory name patterns to exclude from detector search.",
-                "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters).For example, suppose you're running in bash on Linux, you've set--detect.detector.search.depth = 1, and have a subdirectory named blackduck - common(a gradle project)that you want to exclude from the detector search.Any of the following would exclude it:--detect.detector.search.exclusion.patterns=blackduck-common,--detect.detector.search.exclusion.patterns ='blackduck-common',--detect.detector.search.exclusion.patterns ='blackduck-*'")
+            .setInfo("Detector Directory Patterns Exclusions", "3.2.0")
+            .setHelp("A comma-separated list of directory name patterns to exclude from detector search.", "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). For example, suppose you're running in bash on Linux, you've set --detect.detector.search.depth=1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it:--detect.detector.search.exclusion.patterns=blackduck-common,--detect.detector.search.exclusion.patterns='blackduck-common',--detect.detector.search.exclusion.patterns='blackduck-*'")
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS =
         new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.paths", emptyList()))
-            .setInfo(" Detector Directory Path Exclusions", "5.5.0")
+            .setInfo("Detector Directory Path Exclusions", "5.5.0")
             .setHelp(
                 "A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)",
                 "This property performs the same basic function as detect.detector.search.exclusion, but lets you be more specific."
@@ -493,14 +492,13 @@ public class DetectProperties {
 
     public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_FILES =
         new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.files", emptyList()))
-            .setInfo(" Detector File Exclusions", "6.0.0")
+            .setInfo("Detector File Exclusions", "6.0.0")
             .setHelp("A comma-separated list of file names to exclude from detector search.")
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<BooleanProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS =
         new DetectProperty<>(new BooleanProperty("detect.detector.search.exclusion.defaults", true))
-            .setInfo(" Detector File Exclusions", "6.0.0")
             .setInfo("Detector Exclude Default Directories", "3.2.0")
             .setHelp("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.",
                 "If true, these directories will be excluded from the detector search: bin, build, .git, .gradle, node_modules, out, packages, target."
@@ -646,7 +644,7 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.gradle.build.command"))
             .setInfo("Gradle Build Command", "3.0.0")
             .setHelp(
-                "Gradle command line arguments to add to the mvn/mvnw command line.",
+                "Gradle command line arguments to add to the gradle/gradlew command line.",
                 "By default, Detect runs the gradle (or gradlew) command with one task: dependencies. You can use this property to insert one or more additional gradle command line arguments (options or tasks) before the dependencies argument."
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN);

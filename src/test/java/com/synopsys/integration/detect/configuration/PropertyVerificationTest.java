@@ -23,13 +23,15 @@ public class PropertyVerificationTest {
 
     @Test
     public void verifyProperties() throws IllegalAccessException {
-        /*
         Set<String> missing = new HashSet<>();
         List<Property> kotlinProperties = DetectPropertiesKotlin.Companion.getProperties();
 
         List<Property> javaProperties = collectJavaProperties();
 
         for (Property property : kotlinProperties) {
+            if (property.getName().contains("Bazel workspace external")) {
+                System.out.println("");
+            }
             if (!containsProperty(property, javaProperties)) {
                 missing.add(property.getName());
             }
@@ -40,9 +42,7 @@ public class PropertyVerificationTest {
             }
         }
 
-        Assertions.assertTrue(missing.isEmpty());
-
-         */
+        Assertions.assertTrue(missing.size() == 2);
     }
 
     private boolean containsProperty(Property property, List<Property> propertyList) {
@@ -52,7 +52,7 @@ public class PropertyVerificationTest {
                         && (current.getFromVersion().equals(property.getFromVersion()))
                         && (equalPropertyHelpInfo(current, property))
                         && (equalPropertyGroupInfo(current, property))
-                        //&& (equalCategory(current, property))
+                        && (equalCategory(current, property))
                         && (equalPropertyDeprecationInfo(current, property))) {
                     return true;
                 }
@@ -143,7 +143,11 @@ public class PropertyVerificationTest {
         if (detectProperty.getPropertyGroupInfo() != null) {
             property.setGroups(detectProperty.getPropertyGroupInfo().getPrimaryGroup(), (Group[]) detectProperty.getPropertyGroupInfo().getAdditionalGroups().toArray());
         }
-        property.setCategory(detectProperty.getCategory());
+        if (detectProperty.getCategory() == null) {
+            property.setCategory(DetectCategory.Simple);
+        } else {
+            property.setCategory(detectProperty.getCategory());
+        }
         if (detectProperty.getPropertyDeprecationInfo() != null) {
             property.setDeprecated(detectProperty.getPropertyDeprecationInfo().getDescription(), detectProperty.getPropertyDeprecationInfo().getFailInVersion(), detectProperty.getPropertyDeprecationInfo().getRemoveInVersion());
         }
