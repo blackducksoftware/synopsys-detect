@@ -60,6 +60,8 @@ import com.synopsys.integration.detectable.detectables.docker.model.DockerImageI
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DockerExtractor {
+    public static final ExtractionMetadata<File> SQUASHED_IMAGE_META_DATA = new ExtractionMetadata<>("squashedImage", File.class);
+    public static final ExtractionMetadata<File> CONTAINER_FILESYSTEM_META_DATA = new ExtractionMetadata<>("containerFilesystem", File.class);
     public static final ExtractionMetadata<File> DOCKER_TAR_META_DATA = new ExtractionMetadata<>("dockerTar", File.class);
     public static final ExtractionMetadata<String> DOCKER_IMAGE_NAME_META_DATA = new ExtractionMetadata<>("dockerImage", String.class);
     public static final ExtractionMetadata<String> DOCKER_IMAGE_ID_META_DATA = new ExtractionMetadata<>("dockerImageId", String.class);

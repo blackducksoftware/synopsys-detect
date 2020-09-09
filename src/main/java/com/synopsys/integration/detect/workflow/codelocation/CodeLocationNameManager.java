@@ -66,12 +66,12 @@ public class CodeLocationNameManager {
         return codeLocationName;
     }
 
-    public String createScanCodeLocationName(File sourcePath, File scanTargetPath, DockerTargetData dockerTargetData, String projectName, String projectVersionName, String prefix, String suffix) {
+    public String createScanCodeLocationName(File sourcePath, File scanTargetPath, @Nullable File dockerTarget, String projectName, String projectVersionName, String prefix, String suffix) {
         String scanCodeLocationName;
         if (codeLocationNameGenerator.useCodeLocationOverride()) {
             scanCodeLocationName = codeLocationNameGenerator.getNextCodeLocationOverrideNameUnSourced(CodeLocationNameType.SCAN);
-        } else if (dockerTargetData.getSquashedDockerTar().isPresent()) {
-            scanCodeLocationName = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTargetData.getSquashedDockerTar().get(), projectName, projectVersionName, prefix, suffix);
+        } else if (dockerTarget != null) {
+            scanCodeLocationName = codeLocationNameGenerator.createDockerScanCodeLocationName(dockerTarget, projectName, projectVersionName, prefix, suffix);
         } else {
             scanCodeLocationName = codeLocationNameGenerator.createScanCodeLocationName(sourcePath, scanTargetPath, projectName, projectVersionName, prefix, suffix);
         }

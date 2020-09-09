@@ -30,50 +30,52 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckBinaryScannerToolTest {
 
     @Test
-    public void testShouldRunFalsePropertyNotSet() {
+    public void testShouldRunFalsePropertyNotSet() throws DetectUserFriendlyException {
         final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(null, Collections.singletonList(""), "", "");
 
         final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
-        final boolean shouldRunResponse = tool.shouldRun();
+        final boolean shouldRunResponse = !tool.determineBinaryScanPaths(DockerTargetData.NO_DOCKER_TARGET, new NameVersion("name", "version")).isEmpty();
 
         assertFalse(shouldRunResponse);
     }
 
     @Test
-    public void testShouldRunTrueFileNonExistent() {
+    public void testShouldRunTrueFileNonExistent() throws DetectUserFriendlyException {
         final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("thisisnotafile"), Collections.singletonList(""), "", "");
 
         final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
 
-        final boolean shouldRunResponse = tool.shouldRun();
+        final boolean shouldRunResponse = !tool.determineBinaryScanPaths(DockerTargetData.NO_DOCKER_TARGET, new NameVersion("name", "version")).isEmpty();;
 
         assertTrue(shouldRunResponse);
     }
 
     @Test
-    public void testShouldRunTruePropertySetToDirectory() {
+    public void testShouldRunTruePropertySetToDirectory() throws DetectUserFriendlyException {
         final BinaryScanOptions binaryScanOptions = new BinaryScanOptions(Paths.get("."), Collections.singletonList(""), "", "");
 
         final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
 
-        final boolean shouldRunResponse = tool.shouldRun();
+        final boolean shouldRunResponse = !tool.determineBinaryScanPaths(DockerTargetData.NO_DOCKER_TARGET, new NameVersion("name", "version")).isEmpty();;
 
         assertTrue(shouldRunResponse);
     }
 
     @Test
-    public void testShouldRunTrueEverythingCorrect() throws IOException {
+    public void testShouldRunTrueEverythingCorrect() throws IOException, DetectUserFriendlyException {
         final File binaryScanFile = Files.createTempFile("test", "binaryScanFile").toFile();
         binaryScanFile.deleteOnExit();
         assertTrue(binaryScanFile.canRead());
@@ -83,7 +85,7 @@ public class BlackDuckBinaryScannerToolTest {
 
         final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(null, null, null, null, binaryScanOptions, null);
 
-        final boolean shouldRunResponse = tool.shouldRun();
+        final boolean shouldRunResponse = !tool.determineBinaryScanPaths(DockerTargetData.NO_DOCKER_TARGET, new NameVersion("name", "version")).isEmpty();;
 
         assertTrue(shouldRunResponse);
     }
@@ -96,9 +98,9 @@ public class BlackDuckBinaryScannerToolTest {
 
         final BlackDuckBinaryScannerTool tool = new BlackDuckBinaryScannerTool(eventSystem, null, null, null, binaryScanOptions, null);
 
-        final NameVersion projectNameVersion = new NameVersion("testName", "testVersion");
+        Map<File, NameVersion> scanPaths = tool.determineBinaryScanPaths(DockerTargetData.NO_DOCKER_TARGET, new NameVersion("testName", "testVersion"));
 
-        final BinaryScanToolResult result = tool.performBinaryScanActions(projectNameVersion);
+        final BinaryScanToolResult result = tool.performBinaryScanActions(scanPaths).get(0);
 
         assertFalse(result.isSuccessful());
     }

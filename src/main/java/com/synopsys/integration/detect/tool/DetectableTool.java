@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
@@ -128,9 +129,7 @@ public class DetectableTool {
         final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>(detectCodeLocationMap.values());
 
         // new DetectableToolResult
-
-        final File dockerTar = extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).orElse(null); // ifPresent(DetectableToolResult::addDockerTar)
-
+        DockerTargetData dockerTargetData = new DockerTargetData(extraction);
         DetectToolProjectInfo projectInfo = null;
         if (StringUtils.isNotBlank(extraction.getProjectName()) || StringUtils.isNotBlank(extraction.getProjectVersion())) {
             final NameVersion nameVersion = new NameVersion(extraction.getProjectName(), extraction.getProjectVersion());
@@ -139,6 +138,6 @@ public class DetectableTool {
 
         logger.debug("Tool finished.");
 
-        return DetectableToolResult.success(detectCodeLocations, projectInfo, dockerTar);
+        return DetectableToolResult.success(detectCodeLocations, projectInfo, dockerTargetData);
     }
 }

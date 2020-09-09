@@ -30,7 +30,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -47,7 +46,6 @@ import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.data.DockerTargetData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.synopsys.integration.detect.tool.DetectableToolResult;
 import com.synopsys.integration.detect.util.DetectZipUtil;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -87,11 +85,8 @@ public class BlackDuckBinaryScannerTool {
         Map<File, NameVersion> binaryScanFiles = new HashMap<>();
         if (dockerTargetData.hasTarget()) {
             NameVersion nameVersion = dockerTargetData.getNameVersion();
-            if (dockerTargetData.getUnsquashedDockerTar().isPresent()) {
-                binaryScanFiles.put(dockerTargetData.getUnsquashedDockerTar().get(), nameVersion);
-            }
-            if (dockerTargetData.getSquashedDockerTar().isPresent()) {
-                binaryScanFiles.put(dockerTargetData.getSquashedDockerTar().get(), nameVersion);
+            if (dockerTargetData.getContainerFilesystem().isPresent()) {
+                binaryScanFiles.put(dockerTargetData.getContainerFilesystem().get(), nameVersion);
             }
         }
         if (binaryScanOptions.getSingleTargetFilePath().isPresent()) {

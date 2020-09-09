@@ -165,8 +165,8 @@ public class BlackDuckSignatureScanner {
                 signatureScanPaths.add(scanPath);
             }
         } else if (dockerTargetData.hasTarget()) {
-            if (dockerTargetData.getSquashedDockerTar().isPresent()) {
-                SignatureScanPath scanPath = createScanPath(dockerTargetData.getSquashedDockerTar().get().getCanonicalFile().toPath(), maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
+            if (dockerTargetData.getSquashedImage().isPresent()) {
+                SignatureScanPath scanPath = createScanPath(dockerTargetData.getSquashedImage().get().getCanonicalFile().toPath(), maxDepth, signatureScannerExclusionNamePatterns, providedExclusionPatterns);
                 signatureScanPaths.add(scanPath);
             }
         } else {
@@ -224,7 +224,7 @@ public class BlackDuckSignatureScanner {
         String suffix = signatureScannerOptions.getCodeLocationSuffix().orElse(null);
 
         for (SignatureScanPath scanPath : signatureScanPaths) {
-            String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, scanPath.getTargetPath(), dockerTargetData, projectName, projectVersionName, prefix, suffix);
+            String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, scanPath.getTargetPath(), dockerTargetData.getSquashedImage().orElse(null), projectName, projectVersionName, prefix, suffix);
             scanJobBuilder.addTarget(ScanTarget.createBasicTarget(scanPath.getTargetCanonicalPath(), scanPath.getExclusions(), codeLocationName));
         }
 

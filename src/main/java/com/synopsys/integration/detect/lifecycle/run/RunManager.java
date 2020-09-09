@@ -242,7 +242,7 @@ public class RunManager {
             DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
 
             NameVersion nameVersion = detectableToolResult.getDetectToolProjectInfo().isPresent() ? detectableToolResult.getDetectToolProjectInfo().get().getSuggestedNameVersion() : new NameVersion("name", "version");
-            DockerTargetData dockerTargetData = new DockerTargetData(nameVersion, detectableToolResult.getDockerTar().get(), null); // TODO - pass unsquashed image, or container file system to dockerTarget
+            DockerTargetData dockerTargetData = detectableToolResult.getDockerTargetData();
             CodeLocationAccumulator codeLocationWaitController = new CodeLocationAccumulator();
 
             if (!detectToolFilter.shouldExclude(DetectTool.BINARY_SCAN) && enabledTools.contains(DetectTool.BINARY_SCAN)) {
@@ -465,6 +465,7 @@ public class RunManager {
         }
     }
 
+    // When running the signature scanner on a non-docker target
     private void runSignatureScanner(DetectConfigurationFactory detectConfigurationFactory, BlackDuckRunData blackDuckRunData, EventSystem eventSystem, NameVersion projectNameVersion, CodeLocationAccumulator codeLocationAccumulator)
         throws DetectUserFriendlyException {
         runSignatureScanner(detectConfigurationFactory, blackDuckRunData, DockerTargetData.NO_DOCKER_TARGET, eventSystem, projectNameVersion, codeLocationAccumulator);
@@ -485,6 +486,7 @@ public class RunManager {
         logger.info("Signature scanner actions finished.");
     }
 
+    // When running the binary scanner on a non-docker target
     private void runBinaryScanner(DetectConfigurationFactory detectConfigurationFactory, EventSystem eventSystem, CodeLocationNameManager codeLocationNameManager, DirectoryManager directoryManager, NameVersion projectNameVersion, CodeLocationAccumulator codeLocationAccumulator)
         throws DetectUserFriendlyException {
         runBinaryScanner(detectConfigurationFactory, eventSystem, codeLocationNameManager, directoryManager, projectNameVersion, DockerTargetData.NO_DOCKER_TARGET, codeLocationAccumulator);

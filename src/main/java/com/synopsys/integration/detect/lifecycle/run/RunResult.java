@@ -34,7 +34,6 @@ import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
 import com.synopsys.integration.util.NameVersion;
 
 public class RunResult {
-    private File dockerTar = null;
     private final List<DetectToolProjectInfo> detectToolProjectInfo = new ArrayList<>();
     private final List<DetectCodeLocation> detectCodeLocations = new ArrayList<>();
 
@@ -49,16 +48,7 @@ public class RunResult {
 
     public void addDetectableToolResult(final DetectableToolResult detectableToolResult) {
         detectableToolResult.getDetectToolProjectInfo().ifPresent(detectToolProjectInfo1 -> addToolNameVersion(detectToolProjectInfo1.getDetectTool(), detectToolProjectInfo1.getSuggestedNameVersion()));
-        detectableToolResult.getDockerTar().ifPresent(this::addDockerFile);
         detectCodeLocations.addAll(detectableToolResult.getDetectCodeLocations());
-    }
-
-    public void addDockerFile(final File dockerFile) {
-        dockerTar = dockerFile;
-    }
-
-    public Optional<File> getDockerTar() {
-        return Optional.ofNullable(dockerTar);
     }
 
     public List<DetectToolProjectInfo> getDetectToolProjectInfo() {
