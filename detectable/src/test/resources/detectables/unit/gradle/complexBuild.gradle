@@ -119,7 +119,7 @@ uploadArchives {
             }
             pom.project {
                 name project.name
-                description "Gradle build plugin to handle Protocol Buffers automated code generation and compilation"
+                description "Gradle complexBuild plugin to handle Protocol Buffers automated code generation and compilation"
                 url "https://github.com/google/protobuf-gradle-plugin"
                 licenses {
                     license {

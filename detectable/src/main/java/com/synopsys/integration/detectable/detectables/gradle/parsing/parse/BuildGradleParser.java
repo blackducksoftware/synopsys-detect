@@ -31,6 +31,7 @@ import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.groovy.ast.ASTNode;
 import org.codehaus.groovy.ast.builder.AstBuilder;
+import org.codehaus.groovy.control.CompilePhase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,7 @@ public class BuildGradleParser {
         try {
             final String sourceContents = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
             final AstBuilder astBuilder = new AstBuilder();
-            final List<ASTNode> nodes = astBuilder.buildFromString(sourceContents);
+            final List<ASTNode> nodes = astBuilder.buildFromString(CompilePhase.CONVERSION, sourceContents);
 
             final DependenciesVisitor dependenciesVisitor = new DependenciesVisitor(externalIdFactory);
             for (final ASTNode node : nodes) {
