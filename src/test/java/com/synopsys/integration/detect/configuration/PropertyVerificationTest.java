@@ -29,9 +29,6 @@ public class PropertyVerificationTest {
         List<Property> javaProperties = collectJavaProperties();
 
         for (Property property : kotlinProperties) {
-            if (property.getName().contains("Bazel workspace external")) {
-                System.out.println("");
-            }
             if (!containsProperty(property, javaProperties)) {
                 missing.add(property.getName());
             }
