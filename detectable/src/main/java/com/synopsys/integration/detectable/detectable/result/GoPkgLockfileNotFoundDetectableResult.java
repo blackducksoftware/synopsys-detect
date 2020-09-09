@@ -22,15 +22,15 @@
  */
 package com.synopsys.integration.detectable.detectable.result;
 
-public class PoetryRunPoetryInstallDetectResult extends FailedDetectableResult {
+public class GoPkgLockfileNotFoundDetectableResult extends FailedDetectableResult {
     private final String directoryPath;
 
-    public PoetryRunPoetryInstallDetectResult(final String directoryPath) {
+    public GoPkgLockfileNotFoundDetectableResult(final String directoryPath) {
         this.directoryPath = directoryPath;
     }
 
     @Override
     public String toDescription() {
-        return String.format("A pyproject.toml was located in %s, but the Poetry.lock file was NOT located. Please run 'poetry install' in that location and try again.", directoryPath);
+        return String.format("A Gopkg.toml was located in %s, but the Gopkg.lock file was NOT located. Please run 'go dep init' and 'go dep ensure' in that location and try again.", directoryPath);
     }
 }

@@ -22,15 +22,15 @@
  */
 package com.synopsys.integration.detectable.detectable.result;
 
-public class GoDepRunInitEnsureDetectableResult extends FailedDetectableResult {
+public class NpmNodeModulesNotFoundDetectableResult extends FailedDetectableResult {
     private final String directoryPath;
 
-    public GoDepRunInitEnsureDetectableResult(final String directoryPath) {
+    public NpmNodeModulesNotFoundDetectableResult(final String directoryPath) {
         this.directoryPath = directoryPath;
     }
 
     @Override
     public String toDescription() {
-        return String.format("A Gopkg.toml was located in %s, but the Gopkg.lock file was NOT located. Please run 'go dep init' and 'go dep ensure' in that location and try again.", directoryPath);
+        return String.format("A package.json was located in %s, but the node_modules folder was NOT located. Please run 'npm install' in that location and try again.", directoryPath);
     }
 }

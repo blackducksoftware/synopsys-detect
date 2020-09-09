@@ -36,7 +36,7 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.NpmRunInstallDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonDiscoverer;
 
@@ -86,7 +86,7 @@ public class NpmCliDetectable extends Detectable {
     public DetectableResult extractable() throws DetectableException {
         final File nodeModules = fileFinder.findFile(environment.getDirectory(), NODE_MODULES);
         if (nodeModules == null) {
-            return new NpmRunInstallDetectableResult(environment.getDirectory().getAbsolutePath());
+            return new NpmNodeModulesNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
         }
 
         npmExe = npmResolver.resolveNpm(environment);
