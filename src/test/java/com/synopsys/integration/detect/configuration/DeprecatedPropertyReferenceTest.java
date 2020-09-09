@@ -53,12 +53,14 @@ public class DeprecatedPropertyReferenceTest {
         this.getClass()
     )).map(Class::getSimpleName).toList();
 
-    private List<String> deprecatedPropertyReferenceStrings = Bds.of(DetectProperties.Companion.getProperties())
+    private List<String> deprecatedPropertyReferenceStrings = Bds.of(DetectProperties.allProperties())
                                                                   .filter(it -> it.getPropertyDeprecationInfo() != null)
                                                                   .map(Property::getKey)
                                                                   .map(String::toUpperCase)
                                                                   .map(key -> key.replace(".", "_"))
                                                                   .toList();
+
+    public DeprecatedPropertyReferenceTest() throws IllegalAccessException {}
 
     @Test
     public void testCodeReferencesToDeprecatedProperties() throws IOException {

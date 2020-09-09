@@ -69,7 +69,7 @@ public class ProductBoot {
         PolarisRunData polarisRunData = getPolarisRunData(productDecision, polarisConnectivityChecker);
 
         if (productBootOptions.isTestConnections()) {
-            logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperties.Companion.getDETECT_TEST_CONNECTION().getName()));
+            logger.debug(String.format("%s is set to 'true' so Detect will not run.",  DetectProperties.DETECT_TEST_CONNECTION.getProperty().getName()));
             return null;
         }
 
@@ -107,7 +107,7 @@ public class ProductBoot {
         } else {
             if (productBootOptions.isIgnoreConnectionFailures()) {
                 logger.info(String.format("Failed to connect to Black Duck: %s", blackDuckConnectivityResult.getFailureReason()));
-                logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.", DetectProperties.Companion.getDETECT_IGNORE_CONNECTION_FAILURES().getName()));
+                logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.",  DetectProperties.DETECT_IGNORE_CONNECTION_FAILURES.getProperty().getName()));
                 return null;
             } else {
                 throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + blackDuckConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);

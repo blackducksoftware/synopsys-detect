@@ -57,14 +57,14 @@ public class DetectConfigrationTest {
         propertySources.add(new MapPropertySource("test", values));
         final PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
 
-        final Map<String, String> phoneHomePropertiesMap = propertyConfiguration.getRaw(DetectProperties.Companion.getPHONEHOME_PASSTHROUGH());
+        final Map<String, String> phoneHomePropertiesMap = propertyConfiguration.getRaw(DetectProperties.PHONEHOME_PASSTHROUGH.getProperty());
         Assertions.assertEquals(givenValue, phoneHomePropertiesMap.get(givenKeyPhoneHomePart));
     }
 
     @Test
     public void testDeprecated() throws DetectUserFriendlyException {
         final HashMap<String, String> values = new HashMap<>();
-        values.put(DetectProperties.Companion.getDETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS().getKey(), "2");
+        values.put(DetectProperties.DETECT_HUB_SIGNATURE_SCANNER_PARALLEL_PROCESSORS.getProperty().getKey(), "2");
         final List<PropertySource> propertySources = new ArrayList<>();
         propertySources.add(new MapPropertySource("test", values));
         final PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);

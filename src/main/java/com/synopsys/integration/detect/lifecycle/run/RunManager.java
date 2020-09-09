@@ -234,9 +234,9 @@ public class RunManager {
         logger.info(ReportConstants.RUN_SEPARATOR);
         if (detectToolFilter.shouldInclude(DetectTool.DETECTOR)) {
             logger.info("Will include the detector tool.");
-            String projectBomTool = detectConfiguration.getValueOrEmpty(DetectProperties.Companion.getDETECT_PROJECT_DETECTOR()).orElse(null);
-            List<DetectorType> requiredDetectors = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_REQUIRED_DETECTOR_TYPES());
-            boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_BUILDLESS());
+            String projectBomTool = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_PROJECT_DETECTOR.getProperty()).orElse(null);
+            List<DetectorType> requiredDetectors = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES.getProperty());
+            boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_BUILDLESS.getProperty());
 
             DetectorRuleFactory detectorRuleFactory = new DetectorRuleFactory();
             DetectorRuleSet detectRuleSet = detectorRuleFactory.createRules(detectDetectableFactory, buildless);

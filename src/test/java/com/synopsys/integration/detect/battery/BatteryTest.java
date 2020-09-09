@@ -128,7 +128,7 @@ public final class BatteryTest {
 
     public void git(String origin, String branch) {
         sourceFileNamed(".git");
-        executable(DetectProperties.Companion.getDETECT_GIT_PATH(), origin, branch);
+        executable(DetectProperties.DETECT_GIT_PATH.getProperty(), origin, branch);
     }
 
     public void sourceFileNamed(String filename) {
@@ -187,13 +187,13 @@ public final class BatteryTest {
         List<String> detectArguments = new ArrayList<>();
         Map<Property, String> properties = new HashMap<>();
 
-        properties.put(DetectProperties.Companion.getDETECT_TOOLS(), toolsValue);
-        properties.put(DetectProperties.Companion.getBLACKDUCK_OFFLINE_MODE(), "true");
-        properties.put(DetectProperties.Companion.getDETECT_OUTPUT_PATH(), outputDirectory.getCanonicalPath());
-        properties.put(DetectProperties.Companion.getDETECT_BDIO_OUTPUT_PATH(), bdioDirectory.getCanonicalPath());
-        properties.put(DetectProperties.Companion.getDETECT_CLEANUP(), "false");
-        properties.put(DetectProperties.Companion.getLOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION(), "INFO"); // Leave at INFO for Travis. Long logs cause build to fail.
-        properties.put(DetectProperties.Companion.getDETECT_SOURCE_PATH(), sourceDirectory.getCanonicalPath());
+        properties.put(DetectProperties.DETECT_TOOLS.getProperty(), toolsValue);
+        properties.put(DetectProperties.BLACKDUCK_OFFLINE_MODE.getProperty(), "true");
+        properties.put(DetectProperties.DETECT_OUTPUT_PATH.getProperty(), outputDirectory.getCanonicalPath());
+        properties.put(DetectProperties.DETECT_BDIO_OUTPUT_PATH.getProperty(), bdioDirectory.getCanonicalPath());
+        properties.put(DetectProperties.DETECT_CLEANUP.getProperty(), "false");
+        properties.put(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION.getProperty(), "INFO"); // Leave at INFO for Travis. Long logs cause build to fail.
+        properties.put(DetectProperties.DETECT_SOURCE_PATH.getProperty(), sourceDirectory.getCanonicalPath());
         for (Map.Entry<Property, String> entry : properties.entrySet()) {
             detectArguments.add("--" + entry.getKey().getKey() + "=" + entry.getValue());
         }

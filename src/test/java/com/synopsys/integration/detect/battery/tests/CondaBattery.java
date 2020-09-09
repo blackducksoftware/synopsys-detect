@@ -36,8 +36,8 @@ public class CondaBattery {
         test.sourceDirectoryNamed("linux-conda");
         test.sourceFileNamed("environment.yml");
         test.sourceFileNamed("setup.py");
-        test.executableFromResourceFiles(DetectProperties.Companion.getDETECT_CONDA_PATH(), "conda-list.xout", "conda-info.xout");
-        test.executableFromResourceFiles(DetectProperties.Companion.getDETECT_PYTHON_PATH(), "python-setup.xout", "python-inspector.xout");
+        test.executableFromResourceFiles(DetectProperties.DETECT_CONDA_PATH.getProperty(), "conda-list.xout", "conda-info.xout");
+        test.executableFromResourceFiles(DetectProperties.DETECT_PYTHON_PATH.getProperty(), "python-setup.xout", "python-inspector.xout");
         test.expectBdioResources();
         test.run();
     }

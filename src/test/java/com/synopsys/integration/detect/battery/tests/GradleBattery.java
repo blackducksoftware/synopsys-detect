@@ -35,7 +35,7 @@ public class GradleBattery {
     @Test
     void gradleFromProperty() {
         final BatteryTest test = new BatteryTest("gradle-property", "gradle-inspector");
-        test.executableThatCopiesFiles(DetectProperties.Companion.getDETECT_GRADLE_PATH(), RESOURCE_FOLDER)
+        test.executableThatCopiesFiles(DetectProperties.DETECT_GRADLE_PATH.getProperty(), RESOURCE_FOLDER)
             .onWindows(5, "")
             .onLinux(3, "-DGRADLEEXTRACTIONDIR=");
         test.sourceDirectoryNamed("linux-gradle");

@@ -154,8 +154,8 @@ public class Application implements ApplicationRunner {
 
             if (detectBootResult.getDetectConfiguration().isPresent()) {
                 final PropertyConfiguration detectConfiguration = detectBootResult.getDetectConfiguration().get();
-                printOutput = !detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_SUPPRESS_RESULTS_OUTPUT());
-                shouldForceSuccess = detectConfiguration.getValueOrDefault(DetectProperties.Companion.getDETECT_FORCE_SUCCESS());
+                printOutput = !detectConfiguration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_RESULTS_OUTPUT.getProperty());
+                shouldForceSuccess = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_FORCE_SUCCESS.getProperty());
             }
         }
 

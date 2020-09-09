@@ -43,10 +43,10 @@ public class DetectConfigurationFactoryTests {
     @Test
     public void proxyUsesCredentials() throws DetectUserFriendlyException {
         final DetectConfigurationFactory factory = factoryOf(
-            Pair.of(DetectProperties.Companion.getBLACKDUCK_PROXY_HOST(), "host"),
-            Pair.of(DetectProperties.Companion.getBLACKDUCK_PROXY_PORT(), "20"),
-            Pair.of(DetectProperties.Companion.getBLACKDUCK_PROXY_USERNAME(), "username"),
-            Pair.of(DetectProperties.Companion.getBLACKDUCK_PROXY_PASSWORD(), "password")
+            Pair.of(DetectProperties.BLACKDUCK_PROXY_HOST.getProperty(), "host"),
+            Pair.of(DetectProperties.BLACKDUCK_PROXY_PORT.getProperty(), "20"),
+            Pair.of(DetectProperties.BLACKDUCK_PROXY_USERNAME.getProperty(), "username"),
+            Pair.of(DetectProperties.BLACKDUCK_PROXY_PASSWORD.getProperty(), "password")
         );
         final Bdo<Credentials> result = Bdo.of(factory.createBlackDuckProxyInfo().getProxyCredentials());
 
@@ -60,7 +60,7 @@ public class DetectConfigurationFactoryTests {
     public void parallelProcessorsDefaultsToOne() {
         // Using the property default is the safe choice. See IDETECT-1970 - JM
         final DetectConfigurationFactory factory = spyFactoryOf();
-        final Integer defaultValue = DetectProperties.Companion.getDETECT_PARALLEL_PROCESSORS().getDefaultValue();
+        final Integer defaultValue =  DetectProperties.DETECT_PARALLEL_PROCESSORS.getProperty().getDefaultValue();
 
         Assertions.assertEquals(defaultValue.intValue(), factory.findParallelProcessors());
         Mockito.verify(factory, Mockito.never()).findRuntimeProcessors();
@@ -68,7 +68,7 @@ public class DetectConfigurationFactoryTests {
 
     @Test
     public void parallelProcessorsPrefersProperty() {
-        final DetectConfigurationFactory factory = factoryOf(Pair.of(DetectProperties.Companion.getDETECT_PARALLEL_PROCESSORS(), "3"));
+        final DetectConfigurationFactory factory = factoryOf(Pair.of(DetectProperties.DETECT_PARALLEL_PROCESSORS.getProperty(), "3"));
 
         Assertions.assertEquals(3, factory.findParallelProcessors());
     }
@@ -76,8 +76,8 @@ public class DetectConfigurationFactoryTests {
     @Test
     public void parallelProcessorsPrefersNewProperty() {
         final DetectConfigurationFactory factory = factoryOf(
-            Pair.of(DetectProperties.Companion.getDETECT_PARALLEL_PROCESSORS(), "5"),
-            Pair.of(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS(), "4")
+            Pair.of(DetectProperties.DETECT_PARALLEL_PROCESSORS.getProperty(), "5"),
+            Pair.of(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS.getProperty(), "4")
         );
 
         Assertions.assertEquals(5, factory.findParallelProcessors());
@@ -86,7 +86,7 @@ public class DetectConfigurationFactoryTests {
     @Test
     public void parallelProcessorsFallsBackToOldProperty() {
         final DetectConfigurationFactory factory = factoryOf(
-            Pair.of(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS(), "5")
+            Pair.of(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_PARALLEL_PROCESSORS.getProperty(), "5")
         );
 
         Assertions.assertEquals(5, factory.findParallelProcessors());
@@ -97,7 +97,7 @@ public class DetectConfigurationFactoryTests {
     @Test
     public void snippetMatchingDeprecatedPropertyEnablesSnippets() {
         final DetectConfigurationFactory factory = factoryOf(
-            Pair.of(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE(), "true")
+            Pair.of(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE.getProperty(), "true")
         );
 
         Assertions.assertEquals(SnippetMatching.SNIPPET_MATCHING, factory.findSnippetMatching());
@@ -106,8 +106,8 @@ public class DetectConfigurationFactoryTests {
     @Test
     public void snippetMatchingPrefersNewerProperty() {
         final DetectConfigurationFactory factory = factoryOf(
-            Pair.of(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE(), "true"),
-            Pair.of(DetectProperties.Companion.getDETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING(), SnippetMatching.FULL_SNIPPET_MATCHING_ONLY.name())
+            Pair.of(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE.getProperty(), "true"),
+            Pair.of(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING.getProperty(), SnippetMatching.FULL_SNIPPET_MATCHING_ONLY.name())
         );
 
         Assertions.assertEquals(SnippetMatching.FULL_SNIPPET_MATCHING_ONLY, factory.findSnippetMatching());

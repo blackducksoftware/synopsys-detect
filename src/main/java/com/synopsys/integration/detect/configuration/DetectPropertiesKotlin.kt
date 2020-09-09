@@ -60,7 +60,7 @@ import kotlin.reflect.full.companionObject
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.memberProperties
 
-class DetectProperties {
+class DetectPropertiesKotlin {
     companion object {
         //#region Active Properties
 
@@ -400,7 +400,7 @@ class DetectProperties {
         }
         val DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS = StringListProperty("detect.detector.search.exclusion.patterns", emptyList()).apply {
             setInfo("Detector Directory Patterns Exclusions", "3.2.0")
-            setHelp("A comma-separated list of directory name patterns to exclude from detector search.", "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters).For example, suppose you're running in bash on Linux, you've set--detect.detector.search.depth = 1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it:--detect.detector.search.exclusion.patterns = blackduck-common, --detect.detector.search.exclusion.patterns = 'blackduck-common', --detect.detector.search.exclusion.patterns = 'blackduck-*'")
+            setHelp("A comma-separated list of directory name patterns to exclude from detector search.", "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). For example, suppose you're running in bash on Linux, you've set --detect.detector.search.depth=1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it:--detect.detector.search.exclusion.patterns=blackduck-common,--detect.detector.search.exclusion.patterns='blackduck-common',--detect.detector.search.exclusion.patterns='blackduck-*'")
             setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             setCategory(DetectCategory.Advanced)
         }
@@ -1456,7 +1456,7 @@ class DetectProperties {
         }
 
         private fun values(): List<Property> {
-            val clazz = DetectProperties::class
+            val clazz = DetectPropertiesKotlin::class
             val companionClass = clazz.companionObject!!
             val companion = clazz.companionObjectInstance!!
             val members = mutableListOf<Property>()
