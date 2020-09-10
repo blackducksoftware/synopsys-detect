@@ -156,7 +156,7 @@ public class RunManager {
         DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
         DetectDetectableFactory detectDetectableFactory = detectContext.getBean(DetectDetectableFactory.class);
         blackDuckServicesFactory = productRunData.getBlackDuckRunData().getBlackDuckServicesFactory().orElse(null); // TODO - what is best way to provide blackduck service to populateEnabledTools?
-        enabledTools = populateEnabledTools();
+        enabledTools = fetchEnabledTools();
 
         RunResult runResult = new RunResult();
         RunOptions runOptions = detectConfigurationFactory.createRunOptions();
@@ -188,7 +188,7 @@ public class RunManager {
         return runResult;
     }
 
-    private Set<DetectTool> populateEnabledTools() throws IntegrationException {
+    private Set<DetectTool> fetchEnabledTools() throws IntegrationException {
         Set<DetectTool> enabledTools = new HashSet<>();
         if (blackDuckServicesFactory != null) {
             // Get features (tools) from blackduck
