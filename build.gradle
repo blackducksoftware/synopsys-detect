@@ -7,7 +7,7 @@ buildscript {
         springBootVersion = '2.2.4.RELEASE'
         blackDuckCommonVersion = '49.1.0'
         polarisCommonVersion = '0.21.0'
-        junitPlatformDefaultTestTags = 'integration, performance, battery, sample'
+        junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
