@@ -67,10 +67,6 @@ public class ExcludeIncludeEnumFilter<T extends Enum<T>> {
     }
 
     public boolean shouldExclude(T value) {
-        if (willInclude(value)) {
-            return false;
-        } else {
-            return willExclude(value);
-        }
+        return !shouldInclude(value)
     }
 }
