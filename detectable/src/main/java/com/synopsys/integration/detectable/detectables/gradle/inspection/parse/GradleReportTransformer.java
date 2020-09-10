@@ -50,7 +50,7 @@ public class GradleReportTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public CodeLocation transform(GradleReport gradleReport, DependencyReplacementResolver dependencyReplacementResolver) {
+    public CodeLocation transform(GradleReport gradleReport) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
@@ -66,11 +66,11 @@ public class GradleReportTransformer {
         }
     }
 
-    private void addConfigurationToGraph(final MutableDependencyGraph graph, final GradleConfiguration configuration) {
-        final DependencyHistory history = new DependencyHistory();
+    private void addConfigurationToGraph(MutableDependencyGraph graph, GradleConfiguration configuration) {
+        DependencyHistory history = new DependencyHistory();
         Optional<Integer> skipUntil = Optional.empty();
 
-        for (final GradleTreeNode currentNode : configuration.getChildren()) {
+        for (GradleTreeNode currentNode : configuration.getChildren()) {
 
             if (skipUntil.isPresent() && currentNode.getLevel() <= skipUntil.get()) {
                 skipUntil = Optional.empty();
@@ -84,9 +84,9 @@ public class GradleReportTransformer {
                 continue;
             }
 
-            final GradleGav gav = currentNode.getGav().get(); // TODO: Why are we not doing an isPresent() check here?
-            final ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getArtifact(), gav.getVersion());
-            final Dependency currentDependency = new Dependency(gav.getArtifact(), gav.getVersion(), externalId);
+            GradleGav gav = currentNode.getGav().get(); // TODO: Why are we not doing an isPresent() check here?
+            ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getArtifact(), gav.getVersion());
+            Dependency currentDependency = new Dependency(gav.getArtifact(), gav.getVersion(), externalId);
 
             if (history.isEmpty()) {
                 graph.addChildToRoot(currentDependency);
