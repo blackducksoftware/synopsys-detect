@@ -41,8 +41,8 @@ public class GradleReportLineParser {
     private static final String[] REMOVE_SUFFIXES = new String[] { " (*)", " (c)", " (n)" };
     private static final String WINNING_INDICATOR = " -> ";
 
-    public GradleTreeNode parseLine(final String line) {
-        final int level = parseTreeLevel(line);
+    public GradleTreeNode parseLine(String line) {
+        int level = parseTreeLevel(line);
         if (!line.contains(COMPONENT_PREFIX)) {
             return GradleTreeNode.newUnknown(level);
         } else if (StringUtils.containsAny(line, PROJECT_INDICATORS)) {
@@ -64,14 +64,14 @@ public class GradleReportLineParser {
     private String removeSuffixes(String line) {
         for (String suffix : REMOVE_SUFFIXES) {
             if (line.endsWith(suffix)) {
-                final int lastSeenElsewhereIndex = line.lastIndexOf(suffix);
+                int lastSeenElsewhereIndex = line.lastIndexOf(suffix);
                 line = line.substring(0, lastSeenElsewhereIndex);
             }
         }
         return line;
     }
 
-    private List<String> parseGav(final String line) {
+    private GradleGavPieces parseGav(String line) {
         String cleanedOutput = StringUtils.trimToEmpty(line);
         cleanedOutput = cleanedOutput.substring(cleanedOutput.indexOf(COMPONENT_PREFIX) + COMPONENT_PREFIX.length());
 
@@ -87,7 +87,7 @@ public class GradleReportLineParser {
             } else {
                 // the WINNING_INDICATOR is not always preceded by a : so if isn't, we need to clean up from the original split
                 if (gavPieces.get(1).contains(WINNING_INDICATOR)) {
-                    final String withoutWinningIndicator = gavPieces.get(1).substring(0, gavPieces.get(1).indexOf(WINNING_INDICATOR));
+                    String withoutWinningIndicator = gavPieces.get(1).substring(0, gavPieces.get(1).indexOf(WINNING_INDICATOR));
                     gavPieces.set(1, withoutWinningIndicator);
                     // since there was no : we don't have a gav piece for version yet
                     gavPieces.add("");
@@ -99,7 +99,7 @@ public class GradleReportLineParser {
         return gavPieces;
     }
 
-    private int parseTreeLevel(final String line) {
+    private int parseTreeLevel(String line) {
         if (StringUtils.startsWithAny(line, TREE_LEVEL_TERMINALS)) {
             return 0;
         }
@@ -114,9 +114,8 @@ public class GradleReportLineParser {
         if (modifiedLine.endsWith("|")) {
             modifiedLine = modifiedLine.substring(0, modifiedLine.length() - 5);
         }
-        final int matches = StringUtils.countMatches(modifiedLine, "|");
 
-        return matches;
+        return StringUtils.countMatches(modifiedLine, "|");
     }
 
 }
