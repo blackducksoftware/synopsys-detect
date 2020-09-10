@@ -241,7 +241,9 @@ public class RunManager {
 
             DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
 
-            NameVersion nameVersion = detectableToolResult.getDetectToolProjectInfo().isPresent() ? detectableToolResult.getDetectToolProjectInfo().get().getSuggestedNameVersion() : new NameVersion("name", "version");
+            NameVersion nameVersion = detectableToolResult.getDetectToolProjectInfo()
+                        .map(DetectToolProjectInfo::getSuggestedNameVersion)
+                        .orElse(new NameVersion("name", "version"));
             DockerTargetData dockerTargetData = detectableToolResult.getDockerTargetData();
             CodeLocationAccumulator codeLocationWaitController = new CodeLocationAccumulator();
 
