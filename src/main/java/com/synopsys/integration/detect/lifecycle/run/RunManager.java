@@ -108,6 +108,7 @@ import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
+import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecider;
 import com.synopsys.integration.detect.workflow.project.ProjectNameVersionOptions;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
