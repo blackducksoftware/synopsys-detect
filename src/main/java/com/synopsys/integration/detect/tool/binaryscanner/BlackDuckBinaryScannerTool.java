@@ -36,10 +36,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScan;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatch;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanOutput;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanUploadService;
+import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
@@ -55,7 +58,6 @@ import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckBinaryScannerTool {
@@ -140,7 +142,8 @@ public class BlackDuckBinaryScannerTool {
             CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData = binaryScanUploadService.uploadBinaryScan(binaryScanBatch);
 
             BinaryScanBatchOutput binaryScanBatchOutput = codeLocationCreationData.getOutput();
-            binaryScanBatchOutput.throwExceptionForError(new Slf4jIntLogger(logger));
+            // The throwExceptionForError() in BinaryScanBatchOutput has a bug, so doing that work here
+            throwExceptionForError(binaryScanBatchOutput);
 
             logger.info("Successfully uploaded binary scan file: " + codeLocationName);
             eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.SUCCESS));
@@ -150,6 +153,18 @@ public class BlackDuckBinaryScannerTool {
             eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.FAILURE));
             eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(e.getMessage())));
             throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
+        }
+    }
+
+    private void throwExceptionForError(BinaryScanBatchOutput binaryScanBatchOutput) throws BlackDuckIntegrationException {
+        for (BinaryScanOutput binaryScanOutput : binaryScanBatchOutput) {
+            if (binaryScanOutput.getResult() == Result.FAILURE) {
+                String uploadErrorMessage = String.format("Error when uploading binary scan: %s (Black Duck response: %s)",
+                    binaryScanOutput.getErrorMessage().orElse(binaryScanOutput.getStatusMessage()),
+                    binaryScanOutput.getResponse());
+                logger.error(uploadErrorMessage);
+                throw new BlackDuckIntegrationException(uploadErrorMessage);
+            }
         }
     }
 }
