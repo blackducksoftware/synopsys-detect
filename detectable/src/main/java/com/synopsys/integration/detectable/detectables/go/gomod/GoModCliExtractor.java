@@ -30,26 +30,23 @@ import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 
 public class GoModCliExtractor {
-    private final ExecutableRunner executableRunner;
     private final GoModCommandExecutor goModCommandExecutor;
-    private GoListUJsonGenerator goListUJsonGenerator;
     private final GoModGraphTransformer goModGraphTransformer;
     private final GoModGraphParser goModGraphParser;
 
     public GoModCliExtractor(final ExecutableRunner executableRunner, GoModGraphParser goModGraphParser) {
-        this.executableRunner = executableRunner;
         this.goModGraphParser = goModGraphParser;
         this.goModCommandExecutor = new GoModCommandExecutor(executableRunner);
-        this.goListUJsonGenerator = new GoListUJsonGenerator(goModCommandExecutor);
-        this.goModGraphTransformer = new GoModGraphTransformer(goModCommandExecutor);
+        this.goModGraphTransformer = new GoModGraphTransformer();
     }
 
     public Extraction extract(File directory, File goExe) {
         try {
-            final List<String> listOutput = goModCommandExecutor.execute(directory, goExe, "Querying go for the list of modules failed: ", "list", "-m");
-            List<String> listUJsonOutput = goListUJsonGenerator.generateListUJsonOutput(directory, goExe);
-            List<String> modGraphOutput = goModGraphTransformer.generateGoModGraphOutput(directory, goExe, listUJsonOutput);
-            final List<CodeLocation> codeLocations = goModGraphParser.parseListAndGoModGraph(listOutput, modGraphOutput);
+            List<String> listOutput = goModCommandExecutor.generateGoListOutput(directory, goExe);
+            List<String> listUJsonOutput = goModCommandExecutor.generateGoListUJsonOutput(directory, goExe);
+            List<String> modGraphOutput = goModCommandExecutor.generateGoModGraphOutput(directory, goExe);
+            List<String> finalModGraphOutput = goModGraphTransformer.transformGoModGraphOutput(modGraphOutput, listUJsonOutput);
+            final List<CodeLocation> codeLocations = goModGraphParser.parseListAndGoModGraph(listOutput, finalModGraphOutput);
             return new Extraction.Builder().success(codeLocations).build();//no project info - hoping git can help with that.
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
