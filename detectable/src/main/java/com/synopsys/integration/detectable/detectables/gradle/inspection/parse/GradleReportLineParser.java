@@ -48,14 +48,14 @@ public class GradleReportLineParser {
         } else if (StringUtils.containsAny(line, PROJECT_INDICATORS)) {
             return GradleTreeNode.newProject(level);
         } else {
-            final List<String> gav = parseGav(line);
+            List<String> gav = parseGav(line);
             if (gav.size() != 3) {
                 logger.trace(String.format("The line can not be reasonably split in to the necessary parts: %s", line)); //All project lines: +--- org.springframework.boot:spring-boot-starter-activemq (n)
                 return GradleTreeNode.newUnknown(level);
             } else {
-                final String group = gav.get(0);
-                final String artifact = gav.get(1);
-                final String version = gav.get(2);
+                String group = gav.get(0);
+                String artifact = gav.get(1);
+                String version = gav.get(2);
                 return GradleTreeNode.newGav(level, artifact, version, group);
             }
         }
@@ -71,7 +71,7 @@ public class GradleReportLineParser {
         return line;
     }
 
-    private GradleGavPieces parseGav(String line) {
+    private List<String> parseGav(String line) {
         String cleanedOutput = StringUtils.trimToEmpty(line);
         cleanedOutput = cleanedOutput.substring(cleanedOutput.indexOf(COMPONENT_PREFIX) + COMPONENT_PREFIX.length());
 
@@ -81,7 +81,7 @@ public class GradleReportLineParser {
         List<String> gavPieces = new ArrayList<>(Arrays.asList(cleanedOutput.split(":")));
         if (cleanedOutput.contains(WINNING_INDICATOR)) {
             // WINNING_INDICATOR can point to an entire GAV not just a version
-            final String winningSection = cleanedOutput.substring(cleanedOutput.indexOf(WINNING_INDICATOR) + WINNING_INDICATOR.length());
+            String winningSection = cleanedOutput.substring(cleanedOutput.indexOf(WINNING_INDICATOR) + WINNING_INDICATOR.length());
             if (winningSection.contains(":")) {
                 gavPieces = Arrays.asList(winningSection.split(":"));
             } else {
