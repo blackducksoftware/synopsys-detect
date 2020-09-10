@@ -1,5 +1,20 @@
 # Release notes
 
+## Version 6.6.0
+### New features
+* TBD
+
+### Changed features
+* Upon connecting to Black Duck, the users roles and groups, which are only used in DEBUG-level logging, are no longer fetched unless logging level is DEBUG or higher.
+* The error message produced for a binary upload error has been improved.
+* The Docker Inspector now works on Windows 10 Enterprise.
+
+### Resolved issues
+* TBD
+
+### Known issues
+* When running the Docker Inspector on Windows, ${solution_name} may fail to clean up all of its working directories (and log the message "Error trying cleanup") due to the following Docker issue: https://github.com/docker/for-win/issues/394.
+
 ## Version 6.5.0
 ### New features
 * Added [properties](../properties/configuration/debug/#diagnostic-mode) for enabling diagnostic mode.
