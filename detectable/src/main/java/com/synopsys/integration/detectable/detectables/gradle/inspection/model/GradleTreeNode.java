@@ -24,11 +24,14 @@ package com.synopsys.integration.detectable.detectables.gradle.inspection.model;
 
 import java.util.Optional;
 
+import org.jetbrains.annotations.Nullable;
+
 public class GradleTreeNode {
-    public GradleTreeNode(final NodeType nodeType, final int level, final GradleGav gav, final String projectName) {
+    public GradleTreeNode(NodeType nodeType, int level, @Nullable GradleGav gav, @Nullable GradleGav replacedGav, @Nullable String projectName) {
         this.nodeType = nodeType;
         this.level = level;
         this.gav = gav;
+        this.replacedGav = replacedGav;
         this.projectName = projectName;
     }
 
@@ -38,6 +41,10 @@ public class GradleTreeNode {
 
     public Optional<GradleGav> getGav() {
         return Optional.ofNullable(gav);
+    }
+
+    public Optional<GradleGav> getReplacedGav() {
+        return Optional.ofNullable(replacedGav);
     }
 
     public Optional<String> getProjectName() {
@@ -57,17 +64,22 @@ public class GradleTreeNode {
     private final NodeType nodeType;
     private final int level;
     private final GradleGav gav;
+    private final GradleGav replacedGav;
     private final String projectName;
 
-    public static GradleTreeNode newProject(final int level) {
-        return new GradleTreeNode(NodeType.PROJECT, level, null, "");
+    public static GradleTreeNode newProject(int level, String projectName) {
+        return new GradleTreeNode(NodeType.PROJECT, level, null, null, projectName);
     }
 
-    public static GradleTreeNode newGav(final int level, final String artifact, final String version, final String name) {
-        return new GradleTreeNode(NodeType.GAV, level, new GradleGav(artifact, version, name), null);
+    public static GradleTreeNode newGav(int level, String artifact, String version, String name) {
+        return new GradleTreeNode(NodeType.GAV, level, new GradleGav(artifact, version, name), null, null);
     }
 
-    public static GradleTreeNode newUnknown(final int level) {
-        return new GradleTreeNode(NodeType.UNKOWN, level, null, null);
+    public static GradleTreeNode newGavWithReplacement(int level, String artifact, String version, String name, String replacedArtifact, String replacedVersion, String replacedName) {
+        return new GradleTreeNode(NodeType.GAV, level, new GradleGav(artifact, version, name), new GradleGav(replacedArtifact, replacedVersion, replacedName), null);
+    }
+
+    public static GradleTreeNode newUnknown(int level) {
+        return new GradleTreeNode(NodeType.UNKOWN, level, null, null, null);
     }
 }

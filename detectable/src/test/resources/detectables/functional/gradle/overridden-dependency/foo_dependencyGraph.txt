@@ -1,0 +1,322 @@
+
+------------------------------------------------------------
+Project :foo
+------------------------------------------------------------
+
+annotationProcessor - Annotation processors and their dependencies for source set 'main'.
+No dependencies
+
+apiElements - API elements for main. (n)
+No dependencies
+
+archives - Configuration for archive artifacts.
+No dependencies
+
+compile - Dependencies for source set 'main' (deprecated, use 'implementation' instead).
++--- org.hibernate:hibernate-hikaricp:5.4.15.Final
+|    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    +--- org.hibernate:hibernate-core:5.4.15.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.persistence:javax.persistence-api:2.2
+|    |    +--- org.javassist:javassist:3.24.0-GA
+|    |    +--- net.bytebuddy:byte-buddy:1.10.10
+|    |    +--- antlr:antlr:2.7.7
+|    |    +--- org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.Final
+|    |    +--- org.jboss:jandex:2.1.3.Final
+|    |    +--- com.fasterxml:classmate:1.5.1
+|    |    +--- javax.activation:javax.activation-api:1.2.0
+|    |    +--- org.dom4j:dom4j:2.1.3
+|    |    +--- org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
+|    |    |    \--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    \--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |         +--- javax.xml.bind:jaxb-api:2.3.1 (*)
+|    |         +--- org.glassfish.jaxb:txw2:2.3.1
+|    |         +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |         +--- org.jvnet.staxex:stax-ex:1.8
+|    |         +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |         \--- javax.activation:javax.activation-api:1.2.0
+|    \--- com.zaxxer:HikariCP:3.2.0
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.postgresql:postgresql:42.2.11
+\--- org.flywaydb:flyway-core:6.3.2
+
+compileClasspath - Compile classpath for source set 'main'.
++--- org.hibernate:hibernate-hikaricp:5.4.15.Final
+|    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    +--- org.hibernate:hibernate-core:5.4.15.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.persistence:javax.persistence-api:2.2
+|    |    +--- org.javassist:javassist:3.24.0-GA
+|    |    +--- net.bytebuddy:byte-buddy:1.10.10
+|    |    +--- antlr:antlr:2.7.7
+|    |    +--- org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.Final
+|    |    +--- org.jboss:jandex:2.1.3.Final
+|    |    +--- com.fasterxml:classmate:1.5.1
+|    |    +--- javax.activation:javax.activation-api:1.2.0
+|    |    +--- org.dom4j:dom4j:2.1.3
+|    |    +--- org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
+|    |    |    \--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    \--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |         +--- javax.xml.bind:jaxb-api:2.3.1 (*)
+|    |         +--- org.glassfish.jaxb:txw2:2.3.1
+|    |         +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |         +--- org.jvnet.staxex:stax-ex:1.8
+|    |         +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |         \--- javax.activation:javax.activation-api:1.2.0
+|    \--- com.zaxxer:HikariCP:3.2.0
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.postgresql:postgresql:42.2.11
+\--- org.flywaydb:flyway-core:6.3.2
+
+compileOnly - Compile only dependencies for source set 'main'.
+No dependencies
+
+default - Configuration for default artifacts.
++--- org.hibernate:hibernate-hikaricp:5.4.15.Final
+|    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    +--- org.hibernate:hibernate-core:5.4.15.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.persistence:javax.persistence-api:2.2
+|    |    +--- org.javassist:javassist:3.24.0-GA
+|    |    +--- net.bytebuddy:byte-buddy:1.10.10
+|    |    +--- antlr:antlr:2.7.7
+|    |    +--- org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.Final
+|    |    +--- org.jboss:jandex:2.1.3.Final
+|    |    +--- com.fasterxml:classmate:1.5.1
+|    |    +--- javax.activation:javax.activation-api:1.2.0
+|    |    +--- org.dom4j:dom4j:2.1.3
+|    |    +--- org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
+|    |    |    \--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    \--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |         +--- javax.xml.bind:jaxb-api:2.3.1 (*)
+|    |         +--- org.glassfish.jaxb:txw2:2.3.1
+|    |         +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |         +--- org.jvnet.staxex:stax-ex:1.8
+|    |         +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |         \--- javax.activation:javax.activation-api:1.2.0
+|    \--- com.zaxxer:HikariCP:3.2.0
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.postgresql:postgresql:42.2.11
+\--- org.flywaydb:flyway-core:6.3.2
+
+implementation - Implementation only dependencies for source set 'main'. (n)
+No dependencies
+
+runtime - Runtime dependencies for source set 'main' (deprecated, use 'runtimeOnly' instead).
++--- org.hibernate:hibernate-hikaricp:5.4.15.Final
+|    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    +--- org.hibernate:hibernate-core:5.4.15.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.persistence:javax.persistence-api:2.2
+|    |    +--- org.javassist:javassist:3.24.0-GA
+|    |    +--- net.bytebuddy:byte-buddy:1.10.10
+|    |    +--- antlr:antlr:2.7.7
+|    |    +--- org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.Final
+|    |    +--- org.jboss:jandex:2.1.3.Final
+|    |    +--- com.fasterxml:classmate:1.5.1
+|    |    +--- javax.activation:javax.activation-api:1.2.0
+|    |    +--- org.dom4j:dom4j:2.1.3
+|    |    +--- org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
+|    |    |    \--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    \--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |         +--- javax.xml.bind:jaxb-api:2.3.1 (*)
+|    |         +--- org.glassfish.jaxb:txw2:2.3.1
+|    |         +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |         +--- org.jvnet.staxex:stax-ex:1.8
+|    |         +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |         \--- javax.activation:javax.activation-api:1.2.0
+|    \--- com.zaxxer:HikariCP:3.2.0
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.postgresql:postgresql:42.2.11
+\--- org.flywaydb:flyway-core:6.3.2
+
+runtimeClasspath - Runtime classpath of source set 'main'.
++--- org.hibernate:hibernate-hikaricp:5.4.15.Final
+|    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    +--- org.hibernate:hibernate-core:5.4.15.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.persistence:javax.persistence-api:2.2
+|    |    +--- org.javassist:javassist:3.24.0-GA
+|    |    +--- net.bytebuddy:byte-buddy:1.10.10
+|    |    +--- antlr:antlr:2.7.7
+|    |    +--- org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.Final
+|    |    +--- org.jboss:jandex:2.1.3.Final
+|    |    +--- com.fasterxml:classmate:1.5.1
+|    |    +--- javax.activation:javax.activation-api:1.2.0
+|    |    +--- org.dom4j:dom4j:2.1.3
+|    |    +--- org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
+|    |    |    \--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    \--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |         +--- javax.xml.bind:jaxb-api:2.3.1 (*)
+|    |         +--- org.glassfish.jaxb:txw2:2.3.1
+|    |         +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |         +--- org.jvnet.staxex:stax-ex:1.8
+|    |         +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |         \--- javax.activation:javax.activation-api:1.2.0
+|    \--- com.zaxxer:HikariCP:3.2.0
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.postgresql:postgresql:42.2.11
+\--- org.flywaydb:flyway-core:6.3.2
+
+runtimeElements - Elements of runtime for main. (n)
+No dependencies
+
+runtimeOnly - Runtime only dependencies for source set 'main'. (n)
+No dependencies
+
+testAnnotationProcessor - Annotation processors and their dependencies for source set 'test'.
+No dependencies
+
+testCompile - Dependencies for source set 'test' (deprecated, use 'testImplementation' instead).
++--- org.hibernate:hibernate-hikaricp:5.4.15.Final
+|    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    +--- org.hibernate:hibernate-core:5.4.15.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.persistence:javax.persistence-api:2.2
+|    |    +--- org.javassist:javassist:3.24.0-GA
+|    |    +--- net.bytebuddy:byte-buddy:1.10.10
+|    |    +--- antlr:antlr:2.7.7
+|    |    +--- org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.Final
+|    |    +--- org.jboss:jandex:2.1.3.Final
+|    |    +--- com.fasterxml:classmate:1.5.1
+|    |    +--- javax.activation:javax.activation-api:1.2.0
+|    |    +--- org.dom4j:dom4j:2.1.3
+|    |    +--- org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
+|    |    |    \--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    \--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |         +--- javax.xml.bind:jaxb-api:2.3.1 (*)
+|    |         +--- org.glassfish.jaxb:txw2:2.3.1
+|    |         +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |         +--- org.jvnet.staxex:stax-ex:1.8
+|    |         +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |         \--- javax.activation:javax.activation-api:1.2.0
+|    \--- com.zaxxer:HikariCP:3.2.0
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.postgresql:postgresql:42.2.11
+\--- org.flywaydb:flyway-core:6.3.2
+
+testCompileClasspath - Compile classpath for source set 'test'.
++--- org.hibernate:hibernate-hikaricp:5.4.15.Final
+|    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    +--- org.hibernate:hibernate-core:5.4.15.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.persistence:javax.persistence-api:2.2
+|    |    +--- org.javassist:javassist:3.24.0-GA
+|    |    +--- net.bytebuddy:byte-buddy:1.10.10
+|    |    +--- antlr:antlr:2.7.7
+|    |    +--- org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.Final
+|    |    +--- org.jboss:jandex:2.1.3.Final
+|    |    +--- com.fasterxml:classmate:1.5.1
+|    |    +--- javax.activation:javax.activation-api:1.2.0
+|    |    +--- org.dom4j:dom4j:2.1.3
+|    |    +--- org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
+|    |    |    \--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    \--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |         +--- javax.xml.bind:jaxb-api:2.3.1 (*)
+|    |         +--- org.glassfish.jaxb:txw2:2.3.1
+|    |         +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |         +--- org.jvnet.staxex:stax-ex:1.8
+|    |         +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |         \--- javax.activation:javax.activation-api:1.2.0
+|    \--- com.zaxxer:HikariCP:3.2.0
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.postgresql:postgresql:42.2.11
+\--- org.flywaydb:flyway-core:6.3.2
+
+testCompileOnly - Compile only dependencies for source set 'test'.
+No dependencies
+
+testImplementation - Implementation only dependencies for source set 'test'. (n)
+No dependencies
+
+testRuntime - Runtime dependencies for source set 'test' (deprecated, use 'testRuntimeOnly' instead).
++--- org.hibernate:hibernate-hikaricp:5.4.15.Final
+|    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    +--- org.hibernate:hibernate-core:5.4.15.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.persistence:javax.persistence-api:2.2
+|    |    +--- org.javassist:javassist:3.24.0-GA
+|    |    +--- net.bytebuddy:byte-buddy:1.10.10
+|    |    +--- antlr:antlr:2.7.7
+|    |    +--- org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.Final
+|    |    +--- org.jboss:jandex:2.1.3.Final
+|    |    +--- com.fasterxml:classmate:1.5.1
+|    |    +--- javax.activation:javax.activation-api:1.2.0
+|    |    +--- org.dom4j:dom4j:2.1.3
+|    |    +--- org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
+|    |    |    \--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    \--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |         +--- javax.xml.bind:jaxb-api:2.3.1 (*)
+|    |         +--- org.glassfish.jaxb:txw2:2.3.1
+|    |         +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |         +--- org.jvnet.staxex:stax-ex:1.8
+|    |         +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |         \--- javax.activation:javax.activation-api:1.2.0
+|    \--- com.zaxxer:HikariCP:3.2.0
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.postgresql:postgresql:42.2.11
+\--- org.flywaydb:flyway-core:6.3.2
+
+testRuntimeClasspath - Runtime classpath of source set 'test'.
++--- org.hibernate:hibernate-hikaricp:5.4.15.Final
+|    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    +--- org.hibernate:hibernate-core:5.4.15.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.persistence:javax.persistence-api:2.2
+|    |    +--- org.javassist:javassist:3.24.0-GA
+|    |    +--- net.bytebuddy:byte-buddy:1.10.10
+|    |    +--- antlr:antlr:2.7.7
+|    |    +--- org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec:1.1.1.Final
+|    |    +--- org.jboss:jandex:2.1.3.Final
+|    |    +--- com.fasterxml:classmate:1.5.1
+|    |    +--- javax.activation:javax.activation-api:1.2.0
+|    |    +--- org.dom4j:dom4j:2.1.3
+|    |    +--- org.hibernate.common:hibernate-commons-annotations:5.1.0.Final
+|    |    |    \--- org.jboss.logging:jboss-logging:3.3.2.Final
+|    |    +--- javax.xml.bind:jaxb-api:2.3.1
+|    |    |    \--- javax.activation:javax.activation-api:1.2.0
+|    |    \--- org.glassfish.jaxb:jaxb-runtime:2.3.1
+|    |         +--- javax.xml.bind:jaxb-api:2.3.1 (*)
+|    |         +--- org.glassfish.jaxb:txw2:2.3.1
+|    |         +--- com.sun.istack:istack-commons-runtime:3.0.7
+|    |         +--- org.jvnet.staxex:stax-ex:1.8
+|    |         +--- com.sun.xml.fastinfoset:FastInfoset:1.2.15
+|    |         \--- javax.activation:javax.activation-api:1.2.0
+|    \--- com.zaxxer:HikariCP:3.2.0
+|         \--- org.slf4j:slf4j-api:1.7.25
++--- org.postgresql:postgresql:42.2.11
+\--- org.flywaydb:flyway-core:6.3.2
+
+testRuntimeOnly - Runtime only dependencies for source set 'test'. (n)
+No dependencies
+
+(*) - dependencies omitted (listed previously)
+
+A web-based, searchable dependency report is available by adding the --scan option.
+
+DETECT META DATA START
+rootProjectPath:/test
+rootProjectGroup:
+rootProjectName:test
+rootProjectVersion:unspecified
+projectPath:/test/foo
+projectGroup:test
+projectName:foo
+projectVersion:unspecified
+DETECT META DATA END
