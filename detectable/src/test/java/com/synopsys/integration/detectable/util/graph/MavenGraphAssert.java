@@ -28,14 +28,13 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 
 public class MavenGraphAssert extends GraphAssert {
 
-    public MavenGraphAssert(final DependencyGraph graph) {
+    public MavenGraphAssert(DependencyGraph graph) {
         super(Forge.MAVEN, graph);
     }
 
     private ExternalId gavToExternalId(String gav) {
         String[] pieces = gav.split(":");
-        ExternalId id = externalIdFactory.createMavenExternalId(pieces[0], pieces[1], pieces[2]);
-        return id;
+        return externalIdFactory.createMavenExternalId(pieces[0], pieces[1], pieces[2]);
     }
 
     public ExternalId hasRootDependency(String gav) {
@@ -46,7 +45,7 @@ public class MavenGraphAssert extends GraphAssert {
         return this.hasDependency(gavToExternalId(gav));
     }
 
-    public ExternalId noDependency(String gav) {
+    public ExternalId hasNoDependency(String gav) {
         return this.hasNoDependency(gavToExternalId(gav));
     }
 }
