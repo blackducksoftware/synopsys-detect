@@ -55,6 +55,7 @@ import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.DetectTool;
+import com.synopsys.integration.detect.configuration.DetectCategory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
@@ -242,21 +243,8 @@ public class RunManager {
 
             DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
 
-            NameVersion nameVersion = detectableToolResult.getDetectToolProjectInfo()
-                        .map(DetectToolProjectInfo::getSuggestedNameVersion)
-                        .orElse(new NameVersion("name", "version"));
-            DockerTargetData dockerTargetData = detectableToolResult.getDockerTargetData();
-            CodeLocationAccumulator codeLocationWaitController = new CodeLocationAccumulator();
-
-            if (!detectToolFilter.shouldExclude(DetectTool.BINARY_SCAN) && enabledTools.contains(DetectTool.BINARY_SCAN)) {
-                runBinaryScanner(detectConfigurationFactory, eventSystem, codeLocationNameManager, directoryManager, nameVersion, dockerTargetData, codeLocationWaitController);
-            }
-
-            if (!detectToolFilter.shouldExclude(DetectTool.SIGNATURE_SCAN) && enabledTools.contains(DetectTool.SIGNATURE_SCAN)) {
-                runSignatureScanner(detectConfigurationFactory, blackDuckRunData, dockerTargetData, eventSystem, nameVersion, codeLocationWaitController);
-            }
-
             runResult.addDetectableToolResult(detectableToolResult);
+            runResult.addDockerTargetData(detectableToolResult.getDockerTargetData());
             anythingFailed = anythingFailed || detectableToolResult.isFailure();
             logger.info("Docker actions finished.");
         } else {
@@ -399,15 +387,39 @@ public class RunManager {
         logger.debug("Completed Detect Code Location processing.");
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
-            runSignatureScanner(detectConfigurationFactory, blackDuckRunData, eventSystem, projectNameVersion, codeLocationAccumulator);
+        if ((detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN) || detectToolFilter.shouldInclude(DetectTool.DOCKER)) && enabledTools.contains(DetectTool.SIGNATURE_SCAN)) {
+            logger.info("Will include the signature scanner tool.");
+            BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
+            BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
+            SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTargetData());
+            if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
+                codeLocationAccumulator.addWaitableCodeLocation(signatureScannerToolResult.getCreationData().get());
+            } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
+                eventSystem.publishEvent(Event.StatusSummary, new Status("SIGNATURE_SCAN", StatusType.FAILURE));
+                eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(signatureScannerToolResult.getResult().toString())));
+            }
+            logger.info("Signature scanner actions finished.");
         } else {
             logger.info("Signature scan tool will not be run.");
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
-            runBinaryScanner(detectConfigurationFactory, eventSystem, codeLocationNameManager, directoryManager, projectNameVersion, codeLocationAccumulator);
+        if ((detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN) || detectToolFilter.shouldInclude(DetectTool.DOCKER)) && enabledTools.contains(DetectTool.BINARY_SCAN)) {
+            logger.info("Will include the binary scanner tool.");
+            if (null != blackDuckServicesFactory) {
+                BinaryScanOptions binaryScanOptions = detectConfigurationFactory.createBinaryScanOptions();
+                BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, new SimpleFileFinder(), binaryScanOptions, blackDuckServicesFactory);
+                Map<File, NameVersion> binaryScanPaths = blackDuckBinaryScanner.determineBinaryScanPaths(runResult.getDockerTargetData(), projectNameVersion);
+                if (binaryScanPaths.size() > 0) {
+                    List<BinaryScanToolResult> results = blackDuckBinaryScanner.performBinaryScanActions(binaryScanPaths);
+                    for (BinaryScanToolResult result : results) {
+                        if (result.isSuccessful()) {
+                            codeLocationAccumulator.addWaitableCodeLocation(result.getCodeLocationCreationData());
+                        }
+                    }
+                }
+            }
+            logger.info("Binary scanner actions finished.");
         } else {
             logger.info("Binary scan tool will not be run.");
         }
@@ -466,52 +478,6 @@ public class RunManager {
         } else {
             logger.debug("Will not perform Black Duck post actions: Detect is not online.");
         }
-    }
-
-    // When running the signature scanner on a non-docker target
-    private void runSignatureScanner(DetectConfigurationFactory detectConfigurationFactory, BlackDuckRunData blackDuckRunData, EventSystem eventSystem, NameVersion projectNameVersion, CodeLocationAccumulator codeLocationAccumulator)
-        throws DetectUserFriendlyException {
-        runSignatureScanner(detectConfigurationFactory, blackDuckRunData, DockerTargetData.NO_DOCKER_TARGET, eventSystem, projectNameVersion, codeLocationAccumulator);
-    }
-
-    private void runSignatureScanner(DetectConfigurationFactory detectConfigurationFactory, BlackDuckRunData blackDuckRunData, DockerTargetData dockerTargetData, EventSystem eventSystem, NameVersion projectNameVersion, CodeLocationAccumulator codeLocationAccumulator)
-        throws DetectUserFriendlyException {
-        logger.info("Will include the signature scanner tool.");
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
-        BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
-        SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, dockerTargetData);
-        if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
-            codeLocationAccumulator.addWaitableCodeLocation(signatureScannerToolResult.getCreationData().get());
-        } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
-            eventSystem.publishEvent(Event.StatusSummary, new Status("SIGNATURE_SCAN", StatusType.FAILURE));
-            eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(signatureScannerToolResult.getResult().toString())));
-        }
-        logger.info("Signature scanner actions finished.");
-    }
-
-    // When running the binary scanner on a non-docker target
-    private void runBinaryScanner(DetectConfigurationFactory detectConfigurationFactory, EventSystem eventSystem, CodeLocationNameManager codeLocationNameManager, DirectoryManager directoryManager, NameVersion projectNameVersion, CodeLocationAccumulator codeLocationAccumulator)
-        throws DetectUserFriendlyException {
-        runBinaryScanner(detectConfigurationFactory, eventSystem, codeLocationNameManager, directoryManager, projectNameVersion, DockerTargetData.NO_DOCKER_TARGET, codeLocationAccumulator);
-    }
-
-    private void runBinaryScanner(DetectConfigurationFactory detectConfigurationFactory, EventSystem eventSystem, CodeLocationNameManager codeLocationNameManager, DirectoryManager directoryManager, NameVersion projectNameVersion, DockerTargetData dockerTargetData, CodeLocationAccumulator codeLocationAccumulator)
-        throws DetectUserFriendlyException {
-        logger.info("Will include the binary scanner tool.");
-        if (null != blackDuckServicesFactory) {
-            BinaryScanOptions binaryScanOptions = detectConfigurationFactory.createBinaryScanOptions();
-            BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, new SimpleFileFinder(), binaryScanOptions, blackDuckServicesFactory);
-            Map<File, NameVersion> binaryScanPaths = blackDuckBinaryScanner.determineBinaryScanPaths(dockerTargetData, projectNameVersion);
-            if (binaryScanPaths.size() > 0) {
-                List<BinaryScanToolResult> results = blackDuckBinaryScanner.performBinaryScanActions(binaryScanPaths);
-                for (BinaryScanToolResult result : results) {
-                    if (result.isSuccessful()) {
-                        codeLocationAccumulator.addWaitableCodeLocation(result.getCodeLocationCreationData());
-                    }
-                }
-            }
-        }
-        logger.info("Binary scanner actions finished.");
     }
 
     private Set<String> createCodeLocationNames(DetectableToolResult detectableToolResult, CodeLocationNameManager codeLocationNameManager, DirectoryManager directoryManager) {

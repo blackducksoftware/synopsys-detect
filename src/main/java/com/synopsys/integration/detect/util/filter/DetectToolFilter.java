@@ -49,8 +49,4 @@ public class DetectToolFilter {
 
         return excludedIncludedFilter.shouldInclude(detectTool);
     }
-
-    public boolean shouldExclude(final DetectTool detectTool) {
-        return excludedIncludedFilter.shouldExclude(detectTool);
-    }
 }
