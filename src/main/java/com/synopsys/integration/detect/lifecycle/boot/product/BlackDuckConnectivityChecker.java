@@ -46,12 +46,12 @@ import com.synopsys.integration.rest.client.ConnectionResult;
 public class BlackDuckConnectivityChecker {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public BlackDuckConnectivityResult determineConnectivity(final BlackDuckServerConfig blackDuckServerConfig)
+    public BlackDuckConnectivityResult determineConnectivity(BlackDuckServerConfig blackDuckServerConfig)
         throws DetectUserFriendlyException {
 
         logger.debug("Detect will check communication with the Black Duck server.");
 
-        final ConnectionResult connectionResult = blackDuckServerConfig.attemptConnection(new Slf4jIntLogger(logger));
+        ConnectionResult connectionResult = blackDuckServerConfig.attemptConnection(new Slf4jIntLogger(logger));
 
         if (connectionResult.isFailure()) {
             logger.error("Failed to connect to the Black Duck server");
@@ -60,25 +60,27 @@ public class BlackDuckConnectivityChecker {
 
         logger.info("Connection to the Black Duck server was successful.");
 
-        final BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new Slf4jIntLogger(logger));
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new Slf4jIntLogger(logger));
 
         try {
-            final BlackDuckService blackDuckService = blackDuckServicesFactory.getBlackDuckService();
-            final CurrentVersionView currentVersion = blackDuckService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
+            BlackDuckService blackDuckService = blackDuckServicesFactory.getBlackDuckService();
+            CurrentVersionView currentVersion = blackDuckService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
 
             logger.info(String.format("Successfully connected to Black Duck (version %s)!", currentVersion.getVersion()));
 
-            final UserView userView = blackDuckService.getResponse(ApiDiscovery.CURRENT_USER_LINK_RESPONSE);
-            logger.debug("Connected as: " + userView.getUserName());
+            if (logger.isDebugEnabled()) {
+                // These (particularly fetching roles) can be very slow operations
+                UserView userView = blackDuckService.getResponse(ApiDiscovery.CURRENT_USER_LINK_RESPONSE);
+                logger.debug("Connected as: " + userView.getUserName());
 
-            final UserGroupService userGroupService = blackDuckServicesFactory.createUserGroupService();
-            final List<RoleAssignmentView> response = userGroupService.getRolesForUser(userView);
-            logger.debug("Roles: " + response.stream().map(RoleAssignmentView::getName).distinct().collect(Collectors.joining(", ")));
+                UserGroupService userGroupService = blackDuckServicesFactory.createUserGroupService();
+                List<RoleAssignmentView> roles = userGroupService.getRolesForUser(userView);
+                logger.debug("Roles: " + roles.stream().map(RoleAssignmentView::getName).distinct().collect(Collectors.joining(", ")));
 
-            final List<UserGroupView> groups = blackDuckService.getAllResponses(userView.getFirstLink("usergroups"), UserGroupView.class);
-            logger.debug("Group: " + groups.stream().map(UserGroupView::getName).distinct().collect(Collectors.joining(", ")));
-
-        } catch (final IntegrationException e) {
+                List<UserGroupView> groups = blackDuckService.getAllResponses(userView.getFirstLink("usergroups"), UserGroupView.class);
+                logger.debug("Group: " + groups.stream().map(UserGroupView::getName).distinct().collect(Collectors.joining(", ")));
+            }
+        } catch (IntegrationException e) {
             throw new DetectUserFriendlyException("Could not determine which version of Black Duck detect connected to or which user is connecting.", e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         }
 
