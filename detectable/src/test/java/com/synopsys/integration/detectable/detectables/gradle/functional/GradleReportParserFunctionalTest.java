@@ -59,6 +59,7 @@ public class GradleReportParserFunctionalTest {
 
         File gradleReportFile = FunctionalTestFiles.asFile("/gradle/overridden-dependency/test_dependencyGraph.txt");
         Optional<GradleReport> rootGradleReport = gradleReportParser.parseReport(gradleReportFile);
+        Assertions.assertTrue(rootGradleReport.isPresent());
         assertGradleReport(gradleReportFile, rootDependencyReplacementResolver, mavenGraphAssert -> {
             mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.3");
             mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.1");
