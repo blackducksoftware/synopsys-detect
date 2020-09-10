@@ -43,7 +43,7 @@ public class DependencyReplacementResolver {
         return new DependencyReplacementResolver(null);
     }
 
-    public DependencyReplacementResolver(@Nullable DependencyReplacementResolver parentResolver) {
+    private DependencyReplacementResolver(@Nullable DependencyReplacementResolver parentResolver) {
         this.parentResolver = parentResolver;
         this.replacementMap = new HashMap<>();
     }
