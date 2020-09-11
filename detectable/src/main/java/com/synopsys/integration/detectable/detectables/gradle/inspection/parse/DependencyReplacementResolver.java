@@ -29,11 +29,12 @@ import java.util.Optional;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
 
 public class DependencyReplacementResolver {
     @Nullable
     private final DependencyReplacementResolver parentResolver;
-    private final Map<Dependency, Dependency> replacementMap;
+    private final Map<DependencyId, Dependency> replacementMap;
 
     public static DependencyReplacementResolver createFromParentResolver(DependencyReplacementResolver dependencyReplacementResolver) {
         return new DependencyReplacementResolver(dependencyReplacementResolver);
@@ -48,11 +49,11 @@ public class DependencyReplacementResolver {
         this.replacementMap = new HashMap<>();
     }
 
-    public void addReplacementData(Dependency replaced, Dependency replacement) {
+    public void addReplacementData(DependencyId replaced, Dependency replacement) {
         replacementMap.put(replaced, replacement);
     }
 
-    public Optional<Dependency> getReplacement(Dependency dependency) {
+    public Optional<Dependency> getReplacement(DependencyId dependency) {
         Dependency replacement = null;
 
         if (parentResolver != null) {
