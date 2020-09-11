@@ -63,24 +63,27 @@ public class GradleReportParserFunctionalTest {
         Assertions.assertTrue(rootGradleReport.isPresent());
         assertGradleReport(gradleReportFile, rootDependencyReplacementResolver, mavenGraphAssert -> {
             mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.3");
+            mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.2");
             mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.1");
         });
 
         GradleReplacementDiscoverer gradleReplacementDiscoverer = new GradleReplacementDiscoverer(new ExternalIdFactory());
-        final GradleReport gradleReport = rootGradleReport.get();
+        GradleReport gradleReport = rootGradleReport.get();
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
             gradleReplacementDiscoverer.populateFromTreeNodes(rootDependencyReplacementResolver, configuration.getChildren());
         }
-        
+
         File fooGradleReportFile = FunctionalTestFiles.asFile("/gradle/overridden-dependency/foo_dependencyGraph.txt");
         assertGradleReport(fooGradleReportFile, rootDependencyReplacementResolver, mavenGraphAssert -> {
             mavenGraphAssert.hasDependency("org.glassfish.jaxb:jaxb-runtime:2.3.3");
+            mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.2");
             mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.1");
         });
 
         File barGradleReportFile = FunctionalTestFiles.asFile("/gradle/overridden-dependency/bar_dependencyGraph.txt");
         assertGradleReport(barGradleReportFile, rootDependencyReplacementResolver, mavenGraphAssert -> {
             mavenGraphAssert.hasDependency("org.glassfish.jaxb:jaxb-runtime:2.3.3");
+            mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.2");
             mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.1");
         });
     }
