@@ -1143,6 +1143,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#phone-home-passthrough-advanced" class="md-nav__link">
+    Phone Home Passthrough (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-passthrough-advanced" class="md-nav__link">
+    Docker Passthrough (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
     Docker Inspector AirGap Path (Advanced)
   </a>
@@ -1173,20 +1187,6 @@
         <li class="md-nav__item">
   <a href="#platform-top-layer-id-advanced" class="md-nav__link">
     Platform Top Layer ID (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#docker-passthrough-advanced" class="md-nav__link">
-    Docker Passthrough (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#phone-home-passthrough-advanced" class="md-nav__link">
-    Phone Home Passthrough (Advanced)
   </a>
   
 </li>
@@ -1429,6 +1429,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#phone-home-passthrough-advanced" class="md-nav__link">
+    Phone Home Passthrough (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-passthrough-advanced" class="md-nav__link">
+    Docker Passthrough (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
     Docker Inspector AirGap Path (Advanced)
   </a>
@@ -1459,20 +1473,6 @@
         <li class="md-nav__item">
   <a href="#platform-top-layer-id-advanced" class="md-nav__link">
     Platform Top Layer ID (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#docker-passthrough-advanced" class="md-nav__link">
-    Docker Passthrough (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#phone-home-passthrough-advanced" class="md-nav__link">
-    Phone Home Passthrough (Advanced)
   </a>
   
 </li>
@@ -1644,6 +1644,92 @@
 <tr>
 <td>Type</td>
 <td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="phone-home-passthrough-advanced">Phone Home Passthrough (Advanced)<a class="headerlink" href="#phone-home-passthrough-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.phone.home.passthrough
+</code></pre>
+
+<p>Additional values may be sent home for usage information. The keys will be sent without the prefix.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="docker-passthrough-advanced">Docker Passthrough (Advanced)<a class="headerlink" href="#docker-passthrough-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.docker.passthrough
+</code></pre>
+
+<p>Additional properties may be passed to the docker inspector by adding the prefix detect.docker.passthrough. The keys will be given to docker inspector without the prefix.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>None</td>
 </tr>
 <tr>
 <td>Default Value</td>
@@ -1860,92 +1946,6 @@
 <tr>
 <td>Type</td>
 <td>Optional String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="docker-passthrough-advanced">Docker Passthrough (Advanced)<a class="headerlink" href="#docker-passthrough-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.docker.passthrough
-</code></pre>
-
-<p>Additional properties may be passed to the docker inspector by adding the prefix detect.docker.passthrough. The keys will be given to docker inspector without the prefix.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="phone-home-passthrough-advanced">Phone Home Passthrough (Advanced)<a class="headerlink" href="#phone-home-passthrough-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.phone.home.passthrough
-</code></pre>
-
-<p>Additional values may be sent home for usage information. The keys will be sent without the prefix.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>None</td>
 </tr>
 <tr>
 <td>Default Value</td>

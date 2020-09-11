@@ -1182,8 +1182,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-excluded" class="md-nav__link">
-    Dependency Scope Excluded
+  <a href="#maven-executable" class="md-nav__link">
+    Maven Executable
   </a>
   
 </li>
@@ -1196,8 +1196,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-executable" class="md-nav__link">
-    Maven Executable
+  <a href="#dependency-scope-excluded" class="md-nav__link">
+    Dependency Scope Excluded
   </a>
   
 </li>
@@ -1387,8 +1387,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#dependency-scope-excluded" class="md-nav__link">
-    Dependency Scope Excluded
+  <a href="#maven-executable" class="md-nav__link">
+    Maven Executable
   </a>
   
 </li>
@@ -1401,8 +1401,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#maven-executable" class="md-nav__link">
-    Maven Executable
+  <a href="#dependency-scope-excluded" class="md-nav__link">
+    Dependency Scope Excluded
   </a>
   
 </li>
@@ -1458,7 +1458,7 @@
 </code></pre>
 
 <p>Maven command line arguments to add to the mvn/mvnw command line.</p>
-<p>By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings ${HOME}/maven_dev_settings.xml --define reason=other'</p>
+<p>By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \${HOME}/maven_dev_settings.xml --define reason=other'</p>
 <table>
 <thead>
 <tr>
@@ -1497,12 +1497,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="dependency-scope-excluded">Dependency Scope Excluded<a class="headerlink" href="#dependency-scope-excluded" title="Permanent link">#</a></h2>
-<pre><code>--detect.maven.excluded.scopes
+<h2 id="maven-executable">Maven Executable<a class="headerlink" href="#maven-executable" title="Permanent link">#</a></h2>
+<pre><code>--detect.maven.path
 </code></pre>
 
-<p>A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).</p>
-<p>If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
+<p>The path to the Maven executable (mvn or mvnw).</p>
+<p>If set, Detect will use the given Maven executable instead of searching for one.</p>
 <table>
 <thead>
 <tr>
@@ -1513,11 +1513,11 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>6.0.0</td>
+<td>3.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>Optional String</td>
+<td>Optional Path</td>
 </tr>
 <tr>
 <td>Default Value</td>
@@ -1585,12 +1585,12 @@
 </tr>
 </tbody>
 </table>
-<h2 id="maven-executable">Maven Executable<a class="headerlink" href="#maven-executable" title="Permanent link">#</a></h2>
-<pre><code>--detect.maven.path
+<h2 id="dependency-scope-excluded">Dependency Scope Excluded<a class="headerlink" href="#dependency-scope-excluded" title="Permanent link">#</a></h2>
+<pre><code>--detect.maven.excluded.scopes
 </code></pre>
 
-<p>The path to the Maven executable (mvn or mvnw).</p>
-<p>If set, Detect will use the given Maven executable instead of searching for one.</p>
+<p>A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).</p>
+<p>If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details.</p>
 <table>
 <thead>
 <tr>
@@ -1601,11 +1601,11 @@
 <tbody>
 <tr>
 <td>Added</td>
-<td>3.0.0</td>
+<td>6.0.0</td>
 </tr>
 <tr>
 <td>Type</td>
-<td>Optional Path</td>
+<td>Optional String</td>
 </tr>
 <tr>
 <td>Default Value</td>
