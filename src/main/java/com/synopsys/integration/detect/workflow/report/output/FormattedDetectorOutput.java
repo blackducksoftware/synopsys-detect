@@ -40,29 +40,20 @@ public class FormattedDetectorOutput {
     @SerializedName("descriptiveName")
     public String descriptiveName = "";
 
-    @SerializedName("searchable")
-    public boolean searchable = true;
-
-    @SerializedName("applicable")
-    public boolean applicable = true;
-
-    @SerializedName("extractable")
-    public boolean extractable = true;
-
     @SerializedName("discoverable")
     public boolean discoverable = true;
 
     @SerializedName("extracted")
     public boolean extracted = true;
 
-    @SerializedName("searchableReason")
-    public String searchableReason = "";
+    @SerializedName("status")
+    public String status = "";
 
-    @SerializedName("applicableReason")
-    public String applicableReason = "";
+    @SerializedName("statusCode")
+    public String statusCode = "";
 
-    @SerializedName("extractableReason")
-    public String extractableReason = "";
+    @SerializedName("statusReason")
+    public String statusReason = "";
 
     @SerializedName("discoveryReason")
     public String discoveryReason = "";

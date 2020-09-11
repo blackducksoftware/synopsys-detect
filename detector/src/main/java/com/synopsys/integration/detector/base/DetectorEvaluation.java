@@ -36,7 +36,8 @@ import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class DetectorEvaluation {
-    public static final String NO_MESSAGE = "Unknown";
+    private static final String NO_MESSAGE = "Unknown";
+    private static final String PASSED_RESULT = "PassedDetectorResult";
 
     private final DetectorRule detectorRule;
     private Detectable detectable;
@@ -155,6 +156,45 @@ public class DetectorEvaluation {
         return getDetectorResultDescription(extractable).orElse(NO_MESSAGE);
     }
 
+    public DetectorStatusType getStatus() {
+        if (getResultClassName().equals(PASSED_RESULT)) {
+            return DetectorStatusType.SUCCESS;
+        }
+        return DetectorStatusType.FAILURE;
+    }
+
+    public String getResultClassName() {
+        if (!isSearchable()) {
+            return searchable.getResultClassName();
+        }
+        if (!isApplicable()) {
+            return applicable.getResultClassName();
+        }
+        if (!isExtractable()) {
+            return extractable.getResultClassName();
+        }
+        if (extraction.getResult() != Extraction.ExtractionResultType.SUCCESS) {
+            return "EXTRACTION_UNSUCCESSFUL"; // TODO (IDETECT-2189)
+        }
+        return PASSED_RESULT;
+    }
+
+    public String getStatusReason() {
+        if (!isSearchable()) {
+            return searchable.getDescription();
+        }
+        if (!isApplicable()) {
+            return applicable.getDescription();
+        }
+        if (!isExtractable()) {
+            return extractable.getDescription();
+        }
+        if (extraction.getResult() != Extraction.ExtractionResultType.SUCCESS) {
+            return "See logs for further explanation"; // TODO (IDETECT-2189)
+        }
+        return "Passed";
+    }
+
     public Optional<DetectorEvaluation> getSuccessfullFallback() {
         if (fallbackTo != null) {
             if (fallbackTo.isExtractable()) {
@@ -224,5 +264,9 @@ public class DetectorEvaluation {
 
     public void setFallbackFrom(final DetectorEvaluation fallbackFrom) {
         this.fallbackFrom = fallbackFrom;
+    }
+
+    public enum DetectorStatusType {
+        SUCCESS, FAILURE
     }
 }
