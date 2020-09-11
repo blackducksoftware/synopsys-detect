@@ -36,6 +36,7 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleReport;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.DependencyReplacementResolver;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReplacementDiscoverer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
@@ -90,15 +91,13 @@ public class GradleInspectorExtractor {
             DependencyReplacementResolver rootReplacementResolver = DependencyReplacementResolver.createRootResolver();
             GradleReplacementDiscoverer gradleReplacementDiscoverer = new GradleReplacementDiscoverer(new ExternalIdFactory());
             File rootReportFile = fileFinder.findFile(outputDirectory, String.format("%s_dependencyGraph.txt", projectName));
+
             Optional.ofNullable(rootReportFile)
                 .map(gradleReportParser::parseReport)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .ifPresent(gradleReport -> {
-                    gradleReplacementDiscoverer.populateFromReport(rootReplacementResolver, gradleReport);
-                    CodeLocation rootCodeLocation = gradleReportTransformer.transform(gradleReport, rootReplacementResolver);
-                    codeLocations.add(rootCodeLocation);
-                });
+                .map(GradleReport::getConfigurations)
+                .ifPresent(configurations -> configurations.forEach(configuration -> gradleReplacementDiscoverer.populateFromTreeNodes(rootReplacementResolver, configuration.getChildren())));
 
             List<File> reportFiles = fileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
             if (reportFiles != null) {
@@ -108,7 +107,6 @@ public class GradleInspectorExtractor {
                     .map(Optional::get)
                     .map(report -> gradleReportTransformer.transform(report, rootReplacementResolver))
                     .forEach(codeLocations::add);
-
             }
 
             return new Extraction.Builder()

@@ -28,9 +28,7 @@ import java.util.Optional;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleConfiguration;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleGav;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleReport;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleTreeNode;
 
 public class GradleReplacementDiscoverer {
@@ -40,13 +38,7 @@ public class GradleReplacementDiscoverer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public void populateFromReport(DependencyReplacementResolver dependencyReplacementResolver, GradleReport gradleReport) {
-        for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
-            populateFromTreeNodes(dependencyReplacementResolver, configuration.getChildren());
-        }
-    }
-
-    private void populateFromTreeNodes(DependencyReplacementResolver dependencyReplacementResolver, List<GradleTreeNode> gradleTreeNodes) {
+    public void populateFromTreeNodes(DependencyReplacementResolver dependencyReplacementResolver, List<GradleTreeNode> gradleTreeNodes) {
         for (GradleTreeNode currentNode : gradleTreeNodes) {
             Optional<GradleGav> resolvedGavOptional = currentNode.getGav();
             Optional<GradleGav> replacedGavOptional = currentNode.getReplacedGav();

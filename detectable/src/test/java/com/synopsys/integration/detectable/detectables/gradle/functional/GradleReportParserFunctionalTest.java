@@ -40,6 +40,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleConfiguration;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleReport;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.DependencyReplacementResolver;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReplacementDiscoverer;
@@ -66,8 +67,11 @@ public class GradleReportParserFunctionalTest {
         });
 
         GradleReplacementDiscoverer gradleReplacementDiscoverer = new GradleReplacementDiscoverer(new ExternalIdFactory());
-        gradleReplacementDiscoverer.populateFromReport(rootDependencyReplacementResolver, rootGradleReport.get());
-
+        final GradleReport gradleReport = rootGradleReport.get();
+        for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
+            gradleReplacementDiscoverer.populateFromTreeNodes(rootDependencyReplacementResolver, configuration.getChildren());
+        }
+        
         File fooGradleReportFile = FunctionalTestFiles.asFile("/gradle/overridden-dependency/foo_dependencyGraph.txt");
         assertGradleReport(fooGradleReportFile, rootDependencyReplacementResolver, mavenGraphAssert -> {
             mavenGraphAssert.hasDependency("org.glassfish.jaxb:jaxb-runtime:2.3.3");
