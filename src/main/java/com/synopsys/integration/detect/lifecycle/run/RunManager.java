@@ -387,39 +387,47 @@ public class RunManager {
         logger.debug("Completed Detect Code Location processing.");
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if ((detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN) || detectToolFilter.shouldInclude(DetectTool.DOCKER)) && enabledTools.contains(DetectTool.SIGNATURE_SCAN)) {
-            logger.info("Will include the signature scanner tool.");
-            BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
-            BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
-            SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTargetData());
-            if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
-                codeLocationAccumulator.addWaitableCodeLocation(signatureScannerToolResult.getCreationData().get());
-            } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
-                eventSystem.publishEvent(Event.StatusSummary, new Status("SIGNATURE_SCAN", StatusType.FAILURE));
-                eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(signatureScannerToolResult.getResult().toString())));
+        if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN) || detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
+            if (enabledTools.contains(DetectTool.SIGNATURE_SCAN)) {
+                logger.info("Will include the signature scanner tool.");
+                BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
+                BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
+                SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTargetData());
+                if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
+                    codeLocationAccumulator.addWaitableCodeLocation(signatureScannerToolResult.getCreationData().get());
+                } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
+                    eventSystem.publishEvent(Event.StatusSummary, new Status("SIGNATURE_SCAN", StatusType.FAILURE));
+                    eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(signatureScannerToolResult.getResult().toString())));
+                }
+                logger.info("Signature scanner actions finished.");
+            } else {
+                logger.info("Signature scanner tool was included but is not enabled on the Black Duck server.");
             }
-            logger.info("Signature scanner actions finished.");
         } else {
             logger.info("Signature scan tool will not be run.");
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if ((detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN) || detectToolFilter.shouldInclude(DetectTool.DOCKER)) && enabledTools.contains(DetectTool.BINARY_SCAN)) {
-            logger.info("Will include the binary scanner tool.");
-            if (null != blackDuckServicesFactory) {
-                BinaryScanOptions binaryScanOptions = detectConfigurationFactory.createBinaryScanOptions();
-                BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, new SimpleFileFinder(), binaryScanOptions, blackDuckServicesFactory);
-                Map<File, NameVersion> binaryScanPaths = blackDuckBinaryScanner.determineBinaryScanPaths(runResult.getDockerTargetData(), projectNameVersion);
-                if (binaryScanPaths.size() > 0) {
-                    List<BinaryScanToolResult> results = blackDuckBinaryScanner.performBinaryScanActions(binaryScanPaths);
-                    for (BinaryScanToolResult result : results) {
-                        if (result.isSuccessful()) {
-                            codeLocationAccumulator.addWaitableCodeLocation(result.getCodeLocationCreationData());
+        if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN) || detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
+            if (enabledTools.contains(DetectTool.BINARY_SCAN)) {
+                logger.info("Will include the binary scanner tool.");
+                if (null != blackDuckServicesFactory) {
+                    BinaryScanOptions binaryScanOptions = detectConfigurationFactory.createBinaryScanOptions();
+                    BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, new SimpleFileFinder(), binaryScanOptions, blackDuckServicesFactory);
+                    List<File> binaryScanPaths = blackDuckBinaryScanner.determineBinaryScanPaths(runResult.getDockerTargetData());
+                    if (binaryScanPaths.size() > 0) {
+                        List<BinaryScanToolResult> results = blackDuckBinaryScanner.performBinaryScanActions(binaryScanPaths, projectNameVersion);
+                        for (BinaryScanToolResult result : results) {
+                            if (result.isSuccessful()) {
+                                codeLocationAccumulator.addWaitableCodeLocation(result.getCodeLocationCreationData());
+                            }
                         }
                     }
                 }
+                logger.info("Binary scanner actions finished.");
+            } else {
+                logger.info("Binary scanner tool was included but is not enabled on the Black Duck server.");
             }
-            logger.info("Binary scanner actions finished.");
         } else {
             logger.info("Binary scan tool will not be run.");
         }

@@ -33,7 +33,6 @@ import com.synopsys.integration.util.NameVersion;
 
 public class DockerTargetData {
 
-    private NameVersion nameVersion;
     @Nullable
     private File squashedImage;
     @Nullable
@@ -41,24 +40,18 @@ public class DockerTargetData {
     @Nullable
     private File providedImageTar;
 
-    public static DockerTargetData NO_DOCKER_TARGET = new DockerTargetData(null, null, null, null);
+    public static DockerTargetData NO_DOCKER_TARGET = new DockerTargetData(null, null, null);
 
-    public DockerTargetData(final NameVersion nameVersion, @Nullable final File squashedImage, @Nullable final File containerFilesystem, @Nullable File providedImageTar) {
-        this.nameVersion = nameVersion;
+    public DockerTargetData(@Nullable final File squashedImage, @Nullable final File containerFilesystem, @Nullable File providedImageTar) {
         this.squashedImage = squashedImage;
         this.containerFilesystem = containerFilesystem;
         this.providedImageTar = providedImageTar;
     }
 
     public DockerTargetData(Extraction extraction) {
-        this.nameVersion = new NameVersion(extraction.getProjectName(), extraction.getProjectVersion());
         this.squashedImage = extraction.getMetaData(DockerExtractor.SQUASHED_IMAGE_META_DATA).orElse(null);
         this.containerFilesystem = extraction.getMetaData(DockerExtractor.CONTAINER_FILESYSTEM_META_DATA).orElse(null);
         this.providedImageTar = extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).orElse(null);
-    }
-
-    public NameVersion getNameVersion() {
-        return nameVersion;
     }
 
     public Optional<File> getSquashedImage() {

@@ -225,7 +225,8 @@ public class BlackDuckSignatureScanner {
         String suffix = signatureScannerOptions.getCodeLocationSuffix().orElse(null);
 
         for (SignatureScanPath scanPath : signatureScanPaths) {
-            String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, scanPath.getTargetPath(), dockerTargetData.getSquashedImage().orElse(null), projectName, projectVersionName, prefix, suffix);
+            File dockerTarget = dockerTargetData.getSquashedImage().orElse(dockerTargetData.getProvidedImageTar().orElse(null));
+            String codeLocationName = codeLocationNameManager.createScanCodeLocationName(sourcePath, scanPath.getTargetPath(), dockerTarget, projectName, projectVersionName, prefix, suffix);
             scanJobBuilder.addTarget(ScanTarget.createBasicTarget(scanPath.getTargetCanonicalPath(), scanPath.getExclusions(), codeLocationName));
         }
 

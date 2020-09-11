@@ -81,19 +81,18 @@ public class BlackDuckBinaryScannerTool {
         this.eventSystem = eventSystem;
     }
 
-    public Map<File, NameVersion> determineBinaryScanPaths(DockerTargetData dockerTargetData, NameVersion binaryScanOptionsNameVersion) throws DetectUserFriendlyException {
-        Map<File, NameVersion> binaryScanFiles = new HashMap<>();
+    public List<File> determineBinaryScanPaths(DockerTargetData dockerTargetData) throws DetectUserFriendlyException {
+        List<File> binaryScanPaths = new ArrayList<>();
 
-        NameVersion dockerTargetNameVersion = dockerTargetData.getNameVersion();
         if (dockerTargetData.getContainerFilesystem().isPresent()) {
-            binaryScanFiles.put(dockerTargetData.getContainerFilesystem().get(), dockerTargetNameVersion);
+            binaryScanPaths.add(dockerTargetData.getContainerFilesystem().get());
         } else if (dockerTargetData.getProvidedImageTar().isPresent()) {
-            binaryScanFiles.put(dockerTargetData.getProvidedImageTar().get(), dockerTargetNameVersion);
+            binaryScanPaths.add(dockerTargetData.getProvidedImageTar().get());
         }
 
         if (binaryScanOptions.getSingleTargetFilePath().isPresent()) {
             logger.info("Binary scan will upload the single provided binary file path.");
-            binaryScanFiles.put(binaryScanOptions.getSingleTargetFilePath().get().toFile(), binaryScanOptionsNameVersion);
+            binaryScanPaths.add(binaryScanOptions.getSingleTargetFilePath().get().toFile());
         } else if (binaryScanOptions.getMultipleTargetFileNamePatterns().stream().anyMatch(StringUtils::isNotBlank)) {
             logger.info("Binary scan will upload all files in the source directory that match the provided name patterns.");
             final List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), binaryScanOptions.getMultipleTargetFileNamePatterns(), 0);
@@ -105,25 +104,23 @@ public class BlackDuckBinaryScannerTool {
                     final Map<String, Path> uploadTargets = multipleTargets.stream().collect(Collectors.toMap(File::getName, File::toPath));
                     DetectZipUtil.zip(zip, uploadTargets);
                     logger.info("Binary scan created the following zip for upload: " + zip.toPath());
-                    binaryScanFiles.put(zip, binaryScanOptionsNameVersion);
+                    binaryScanPaths.add(zip);
                 } catch (final IOException e) {
                     throw new DetectUserFriendlyException("Unable to create binary scan archive for upload.", e, ExitCodeType.FAILURE_UNKNOWN_ERROR);
                 }
             }
         }
-        return binaryScanFiles;
+        return binaryScanPaths;
     }
 
-    public List<BinaryScanToolResult> performBinaryScanActions(Map<File, NameVersion> binaryUploadTargets) throws DetectUserFriendlyException {
+    public List<BinaryScanToolResult> performBinaryScanActions(List<File> binaryUploadTargets, NameVersion projectNameVersion) throws DetectUserFriendlyException {
         List<BinaryScanToolResult> results = new ArrayList<>();
-        for (Map.Entry<File, NameVersion> binaryUploadTarget : binaryUploadTargets.entrySet()) {
-            File binaryUpload = binaryUploadTarget.getKey();
-            NameVersion nameVersion = binaryUploadTarget.getValue();
-            if (binaryUpload != null && binaryUpload.isFile() && binaryUpload.canRead()) {
-                final String name = nameVersion.getName();
-                final String version = nameVersion.getVersion();
-                final BinaryScanUploadService uploadService = blackDuckServicesFactory.createBinaryScanUploadService();
-                CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData = uploadBinaryScanFile(uploadService, binaryUpload, name, version);
+        final BinaryScanUploadService uploadService = blackDuckServicesFactory.createBinaryScanUploadService();
+        for (File binaryUploadTarget : binaryUploadTargets) {
+            if (binaryUploadTarget != null && binaryUploadTarget.isFile() && binaryUploadTarget.canRead()) {
+                final String name = projectNameVersion.getName();
+                final String version = projectNameVersion.getVersion();
+                CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData = uploadBinaryScanFile(uploadService, binaryUploadTarget, name, version);
                 results.add(BinaryScanToolResult.SUCCESS(codeLocationCreationData));
             }
         }
