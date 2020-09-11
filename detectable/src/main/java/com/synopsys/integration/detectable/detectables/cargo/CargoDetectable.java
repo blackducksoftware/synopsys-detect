@@ -31,7 +31,7 @@ import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.result.CargoGenerateLockfileDetectResult;
+import com.synopsys.integration.detectable.detectable.result.CargoLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
@@ -66,7 +66,7 @@ public class CargoDetectable extends Detectable {
     @Override
     public DetectableResult extractable() {
         if (cargoLock == null && cargoToml != null) {
-            return new CargoGenerateLockfileDetectResult(environment.getDirectory().getAbsolutePath());
+            return new CargoLockfileNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
         }
         return new PassedDetectableResult();
     }

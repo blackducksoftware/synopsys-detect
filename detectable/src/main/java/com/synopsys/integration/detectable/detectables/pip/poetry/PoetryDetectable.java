@@ -34,7 +34,7 @@ import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PoetryRunPoetryInstallDetectResult;
+import com.synopsys.integration.detectable.detectable.result.PoetryLockfileNotFoundDetectableResult;
 
 @DetectableInfo(language = "Python", forge = "pypi", requirementsMarkdown = "Files: Poetry.lock, pyproject.toml")
 public class PoetryDetectable extends Detectable {
@@ -66,7 +66,7 @@ public class PoetryDetectable extends Detectable {
     @Override
     public DetectableResult extractable() {
         if (poetryLock == null && pyprojectToml != null) {
-            return new PoetryRunPoetryInstallDetectResult(environment.getDirectory().getAbsolutePath());
+            return new PoetryLockfileNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
         }
         return new PassedDetectableResult();
     }

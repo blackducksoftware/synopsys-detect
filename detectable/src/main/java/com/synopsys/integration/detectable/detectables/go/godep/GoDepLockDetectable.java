@@ -35,7 +35,7 @@ import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.GoDepRunInitEnsureDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.GoPkgLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
 @DetectableInfo(language = "Golang", forge = "GitHub", requirementsMarkdown = "File: Gopkg.lock.")
@@ -71,7 +71,7 @@ public class GoDepLockDetectable extends Detectable {
     @Override
     public DetectableResult extractable() {
         if (goLock == null && goToml != null) {
-            return new GoDepRunInitEnsureDetectableResult(environment.getDirectory().getAbsolutePath());
+            return new GoPkgLockfileNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
         }
         return new PassedDetectableResult();
     }
