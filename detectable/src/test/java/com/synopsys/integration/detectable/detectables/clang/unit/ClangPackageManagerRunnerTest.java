@@ -42,6 +42,18 @@ public class ClangPackageManagerRunnerTest {
     }
 
     @Test
+    public void testDpkgPkgBuriedArchitecture() throws ExecutableRunnerException {
+        ClangPackageManagerInfoFactory factory = ClangPackageManagerInfoFactory.standardFactory();
+        ClangPackageManagerInfo packageManagerInfo = factory.dpkg();
+        DpkgVersionResolver versionResolver = new DpkgVersionResolver();
+        ClangPackageManagerResolver packageResolver = new DpkgPackageManagerResolver(versionResolver);
+        String pkgDetailsPattern = "Package: %s\n"
+                                       + "Architecture: amd64\n"
+                                       + "Version: 1:1.1.5-1\n";
+        testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", "1:1.1.5-1", "libxt-dev: %s ", pkgDetailsPattern);
+    }
+
+    @Test
     public void testRpmNonPkgOwnedIncludeFile() throws ExecutableRunnerException {
 
         ClangPackageManagerInfoFactory factory = ClangPackageManagerInfoFactory.standardFactory();
