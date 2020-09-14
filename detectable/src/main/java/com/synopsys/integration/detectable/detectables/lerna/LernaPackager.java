@@ -152,7 +152,7 @@ public class LernaPackager {
             String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
             String lockfileText = FileUtils.readFileToString(npmLockfile, StandardCharsets.UTF_8);
 
-            NpmParseResult npmParseResult = npmLockfileParser.parse(packageJsonText, lockfileText, npmLockfileOptions.shouldIncludeDeveloperDependencies(), lernaMissingDependencyHandler::missingNpmDependencyHandler);
+            NpmParseResult npmParseResult = npmLockfileParser.parse(packageJsonText, lockfileText, npmLockfileOptions.shouldIncludeDeveloperDependencies(), lernaMissingDependencyHandler::handleMissingNpmDependency);
 
             return LernaResult.success(npmParseResult.getProjectName(), npmParseResult.getProjectVersion(), Collections.singletonList(npmParseResult.getCodeLocation()));
         } catch (IOException exception) {
@@ -165,7 +165,7 @@ public class LernaPackager {
             String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
 
-            YarnResult yarnResult = yarnPackager.generateYarnResult(packageJsonText, yarnLockLines, yarnLockFile.getAbsolutePath(), lernaMissingDependencyHandler::missingYarnDependencyHandler);
+            YarnResult yarnResult = yarnPackager.generateYarnResult(packageJsonText, yarnLockLines, yarnLockFile.getAbsolutePath(), lernaMissingDependencyHandler::handleMissingYarnDependency);
 
             if (yarnResult.getException().isPresent()) {
                 throw yarnResult.getException().get();

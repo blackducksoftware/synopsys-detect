@@ -22,7 +22,7 @@ public class LernaMissingDependencyHandler {
         this.lernaPackages = lernaPackages;
     }
 
-    public void missingNpmDependencyHandler(Logger logger, NpmRequires missingDependency) {
+    public void handleMissingNpmDependency(Logger logger, NpmRequires missingDependency) {
         boolean isLernaPackage = lernaPackages.stream()
                                      .anyMatch(lernaPackage -> lernaPackage.getName().equalsIgnoreCase(missingDependency.getName()));
         if (!isLernaPackage) {
@@ -30,7 +30,7 @@ public class LernaMissingDependencyHandler {
         }
     }
 
-    public ExternalId missingYarnDependencyHandler(Logger logger, ExternalIdFactory externalIdFactory, DependencyId dependencyId, LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo, String yarnLockFilePath) {
+    public ExternalId handleMissingYarnDependency(Logger logger, ExternalIdFactory externalIdFactory, DependencyId dependencyId, LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo, String yarnLockFilePath) {
         Optional<LernaPackage> foundLernaPackage = lernaPackages.stream()
                                                        .filter(lernaPackage -> dependencyId.toString().toLowerCase().contains(lernaPackage.getName().toLowerCase()))
                                                        .findAny();
