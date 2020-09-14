@@ -1,0 +1,5 @@
+compileClasspath - Compile classpath for source set 'main'.
++--- project :bar
+|     \--- org.glassfish.jaxb:jaxb-runtime:2.3.2 -> 2.3.3 (*)
+\--- project :foo
+      \--- org.glassfish.jaxb:jaxb-runtime:2.3.1 -> 2.3.3 (*)

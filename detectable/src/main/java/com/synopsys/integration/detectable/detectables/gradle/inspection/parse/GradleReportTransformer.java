@@ -50,12 +50,12 @@ public class GradleReportTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public CodeLocation transform(GradleReport gradleReport) {
+    public CodeLocation transform(GradleReport gradleReport, DependencyReplacementResolver dependencyReplacementResolver) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
             logger.trace(String.format("Adding configuration to the graph: %s", configuration.getName()));
-            addConfigurationToGraph(graph, configuration);
+            addConfigurationToGraph(graph, configuration, dependencyReplacementResolver);
         }
 
         ExternalId projectId = externalIdFactory.createMavenExternalId(gradleReport.getProjectGroup(), gradleReport.getProjectName(), gradleReport.getProjectVersionName());
@@ -66,12 +66,11 @@ public class GradleReportTransformer {
         }
     }
 
-    private void addConfigurationToGraph(MutableDependencyGraph graph, GradleConfiguration configuration) {
+    private void addConfigurationToGraph(MutableDependencyGraph graph, GradleConfiguration configuration, DependencyReplacementResolver dependencyReplacementResolver) {
         DependencyHistory history = new DependencyHistory();
         Optional<Integer> skipUntil = Optional.empty();
 
         for (GradleTreeNode currentNode : configuration.getChildren()) {
-
             if (skipUntil.isPresent() && currentNode.getLevel() <= skipUntil.get()) {
                 skipUntil = Optional.empty();
             } else if (skipUntil.isPresent()) {
@@ -79,14 +78,18 @@ public class GradleReportTransformer {
             }
 
             history.clearDependenciesDeeperThan(currentNode.getLevel());
-            if (currentNode.getNodeType() != GradleTreeNode.NodeType.GAV) {
+            Optional<GradleGav> gavOptional = currentNode.getGav();
+            if (currentNode.getNodeType() != GradleTreeNode.NodeType.GAV || !gavOptional.isPresent()) {
                 skipUntil = Optional.of(currentNode.getLevel());
                 continue;
             }
 
-            GradleGav gav = currentNode.getGav().get(); // TODO: Why are we not doing an isPresent() check here?
+            GradleGav gav = gavOptional.get();
             ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getArtifact(), gav.getVersion());
             Dependency currentDependency = new Dependency(gav.getArtifact(), gav.getVersion(), externalId);
+
+            currentDependency = dependencyReplacementResolver.getReplacement(currentDependency)
+                                    .orElse(currentDependency);
 
             if (history.isEmpty()) {
                 graph.addChildToRoot(currentDependency);

@@ -1,0 +1,2 @@
+api - API dependencies for source set 'main'. (n)
+\--- org.glassfish.jaxb:jaxb-runtime:2.3.2 (n)

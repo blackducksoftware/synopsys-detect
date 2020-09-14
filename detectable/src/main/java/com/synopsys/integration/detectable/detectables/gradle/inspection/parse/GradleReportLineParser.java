@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,19 +47,42 @@ public class GradleReportLineParser {
         if (!line.contains(COMPONENT_PREFIX)) {
             return GradleTreeNode.newUnknown(level);
         } else if (StringUtils.containsAny(line, PROJECT_INDICATORS)) {
-            return GradleTreeNode.newProject(level);
+            String projectName = parseProjectName(line);
+            return GradleTreeNode.newProject(level, projectName);
         } else {
-            List<String> gav = parseGav(line);
-            if (gav.size() != 3) {
+            GradleGavPieces gav = parseGav(line);
+            if (gav.getGavPieces().size() != 3) {
                 logger.trace(String.format("The line can not be reasonably split in to the necessary parts: %s", line)); //All project lines: +--- org.springframework.boot:spring-boot-starter-activemq (n)
                 return GradleTreeNode.newUnknown(level);
             } else {
-                String group = gav.get(0);
-                String artifact = gav.get(1);
-                String version = gav.get(2);
-                return GradleTreeNode.newGav(level, artifact, version, group);
+                String group = gav.getGavPieces().get(0);
+                String artifact = gav.getGavPieces().get(1);
+                String version = gav.getGavPieces().get(2);
+
+                if (gav.getReplacedGavPieces().isEmpty()) {
+                    return GradleTreeNode.newGav(level, artifact, version, group);
+                } else if (gav.getReplacedGavPieces().size() == 3) {
+                    String replacedGroup = gav.getReplacedGavPieces().get(0);
+                    String replacedArtifact = gav.getReplacedGavPieces().get(1);
+                    String replacedVersion = gav.getReplacedGavPieces().get(2);
+                    return GradleTreeNode.newGavWithReplacement(level, artifact, version, group, replacedArtifact, replacedVersion, replacedGroup);
+                } else {
+                    logger.warn(String.format("The replacement gav is an unknown format: %s", line));
+                    return GradleTreeNode.newGav(level, artifact, version, group);
+                }
             }
         }
+    }
+
+    @Nullable
+    private String parseProjectName(String line) {
+        String cleanedOutput = StringUtils.trimToEmpty(line);
+        for (String projectIndicator : PROJECT_INDICATORS) {
+            cleanedOutput = cleanedOutput.substring(cleanedOutput.indexOf(projectIndicator) + projectIndicator.length());
+        }
+        cleanedOutput = removeSuffixes(cleanedOutput);
+
+        return cleanedOutput;
     }
 
     private String removeSuffixes(String line) {
@@ -71,7 +95,7 @@ public class GradleReportLineParser {
         return line;
     }
 
-    private List<String> parseGav(String line) {
+    private GradleGavPieces parseGav(String line) {
         String cleanedOutput = StringUtils.trimToEmpty(line);
         cleanedOutput = cleanedOutput.substring(cleanedOutput.indexOf(COMPONENT_PREFIX) + COMPONENT_PREFIX.length());
 
@@ -82,6 +106,7 @@ public class GradleReportLineParser {
         if (cleanedOutput.contains(WINNING_INDICATOR)) {
             // WINNING_INDICATOR can point to an entire GAV not just a version
             String winningSection = cleanedOutput.substring(cleanedOutput.indexOf(WINNING_INDICATOR) + WINNING_INDICATOR.length());
+            String losingSection = cleanedOutput.substring(0, cleanedOutput.indexOf(WINNING_INDICATOR));
             if (winningSection.contains(":")) {
                 gavPieces = Arrays.asList(winningSection.split(":"));
             } else {
@@ -94,9 +119,10 @@ public class GradleReportLineParser {
                 }
                 gavPieces.set(2, winningSection);
             }
+            return GradleGavPieces.createGavWithReplacement(gavPieces, Arrays.asList(losingSection.split(":")));
+        } else {
+            return GradleGavPieces.createGav(gavPieces);
         }
-
-        return gavPieces;
     }
 
     private int parseTreeLevel(String line) {
