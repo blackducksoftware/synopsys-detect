@@ -36,6 +36,7 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectables.npm.MissingNpmDependencyHandler;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmDependencyConverter;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDependency;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
@@ -55,6 +56,10 @@ public class NpmLockfilePackager {
     }
 
     public NpmParseResult parse(@Nullable String packageJsonText, String lockFileText, boolean includeDevDependencies) {
+        return parse(packageJsonText, lockFileText, includeDevDependencies, NpmLockfilePackager::handleMissingDependency);
+    }
+
+    public NpmParseResult parse(@Nullable String packageJsonText, String lockFileText, boolean includeDevDependencies, MissingNpmDependencyHandler missingNpmDependencyHandler) {
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
         Optional<PackageJson> packageJson = Optional.ofNullable(packageJsonText)
@@ -71,15 +76,15 @@ public class NpmLockfilePackager {
 
             //First we will recreate the graph from the resolved npm dependencies
             for (NpmDependency resolved : project.getResolvedDependencies()) {
-                transformTreeToGraph(resolved, project, dependencyGraph, includeDevDependencies);
+                transformTreeToGraph(resolved, project, dependencyGraph, includeDevDependencies, missingNpmDependencyHandler);
             }
 
             //Then we will add relationships between the project (root) and the graph
             boolean atLeastOneRequired = !project.getDeclaredDependencies().isEmpty() || !project.getDeclaredDevDependencies().isEmpty();
             if (atLeastOneRequired) {
-                addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDependencies(), dependencyGraph);
+                addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDependencies(), dependencyGraph, missingNpmDependencyHandler);
                 if (includeDevDependencies) {
-                    addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDevDependencies(), dependencyGraph);
+                    addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDevDependencies(), dependencyGraph, missingNpmDependencyHandler);
                 }
             } else {
                 project.getResolvedDependencies()
@@ -98,18 +103,22 @@ public class NpmLockfilePackager {
         return new NpmParseResult(packageLock.name, packageLock.version, codeLocation);
     }
 
-    private void addRootDependencies(List<NpmDependency> resolvedDependencies, List<NpmRequires> requires, MutableDependencyGraph dependencyGraph) {
+    public static void handleMissingDependency(Logger missingDependencyLogger, NpmRequires missingDependency) {
+        missingDependencyLogger.error(String.format("No dependency found for package: %s", missingDependency.getName()));
+    }
+
+    private void addRootDependencies(List<NpmDependency> resolvedDependencies, List<NpmRequires> requires, MutableDependencyGraph dependencyGraph, MissingNpmDependencyHandler missingNpmDependencyHandler) {
         for (NpmRequires dependency : requires) {
             NpmDependency resolved = firstDependencyWithName(resolvedDependencies, dependency.getName());
             if (resolved != null) {
                 dependencyGraph.addChildToRoot(resolved.getGraphDependency());
             } else {
-                logger.error(String.format("No dependency found for package: %s", dependency.getName()));
+                missingNpmDependencyHandler.handleMissingDependency(logger, dependency);
             }
         }
     }
 
-    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, MutableDependencyGraph dependencyGraph, boolean includeDevDependencies) {
+    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, MutableDependencyGraph dependencyGraph, boolean includeDevDependencies, MissingNpmDependencyHandler missingNpmDependencyHandler) {
         if (!shouldIncludeDependency(npmDependency, includeDevDependencies))
             return;
 
@@ -120,11 +129,11 @@ public class NpmLockfilePackager {
                 logger.trace(String.format("Found package: %s with version: %s", resolved.getName(), resolved.getVersion()));
                 dependencyGraph.addChildWithParent(resolved.getGraphDependency(), npmDependency.getGraphDependency());
             } else {
-                logger.error(String.format("No dependency found for package: %s", required.getName()));
+                missingNpmDependencyHandler.handleMissingDependency(logger, required);
             }
         });
 
-        npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, includeDevDependencies));
+        npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, includeDevDependencies, missingNpmDependencyHandler));
     }
 
     //returns the first dependency in the following order: directly under this dependency, under a parent, under the project
