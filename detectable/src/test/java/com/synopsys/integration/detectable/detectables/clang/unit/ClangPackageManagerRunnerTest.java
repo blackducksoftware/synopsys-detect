@@ -38,8 +38,23 @@ public class ClangPackageManagerRunnerTest {
         String pkgOwnerPattern = "libxt-dev:amd64: %s\n";
         String pkgDetailsPattern = "Package: %s\n"
                                        + "Architecture: amd64\n"
-                                       + "Version: 1:1.1.5-1\n";
+                                       + "Version: 1:1.1.5-1\n"
+                                       + "Status: install ok installed\n";
         testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
+    }
+
+    @Test
+    public void testDpkgPkgNotInstalled() throws ExecutableRunnerException {
+        ClangPackageManagerInfoFactory factory = ClangPackageManagerInfoFactory.standardFactory();
+        ClangPackageManagerInfo packageManagerInfo = factory.dpkg();
+        DpkgPkgDetailsResolver versionResolver = new DpkgPkgDetailsResolver();
+        ClangPackageManagerResolver packageResolver = new DpkgPackageManagerResolver(versionResolver);
+        String pkgOwnerPattern = "libxt-dev:amd64: %s\n";
+        String pkgDetailsPattern = "Package: %s\n"
+                                       + "Architecture: amd64\n"
+                                       + "Version: 1:1.1.5-1\n"
+                                       + "Status: pending\n";
+        testNoResultsCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
     }
 
     @Test
@@ -51,7 +66,8 @@ public class ClangPackageManagerRunnerTest {
         String pkgOwnerPattern = "libxt-dev: %s\n";
         String pkgDetailsPattern = "Package: %s\n"
                                        + "Architecture: amd64\n"
-                                       + "Version: 1:1.1.5-1\n";
+                                       + "Version: 1:1.1.5-1\n"
+                                       + "Status: install ok installed\n";
         testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
     }
 
@@ -111,6 +127,19 @@ public class ClangPackageManagerRunnerTest {
         assertEquals(pkgName, foundPkgDetails.getPackageName());
         assertEquals(pkgArchitecture, foundPkgDetails.getPackageArch());
         assertEquals(pkgVersion, foundPkgDetails.getPackageVersion());
+    }
+
+    private void testNoResultsCase(ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
+        String pkgName, String pkgArchitecture, String pkgVersion,
+        String pkgMgrQueryResultPattern, String pkgMgrDetailsQueryResultPattern) throws ExecutableRunnerException {
+
+        // Test
+        PackageDetailsResult result = runTest(packageManagerInfo, packageResolver, pkgName,
+            pkgMgrQueryResultPattern, pkgMgrDetailsQueryResultPattern, dependencyFile);
+
+        // Verify
+        assertEquals(0, result.getUnRecognizedDependencyFiles().size());
+        assertEquals(0, result.getFoundPackages().size());
     }
 
     private PackageDetailsResult runTest(ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,

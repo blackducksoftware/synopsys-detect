@@ -57,26 +57,33 @@ public class DpkgPkgDetailsResolver {
     private Optional<PackageDetails> parsePackageDetailsFromStatusOutput(PackageDetails pkg, String packageStatusOutput) {
         String[] packageStatusOutputLines = packageStatusOutput.split("\\n");
         for (String packageStatusOutputLine : packageStatusOutputLines) {
-            String[] packageStatusOutputLineNameValue = packageStatusOutputLine.split(":\\s+");
-            String label = packageStatusOutputLineNameValue[0];
-            if ("Status".equals(label.trim())) {
-                if (packageStatusOutputLineNameValue.length > 1) {
-                    String value = packageStatusOutputLineNameValue[1];
-                    if ((value != null) && !value.contains("installed")) {
-                        logger.debug(String.format("%s is not installed; Status is: %s", pkg.getPackageName(), value));
-                        return Optional.empty();
-                    }
-                } else {
-                    logger.warn(String.format("Missing value for Status field for package %s", pkg.getPackageName()));
-                }
+            if (foundUninstalledStatus(pkg, packageStatusOutputLine)) {
+                return Optional.empty();
             }
-            parseLineForLabel(pkg, packageStatusOutputLine, "Architecture", () -> pkg.getPackageArch(), (String a) -> pkg.setPackageArch(a));
-            parseLineForLabel(pkg, packageStatusOutputLine, "Version", () -> pkg.getPackageVersion(), (String v) -> pkg.setPackageVersion(v));
+            consumeValueFromLineIfPresent(pkg, packageStatusOutputLine, "Architecture", () -> pkg.getPackageArch(), (String a) -> pkg.setPackageArch(a));
+            consumeValueFromLineIfPresent(pkg, packageStatusOutputLine, "Version", () -> pkg.getPackageVersion(), (String v) -> pkg.setPackageVersion(v));
         }
         return Optional.of(pkg);
     }
 
-    private boolean parseLineForLabel(PackageDetails pkg, String packageStatusOutputLine, String targetLabel, Supplier<String> oldValueGetter, Consumer<String> newValueConsumer) {
+    private boolean foundUninstalledStatus(PackageDetails pkg, String packageStatusOutputLine) {
+        String[] packageStatusOutputLineNameValue = packageStatusOutputLine.split(":\\s+");
+        String label = packageStatusOutputLineNameValue[0];
+        if ("Status".equals(label.trim())) {
+            if (packageStatusOutputLineNameValue.length > 1) {
+                String value = packageStatusOutputLineNameValue[1];
+                if ((value != null) && !value.contains("installed")) {
+                    logger.debug(String.format("%s is not installed; Status is: %s", pkg.getPackageName(), value));
+                    return true;
+                }
+            } else {
+                logger.warn(String.format("Missing value for Status field for package %s", pkg.getPackageName()));
+            }
+        }
+        return false;
+    }
+
+    private boolean consumeValueFromLineIfPresent(PackageDetails pkg, String packageStatusOutputLine, String targetLabel, Supplier<String> oldValueGetter, Consumer<String> newValueConsumer) {
         String[] packageStatusOutputLineNameValue = packageStatusOutputLine.split(":\\s+");
         String parsedLabel = packageStatusOutputLineNameValue[0].trim();
         if (targetLabel.equals(parsedLabel)) {
