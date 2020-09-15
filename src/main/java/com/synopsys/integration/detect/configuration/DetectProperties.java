@@ -710,14 +710,14 @@ public class DetectProperties {
             .setGroups(DetectGroup.HEX, DetectGroup.GLOBAL);
 
     public static final DetectProperty<BooleanProperty> DETECT_IMPACT_ANALYSIS_ENABLED = new DetectProperty<>(new BooleanProperty("detect.impact.analysis.enabled", false))
-        .setInfo("Vulnerability Impact Analysis Enabled", "6.5.0")
+                                                                                             .setInfo("Vulnerability Impact Analysis Enabled", "6.5.0")
         .setHelp("If set to true, Detect will attempt to look for *.class files and generate a Vulnerability Impact Analysis Report for upload to Black Duck.")
-        .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
+                                                                                             .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
 
     public static final DetectProperty<NullablePathProperty> DETECT_IMPACT_ANALYSIS_OUTPUT_PATH = new DetectProperty<>(new NullablePathProperty("detect.impact.analysis.output.path"))
-        .setInfo("Impact Analysis Output Directory", "6.5.0")
+                                                                                                      .setInfo("Impact Analysis Output Directory", "6.5.0")
         .setHelp("The path to the output directory for Impact Analysis reports.", "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.")
-        .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
+                                                                                                      .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
 
     public static final DetectProperty<FilterableEnumListProperty<DetectorType>> DETECT_INCLUDED_DETECTOR_TYPES =
         new DetectProperty<>(new FilterableEnumListProperty<>("detect.included.detector.types", emptyList(), DetectorType.class))
@@ -1723,7 +1723,7 @@ public class DetectProperties {
         List<Property> properties = new ArrayList<>();
         Field[] allFields = DetectProperties.class.getDeclaredFields();
         for (Field field : allFields) {
-            if (!field.getType().equals(String.class)) {
+            if (field.getType().equals(DetectProperty.class)) {
                 Object property = field.get(Property.class);
                 DetectProperty detectProperty = (DetectProperty) property;
                 properties.add(convertDetectPropertyToProperty(detectProperty));
@@ -1733,7 +1733,7 @@ public class DetectProperties {
     }
 
     private static Property convertDetectPropertyToProperty(DetectProperty detectProperty) {
-        Property property =  detectProperty.getProperty();
+        Property property = detectProperty.getProperty();
         property.setInfo(detectProperty.getName(), detectProperty.getFromVersion());
         if (detectProperty.getPropertyHelpInfo() != null) {
             property.setHelp(detectProperty.getPropertyHelpInfo().getShortText(), detectProperty.getPropertyHelpInfo().getLongText());
