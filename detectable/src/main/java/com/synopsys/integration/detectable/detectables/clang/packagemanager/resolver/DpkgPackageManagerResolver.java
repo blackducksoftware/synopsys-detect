@@ -56,12 +56,12 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
             }
             String[] queryPackageOutputParts = packageLine.split("\\s+");
             String[] packageNameArchParts = queryPackageOutputParts[0].split(":");
-            PackageDetails pkg = new PackageDetails(packageNameArchParts[0]);
+            PackageDetails pkgPartial = new PackageDetails(packageNameArchParts[0]);
             if (packageNameArchParts.length > 1) {
-                pkg.setPackageArch(packageNameArchParts[1]);
+                pkgPartial.setPackageArch(packageNameArchParts[1]);
             }
-            logger.debug(String.format("package name: %s; architecture: %s", pkg.getPackageName(), pkg.getPackageArch()));
-            Optional<PackageDetails> pkgComplete = versionResolver.resolvePackageVersion(currentPackageManager, executableRunner, workingDirectory, pkg);
+            logger.debug(String.format("package name: %s; architecture: %s", pkgPartial.getPackageName(), pkgPartial.getPackageArch()));
+            Optional<PackageDetails> pkgComplete = versionResolver.resolvePackageDetails(currentPackageManager, executableRunner, workingDirectory, pkgPartial);
             if (pkgComplete.isPresent()) {
                 packageDetailsList.add(pkgComplete.get());
             }

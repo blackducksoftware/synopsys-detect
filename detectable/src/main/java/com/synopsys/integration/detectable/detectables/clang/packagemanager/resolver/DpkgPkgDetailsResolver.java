@@ -26,6 +26,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +41,7 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Pack
 public class DpkgPkgDetailsResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public Optional<PackageDetails> resolvePackageVersion(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, PackageDetails pkg) {
+    public Optional<PackageDetails> resolvePackageDetails(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, PackageDetails pkg) {
         try {
             List<String> args = new ArrayList<>(currentPackageManager.getPkgInfoArgs().get());
             args.add(pkg.getPackageName());
@@ -67,33 +69,30 @@ public class DpkgPkgDetailsResolver {
                 } else {
                     logger.warn(String.format("Missing value for Status field for package %s", pkg.getPackageName()));
                 }
-
             }
-            if ("Architecture".equals(label.trim())) {
-                if (packageStatusOutputLineNameValue.length > 1) {
-                    String value = packageStatusOutputLineNameValue[1];
-                    if ((pkg.getPackageArch() != null) && !pkg.getPackageArch().equals(value)) {
-                        logger.warn("Package %s architecture changed from %s to %s during details resolution",
-                            pkg.getPackageName(), pkg.getPackageArch(), value);
-                    }
-                    pkg.setPackageArch(value);
-                } else {
-                    logger.warn(String.format("Missing value for Architecture field for package %s", pkg.getPackageName()));
-                }
-            }
-            if ("Version".equals(label.trim())) {
-                if (packageStatusOutputLineNameValue.length > 1) {
-                    String value = packageStatusOutputLineNameValue[1];
-                    if ((pkg.getPackageVersion() != null) && !pkg.getPackageVersion().equals(value)) {
-                        logger.warn("Package %s version changed from %s to %s during details resolution",
-                            pkg.getPackageName(), pkg.getPackageVersion(), value);
-                    }
-                    pkg.setPackageVersion(value);
-                } else {
-                    logger.warn(String.format("Missing value for Version field for package %s", pkg.getPackageName()));
-                }
-            }
+            parseLineForLabel(pkg, packageStatusOutputLine, "Architecture", () -> pkg.getPackageArch(), (String a) -> pkg.setPackageArch(a));
+            parseLineForLabel(pkg, packageStatusOutputLine, "Version", () -> pkg.getPackageVersion(), (String v) -> pkg.setPackageVersion(v));
         }
         return Optional.of(pkg);
+    }
+
+    private boolean parseLineForLabel(PackageDetails pkg, String packageStatusOutputLine, String targetLabel, Supplier<String> oldValueGetter, Consumer<String> newValueConsumer) {
+        String[] packageStatusOutputLineNameValue = packageStatusOutputLine.split(":\\s+");
+        String parsedLabel = packageStatusOutputLineNameValue[0].trim();
+        if (targetLabel.equals(parsedLabel)) {
+            if (packageStatusOutputLineNameValue.length > 1) {
+                String parsedValue = packageStatusOutputLineNameValue[1];
+                String oldValue = oldValueGetter.get();
+                if ((oldValue != null) && !oldValue.equals(parsedValue)) {
+                    logger.warn("Package %s %s value changed from %s to %s during details resolution",
+                        pkg.getPackageName(), targetLabel, oldValue, parsedValue);
+                }
+                newValueConsumer.accept(parsedValue);
+                return true;
+            } else {
+                logger.warn(String.format("Missing value for %s field for package %s", targetLabel, pkg.getPackageName()));
+            }
+        }
+        return false;
     }
 }
