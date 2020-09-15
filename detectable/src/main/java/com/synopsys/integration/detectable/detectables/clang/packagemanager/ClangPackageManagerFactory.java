@@ -35,7 +35,7 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.reso
 public class ClangPackageManagerFactory {
     private final ClangPackageManagerInfoFactory packageManagerInfoFactory;
 
-    public ClangPackageManagerFactory(final ClangPackageManagerInfoFactory packageManagerInfoFactory) {
+    public ClangPackageManagerFactory(ClangPackageManagerInfoFactory packageManagerInfoFactory) {
         this.packageManagerInfoFactory = packageManagerInfoFactory;
     }
 
@@ -44,7 +44,7 @@ public class ClangPackageManagerFactory {
     }
 
     public List<ClangPackageManager> createPackageManagers() {
-        final List<ClangPackageManager> packageManagers = new ArrayList<>();
+        List<ClangPackageManager> packageManagers = new ArrayList<>();
 
         packageManagers.add(new ClangPackageManager(packageManagerInfoFactory.apk(), new ApkPackageManagerResolver(new ApkArchitectureResolver())));
         packageManagers.add(new ClangPackageManager(packageManagerInfoFactory.dpkg(), new DpkgPackageManagerResolver(new DpkgVersionResolver())));

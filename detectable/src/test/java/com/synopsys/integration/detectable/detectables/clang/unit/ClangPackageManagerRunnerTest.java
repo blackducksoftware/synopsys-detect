@@ -30,48 +30,48 @@ public class ClangPackageManagerRunnerTest {
     @Test
     public void testRpmNonPkgOwnedIncludeFile() throws ExecutableRunnerException {
 
-        final ClangPackageManagerInfoFactory factory = ClangPackageManagerInfoFactory.standardFactory();
-        final ClangPackageManagerInfo packageManagerInfo = factory.rpm();
-        final ClangPackageManagerResolver packageResolver = new RpmPackageManagerResolver(new Gson());
+        ClangPackageManagerInfoFactory factory = ClangPackageManagerInfoFactory.standardFactory();
+        ClangPackageManagerInfo packageManagerInfo = factory.rpm();
+        ClangPackageManagerResolver packageResolver = new RpmPackageManagerResolver(new Gson());
         doTestNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, "%s is not owned by any package");
     }
 
     @Test
     public void testDpkgNonPkgOwnedIncludeFile() throws ExecutableRunnerException {
-        final ClangPackageManagerInfoFactory factory = ClangPackageManagerInfoFactory.standardFactory();
-        final ClangPackageManagerInfo packageManagerInfo = factory.dpkg();
+        ClangPackageManagerInfoFactory factory = ClangPackageManagerInfoFactory.standardFactory();
+        ClangPackageManagerInfo packageManagerInfo = factory.dpkg();
         DpkgVersionResolver versionResolver = new DpkgVersionResolver();
-        final ClangPackageManagerResolver packageResolver = new DpkgPackageManagerResolver(versionResolver);
+        ClangPackageManagerResolver packageResolver = new DpkgPackageManagerResolver(versionResolver);
 
         doTestNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, "dpkg-query: no path found matching pattern %s");
     }
 
     @Test
     public void testApkNonPkgOwnedIncludeFile() throws ExecutableRunnerException {
-        final ClangPackageManagerInfoFactory factory = ClangPackageManagerInfoFactory.standardFactory();
-        final ClangPackageManagerInfo packageManagerInfo = factory.apk();
+        ClangPackageManagerInfoFactory factory = ClangPackageManagerInfoFactory.standardFactory();
+        ClangPackageManagerInfo packageManagerInfo = factory.apk();
         ApkArchitectureResolver archResolver = new ApkArchitectureResolver();
-        final ClangPackageManagerResolver packageResolver = new ApkPackageManagerResolver(archResolver);
+        ClangPackageManagerResolver packageResolver = new ApkPackageManagerResolver(archResolver);
 
         doTestNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, "ERROR: %s: Could not find owner package");
     }
 
-    private void doTestNonPkgOwnedIncludeFile(final ClangPackageManagerInfo packageManagerInfo, final ClangPackageManagerResolver packageResolver,
-        final String pkgMgrQueryResultPattern) throws ExecutableRunnerException {
-        final ClangPackageManager currentPackageManager = new ClangPackageManager(packageManagerInfo, packageResolver);
+    private void doTestNonPkgOwnedIncludeFile(ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
+        String pkgMgrQueryResultPattern) throws ExecutableRunnerException {
+        ClangPackageManager currentPackageManager = new ClangPackageManager(packageManagerInfo, packageResolver);
 
-        final File workingDirectory = new File("test");
-        final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        final List<String> fileSpecificGetOwnerArgs = new ArrayList<>(packageManagerInfo.getPkgMgrGetOwnerCmdArgs());
-        final File nonPkgOwnedIncludeFile = new File("/home/steve/detect.sh");
+        File workingDirectory = new File("test");
+        ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        List<String> fileSpecificGetOwnerArgs = new ArrayList<>(packageManagerInfo.getPkgMgrGetOwnerCmdArgs());
+        File nonPkgOwnedIncludeFile = new File("/home/steve/detect.sh");
         fileSpecificGetOwnerArgs.add(nonPkgOwnedIncludeFile.getAbsolutePath());
-        final String pkgMgrGetOwnerQueryFileOutput = String.format(pkgMgrQueryResultPattern, nonPkgOwnedIncludeFile.getAbsolutePath());
-        final ExecutableOutput pkgMgrGetOwnerQueryFileResult = new ExecutableOutput("", 0, pkgMgrGetOwnerQueryFileOutput, "");
+        String pkgMgrGetOwnerQueryFileOutput = String.format(pkgMgrQueryResultPattern, nonPkgOwnedIncludeFile.getAbsolutePath());
+        ExecutableOutput pkgMgrGetOwnerQueryFileResult = new ExecutableOutput("", 0, pkgMgrGetOwnerQueryFileOutput, "");
         Mockito.when(executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetOwnerArgs)).thenReturn(pkgMgrGetOwnerQueryFileResult);
-        final ClangPackageManagerRunner runner = new ClangPackageManagerRunner();
+        ClangPackageManagerRunner runner = new ClangPackageManagerRunner();
 
         // Test
-        final PackageDetailsResult result = runner.getPackages(currentPackageManager, workingDirectory, executableRunner, nonPkgOwnedIncludeFile);
+        PackageDetailsResult result = runner.getPackages(currentPackageManager, workingDirectory, executableRunner, nonPkgOwnedIncludeFile);
 
         // Verify
         assertEquals(1, result.getUnRecognizedDependencyFiles().size());
