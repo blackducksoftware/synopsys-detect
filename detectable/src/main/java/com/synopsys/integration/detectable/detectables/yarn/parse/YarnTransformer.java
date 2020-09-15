@@ -46,7 +46,7 @@ public class YarnTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(YarnLockResult yarnLockResult, boolean productionOnly) throws MissingExternalIdException {
+    public DependencyGraph transform(YarnLockResult yarnLockResult, boolean productionOnly, MissingYarnDependencyHandler missingYarnDependencyHandler) throws MissingExternalIdException {
         LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
         addRootNodesToGraph(graphBuilder, yarnLockResult.getPackageJson(), productionOnly);
@@ -66,15 +66,16 @@ public class YarnTransformer {
             }
         }
 
-        return graphBuilder.build((dependencyId, lazyDependencyInfo) -> handleMissingExternalIds(dependencyId, lazyDependencyInfo, yarnLockResult.getYarnLockFilePath()));
+        return graphBuilder.build((dependencyId, lazyDependencyInfo) -> missingYarnDependencyHandler.handleMissingYarnDependency(logger, externalIdFactory, dependencyId, lazyDependencyInfo, yarnLockResult.getYarnLockFilePath()));
     }
 
-    private ExternalId handleMissingExternalIds(DependencyId dependencyId, LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo, String yarnLockFilePath) {
+    public static ExternalId handleMissingExternalIds(Logger missingDependencyLogger, ExternalIdFactory externalIdFactory, DependencyId dependencyId, LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo,
+        String yarnLockFilePath) {
         DependencyId dependencyIdToLog = Optional.ofNullable(lazyDependencyInfo)
                                              .map(LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo::getAliasId)
                                              .orElse(dependencyId);
 
-        logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from %s.", dependencyIdToLog, yarnLockFilePath));
+        missingDependencyLogger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from %s.", dependencyIdToLog, yarnLockFilePath));
         return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, dependencyId.toString());
     }
 

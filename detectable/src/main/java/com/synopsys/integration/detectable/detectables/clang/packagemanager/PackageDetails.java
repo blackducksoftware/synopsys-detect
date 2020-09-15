@@ -32,7 +32,7 @@ public class PackageDetails extends Stringable {
     public PackageDetails(String packageName) {
         this.packageName = packageName;
     }
-
+    
     public PackageDetails(String packageName, String packageVersion, String packageArch) {
         this.packageName = packageName;
         this.packageVersion = packageVersion;

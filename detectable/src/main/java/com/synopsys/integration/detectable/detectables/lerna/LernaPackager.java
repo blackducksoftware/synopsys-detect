@@ -62,7 +62,9 @@ public class LernaPackager {
     }
 
     public LernaResult generateLernaResult(File sourceDirectory, List<LernaPackage> lernaPackages) {
-        LernaResult rootLernaResult = extractWithRootLockfile(sourceDirectory, sourceDirectory);
+        LernaMissingDependencyHandler lernaMissingDependencyHandler = new LernaMissingDependencyHandler(lernaPackages);
+
+        LernaResult rootLernaResult = extractWithRootLockfile(sourceDirectory, sourceDirectory, lernaMissingDependencyHandler);
         if (rootLernaResult.isFailure()) {
             return rootLernaResult;
         }
@@ -79,7 +81,7 @@ public class LernaPackager {
             logger.debug(String.format("Now extracting Lerna package %s.", lernaPackageDetails));
             File lernaPackageDirectory = new File(lernaPackage.getLocation());
 
-            LernaResult lernaResult = extractLernaPackage(sourceDirectory, lernaPackageDirectory);
+            LernaResult lernaResult = extractLernaPackage(sourceDirectory, lernaPackageDirectory, lernaMissingDependencyHandler);
             if (lernaResult.isSuccess()) {
                 logger.debug(String.format("Extraction completed successfully on %s.", lernaPackageDetails));
                 lernaResult.getCodeLocations().stream()
@@ -95,42 +97,42 @@ public class LernaPackager {
         return LernaResult.success(rootLernaResult.getProjectName(), rootLernaResult.getProjectVersionName(), codeLocations);
     }
 
-    private LernaResult extractLernaPackage(File sourceDirectory, File lernaPackageDirectory) {
-        LernaResult lernaResult = extractWithLocalLockfile(lernaPackageDirectory);
+    private LernaResult extractLernaPackage(File sourceDirectory, File lernaPackageDirectory, LernaMissingDependencyHandler lernaMissingDependencyHandler) {
+        LernaResult lernaResult = extractWithLocalLockfile(lernaPackageDirectory, lernaMissingDependencyHandler);
         if (lernaResult.getException().isPresent()) {
-            lernaResult = extractWithRootLockfile(lernaPackageDirectory, sourceDirectory);
+            lernaResult = extractWithRootLockfile(lernaPackageDirectory, sourceDirectory, lernaMissingDependencyHandler);
         }
 
         return lernaResult;
     }
 
-    private LernaResult extractWithRootLockfile(File lernaPackageDirectory, File sourceDirectory) {
+    private LernaResult extractWithRootLockfile(File lernaPackageDirectory, File sourceDirectory, LernaMissingDependencyHandler lernaMissingDependencyHandler) {
         File packageJsonFile = fileFinder.findFile(lernaPackageDirectory, LernaDetectable.PACKAGE_JSON);
         if (packageJsonFile == null) {
             return LernaResult.failure(new FileNotFoundException(String.format("A %s file was not found in %s.", LernaDetectable.PACKAGE_JSON, lernaPackageDirectory.getAbsolutePath())));
         }
-        return extractWithAnyLockfile(sourceDirectory, packageJsonFile);
+        return extractWithAnyLockfile(sourceDirectory, packageJsonFile, lernaMissingDependencyHandler);
     }
 
-    private LernaResult extractWithLocalLockfile(File lernaPackageDirectory) {
+    private LernaResult extractWithLocalLockfile(File lernaPackageDirectory, LernaMissingDependencyHandler lernaMissingDependencyHandler) {
         File packageJsonFile = fileFinder.findFile(lernaPackageDirectory, LernaDetectable.PACKAGE_JSON);
         if (packageJsonFile == null) {
             return LernaResult.failure(new FileNotFoundException(String.format("A %s file was not found in %s.", LernaDetectable.PACKAGE_JSON, lernaPackageDirectory.getAbsolutePath())));
         }
-        return extractWithAnyLockfile(lernaPackageDirectory, packageJsonFile);
+        return extractWithAnyLockfile(lernaPackageDirectory, packageJsonFile, lernaMissingDependencyHandler);
     }
 
-    private LernaResult extractWithAnyLockfile(File searchDirectory, File packageJsonFile) {
+    private LernaResult extractWithAnyLockfile(File searchDirectory, File packageJsonFile, LernaMissingDependencyHandler lernaMissingDependencyHandler) {
         File packageLockJsonFile = fileFinder.findFile(searchDirectory, LernaDetectable.PACKAGE_LOCK_JSON);
         File shrinkwrapJsonFile = fileFinder.findFile(searchDirectory, LernaDetectable.SHRINKWRAP_JSON);
         File yarnLockFile = fileFinder.findFile(searchDirectory, LernaDetectable.YARN_LOCK);
 
         if (packageLockJsonFile != null) {
-            return extractFromNpmLockfile(packageJsonFile, packageLockJsonFile);
+            return extractFromNpmLockfile(packageJsonFile, packageLockJsonFile, lernaMissingDependencyHandler);
         } else if (shrinkwrapJsonFile != null) {
-            return extractFromNpmLockfile(packageJsonFile, shrinkwrapJsonFile);
+            return extractFromNpmLockfile(packageJsonFile, shrinkwrapJsonFile, lernaMissingDependencyHandler);
         } else if (yarnLockFile != null) {
-            return extractFromYarnLock(packageJsonFile, yarnLockFile);
+            return extractFromYarnLock(packageJsonFile, yarnLockFile, lernaMissingDependencyHandler);
         } else {
             return LernaResult.failure(
                 new FileNotFoundException(
@@ -145,12 +147,12 @@ public class LernaPackager {
         }
     }
 
-    private LernaResult extractFromNpmLockfile(File packageJsonFile, File npmLockfile) {
+    private LernaResult extractFromNpmLockfile(File packageJsonFile, File npmLockfile, LernaMissingDependencyHandler lernaMissingDependencyHandler) {
         try {
             String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
             String lockfileText = FileUtils.readFileToString(npmLockfile, StandardCharsets.UTF_8);
 
-            NpmParseResult npmParseResult = npmLockfileParser.parse(packageJsonText, lockfileText, npmLockfileOptions.shouldIncludeDeveloperDependencies());
+            NpmParseResult npmParseResult = npmLockfileParser.parse(packageJsonText, lockfileText, npmLockfileOptions.shouldIncludeDeveloperDependencies(), lernaMissingDependencyHandler::handleMissingNpmDependency);
 
             return LernaResult.success(npmParseResult.getProjectName(), npmParseResult.getProjectVersion(), Collections.singletonList(npmParseResult.getCodeLocation()));
         } catch (IOException exception) {
@@ -158,12 +160,12 @@ public class LernaPackager {
         }
     }
 
-    private LernaResult extractFromYarnLock(File packageJsonFile, File yarnLockFile) {
+    private LernaResult extractFromYarnLock(File packageJsonFile, File yarnLockFile, LernaMissingDependencyHandler lernaMissingDependencyHandler) {
         try {
             String packageJsonText = FileUtils.readFileToString(packageJsonFile, StandardCharsets.UTF_8);
             List<String> yarnLockLines = FileUtils.readLines(yarnLockFile, StandardCharsets.UTF_8);
 
-            YarnResult yarnResult = yarnPackager.generateYarnResult(packageJsonText, yarnLockLines, yarnLockFile.getAbsolutePath());
+            YarnResult yarnResult = yarnPackager.generateYarnResult(packageJsonText, yarnLockLines, yarnLockFile.getAbsolutePath(), lernaMissingDependencyHandler::handleMissingYarnDependency);
 
             if (yarnResult.getException().isPresent()) {
                 throw yarnResult.getException().get();

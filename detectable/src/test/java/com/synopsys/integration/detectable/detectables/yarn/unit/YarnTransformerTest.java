@@ -41,7 +41,7 @@ public class YarnTransformerTest {
         YarnLockResult yarnLockResult = new YarnLockResult(packageJson, "yarn.lock", yarnLock);
 
         // This should not throw an exception.
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false);
+        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, YarnTransformer::handleMissingExternalIds);
 
         // Sanity check.
         Assertions.assertNotNull(dependencyGraph, "The dependency graph should not be null.");
