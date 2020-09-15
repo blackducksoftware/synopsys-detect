@@ -209,6 +209,7 @@ import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
 import com.synopsys.integration.detectable.detectables.yarn.YarnPackager;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
+import com.synopsys.integration.detectable.util.MissingDependencyLogger;
 
 /*
  Entry point for creating detectables using most
@@ -219,12 +220,14 @@ public class DetectableFactory {
     private final ExecutableRunner executableRunner;
     private final ExternalIdFactory externalIdFactory;
     private final Gson gson;
+    private final MissingDependencyLogger missingDependencyLogger;
 
-    public DetectableFactory(FileFinder fileFinder, ExecutableRunner executableRunner, ExternalIdFactory externalIdFactory, Gson gson) {
+    public DetectableFactory(FileFinder fileFinder, ExecutableRunner executableRunner, ExternalIdFactory externalIdFactory, Gson gson, MissingDependencyLogger missingDependencyLogger) {
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
         this.gson = gson;
+        this.missingDependencyLogger = missingDependencyLogger;
     }
 
     //#region Detectables
@@ -562,7 +565,7 @@ public class DetectableFactory {
     }
 
     private NpmLockfileExtractor npmLockfileExtractor() {
-        return new NpmLockfileExtractor(npmLockfilePackager());
+        return new NpmLockfileExtractor(npmLockfilePackager(), missingDependencyLogger);
     }
 
     private NugetInspectorParser nugetInspectorParser() {
@@ -650,7 +653,7 @@ public class DetectableFactory {
     }
 
     private YarnLockExtractor yarnLockExtractor(YarnLockOptions yarnLockOptions) {
-        return new YarnLockExtractor(yarnPackager(yarnLockOptions));
+        return new YarnLockExtractor(yarnPackager(yarnLockOptions), missingDependencyLogger);
     }
 
     private BitbakeRecipesParser bitbakeRecipesParser() {

@@ -84,6 +84,7 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspe
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorResolver;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.inspector.GradleInspectorScriptCreator;
 import com.synopsys.integration.detectable.factory.DetectableFactory;
+import com.synopsys.integration.detectable.util.MissingDependencyLogger;
 
 import freemarker.template.Configuration;
 
@@ -242,7 +243,7 @@ public class RunBeanConfiguration {
 
     @Bean()
     public DetectableFactory detectableFactory() {
-        return new DetectableFactory(filteredFileFinder(), executableRunner(), externalIdFactory(), gson);
+        return new DetectableFactory(filteredFileFinder(), executableRunner(), externalIdFactory(), gson, new MissingDependencyLogger());
     }
 
     @Bean()

@@ -33,6 +33,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
+import com.synopsys.integration.detectable.util.MissingDependencyLogger;
 
 public class YarnPackager {
     private final Gson gson;
@@ -47,13 +48,13 @@ public class YarnPackager {
         this.yarnLockOptions = yarnLockOptions;
     }
 
-    public YarnResult generateYarnResult(String packageJsonText, List<String> yarnLockLines, String yarnLockFilePath) {
+    public YarnResult generateYarnResult(String packageJsonText, List<String> yarnLockLines, String yarnLockFilePath, MissingDependencyLogger missingDependencyLogger) {
         PackageJson packageJson = gson.fromJson(packageJsonText, PackageJson.class);
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
         YarnLockResult yarnLockResult = new YarnLockResult(packageJson, yarnLockFilePath, yarnLock);
 
         try {
-            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, yarnLockOptions.useProductionOnly());
+            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, yarnLockOptions.useProductionOnly(), missingDependencyLogger);
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
             return YarnResult.success(packageJson.name, packageJson.version, codeLocation);

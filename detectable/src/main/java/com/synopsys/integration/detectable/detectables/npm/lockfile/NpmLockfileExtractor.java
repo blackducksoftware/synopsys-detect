@@ -31,12 +31,15 @@ import org.apache.commons.io.FileUtils;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.parse.NpmLockfilePackager;
+import com.synopsys.integration.detectable.util.MissingDependencyLogger;
 
 public class NpmLockfileExtractor {
     private final NpmLockfilePackager npmLockfileParser;
+    private final MissingDependencyLogger missingDependencyLogger;
 
-    public NpmLockfileExtractor(NpmLockfilePackager npmLockfileParser) {
+    public NpmLockfileExtractor(NpmLockfilePackager npmLockfileParser, MissingDependencyLogger missingDependencyLogger) {
         this.npmLockfileParser = npmLockfileParser;
+        this.missingDependencyLogger = missingDependencyLogger;
     }
 
     /*
@@ -50,7 +53,7 @@ public class NpmLockfileExtractor {
                 packageText = FileUtils.readFileToString(packageJson, StandardCharsets.UTF_8);
             }
 
-            NpmParseResult result = npmLockfileParser.parse(packageText, lockText, includeDevDependencies);
+            NpmParseResult result = npmLockfileParser.parse(packageText, lockText, includeDevDependencies, missingDependencyLogger);
 
             return new Extraction.Builder()
                        .success(result.getCodeLocation())

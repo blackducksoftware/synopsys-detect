@@ -43,6 +43,7 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmPro
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.util.MissingDependencyLogger;
 
 public class NpmLockfilePackager {
     private final Logger logger = LoggerFactory.getLogger(NpmLockfilePackager.class);
@@ -54,7 +55,7 @@ public class NpmLockfilePackager {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public NpmParseResult parse(@Nullable String packageJsonText, String lockFileText, boolean includeDevDependencies) {
+    public NpmParseResult parse(@Nullable String packageJsonText, String lockFileText, boolean includeDevDependencies, MissingDependencyLogger missingDependencyLogger) {
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
         Optional<PackageJson> packageJson = Optional.ofNullable(packageJsonText)
@@ -77,9 +78,9 @@ public class NpmLockfilePackager {
             //Then we will add relationships between the project (root) and the graph
             boolean atLeastOneRequired = !project.getDeclaredDependencies().isEmpty() || !project.getDeclaredDevDependencies().isEmpty();
             if (atLeastOneRequired) {
-                addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDependencies(), dependencyGraph);
+                addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDependencies(), dependencyGraph, missingDependencyLogger);
                 if (includeDevDependencies) {
-                    addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDevDependencies(), dependencyGraph);
+                    addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDevDependencies(), dependencyGraph, missingDependencyLogger);
                 }
             } else {
                 project.getResolvedDependencies()
@@ -98,13 +99,13 @@ public class NpmLockfilePackager {
         return new NpmParseResult(packageLock.name, packageLock.version, codeLocation);
     }
 
-    private void addRootDependencies(List<NpmDependency> resolvedDependencies, List<NpmRequires> requires, MutableDependencyGraph dependencyGraph) {
+    private void addRootDependencies(List<NpmDependency> resolvedDependencies, List<NpmRequires> requires, MutableDependencyGraph dependencyGraph, MissingDependencyLogger missingDependencyLogger) {
         for (NpmRequires dependency : requires) {
             NpmDependency resolved = firstDependencyWithName(resolvedDependencies, dependency.getName());
             if (resolved != null) {
                 dependencyGraph.addChildToRoot(resolved.getGraphDependency());
             } else {
-                logger.error(String.format("No dependency found for package: %s", dependency.getName()));
+                missingDependencyLogger.logError(dependency.getName(), logger, String.format("No dependency found for package: %s", dependency.getName()));
             }
         }
     }

@@ -43,6 +43,7 @@ import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractor;
 import com.synopsys.integration.detectable.detectables.npm.cli.NpmCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
 import com.synopsys.integration.detectable.factory.DetectableFactory;
+import com.synopsys.integration.detectable.util.MissingDependencyLogger;
 
 //This sample application will an example detectable tool and execute it against the current folder.
 public class SingleDetectableApplication {
@@ -59,7 +60,8 @@ public class SingleDetectableApplication {
         final ExecutableRunner executableRunner = new SimpleExecutableRunner();
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        final DetectableFactory detectableFactory = new DetectableFactory(simpleFileFinder, executableRunner, externalIdFactory, gson);
+        final MissingDependencyLogger missingDependencyLogger = new MissingDependencyLogger();
+        final DetectableFactory detectableFactory = new DetectableFactory(simpleFileFinder, executableRunner, externalIdFactory, gson, missingDependencyLogger);
 
         //Data
         final File sourceDirectory = new File("");
