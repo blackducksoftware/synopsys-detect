@@ -38,9 +38,9 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Pack
 public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final DpkgVersionResolver versionResolver;
+    private final DpkgPkgDetailsResolver versionResolver;
 
-    public DpkgPackageManagerResolver(DpkgVersionResolver versionResolver) {
+    public DpkgPackageManagerResolver(DpkgPkgDetailsResolver versionResolver) {
         this.versionResolver = versionResolver;
     }
 
@@ -56,12 +56,15 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
             }
             String[] queryPackageOutputParts = packageLine.split("\\s+");
             String[] packageNameArchParts = queryPackageOutputParts[0].split(":");
-            String packageName = packageNameArchParts[0];
-            String packageArch = packageNameArchParts[1];
-            logger.debug(String.format("package name: %s; arch: %s", packageName, packageArch));
-            Optional<String> packageVersion = versionResolver.resolvePackageVersion(currentPackageManager, executableRunner, workingDirectory, packageName);
-            PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion.orElse(null), packageArch);
-            packageDetailsList.add(dependencyDetails);
+            PackageDetails pkg = new PackageDetails(packageNameArchParts[0]);
+            if (packageNameArchParts.length > 1) {
+                pkg.setPackageArch(packageNameArchParts[1]);
+            }
+            logger.debug(String.format("package name: %s; architecture: %s", pkg.getPackageName(), pkg.getPackageArch()));
+            Optional<PackageDetails> pkgComplete = versionResolver.resolvePackageVersion(currentPackageManager, executableRunner, workingDirectory, pkg);
+            if (pkgComplete.isPresent()) {
+                packageDetailsList.add(pkgComplete.get());
+            }
         }
         return packageDetailsList;
     }
@@ -70,6 +73,14 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
         if (packageLine.contains("no path found matching pattern")) {
             throw new NotOwnedByAnyPkgException(packageLine);
         }
-        return packageLine.matches(".+:.+: .+");
+        // arch included
+        if (packageLine.matches(".+:.+: .+")) {
+            return true;
+        }
+        // arch not included
+        if (packageLine.matches(".+: .+")) {
+            return true;
+        }
+        return false;
     }
 }

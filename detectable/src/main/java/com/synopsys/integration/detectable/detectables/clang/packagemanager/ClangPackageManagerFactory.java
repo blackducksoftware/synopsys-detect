@@ -29,13 +29,13 @@ import com.google.gson.Gson;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.ApkArchitectureResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.ApkPackageManagerResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPackageManagerResolver;
-import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgVersionResolver;
+import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPkgDetailsResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.RpmPackageManagerResolver;
 
 public class ClangPackageManagerFactory {
     private final ClangPackageManagerInfoFactory packageManagerInfoFactory;
 
-    public ClangPackageManagerFactory(final ClangPackageManagerInfoFactory packageManagerInfoFactory) {
+    public ClangPackageManagerFactory(ClangPackageManagerInfoFactory packageManagerInfoFactory) {
         this.packageManagerInfoFactory = packageManagerInfoFactory;
     }
 
@@ -44,10 +44,10 @@ public class ClangPackageManagerFactory {
     }
 
     public List<ClangPackageManager> createPackageManagers() {
-        final List<ClangPackageManager> packageManagers = new ArrayList<>();
+        List<ClangPackageManager> packageManagers = new ArrayList<>();
 
         packageManagers.add(new ClangPackageManager(packageManagerInfoFactory.apk(), new ApkPackageManagerResolver(new ApkArchitectureResolver())));
-        packageManagers.add(new ClangPackageManager(packageManagerInfoFactory.dpkg(), new DpkgPackageManagerResolver(new DpkgVersionResolver())));
+        packageManagers.add(new ClangPackageManager(packageManagerInfoFactory.dpkg(), new DpkgPackageManagerResolver(new DpkgPkgDetailsResolver())));
         packageManagers.add(new ClangPackageManager(packageManagerInfoFactory.rpm(), new RpmPackageManagerResolver(new Gson())));
 
         return packageManagers;

@@ -23,7 +23,7 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.reso
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.ApkPackageManagerResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.ClangPackageManagerResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPackageManagerResolver;
-import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgVersionResolver;
+import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPkgDetailsResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.RpmPackageManagerResolver;
 
 public class ClangPackageManagerRunnerTest {
@@ -33,43 +33,45 @@ public class ClangPackageManagerRunnerTest {
     public void testDpkgPkg() throws ExecutableRunnerException {
         ClangPackageManagerInfoFactory factory = ClangPackageManagerInfoFactory.standardFactory();
         ClangPackageManagerInfo packageManagerInfo = factory.dpkg();
-        DpkgVersionResolver versionResolver = new DpkgVersionResolver();
+        DpkgPkgDetailsResolver versionResolver = new DpkgPkgDetailsResolver();
         ClangPackageManagerResolver packageResolver = new DpkgPackageManagerResolver(versionResolver);
+        String pkgOwnerPattern = "libxt-dev:amd64: %s\n";
         String pkgDetailsPattern = "Package: %s\n"
                                        + "Architecture: amd64\n"
                                        + "Version: 1:1.1.5-1\n";
-        testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", "1:1.1.5-1", "libxt-dev:amd64: %s ", pkgDetailsPattern);
+        testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
     }
 
     @Test
     public void testDpkgPkgBuriedArchitecture() throws ExecutableRunnerException {
         ClangPackageManagerInfoFactory factory = ClangPackageManagerInfoFactory.standardFactory();
         ClangPackageManagerInfo packageManagerInfo = factory.dpkg();
-        DpkgVersionResolver versionResolver = new DpkgVersionResolver();
+        DpkgPkgDetailsResolver versionResolver = new DpkgPkgDetailsResolver();
         ClangPackageManagerResolver packageResolver = new DpkgPackageManagerResolver(versionResolver);
+        String pkgOwnerPattern = "libxt-dev: %s\n";
         String pkgDetailsPattern = "Package: %s\n"
                                        + "Architecture: amd64\n"
                                        + "Version: 1:1.1.5-1\n";
-        testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", "1:1.1.5-1", "libxt-dev: %s ", pkgDetailsPattern);
+        testSuccessCase(packageManagerInfo, packageResolver, "libxt-dev", "amd64", "1:1.1.5-1", pkgOwnerPattern, pkgDetailsPattern);
     }
 
     @Test
     public void testRpmNonPkgOwnedIncludeFile() throws ExecutableRunnerException {
-
         ClangPackageManagerInfoFactory factory = ClangPackageManagerInfoFactory.standardFactory();
         ClangPackageManagerInfo packageManagerInfo = factory.rpm();
         ClangPackageManagerResolver packageResolver = new RpmPackageManagerResolver(new Gson());
-        testNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, "%s is not owned by any package", null);
+        String pkgOwnerPattern = "%s is not owned by any package";
+        testNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, pkgOwnerPattern, null);
     }
 
     @Test
     public void testDpkgNonPkgOwnedIncludeFile() throws ExecutableRunnerException {
         ClangPackageManagerInfoFactory factory = ClangPackageManagerInfoFactory.standardFactory();
         ClangPackageManagerInfo packageManagerInfo = factory.dpkg();
-        DpkgVersionResolver versionResolver = new DpkgVersionResolver();
+        DpkgPkgDetailsResolver versionResolver = new DpkgPkgDetailsResolver();
         ClangPackageManagerResolver packageResolver = new DpkgPackageManagerResolver(versionResolver);
-
-        testNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, "dpkg-query: no path found matching pattern %s", null);
+        String pkgOwnerPattern = "dpkg-query: no path found matching pattern %s";
+        testNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, pkgOwnerPattern, null);
     }
 
     @Test
@@ -78,8 +80,8 @@ public class ClangPackageManagerRunnerTest {
         ClangPackageManagerInfo packageManagerInfo = factory.apk();
         ApkArchitectureResolver archResolver = new ApkArchitectureResolver();
         ClangPackageManagerResolver packageResolver = new ApkPackageManagerResolver(archResolver);
-
-        testNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, "ERROR: %s: Could not find owner package", null);
+        String pkgOwnerPattern = "ERROR: %s: Could not find owner package";
+        testNonPkgOwnedIncludeFile(packageManagerInfo, packageResolver, pkgOwnerPattern, null);
     }
 
     private void testNonPkgOwnedIncludeFile(ClangPackageManagerInfo packageManagerInfo, ClangPackageManagerResolver packageResolver,
