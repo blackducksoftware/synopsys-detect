@@ -1,15 +1,11 @@
 # Release notes
 
 ## Version 6.6.0
-### New features
-* TBD
-
 ### Changed features
-* Upon connecting to Black Duck, the users roles and groups, which are only used in DEBUG-level logging, are no longer fetched unless logging level is DEBUG or higher.
-* The error message produced for a binary upload error has been improved.
 * The Docker Inspector now works on Windows 10 Enterprise.
+* Upon connecting to Black Duck, the users roles and groups, which are only used in DEBUG-level logging, are no longer fetched unless logging level is DEBUG or higher.
+* The error messages produced for binary scan file upload failures have been improved.
 * The "detectors" field in the status.json file now features status data with more-expressive error codes derived from the runtime class of a detectable result.
-* Improved error messages when Binary Scan fails.
 * Detect will follow 302 redirects when communicating with Black Duck.
 
 ### Resolved issues
@@ -19,7 +15,6 @@
 * (IDETECT-2138, IDETECT-2161, IDETECT-2172) Resolved issue where Gradle parse detector would fail due to an inability to resolve classes, referenced in the project's build scripts, that were outside of Detect's classpath.
 * (IDETECT-2110) Nuget inspectors will correctly return -1 when an error occurs by default.
 * (IDETECT-2202) Impact analysis code locations will now appear in the status.json file.
-
 
 ### Known issues
 * When running the Docker Inspector on Windows, ${solution_name} may fail to clean up all of its working directories (and log the message "Error trying cleanup") due to the following Docker issue: https://github.com/docker/for-win/issues/394.
