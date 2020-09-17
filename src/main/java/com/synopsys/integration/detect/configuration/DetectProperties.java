@@ -68,7 +68,6 @@ import com.synopsys.integration.log.LogLevel;
 
 // java:S1192: Sonar wants constants defined for fromVersion when setting property info.
 // java:S1123: Warning about deprecations not having Java doc.
-@SuppressWarnings({ "java:S1192", "java:S1123" })
 public class DetectProperties {
 
     private DetectProperties() { }
@@ -226,7 +225,8 @@ public class DetectProperties {
     public static final DetectProperty<StringListProperty> DETECT_BINARY_SCAN_FILE_NAME_PATTERNS =
         new DetectProperty<>(new StringListProperty("detect.binary.scan.file.name.patterns", emptyList()))
             .setInfo("Binary Scan Filename Patterns", "6.0.0")
-            .setHelp("If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp(
+                "If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH);
 
     public static final DetectProperty<StringProperty> DETECT_BITBAKE_BUILD_ENV_NAME =
@@ -276,7 +276,8 @@ public class DetectProperties {
         new DetectProperty<>(
             new StringListProperty("detect.blackduck.signature.scanner.exclusion.name.patterns", singletonList("node_modules")))
             .setInfo("Directory Name Exclusion Patterns", "4.2.0")
-            .setHelp("A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.", "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details. Detect will recursively search within the scan targets for files/directories that match these patterns and will create the corresponding exclusion patterns (paths relative to the scan target directory) for the signature scanner (Black Duck scan CLI). Please note that the signature scanner will only exclude directories; matched filenames will be passed to the signature scanner but will have no effect. These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns and passed as --exclude values. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.name.patterns=blackduck-common, --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-common', --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-*'. Use this property when you want Detect to convert the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns to pass patterns directly to the signature scanner as-is.")
+            .setHelp("A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.",
+                "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details. Detect will recursively search within the scan targets for files/directories that match these patterns and will create the corresponding exclusion patterns (paths relative to the scan target directory) for the signature scanner (Black Duck scan CLI). Please note that the signature scanner will only exclude directories; matched filenames will be passed to the signature scanner but will have no effect. These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns and passed as --exclude values. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.name.patterns=blackduck-common, --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-common', --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-*'. Use this property when you want Detect to convert the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns to pass patterns directly to the signature scanner as-is.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<IntegerProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH =
@@ -476,7 +477,8 @@ public class DetectProperties {
     public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS =
         new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.patterns", emptyList()))
             .setInfo("Detector Directory Patterns Exclusions", "3.2.0")
-            .setHelp("A comma-separated list of directory name patterns to exclude from detector search.", "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). For example, suppose you're running in bash on Linux, you've set --detect.detector.search.depth=1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it:--detect.detector.search.exclusion.patterns=blackduck-common,--detect.detector.search.exclusion.patterns='blackduck-common',--detect.detector.search.exclusion.patterns='blackduck-*'")
+            .setHelp("A comma-separated list of directory name patterns to exclude from detector search.",
+                "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). For example, suppose you're running in bash on Linux, you've set --detect.detector.search.depth=1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it:--detect.detector.search.exclusion.patterns=blackduck-common,--detect.detector.search.exclusion.patterns='blackduck-common',--detect.detector.search.exclusion.patterns='blackduck-*'")
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
@@ -544,7 +546,7 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.docker.image"))
             .setInfo("Docker Image Name", "3.0.0")
             .setHelp(
-                "The Docker image name to inspect. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.")
+                "The Docker image name to inspect. For Detect to run Docker Inspector, either this property, detect.docker.tar, or detect.docker.image.id must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH);
 
     public static final DetectProperty<NullableStringProperty> DETECT_DOCKER_IMAGE_ID =
@@ -652,28 +654,32 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_EXCLUDED_CONFIGURATIONS =
         new DetectProperty<>(new NullableStringProperty("detect.gradle.excluded.configurations"))
             .setInfo("Gradle Exclude Configurations", "3.0.0")
-            .setHelp("A comma-separated list of Gradle configurations to exclude.", "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp("A comma-separated list of Gradle configurations to exclude.",
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_EXCLUDED_PROJECTS =
         new DetectProperty<>(new NullableStringProperty("detect.gradle.excluded.projects"))
             .setInfo("Gradle Exclude Projects", "3.0.0")
-            .setHelp("A comma-separated list of Gradle sub-projects to exclude.", "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp("A comma-separated list of Gradle sub-projects to exclude.",
+                "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_INCLUDED_CONFIGURATIONS =
         new DetectProperty<>(new NullableStringProperty("detect.gradle.included.configurations"))
             .setInfo("Gradle Include Configurations", "3.0.0")
-            .setHelp("A comma-separated list of Gradle configurations to include.", "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp("A comma-separated list of Gradle configurations to include.",
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_INCLUDED_PROJECTS =
         new DetectProperty<>(new NullableStringProperty("detect.gradle.included.projects"))
             .setInfo("Gradle Include Projects", "3.0.0")
-            .setHelp("A comma-separated list of Gradle sub-projects to include.", "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp("A comma-separated list of Gradle sub-projects to include.",
+                "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
@@ -711,12 +717,14 @@ public class DetectProperties {
 
     public static final DetectProperty<BooleanProperty> DETECT_IMPACT_ANALYSIS_ENABLED = new DetectProperty<>(new BooleanProperty("detect.impact.analysis.enabled", false))
                                                                                              .setInfo("Vulnerability Impact Analysis Enabled", "6.5.0")
-        .setHelp("If set to true, Detect will attempt to look for *.class files and generate a Vulnerability Impact Analysis Report for upload to Black Duck.")
+                                                                                             .setHelp(
+                                                                                                 "If set to true, Detect will attempt to look for *.class files and generate a Vulnerability Impact Analysis Report for upload to Black Duck.")
                                                                                              .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
 
     public static final DetectProperty<NullablePathProperty> DETECT_IMPACT_ANALYSIS_OUTPUT_PATH = new DetectProperty<>(new NullablePathProperty("detect.impact.analysis.output.path"))
                                                                                                       .setInfo("Impact Analysis Output Directory", "6.5.0")
-        .setHelp("The path to the output directory for Impact Analysis reports.", "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.")
+                                                                                                      .setHelp("The path to the output directory for Impact Analysis reports.",
+                                                                                                          "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.")
                                                                                                       .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
 
     public static final DetectProperty<FilterableEnumListProperty<DetectorType>> DETECT_INCLUDED_DETECTOR_TYPES =
@@ -750,20 +758,23 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> DETECT_MAVEN_BUILD_COMMAND =
         new DetectProperty<>(new NullableStringProperty("detect.maven.build.command"))
             .setInfo("Maven Build Command", "3.0.0")
-            .setHelp("Maven command line arguments to add to the mvn/mvnw command line.", "By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'")
+            .setHelp("Maven command line arguments to add to the mvn/mvnw command line.",
+                "By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'")
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullableStringProperty> DETECT_MAVEN_EXCLUDED_MODULES =
         new DetectProperty<>(new NullableStringProperty("detect.maven.excluded.modules"))
             .setInfo("Maven Modules Excluded", "3.0.0")
-            .setHelp("A comma-separated list of Maven modules (sub-projects) to exclude.", "As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp("A comma-separated list of Maven modules (sub-projects) to exclude.",
+                "As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<NullableStringProperty> DETECT_MAVEN_INCLUDED_MODULES =
         new DetectProperty<>(new NullableStringProperty("detect.maven.included.modules"))
             .setInfo("Maven Modules Included", "3.0.0")
-            .setHelp("A comma-separated list of Maven modules (sub-projects) to include.", "As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp("A comma-separated list of Maven modules (sub-projects) to include.",
+                "As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
@@ -776,13 +787,15 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> DETECT_MAVEN_INCLUDED_SCOPES =
         new DetectProperty<>(new NullableStringProperty("detect.maven.included.scopes"))
             .setInfo("Dependency Scope Included", "6.0.0")
-            .setHelp("A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).", "If set, Detect will include only dependencies of the given Maven scope. This property accepts filename globbing-style wildcards. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp("A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).",
+                "If set, Detect will include only dependencies of the given Maven scope. This property accepts filename globbing-style wildcards. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullableStringProperty> DETECT_MAVEN_EXCLUDED_SCOPES =
         new DetectProperty<>(new NullableStringProperty("detect.maven.excluded.scopes"))
             .setInfo("Dependency Scope Excluded", "6.0.0")
-            .setHelp("A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).", "If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+            .setHelp("A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).",
+                "If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<BooleanProperty> DETECT_MAVEN_INCLUDE_PLUGINS =
@@ -961,14 +974,16 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> DETECT_CUSTOM_FIELDS_PROJECT =
         new DetectProperty<>(new NullableStringProperty("detect.custom.fields.project"))
             .setInfo("Custom Fields", "5.6.0")
-            .setHelp("A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example, to set a custom field with label 'example' to 'one,two': detect.custom.fields.project[0].label='example' and detect.custom.fields.project[0].value='one,two'. To set another field, use index 1. Note that these will not show up in the detect configuration log.")
+            .setHelp(
+                "A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example, to set a custom field with label 'example' to 'one,two': detect.custom.fields.project[0].label='example' and detect.custom.fields.project[0].value='one,two'. To set another field, use index 1. Note that these will not show up in the detect configuration log.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<NullableStringProperty> DETECT_CUSTOM_FIELDS_VERSION =
         new DetectProperty<>(new NullableStringProperty("detect.custom.fields.version"))
             .setInfo("Custom Fields", "5.6.0")
-            .setHelp("A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example , to set a custom field with label 'example' to 'one,two': detect.custom.fields.version[0].label='example' and detect.custom.fields.version[0].value='one,two'. To set another field, use index 1. Note that these will not show up in the detect configuration log.")
+            .setHelp(
+                "A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example , to set a custom field with label 'example' to 'one,two': detect.custom.fields.version[0].label='example' and detect.custom.fields.version[0].value='one,two'. To set another field, use index 1. Note that these will not show up in the detect configuration log.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
@@ -1048,14 +1063,16 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> DETECT_PARENT_PROJECT_NAME =
         new DetectProperty<>(new NullableStringProperty("detect.parent.project.name"))
             .setInfo("Parent Project Name", "3.0.0")
-            .setHelp("When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version. The specified parent project and parent project version must exist on Black Duck.")
+            .setHelp(
+                "When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version. The specified parent project and parent project version must exist on Black Duck.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<NullableStringProperty> DETECT_PARENT_PROJECT_VERSION_NAME =
         new DetectProperty<>(new NullableStringProperty("detect.parent.project.version.name"))
             .setInfo("Parent Project Version Name", "3.0.0")
-            .setHelp("When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version. The specified parent project and parent project version must exist on Black Duck.")
+            .setHelp(
+                "When a parent project and version name are specified, the created detect project will be added as a component to the specified parent project version. The specified parent project and parent project version must exist on Black Duck.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
