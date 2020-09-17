@@ -5,6 +5,7 @@
 if [ "$#" -ne 2 ]; then
     echo "Usage: $0 <old Detect version git tag> <new Detect version git tag>"
     echo "For example: $0 6.4.0 6.5.0"
+    echo "** Be sure the new tag has been pushed to github"
     exit -1
 fi
 

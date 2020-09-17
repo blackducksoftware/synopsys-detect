@@ -67,5 +67,11 @@ which ${solution_name} will scan using the ${blackduck_signature_scanner_name}.
 
 ### Inspecting Docker images on Windows
 
+By default, Docker Inspector pulls (using Docker) and uses Linux-based containerized image inspector services.
+On Windows, Docker must be configured for Linux containers in order for these Linux-based images to be pulled and started by Docker Inspector.
+Docker Inspector also supports more advanced deployment options that avoid this requirement by using
+image inspector services running elsewhere in the network;
+for more information, refer to the Docker Inspector documentation.
+
 For important information on a Docker for Windows bug that might affect ${solution_name}, refer to the
 [troubleshooting page](../../troubleshooting/solutions/#on-windows-error-trying-cleanup).
