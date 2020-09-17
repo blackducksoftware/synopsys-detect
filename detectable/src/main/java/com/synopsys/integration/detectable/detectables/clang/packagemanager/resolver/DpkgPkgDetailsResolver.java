@@ -63,6 +63,7 @@ public class DpkgPkgDetailsResolver {
             consumeValueFromLineIfPresent(pkg, packageStatusOutputLine, "Architecture", () -> pkg.getPackageArch(), (String a) -> pkg.setPackageArch(a));
             consumeValueFromLineIfPresent(pkg, packageStatusOutputLine, "Version", () -> pkg.getPackageVersion(), (String v) -> pkg.setPackageVersion(v));
         }
+        logger.trace(String.format("Parsed package from status output: %s", pkg));
         return Optional.of(pkg);
     }
 
