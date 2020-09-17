@@ -150,14 +150,14 @@ public class GenerateDocsTask extends DefaultTask {
 
     private String encodePropertyLocation(String propertyName) {
         if (!propertyName.equals(propertyName.trim())) {
-            throw new RuntimeException("Property name should not include trim-able white space (" + propertyName + ") should be shortened to (" + propertyName.trim() + ") ");
+            throw new RuntimeException("Property name should not include trim-able white space. Property (" + propertyName + ") should be shortened to (" + propertyName.trim() + ") ");
         }
         Map<String, String> supportedCharacters = new HashMap<String, String>();
         String literals = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         for (char literalCharacter : literals.toCharArray()) {
             supportedCharacters.put(String.valueOf(literalCharacter), String.valueOf(literalCharacter));
         }
-        supportedCharacters.put(" ", "_");
+        supportedCharacters.put(" ", "-");
         supportedCharacters.put(".", "46");
         supportedCharacters.put("(", "40");
         supportedCharacters.put(")", "41");
@@ -170,7 +170,7 @@ public class GenerateDocsTask extends DefaultTask {
                 encoded.append(supportedCharacters.get(charString));
             }
         }
-        return encoded.toString();
+        return encoded.toString().toLowerCase();
     }
 
     private void handleProperties(final TemplateProvider templateProvider, final File outputDir, final HelpJsonData helpJson) throws IntegrationException, IOException, TemplateException {
