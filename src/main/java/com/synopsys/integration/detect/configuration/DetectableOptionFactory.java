@@ -129,7 +129,12 @@ public class DetectableOptionFactory {
         String suppliedDockerImage = getNullableValue(DetectProperties.DETECT_DOCKER_IMAGE);
         String dockerImageId = getNullableValue(DetectProperties.DETECT_DOCKER_IMAGE_ID);
         String suppliedDockerTar = getNullableValue(DetectProperties.DETECT_DOCKER_TAR);
-        LogLevel dockerInspectorLoggingLevel = getValue(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION);
+        LogLevel dockerInspectorLoggingLevel;
+        if (detectConfiguration.wasKeyProvided(DetectProperties.LOGGING_LEVEL_DETECT.getProperty().getKey())) {
+            dockerInspectorLoggingLevel = getValue(DetectProperties.LOGGING_LEVEL_DETECT);
+        } else {
+            dockerInspectorLoggingLevel = getValue(DetectProperties.LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION);
+        }
         String dockerInspectorVersion = getNullableValue(DetectProperties.DETECT_DOCKER_INSPECTOR_VERSION);
         Map<String, String> additionalDockerProperties = detectConfiguration.getRaw(DetectProperties.DOCKER_PASSTHROUGH.getProperty());
         if (diagnosticSystem != null) {
@@ -279,11 +284,11 @@ public class DetectableOptionFactory {
         return allWasSpecified;
     }
 
-    private <P,T extends NullableProperty<P>> P getNullableValue(DetectProperty<T> detectProperty) {
+    private <P, T extends NullableProperty<P>> P getNullableValue(DetectProperty<T> detectProperty) {
         return detectConfiguration.getValue(detectProperty.getProperty()).orElse(null);
     }
 
-    private <P,T extends ValuedProperty<P>> P getValue(DetectProperty<T> detectProperty) {
+    private <P, T extends ValuedProperty<P>> P getValue(DetectProperty<T> detectProperty) {
         return detectConfiguration.getValue(detectProperty.getProperty());
     }
 }
