@@ -48,10 +48,10 @@ public class GradleReplacementDiscoverer {
             GradleGav resolvedGav = resolvedGavOptional.get();
             GradleGav replacedGav = replacedGavOptional.get();
 
-            ExternalId externalId = externalIdFactory.createMavenExternalId(resolvedGav.getName(), resolvedGav.getArtifact(), resolvedGav.getVersion());
+            ExternalId externalId = externalIdFactory.createMavenExternalId(resolvedGav.getGroup(), resolvedGav.getArtifact(), resolvedGav.getVersion());
             Dependency resolvedDependency = new Dependency(resolvedGav.getArtifact(), resolvedGav.getVersion(), externalId);
 
-            ExternalId replacedExternalId = externalIdFactory.createMavenExternalId(replacedGav.getName(), replacedGav.getArtifact(), replacedGav.getVersion());
+            ExternalId replacedExternalId = externalIdFactory.createMavenExternalId(replacedGav.getGroup(), replacedGav.getArtifact(), replacedGav.getVersion());
             Dependency replacedDependency = new Dependency(replacedGav.getArtifact(), replacedGav.getVersion(), replacedExternalId);
 
             dependencyReplacementResolver.addReplacementData(replacedDependency, resolvedDependency);

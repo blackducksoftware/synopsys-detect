@@ -71,12 +71,12 @@ public class GradleTreeNode {
         return new GradleTreeNode(NodeType.PROJECT, level, null, null, projectName);
     }
 
-    public static GradleTreeNode newGav(int level, String artifact, String version, String name) {
-        return new GradleTreeNode(NodeType.GAV, level, new GradleGav(artifact, version, name), null, null);
+    public static GradleTreeNode newGav(int level, String group, String artifact, String version) {
+        return new GradleTreeNode(NodeType.GAV, level, new GradleGav(group, artifact, version), null, null);
     }
 
-    public static GradleTreeNode newGavWithReplacement(int level, String artifact, String version, String name, String replacedArtifact, String replacedVersion, String replacedName) {
-        return new GradleTreeNode(NodeType.GAV, level, new GradleGav(artifact, version, name), new GradleGav(replacedArtifact, replacedVersion, replacedName), null);
+    public static GradleTreeNode newGavWithReplacement(int level, String group, String artifact, String version, String replacedGroup, String replacedArtifact, String replacedVersion) {
+        return new GradleTreeNode(NodeType.GAV, level, new GradleGav(group, artifact, version), new GradleGav(replacedGroup, replacedArtifact, replacedVersion), null);
     }
 
     public static GradleTreeNode newUnknown(int level) {

@@ -85,7 +85,7 @@ public class GradleReportTransformer {
             }
 
             GradleGav gav = gavOptional.get();
-            ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getArtifact(), gav.getVersion());
+            ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getGroup(), gav.getArtifact(), gav.getVersion());
             Dependency currentDependency = new Dependency(gav.getArtifact(), gav.getVersion(), externalId);
 
             currentDependency = dependencyReplacementResolver.getReplacement(currentDependency)
