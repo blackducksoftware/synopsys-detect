@@ -1,5 +1,9 @@
 # Release notes
 
+## Version 6.7.0
+### Resolved issues
+* (IDETECT-2221) Resolved an issue where the Docker Inspector logging level was not set correctly when property logging.level.detect was used.
+
 ## Version 6.6.0
 ### Changed features
 * The Docker Inspector now works on Windows 10 Enterprise.
