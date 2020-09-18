@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectables.npm.lockfile.parse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,10 +34,10 @@ import com.google.gson.Gson;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
+import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.npm.MissingNpmDependencyHandler;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmDependencyConverter;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmDependency;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
@@ -44,6 +45,7 @@ import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmPro
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmRequires;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.PackageLock;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.util.NameVersion;
 
 public class NpmLockfilePackager {
     private final Logger logger = LoggerFactory.getLogger(NpmLockfilePackager.class);
@@ -56,10 +58,10 @@ public class NpmLockfilePackager {
     }
 
     public NpmParseResult parse(@Nullable String packageJsonText, String lockFileText, boolean includeDevDependencies) {
-        return parse(packageJsonText, lockFileText, includeDevDependencies, NpmLockfilePackager::handleMissingDependency);
+        return parse(packageJsonText, lockFileText, includeDevDependencies, new ArrayList<>());
     }
 
-    public NpmParseResult parse(@Nullable String packageJsonText, String lockFileText, boolean includeDevDependencies, MissingNpmDependencyHandler missingNpmDependencyHandler) {
+    public NpmParseResult parse(@Nullable String packageJsonText, String lockFileText, boolean includeDevDependencies, List<NameVersion> externalDependencies) {
         MutableDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
 
         Optional<PackageJson> packageJson = Optional.ofNullable(packageJsonText)
@@ -76,15 +78,15 @@ public class NpmLockfilePackager {
 
             //First we will recreate the graph from the resolved npm dependencies
             for (NpmDependency resolved : project.getResolvedDependencies()) {
-                transformTreeToGraph(resolved, project, dependencyGraph, includeDevDependencies, missingNpmDependencyHandler);
+                transformTreeToGraph(resolved, project, dependencyGraph, includeDevDependencies, externalDependencies);
             }
 
             //Then we will add relationships between the project (root) and the graph
             boolean atLeastOneRequired = !project.getDeclaredDependencies().isEmpty() || !project.getDeclaredDevDependencies().isEmpty();
             if (atLeastOneRequired) {
-                addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDependencies(), dependencyGraph, missingNpmDependencyHandler);
+                addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDependencies(), dependencyGraph, externalDependencies);
                 if (includeDevDependencies) {
-                    addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDevDependencies(), dependencyGraph, missingNpmDependencyHandler);
+                    addRootDependencies(project.getResolvedDependencies(), project.getDeclaredDevDependencies(), dependencyGraph, externalDependencies);
                 }
             } else {
                 project.getResolvedDependencies()
@@ -98,63 +100,73 @@ public class NpmLockfilePackager {
             logger.debug("Lock file did not have a 'dependencies' section.");
         }
         logger.debug("Finished processing.");
-        ExternalId projectId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, packageLock.name, packageLock.version);
+        ExternalId projectId;
+        if (packageJson.isPresent()) {
+            projectId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, packageJson.get().name, packageJson.get().version);
+        } else {
+            projectId = externalIdFactory.createNameVersionExternalId(Forge.NPMJS, packageLock.name, packageLock.version);
+        }
         CodeLocation codeLocation = new CodeLocation(dependencyGraph, projectId);
-        return new NpmParseResult(packageLock.name, packageLock.version, codeLocation);
+        return new NpmParseResult(projectId.getName(), projectId.getVersion(), codeLocation);
     }
 
-    public static void handleMissingDependency(Logger missingDependencyLogger, NpmRequires missingDependency) {
-        missingDependencyLogger.error(String.format("No dependency found for package: %s", missingDependency.getName()));
-    }
-
-    private void addRootDependencies(List<NpmDependency> resolvedDependencies, List<NpmRequires> requires, MutableDependencyGraph dependencyGraph, MissingNpmDependencyHandler missingNpmDependencyHandler) {
+    private void addRootDependencies(List<NpmDependency> resolvedDependencies, List<NpmRequires> requires, MutableDependencyGraph dependencyGraph, final List<NameVersion> externalDependencies) {
         for (NpmRequires dependency : requires) {
-            NpmDependency resolved = firstDependencyWithName(resolvedDependencies, dependency.getName());
+            Dependency resolved = lookupProjectOrExternal(dependency.getName(), resolvedDependencies, externalDependencies);
             if (resolved != null) {
-                dependencyGraph.addChildToRoot(resolved.getGraphDependency());
+                dependencyGraph.addChildToRoot(resolved);
             } else {
-                missingNpmDependencyHandler.handleMissingDependency(logger, dependency);
+                logger.error("No dependency found for package: " + dependency.getName());
             }
         }
     }
 
-    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, MutableDependencyGraph dependencyGraph, boolean includeDevDependencies, MissingNpmDependencyHandler missingNpmDependencyHandler) {
+    private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, MutableDependencyGraph dependencyGraph, boolean includeDevDependencies, final List<NameVersion> externalDependencies) {
         if (!shouldIncludeDependency(npmDependency, includeDevDependencies))
             return;
 
         npmDependency.getRequires().forEach(required -> {
             logger.trace(String.format("Required package: %s of version: %s", required.getName(), required.getFuzzyVersion()));
-            NpmDependency resolved = lookupDependency(npmDependency, npmProject, required.getName());
+            Dependency resolved = lookupDependency(required.getName(), npmDependency, npmProject, externalDependencies);
             if (resolved != null) {
                 logger.trace(String.format("Found package: %s with version: %s", resolved.getName(), resolved.getVersion()));
-                dependencyGraph.addChildWithParent(resolved.getGraphDependency(), npmDependency.getGraphDependency());
+                dependencyGraph.addChildWithParent(resolved, npmDependency.getGraphDependency());
             } else {
-                missingNpmDependencyHandler.handleMissingDependency(logger, required);
+                logger.error("No dependency found for package: " + required.getName());
             }
         });
 
-        npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, includeDevDependencies, missingNpmDependencyHandler));
+        npmDependency.getDependencies().forEach(child -> transformTreeToGraph(child, npmProject, dependencyGraph, includeDevDependencies, externalDependencies));
     }
 
-    //returns the first dependency in the following order: directly under this dependency, under a parent, under the project
-    private NpmDependency lookupDependency(NpmDependency npmDependency, NpmProject project, String name) {
-        NpmDependency resolved = firstDependencyWithName(npmDependency.getDependencies(), name);
-
-        if (resolved != null) {
-            return resolved;
+    private Dependency lookupProjectOrExternal(String name, List<NpmDependency> projectResolvedDependencies, final List<NameVersion> externalDependencies) {
+        Dependency projectDependency = firstDependencyWithName(projectResolvedDependencies, name);
+        if (projectDependency != null) {
+            return projectDependency;
         } else {
-            if (npmDependency.getParent().isPresent()) {
-                return lookupDependency(npmDependency.getParent().get(), project, name);
-            } else {
-                return firstDependencyWithName(project.getResolvedDependencies(), name);
-            }
+            Optional<NameVersion> externalNameVersion = externalDependencies.stream().filter(it -> it.getName().equals(name)).findFirst();
+            return externalNameVersion.map(nameVersion -> new Dependency(nameVersion.getName(), nameVersion.getVersion(),
+                externalIdFactory.createNameVersionExternalId(Forge.NPMJS, nameVersion.getName(), nameVersion.getVersion()))).orElse(null);
         }
     }
 
-    private NpmDependency firstDependencyWithName(List<NpmDependency> dependencies, String name) {
+    //returns the first dependency in the following order: directly under this dependency, under a parent, under the project, under external dependencies
+    private Dependency lookupDependency(String name, NpmDependency npmDependency, NpmProject project, final List<NameVersion> externalDependencies) {
+        Dependency resolved = firstDependencyWithName(npmDependency.getDependencies(), name);
+
+        if (resolved != null) {
+            return resolved;
+        } else if (npmDependency.getParent().isPresent()) {
+            return lookupDependency(name, npmDependency.getParent().get(), project, externalDependencies);
+        } else {
+            return lookupProjectOrExternal(name, project.getResolvedDependencies(), externalDependencies);
+        }
+    }
+
+    private Dependency firstDependencyWithName(List<NpmDependency> dependencies, String name) {
         for (NpmDependency current : dependencies) {
             if (current.getName().equals(name)) {
-                return current;
+                return current.getGraphDependency();
             }
         }
         return null;

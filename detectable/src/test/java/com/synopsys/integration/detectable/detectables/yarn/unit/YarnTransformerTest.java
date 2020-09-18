@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.yarn.unit;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +42,7 @@ public class YarnTransformerTest {
         YarnLockResult yarnLockResult = new YarnLockResult(packageJson, "yarn.lock", yarnLock);
 
         // This should not throw an exception.
-        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, YarnTransformer::handleMissingExternalIds);
+        DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, new ArrayList<>());
 
         // Sanity check.
         Assertions.assertNotNull(dependencyGraph, "The dependency graph should not be null.");

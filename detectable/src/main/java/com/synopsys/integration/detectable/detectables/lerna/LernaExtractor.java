@@ -25,7 +25,6 @@ package com.synopsys.integration.detectable.detectables.lerna;
 import java.io.File;
 import java.util.List;
 
-import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaPackage;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaResult;
@@ -39,12 +38,10 @@ public class LernaExtractor {
         this.lernaPackager = lernaPackager;
     }
 
-    public Extraction extract(DetectableEnvironment detectableEnvironment, File lernaExecutable) {
-        File sourceDirectory = detectableEnvironment.getDirectory();
-
+    public Extraction extract(File sourceDirectory, File packageJson, File lernaExecutable) {
         try {
             List<LernaPackage> lernaPackages = lernaPackageDiscoverer.discoverLernaPackages(sourceDirectory, lernaExecutable);
-            LernaResult lernaResult = lernaPackager.generateLernaResult(sourceDirectory, lernaPackages);
+            LernaResult lernaResult = lernaPackager.generateLernaResult(sourceDirectory, packageJson, lernaPackages);
 
             if (lernaResult.getException().isPresent()) {
                 throw lernaResult.getException().get();
