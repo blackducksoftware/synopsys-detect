@@ -48,7 +48,6 @@ public class DpkgPkgDetailsResolver {
             List<String> args = new ArrayList<>(currentPackageManager.getPkgInfoArgs().get());
             args.add(pkgPartial.getPackageName());
             ExecutableOutput packageInfoOutput = executableRunner.execute(workingDirectory, currentPackageManager.getPkgMgrCmdString(), args);
-            logger.debug(String.format("packageInfoOutput: %s", packageInfoOutput));
             return parsePackageDetailsFromInfoOutput(pkgPartial, packageInfoOutput.getStandardOutput());
         } catch (ExecutableRunnerException e) {
             logger.error(String.format("Error executing %s to get package info: %s", currentPackageManager.getPkgMgrName(), e.getMessage()));
