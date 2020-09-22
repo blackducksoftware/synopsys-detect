@@ -1463,15 +1463,14 @@
 &quot;detectorType&quot;: The normalized detector type such as &quot;GIT&quot;.
 &quot;detectorName&quot;: A shorthand name of the detector such as &quot;Git Cli&quot;.
 &quot;descriptiveName&quot;: The long form name of the detector such as &quot;GIT - Git Cli&quot;.
-&quot;searchable&quot;: A boolean of whether or not the detector searched the given folder (currently will always be true).
-&quot;applicable&quot;: A boolean of whether or not the detector applied to the given folder (currently will always be true).
-&quot;extractable&quot;:  A boolean indicating whether the detector could extract, meaning all of it's dependencies were downloaded or available.
 &quot;discoverable&quot;:  A boolean indicating whether or not the detector was able to discover project information.
 &quot;extracted&quot;: A boolean indicating whether or not the detector was able to extract dependencies.
-&quot;searchableReason&quot;: A human readable description of the searchable result.
-&quot;applicableReason&quot;: A human readable description of the applicable result.
-&quot;extractableReason&quot;: A human readable description of the extractable result.
+&quot;status&quot;: An enum indicating whether the detector was successful or failed.
+&quot;statusCode&quot;: A code generated using the name of the error thrown by the detector at runtime, or SUCCESS if the detector was successful.
+&quot;statusReason&quot;: A human readable description of the status code.
 &quot;relevantFiles&quot;: [ A list of files relevant to the detector. ]
+&quot;discoveryReason&quot;: A human readable description of the discovery result.
+&quot;extractedReason&quot;: A human readable description of the extraction result.
 &quot;projectName&quot;: The project name this detectable found.
 &quot;projectVersion&quot;: The project version this detectable found.
 &quot;codeLocationCount&quot;: The number of code locations this detector produced.
