@@ -29,15 +29,14 @@ The file includes status codes, issues encountered and results produced. As addi
 "detectorType": The normalized detector type such as "GIT".
 "detectorName": A shorthand name of the detector such as "Git Cli".
 "descriptiveName": The long form name of the detector such as "GIT - Git Cli".
-"searchable": A boolean of whether or not the detector searched the given folder (currently will always be true).
-"applicable": A boolean of whether or not the detector applied to the given folder (currently will always be true).
-"extractable":  A boolean indicating whether the detector could extract, meaning all of it's dependencies were downloaded or available.
 "discoverable":  A boolean indicating whether or not the detector was able to discover project information.
 "extracted": A boolean indicating whether or not the detector was able to extract dependencies.
-"searchableReason": A human readable description of the searchable result.
-"applicableReason": A human readable description of the applicable result.
-"extractableReason": A human readable description of the extractable result.
+"status": An enum indicating whether the detector was successful or failed.
+"statusCode": A code generated using the name of the error thrown by the detector at runtime, or SUCCESS if the detector was successful.
+"statusReason": A human readable description of the status code.
 "relevantFiles": [ A list of files relevant to the detector. ]
+"discoveryReason": A human readable description of the discovery result.
+"extractedReason": A human readable description of the extraction result.
 "projectName": The project name this detectable found.
 "projectVersion": The project version this detectable found.
 "codeLocationCount": The number of code locations this detector produced.
