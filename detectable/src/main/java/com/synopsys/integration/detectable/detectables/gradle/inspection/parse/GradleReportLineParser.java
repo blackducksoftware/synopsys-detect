@@ -60,15 +60,15 @@ public class GradleReportLineParser {
                 String version = gav.getGavPieces().get(2);
 
                 if (gav.getReplacedGavPieces().isEmpty()) {
-                    return GradleTreeNode.newGav(level, artifact, version, group);
+                    return GradleTreeNode.newGav(level, group, artifact, version);
                 } else if (gav.getReplacedGavPieces().size() == 3) {
                     String replacedGroup = gav.getReplacedGavPieces().get(0);
                     String replacedArtifact = gav.getReplacedGavPieces().get(1);
                     String replacedVersion = gav.getReplacedGavPieces().get(2);
-                    return GradleTreeNode.newGavWithReplacement(level, artifact, version, group, replacedArtifact, replacedVersion, replacedGroup);
+                    return GradleTreeNode.newGavWithReplacement(level, group, artifact, version, replacedGroup, replacedArtifact, replacedVersion);
                 } else {
                     logger.warn(String.format("The replacement gav is an unknown format: %s", line));
-                    return GradleTreeNode.newGav(level, artifact, version, group);
+                    return GradleTreeNode.newGav(level, group, artifact, version);
                 }
             }
         }

@@ -20,21 +20,21 @@ public class GradleReplacementDiscovererTest {
         DependencyReplacementResolver dependencyReplacementResolver = DependencyReplacementResolver.createRootResolver();
 
         List<GradleTreeNode> gradleTreeNodes = new ArrayList<>();
-        GradleGav resolvedGav = new GradleGav("artifact", "version", "group");
-        GradleGav replacedGav = new GradleGav("replacedArtifact", "replacedVersion", "replacedGroup");
+        GradleGav resolvedGav = new GradleGav("group", "artifact", "version");
+        GradleGav replacedGav = new GradleGav("replacedGroup", "replacedArtifact", "replacedVersion");
         gradleTreeNodes.add(GradleTreeNode.newProject(0, "foo"));
-        gradleTreeNodes.add(GradleTreeNode.newGav(1, "unrelatedArtifact", "unrelatedVersion", "unrelatedGroup"));
-        gradleTreeNodes.add(GradleTreeNode.newGavWithReplacement(1, resolvedGav.getArtifact(), resolvedGav.getVersion(), resolvedGav.getName(), replacedGav.getArtifact(), replacedGav.getVersion(), replacedGav.getName()));
+        gradleTreeNodes.add(GradleTreeNode.newGav(1, "unrelatedGroup", "unrelatedArtifact", "unrelatedVersion"));
+        gradleTreeNodes.add(GradleTreeNode.newGavWithReplacement(1, resolvedGav.getGroup(), resolvedGav.getArtifact(), resolvedGav.getVersion(), replacedGav.getGroup(), replacedGav.getArtifact(), replacedGav.getVersion()));
 
         gradleReplacementDiscoverer.populateFromTreeNodes(dependencyReplacementResolver, gradleTreeNodes);
 
-        Dependency resolvedDependency = new Dependency(resolvedGav.getArtifact(), resolvedGav.getVersion(), externalIdFactory.createMavenExternalId(resolvedGav.getName(), resolvedGav.getArtifact(), resolvedGav.getVersion()));
-        Dependency replacedDependency = new Dependency(replacedGav.getArtifact(), replacedGav.getVersion(), externalIdFactory.createMavenExternalId(replacedGav.getName(), replacedGav.getArtifact(), replacedGav.getVersion()));
+        Dependency resolvedDependency = new Dependency(resolvedGav.getArtifact(), resolvedGav.getVersion(), externalIdFactory.createMavenExternalId(resolvedGav.getGroup(), resolvedGav.getArtifact(), resolvedGav.getVersion()));
+        Dependency replacedDependency = new Dependency(replacedGav.getArtifact(), replacedGav.getVersion(), externalIdFactory.createMavenExternalId(replacedGav.getGroup(), replacedGav.getArtifact(), replacedGav.getVersion()));
         Optional<Dependency> replacement = dependencyReplacementResolver.getReplacement(replacedDependency);
         Assertions.assertTrue(replacement.isPresent());
         Assertions.assertEquals(resolvedDependency, replacement.get());
 
-        Dependency unrelatedDependency = new Dependency(externalIdFactory.createMavenExternalId(resolvedGav.getName(), resolvedGav.getArtifact(), resolvedGav.getVersion()));
+        Dependency unrelatedDependency = new Dependency(externalIdFactory.createMavenExternalId(resolvedGav.getGroup(), resolvedGav.getArtifact(), resolvedGav.getVersion()));
         Optional<Dependency> unrelated = dependencyReplacementResolver.getReplacement(unrelatedDependency);
         Assertions.assertFalse(unrelated.isPresent());
     }
