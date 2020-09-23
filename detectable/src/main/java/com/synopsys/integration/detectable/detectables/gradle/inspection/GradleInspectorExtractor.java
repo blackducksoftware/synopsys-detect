@@ -31,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
@@ -89,7 +88,7 @@ public class GradleInspectorExtractor {
             }
 
             DependencyReplacementResolver rootReplacementResolver = DependencyReplacementResolver.createRootResolver();
-            GradleReplacementDiscoverer gradleReplacementDiscoverer = new GradleReplacementDiscoverer(new ExternalIdFactory());
+            GradleReplacementDiscoverer gradleReplacementDiscoverer = new GradleReplacementDiscoverer();
             File rootReportFile = fileFinder.findFile(outputDirectory, String.format("%s_dependencyGraph.txt", projectName));
 
             Optional.ofNullable(rootReportFile)
