@@ -159,6 +159,8 @@ public class DetectorEvaluation {
     public DetectorStatusType getStatus() {
         if (getResultClassName().equals(PASSED_RESULT)) {
             return DetectorStatusType.SUCCESS;
+        } else if (fallbackFrom != null && fallbackFrom.isExtractable()) {
+            return DetectorStatusType.DEFERRED;
         }
         return DetectorStatusType.FAILURE;
     }
@@ -267,6 +269,6 @@ public class DetectorEvaluation {
     }
 
     public enum DetectorStatusType {
-        SUCCESS, FAILURE
+        SUCCESS, FAILURE, DEFERRED
     }
 }
