@@ -67,7 +67,7 @@ public class GradleReportParserFunctionalTest {
             mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.1");
         });
 
-        GradleReplacementDiscoverer gradleReplacementDiscoverer = new GradleReplacementDiscoverer(new ExternalIdFactory());
+        GradleReplacementDiscoverer gradleReplacementDiscoverer = new GradleReplacementDiscoverer();
         GradleReport gradleReport = rootGradleReport.get();
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
             gradleReplacementDiscoverer.populateFromTreeNodes(rootDependencyReplacementResolver, configuration.getChildren());

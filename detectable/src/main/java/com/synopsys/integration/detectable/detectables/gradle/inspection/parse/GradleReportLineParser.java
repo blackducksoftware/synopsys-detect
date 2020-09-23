@@ -32,7 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.util.DetectableStringUtils;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleGav;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleTreeNode;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.ReplacedGradleGav;
 
 public class GradleReportLineParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -58,17 +60,24 @@ public class GradleReportLineParser {
                 String group = gav.getGavPieces().get(0);
                 String artifact = gav.getGavPieces().get(1);
                 String version = gav.getGavPieces().get(2);
+                GradleGav resolvedGradleGav = new GradleGav(group, artifact, version);
 
                 if (gav.getReplacedGavPieces().isEmpty()) {
-                    return GradleTreeNode.newGav(level, group, artifact, version);
+                    return GradleTreeNode.newGav(level, resolvedGradleGav);
+                } else if (gav.getReplacedGavPieces().size() == 2) {
+                    String replacedGroup = gav.getReplacedGavPieces().get(0);
+                    String replacedArtifact = gav.getReplacedGavPieces().get(1);
+                    ReplacedGradleGav replacedGradleGav = new ReplacedGradleGav(replacedGroup, replacedArtifact);
+                    return GradleTreeNode.newGavWithReplacement(level, resolvedGradleGav, replacedGradleGav);
                 } else if (gav.getReplacedGavPieces().size() == 3) {
                     String replacedGroup = gav.getReplacedGavPieces().get(0);
                     String replacedArtifact = gav.getReplacedGavPieces().get(1);
                     String replacedVersion = gav.getReplacedGavPieces().get(2);
-                    return GradleTreeNode.newGavWithReplacement(level, group, artifact, version, replacedGroup, replacedArtifact, replacedVersion);
+                    ReplacedGradleGav replacedGradleGav = new ReplacedGradleGav(replacedGroup, replacedArtifact, replacedVersion);
+                    return GradleTreeNode.newGavWithReplacement(level, resolvedGradleGav, replacedGradleGav);
                 } else {
                     logger.warn(String.format("The replacement gav is an unknown format: %s", line));
-                    return GradleTreeNode.newGav(level, group, artifact, version);
+                    return GradleTreeNode.newGav(level, resolvedGradleGav);
                 }
             }
         }
