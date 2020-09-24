@@ -559,6 +559,40 @@
     Inspecting Docker images on Windows
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docker-usually-needs-to-be-configured-for-linux-containers" class="md-nav__link">
+    Docker usually needs to be configured for Linux containers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-must-be-able-to-mount-the-shared-directory-as-a-volume" class="md-nav__link">
+    Docker must be able to mount the shared directory as a volume
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-user-must-have-permission-to-create-symbolic-links" class="md-nav__link">
+    The user must have permission to create symbolic links
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-docker-bug-may-affect-synopsys-detect-during-clean-up" class="md-nav__link">
+    A Docker bug may affect Synopsys Detect during clean up
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
       
@@ -1391,6 +1425,40 @@
     Inspecting Docker images on Windows
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docker-usually-needs-to-be-configured-for-linux-containers" class="md-nav__link">
+    Docker usually needs to be configured for Linux containers
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-must-be-able-to-mount-the-shared-directory-as-a-volume" class="md-nav__link">
+    Docker must be able to mount the shared directory as a volume
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-user-must-have-permission-to-create-symbolic-links" class="md-nav__link">
+    The user must have permission to create symbolic links
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#a-docker-bug-may-affect-synopsys-detect-during-clean-up" class="md-nav__link">
+    A Docker bug may affect Synopsys Detect during clean up
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
       
@@ -1457,11 +1525,27 @@ a Linux package manager will not contribute any components to the BOM, but will
 return the container filesystem (in the form of a squashed image),
 which Synopsys Detect will scan using the Black Duck Signature Scanner.</p>
 <h3 id="inspecting-docker-images-on-windows">Inspecting Docker images on Windows<a class="headerlink" href="#inspecting-docker-images-on-windows" title="Permanent link">#</a></h3>
-<p>By default, Docker Inspector pulls (using Docker) and uses Linux-based containerized image inspector services.
-On Windows, Docker must be configured for Linux containers in order for these Linux-based images to be pulled and started by Docker Inspector.
-Docker Inspector also supports more advanced deployment options that avoid this requirement by using
+<p>This section contains considerations that apply when running on Windows.</p>
+<h4 id="docker-usually-needs-to-be-configured-for-linux-containers">Docker usually needs to be configured for Linux containers<a class="headerlink" href="#docker-usually-needs-to-be-configured-for-linux-containers" title="Permanent link">#</a></h4>
+<p>By default, Docker Inspector pulls (using Docker) and uses container-based image inspector services.
+These services run on Linux operating systems.
+On Windows, Docker must be configured for Linux containers in order for these Linux-based images
+to be pulled and started by Docker Inspector.</p>
+<p>Docker Inspector also supports more advanced deployment options that avoid this requirement by using
 image inspector services running elsewhere in the network;
 for more information, refer to the Docker Inspector documentation.</p>
+<h4 id="docker-must-be-able-to-mount-the-shared-directory-as-a-volume">Docker must be able to mount the shared directory as a volume<a class="headerlink" href="#docker-must-be-able-to-mount-the-shared-directory-as-a-volume" title="Permanent link">#</a></h4>
+<p>Docker Inspector uses Docker to mount a shared directory (a directory inside Synopsys Detect's output directory,
+which is controlled via property detect.output.path)
+so that it can be accessed (read from and written to) by the image inspector container.
+Consequently Docker must have permissions sufficient to mount read/write directories
+within Synopsys Detect's output directory.</p>
+<h4 id="the-user-must-have-permission-to-create-symbolic-links">The user must have permission to create symbolic links<a class="headerlink" href="#the-user-must-have-permission-to-create-symbolic-links" title="Permanent link">#</a></h4>
+<p>Docker Inspector constructs the initial file system that a container would have if you ran
+the target image. All component discovery (including package manager discovery
+and signature scanning) is based on this file system. In order to construct the file
+system accurately, the Synopsys Detect user must have permission to create symbolic links.</p>
+<h4 id="a-docker-bug-may-affect-synopsys-detect-during-clean-up">A Docker bug may affect Synopsys Detect during clean up<a class="headerlink" href="#a-docker-bug-may-affect-synopsys-detect-during-clean-up" title="Permanent link">#</a></h4>
 <p>For important information on a Docker for Windows bug that might affect Synopsys Detect, refer to the
 <a href="../../troubleshooting/solutions/#on-windows-error-trying-cleanup">troubleshooting page</a>.</p>
                 
