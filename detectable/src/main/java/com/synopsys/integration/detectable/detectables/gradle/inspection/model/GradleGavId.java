@@ -22,33 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.gradle.inspection.model;
 
-import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
+import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
 
-public class GradleGav implements GradleGavId {
-    private final String group;
-    private final String artifact;
-    private final String version;
-
-    public GradleGav(String group, String artifact, String version) {
-        this.group = group;
-        this.artifact = artifact;
-        this.version = version;
-    }
-
-    public String getGroup() {
-        return group;
-    }
-
-    public String getArtifact() {
-        return artifact;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    @Override
-    public StringDependencyId toDependencyId() {
-        return new StringDependencyId(String.format("%s:%s:%s", getGroup(), getArtifact(), getVersion()));
-    }
+public interface GradleGavId {
+    DependencyId toDependencyId();
 }
