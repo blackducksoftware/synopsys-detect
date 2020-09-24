@@ -26,9 +26,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,63 +42,71 @@ public class DpkgPkgDetailsResolver {
     private static final int PKG_INFO_LINE_LABEL_POSITION = 0;
     private static final int PKG_INFO_LINE_VALUE_POSITION = 1;
 
-    public Optional<PackageDetails> resolvePackageDetails(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, PackageDetails pkgPartial) {
+    public Optional<PackageDetails> resolvePackageDetails(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String packageName) {
         try {
             List<String> args = new ArrayList<>(currentPackageManager.getPkgInfoArgs().get());
-            args.add(pkgPartial.getPackageName());
+            args.add(packageName);
             ExecutableOutput packageInfoOutput = executableRunner.execute(workingDirectory, currentPackageManager.getPkgMgrCmdString(), args);
-            return parsePackageDetailsFromInfoOutput(pkgPartial, packageInfoOutput.getStandardOutput());
+            return parsePackageDetailsFromInfoOutput(packageName, packageInfoOutput.getStandardOutput());
         } catch (ExecutableRunnerException e) {
-            logger.error(String.format("Error executing %s to get package info: %s", currentPackageManager.getPkgMgrName(), e.getMessage()));
+            logger.warn(String.format("Error executing %s to get package info: %s", currentPackageManager.getPkgMgrName(), e.getMessage()));
         }
         return Optional.empty();
     }
 
-    private Optional<PackageDetails> parsePackageDetailsFromInfoOutput(PackageDetails pkg, String packageInfoOutput) {
+    private Optional<PackageDetails> parsePackageDetailsFromInfoOutput(String packageName, String packageInfoOutput) {
+        String packageArchitecture = null;
+        String packageVersion = null;
         String[] packageInfoOutputLines = packageInfoOutput.split("\\n");
         for (String packageInfoOutputLine : packageInfoOutputLines) {
-            if (foundUninstalledStatus(pkg, packageInfoOutputLine)) {
+            if (foundUninstalledStatus(packageName, packageInfoOutputLine)) {
                 return Optional.empty();
             }
-            consumeValueFromLineIfPresent(pkg, packageInfoOutputLine, "Architecture", () -> pkg.getPackageArch(), (String a) -> pkg.setPackageArch(a));
-            consumeValueFromLineIfPresent(pkg, packageInfoOutputLine, "Version", () -> pkg.getPackageVersion(), (String v) -> pkg.setPackageVersion(v));
+            packageArchitecture = parseNeededValueFromLineIfPresent(packageName, packageInfoOutputLine, "Architecture", packageArchitecture);
+            packageVersion = parseNeededValueFromLineIfPresent(packageName, packageInfoOutputLine, "Version", packageVersion);
         }
-        logger.trace(String.format("Parsed package from pkg info output: %s", pkg));
-        return Optional.of(pkg);
+        if ((packageVersion == null) || (packageArchitecture == null)) {
+            logger.warn(String.format("Unable to determine all details for package %s (version: %s; architecture: %s); this package will be omitted from the output",
+                packageName, packageVersion, packageArchitecture));
+            return Optional.empty();
+        }
+        return Optional.of(new PackageDetails(packageName, packageVersion, packageArchitecture));
     }
 
-    private boolean foundUninstalledStatus(PackageDetails pkg, String packageInfoOutputLine) {
+    private String parseNeededValueFromLineIfPresent(String packageName, String packageInfoOutputLine, String targetLabel, String currentValue) {
+        if (currentValue != null) {
+            return currentValue;
+        }
+        return parseValueFromLineIfPresent(packageName, packageInfoOutputLine, targetLabel).orElse(currentValue);
+    }
+
+    private Optional<String> parseValueFromLineIfPresent(String packageName, String packageInfoOutputLine, String targetLabel) {
+        String[] packageInfoOutputLineParts = packageInfoOutputLine.split(":\\s+");
+        String parsedLabel = packageInfoOutputLineParts[PKG_INFO_LINE_LABEL_POSITION].trim();
+        if (targetLabel.equals(parsedLabel)) {
+            if (packageInfoOutputLineParts.length > PKG_INFO_LINE_VALUE_POSITION) {
+                String parsedValue = packageInfoOutputLineParts[PKG_INFO_LINE_VALUE_POSITION].trim();
+                if (StringUtils.isNotBlank(parsedValue)) {
+                    return Optional.of(parsedValue);
+                }
+            }
+            logger.warn(String.format("Package %s: %s field value is missing", packageName, targetLabel));
+        }
+        return Optional.empty();
+    }
+
+    private boolean foundUninstalledStatus(String packageName, String packageInfoOutputLine) {
         String[] packageInfoOutputLineParts = packageInfoOutputLine.split(":\\s+");
         String label = packageInfoOutputLineParts[PKG_INFO_LINE_LABEL_POSITION];
         if ("Status".equals(label.trim())) {
             if (packageInfoOutputLineParts.length > PKG_INFO_LINE_VALUE_POSITION) {
                 String value = packageInfoOutputLineParts[PKG_INFO_LINE_VALUE_POSITION];
                 if ((value != null) && !value.contains("installed")) {
-                    logger.debug(String.format("%s is not installed; Status is: %s", pkg.getPackageName(), value));
+                    logger.debug(String.format("Package is not installed; Status is: %s", packageName, value));
                     return true;
                 }
             } else {
-                logger.warn(String.format("Missing value for Status field for package %s", pkg.getPackageName()));
-            }
-        }
-        return false;
-    }
-
-    private boolean consumeValueFromLineIfPresent(PackageDetails pkg, String packageInfoOutputLine, String targetLabel, Supplier<String> oldValueGetter, Consumer<String> newValueSetter) {
-        String[] packageInfoOutputLineParts = packageInfoOutputLine.split(":\\s+");
-        String parsedLabel = packageInfoOutputLineParts[PKG_INFO_LINE_LABEL_POSITION].trim();
-        if (targetLabel.equals(parsedLabel)) {
-            if (packageInfoOutputLineParts.length > PKG_INFO_LINE_VALUE_POSITION) {
-                String parsedValue = packageInfoOutputLineParts[PKG_INFO_LINE_VALUE_POSITION];
-                String oldValue = oldValueGetter.get();
-                if ((oldValue != null) && !oldValue.equals(parsedValue)) {
-                    logger.warn("Package %s %s value changed from %s to %s during details resolution",
-                        pkg.getPackageName(), targetLabel, oldValue, parsedValue);
-                }
-                newValueSetter.accept(parsedValue);
-                return true;
-            } else {
-                logger.warn(String.format("Missing value for %s field for package %s", targetLabel, pkg.getPackageName()));
+                logger.warn(String.format("Missing value for Status field for package %s", packageName));
             }
         }
         return false;

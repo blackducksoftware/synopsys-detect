@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 
@@ -45,25 +44,23 @@ public class DpkgPackageManagerResolver implements ClangPackageManagerResolver {
     }
 
     @Override
-    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput)
-        throws ExecutableRunnerException, NotOwnedByAnyPkgException {
+    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String ownershipQueryOutput)
+        throws NotOwnedByAnyPkgException {
         List<PackageDetails> packageDetailsList = new ArrayList<>();
-        String[] packageLines = queryPackageOutput.split("\n");
+        String[] packageLines = ownershipQueryOutput.split("\n");
         for (String packageLine : packageLines) {
             if (!valid(packageLine)) {
-                logger.debug(String.format("Skipping line: %s", packageLine));
+                logger.trace(String.format("Skipping file ownership query output line: %s", packageLine));
                 continue;
             }
             String[] queryPackageOutputParts = packageLine.split("\\s+");
             String[] packageNameArchParts = queryPackageOutputParts[0].split(":");
-            PackageDetails pkgPartial = new PackageDetails(packageNameArchParts[0]);
-            if (packageNameArchParts.length > 1) {
-                pkgPartial.setPackageArch(packageNameArchParts[1]);
-            }
-            logger.debug(String.format("package name: %s; architecture: %s", pkgPartial.getPackageName(), pkgPartial.getPackageArch()));
-            Optional<PackageDetails> pkgComplete = versionResolver.resolvePackageDetails(currentPackageManager, executableRunner, workingDirectory, pkgPartial);
-            if (pkgComplete.isPresent()) {
-                packageDetailsList.add(pkgComplete.get());
+            String packageName = packageNameArchParts[0].trim();
+            logger.debug(String.format("File ownership query results: package name: %s", packageName));
+            Optional<PackageDetails> pkg = versionResolver.resolvePackageDetails(currentPackageManager, executableRunner, workingDirectory, packageName);
+            if (pkg.isPresent()) {
+                logger.debug(String.format("Adding package: %s", pkg.get()));
+                packageDetailsList.add(pkg.get());
             }
         }
         return packageDetailsList;

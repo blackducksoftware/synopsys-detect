@@ -26,13 +26,9 @@ import com.synopsys.integration.util.Stringable;
 
 public class PackageDetails extends Stringable {
     private final String packageName;
-    private String packageVersion;
-    private String packageArch;
+    private final String packageVersion;
+    private final String packageArch;
 
-    public PackageDetails(String packageName) {
-        this.packageName = packageName;
-    }
-    
     public PackageDetails(String packageName, String packageVersion, String packageArch) {
         this.packageName = packageName;
         this.packageVersion = packageVersion;
@@ -49,13 +45,5 @@ public class PackageDetails extends Stringable {
 
     public String getPackageArch() {
         return packageArch;
-    }
-
-    public void setPackageVersion(String packageVersion) {
-        this.packageVersion = packageVersion;
-    }
-
-    public void setPackageArch(String packageArch) {
-        this.packageArch = packageArch;
     }
 }
