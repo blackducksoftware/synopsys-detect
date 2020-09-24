@@ -81,8 +81,8 @@ public class GenerateDocsTask extends DefaultTask {
         final HelpJsonData helpJson = new Gson().fromJson(reader, HelpJsonData.class);
 
         final File outputDir = project.file("docs/generated");
-        final File troubleshootingDir = new File(outputDir, "advanced/troubleshooting");
         final File advancedDir = new File(outputDir,"advanced");
+        final File troubleshootingDir = new File(advancedDir, "troubleshooting");
 
         FileUtils.deleteDirectory(outputDir);
         troubleshootingDir.mkdirs();
