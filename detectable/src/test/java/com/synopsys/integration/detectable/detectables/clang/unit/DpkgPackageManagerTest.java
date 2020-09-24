@@ -36,7 +36,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableRunne
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfoFactory;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPackageManagerResolver;
-import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgVersionResolver;
+import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPkgDetailsResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.NotOwnedByAnyPkgException;
 
 public class DpkgPackageManagerTest {
@@ -80,7 +80,7 @@ public class DpkgPackageManagerTest {
         ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput("", 0, pkgMgrVersionOutput, ""));
 
-        DpkgVersionResolver dpkgVersionResolver = new DpkgVersionResolver();
+        DpkgPkgDetailsResolver dpkgVersionResolver = new DpkgPkgDetailsResolver();
         DpkgPackageManagerResolver pkgMgr = new DpkgPackageManagerResolver(dpkgVersionResolver);
 
         List<PackageDetails> pkgs = pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().dpkg(), executableRunner, null, pkgMgrOwnedByOutput);
@@ -135,7 +135,7 @@ public class DpkgPackageManagerTest {
         ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
         Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput("", 0, pkgMgrVersionOutput, ""));
 
-        DpkgVersionResolver dpkgVersionResolver = new DpkgVersionResolver();
+        DpkgPkgDetailsResolver dpkgVersionResolver = new DpkgPkgDetailsResolver();
         DpkgPackageManagerResolver pkgMgr = new DpkgPackageManagerResolver(dpkgVersionResolver);
 
         List<PackageDetails> pkgs = pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().dpkg(), executableRunner, null, pkgMgrOwnedByOutput);
