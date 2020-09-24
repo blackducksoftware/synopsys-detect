@@ -3,6 +3,7 @@
 ## Version 6.7.0
 ### Resolved issues
 * (IDETECT-2221) Resolved an issue where the Docker Inspector logging level was not set correctly when property logging.level.detect was used.
+* (IDETECT-2213) Resolved an issue that could cause the CLANG detector to omit some components on Debian-based Linux systems.
 
 ## Version 6.6.0
 ### Changed features
