@@ -31,11 +31,13 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,6 +55,7 @@ import com.synopsys.integration.detect.docs.model.DeprecatedPropertyTableGroup;
 import com.synopsys.integration.detect.docs.model.Detector;
 import com.synopsys.integration.detect.docs.model.SimplePropertyTableGroup;
 import com.synopsys.integration.detect.docs.model.SplitGroup;
+import com.synopsys.integration.detect.docs.model.DetectorStatusCodes;
 import com.synopsys.integration.detect.docs.pages.AdvancedPropertyTablePage;
 import com.synopsys.integration.detect.docs.pages.DeprecatedPropertyTablePage;
 import com.synopsys.integration.detect.docs.pages.DetectorsPage;
@@ -67,6 +70,8 @@ import freemarker.template.TemplateException;
 
 public class GenerateDocsTask extends DefaultTask {
     private final IntLogger logger = new Slf4jIntLogger(this.getLogger());
+    private String pathToDetectableResults = "detectable/src/main/java/com/synopsys/integration/detectable/detectable/result";
+    private String getPathToDetectorResults = "detector/src/main/java/com/synopsys/integration/detector/result";
 
     @TaskAction
     public void generateDocs() throws IOException, TemplateException, IntegrationException {
@@ -77,6 +82,7 @@ public class GenerateDocsTask extends DefaultTask {
 
         final File outputDir = project.file("docs/generated");
         final File troubleshootingDir = new File(outputDir, "advanced/troubleshooting");
+        final File advancedDir = new File(outputDir,"advanced");
 
         FileUtils.deleteDirectory(outputDir);
         troubleshootingDir.mkdirs();
@@ -84,10 +90,36 @@ public class GenerateDocsTask extends DefaultTask {
         final TemplateProvider templateProvider = new TemplateProvider(project.file("docs/templates"), project.getVersion().toString());
 
         createFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
+        createFromFreemarker(templateProvider, advancedDir, "status-file", getDetectorStatusCodes());
 
         handleDetectors(templateProvider, outputDir, helpJson);
         handleProperties(templateProvider, outputDir, helpJson);
         handleContent(outputDir, templateProvider);
+    }
+
+    private DetectorStatusCodes getDetectorStatusCodes() {
+        File detectableResults = new File(pathToDetectableResults);
+        File detectorResults = new File(getPathToDetectorResults);
+        List<File> allResults = new ArrayList<>();
+        allResults.addAll(Arrays.asList(detectableResults.listFiles()));
+        allResults.addAll(Arrays.asList(detectorResults.listFiles()));
+
+        Set<String> statusCodes = allResults.stream()
+                                      .map(it -> formatResultNameToStatusCode(it.getName()))
+                                      .filter(StringUtils::isNotBlank)
+                                      .collect(Collectors.toSet());
+
+        return new DetectorStatusCodes(statusCodes);
+    }
+
+    // copied from FormattedOutputManager
+    private String formatResultNameToStatusCode(String resultName) {
+        String[] classnamePieces = resultName.split("/");
+        String actualResultName = classnamePieces[classnamePieces.length-1].replace("DetectResult", "").replace("DetectorResult", "").replace("DetectableResult", "").replace(".java", "");
+
+        return actualResultName
+                   .replaceAll("([a-z])([A-Z]+)", "$1_$2")
+                   .toUpperCase();
     }
 
     private void handleContent(final File outputDir, final TemplateProvider templateProvider) throws IOException, TemplateException {
