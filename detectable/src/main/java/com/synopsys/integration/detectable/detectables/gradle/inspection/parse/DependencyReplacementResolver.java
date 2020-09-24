@@ -28,13 +28,15 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleGav;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleGavId;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.ReplacedGradleGav;
 
 public class DependencyReplacementResolver {
     @Nullable
     private final DependencyReplacementResolver parentResolver;
-    private final Map<DependencyId, Dependency> replacementMap;
+    private final Map<DependencyId, GradleGav> replacementMap;
 
     public static DependencyReplacementResolver createFromParentResolver(DependencyReplacementResolver dependencyReplacementResolver) {
         return new DependencyReplacementResolver(dependencyReplacementResolver);
@@ -49,19 +51,19 @@ public class DependencyReplacementResolver {
         this.replacementMap = new HashMap<>();
     }
 
-    public void addReplacementData(DependencyId replaced, Dependency replacement) {
-        replacementMap.put(replaced, replacement);
+    public void addReplacementData(ReplacedGradleGav replaced, GradleGav replacement) {
+        replacementMap.put(replaced.toDependencyId(), replacement);
     }
 
-    public Optional<Dependency> getReplacement(DependencyId dependency) {
-        Dependency replacement = null;
+    public Optional<GradleGav> getReplacement(GradleGavId dependency) {
+        GradleGav replacement = null;
 
         if (parentResolver != null) {
             replacement = parentResolver.getReplacement(dependency).orElse(null);
         }
 
         if (replacement == null) {
-            replacement = replacementMap.get(dependency);
+            replacement = replacementMap.get(dependency.toDependencyId());
             if (parentResolver != null && replacement != null) {
                 replacement = parentResolver.getReplacement(replacement).orElse(replacement);
             }
