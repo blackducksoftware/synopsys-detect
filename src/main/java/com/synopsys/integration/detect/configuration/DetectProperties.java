@@ -226,7 +226,7 @@ public class DetectProperties {
         new DetectProperty<>(new StringListProperty("detect.binary.scan.file.name.patterns", emptyList()))
             .setInfo("Binary Scan Filename Patterns", "6.0.0")
             .setHelp(
-                "If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
+                "If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. The depth of the search is 0 (subdirectories are not searched). This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH);
 
     public static final DetectProperty<StringProperty> DETECT_BITBAKE_BUILD_ENV_NAME =
