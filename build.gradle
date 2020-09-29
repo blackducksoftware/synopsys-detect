@@ -12,19 +12,16 @@ buildscript {
 
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
+}
 
-    dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-        classpath "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
-        classpath "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
-    }
+plugins {
+    id 'org.springframework.boot' version '2.2.4.RELEASE'
 }
 
 group = 'com.synopsys.integration'
 version = '6.7.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
-apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 apply from: 'docs.gradle'
@@ -41,16 +38,9 @@ subprojects {
     group = rootProject.group
     version = rootProject.version
     apply plugin: 'com.synopsys.integration.simple'
-    apply plugin: 'io.spring.dependency-management'
 
     license {
         header rootProject.file('LICENSE')
-    }
-
-    dependencyManagement {
-        imports {
-            mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-        }
     }
 }
 
@@ -61,9 +51,9 @@ allprojects {
         implementation 'com.moandjiezana.toml:toml4j:0.7.1'
         implementation 'com.paypal.digraph:digraph-parser:1.0'
         implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
-        implementation 'com.synopsys:method-analyzer-core:0.1.0'
 
         implementation 'org.freemarker:freemarker:2.3.26-incubating'
+
         implementation 'org.jetbrains:annotations:19.0.0'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
@@ -98,16 +88,21 @@ dependencies {
     implementation project(':detectable')
     implementation project(':detector')
 
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+
     implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
     implementation "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
+    implementation 'com.synopsys:method-analyzer-core:0.1.0'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
-    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation "org.springframework.boot:spring-boot"
     implementation 'org.yaml:snakeyaml:1.24'
     implementation 'org.zeroturnaround:zt-zip:1.13'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // spring-boot-starter-test *can* provide these, but we choose to be more explicit about the dependencies we ACTUALLY use
+    testImplementation 'org.assertj:assertj-core:3.13.2'
+    testImplementation 'org.skyscreamer:jsonassert:1.5.0'
 
     testImplementation project(':configuration').sourceSets.test.output
 }
