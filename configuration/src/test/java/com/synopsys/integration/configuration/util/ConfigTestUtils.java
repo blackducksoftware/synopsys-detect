@@ -46,17 +46,6 @@ public class ConfigTestUtils {
         return configOf(propertySourceOf("map", properties));
     }
 
-    // TODO: Remove function when Kotlin to Java conversion is complete.
-    @SafeVarargs
-    @NotNull
-    public static PropertyConfiguration configOf(@NotNull final kotlin.Pair<String, String>... properties) {
-        final Map<String, String> propertyMap = Bds.of(properties)
-                                                    .map(kPair -> Pair.of(kPair.component1(), kPair.component2()))
-                                                    .toMap(Pair::getLeft, Pair::getRight);
-
-        return configOf(new MapPropertySource("map", propertyMap));
-    }
-
     @SafeVarargs
     @NotNull
     public static PropertySource propertySourceOf(@NotNull final String name, @NotNull final Map.Entry<String, String>... properties) {
