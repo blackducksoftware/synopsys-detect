@@ -12,16 +12,17 @@ buildscript {
 
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
-}
 
-plugins {
-    id 'org.springframework.boot' version '2.2.4.RELEASE'
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
 }
 
 group = 'com.synopsys.integration'
 version = '6.7.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
+apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 apply from: 'docs.gradle'
