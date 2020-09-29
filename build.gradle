@@ -13,12 +13,6 @@ buildscript {
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-repositories.gradle', to: buildscript
     apply from: 'https://raw.githubusercontent.com/blackducksoftware/integration-resources/master/gradle_common/buildscript-dependencies.gradle', to: buildscript
 
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
         classpath "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
