@@ -24,7 +24,7 @@ package com.synopsys.integration.configuration.util;
 
 import java.util.Optional;
 
-import org.antlr.v4.runtime.misc.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 public interface Group {
     @NotNull

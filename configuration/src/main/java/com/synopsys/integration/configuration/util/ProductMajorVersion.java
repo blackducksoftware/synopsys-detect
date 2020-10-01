@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.configuration.util;
 
-import org.antlr.v4.runtime.misc.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 public class ProductMajorVersion {
     private final Integer intValue;

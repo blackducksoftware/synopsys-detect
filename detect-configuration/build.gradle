@@ -6,4 +6,7 @@ versionFile << version
 
 dependencies {
     implementation project(':configuration')
+
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.synopsys.integration:integration-common:23.0.0'
 }

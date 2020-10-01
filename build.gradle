@@ -47,14 +47,8 @@ subprojects {
 
 allprojects {
     dependencies {
-        implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0'
-        implementation 'com.fasterxml.jackson.core:jackson-core:2.10.0'
-        implementation 'com.moandjiezana.toml:toml4j:0.7.1'
-        implementation 'com.paypal.digraph:digraph-parser:1.0'
-        implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
-
-        implementation 'org.freemarker:freemarker:2.3.26-incubating'
-
+        implementation "org.slf4j:slf4j-api:1.7.30"
+        implementation "org.apache.commons:commons-lang3:3.10" /* this could be managed by blackduck common */
         implementation 'org.jetbrains:annotations:19.0.0'
 
         testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
@@ -94,13 +88,15 @@ dependencies {
     implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
     implementation "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
+    implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
     implementation 'com.synopsys:method-analyzer-core:0.1.0'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
     implementation "org.springframework.boot:spring-boot"
     implementation 'org.yaml:snakeyaml:1.24'
     implementation 'org.zeroturnaround:zt-zip:1.13'
-
+    implementation 'org.freemarker:freemarker:2.3.26-incubating'
+    
     // spring-boot-starter-test *can* provide these, but we choose to be more explicit about the dependencies we ACTUALLY use
     testImplementation 'org.assertj:assertj-core:3.13.2'
     testImplementation 'org.skyscreamer:jsonassert:1.5.0'

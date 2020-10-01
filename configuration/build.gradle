@@ -11,4 +11,5 @@ dependencies {
     implementation "org.springframework:spring-core"
 
     testImplementation "org.springframework:spring-test"
+    testImplementation "org.apache.commons:commons-collections4:4.2"
 }

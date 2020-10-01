@@ -25,7 +25,7 @@ package com.synopsys.integration.configuration.property.types.enumsoft;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.antlr.v4.runtime.misc.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.util.Assert;
 

@@ -33,10 +33,10 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 
-class GoModCommandExecutor {
+public class GoModCommandExecutor {
     private final ExecutableRunner executableRunner;
 
-    GoModCommandExecutor(final ExecutableRunner executableRunner) {
+    public GoModCommandExecutor(final ExecutableRunner executableRunner) {
         this.executableRunner = executableRunner;
     }
 

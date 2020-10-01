@@ -24,7 +24,7 @@ package com.synopsys.integration.detect;
 
 import java.util.Optional;
 
-import org.antlr.v4.runtime.misc.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
