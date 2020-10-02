@@ -52,7 +52,7 @@ import com.synopsys.integration.configuration.property.types.path.NullablePathPr
 import com.synopsys.integration.configuration.property.types.path.PathListProperty;
 import com.synopsys.integration.configuration.property.types.path.PathProperty;
 import com.synopsys.integration.configuration.property.types.path.PathValue;
-import com.synopsys.integration.configuration.property.types.string.ExcludeIncludeStringListProperty;
+import com.synopsys.integration.configuration.property.types.string.CaseSensitiveStringListProperty;
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty;
 import com.synopsys.integration.configuration.property.types.string.StringListProperty;
 import com.synopsys.integration.configuration.property.types.string.StringProperty;
@@ -785,15 +785,15 @@ public class DetectProperties {
             .setHelp("The path to the Maven executable (mvn or mvnw).", "If set, Detect will use the given Maven executable instead of searching for one.")
             .setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<ExcludeIncludeStringListProperty> DETECT_MAVEN_INCLUDED_SCOPES =
-        new DetectProperty<>(new ExcludeIncludeStringListProperty("detect.maven.included.scopes"))
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_MAVEN_INCLUDED_SCOPES =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.maven.included.scopes"))
             .setInfo("Dependency Scope Included", "6.0.0")
             .setHelp("A comma separated list of Maven scopes. Output will be limited to dependencies within these scopes (overridden by exclude).",
                 "If set, Detect will include only dependencies of the given Maven scope. This property accepts filename globbing-style wildcards. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<ExcludeIncludeStringListProperty> DETECT_MAVEN_EXCLUDED_SCOPES =
-        new DetectProperty<>(new ExcludeIncludeStringListProperty("detect.maven.excluded.scopes"))
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_MAVEN_EXCLUDED_SCOPES =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.maven.excluded.scopes"))
             .setInfo("Dependency Scope Excluded", "6.0.0")
             .setHelp("A comma separated list of Maven scopes. Output will be limited to dependencies outside these scopes (overrides include).",
                 "If set, Detect will include only dependencies outside of the given Maven scope. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")

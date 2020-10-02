@@ -1,5 +1,5 @@
 /**
- * configuration
+ * detectable
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,19 +20,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.property.types.string;
+package com.synopsys.integration.detectable.util;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
+import org.apache.commons.lang3.StringUtils;
 
-public class ExcludeIncludeStringListProperty extends StringListProperty {
-    public ExcludeIncludeStringListProperty(@NotNull String key) {
-        super(key, Collections.emptyList());
-    }
-    
-    @Override
-    public boolean isCaseSensitive() {
-        return true;
+import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
+
+public class ExcludedIncludedWildcardFilterFactory {
+
+    public ExcludedIncludedWildcardFilter create(List<String> toExclude, List<String> toInclude) {
+        if (toExclude == null) {
+            toExclude = new ArrayList<>(0);
+        }
+        if (toInclude == null) {
+            toInclude = new ArrayList<>(0);
+        }
+        String toExcludeString = StringUtils.joinWith(",", toExclude.toArray());
+        String toIncludeString = StringUtils.joinWith(",", toInclude.toArray());
+        return new ExcludedIncludedWildcardFilter(toExcludeString, toIncludeString);
     }
 }

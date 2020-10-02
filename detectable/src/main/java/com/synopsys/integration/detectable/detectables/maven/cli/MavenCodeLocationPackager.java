@@ -40,7 +40,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.util.ListSourcedExcludedIncludedWildcardFilter;
+import com.synopsys.integration.detectable.util.ExcludedIncludedWildcardFilterFactory;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
 // TODO: Re-write. Some fields could be local variables. Includes many code smells. A component none:Additional_Components:none appears in the graph.
@@ -73,7 +73,7 @@ public class MavenCodeLocationPackager {
     // mavenTextOutput should be the full output of mvn dependency:tree (no scope applied); scope filtering is now done by this method
     public List<MavenParseResult> extractCodeLocations(String sourcePath, String mavenOutputText, List<String> excludedScopes, List<String> includedScopes, String excludedModules, String includedModules) {
         ExcludedIncludedWildcardFilter modulesFilter = new ExcludedIncludedWildcardFilter(excludedModules, includedModules);
-        ExcludedIncludedWildcardFilter scopeFilter = ListSourcedExcludedIncludedWildcardFilter.create(excludedScopes, includedScopes);
+        ExcludedIncludedWildcardFilter scopeFilter = (new ExcludedIncludedWildcardFilterFactory()).create(excludedScopes, includedScopes);
         codeLocations = new ArrayList<>();
         currentMavenProject = null;
         dependencyParentStack = new Stack<>();
