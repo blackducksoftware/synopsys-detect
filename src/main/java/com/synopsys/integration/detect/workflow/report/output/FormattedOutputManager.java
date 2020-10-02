@@ -41,7 +41,7 @@ import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
-import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detect.status.DetectorStatusCode;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.util.NameVersion;
@@ -116,7 +116,8 @@ public class FormattedOutputManager {
         detectorOutput.extracted = evaluation.wasExtractionSuccessful();
         detectorOutput.discoverable = evaluation.wasDiscoverySuccessful();
         detectorOutput.status = evaluation.getStatus().name();
-        detectorOutput.statusCode = formatResultNameToStatusCode(evaluation.getResultClassName());
+        DetectorResultClassStatusCodeMap detectorResultClassStatusCodeMap = new DetectorResultClassStatusCodeMap();
+        detectorOutput.statusCode = detectorResultClassStatusCodeMap.getStatusCode(evaluation.getResultClass());
         detectorOutput.statusReason = evaluation.getStatusReason();
 
         if (evaluation.getDiscovery() != null) {
@@ -133,6 +134,16 @@ public class FormattedOutputManager {
         }
 
         return detectorOutput;
+    }
+
+    private DetectorStatusCode determineDetectorStatusCode(String resultName) {
+        String formattedResultName = formatResultNameToStatusCode(resultName);
+        for (DetectorStatusCode code : DetectorStatusCode.values()) {
+            if (code.name().equals(formattedResultName)) {
+                return code;
+            }
+        }
+        return DetectorStatusCode.UNKNOWN_DETECTOR_RESULT;
     }
 
     private String formatResultNameToStatusCode(String resultName) {

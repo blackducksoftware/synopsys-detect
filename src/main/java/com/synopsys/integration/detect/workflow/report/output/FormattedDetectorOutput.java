@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
+import com.synopsys.integration.detect.status.DetectorStatusCode;
 
 public class FormattedDetectorOutput {
     @SerializedName("folder")
@@ -50,7 +51,7 @@ public class FormattedDetectorOutput {
     public String status = "";
 
     @SerializedName("statusCode")
-    public String statusCode = "";
+    public DetectorStatusCode statusCode = DetectorStatusCode.UNKNOWN_DETECTOR_RESULT;
 
     @SerializedName("statusReason")
     public String statusReason = "";
