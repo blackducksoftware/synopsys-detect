@@ -1,4 +1,4 @@
-package com.synopsys.integration.detector.result.status;
+package com.synopsys.integration.detect.workflow.report;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import com.synopsys.integration.detect.workflow.report.output.DetectorResultClassStatusCodeMap;
 
 public class DetectorStatusCodeTest {
 
@@ -22,8 +24,9 @@ public class DetectorStatusCodeTest {
     }
 
     public Set<String> getResultClassNames() {
-        String pathToDetectableResults = "../detectable/src/main/java/com/synopsys/integration/detectable/detectable/result";
-        String pathToDetectorResults = "src/main/java/com/synopsys/integration/detector/result";
+        String pathToDetectableResults = "detectable/src/main/java/com/synopsys/integration/detectable/detectable/result";
+        String pathToDetectorResults = "detector/src/main/java/com/synopsys/integration/detector/result";
+        String wd = System.getProperty("user.dir");
 
         File detectableResults = new File(pathToDetectableResults);
         File detectorResults = new File(pathToDetectorResults);
