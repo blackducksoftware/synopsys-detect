@@ -89,7 +89,6 @@ import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolv
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
-import com.synopsys.integration.detect.type.OperatingSystemType;
 import com.synopsys.integration.detect.util.filter.DetectFilter;
 import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
@@ -123,6 +122,7 @@ import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
+import com.synopsys.integration.util.OperatingSystemType;
 
 import freemarker.template.Configuration;
 
@@ -324,7 +324,7 @@ public class DetectBoot {
 
         Map<String, String> additionalNotes = new HashMap<>();
 
-        List<Property> deprecatedProperties =  DetectProperties.allProperties()
+        List<Property> deprecatedProperties = DetectProperties.allProperties()
                                                   .stream()
                                                   .filter(property -> property.getPropertyDeprecationInfo() != null)
                                                   .collect(Collectors.toList());
@@ -356,7 +356,7 @@ public class DetectBoot {
         PropertyConfigurationHelpContext detectConfigurationReporter = new PropertyConfigurationHelpContext(detectConfiguration);
         InfoLogReportWriter infoLogReportWriter = new InfoLogReportWriter();
         if (!fullConfiguration) {
-            detectConfigurationReporter.printCurrentValues(infoLogReportWriter::writeLine,  DetectProperties.allProperties(), additionalNotes);
+            detectConfigurationReporter.printCurrentValues(infoLogReportWriter::writeLine, DetectProperties.allProperties(), additionalNotes);
         }
 
         //Next check for options that are just plain bad, ie giving an detector type we don't know about.
@@ -367,12 +367,12 @@ public class DetectBoot {
         }
 
         if (usedFailureProperties.size() > 0) {
-            detectConfigurationReporter.printPropertyErrors(infoLogReportWriter::writeLine,  DetectProperties.allProperties(), deprecationMessages);
+            detectConfigurationReporter.printPropertyErrors(infoLogReportWriter::writeLine, DetectProperties.allProperties(), deprecationMessages);
 
             logger.warn(StringUtils.repeat("=", 60));
             logger.warn("Configuration is using deprecated properties that must be updated for this major version.");
             logger.warn("You MUST fix these deprecation issues for detect to proceed.");
-            logger.warn("To ignore these messages and force detect to exit with success supply --" +  DetectProperties.DETECT_FORCE_SUCCESS.getProperty().getKey() + "=true");
+            logger.warn("To ignore these messages and force detect to exit with success supply --" + DetectProperties.DETECT_FORCE_SUCCESS.getProperty().getKey() + "=true");
             logger.warn("This will not force detect to run, but it will pretend to have succeeded.");
             logger.warn(StringUtils.repeat("=", 60));
 
