@@ -172,8 +172,8 @@ public class DetectableOptionFactory {
 
     public MavenCliExtractorOptions createMavenCliOptions() {
         String mavenBuildCommand = getNullableValue(DetectProperties.DETECT_MAVEN_BUILD_COMMAND);
-        String mavenExcludedScopes = getNullableValue(DetectProperties.DETECT_MAVEN_EXCLUDED_SCOPES);
-        String mavenIncludedScopes = getNullableValue(DetectProperties.DETECT_MAVEN_INCLUDED_SCOPES);
+        List<String> mavenExcludedScopes = getValue(DetectProperties.DETECT_MAVEN_EXCLUDED_SCOPES);
+        List<String> mavenIncludedScopes = getValue(DetectProperties.DETECT_MAVEN_INCLUDED_SCOPES);
         String mavenExcludedModules = getNullableValue(DetectProperties.DETECT_MAVEN_EXCLUDED_MODULES);
         String mavenIncludedModules = getNullableValue(DetectProperties.DETECT_MAVEN_INCLUDED_MODULES);
         return new MavenCliExtractorOptions(mavenBuildCommand, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules);

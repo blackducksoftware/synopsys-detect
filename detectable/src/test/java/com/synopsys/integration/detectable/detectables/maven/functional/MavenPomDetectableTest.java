@@ -72,22 +72,22 @@ public class MavenPomDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         class MavenPomResolverTest implements MavenResolver {
 
             @Override
-            public File resolveMaven(final DetectableEnvironment environment) throws DetectableException {
+            public File resolveMaven(DetectableEnvironment environment) throws DetectableException {
                 return new File("maven");
             }
         }
-        return detectableFactory.createMavenPomDetectable(detectableEnvironment, new MavenPomResolverTest(), new MavenCliExtractorOptions("test", "", "", "", ""));
+        return detectableFactory.createMavenPomDetectable(detectableEnvironment, new MavenPomResolverTest(), new MavenCliExtractorOptions("test", null, null, "", ""));
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size(), "A code location should have been generated.");
 
-        final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.MAVEN, extraction.getCodeLocations().get(0).getDependencyGraph());
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.MAVEN, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(3);
 
         // ExternalIdFactory sets group for Maven external Ids

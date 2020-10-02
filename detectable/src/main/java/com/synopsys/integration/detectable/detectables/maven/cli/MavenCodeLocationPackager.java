@@ -40,6 +40,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.util.ListSourcedExcludedIncludedWildcardFilter;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
 // TODO: Re-write. Some fields could be local variables. Includes many code smells. A component none:Additional_Components:none appears in the graph.
@@ -65,14 +66,14 @@ public class MavenCodeLocationPackager {
     private boolean inOutOfScopeTree = false;
     private MutableDependencyGraph currentGraph = null;
 
-    public MavenCodeLocationPackager(final ExternalIdFactory externalIdFactory) {
+    public MavenCodeLocationPackager(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
     // mavenTextOutput should be the full output of mvn dependency:tree (no scope applied); scope filtering is now done by this method
-    public List<MavenParseResult> extractCodeLocations(final String sourcePath, final String mavenOutputText, final String excludedScopes, final String includedScopes, final String excludedModules, final String includedModules) {
-        final ExcludedIncludedWildcardFilter modulesFilter = new ExcludedIncludedWildcardFilter(excludedModules, includedModules);
-        final ExcludedIncludedWildcardFilter scopeFilter = new ExcludedIncludedWildcardFilter(excludedScopes, includedScopes);
+    public List<MavenParseResult> extractCodeLocations(String sourcePath, String mavenOutputText, List<String> excludedScopes, List<String> includedScopes, String excludedModules, String includedModules) {
+        ExcludedIncludedWildcardFilter modulesFilter = new ExcludedIncludedWildcardFilter(excludedModules, includedModules);
+        ExcludedIncludedWildcardFilter scopeFilter = ListSourcedExcludedIncludedWildcardFilter.create(excludedScopes, includedScopes);
         codeLocations = new ArrayList<>();
         currentMavenProject = null;
         dependencyParentStack = new Stack<>();
@@ -80,7 +81,7 @@ public class MavenCodeLocationPackager {
         currentGraph = new MutableMapDependencyGraph();
 
         level = 0;
-        for (final String currentLine : mavenOutputText.split(System.lineSeparator())) {
+        for (String currentLine : mavenOutputText.split(System.lineSeparator())) {
             String line = currentLine.trim();
 
             if (shouldSkipLine(line)) {
@@ -94,7 +95,7 @@ public class MavenCodeLocationPackager {
                 continue;
             }
 
-            final boolean finished = line.contains("--------") || endOfTreePattern.matcher(line).matches();
+            boolean finished = line.contains("--------") || endOfTreePattern.matcher(line).matches();
             if (finished) {
                 currentMavenProject = null;
                 dependencyParentStack.clear();
@@ -103,9 +104,9 @@ public class MavenCodeLocationPackager {
                 continue;
             }
 
-            final int previousLevel = level;
-            final String cleanedLine = calculateCurrentLevelAndCleanLine(line);
-            final ScopedDependency dependency = textToDependency(cleanedLine);
+            int previousLevel = level;
+            String cleanedLine = calculateCurrentLevelAndCleanLine(line);
+            ScopedDependency dependency = textToDependency(cleanedLine);
             if (null == dependency) {
                 continue;
             }
@@ -142,7 +143,7 @@ public class MavenCodeLocationPackager {
     private void initializeCurrentMavenProject(ExcludedIncludedWildcardFilter modulesFilter, String sourcePath, String line) {
         // this is the first line of a new code location, the following lines will be the tree of dependencies for this code location
         currentGraph = new MutableMapDependencyGraph();
-        final MavenParseResult mavenProject = createMavenParseResult(sourcePath, line, currentGraph);
+        MavenParseResult mavenProject = createMavenParseResult(sourcePath, line, currentGraph);
         if (null != mavenProject && modulesFilter.shouldInclude(mavenProject.getProjectName())) {
             logger.trace(String.format("Project: %s", mavenProject.getProjectName()));
             this.currentMavenProject = mavenProject;
@@ -195,21 +196,21 @@ public class MavenCodeLocationPackager {
         }
     }
 
-    private void addOrphansToGraph(final MutableDependencyGraph graph, final List<Dependency> orphans) {
+    private void addOrphansToGraph(MutableDependencyGraph graph, List<Dependency> orphans) {
         logger.trace(String.format("# orphans: %d", orphans.size()));
         if (orphans.size() > 0) {
-            final Dependency orphanListParent = createOrphanListParentDependency();
+            Dependency orphanListParent = createOrphanListParentDependency();
             logger.trace(String.format("adding orphan list parent dependency: %s", orphanListParent.getExternalId().toString()));
             graph.addChildToRoot(orphanListParent);
-            for (final Dependency dependency : orphans) {
+            for (Dependency dependency : orphans) {
                 logger.trace(String.format("adding orphan: %s", dependency.getExternalId().toString()));
                 graph.addParentWithChild(orphanListParent, dependency);
             }
         }
     }
 
-    private void addDependencyIfInScope(final MutableDependencyGraph currentGraph, final List<Dependency> orphans, final ExcludedIncludedWildcardFilter scopeFilter, final boolean inOutOfScopeTree, final Dependency parent,
-        final ScopedDependency dependency) {
+    private void addDependencyIfInScope(MutableDependencyGraph currentGraph, List<Dependency> orphans, ExcludedIncludedWildcardFilter scopeFilter, boolean inOutOfScopeTree, Dependency parent,
+        ScopedDependency dependency) {
         if (scopeFilter.shouldInclude(dependency.scope)) {
             if (inOutOfScopeTree) {
                 logger.trace(
@@ -224,23 +225,23 @@ public class MavenCodeLocationPackager {
         }
     }
 
-    private MavenParseResult createMavenParseResult(final String sourcePath, final String line, final DependencyGraph graph) {
-        final Dependency dependency = textToProject(line);
+    private MavenParseResult createMavenParseResult(String sourcePath, String line, DependencyGraph graph) {
+        Dependency dependency = textToProject(line);
         if (null != dependency) {
             String codeLocationSourcePath = sourcePath;
             if (!sourcePath.endsWith(dependency.getName())) {
                 codeLocationSourcePath += "/" + dependency.getName();
             }
-            final CodeLocation codeLocation = new CodeLocation(graph, dependency.getExternalId(), new File(codeLocationSourcePath));
+            CodeLocation codeLocation = new CodeLocation(graph, dependency.getExternalId(), new File(codeLocationSourcePath));
             return new MavenParseResult(dependency.getName(), dependency.getVersion(), codeLocation);
         }
         return null;
     }
 
-    public String calculateCurrentLevelAndCleanLine(final String line) {
+    public String calculateCurrentLevelAndCleanLine(String line) {
         level = 0;
         String cleanedLine = line;
-        for (final String pattern : indentationStrings) {
+        for (String pattern : indentationStrings) {
             while (cleanedLine.contains(pattern)) {
                 level++;
                 cleanedLine = cleanedLine.replaceFirst(Pattern.quote(pattern), "");
@@ -251,37 +252,37 @@ public class MavenCodeLocationPackager {
     }
 
     private Dependency createOrphanListParentDependency() {
-        final ExternalId externalId = externalIdFactory.createMavenExternalId(ORPHAN_LIST_PARENT_NODE_GROUP, ORPHAN_LIST_PARENT_NODE_NAME, ORPHAN_LIST_PARENT_NODE_VERSION);
+        ExternalId externalId = externalIdFactory.createMavenExternalId(ORPHAN_LIST_PARENT_NODE_GROUP, ORPHAN_LIST_PARENT_NODE_NAME, ORPHAN_LIST_PARENT_NODE_VERSION);
         return new Dependency(ORPHAN_LIST_PARENT_NODE_NAME, ORPHAN_LIST_PARENT_NODE_VERSION, externalId);
     }
 
-    public ScopedDependency textToDependency(final String componentText) {
+    public ScopedDependency textToDependency(String componentText) {
         if (!isGav(componentText)) {
             return null;
         }
-        final String[] gavParts = componentText.split(":");
-        final String group = gavParts[0];
-        final String artifact = gavParts[1];
+        String[] gavParts = componentText.split(":");
+        String group = gavParts[0];
+        String artifact = gavParts[1];
 
-        final String scope = gavParts[gavParts.length - 1];
-        final boolean recognizedScope = KNOWN_SCOPES.stream().anyMatch(knownScope -> scope.startsWith(knownScope));
+        String scope = gavParts[gavParts.length - 1];
+        boolean recognizedScope = KNOWN_SCOPES.stream().anyMatch(knownScope -> scope.startsWith(knownScope));
 
         if (!recognizedScope) {
             logger.warn("This line can not be parsed correctly due to an unknown dependency format - it is unlikely a match will be found for this dependency: " + componentText);
         }
-        final String version = gavParts[gavParts.length - 2];
-        final ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
+        String version = gavParts[gavParts.length - 2];
+        ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
         return new ScopedDependency(artifact, version, externalId, scope);
     }
 
-    public Dependency textToProject(final String componentText) {
+    public Dependency textToProject(String componentText) {
         if (!isGav(componentText)) {
             return null;
         }
-        final String[] gavParts = componentText.split(":");
-        final String group = gavParts[0];
-        final String artifact = gavParts[1];
-        final String version;
+        String[] gavParts = componentText.split(":");
+        String group = gavParts[0];
+        String artifact = gavParts[1];
+        String version;
         if (gavParts.length == 4) {
             // Dependency does not include the classifier
             version = gavParts[gavParts.length - 1];
@@ -292,18 +293,18 @@ public class MavenCodeLocationPackager {
             logger.debug(String.format("%s does not look like a dependency we can parse", componentText));
             return null;
         }
-        final ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
+        ExternalId externalId = externalIdFactory.createMavenExternalId(group, artifact, version);
         return new Dependency(artifact, version, externalId);
     }
 
-    public boolean isLineRelevant(final String line) {
-        final String editableLine = line;
+    public boolean isLineRelevant(String line) {
+        String editableLine = line;
         if (!doesLineContainSegmentsInOrder(line, "[", "INFO", "]")) {
             // Does not contain [INFO]
             return false;
         }
-        final int index = indexOfEndOfSegments(line, "[", "INFO", "]");
-        final String trimmedLine = editableLine.substring(index);
+        int index = indexOfEndOfSegments(line, "[", "INFO", "]");
+        String trimmedLine = editableLine.substring(index);
 
         if (StringUtils.isBlank(trimmedLine) || trimmedLine.contains("Downloaded") || trimmedLine.contains("Downloading")) {
             // Does not have content or this a line about download information
@@ -312,10 +313,10 @@ public class MavenCodeLocationPackager {
         return true;
     }
 
-    public String trimLogLevel(final String line) {
-        final String editableLine = line;
+    public String trimLogLevel(String line) {
+        String editableLine = line;
 
-        final int index = indexOfEndOfSegments(line, "[", "INFO", "]");
+        int index = indexOfEndOfSegments(line, "[", "INFO", "]");
         String trimmedLine = editableLine.substring(index);
 
         if (trimmedLine.startsWith(" ")) {
@@ -324,12 +325,12 @@ public class MavenCodeLocationPackager {
         return trimmedLine;
     }
 
-    public boolean isProjectSection(final String line) {
+    public boolean isProjectSection(String line) {
         // We only want to parse the dependency:tree output
         return doesLineContainSegmentsInOrder(line, "---", "dependency", ":", "tree");
     }
 
-    public boolean isDependencyTreeUpdates(final String line) {
+    public boolean isDependencyTreeUpdates(String line) {
         if (line.contains("checking for updates")) {
             return true;
         } else {
@@ -337,11 +338,11 @@ public class MavenCodeLocationPackager {
         }
     }
 
-    public boolean isGav(final String componentText) {
-        final String debugMessage = String.format("%s does not look like a GAV we recognize", componentText);
-        final String[] gavParts = componentText.split(":");
+    public boolean isGav(String componentText) {
+        String debugMessage = String.format("%s does not look like a GAV we recognize", componentText);
+        String[] gavParts = componentText.split(":");
         if (gavParts.length >= 4) {
-            for (final String part : gavParts) {
+            for (String part : gavParts) {
                 if (StringUtils.isBlank(part)) {
                     logger.debug(debugMessage);
                     return false;
@@ -353,10 +354,10 @@ public class MavenCodeLocationPackager {
         return false;
     }
 
-    public boolean doesLineContainSegmentsInOrder(final String line, final String... segments) {
+    public boolean doesLineContainSegmentsInOrder(String line, String... segments) {
         Boolean lineContainsSegments = true;
 
-        final int index = indexOfEndOfSegments(line, segments);
+        int index = indexOfEndOfSegments(line, segments);
         if (index == -1) {
             lineContainsSegments = false;
         }
@@ -364,15 +365,15 @@ public class MavenCodeLocationPackager {
         return lineContainsSegments;
     }
 
-    public int indexOfEndOfSegments(final String line, final String... segments) {
+    public int indexOfEndOfSegments(String line, String... segments) {
         int endOfSegments = -1;
         if (segments.length > 0) {
             endOfSegments = 0;
         }
 
         String editableLine = line;
-        for (final String segment : segments) {
-            final int index = editableLine.indexOf(segment);
+        for (String segment : segments) {
+            int index = editableLine.indexOf(segment);
             // If the string does not contain the segment indexOf returns -1
             if (index == -1) {
                 endOfSegments = -1;
