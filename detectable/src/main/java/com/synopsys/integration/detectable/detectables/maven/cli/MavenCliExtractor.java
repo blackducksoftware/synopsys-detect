@@ -93,5 +93,4 @@ public class MavenCliExtractor {
             return new Extraction.Builder().exception(e).build();
         }
     }
-
 }
