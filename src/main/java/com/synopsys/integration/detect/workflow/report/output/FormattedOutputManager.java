@@ -136,16 +136,6 @@ public class FormattedOutputManager {
         return detectorOutput;
     }
 
-    private DetectorStatusCode determineDetectorStatusCode(String resultName) {
-        String formattedResultName = formatResultNameToStatusCode(resultName);
-        for (DetectorStatusCode code : DetectorStatusCode.values()) {
-            if (code.name().equals(formattedResultName)) {
-                return code;
-            }
-        }
-        return DetectorStatusCode.UNKNOWN_DETECTOR_RESULT;
-    }
-
     private String formatResultNameToStatusCode(String resultName) {
         String[] classnamePieces = resultName.split("\\.");
         String actualResultName = classnamePieces[classnamePieces.length-1].replace("DetectResult", "").replace("DetectorResult", "").replace("DetectableResult", "");
