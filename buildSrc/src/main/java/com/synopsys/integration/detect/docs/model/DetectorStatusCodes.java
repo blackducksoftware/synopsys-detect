@@ -24,20 +24,32 @@ package com.synopsys.integration.detect.docs.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.synopsys.integration.detect.docs.copied.HelpJsonDetectorStatusCode;
+
 public class DetectorStatusCodes {
 
-    private Set<String> statusCodes;
+    private Set<HelpJsonDetectorStatusCode> statusCodes;
 
-    public DetectorStatusCodes(final Set<String> statusCodes) {
-        this.statusCodes = statusCodes;
+    public DetectorStatusCodes(final List<HelpJsonDetectorStatusCode> statusCodes) {
+        this.statusCodes = new HashSet<>(statusCodes);
     }
 
-    public List<String> getStatusCodes() {
-        List<String> sortedCodes = new ArrayList<>(statusCodes);
-        Collections.sort(sortedCodes);
+    public List<HelpJsonDetectorStatusCode> getStatusCodes() {
+        List<HelpJsonDetectorStatusCode> sortedCodes = new ArrayList<>(statusCodes);
+        sortedCodes.sort(new HelpJsonDetectorStatusCodeComparator());
         return sortedCodes;
+    }
+
+    private class HelpJsonDetectorStatusCodeComparator implements Comparator<HelpJsonDetectorStatusCode> {
+
+        @Override
+        public int compare(final HelpJsonDetectorStatusCode o1, final HelpJsonDetectorStatusCode o2) {
+            return o1.getStatusCode().compareTo(o2.getStatusCode());
+        }
     }
 }
