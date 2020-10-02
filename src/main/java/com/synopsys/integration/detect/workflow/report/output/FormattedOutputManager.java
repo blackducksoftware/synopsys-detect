@@ -136,15 +136,6 @@ public class FormattedOutputManager {
         return detectorOutput;
     }
 
-    private String formatResultNameToStatusCode(String resultName) {
-        String[] classnamePieces = resultName.split("\\.");
-        String actualResultName = classnamePieces[classnamePieces.length-1].replace("DetectResult", "").replace("DetectorResult", "").replace("DetectableResult", "");
-
-        return actualResultName
-                   .replaceAll("([a-z])([A-Z]+)", "$1_$2")
-                   .toUpperCase();
-    }
-
     private void detectorsComplete(final DetectorToolResult detectorToolResult) {
         this.detectorToolResult = detectorToolResult;
     }
