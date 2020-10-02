@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.maven.unit;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ public class MavenCorruptOutputTest {
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         MavenCodeLocationPackager packager = new MavenCodeLocationPackager(externalIdFactory);
 
-        List<MavenParseResult> results = packager.extractCodeLocations("", getInput(), null, null, null, null);
+        List<MavenParseResult> results = packager.extractCodeLocations("", getInput(), Collections.emptyList(), Collections.emptyList(), null, null);
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.MAVEN, results.get(0).getCodeLocation().getDependencyGraph());
         graphAssert.hasRootSize(1);
