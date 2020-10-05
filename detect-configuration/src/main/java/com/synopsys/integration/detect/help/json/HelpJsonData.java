@@ -30,6 +30,7 @@ public class HelpJsonData {
     private List<HelpJsonDetector> buildDetectors = new ArrayList<>();
     private List<HelpJsonDetector> buildlessDetectors = new ArrayList<>();
     private List<HelpJsonOption> options = new ArrayList<>();
+    private List<HelpJsonDetectorStatusCode> detectorStatusCodes = new ArrayList<>();
 
     public List<HelpJsonExitCode> getExitCodes() {
         return exitCodes;
@@ -61,5 +62,13 @@ public class HelpJsonData {
 
     public void setOptions(final List<HelpJsonOption> options) {
         this.options = options;
+    }
+
+    public List<HelpJsonDetectorStatusCode> getDetectorStatusCodes() {
+        return detectorStatusCodes;
+    }
+
+    public void setDetectorStatusCodes(final List<HelpJsonDetectorStatusCode> detectorStatusCodes) {
+        this.detectorStatusCodes = detectorStatusCodes;
     }
 }

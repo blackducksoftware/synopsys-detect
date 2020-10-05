@@ -26,14 +26,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class PassedDetectorResult extends DetectorResult {
     public PassedDetectorResult() {
-        this("Passed.", "N/A");
+        this("Passed.", null);
     }
 
     public PassedDetectorResult(@NotNull final String description) {
-        this(description, "N/A");
+        this(description, null);
     }
 
-    public PassedDetectorResult(@NotNull final String description, final String resultName) {
-        super(true, description, resultName);
+    public PassedDetectorResult(@NotNull final String description, final Class resultClass) {
+        super(true, description, resultClass);
     }
 }

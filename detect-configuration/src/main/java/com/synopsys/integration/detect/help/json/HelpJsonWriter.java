@@ -37,6 +37,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.util.Group;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.status.DetectorStatusCode;
 
 public class HelpJsonWriter {
     private final Logger logger = LoggerFactory.getLogger(HelpJsonWriter.class);
@@ -52,6 +53,7 @@ public class HelpJsonWriter {
 
         data.getOptions().addAll(detectOptions.stream().map(this::convertOption).collect(Collectors.toList()));
         data.getExitCodes().addAll(Stream.of(ExitCodeType.values()).map(this::convertExitCode).collect(Collectors.toList()));
+        data.getDetectorStatusCodes().addAll(Stream.of(DetectorStatusCode.values()).map(this::convertDetectorStatusCode).collect(Collectors.toList()));
         data.setBuildlessDetectors(buildlessDetectors);
         data.setBuildDetectors(buildDetectors);
 
@@ -64,6 +66,13 @@ public class HelpJsonWriter {
         } catch (IOException e) {
             logger.error("There was an error when creating the html file", e);
         }
+    }
+
+    public HelpJsonDetectorStatusCode convertDetectorStatusCode(DetectorStatusCode statusCode) {
+        HelpJsonDetectorStatusCode helpJsonDetectorStatusCode = new HelpJsonDetectorStatusCode();
+        helpJsonDetectorStatusCode.setStatusCode(statusCode.name());
+        helpJsonDetectorStatusCode.setStatusCodeDescription(statusCode.getDescription());
+        return helpJsonDetectorStatusCode;
     }
 
     public HelpJsonExitCode convertExitCode(ExitCodeType exitCodeType) {

@@ -1,5 +1,5 @@
 /**
- * detector
+ * detect-configuration
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,10 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.result;
+package com.synopsys.integration.detect.help.json;
 
-public class NotNestableDetectorResult extends FailedDetectorResult {
-    public NotNestableDetectorResult() {
-        super("Not nestable and a detector already applied in parent directory.", NotNestableDetectorResult.class);
+public class HelpJsonDetectorStatusCode {
+    private String statusCode = "";
+    private String statusCodeDescription = "";
+
+    public String getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(final String statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public String getStatusCodeDescription() {
+        return statusCodeDescription;
+    }
+
+    public void setStatusCodeDescription(final String statusCodeDescription) {
+        this.statusCodeDescription = statusCodeDescription;
     }
 }

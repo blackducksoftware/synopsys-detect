@@ -41,7 +41,7 @@ import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
-import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detect.status.DetectorStatusCode;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.util.NameVersion;
@@ -116,7 +116,8 @@ public class FormattedOutputManager {
         detectorOutput.extracted = evaluation.wasExtractionSuccessful();
         detectorOutput.discoverable = evaluation.wasDiscoverySuccessful();
         detectorOutput.status = evaluation.getStatus().name();
-        detectorOutput.statusCode = formatResultNameToStatusCode(evaluation.getResultClassName());
+        DetectorResultClassStatusCodeMap detectorResultClassStatusCodeMap = new DetectorResultClassStatusCodeMap();
+        detectorOutput.statusCode = detectorResultClassStatusCodeMap.getStatusCode(evaluation.getResultClass());
         detectorOutput.statusReason = evaluation.getStatusReason();
 
         if (evaluation.getDiscovery() != null) {
@@ -133,15 +134,6 @@ public class FormattedOutputManager {
         }
 
         return detectorOutput;
-    }
-
-    private String formatResultNameToStatusCode(String resultName) {
-        String[] classnamePieces = resultName.split("\\.");
-        String actualResultName = classnamePieces[classnamePieces.length-1].replace("DetectResult", "").replace("DetectorResult", "").replace("DetectableResult", "");
-
-        return actualResultName
-                   .replaceAll("([a-z])([A-Z]+)", "$1_$2")
-                   .toUpperCase();
     }
 
     private void detectorsComplete(final DetectorToolResult detectorToolResult) {

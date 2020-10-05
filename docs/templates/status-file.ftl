@@ -31,8 +31,8 @@ The file includes status codes, issues encountered and results produced. As addi
 "descriptiveName": The long form name of the detector such as "GIT - Git Cli".
 "discoverable":  A boolean indicating whether or not the detector was able to discover project information.
 "extracted": A boolean indicating whether or not the detector was able to extract dependencies.
-"status": An enum indicating whether the detector was successful or failed.
-"statusCode": A code generated using the name of the error thrown by the detector at runtime, or SUCCESS if the detector was successful.
+"status": An enum indicating whether the detector was successful, failed, or deferred to another detector.
+"statusCode": A code specifying the nature of the detector's failure, or PASSED if the detector was successful. See below for a complete list of possible status codes.
 "statusReason": A human readable description of the status code.
 "relevantFiles": [ A list of files relevant to the detector. ]
 "discoveryReason": A human readable description of the discovery result.
@@ -42,6 +42,13 @@ The file includes status codes, issues encountered and results produced. As addi
 "codeLocationCount": The number of code locations this detector produced.
 }
 ```
+###Detector Status Codes
+
+| Status Code | Description |
+| --- | --- |
+<#list statusCodes as statusCode>
+    | ${statusCode.statusCode} | ${statusCode.statusCodeDescription} |
+</#list>
 
 ##Status
 ```
