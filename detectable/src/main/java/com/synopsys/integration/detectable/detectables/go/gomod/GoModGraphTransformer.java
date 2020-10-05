@@ -25,13 +25,14 @@ package com.synopsys.integration.detectable.detectables.go.gomod;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gson.Gson;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
-class GoModGraphTransformer {
-    private Gson gson = BlackDuckServicesFactory.createDefaultGsonBuilder().setPrettyPrinting().setLenient().create();
-    private ReplacementDataExtractor replacementDataExtractor = new ReplacementDataExtractor(gson);
+public class GoModGraphTransformer {
+    private ReplacementDataExtractor replacementDataExtractor;
+
+    public GoModGraphTransformer(final ReplacementDataExtractor replacementDataExtractor) {
+        this.replacementDataExtractor = replacementDataExtractor;
+    }
 
     List<String> transformGoModGraphOutput(List<String> modGraphOutput, List<String> listUJsonOutput) throws DetectableException {
         if (!listUJsonOutput.isEmpty()) {

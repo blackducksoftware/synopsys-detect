@@ -25,7 +25,7 @@ package com.synopsys.integration.configuration.property;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.antlr.v4.runtime.misc.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.configuration.util.Category;

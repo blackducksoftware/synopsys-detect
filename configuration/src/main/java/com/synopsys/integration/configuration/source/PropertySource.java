@@ -24,7 +24,7 @@ package com.synopsys.integration.configuration.source;
 
 import java.util.Set;
 
-import org.antlr.v4.runtime.misc.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 // IMPORTANT

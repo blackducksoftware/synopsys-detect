@@ -25,7 +25,7 @@ package com.synopsys.integration.detectable.detectable.executable;
 import java.io.File;
 import java.util.List;
 
-import org.antlr.v4.runtime.misc.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 public interface ExecutableRunner {
     @NotNull
