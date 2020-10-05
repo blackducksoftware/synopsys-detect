@@ -445,6 +445,19 @@
     Detector
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#detector-status-codes" class="md-nav__link">
+    Detector Status Codes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1382,6 +1395,19 @@
     Detector
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#detector-status-codes" class="md-nav__link">
+    Detector Status Codes
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1465,8 +1491,8 @@
 &quot;descriptiveName&quot;: The long form name of the detector such as &quot;GIT - Git Cli&quot;.
 &quot;discoverable&quot;:  A boolean indicating whether or not the detector was able to discover project information.
 &quot;extracted&quot;: A boolean indicating whether or not the detector was able to extract dependencies.
-&quot;status&quot;: An enum indicating whether the detector was successful or failed.
-&quot;statusCode&quot;: A code generated using the name of the error thrown by the detector at runtime, or SUCCESS if the detector was successful.
+&quot;status&quot;: An enum indicating whether the detector was successful, failed, or deferred to another detector.
+&quot;statusCode&quot;: A code specifying the nature of the detector's failure, or PASSED if the detector was successful. See below for a complete list of possible status codes.
 &quot;statusReason&quot;: A human readable description of the status code.
 &quot;relevantFiles&quot;: [ A list of files relevant to the detector. ]
 &quot;discoveryReason&quot;: A human readable description of the discovery result.
@@ -1477,6 +1503,101 @@
 }
 </code></pre>
 
+<h3 id="detector-status-codes">Detector Status Codes<a class="headerlink" href="#detector-status-codes" title="Permanent link">#</a></h3>
+<table>
+<thead>
+<tr>
+<th>Status Code</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CARGO_LOCKFILE_NOT_FOUND</td>
+<td>A Cargo.toml was located in the target project, but the Cargo.lock file was NOT located.</td>
+</tr>
+<tr>
+<td>EXCEPTION</td>
+<td>An exception occured.</td>
+</tr>
+<tr>
+<td>EXCLUDED</td>
+<td>Detector type was excluded.</td>
+</tr>
+<tr>
+<td>EXECUTABLE_NOT_FOUND</td>
+<td>The necessary executable was not found.</td>
+</tr>
+<tr>
+<td>FAILED</td>
+<td>Detector failed.</td>
+</tr>
+<tr>
+<td>FALLBACK_NOT_NEEDED</td>
+<td>The fallback detector was not needed, as its preceding detector passed.</td>
+</tr>
+<tr>
+<td>FILES_NOT_FOUND</td>
+<td>Necessary files were not found within the target project.</td>
+</tr>
+<tr>
+<td>FILE_NOT_FOUND</td>
+<td>A file was not found within the target project.</td>
+</tr>
+<tr>
+<td>FORCED_NESTED_PASSED</td>
+<td>Forced to pass because nested forced by user.</td>
+</tr>
+<tr>
+<td>GO_PKG_LOCKFILE_NOT_FOUND</td>
+<td>A Gopkg.toml was located in the target project, but the Gopkg.lock file was NOT located.</td>
+</tr>
+<tr>
+<td>INSPECTOR_NOT_FOUND</td>
+<td>The necessary inspector was not found</td>
+</tr>
+<tr>
+<td>MAX_DEPTH_EXCEEDED</td>
+<td>Max depth was exceeded.</td>
+</tr>
+<tr>
+<td>NOT_NESTABLE</td>
+<td>Not nestable and a detector already applied in parent directory.</td>
+</tr>
+<tr>
+<td>NOT_SELF_NESTABLE</td>
+<td>Nestable but this detector already applied in a parent directory.</td>
+</tr>
+<tr>
+<td>NPM_NODE_MODULES_NOT_FOUND</td>
+<td>A package.json was located in the target project, but the node_modules folder was NOT located.</td>
+</tr>
+<tr>
+<td>PASSED</td>
+<td>Detector passed.</td>
+</tr>
+<tr>
+<td>POETRY_LOCKFILE_NOT_FOUND</td>
+<td>A pyproject.toml was located in the target project, but the Poetry.lock file was NOT located.</td>
+</tr>
+<tr>
+<td>PROPERTY_INSUFFICIENT</td>
+<td>The properties are insufficient to run.</td>
+</tr>
+<tr>
+<td>UNKNOWN_DETECTOR_RESULT</td>
+<td>There was an unknown result.</td>
+</tr>
+<tr>
+<td>WRONG_OPERATING_SYSTEM_RESULT</td>
+<td>Cannot run on the used operating system.</td>
+</tr>
+<tr>
+<td>YIELDED</td>
+<td>Yielded to other detectors.</td>
+</tr>
+</tbody>
+</table>
 <h2 id="status">Status<a class="headerlink" href="#status" title="Permanent link">#</a></h2>
 <pre><code>{
 &quot;key&quot;: The normalized key this status element describes such as &quot;GIT&quot;.
