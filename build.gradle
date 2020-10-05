@@ -25,7 +25,7 @@ plugins {
 }
 
 group = 'com.synopsys.integration'
-version = '6.6.0-SIGQA4'
+version = '6.6.0-SIGQA5-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
