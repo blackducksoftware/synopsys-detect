@@ -72,7 +72,7 @@ public class MavenCodeLocationPackager {
     // mavenTextOutput should be the full output of mvn dependency:tree (no scope applied); scope filtering is now done by this method
     public List<MavenParseResult> extractCodeLocations(String sourcePath, String mavenOutputText, List<String> excludedScopes, List<String> includedScopes, String excludedModules, String includedModules) {
         ExcludedIncludedWildcardFilter modulesFilter = new ExcludedIncludedWildcardFilter(excludedModules, includedModules);
-        ExcludedIncludedWildcardFilter scopeFilter = new ExcludedIncludedWildcardFilter(StringUtils.joinWith(",", excludedScopes.toArray()), StringUtils.joinWith(",", includedScopes.toArray()));
+        ExcludedIncludedWildcardFilter scopeFilter = new ExcludedIncludedWildcardFilter(StringUtils.joinWith(",", excludedScopes.toArray()), StringUtils.joinWith(",", includedScopes.toArray())); // TODO: Replace when INTCMN-469 is completed.
         codeLocations = new ArrayList<>();
         currentMavenProject = null;
         dependencyParentStack = new Stack<>();
