@@ -67,8 +67,8 @@ public class MavenCliExtractor {
                 // TODO: Improve null handling.
                 List<String> excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes();
                 List<String> includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes();
-                String excludedModules = mavenCliExtractorOptions.getMavenExcludedModules().orElse(null);
-                String includedModules = mavenCliExtractorOptions.getMavenIncludedModules().orElse(null);
+                List<String> excludedModules = mavenCliExtractorOptions.getMavenExcludedModules();
+                List<String> includedModules = mavenCliExtractorOptions.getMavenIncludedModules();
                 List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(), excludedScopes, includedScopes, excludedModules, includedModules);
 
                 List<CodeLocation> codeLocations = mavenResults.stream()

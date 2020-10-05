@@ -29,10 +29,10 @@ public class MavenCliExtractorOptions {
     private final String mavenBuildCommand;
     private final List<String> mavenExcludedScopes;
     private final List<String> mavenIncludedScopes;
-    private final String mavenExcludedModules;
-    private final String mavenIncludedModules;
-    
-    public MavenCliExtractorOptions(String mavenBuildCommand, List<String> mavenExcludedScopes, List<String> mavenIncludedScopes, String mavenExcludedModules, String mavenIncludedModules) {
+    private final List<String> mavenExcludedModules;
+    private final List<String> mavenIncludedModules;
+
+    public MavenCliExtractorOptions(String mavenBuildCommand, List<String> mavenExcludedScopes, List<String> mavenIncludedScopes, List<String> mavenExcludedModules, List<String> mavenIncludedModules) {
         this.mavenBuildCommand = mavenBuildCommand;
         this.mavenExcludedScopes = mavenExcludedScopes;
         this.mavenIncludedScopes = mavenIncludedScopes;
@@ -52,11 +52,11 @@ public class MavenCliExtractorOptions {
         return mavenIncludedScopes;
     }
 
-    public Optional<String> getMavenExcludedModules() {
-        return Optional.ofNullable(mavenExcludedModules);
+    public List<String> getMavenExcludedModules() {
+        return mavenExcludedModules;
     }
 
-    public Optional<String> getMavenIncludedModules() {
-        return Optional.ofNullable(mavenIncludedModules);
+    public List<String> getMavenIncludedModules() {
+        return mavenIncludedModules;
     }
 }

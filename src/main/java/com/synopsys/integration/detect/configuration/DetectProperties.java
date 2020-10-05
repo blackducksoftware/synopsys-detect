@@ -652,32 +652,32 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_EXCLUDED_CONFIGURATIONS =
-        new DetectProperty<>(new NullableStringProperty("detect.gradle.excluded.configurations"))
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_GRADLE_EXCLUDED_CONFIGURATIONS =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.gradle.excluded.configurations"))
             .setInfo("Gradle Exclude Configurations", "3.0.0")
             .setHelp("A comma-separated list of Gradle configurations to exclude.",
                 "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle configurations specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_EXCLUDED_PROJECTS =
-        new DetectProperty<>(new NullableStringProperty("detect.gradle.excluded.projects"))
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_GRADLE_EXCLUDED_PROJECTS =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.gradle.excluded.projects"))
             .setInfo("Gradle Exclude Projects", "3.0.0")
             .setHelp("A comma-separated list of Gradle sub-projects to exclude.",
                 "As Detect examines the Gradle project for dependencies, Detect will skip any Gradle sub-projects specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_INCLUDED_CONFIGURATIONS =
-        new DetectProperty<>(new NullableStringProperty("detect.gradle.included.configurations"))
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_GRADLE_INCLUDED_CONFIGURATIONS =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.gradle.included.configurations"))
             .setInfo("Gradle Include Configurations", "3.0.0")
             .setHelp("A comma-separated list of Gradle configurations to include.",
                 "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those Gradle configurations specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_INCLUDED_PROJECTS =
-        new DetectProperty<>(new NullableStringProperty("detect.gradle.included.projects"))
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_GRADLE_INCLUDED_PROJECTS =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.gradle.included.projects"))
             .setInfo("Gradle Include Projects", "3.0.0")
             .setHelp("A comma-separated list of Gradle sub-projects to include.",
                 "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
@@ -763,16 +763,16 @@ public class DetectProperties {
                 "By default, Detect runs the mvn (or mvnw) command with one argument: dependency:tree. You can use this property to insert one or more additional mvn command line arguments (goals, etc.) before the dependency:tree argument. For example: suppose you are running in bash on Linux, and want to point maven to your settings file (maven_dev_settings.xml in your home directory) and assign the value 'other' to property 'reason'. You could do this with: --detect.maven.build.command='--settings \\${HOME}/maven_dev_settings.xml --define reason=other'")
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<NullableStringProperty> DETECT_MAVEN_EXCLUDED_MODULES =
-        new DetectProperty<>(new NullableStringProperty("detect.maven.excluded.modules"))
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_MAVEN_EXCLUDED_MODULES =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.maven.excluded.modules"))
             .setInfo("Maven Modules Excluded", "3.0.0")
             .setHelp("A comma-separated list of Maven modules (sub-projects) to exclude.",
                 "As Detect parses the mvn dependency:tree output for dependencies, Detect will skip any Maven modules specified via this property. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<NullableStringProperty> DETECT_MAVEN_INCLUDED_MODULES =
-        new DetectProperty<>(new NullableStringProperty("detect.maven.included.modules"))
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_MAVEN_INCLUDED_MODULES =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.maven.included.modules"))
             .setInfo("Maven Modules Included", "3.0.0")
             .setHelp("A comma-separated list of Maven modules (sub-projects) to include.",
                 "As Detect parses the mvn dependency:tree output for dependencies, if this property is set, Detect will include only those Maven modules specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
@@ -842,8 +842,8 @@ public class DetectProperties {
             .setHelp("The path to the Nuget.Config file to supply to the nuget exe.")
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<NullableStringProperty> DETECT_NUGET_EXCLUDED_MODULES =
-        new DetectProperty<>(new NullableStringProperty("detect.nuget.excluded.modules"))
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_NUGET_EXCLUDED_MODULES =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.nuget.excluded.modules"))
             .setInfo("Nuget Projects Excluded", "3.0.0")
             .setHelp("The names of the projects in a solution to exclude.")
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
@@ -856,8 +856,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<NullableStringProperty> DETECT_NUGET_INCLUDED_MODULES =
-        new DetectProperty<>(new NullableStringProperty("detect.nuget.included.modules"))
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_NUGET_INCLUDED_MODULES =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.nuget.included.modules"))
             .setInfo("Nuget Modules Included", "3.0.0")
             .setHelp("The names of the projects in a solution to include (overrides exclude).")
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
@@ -1192,15 +1192,15 @@ public class DetectProperties {
             .setHelp("If set to true, development dependencies will be included when parsing *.gemspec files.")
             .setGroups(DetectGroup.RUBY, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<NullableStringProperty> DETECT_SBT_EXCLUDED_CONFIGURATIONS =
-        new DetectProperty<>(new NullableStringProperty("detect.sbt.excluded.configurations"))
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_SBT_EXCLUDED_CONFIGURATIONS =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.sbt.excluded.configurations"))
             .setInfo("SBT Configurations Excluded", "3.0.0")
             .setHelp("The names of the sbt configurations to exclude.", "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<NullableStringProperty> DETECT_SBT_INCLUDED_CONFIGURATIONS =
-        new DetectProperty<>(new NullableStringProperty("detect.sbt.included.configurations"))
+    public static final DetectProperty<CaseSensitiveStringListProperty> DETECT_SBT_INCLUDED_CONFIGURATIONS =
+        new DetectProperty<>(new CaseSensitiveStringListProperty("detect.sbt.included.configurations"))
             .setInfo("SBT Configurations Included", "3.0.0")
             .setHelp("The names of the sbt configurations to include.", "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.SBT, DetectGroup.SOURCE_SCAN)
