@@ -40,13 +40,13 @@ public class MavenCliExtractor {
     private final ExecutableRunner executableRunner;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
 
-    public MavenCliExtractor(final ExecutableRunner executableRunner, final MavenCodeLocationPackager mavenCodeLocationPackager) {
+    public MavenCliExtractor(ExecutableRunner executableRunner, MavenCodeLocationPackager mavenCodeLocationPackager) {
         this.executableRunner = executableRunner;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
     }
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
-    public Extraction extract(final File directory, final File mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) {
+    public Extraction extract(File directory, File mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) {
         try {
             String[] mavenCommand = mavenCliExtractorOptions.getMavenBuildCommand()
                                         .map(cmd -> cmd.replace("dependency:tree", ""))
@@ -54,44 +54,43 @@ public class MavenCliExtractor {
                                         .map(cmd -> cmd.split(" "))
                                         .orElse(null);
 
-            final List<String> arguments = new ArrayList<>();
+            List<String> arguments = new ArrayList<>();
             if (mavenCommand != null) {
                 arguments.addAll(Arrays.asList(mavenCommand));
             }
             arguments.add("dependency:tree");
             arguments.add("-T1"); // Force maven to use a single thread to ensure the tree output is in the correct order.
 
-            final ExecutableOutput mvnOutput = executableRunner.execute(directory, mavenExe, arguments);
+            ExecutableOutput mvnOutput = executableRunner.execute(directory, mavenExe, arguments);
 
             if (mvnOutput.getReturnCode() == 0) {
                 // TODO: Improve null handling.
-                final String excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes().orElse(null);
-                final String includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes().orElse(null);
-                final String excludedModules = mavenCliExtractorOptions.getMavenExcludedModules().orElse(null);
-                final String includedModules = mavenCliExtractorOptions.getMavenIncludedModules().orElse(null);
-                final List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(), excludedScopes, includedScopes, excludedModules, includedModules);
+                String excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes().orElse(null);
+                String includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes().orElse(null);
+                String excludedModules = mavenCliExtractorOptions.getMavenExcludedModules().orElse(null);
+                String includedModules = mavenCliExtractorOptions.getMavenIncludedModules().orElse(null);
+                List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(), excludedScopes, includedScopes, excludedModules, includedModules);
 
-                final List<CodeLocation> codeLocations = mavenResults.stream()
+                List<CodeLocation> codeLocations = mavenResults.stream()
                                                              .map(mavenResult -> mavenResult.getCodeLocation())
                                                              .collect(Collectors.toList());
 
-                final Optional<MavenParseResult> firstWithName = mavenResults.stream()
+                Optional<MavenParseResult> firstWithName = mavenResults.stream()
                                                                      .filter(it -> StringUtils.isNoneBlank(it.getProjectName()))
                                                                      .findFirst();
 
-                final Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
+                Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
                 if (firstWithName.isPresent()) {
                     builder.projectName(firstWithName.get().getProjectName());
                     builder.projectVersion(firstWithName.get().getProjectVersion());
                 }
                 return builder.build();
             } else {
-                final Extraction.Builder builder = new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", arguments), mvnOutput.getReturnCode()));
+                Extraction.Builder builder = new Extraction.Builder().failure(String.format("Executing command '%s' returned a non-zero exit code %s", String.join(" ", arguments), mvnOutput.getReturnCode()));
                 return builder.build();
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
-
 }
