@@ -159,7 +159,7 @@ public class DetectorEvaluation {
     }
 
     public DetectorStatusType getStatus() {
-        if (getResultClass().equals(PASSED_RESULT)) {
+        if (getExtraction() != null && getExtraction().getResult().equals(Extraction.ExtractionResultType.SUCCESS)) {
             return DetectorStatusType.SUCCESS;
         } else if (fallbackFrom != null && fallbackFrom.isExtractable()) {
             return DetectorStatusType.DEFERRED;
