@@ -1,5 +1,5 @@
 /**
- * detectable
+ * synopsys-detect
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.executable.impl;
+package com.synopsys.integration.detect.tool.detector.executable;
 
 import java.io.File;
 import java.util.Arrays;
@@ -33,23 +33,24 @@ import org.jetbrains.annotations.Nullable;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.util.OperatingSystemType;
 
-public class SimpleExecutableFinder {
+// Finds an executable in a directory.
+public class DirectoryExecutableFinder {
     private final List<String> extensions;
     private final FileFinder fileFinder;
 
-    public static SimpleExecutableFinder forCurrentOperatingSystem(final FileFinder fileFinder) {
-        return SimpleExecutableFinder.forOperatingSystem(OperatingSystemType.determineFromSystem(), fileFinder);
+    public static DirectoryExecutableFinder forCurrentOperatingSystem(final FileFinder fileFinder) {
+        return DirectoryExecutableFinder.forOperatingSystem(OperatingSystemType.determineFromSystem(), fileFinder);
     }
 
-    public static SimpleExecutableFinder forOperatingSystem(final OperatingSystemType operatingSystemType, final FileFinder fileFinder) {
+    public static DirectoryExecutableFinder forOperatingSystem(final OperatingSystemType operatingSystemType, final FileFinder fileFinder) {
         if (operatingSystemType == OperatingSystemType.WINDOWS) {
-            return new SimpleExecutableFinder(Arrays.asList(".cmd", ".bat", ".exe"), fileFinder);
+            return new DirectoryExecutableFinder(Arrays.asList(".cmd", ".bat", ".exe"), fileFinder);
         } else {
-            return new SimpleExecutableFinder(Collections.emptyList(), fileFinder);
+            return new DirectoryExecutableFinder(Collections.emptyList(), fileFinder);
         }
     }
 
-    public SimpleExecutableFinder(final List<String> extensions, final FileFinder fileFinder) {
+    public DirectoryExecutableFinder(final List<String> extensions, final FileFinder fileFinder) {
         this.extensions = extensions;
         this.fileFinder = fileFinder;
     }

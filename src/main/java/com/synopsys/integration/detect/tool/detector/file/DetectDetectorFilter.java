@@ -20,22 +20,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector.impl;
+package com.synopsys.integration.detect.tool.detector.file;
 
-import java.io.File;
+import java.util.function.Predicate;
 
-import com.synopsys.integration.detect.tool.detector.ExtractionId;
-import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
+import com.synopsys.integration.detector.rule.DetectorRule;
 
-public class DetectExtractionEnvironment extends ExtractionEnvironment {
-    private ExtractionId extractionId;
-
-    public DetectExtractionEnvironment(final File outputDirectory, final ExtractionId extractionId) {
-        super(outputDirectory);
-        this.extractionId = extractionId;
+public class DetectDetectorFilter extends DetectOverrideableFilter implements Predicate<DetectorRule> {
+    public DetectDetectorFilter(String excluded, String included) {
+        super(excluded, included);
     }
 
-    public ExtractionId getExtractionId() {
-        return extractionId;
+    @Override
+    public boolean test(final DetectorRule detectorRule) {
+        return shouldInclude(detectorRule.getDetectorType().toString());
     }
 }

@@ -1,5 +1,5 @@
 /**
- * detectable
+ * synopsys-detect
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,16 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.executable.impl;
+package com.synopsys.integration.detect.tool.detector.executable;
 
-public class CachedExecutableResolverOptions {
-    private final boolean python3;
+import java.io.File;
 
-    public CachedExecutableResolverOptions(final boolean python3) {
-        this.python3 = python3;
-    }
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
-    public boolean isPython3() {
-        return python3;
-    }
+@FunctionalInterface
+public interface ExecutableResolverFunction {
+    File resolve(String executableName) throws DetectableException;
 }

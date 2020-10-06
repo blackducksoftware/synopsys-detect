@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.inspector.go;
+package com.synopsys.integration.detectable.detectable.executable.resolver;
 
 import java.io.File;
 

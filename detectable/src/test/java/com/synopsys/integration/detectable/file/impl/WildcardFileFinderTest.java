@@ -37,9 +37,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 
-public class SimpleFileFinderTest {
+public class WildcardFileFinderTest {
 
     private static Path initialDirectoryPath;
 
@@ -69,7 +69,7 @@ public class SimpleFileFinderTest {
         final File regularFile = new File(subDir, "regularFile");
         regularFile.createNewFile();
 
-        final SimpleFileFinder finder = new SimpleFileFinder();
+        final WildcardFileFinder finder = new WildcardFileFinder();
         final List<String> filenamePatterns = Arrays.asList("sub", "linkToInitial", "regularDir", "regularFile");
         final List<File> foundFiles = finder.findFiles(initialDirectoryPath.toFile(), filenamePatterns, 10);
 

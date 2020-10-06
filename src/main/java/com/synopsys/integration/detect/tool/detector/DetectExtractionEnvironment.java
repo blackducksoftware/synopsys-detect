@@ -23,22 +23,18 @@
 package com.synopsys.integration.detect.tool.detector;
 
 import java.io.File;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detectable.ExtractionEnvironment;
 
-public class DetectFileFinder extends SimpleFileFinder {
-    private final List<String> excludedFileNames;
+public class DetectExtractionEnvironment extends ExtractionEnvironment {
+    private ExtractionId extractionId;
 
-    public DetectFileFinder(final List<String> excludedFileNames) {
-        this.excludedFileNames = excludedFileNames;
+    public DetectExtractionEnvironment(final File outputDirectory, final ExtractionId extractionId) {
+        super(outputDirectory);
+        this.extractionId = extractionId;
     }
 
-    @Override
-    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, final boolean findInsideMatchingDirectories) {
-        return super.findFiles(directoryToSearch, filenamePatterns, depth, findInsideMatchingDirectories).stream()
-                   .filter(file -> !excludedFileNames.contains(file.getName()))
-                   .collect(Collectors.toList());
+    public ExtractionId getExtractionId() {
+        return extractionId;
     }
 }

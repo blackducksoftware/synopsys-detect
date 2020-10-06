@@ -48,7 +48,7 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.factory.DetectableFactory;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
@@ -82,7 +82,7 @@ public abstract class DetectableFunctionalTest {
 
         this.executableRunner = new FunctionalExecutableRunner();
 
-        final FileFinder fileFinder = new SimpleFileFinder();
+        final FileFinder fileFinder = new WildcardFileFinder();
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
         this.detectableFactory = new DetectableFactory(fileFinder, executableRunner, externalIdFactory, gson);

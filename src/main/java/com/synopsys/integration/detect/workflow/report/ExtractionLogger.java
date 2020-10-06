@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.workflow.report;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.tool.detector.impl.DetectExtractionEnvironment;
+import com.synopsys.integration.detect.tool.detector.DetectExtractionEnvironment;
 import com.synopsys.integration.detect.workflow.report.util.ObjectPrinter;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.report.writer.DebugLogReportWriter;

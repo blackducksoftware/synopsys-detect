@@ -41,7 +41,7 @@ import com.synopsys.integration.configuration.util.ConfigTestUtils;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 
 public class FileExclusionTest {
     File sourceFile;
@@ -73,7 +73,7 @@ public class FileExclusionTest {
 
     @Test
     public void testSimpleFindsAll() throws IOException {
-        FileFinder finder = new SimpleFileFinder();
+        FileFinder finder = new WildcardFileFinder();
         Assert.assertEquals(4, finder.findFiles(sourceFile, "*", 2).size());
     }
 

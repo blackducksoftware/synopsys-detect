@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.exitcode.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;

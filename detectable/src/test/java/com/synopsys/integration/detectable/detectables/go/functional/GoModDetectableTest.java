@@ -13,7 +13,7 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
