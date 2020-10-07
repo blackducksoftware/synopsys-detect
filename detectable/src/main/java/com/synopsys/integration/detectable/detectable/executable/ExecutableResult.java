@@ -48,7 +48,7 @@ public class ExecutableResult {
         return Optional.ofNullable(executableOutput);
     }
 
-    public boolean hasOutputWithReturnCodeZero() {
+    public boolean isSuccessful() {
         return executableOutput != null && executableOutput.getReturnCode() == 0;
     }
 

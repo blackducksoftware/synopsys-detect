@@ -40,9 +40,13 @@ public class Extraction {
     private final List<File> relevantFiles;
     private final List<File> unrecognizedPaths;
     private final ExtractionResultType result;
-    private final Exception error;
-    private final String description;
 
+    //if your an error you might have one of these filled.
+    private final Exception error;
+    private final ExecutableResult errorExecutable;
+    //end
+
+    private final String description;
     private final String projectVersion;
     private final String projectName;
     private final Map<ExtractionMetadata, Object> metaData;
@@ -58,6 +62,7 @@ public class Extraction {
         this.metaData = builder.metaData;
         this.relevantFiles = builder.relevantFiles;
         this.unrecognizedPaths = builder.unrecognizedPaths;
+        this.errorExecutable = builder.errorExecutable;
 
         if (result == null) {
             throw new IllegalArgumentException("An extraction requires a result type.");
@@ -65,7 +70,7 @@ public class Extraction {
     }
 
     public static Extraction fromFailedExecutable(ExecutableResult executableResult) {
-        return new Extraction.Builder().executableError(executableResult).build();
+        return new Extraction.Builder().exception(executableResult).build();
     }
 
     public <T> Optional<T> getMetaData(final ExtractionMetadata<T> extractionMetadata) {
@@ -121,6 +126,7 @@ public class Extraction {
         private final List<CodeLocation> codeLocations = new ArrayList<>();
         private final List<File> relevantFiles = new ArrayList<>();
         private final List<File> unrecognizedPaths = new ArrayList<>();
+        public ExecutableResult errorExecutable;
         private ExtractionResultType result;
         private Exception error;
         private String description;
@@ -180,10 +186,9 @@ public class Extraction {
             return this;
         }
 
-        public Builder executableError(ExecutableResult result) {
-            this.result = ExtractionResultType.FAILURE;
-            //TODO: Finish
-            //this.description = description;
+        public Builder exception(ExecutableResult result) {
+            this.result = ExtractionResultType.EXCEPTION;
+            this.errorExecutable = result;
             return this;
         }
 
