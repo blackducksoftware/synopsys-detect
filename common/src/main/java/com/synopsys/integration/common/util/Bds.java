@@ -1,5 +1,5 @@
 /**
- * configuration
+ * common
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.util;
+package com.synopsys.integration.common.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +41,7 @@ import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+//Black Duck Stream
 // TODO: Test this class.
 public class Bds<T> {
     private Stream<T> stream;
@@ -70,6 +71,10 @@ public class Bds<T> {
 
     public Bds<T> filter(final Predicate<? super T> predicate) {
         return new Bds<>(stream.filter(predicate));
+    }
+
+    public Optional<T> firstFiltered(final Predicate<? super T> predicate) {
+        return stream.filter(predicate).findFirst();
     }
 
     public Bds<T> filterNot(final Predicate<? super T> predicate) {

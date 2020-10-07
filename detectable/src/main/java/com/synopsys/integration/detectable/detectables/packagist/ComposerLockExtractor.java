@@ -29,7 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectables.packagist.model.PackagistParseResult;
 import com.synopsys.integration.detectable.detectables.packagist.parse.PackagistParser;
 

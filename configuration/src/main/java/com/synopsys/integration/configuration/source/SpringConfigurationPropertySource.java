@@ -37,7 +37,7 @@ import org.springframework.boot.env.RandomValuePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.ConfigurablePropertyResolver;
 
-import com.synopsys.integration.configuration.util.Bds;
+import com.synopsys.integration.common.util.Bds;
 
 public class SpringConfigurationPropertySource implements PropertySource {
     private String name;

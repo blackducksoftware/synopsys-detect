@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.tool.detector;
 import java.io.File;
 
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class ExtractionEnvironmentProvider {

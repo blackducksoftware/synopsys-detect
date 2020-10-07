@@ -31,10 +31,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.types.string.NullableStringProperty;
 import com.synopsys.integration.configuration.source.PropertySource;
-import com.synopsys.integration.configuration.util.Bds;
 
 class MultiplePropertySourceTests {
     @Test

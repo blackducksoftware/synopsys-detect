@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
-import com.synopsys.integration.configuration.util.Bdo;
+import com.synopsys.integration.common.util.Bdo;
 import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.rest.credentials.Credentials;
 
@@ -60,7 +60,7 @@ public class DetectConfigurationFactoryTests {
     public void parallelProcessorsDefaultsToOne() {
         // Using the property default is the safe choice. See IDETECT-1970 - JM
         final DetectConfigurationFactory factory = spyFactoryOf();
-        final Integer defaultValue =  DetectProperties.DETECT_PARALLEL_PROCESSORS.getProperty().getDefaultValue();
+        final Integer defaultValue = DetectProperties.DETECT_PARALLEL_PROCESSORS.getProperty().getDefaultValue();
 
         Assertions.assertEquals(defaultValue.intValue(), factory.findParallelProcessors());
         Mockito.verify(factory, Mockito.never()).findRuntimeProcessors();

@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.configuration.util.Bds;
+import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -41,7 +41,6 @@ import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
-import com.synopsys.integration.detect.status.DetectorStatusCode;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.util.NameVersion;

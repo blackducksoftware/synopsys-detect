@@ -9,7 +9,7 @@ import org.mockito.Mockito;
 
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;

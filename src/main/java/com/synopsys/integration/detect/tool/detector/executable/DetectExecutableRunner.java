@@ -25,6 +25,7 @@ package com.synopsys.integration.detect.tool.detector.executable;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,7 @@ import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 
-public class DetectExecutableRunner extends SimpleExecutableRunner {
+public class DetectExecutableRunner extends ProcessBuilderExecutableRunner {
     private final EventSystem eventSystem;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final boolean shouldLogOutput;
@@ -46,15 +47,16 @@ public class DetectExecutableRunner extends SimpleExecutableRunner {
     }
 
     public static DetectExecutableRunner newDebug(EventSystem eventSystem) {
-        Logger logger = LoggerFactory.getLogger(SimpleExecutableRunner.class);
+        Logger logger = LoggerFactory.getLogger(ProcessBuilderExecutableRunner.class);
         return new DetectExecutableRunner(logger::debug, logger::trace, eventSystem, true);
     }
 
     public static DetectExecutableRunner newInfo(EventSystem eventSystem) {
-        Logger logger = LoggerFactory.getLogger(SimpleExecutableRunner.class);
+        Logger logger = LoggerFactory.getLogger(ProcessBuilderExecutableRunner.class);
         return new DetectExecutableRunner(logger::info, logger::trace, eventSystem, false);
     }
 
+    @NotNull
     @Override
     public ExecutableOutput execute(final Executable executable) throws ExecutableRunnerException {
         final ExecutableOutput output = super.execute(executable);
