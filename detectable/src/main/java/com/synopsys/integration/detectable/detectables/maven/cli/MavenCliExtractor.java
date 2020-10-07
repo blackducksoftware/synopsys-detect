@@ -23,12 +23,13 @@
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.common.util.Bdc;
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableResult;
@@ -50,12 +51,14 @@ public class MavenCliExtractor {
                                     .map(cmd -> cmd.replace("dependency:tree", ""))
                                     .map(String::trim)
                                     .map(cmd -> cmd.split(" "))
-                                    .orElse(null);
+                                    .orElse(new String[] {});
 
-        List<String> arguments = Bdc.listFromArrayArgs(mavenCommand, "dependency:tree", "-T1");
+        List<String> arguments = new ArrayList<>(Arrays.asList(mavenCommand));
+        arguments.add("dependency:tree");
+        arguments.add("-T1"); // Force maven to use a single thread to ensure the tree output is in the correct order.
 
         ExecutableResult mvnExecutableResult = ExecutableResult.wrap(executableRunner, directory, mavenExe, arguments);
-        if (!mvnExecutableResult.hasOutputWithReturnCodeZero()) {
+        if (!mvnExecutableResult.isSuccessful()) {
             return Extraction.fromFailedExecutable(mvnExecutableResult);
         }
 

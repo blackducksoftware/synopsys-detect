@@ -106,7 +106,7 @@ public class ProcessBuilderExecutableRunner implements ExecutableRunner {
                 return output;
             }
         } catch (final IOException | InterruptedException e) {
-            throw new ExecutableRunnerException(e);
+            throw new ExecutableRunnerException(executable.getMaskedExecutableDescription(), e);
         }
     }
 
