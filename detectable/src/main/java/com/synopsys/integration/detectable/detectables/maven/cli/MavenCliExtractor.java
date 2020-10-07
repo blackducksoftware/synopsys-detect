@@ -60,10 +60,10 @@ public class MavenCliExtractor {
         }
 
         List<String> mavenOutput = mvnExecutableResult.getStandardOutputAsList();
-        String excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes().orElse(null);
-        String includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes().orElse(null);
-        String excludedModules = mavenCliExtractorOptions.getMavenExcludedModules().orElse(null);
-        String includedModules = mavenCliExtractorOptions.getMavenIncludedModules().orElse(null);
+        List<String> excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes();
+        List<String> includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes();
+        List<String> excludedModules = mavenCliExtractorOptions.getMavenExcludedModules();
+        List<String> includedModules = mavenCliExtractorOptions.getMavenIncludedModules();
         List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mavenOutput, excludedScopes, includedScopes, excludedModules, includedModules);
 
         List<CodeLocation> codeLocations = Bds.of(mavenResults)

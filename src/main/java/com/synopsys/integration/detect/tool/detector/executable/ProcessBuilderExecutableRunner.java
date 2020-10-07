@@ -105,10 +105,13 @@ public class ProcessBuilderExecutableRunner implements ExecutableRunner {
                 final ExecutableOutput output = new ExecutableOutput(executable.getMaskedExecutableDescription(), returnCode, standardOutput, errorOutput);
                 return output;
             }
-        } catch (final IOException e) {
-            throw new ExecutableRunnerException(e);
-        } catch (InterruptedException e) {
+        } catch (final IOException | InterruptedException e) {
             throw new ExecutableRunnerException(e);
         }
+    }
+
+    @Override
+    public @NotNull Executable translate(final File workingDirectory, final File exeFile, final List<String> args) {
+        return new Executable(workingDirectory, new HashMap<>(), exeFile.getAbsolutePath(), args);
     }
 }

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,12 +45,12 @@ public class NugetInspectorArguments {
             "--output_directory=" + outputDirectory.getCanonicalPath(),
             "--ignore_failure=" + nugetInspectorOptions.isIgnoreFailures()));
 
-        nugetInspectorOptions.getExcludedModules()
-            .ifPresent(arg -> options.add("--excluded_modules=" + arg));
-
-        nugetInspectorOptions.getIncludedModules()
-            .ifPresent(arg -> options.add("--included_modules=" + arg));
-
+        if (!nugetInspectorOptions.getExcludedModules().isEmpty()) {
+            options.add("--excluded_modules=" + toCommaSeparatedString(nugetInspectorOptions.getExcludedModules()));
+        }
+        if (!nugetInspectorOptions.getIncludedModules().isEmpty()) {
+            options.add("--included_modules=" + toCommaSeparatedString(nugetInspectorOptions.getIncludedModules()));
+        }
         List<String> nugetPackagesRepo = nugetInspectorOptions.getPackagesRepoUrl();
         if (nugetPackagesRepo != null && nugetPackagesRepo.size() > 0) {
             String packagesRepos = String.join(",", nugetPackagesRepo);
@@ -64,5 +65,9 @@ public class NugetInspectorArguments {
         }
 
         return options;
+    }
+
+    private static String toCommaSeparatedString(List<String> list) {
+        return StringUtils.joinWith(",", list.toArray());
     }
 }
