@@ -112,6 +112,6 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
 
     @Override
     public @NotNull Executable translate(final File workingDirectory, final File exeFile, final List<String> args) {
-        return new Executable(workingDirectory, new HashMap<>(), exeFile.getAbsolutePath(), args);
+        return new Executable(workingDirectory, new HashMap<>(), exeFile.getPath(), args);
     }
 }
