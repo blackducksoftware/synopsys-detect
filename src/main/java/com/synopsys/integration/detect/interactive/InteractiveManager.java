@@ -24,11 +24,12 @@ package com.synopsys.integration.detect.interactive;
 
 import java.io.Console;
 import java.io.PrintStream;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.configuration.source.MapPropertySource;
+import com.synopsys.integration.detect.interactive.mode.InteractionTree;
 import com.synopsys.integration.detect.interactive.mode.InteractiveMode;
 import com.synopsys.integration.detect.interactive.reader.ConsoleInteractiveReader;
 import com.synopsys.integration.detect.interactive.reader.InteractiveReader;
@@ -37,11 +38,11 @@ import com.synopsys.integration.detect.interactive.reader.ScannerInteractiveRead
 public class InteractiveManager {
     private final Logger logger = LoggerFactory.getLogger(InteractiveManager.class);
 
-    public List<InteractiveOption> configureInInteractiveMode(final InteractiveMode interactiveMode) {
+    public MapPropertySource configureInInteractiveMode(InteractionTree interactionTree) {
         // Using an UncloseablePrintStream so we don't accidentally close System.out
-        try (final PrintStream interactivePrintStream = new UncloseablePrintStream(System.out)) {
-            final InteractiveReader interactiveReader;
-            final Console console = System.console();
+        try (PrintStream interactivePrintStream = new UncloseablePrintStream(System.out)) {
+            InteractiveReader interactiveReader;
+            Console console = System.console();
 
             if (console != null) {
                 interactiveReader = new ConsoleInteractiveReader(console);
@@ -50,15 +51,16 @@ public class InteractiveManager {
                 interactiveReader = new ScannerInteractiveReader(System.in);
             }
 
-            interactiveMode.init(interactivePrintStream, interactiveReader);
+            InteractiveMode interactiveMode = new InteractiveMode(interactivePrintStream, interactiveReader);
 
             interactiveMode.println("");
             interactiveMode.println("Interactive flag found.");
             interactiveMode.println("Starting default interactive mode.");
             interactiveMode.println("");
 
-            interactiveMode.configure();
-            return interactiveMode.getInteractiveOptions();
+            interactionTree.configure(interactiveMode);
+
+            return interactiveMode.toPropertySource();
         }
     }
 }

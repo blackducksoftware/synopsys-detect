@@ -70,8 +70,7 @@ import com.synopsys.integration.detect.help.json.HelpJsonWriter;
 import com.synopsys.integration.detect.help.print.DetectInfoPrinter;
 import com.synopsys.integration.detect.help.print.HelpPrinter;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
-import com.synopsys.integration.detect.interactive.InteractiveOption;
-import com.synopsys.integration.detect.interactive.mode.DefaultInteractiveMode;
+import com.synopsys.integration.detect.interactive.mode.DefaultInteractionTree;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
@@ -166,10 +165,9 @@ public class DetectBoot {
         printDetectInfo(detectInfo);
 
         if (detectArgumentState.isInteractive()) {
-            List<InteractiveOption> interactiveOptions = startInteractiveMode(propertySources);
-            Map<String, String> interactivePropertyMap = interactiveOptions.stream()
-                                                             .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), InteractiveOption::getInteractiveValue));
-            PropertySource interactivePropertySource = new MapPropertySource("interactive", interactivePropertyMap);
+            InteractiveManager interactiveManager = new InteractiveManager();
+            DefaultInteractionTree defaultInteractiveMode = new DefaultInteractionTree(propertySources);
+            MapPropertySource interactivePropertySource = interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
             propertySources.add(0, interactivePropertySource);
         }
         PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
@@ -381,12 +379,6 @@ public class DetectBoot {
         }
 
         return Optional.empty();
-    }
-
-    private List<InteractiveOption> startInteractiveMode(List<PropertySource> propertySources) {
-        InteractiveManager interactiveManager = new InteractiveManager();
-        DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(propertySources);
-        return interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
     }
 
     private DetectArgumentState parseDetectArgumentState(String[] sourceArgs) {

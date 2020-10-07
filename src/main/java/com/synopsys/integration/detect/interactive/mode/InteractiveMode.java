@@ -37,44 +37,43 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.configuration.property.Property;
+import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.detect.interactive.InteractiveOption;
 import com.synopsys.integration.detect.interactive.reader.InteractiveReader;
 
-public abstract class InteractiveMode {
+public class InteractiveMode {
     private final Map<Property, InteractiveOption> propertyToOptionMap = new HashMap<>();
-    private PrintStream printStream;
-    private InteractiveReader interactiveReader;
+    private final PrintStream printStream;
+    private final InteractiveReader interactiveReader;
     private String profileName = null;
 
-    public void init(final PrintStream printStream, final InteractiveReader reader) {
+    public InteractiveMode(PrintStream printStream, InteractiveReader reader) {
         this.printStream = printStream;
         this.interactiveReader = reader;
     }
 
-    public abstract void configure();
-
-    public String askQuestion(final String question) {
+    public String askQuestion(String question) {
         printStream.println(question);
         return interactiveReader.readLine();
     }
 
-    public String askSecretQuestion(final String question) {
+    public String askSecretQuestion(String question) {
         printStream.println(question);
         return interactiveReader.readPassword();
     }
 
-    public void setPropertyFromQuestion(final Property detectProperty, final String question) {
-        final String value = askQuestion(question);
+    public void setPropertyFromQuestion(Property detectProperty, String question) {
+        String value = askQuestion(question);
         setProperty(detectProperty, value);
     }
 
-    public void setPropertyFromSecretQuestion(final Property detectProperty, final String question) {
-        final String value = askSecretQuestion(question);
+    public void setPropertyFromSecretQuestion(Property detectProperty, String question) {
+        String value = askSecretQuestion(question);
         setProperty(detectProperty, value);
     }
 
-    public void setProperty(final Property detectProperty, final String value) {
-        final InteractiveOption option;
+    public void setProperty(Property detectProperty, String value) {
+        InteractiveOption option;
         if (!propertyToOptionMap.containsKey(detectProperty)) {
             option = new InteractiveOption();
             option.setDetectProperty(detectProperty);
@@ -85,11 +84,11 @@ public abstract class InteractiveMode {
         option.setInteractiveValue(value);
     }
 
-    public Boolean askYesOrNo(final String question) {
+    public Boolean askYesOrNo(String question) {
         return askYesOrNoWithMessage(question, null);
     }
 
-    public Boolean askYesOrNoWithMessage(final String question, final String message) {
+    public Boolean askYesOrNoWithMessage(String question, String message) {
         printStream.print(question);
         if (StringUtils.isNotBlank(message)) {
             printStream.print(message);
@@ -99,7 +98,7 @@ public abstract class InteractiveMode {
         final int maxAttempts = 3;
         int attempts = 0;
         while (attempts < maxAttempts) {
-            final String response = interactiveReader.readLine();
+            String response = interactiveReader.readLine();
             if (anyEquals(response, "y", "yes")) {
                 return true;
             } else if (anyEquals(response, "n", "no")) {
@@ -112,19 +111,19 @@ public abstract class InteractiveMode {
     }
 
     public Properties optionsToProperties() {
-        final Properties properties = new Properties();
-        for (final InteractiveOption interactiveOption : propertyToOptionMap.values()) {
+        Properties properties = new Properties();
+        for (InteractiveOption interactiveOption : propertyToOptionMap.values()) {
             properties.put(interactiveOption.getDetectProperty().getKey(), interactiveOption.getInteractiveValue());
         }
 
         return properties;
     }
 
-    public boolean hasValueForField(final Property field) {
+    public boolean hasValueForField(Property field) {
         return propertyToOptionMap.containsKey(field);
     }
 
-    public void performStandardOutflow() {
+    public void saveAndEndInteractiveMode() {
         printSuccess();
         askToSave();
         readyToStartDetect();
@@ -141,47 +140,42 @@ public abstract class InteractiveMode {
         printStream.println();
     }
 
-    public void printProfile() {
-        if (profileName != null) {
-            printStream.println();
-            printStream.println("In the future, to use this profile add the following option:");
-            printStream.println();
-            printStream.println("--spring.profiles.active=" + profileName);
-        }
-    }
-
     public void askToSave() {
-        final Boolean saveSettings = askYesOrNo("Would you like to save these settings to an application.properties file?");
+        Boolean saveSettings = askYesOrNo("Would you like to save these settings to an application.properties file?");
         if (saveSettings) {
-            final Boolean customName = askYesOrNo("Would you like save these settings to a profile?");
+            Boolean customName = askYesOrNo("Would you like save these settings to a profile?");
             if (customName) {
                 profileName = askQuestion("What is the profile name?");
             }
 
             saveOptionsToApplicationProperties();
 
-            printProfile();
+            if (profileName != null) {
+                printStream.println();
+                printStream.println("In the future, to use this profile add the following option:");
+                printStream.println();
+                printStream.println("--spring.profiles.active=" + profileName);
+            }
         }
-
     }
 
     public void saveOptionsToApplicationProperties() {
-        final Properties properties = optionsToProperties();
-        final File directory = new File(System.getProperty("user.dir"));
+        Properties properties = optionsToProperties();
+        File directory = new File(System.getProperty("user.dir"));
         String fileName = "application.properties";
         if (profileName != null) {
             fileName = "application-" + profileName + ".properties";
         }
 
-        final File applicationsProperty = new File(directory, fileName);
-        final OutputStream outputStream;
+        File applicationsProperty = new File(directory, fileName);
+        OutputStream outputStream;
         try {
             outputStream = new FileOutputStream(applicationsProperty);
             properties.store(outputStream, "Automatically generated during Detect Interactive Mode.");
             printStream.println();
             printStream.println("Successfully saved to '" + applicationsProperty.getCanonicalPath() + "'!");
             outputStream.close();
-        } catch (final IOException e) {
+        } catch (IOException e) {
             printStream.println(e);
             printStream.println("Failed to write to application.properties.");
             throw new RuntimeException(e);
@@ -190,20 +184,20 @@ public abstract class InteractiveMode {
 
     public void printWelcome() {
         printStream.println("***** Welcome to Detect Interactive Mode *****");
-        printStream.println("");
+        printStream.println();
     }
 
-    public void print(final String x) {
+    public void print(String x) {
         printStream.print(x);
     }
 
-    public void println(final String x) {
+    public void println(String x) {
         printStream.println(x);
     }
 
-    private boolean anyEquals(final String response, final String... options) {
-        final String trimmed = response.trim().toLowerCase();
-        for (final String opt : options) {
+    private boolean anyEquals(String response, String... options) {
+        String trimmed = response.trim().toLowerCase();
+        for (String opt : options) {
             if (trimmed.equals(opt)) {
                 return true;
             }
@@ -215,8 +209,10 @@ public abstract class InteractiveMode {
         return new ArrayList<>(propertyToOptionMap.values());
     }
 
-    public Map<String, String> toPropertyMap() {
-        return propertyToOptionMap.values().stream().collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), option -> option.getInteractiveValue()));
+    public MapPropertySource toPropertySource() {
+        Map<String, String> interactivePropertyMap = propertyToOptionMap.values().stream()
+                                                         .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), InteractiveOption::getInteractiveValue));
+        return new MapPropertySource("interactive", interactivePropertyMap);
     }
 
 }
