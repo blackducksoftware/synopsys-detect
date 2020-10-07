@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,22 +20,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector.impl;
+package com.synopsys.integration.detectable.detectable.executable.resolver;
 
 import java.io.File;
 
-import com.synopsys.integration.detect.tool.detector.ExtractionId;
-import com.synopsys.integration.detectable.ExtractionEnvironment;
+import org.jetbrains.annotations.Nullable;
 
-public class DetectExtractionEnvironment extends ExtractionEnvironment {
-    private ExtractionId extractionId;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
-    public DetectExtractionEnvironment(final File outputDirectory, final ExtractionId extractionId) {
-        super(outputDirectory);
-        this.extractionId = extractionId;
-    }
-
-    public ExtractionId getExtractionId() {
-        return extractionId;
-    }
+public interface GoResolver {
+    @Nullable
+    File resolveGo() throws DetectableException;
 }

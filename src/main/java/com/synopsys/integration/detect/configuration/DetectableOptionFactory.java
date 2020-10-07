@@ -44,7 +44,6 @@ import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
-import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
@@ -247,11 +246,6 @@ public class DetectableOptionFactory {
         String nugetInspectorName = getValue(DetectProperties.DETECT_NUGET_INSPECTOR_NAME);
         String nugetInspectorVersion = getNullableValue(DetectProperties.DETECT_NUGET_INSPECTOR_VERSION);
         return new NugetLocatorOptions(packagesRepoUrl, nugetInspectorName, nugetInspectorVersion);
-    }
-
-    public CachedExecutableResolverOptions createCachedExecutableResolverOptions() {
-        Boolean python3 = getValue(DetectProperties.DETECT_PYTHON_PYTHON3);
-        return new CachedExecutableResolverOptions(python3);
     }
 
     private Set<WorkspaceRule> deriveBazelDependencyRules(List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRulesPropertyValues) {

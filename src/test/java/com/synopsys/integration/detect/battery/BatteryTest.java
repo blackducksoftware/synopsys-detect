@@ -53,7 +53,7 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
+import com.synopsys.integration.detect.tool.detector.executable.SimpleExecutableRunner;
 
 import freemarker.template.TemplateException;
 

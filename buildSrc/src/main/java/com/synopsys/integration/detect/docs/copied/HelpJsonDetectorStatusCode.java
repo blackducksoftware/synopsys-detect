@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * buildSrc
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,20 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector.impl;
+package com.synopsys.integration.detect.docs.copied;
 
-import java.util.function.Predicate;
+public class HelpJsonDetectorStatusCode {
+    private String statusCode = "";
+    private String statusCodeDescription = "";
 
-import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
-import com.synopsys.integration.detector.rule.DetectorRule;
-
-public class DetectDetectorFilter extends DetectOverrideableFilter implements Predicate<DetectorRule> {
-    public DetectDetectorFilter(String excluded, String included) {
-        super(excluded, included);
+    public String getStatusCode() {
+        return statusCode;
     }
 
-    @Override
-    public boolean test(final DetectorRule detectorRule) {
-        return shouldInclude(detectorRule.getDetectorType().toString());
+    public void setStatusCode(final String code) {
+        this.statusCode = code;
+    }
+
+    public String getStatusCodeDescription() {
+        return statusCodeDescription;
+    }
+
+    public void setStatusCodeDescription(final String description) {
+        this.statusCodeDescription = description;
     }
 }

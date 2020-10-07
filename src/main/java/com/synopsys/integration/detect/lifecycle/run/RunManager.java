@@ -63,13 +63,13 @@ import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanToolResult;
 import com.synopsys.integration.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
-import com.synopsys.integration.detect.tool.detector.DetectExecutableRunner;
+import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorIssuePublisher;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorTool;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
-import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
-import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
+import com.synopsys.integration.detect.tool.detector.ExtractionEnvironmentProvider;
+import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.impactanalysis.BlackDuckImpactAnalysisTool;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisToolResult;
@@ -109,7 +109,7 @@ import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
@@ -376,7 +376,7 @@ public class RunManager {
             logger.info("Will include the binary scanner tool.");
             if (null != blackDuckServicesFactory) {
                 BinaryScanOptions binaryScanOptions = detectConfigurationFactory.createBinaryScanOptions();
-                BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, new SimpleFileFinder(), binaryScanOptions, blackDuckServicesFactory);
+                BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, new WildcardFileFinder(), binaryScanOptions, blackDuckServicesFactory);
                 if (blackDuckBinaryScanner.shouldRun()) {
                     BinaryScanToolResult result = blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
                     if (result.isSuccessful()) {

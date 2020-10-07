@@ -1,5 +1,5 @@
 /**
- * detectable
+ * synopsys-detect
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,15 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.inspector.go;
+package com.synopsys.integration.detect.tool.detector.executable;
 
 import java.io.File;
 
-import org.jetbrains.annotations.Nullable;
-
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
-public interface GoResolver {
-    @Nullable
-    File resolveGo() throws DetectableException;
+@FunctionalInterface
+public interface ExecutableResolverFunction {
+    File resolve(String executableName) throws DetectableException;
 }

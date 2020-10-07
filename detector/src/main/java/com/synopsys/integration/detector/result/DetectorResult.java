@@ -28,12 +28,18 @@ public class DetectorResult {
     private final boolean passed;
     @NotNull
     private final String description;
-    private final String resultClassName;
+    private final Class resultClass;
 
-    public DetectorResult(final boolean passed, @NotNull final String description, final String resultClassName) {
+    public DetectorResult(final boolean passed, @NotNull final String description) {
         this.passed = passed;
         this.description = description;
-        this.resultClassName = resultClassName;
+        this.resultClass = null;
+    }
+
+    public DetectorResult(final boolean passed, @NotNull final String description, final Class resultClass) {
+        this.passed = passed;
+        this.description = description;
+        this.resultClass = resultClass;
     }
 
     public boolean getPassed() {
@@ -45,8 +51,7 @@ public class DetectorResult {
         return description;
     }
 
-    public String getResultClassName() {
-        return resultClassName;
+    public Class getResultClass() {
+        return resultClass;
     }
-
 }

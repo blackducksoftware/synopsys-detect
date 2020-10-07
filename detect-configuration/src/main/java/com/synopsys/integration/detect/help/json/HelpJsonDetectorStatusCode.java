@@ -1,5 +1,5 @@
 /**
- * detectable
+ * detect-configuration
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,16 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.executable.impl;
+package com.synopsys.integration.detect.help.json;
 
-public class CachedExecutableResolverOptions {
-    private final boolean python3;
+public class HelpJsonDetectorStatusCode {
+    private String statusCode = "";
+    private String statusCodeDescription = "";
 
-    public CachedExecutableResolverOptions(final boolean python3) {
-        this.python3 = python3;
+    public String getStatusCode() {
+        return statusCode;
     }
 
-    public boolean isPython3() {
-        return python3;
+    public void setStatusCode(final String statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public String getStatusCodeDescription() {
+        return statusCodeDescription;
+    }
+
+    public void setStatusCodeDescription(final String statusCodeDescription) {
+        this.statusCodeDescription = statusCodeDescription;
     }
 }

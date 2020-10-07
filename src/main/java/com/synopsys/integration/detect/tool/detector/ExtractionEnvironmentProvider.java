@@ -20,11 +20,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector.impl;
+package com.synopsys.integration.detect.tool.detector;
 
 import java.io.File;
 
-import com.synopsys.integration.detect.tool.detector.ExtractionId;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detector.base.DetectorEvaluation;

@@ -40,6 +40,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.CpanRe
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.LernaResolver;
@@ -54,7 +55,6 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftR
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
-import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;

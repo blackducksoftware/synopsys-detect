@@ -1,5 +1,5 @@
 /**
- * detector
+ * synopsys-detect
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,20 +20,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.result;
+package com.synopsys.integration.detect.tool.detector;
+
+import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 
-public class PassedDetectorResult extends DetectorResult {
-    public PassedDetectorResult() {
-        this("Passed.", null);
+import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
+
+public class FilteredFileFinder extends WildcardFileFinder {
+    private final List<String> excludedFileNames;
+
+    public FilteredFileFinder(final List<String> excludedFileNames) {
+        this.excludedFileNames = excludedFileNames;
     }
 
-    public PassedDetectorResult(@NotNull final String description) {
-        this(description, null);
-    }
-
-    public PassedDetectorResult(@NotNull final String description, final Class resultClass) {
-        super(true, description, resultClass);
+    @NotNull
+    @Override
+    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, final boolean findInsideMatchingDirectories) {
+        return super.findFiles(directoryToSearch, filenamePatterns, depth, findInsideMatchingDirectories).stream()
+                   .filter(file -> !excludedFileNames.contains(file.getName()))
+                   .collect(Collectors.toList());
     }
 }

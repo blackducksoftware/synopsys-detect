@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detect.tool.detector;
 
-import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable;
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;

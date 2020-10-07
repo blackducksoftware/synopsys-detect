@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.file.impl;
+package com.synopsys.integration.detectable.detectable.file;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -29,10 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.jetbrains.annotations.NotNull;
 
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
-
-public class SimpleFileFinder implements FileFinder {
+public class WildcardFileFinder implements FileFinder {
 
     private List<File> findFiles(final File directoryToSearch, final FilenameFilter filenameFilter, final int depth, final boolean findInsideMatchingDirectories) {
         final List<File> foundFiles = new ArrayList<>();
@@ -61,6 +60,7 @@ public class SimpleFileFinder implements FileFinder {
         return foundFiles;
     }
 
+    @NotNull
     @Override
     public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, final boolean findInsideMatchingDirectories) {
         return findFiles(directoryToSearch, new WildcardFileFilter(filenamePatterns), depth, findInsideMatchingDirectories);
