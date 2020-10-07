@@ -42,4 +42,7 @@ public interface ExecutableRunner {
 
     @NotNull
     ExecutableOutput execute(Executable executable) throws ExecutableRunnerException;
+
+    @NotNull
+    Executable translate(final File workingDirectory, final File exeFile, final List<String> args);
 }

@@ -70,7 +70,7 @@ public class MavenCodeLocationPackager {
     }
 
     // mavenTextOutput should be the full output of mvn dependency:tree (no scope applied); scope filtering is now done by this method
-    public List<MavenParseResult> extractCodeLocations(String sourcePath, String mavenOutputText, String excludedScopes, String includedScopes, String excludedModules, String includedModules) {
+    public List<MavenParseResult> extractCodeLocations(String sourcePath, List<String> mavenOutput, String excludedScopes, String includedScopes, String excludedModules, String includedModules) {
         ExcludedIncludedWildcardFilter modulesFilter = new ExcludedIncludedWildcardFilter(excludedModules, includedModules);
         ExcludedIncludedWildcardFilter scopeFilter = new ExcludedIncludedWildcardFilter(excludedScopes, includedScopes);
         codeLocations = new ArrayList<>();
@@ -80,7 +80,7 @@ public class MavenCodeLocationPackager {
         currentGraph = new MutableMapDependencyGraph();
 
         level = 0;
-        for (String currentLine : mavenOutputText.split(System.lineSeparator())) {
+        for (String currentLine : mavenOutput) {
             String line = currentLine.trim();
 
             if (shouldSkipLine(line)) {

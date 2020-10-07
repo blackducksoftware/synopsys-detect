@@ -24,7 +24,7 @@ package com.synopsys.integration.detect.tool.detector;
 
 import java.io.File;
 
-import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 public class DetectExtractionEnvironment extends ExtractionEnvironment {
     private ExtractionId extractionId;

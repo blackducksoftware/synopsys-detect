@@ -78,6 +78,7 @@ test {
 }
 
 dependencies {
+    implementation project(':common')
     implementation project(':configuration')
     implementation project(':detect-configuration')
     implementation project(':detectable')
@@ -96,7 +97,7 @@ dependencies {
     implementation 'org.yaml:snakeyaml:1.24'
     implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.freemarker:freemarker:2.3.26-incubating'
-    
+
     // spring-boot-starter-test *can* provide these, but we choose to be more explicit about the dependencies we ACTUALLY use
     testImplementation 'org.assertj:assertj-core:3.13.2'
     testImplementation 'org.skyscreamer:jsonassert:1.5.0'

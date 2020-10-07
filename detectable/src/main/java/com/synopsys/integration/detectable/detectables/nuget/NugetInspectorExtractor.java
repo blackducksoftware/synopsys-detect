@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraphCombiner;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
-import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;

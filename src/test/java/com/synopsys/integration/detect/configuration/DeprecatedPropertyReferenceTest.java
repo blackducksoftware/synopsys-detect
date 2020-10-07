@@ -34,8 +34,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.property.Property;
-import com.synopsys.integration.configuration.util.Bds;
 
 @Disabled // For now these tests are not actually helping anyone. Will be tagged with "lint" in the future.
 public class DeprecatedPropertyReferenceTest {
@@ -60,7 +60,8 @@ public class DeprecatedPropertyReferenceTest {
                                                                   .map(key -> key.replace(".", "_"))
                                                                   .toList();
 
-    public DeprecatedPropertyReferenceTest() throws IllegalAccessException {}
+    public DeprecatedPropertyReferenceTest() throws IllegalAccessException {
+    }
 
     @Test
     public void testCodeReferencesToDeprecatedProperties() throws IOException {

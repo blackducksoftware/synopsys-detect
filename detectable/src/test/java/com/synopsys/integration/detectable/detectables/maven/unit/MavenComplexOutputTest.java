@@ -14,8 +14,8 @@ import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class MavenComplexOutputTest {
 
-    private String getInput() {
-        return String.join(System.lineSeparator(), Arrays.asList(
+    private List<String> getInput() {
+        return Arrays.asList(
             "[INFO] Reactor Build Order:",
             "[INFO] ",
             "[INFO] murex-parent                                                       [pom]",
@@ -37,7 +37,7 @@ public class MavenComplexOutputTest {
             "7509 [main] [INFO] +- com.blackducksoftware.integration:hub-common:jar:13.1.2:compile",
             "7560 [main] [INFO] |  +- com.blackducksoftware.integration:hub-common-rest:jar:2.1.3:compile",
             "7638 [main] [INFO] |  |  +- com.blackducksoftware.integration:integration-common:jar:6.0.2:compile"
-        ));
+        );
     }
 
     @Test

@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable;
+package com.synopsys.integration.detectable.extraction;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableResult;
 import com.synopsys.integration.util.NameVersion;
 
 public class Extraction {
@@ -61,6 +62,10 @@ public class Extraction {
         if (result == null) {
             throw new IllegalArgumentException("An extraction requires a result type.");
         }
+    }
+
+    public static Extraction fromFailedExecutable(ExecutableResult executableResult) {
+        return new Extraction.Builder().executableError(executableResult).build();
     }
 
     public <T> Optional<T> getMetaData(final ExtractionMetadata<T> extractionMetadata) {
@@ -172,6 +177,13 @@ public class Extraction {
         public Builder failure(final String description) {
             this.result = ExtractionResultType.FAILURE;
             this.description = description;
+            return this;
+        }
+
+        public Builder executableError(ExecutableResult result) {
+            this.result = ExtractionResultType.FAILURE;
+            //TODO: Finish
+            //this.description = description;
             return this;
         }
 

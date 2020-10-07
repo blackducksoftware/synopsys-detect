@@ -35,7 +35,7 @@ import org.tomlj.TomlParseResult;
 import org.tomlj.TomlTable;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoLockParser;

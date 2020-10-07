@@ -1,5 +1,5 @@
 /**
- * configuration
+ * common
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.configuration.util;
+package com.synopsys.integration.common.util;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//Black Duck Optional
 public class Bdo<T> {
     private final T value;
 

@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.synopsys.integration.builder.BuilderStatus;
-import com.synopsys.integration.configuration.util.Bds;
+import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;

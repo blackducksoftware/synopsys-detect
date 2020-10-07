@@ -42,21 +42,25 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
         executableExecutableOutputMap.put(executable, executableOutput);
     }
 
+    @NotNull
     @Override
     public ExecutableOutput execute(@NotNull final File workingDirectory, @NotNull final String exeCmd, @NotNull final String... args) {
         return execute(workingDirectory, new File(exeCmd), args);
     }
 
+    @NotNull
     @Override
     public ExecutableOutput execute(@NotNull final File workingDirectory, @NotNull final String exeCmd, @NotNull final List<String> args) {
         return execute(workingDirectory, new File(exeCmd), args);
     }
 
+    @NotNull
     @Override
     public ExecutableOutput execute(@NotNull final File workingDirectory, @NotNull final File exeFile, @NotNull final String... args) {
         return execute(workingDirectory, exeFile, Arrays.asList(args));
     }
 
+    @NotNull
     @Override
     public ExecutableOutput execute(@NotNull final File workingDirectory, @NotNull final File exeFile, @NotNull final List<String> args) {
 
@@ -67,6 +71,7 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
         return execute(new Executable(workingDirectory, new HashMap<>(), command));
     }
 
+    @NotNull
     @Override
     public ExecutableOutput execute(@NotNull final Executable executable) {
         final ExecutableOutput executableOutput = executableExecutableOutputMap.get(executable);

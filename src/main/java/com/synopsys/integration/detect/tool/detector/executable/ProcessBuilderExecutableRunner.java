@@ -23,12 +23,14 @@
 package com.synopsys.integration.detect.tool.detector.executable;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,41 +39,46 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableOutpu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 
-public class SimpleExecutableRunner implements ExecutableRunner {
+public class ProcessBuilderExecutableRunner implements ExecutableRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Consumer<String> outputConsumer;
     private final Consumer<String> traceConsumer;
 
-    public SimpleExecutableRunner() {
+    public ProcessBuilderExecutableRunner() {
         this.outputConsumer = logger::debug;
         this.traceConsumer = logger::trace;
     }
 
-    public SimpleExecutableRunner(final Consumer<String> outputConsumer, final Consumer<String> traceConsumer) {
+    public ProcessBuilderExecutableRunner(final Consumer<String> outputConsumer, final Consumer<String> traceConsumer) {
         this.outputConsumer = outputConsumer;
         this.traceConsumer = traceConsumer;
     }
 
+    @NotNull
     @Override
     public ExecutableOutput execute(final File workingDirectory, final String exeCmd, final String... args) throws ExecutableRunnerException {
         return execute(new Executable(workingDirectory, new HashMap<>(), exeCmd, Arrays.asList(args)));
     }
 
+    @NotNull
     @Override
     public ExecutableOutput execute(final File workingDirectory, final String exeCmd, final List<String> args) throws ExecutableRunnerException {
         return execute(new Executable(workingDirectory, new HashMap<>(), exeCmd, args));
     }
 
+    @NotNull
     @Override
     public ExecutableOutput execute(final File workingDirectory, final File exeFile, final String... args) throws ExecutableRunnerException {
         return execute(new Executable(workingDirectory, new HashMap<>(), exeFile.getAbsolutePath(), Arrays.asList(args)));
     }
 
+    @NotNull
     @Override
     public ExecutableOutput execute(final File workingDirectory, final File exeFile, final List<String> args) throws ExecutableRunnerException {
         return execute(new Executable(workingDirectory, new HashMap<>(), exeFile.getAbsolutePath(), args));
     }
 
+    @NotNull
     @Override
     public ExecutableOutput execute(final Executable executable) throws ExecutableRunnerException {
         logger.info(String.format("Running executable >%s", executable.getMaskedExecutableDescription()));
@@ -98,7 +105,9 @@ public class SimpleExecutableRunner implements ExecutableRunner {
                 final ExecutableOutput output = new ExecutableOutput(executable.getMaskedExecutableDescription(), returnCode, standardOutput, errorOutput);
                 return output;
             }
-        } catch (final Exception e) {
+        } catch (final IOException e) {
+            throw new ExecutableRunnerException(e);
+        } catch (InterruptedException e) {
             throw new ExecutableRunnerException(e);
         }
     }

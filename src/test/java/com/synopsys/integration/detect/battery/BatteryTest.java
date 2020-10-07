@@ -50,10 +50,10 @@ import org.zeroturnaround.zip.ZipUtil;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.detect.Application;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.tool.detector.executable.ProcessBuilderExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detect.tool.detector.executable.SimpleExecutableRunner;
 
 import freemarker.template.TemplateException;
 
@@ -227,7 +227,7 @@ public final class BatteryTest {
         shellArguments.add(target.toString());
 
         Executable executable = new Executable(outputDirectory, new HashMap<>(), "curl", shellArguments);
-        SimpleExecutableRunner executableRunner = new SimpleExecutableRunner();
+        ProcessBuilderExecutableRunner executableRunner = new ProcessBuilderExecutableRunner();
         return executableRunner.execute(executable);
     }
 
@@ -260,7 +260,7 @@ public final class BatteryTest {
         }
 
         Executable executable = new Executable(outputDirectory, environmentVariables, target, shellArguments);
-        SimpleExecutableRunner executableRunner = new SimpleExecutableRunner();
+        ProcessBuilderExecutableRunner executableRunner = new ProcessBuilderExecutableRunner();
         ExecutableOutput result = executableRunner.execute(executable);
 
         Assertions.assertEquals(0, result.getReturnCode(), "Detect returned a non-zero exit code:" + result.getReturnCode());
@@ -285,7 +285,7 @@ public final class BatteryTest {
         javaArguments.add(detectJar);
         javaArguments.addAll(detectArguments);
 
-        SimpleExecutableRunner executableRunner = new SimpleExecutableRunner();
+        ProcessBuilderExecutableRunner executableRunner = new ProcessBuilderExecutableRunner();
         ExecutableOutput result = executableRunner.execute(outputDirectory, java, javaArguments);
 
         Assertions.assertEquals(0, result.getReturnCode(), "Detect returned a non-zero exit code:" + result.getReturnCode());

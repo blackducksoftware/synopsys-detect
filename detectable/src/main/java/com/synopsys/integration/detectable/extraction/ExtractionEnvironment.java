@@ -20,39 +20,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable;
+package com.synopsys.integration.detectable.extraction;
 
-import java.util.Objects;
+import java.io.File;
 
-public class ExtractionMetadata<T> {
-    final private String key;
-    private final Class<T> metadataClass;
+public class ExtractionEnvironment {
+    private File outputDirectory;
 
-    public ExtractionMetadata(final String key, final Class<T> metadataClass) {
-        this.key = key;
-        this.metadataClass = metadataClass;
-    }
+    public ExtractionEnvironment(final File outputDirectory) {this.outputDirectory = outputDirectory;}
 
-    public String getKey() {
-        return key;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        final ExtractionMetadata<?> that = (ExtractionMetadata<?>) o;
-        return key.equals(that.key);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(key);
-    }
-
-    public Class<T> getMetadataClass() {
-        return metadataClass;
+    public File getOutputDirectory() {
+        return outputDirectory;
     }
 }

@@ -37,13 +37,13 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.parse.ValueParser;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.PassthroughProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
 import com.synopsys.integration.configuration.source.PropertySource;
-import com.synopsys.integration.configuration.util.Bds;
 
 public class PropertyConfigurationTest {
     public static final String UNKNOWN_VALUE = "-1";
