@@ -25,6 +25,7 @@ package com.synopsys.integration.detectable.detectables.maven.functional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Collections;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
@@ -80,7 +81,8 @@ public class MavenPomDetectableTest extends DetectableFunctionalTest {
                 return new File("maven");
             }
         }
-        return detectableFactory.createMavenPomDetectable(detectableEnvironment, new MavenPomResolverTest(), new MavenCliExtractorOptions("test", "", "", "", ""));
+        return detectableFactory
+                   .createMavenPomDetectable(detectableEnvironment, new MavenPomResolverTest(), new MavenCliExtractorOptions("test", Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList()));
     }
 
     @Override

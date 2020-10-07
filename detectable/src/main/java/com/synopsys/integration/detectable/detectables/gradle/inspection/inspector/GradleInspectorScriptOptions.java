@@ -22,18 +22,20 @@
  */
 package com.synopsys.integration.detectable.detectables.gradle.inspection.inspector;
 
+import java.util.List;
 import java.util.Optional;
 
 public class GradleInspectorScriptOptions {
-    private final String excludedProjectNames;
-    private final String includedProjectNames;
-    private final String excludedConfigurationNames;
-    private final String includedConfigurationNames;
+    private final List<String> excludedProjectNames;
+    private final List<String> includedProjectNames;
+    private final List<String> excludedConfigurationNames;
+    private final List<String> includedConfigurationNames;
     private final String gradleInspectorRepositoryUrl;
     private final String providedOnlineInspectorVersion;
 
-    public GradleInspectorScriptOptions(final String excludedProjectNames, final String includedProjectNames, final String excludedConfigurationNames, final String includedConfigurationNames, final String gradleInspectorRepositoryUrl,
-        final String providedOnlineInspectorVersion) {
+    public GradleInspectorScriptOptions(List<String> excludedProjectNames, List<String> includedProjectNames, List<String> excludedConfigurationNames, List<String> includedConfigurationNames,
+        String gradleInspectorRepositoryUrl,
+        String providedOnlineInspectorVersion) {
         this.excludedProjectNames = excludedProjectNames;
         this.includedProjectNames = includedProjectNames;
         this.excludedConfigurationNames = excludedConfigurationNames;
@@ -46,20 +48,20 @@ public class GradleInspectorScriptOptions {
         return gradleInspectorRepositoryUrl;
     }
 
-    public Optional<String> getExcludedProjectNames() {
-        return Optional.ofNullable(excludedProjectNames);
+    public List<String> getExcludedProjectNames() {
+        return excludedProjectNames;
     }
 
-    public Optional<String> getIncludedProjectNames() {
-        return Optional.ofNullable(includedProjectNames);
+    public List<String> getIncludedProjectNames() {
+        return includedProjectNames;
     }
 
-    public Optional<String> getExcludedConfigurationNames() {
-        return Optional.ofNullable(excludedConfigurationNames);
+    public List<String> getExcludedConfigurationNames() {
+        return excludedConfigurationNames;
     }
 
-    public Optional<String> getIncludedConfigurationNames() {
-        return Optional.ofNullable(includedConfigurationNames);
+    public List<String> getIncludedConfigurationNames() {
+        return includedConfigurationNames;
     }
 
     public Optional<String> getProvidedOnlineInspectorVersion() {

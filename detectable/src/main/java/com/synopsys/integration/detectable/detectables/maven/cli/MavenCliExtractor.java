@@ -65,19 +65,19 @@ public class MavenCliExtractor {
 
             if (mvnOutput.getReturnCode() == 0) {
                 // TODO: Improve null handling.
-                String excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes().orElse(null);
-                String includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes().orElse(null);
-                String excludedModules = mavenCliExtractorOptions.getMavenExcludedModules().orElse(null);
-                String includedModules = mavenCliExtractorOptions.getMavenIncludedModules().orElse(null);
+                List<String> excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes();
+                List<String> includedScopes = mavenCliExtractorOptions.getMavenIncludedScopes();
+                List<String> excludedModules = mavenCliExtractorOptions.getMavenExcludedModules();
+                List<String> includedModules = mavenCliExtractorOptions.getMavenIncludedModules();
                 List<MavenParseResult> mavenResults = mavenCodeLocationPackager.extractCodeLocations(directory.toString(), mvnOutput.getStandardOutput(), excludedScopes, includedScopes, excludedModules, includedModules);
 
                 List<CodeLocation> codeLocations = mavenResults.stream()
-                                                             .map(mavenResult -> mavenResult.getCodeLocation())
-                                                             .collect(Collectors.toList());
+                                                       .map(mavenResult -> mavenResult.getCodeLocation())
+                                                       .collect(Collectors.toList());
 
                 Optional<MavenParseResult> firstWithName = mavenResults.stream()
-                                                                     .filter(it -> StringUtils.isNoneBlank(it.getProjectName()))
-                                                                     .findFirst();
+                                                               .filter(it -> StringUtils.isNoneBlank(it.getProjectName()))
+                                                               .findFirst();
 
                 Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
                 if (firstWithName.isPresent()) {
