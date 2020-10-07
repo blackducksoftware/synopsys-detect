@@ -339,7 +339,8 @@ public class DetectProperties {
     public static final DetectProperty<PathListProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS =
         new DetectProperty<>(new PathListProperty("detect.blackduck.signature.scanner.paths", emptyList()))
             .setInfo("Signature Scanner Target Paths", "4.2.0")
-            .setHelp("These paths and only these paths will be scanned.")
+            .setHelp(
+                "If this property is not set, the signature scanner target path is the source path (see property detect.source.path). If this property is set, the paths provided in this property's value will be signature scanned instead (the signature scanner will be executed once for each provided path).")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL);
 
     public static final DetectProperty<ExtendedEnumProperty<ExtendedSnippetMode, SnippetMatching>> DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING =
@@ -1222,8 +1223,9 @@ public class DetectProperties {
         new DetectProperty<>(new NullablePathProperty("detect.source.path"))
             .setInfo("Source Path", "3.0.0")
             .setHelp(
-                "The path to the project directory to inspect.",
-                "Detect will search the given directory for hints that indicate which package manager(s) the project uses, and will attempt to run the corresponding detector(s)."
+                "The source path is the path to the project directory to inspect. If no value is provided, the source path defaults to the current working directory.",
+                "Detect will search the source directory for hints that indicate which package manager(s) the project uses, and will attempt to run the corresponding detector(s). " +
+                    "The source path is also the default target for signature scanning. (This can be overridden with the detect.blackduck.signature.scanner.paths property.)"
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.SOURCE_PATH);
 
