@@ -81,12 +81,9 @@ public class CodeLocationConverter {
                 externalId = codeLocation.getExternalId().get();
             }
             Optional<String> dockerImageName = extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA);
-            DetectCodeLocation detectCodeLocation;
-            if (dockerImageName.isPresent()) {
-                detectCodeLocation = DetectCodeLocation.forDocker(codeLocation.getDependencyGraph(), sourcePath, externalId, dockerImageName.get());
-            } else {
-                detectCodeLocation = DetectCodeLocation.forCreator(codeLocation.getDependencyGraph(), sourcePath, externalId, overrideName);
-            }
+
+            DetectCodeLocation detectCodeLocation = dockerImageName.map(s -> DetectCodeLocation.forDocker(codeLocation.getDependencyGraph(), sourcePath, externalId, s))
+                                                        .orElseGet(() -> DetectCodeLocation.forCreator(codeLocation.getDependencyGraph(), sourcePath, externalId, overrideName));
 
             detectCodeLocations.put(codeLocation, detectCodeLocation);
         }
