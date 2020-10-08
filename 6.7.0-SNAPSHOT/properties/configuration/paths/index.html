@@ -2159,8 +2159,8 @@
 <pre><code>--detect.source.path
 </code></pre>
 
-<p>The path to the project directory to inspect.</p>
-<p>Detect will search the given directory for hints that indicate which package manager(s) the project uses, and will attempt to run the corresponding detector(s).</p>
+<p>The source path is the path to the project directory to inspect. If no value is provided, the source path defaults to the current working directory.</p>
+<p>Detect will search the source directory for hints that indicate which package manager(s) the project uses, and will attempt to run the corresponding detector(s). The source path is also the default target for signature scanning. (This can be overridden with the detect.blackduck.signature.scanner.paths property.)</p>
 <table>
 <thead>
 <tr>
