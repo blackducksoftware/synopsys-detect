@@ -24,13 +24,13 @@ package com.synopsys.integration.detect.interactive;
 
 import java.io.Console;
 import java.io.PrintStream;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.configuration.source.MapPropertySource;
-import com.synopsys.integration.detect.interactive.mode.InteractionTree;
-import com.synopsys.integration.detect.interactive.mode.InteractiveMode;
+import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.interactive.reader.ConsoleInteractiveReader;
 import com.synopsys.integration.detect.interactive.reader.InteractiveReader;
 import com.synopsys.integration.detect.interactive.reader.ScannerInteractiveReader;
@@ -38,7 +38,7 @@ import com.synopsys.integration.detect.interactive.reader.ScannerInteractiveRead
 public class InteractiveManager {
     private final Logger logger = LoggerFactory.getLogger(InteractiveManager.class);
 
-    public MapPropertySource configureInInteractiveMode(InteractionTree interactionTree) {
+    public MapPropertySource getInteractivePropertySource(List<PropertySource> existingPropertySources) {
         // Using an UncloseablePrintStream so we don't accidentally close System.out
         try (PrintStream interactivePrintStream = new UncloseablePrintStream(System.out)) {
             InteractiveReader interactiveReader;
@@ -51,16 +51,17 @@ public class InteractiveManager {
                 interactiveReader = new ScannerInteractiveReader(System.in);
             }
 
-            InteractiveMode interactiveMode = new InteractiveMode(interactivePrintStream, interactiveReader);
+            Interactions interactions = new Interactions(interactivePrintStream, interactiveReader);
 
-            interactiveMode.println("");
-            interactiveMode.println("Interactive flag found.");
-            interactiveMode.println("Starting default interactive mode.");
-            interactiveMode.println("");
+            interactions.println("");
+            interactions.println("Interactive flag found.");
+            interactions.println("Starting interactive mode.");
+            interactions.println("");
 
-            interactionTree.configure(interactiveMode);
+            InteractiveModeDecisionTree interactiveModeDialogueTree = new InteractiveModeDecisionTree(existingPropertySources);
+            interactiveModeDialogueTree.traverse(interactions);
 
-            return interactiveMode.toPropertySource();
+            return interactions.createPropertySource();
         }
     }
 }

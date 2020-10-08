@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.interactive.mode;
+package com.synopsys.integration.detect.interactive;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,26 +13,26 @@ import com.synopsys.integration.detect.configuration.connection.BlackDuckConfigF
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.rest.client.ConnectionResult;
 
-public class BlackDuckConnectionInteractionTree implements InteractionTree {
+public class BlackDuckConnectionDecisionBranch implements DecisionTree {
     private final List<PropertySource> existingPropertySources;
 
-    public BlackDuckConnectionInteractionTree(List<PropertySource> existingPropertySources) {
+    public BlackDuckConnectionDecisionBranch(List<PropertySource> existingPropertySources) {
         this.existingPropertySources = existingPropertySources;
     }
 
-    public void configure(InteractiveMode interactiveMode) {
+    public void traverse(Interactions interactions) {
         boolean connected = false;
         boolean skipConnectionTest = false;
-        BlackDuckServerInteractionTree blackDuckServerInteractionTree = new BlackDuckServerInteractionTree();
+        BlackDuckServerDecisionBranch blackDuckServerDecisionBranch = new BlackDuckServerDecisionBranch();
 
         while (!connected && !skipConnectionTest) {
-            blackDuckServerInteractionTree.configure(interactiveMode);
+            blackDuckServerDecisionBranch.traverse(interactions);
 
-            Boolean testHub = interactiveMode.askYesOrNo("Would you like to test the Black Duck connection now?");
+            Boolean testHub = interactions.askYesOrNo("Would you like to test the Black Duck connection now?");
             if (testHub) {
                 ConnectionResult connectionAttempt = null;
                 try {
-                    MapPropertySource interactivePropertySource = interactiveMode.toPropertySource();
+                    MapPropertySource interactivePropertySource = interactions.createPropertySource();
                     List<PropertySource> propertySources = new ArrayList<>(this.existingPropertySources);
                     propertySources.add(interactivePropertySource);
                     PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
@@ -41,20 +41,20 @@ public class BlackDuckConnectionInteractionTree implements InteractionTree {
                     BlackDuckServerConfig blackDuckServerConfig = blackDuckConfigFactory.createServerConfig(new SilentIntLogger());
                     connectionAttempt = blackDuckServerConfig.attemptConnection(new SilentIntLogger());
                 } catch (Exception e) {
-                    interactiveMode.println("Failed to test connection.");
-                    interactiveMode.println(e.toString());
-                    interactiveMode.println("");
+                    interactions.println("Failed to test connection.");
+                    interactions.println(e.toString());
+                    interactions.println("");
                 }
 
                 if (connectionAttempt != null && connectionAttempt.isSuccess()) {
                     connected = true;
                 } else {
                     connected = false;
-                    interactiveMode.println("Failed to connect.");
+                    interactions.println("Failed to connect.");
                     if (connectionAttempt != null) {
-                        interactiveMode.println(connectionAttempt.getFailureMessage().orElse("Unknown reason."));
+                        interactions.println(connectionAttempt.getFailureMessage().orElse("Unknown reason."));
                     }
-                    skipConnectionTest = !interactiveMode.askYesOrNo("Would you like to retry entering Black Duck information?");
+                    skipConnectionTest = !interactions.askYesOrNo("Would you like to retry entering Black Duck information?");
                 }
             } else {
                 skipConnectionTest = true;

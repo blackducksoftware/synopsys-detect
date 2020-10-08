@@ -20,16 +20,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.interactive.mode;
+package com.synopsys.integration.detect.interactive;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -38,16 +36,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.source.MapPropertySource;
-import com.synopsys.integration.detect.interactive.InteractiveOption;
 import com.synopsys.integration.detect.interactive.reader.InteractiveReader;
 
-public class InteractiveMode {
+public class Interactions {
     private final Map<Property, InteractiveOption> propertyToOptionMap = new HashMap<>();
     private final PrintStream printStream;
     private final InteractiveReader interactiveReader;
     private String profileName = null;
 
-    public InteractiveMode(PrintStream printStream, InteractiveReader reader) {
+    public Interactions(PrintStream printStream, InteractiveReader reader) {
         this.printStream = printStream;
         this.interactiveReader = reader;
     }
@@ -126,10 +123,10 @@ public class InteractiveMode {
     public void saveAndEndInteractiveMode() {
         printSuccess();
         askToSave();
-        readyToStartDetect();
+        printReadyToStartDetect();
     }
 
-    public void readyToStartDetect() {
+    public void printReadyToStartDetect() {
         printStream.println();
         printStream.println("Ready to start Detect. Hit enter to proceed.");
         interactiveReader.readLine();
@@ -187,10 +184,6 @@ public class InteractiveMode {
         printStream.println();
     }
 
-    public void print(String x) {
-        printStream.print(x);
-    }
-
     public void println(String x) {
         printStream.println(x);
     }
@@ -205,11 +198,7 @@ public class InteractiveMode {
         return false;
     }
 
-    public List<InteractiveOption> getInteractiveOptions() {
-        return new ArrayList<>(propertyToOptionMap.values());
-    }
-
-    public MapPropertySource toPropertySource() {
+    public MapPropertySource createPropertySource() {
         Map<String, String> interactivePropertyMap = propertyToOptionMap.values().stream()
                                                          .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), InteractiveOption::getInteractiveValue));
         return new MapPropertySource("interactive", interactivePropertyMap);

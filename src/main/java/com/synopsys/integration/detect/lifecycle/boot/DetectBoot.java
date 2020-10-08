@@ -70,7 +70,6 @@ import com.synopsys.integration.detect.help.json.HelpJsonWriter;
 import com.synopsys.integration.detect.help.print.DetectInfoPrinter;
 import com.synopsys.integration.detect.help.print.HelpPrinter;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
-import com.synopsys.integration.detect.interactive.mode.DefaultInteractionTree;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
@@ -164,8 +163,7 @@ public class DetectBoot {
 
         if (detectArgumentState.isInteractive()) {
             InteractiveManager interactiveManager = new InteractiveManager();
-            DefaultInteractionTree defaultInteractiveMode = new DefaultInteractionTree(propertySources);
-            MapPropertySource interactivePropertySource = interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
+            MapPropertySource interactivePropertySource = interactiveManager.getInteractivePropertySource(propertySources);
             propertySources.add(0, interactivePropertySource);
         }
         PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
