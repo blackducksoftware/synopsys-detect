@@ -4,4 +4,5 @@ include "detect-configuration"
 include 'detectable'
 include 'detector'
 include 'configuration'
+include 'common'
 

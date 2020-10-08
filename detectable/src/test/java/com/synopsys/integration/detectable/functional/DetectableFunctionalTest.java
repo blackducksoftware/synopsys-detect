@@ -42,13 +42,13 @@ import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.Executable;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.factory.DetectableFactory;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
@@ -82,7 +82,7 @@ public abstract class DetectableFunctionalTest {
 
         this.executableRunner = new FunctionalExecutableRunner();
 
-        final FileFinder fileFinder = new SimpleFileFinder();
+        final FileFinder fileFinder = new WildcardFileFinder();
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
         this.detectableFactory = new DetectableFactory(fileFinder, executableRunner, externalIdFactory, gson);

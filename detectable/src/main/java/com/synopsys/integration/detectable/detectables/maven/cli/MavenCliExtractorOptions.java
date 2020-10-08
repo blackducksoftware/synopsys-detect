@@ -22,16 +22,17 @@
  */
 package com.synopsys.integration.detectable.detectables.maven.cli;
 
+import java.util.List;
 import java.util.Optional;
 
 public class MavenCliExtractorOptions {
     private final String mavenBuildCommand;
-    private final String mavenExcludedScopes;
-    private final String mavenIncludedScopes;
-    private final String mavenExcludedModules;
-    private final String mavenIncludedModules;
+    private final List<String> mavenExcludedScopes;
+    private final List<String> mavenIncludedScopes;
+    private final List<String> mavenExcludedModules;
+    private final List<String> mavenIncludedModules;
 
-    public MavenCliExtractorOptions(final String mavenBuildCommand, final String mavenExcludedScopes, final String mavenIncludedScopes, final String mavenExcludedModules, final String mavenIncludedModules) {
+    public MavenCliExtractorOptions(String mavenBuildCommand, List<String> mavenExcludedScopes, List<String> mavenIncludedScopes, List<String> mavenExcludedModules, List<String> mavenIncludedModules) {
         this.mavenBuildCommand = mavenBuildCommand;
         this.mavenExcludedScopes = mavenExcludedScopes;
         this.mavenIncludedScopes = mavenIncludedScopes;
@@ -43,19 +44,19 @@ public class MavenCliExtractorOptions {
         return Optional.ofNullable(mavenBuildCommand);
     }
 
-    public Optional<String> getMavenExcludedScopes() {
-        return Optional.ofNullable(mavenExcludedScopes);
+    public List<String> getMavenExcludedScopes() {
+        return mavenExcludedScopes;
     }
 
-    public Optional<String> getMavenIncludedScopes() {
-        return Optional.ofNullable(mavenIncludedScopes);
+    public List<String> getMavenIncludedScopes() {
+        return mavenIncludedScopes;
     }
 
-    public Optional<String> getMavenExcludedModules() {
-        return Optional.ofNullable(mavenExcludedModules);
+    public List<String> getMavenExcludedModules() {
+        return mavenExcludedModules;
     }
 
-    public Optional<String> getMavenIncludedModules() {
-        return Optional.ofNullable(mavenIncludedModules);
+    public List<String> getMavenIncludedModules() {
+        return mavenIncludedModules;
     }
 }

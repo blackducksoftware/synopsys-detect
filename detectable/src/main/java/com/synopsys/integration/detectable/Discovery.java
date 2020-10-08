@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detectable;
 
+import com.synopsys.integration.detectable.extraction.Extraction;
+
 public class Discovery {
     private final DiscoveryResultType result;
     private final Exception error;

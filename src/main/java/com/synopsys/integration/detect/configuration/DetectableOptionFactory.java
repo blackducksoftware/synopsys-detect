@@ -44,7 +44,6 @@ import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
-import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
@@ -148,10 +147,10 @@ public class DetectableOptionFactory {
     }
 
     public GradleInspectorOptions createGradleInspectorOptions() {
-        String excludedProjectNames = getNullableValue(DetectProperties.DETECT_GRADLE_EXCLUDED_PROJECTS);
-        String includedProjectNames = getNullableValue(DetectProperties.DETECT_GRADLE_INCLUDED_PROJECTS);
-        String excludedConfigurationNames = getNullableValue(DetectProperties.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS);
-        String includedConfigurationNames = getNullableValue(DetectProperties.DETECT_GRADLE_INCLUDED_CONFIGURATIONS);
+        List<String> excludedProjectNames = getValue(DetectProperties.DETECT_GRADLE_EXCLUDED_PROJECTS);
+        List<String> includedProjectNames = getValue(DetectProperties.DETECT_GRADLE_INCLUDED_PROJECTS);
+        List<String> excludedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_EXCLUDED_CONFIGURATIONS);
+        List<String> includedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_INCLUDED_CONFIGURATIONS);
         String configuredGradleInspectorRepositoryUrl = getNullableValue(DetectProperties.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
         String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
         if (configuredGradleInspectorRepositoryUrl != null && StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
@@ -172,10 +171,10 @@ public class DetectableOptionFactory {
 
     public MavenCliExtractorOptions createMavenCliOptions() {
         String mavenBuildCommand = getNullableValue(DetectProperties.DETECT_MAVEN_BUILD_COMMAND);
-        String mavenExcludedScopes = getNullableValue(DetectProperties.DETECT_MAVEN_EXCLUDED_SCOPES);
-        String mavenIncludedScopes = getNullableValue(DetectProperties.DETECT_MAVEN_INCLUDED_SCOPES);
-        String mavenExcludedModules = getNullableValue(DetectProperties.DETECT_MAVEN_EXCLUDED_MODULES);
-        String mavenIncludedModules = getNullableValue(DetectProperties.DETECT_MAVEN_INCLUDED_MODULES);
+        List<String> mavenExcludedScopes = getValue(DetectProperties.DETECT_MAVEN_EXCLUDED_SCOPES);
+        List<String> mavenIncludedScopes = getValue(DetectProperties.DETECT_MAVEN_INCLUDED_SCOPES);
+        List<String> mavenExcludedModules = getValue(DetectProperties.DETECT_MAVEN_EXCLUDED_MODULES);
+        List<String> mavenIncludedModules = getValue(DetectProperties.DETECT_MAVEN_INCLUDED_MODULES);
         return new MavenCliExtractorOptions(mavenBuildCommand, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules);
     }
 
@@ -222,8 +221,8 @@ public class DetectableOptionFactory {
     }
 
     public SbtResolutionCacheDetectableOptions createSbtResolutionCacheDetectableOptions() {
-        String includedConfigurations = getNullableValue(DetectProperties.DETECT_SBT_INCLUDED_CONFIGURATIONS);
-        String excludedConfigurations = getNullableValue(DetectProperties.DETECT_SBT_EXCLUDED_CONFIGURATIONS);
+        List<String> includedConfigurations = getValue(DetectProperties.DETECT_SBT_INCLUDED_CONFIGURATIONS);
+        List<String> excludedConfigurations = getValue(DetectProperties.DETECT_SBT_EXCLUDED_CONFIGURATIONS);
         Integer reportDepth = getValue(DetectProperties.DETECT_SBT_REPORT_DEPTH);
         return new SbtResolutionCacheDetectableOptions(includedConfigurations, excludedConfigurations, reportDepth);
     }
@@ -235,8 +234,8 @@ public class DetectableOptionFactory {
 
     public NugetInspectorOptions createNugetInspectorOptions() {
         Boolean ignoreFailures = getValue(DetectProperties.DETECT_NUGET_IGNORE_FAILURE);
-        String excludedModules = getNullableValue(DetectProperties.DETECT_NUGET_EXCLUDED_MODULES);
-        String includedModules = getNullableValue(DetectProperties.DETECT_NUGET_INCLUDED_MODULES);
+        List<String> excludedModules = getValue(DetectProperties.DETECT_NUGET_EXCLUDED_MODULES);
+        List<String> includedModules = getValue(DetectProperties.DETECT_NUGET_INCLUDED_MODULES);
         List<String> packagesRepoUrl = getValue(DetectProperties.DETECT_NUGET_PACKAGES_REPO_URL);
         Path nugetConfigPath = detectConfiguration.getValue(DetectProperties.DETECT_NUGET_CONFIG_PATH.getProperty()).map(path -> path.resolvePath(pathResolver)).orElse(null);
         return new NugetInspectorOptions(ignoreFailures, excludedModules, includedModules, packagesRepoUrl, nugetConfigPath);
@@ -247,11 +246,6 @@ public class DetectableOptionFactory {
         String nugetInspectorName = getValue(DetectProperties.DETECT_NUGET_INSPECTOR_NAME);
         String nugetInspectorVersion = getNullableValue(DetectProperties.DETECT_NUGET_INSPECTOR_VERSION);
         return new NugetLocatorOptions(packagesRepoUrl, nugetInspectorName, nugetInspectorVersion);
-    }
-
-    public CachedExecutableResolverOptions createCachedExecutableResolverOptions() {
-        Boolean python3 = getValue(DetectProperties.DETECT_PYTHON_PYTHON3);
-        return new CachedExecutableResolverOptions(python3);
     }
 
     private Set<WorkspaceRule> deriveBazelDependencyRules(List<FilterableEnumValue<WorkspaceRule>> bazelDependencyRulesPropertyValues) {

@@ -28,7 +28,7 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.configuration.util.Bds;
+import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.util.KeyUtils;
 
 public class MapPropertySource implements PropertySource {

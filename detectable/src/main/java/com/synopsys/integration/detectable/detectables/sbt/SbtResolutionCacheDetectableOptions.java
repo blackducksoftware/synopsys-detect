@@ -22,25 +22,25 @@
  */
 package com.synopsys.integration.detectable.detectables.sbt;
 
-import java.util.Optional;
+import java.util.List;
 
 public class SbtResolutionCacheDetectableOptions {
-    private final String includedConfigurations;
-    private final String excludedConfigurations;
+    private final List<String> includedConfigurations;
+    private final List<String> excludedConfigurations;
     private final int reportDepth;
 
-    public SbtResolutionCacheDetectableOptions(final String includedConfigurations, final String excludedConfigurations, final int reportDepth) {
+    public SbtResolutionCacheDetectableOptions(List<String> includedConfigurations, List<String> excludedConfigurations, int reportDepth) {
         this.includedConfigurations = includedConfigurations;
         this.excludedConfigurations = excludedConfigurations;
         this.reportDepth = reportDepth;
     }
 
-    public Optional<String> getIncludedConfigurations() {
-        return Optional.ofNullable(includedConfigurations);
+    public List<String> getIncludedConfigurations() {
+        return includedConfigurations;
     }
 
-    public Optional<String> getExcludedConfigurations() {
-        return Optional.ofNullable(excludedConfigurations);
+    public List<String> getExcludedConfigurations() {
+        return excludedConfigurations;
     }
 
     public int getReportDepth() {

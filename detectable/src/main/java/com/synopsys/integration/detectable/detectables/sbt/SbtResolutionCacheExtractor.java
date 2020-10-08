@@ -40,7 +40,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.sbt.model.SbtDependencyModule;
@@ -62,26 +62,26 @@ public class SbtResolutionCacheExtractor {
     private final FileFinder fileFinder;
     private final ExternalIdFactory externalIdFactory;
 
-    public SbtResolutionCacheExtractor(final FileFinder fileFinder, final ExternalIdFactory externalIdFactory) {
+    public SbtResolutionCacheExtractor(FileFinder fileFinder, ExternalIdFactory externalIdFactory) {
         this.fileFinder = fileFinder;
         this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(final File directory, SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions) { //TODO: Extractor should not use DetectableOptions
+    public Extraction extract(File directory, SbtResolutionCacheDetectableOptions sbtResolutionCacheDetectableOptions) { //TODO: Extractor should not use DetectableOptions
         try {
             // TODO: Handle null better.
-            final String included = sbtResolutionCacheDetectableOptions.getIncludedConfigurations().orElse("");
-            final String excluded = sbtResolutionCacheDetectableOptions.getExcludedConfigurations().orElse("");
-            final int depth = sbtResolutionCacheDetectableOptions.getReportDepth();
+            List<String> included = sbtResolutionCacheDetectableOptions.getIncludedConfigurations();
+            List<String> excluded = sbtResolutionCacheDetectableOptions.getExcludedConfigurations();
+            int depth = sbtResolutionCacheDetectableOptions.getReportDepth();
 
-            final SbtProject project = extractProject(directory, depth, included, excluded);
+            SbtProject project = extractProject(directory, depth, included, excluded);
 
-            final List<CodeLocation> codeLocations = new ArrayList<>();
+            List<CodeLocation> codeLocations = new ArrayList<>();
 
             String projectName = null;
             String projectVersion = null;
-            for (final SbtDependencyModule module : project.getModules()) {
-                final CodeLocation codeLocation;
+            for (SbtDependencyModule module : project.getModules()) {
+                CodeLocation codeLocation;
                 if (project.getProjectExternalId() != null) {
                     codeLocation = new CodeLocation(module.getGraph(), project.getProjectExternalId());
                 } else {
@@ -101,19 +101,19 @@ public class SbtResolutionCacheExtractor {
                 return new Extraction.Builder().failure("Unable to find any dependency information.").build();
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    private SbtProject extractProject(final File path, final int depth, final String included, final String excluded) throws IOException, SAXException, ParserConfigurationException {
-        final List<SbtDependencyModule> rawModules = extractModules(path, depth, included, excluded);
-        final List<SbtDependencyModule> modules = rawModules.stream().filter(it -> it.getGraph() != null).collect(Collectors.toList());
-        final int skipped = rawModules.size() - modules.size();
+    private SbtProject extractProject(File path, int depth, List<String> included, List<String> excluded) throws IOException, SAXException, ParserConfigurationException {
+        List<SbtDependencyModule> rawModules = extractModules(path, depth, included, excluded);
+        List<SbtDependencyModule> modules = rawModules.stream().filter(it -> it.getGraph() != null).collect(Collectors.toList());
+        int skipped = rawModules.size() - modules.size();
         if (skipped > 0) {
             logger.error(String.format("Skipped %s", skipped));
         }
-        final SbtProject result = new SbtProject();
+        SbtProject result = new SbtProject();
         result.setModules(modules);
 
         if (modules.isEmpty()) {
@@ -138,11 +138,11 @@ public class SbtResolutionCacheExtractor {
         return result;
     }
 
-    private String findFirstModuleVersion(final List<SbtDependencyModule> modules, final String... names) {
+    private String findFirstModuleVersion(List<SbtDependencyModule> modules, String... names) {
         String version = null;
-        final List<String> nameList = new ArrayList<>(Arrays.asList(names));
+        List<String> nameList = new ArrayList<>(Arrays.asList(names));
 
-        for (final SbtDependencyModule it : modules) {
+        for (SbtDependencyModule it : modules) {
             if (version == null && it.getName() != null && nameList.contains(it.getName())) {
                 logger.debug(String.format("Matched %s to project version.", it.getName()));
                 version = it.getVersion();
@@ -151,29 +151,29 @@ public class SbtResolutionCacheExtractor {
         return version;
     }
 
-    private List<SbtDependencyModule> extractModules(final File path, final int depth, final String included, final String excluded) throws IOException, SAXException, ParserConfigurationException {
-        final List<File> sbtFiles = fileFinder.findFiles(path, BUILD_SBT_FILENAME, depth);
-        final List<File> resolutionCaches = fileFinder.findFiles(path, RESOLUTION_CACHE_DIRECTORY, depth); // TODO: ensure this does what the old method did. findDirectoriesContainingDirectoriesToDepth
+    private List<SbtDependencyModule> extractModules(File path, int depth, List<String> included, List<String> excluded) throws IOException, SAXException, ParserConfigurationException {
+        List<File> sbtFiles = fileFinder.findFiles(path, BUILD_SBT_FILENAME, depth);
+        List<File> resolutionCaches = fileFinder.findFiles(path, RESOLUTION_CACHE_DIRECTORY, depth); // TODO: ensure this does what the old method did. findDirectoriesContainingDirectoriesToDepth
 
         logger.debug(String.format("Found %s build.sbt files.", sbtFiles.size()));
         logger.debug(String.format("Found %s resolution caches.", resolutionCaches.size()));
 
-        final List<SbtDependencyModule> modules = new ArrayList<>();
-        final List<String> usedReports = new ArrayList<>();
+        List<SbtDependencyModule> modules = new ArrayList<>();
+        List<String> usedReports = new ArrayList<>();
 
-        for (final File sbtFile : sbtFiles) {
+        for (File sbtFile : sbtFiles) {
             logger.debug(String.format("Found SBT build file: %s", sbtFile.getCanonicalPath()));
-            final File sbtDirectory = sbtFile.getParentFile();
-            final File reportPath = new File(sbtDirectory, REPORT_FILE_DIRECTORY);
+            File sbtDirectory = sbtFile.getParentFile();
+            File reportPath = new File(sbtDirectory, REPORT_FILE_DIRECTORY);
 
-            final List<SbtDependencyModule> foundModules = extractReportModules(path, reportPath, sbtDirectory, included, excluded, usedReports);
+            List<SbtDependencyModule> foundModules = extractReportModules(path, reportPath, sbtDirectory, included, excluded, usedReports);
             modules.addAll(foundModules);
         }
 
-        for (final File resCache : resolutionCaches) {
+        for (File resCache : resolutionCaches) {
             logger.debug(String.format("Found resolution cache: %s", resCache.getCanonicalPath()));
-            final File reportPath = new File(resCache, REPORT_DIRECTORY);
-            final List<SbtDependencyModule> foundModules = extractReportModules(path, reportPath, resCache.getParentFile(), included, excluded, usedReports);
+            File reportPath = new File(resCache, REPORT_DIRECTORY);
+            List<SbtDependencyModule> foundModules = extractReportModules(path, reportPath, resCache.getParentFile(), included, excluded, usedReports);
             modules.addAll(foundModules);
         }
 
@@ -200,32 +200,32 @@ public class SbtResolutionCacheExtractor {
         return modules;
     }
 
-    private Boolean isInProject(final File file, final File sourcePath) throws IOException {
-        final File projectPath = new File(sourcePath, PROJECT_FOLDER);
+    private Boolean isInProject(File file, File sourcePath) throws IOException {
+        File projectPath = new File(sourcePath, PROJECT_FOLDER);
         return file.getCanonicalPath().startsWith(projectPath.getCanonicalPath());
     }
 
-    private List<SbtDependencyModule> extractReportModules(final File path, final File reportPath, final File source, final String included, final String excluded, final List<String> usedReports)
+    private List<SbtDependencyModule> extractReportModules(File path, File reportPath, File source, List<String> included, List<String> excluded, List<String> usedReports)
         throws IOException, SAXException, ParserConfigurationException {
-        final List<SbtDependencyModule> modules = new ArrayList<>();
-        final String canonical = reportPath.getCanonicalPath();
+        List<SbtDependencyModule> modules = new ArrayList<>();
+        String canonical = reportPath.getCanonicalPath();
         if (usedReports.contains(canonical)) {
             logger.debug(String.format("Skipping already processed report folder: %s", canonical));
         } else if (isInProject(reportPath, path)) {
             logger.debug(String.format("Skipping reports in project folder: %s", reportPath.getCanonicalPath()));
         } else {
             usedReports.add(canonical);
-            final List<File> reportFiles = fileFinder.findFiles(reportPath, REPORT_FILE_PATTERN);
+            List<File> reportFiles = fileFinder.findFiles(reportPath, REPORT_FILE_PATTERN);
             if (reportFiles == null || reportFiles.isEmpty()) {
                 logger.debug(String.format("No reports were found in: %s", reportPath));
             } else {
-                final List<SbtDependencyModule> aggregatedModules = makeModuleAggregate(reportFiles, included, excluded);
+                List<SbtDependencyModule> aggregatedModules = makeModuleAggregate(reportFiles, included, excluded);
 
                 if (aggregatedModules == null) {
                     logger.debug(String.format("No dependencies were generated for report folder: %s", reportPath));
                 } else {
                     logger.debug(String.format("Found %s aggregate dependencies in report folder: %s", aggregatedModules.size(), reportPath));
-                    for (final SbtDependencyModule aggregatedModule : aggregatedModules) {
+                    for (SbtDependencyModule aggregatedModule : aggregatedModules) {
                         logger.debug(String.format("Generated root node of %s %s", aggregatedModule.getName(), aggregatedModule.getVersion()));
 
                         aggregatedModule.setSourcePath(source);
@@ -239,25 +239,25 @@ public class SbtResolutionCacheExtractor {
         return modules;
     }
 
-    private List<SbtDependencyModule> makeModuleAggregate(final List<File> reportFiles, final String include, final String exclude) throws SAXException, IOException, ParserConfigurationException {
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        final DocumentBuilder builder = factory.newDocumentBuilder();
+    private List<SbtDependencyModule> makeModuleAggregate(List<File> reportFiles, List<String> include, List<String> exclude) throws SAXException, IOException, ParserConfigurationException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
 
-        final SbtReportParser parser = new SbtReportParser();
-        final SbtDependencyResolver resolver = new SbtDependencyResolver(externalIdFactory);
-        final ExcludedIncludedWildcardFilter filter = new ExcludedIncludedWildcardFilter(exclude, include);
-        final SbtModuleAggregator aggregator = new SbtModuleAggregator();
+        SbtReportParser parser = new SbtReportParser();
+        SbtDependencyResolver resolver = new SbtDependencyResolver(externalIdFactory);
+        ExcludedIncludedWildcardFilter filter = new ExcludedIncludedWildcardFilter(StringUtils.joinWith(",", exclude.toArray()), StringUtils.joinWith(",", include.toArray()));
+        SbtModuleAggregator aggregator = new SbtModuleAggregator();
 
-        final List<SbtDependencyModule> modules = new ArrayList<>();
-        for (final File reportFile : reportFiles) {
-            final Document xml = builder.parse(reportFile);
+        List<SbtDependencyModule> modules = new ArrayList<>();
+        for (File reportFile : reportFiles) {
+            Document xml = builder.parse(reportFile);
             logger.debug(String.format("Parsing SBT report file: %s", reportFile.getCanonicalPath()));
-            final SbtReport report = parser.parseReportFromXml(xml);
-            final SbtDependencyModule tree = resolver.resolveReport(report);
+            SbtReport report = parser.parseReportFromXml(xml);
+            SbtDependencyModule tree = resolver.resolveReport(report);
             modules.add(tree);
         }
 
-        final List<SbtDependencyModule> includedModules = modules.stream().filter(module -> filter.shouldInclude(module.getConfiguration())).collect(Collectors.toList());
+        List<SbtDependencyModule> includedModules = modules.stream().filter(module -> filter.shouldInclude(module.getConfiguration())).collect(Collectors.toList());
 
         if (modules.isEmpty()) {
             logger.warn("No sbt configurations were found in report folder.");

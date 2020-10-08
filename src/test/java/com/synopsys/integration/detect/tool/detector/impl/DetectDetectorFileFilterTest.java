@@ -32,6 +32,8 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.synopsys.integration.detect.tool.detector.file.DetectDetectorFileFilter;
+
 class DetectDetectorFileFilterTest {
     @Test
     void testIsExcludedDirectories() {

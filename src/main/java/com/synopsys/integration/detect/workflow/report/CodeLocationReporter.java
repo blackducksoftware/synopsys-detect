@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.workflow.report;
 import java.util.Map;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.detect.tool.detector.impl.DetectExtractionEnvironment;
+import com.synopsys.integration.detect.tool.detector.DetectExtractionEnvironment;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;

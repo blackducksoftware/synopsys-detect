@@ -29,10 +29,12 @@ import java.util.Optional;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Discovery;
-import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.ExtractionEnvironment;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detector.evaluation.SearchEnvironment;
 import com.synopsys.integration.detector.result.DetectorResult;
+import com.synopsys.integration.detector.result.FailedDetectorResult;
+import com.synopsys.integration.detector.result.PassedDetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class DetectorEvaluation {
@@ -157,7 +159,7 @@ public class DetectorEvaluation {
     }
 
     public DetectorStatusType getStatus() {
-        if (getResultClassName().equals(PASSED_RESULT)) {
+        if (getExtraction() != null && getExtraction().getResult().equals(Extraction.ExtractionResultType.SUCCESS)) {
             return DetectorStatusType.SUCCESS;
         } else if (fallbackFrom != null && fallbackFrom.isExtractable()) {
             return DetectorStatusType.DEFERRED;
@@ -165,20 +167,20 @@ public class DetectorEvaluation {
         return DetectorStatusType.FAILURE;
     }
 
-    public String getResultClassName() {
+    public Class getResultClass() {
         if (!isSearchable()) {
-            return searchable.getResultClassName();
+            return searchable.getResultClass();
         }
         if (!isApplicable()) {
-            return applicable.getResultClassName();
+            return applicable.getResultClass();
         }
         if (!isExtractable()) {
-            return extractable.getResultClassName();
+            return extractable.getResultClass();
         }
         if (extraction.getResult() != Extraction.ExtractionResultType.SUCCESS) {
-            return "EXTRACTION_UNSUCCESSFUL"; // TODO (IDETECT-2189)
+            return FailedDetectorResult.class; // TODO (IDETECT-2189)
         }
-        return PASSED_RESULT;
+        return PassedDetectorResult.class;
     }
 
     public String getStatusReason() {

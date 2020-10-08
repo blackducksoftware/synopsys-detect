@@ -32,11 +32,11 @@ import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.TypedProperty;
-import com.synopsys.integration.configuration.util.Bds;
 
 //The idea is that this is here to help you log information about a particular property configuration with particular things you want to express.
 //  For example you may want to log deprecation warning when a particular property is set.
