@@ -32,8 +32,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.enums.DefaultVersionNameScheme;
-import com.synopsys.integration.detect.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.util.NameVersion;
 
 public class ProjectNameVersionDecider {

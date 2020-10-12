@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.workflow.status;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.detect.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.log.IntLogger;
 

@@ -80,7 +80,6 @@ test {
 dependencies {
     implementation project(':common')
     implementation project(':configuration')
-    implementation project(':detect-configuration')
     implementation project(':detectable')
     implementation project(':detector')
 
