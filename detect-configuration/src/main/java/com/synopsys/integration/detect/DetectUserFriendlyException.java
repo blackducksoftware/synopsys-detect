@@ -20,10 +20,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.type;
+package com.synopsys.integration.detect;
 
-public enum OperatingSystemType {
-    LINUX,
-    MAC,
-    WINDOWS;
+import com.synopsys.integration.detect.enumeration.ExitCodeType;
+
+public class DetectUserFriendlyException extends Exception {
+    private static final long serialVersionUID = 1L;
+
+    private final ExitCodeType exitCodeType;
+
+    public DetectUserFriendlyException(final String message, final ExitCodeType exitCodeType) {
+        super(message);
+        this.exitCodeType = exitCodeType;
+    }
+
+    public DetectUserFriendlyException(final String message, final Throwable cause, final ExitCodeType exitCodeType) {
+        super(message, cause);
+        this.exitCodeType = exitCodeType;
+    }
+
+    public ExitCodeType getExitCodeType() {
+        return exitCodeType;
+    }
+
 }

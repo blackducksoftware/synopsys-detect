@@ -20,26 +20,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.configuration;
+package com.synopsys.integration.detect.enumeration;
 
-public enum DetectorSearchExcludedDirectories {
-    BIN("bin"),
-    BUILD("build"),
-    DOT_GRADLE(".gradle"),
-    NODE_MODULES("node_modules"),
-    OUT("out"),
-    PACKAGES("packages"),
-    GIT(".git"),
-    TARGET("target");
-
-    private final String directoryName;
-
-    DetectorSearchExcludedDirectories(final String directoryName) {
-        this.directoryName = directoryName;
-    }
-
-    public String getDirectoryName() {
-        return directoryName;
-    }
-
+public enum OperatingSystemType {
+    LINUX,
+    MAC,
+    WINDOWS;
 }

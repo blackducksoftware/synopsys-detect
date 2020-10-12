@@ -41,7 +41,7 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.common.util.Bdo;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBoot;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootFactory;

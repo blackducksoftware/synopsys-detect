@@ -30,7 +30,7 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;

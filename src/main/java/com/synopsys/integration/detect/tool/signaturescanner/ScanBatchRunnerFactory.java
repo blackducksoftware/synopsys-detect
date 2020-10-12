@@ -34,8 +34,8 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScannerZipInstaller;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.http.client.BlackDuckHttpClient;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.DetectUserFriendlyException;
+import com.synopsys.integration.detect.enumeration.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.client.IntHttpClient;

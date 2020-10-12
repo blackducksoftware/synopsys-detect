@@ -48,8 +48,8 @@ import com.synopsys.integration.blackduck.service.dataservice.ProjectUsersServic
 import com.synopsys.integration.blackduck.service.dataservice.TagService;
 import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.DetectUserFriendlyException;
+import com.synopsys.integration.detect.enumeration.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;

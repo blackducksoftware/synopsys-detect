@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detect-configuration
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,29 +20,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector;
+package com.synopsys.integration.detect.enumeration;
 
-import com.synopsys.integration.detector.base.DetectorType;
-
-public class ExtractionId {
-    private final Integer id;
-    private final String extractionType;
-
-    public ExtractionId(final DetectorType detectorType, final Integer id) {
-        extractionType = detectorType.toString();
-        this.id = id;
-    }
-
-    public ExtractionId(final String extractionType, final Integer id) {
-        this.id = id;
-        this.extractionType = extractionType;
-    }
-
-    public String toUniqueString() {
-        return extractionType + "-" + id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
+public enum DetectTool {
+    DETECTOR,
+    SIGNATURE_SCAN,
+    BINARY_SCAN,
+    IMPACT_ANALYSIS,
+    POLARIS,
+    DOCKER,
+    BAZEL
 }

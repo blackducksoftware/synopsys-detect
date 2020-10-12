@@ -35,8 +35,8 @@ import com.synopsys.integration.blackduck.api.core.BlackDuckView;
 import com.synopsys.integration.blackduck.api.core.response.LinkMultipleResponses;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.DetectUserFriendlyException;
+import com.synopsys.integration.detect.enumeration.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectCustomFieldService {

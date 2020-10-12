@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.util;
+package com.synopsys.integration.common.util;
 
 import java.net.MalformedURLException;
 import java.net.URL;

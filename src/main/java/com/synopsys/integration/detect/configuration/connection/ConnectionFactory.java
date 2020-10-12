@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.configuration.connection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.detect.util.ProxyUtil;
+import com.synopsys.integration.common.util.ProxyUtil;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.rest.client.IntHttpClient;

@@ -39,7 +39,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.blackduck.bdio2.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;

@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.detect.workflow.project;
 
-import com.synopsys.integration.detect.DetectTool;
+import com.synopsys.integration.detect.enumeration.DetectTool;
 import com.synopsys.integration.util.NameVersion;
 import com.synopsys.integration.util.Stringable;
 

@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.tool.detector;
+package com.synopsys.integration.detect.tool.detector.file;
 
 import java.io.File;
 import java.util.List;

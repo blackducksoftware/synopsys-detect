@@ -57,9 +57,9 @@ import com.synopsys.integration.configuration.property.types.string.NullableStri
 import com.synopsys.integration.configuration.property.types.string.StringListProperty;
 import com.synopsys.integration.configuration.property.types.string.StringProperty;
 import com.synopsys.integration.configuration.util.Group;
-import com.synopsys.integration.detect.DetectMajorVersion;
-import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.configuration.enums.DefaultVersionNameScheme;
+import com.synopsys.integration.detect.enumeration.DetectMajorVersion;
+import com.synopsys.integration.detect.enumeration.DetectTool;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
@@ -71,7 +71,8 @@ import com.synopsys.integration.log.LogLevel;
 // java:S1123: Warning about deprecations not having Java doc.
 public class DetectProperties {
 
-    private DetectProperties() { }
+    private DetectProperties() {
+    }
 
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_API_TOKEN =
         new DetectProperty<>(new NullableStringProperty("blackduck.api.token"))

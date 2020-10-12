@@ -41,7 +41,6 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;

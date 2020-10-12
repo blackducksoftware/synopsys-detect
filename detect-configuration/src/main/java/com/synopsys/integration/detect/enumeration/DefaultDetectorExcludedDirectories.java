@@ -20,21 +20,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect;
+package com.synopsys.integration.detect.enumeration;
 
-import com.synopsys.integration.configuration.util.ProductMajorVersion;
+public enum DefaultDetectorExcludedDirectories {
+    BIN("bin"),
+    BUILD("build"),
+    DOT_GRADLE(".gradle"),
+    NODE_MODULES("node_modules"),
+    OUT("out"),
+    PACKAGES("packages"),
+    GIT(".git"),
+    TARGET("target");
 
-public class DetectMajorVersion extends ProductMajorVersion {
-    public static final DetectMajorVersion ONE = new DetectMajorVersion(1);
-    public static final DetectMajorVersion TWO = new DetectMajorVersion(2);
-    public static final DetectMajorVersion THREE = new DetectMajorVersion(3);
-    public static final DetectMajorVersion FOUR = new DetectMajorVersion(4);
-    public static final DetectMajorVersion FIVE = new DetectMajorVersion(5);
-    public static final DetectMajorVersion SIX = new DetectMajorVersion(6);
-    public static final DetectMajorVersion SEVEN = new DetectMajorVersion(7);
-    public static final DetectMajorVersion EIGHT = new DetectMajorVersion(8);
+    private final String directoryName;
 
-    public DetectMajorVersion(final Integer intValue) {
-        super(intValue);
+    DefaultDetectorExcludedDirectories(final String directoryName) {
+        this.directoryName = directoryName;
     }
+
+    public String getDirectoryName() {
+        return directoryName;
+    }
+
 }

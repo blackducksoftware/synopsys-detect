@@ -31,8 +31,8 @@ import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.dataservice.CodeLocationService;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.DetectUserFriendlyException;
+import com.synopsys.integration.detect.enumeration.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectCodeLocationUnmapService {

@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.tool.detector.DetectExtractionEnvironment;
-import com.synopsys.integration.detect.tool.detector.ExtractionId;
+import com.synopsys.integration.detect.tool.detector.extraction.ExtractionId;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 

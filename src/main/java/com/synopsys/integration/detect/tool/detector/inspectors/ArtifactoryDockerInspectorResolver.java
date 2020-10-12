@@ -34,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;

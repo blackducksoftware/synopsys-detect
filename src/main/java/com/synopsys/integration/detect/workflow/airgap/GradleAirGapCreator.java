@@ -35,8 +35,8 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.DetectUserFriendlyException;
+import com.synopsys.integration.detect.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;

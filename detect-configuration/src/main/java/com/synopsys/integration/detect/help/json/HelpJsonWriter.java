@@ -36,8 +36,8 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.util.Group;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.detect.status.DetectorStatusCode;
+import com.synopsys.integration.detect.enumeration.DetectorStatusCode;
+import com.synopsys.integration.detect.enumeration.ExitCodeType;
 
 public class HelpJsonWriter {
     private final Logger logger = LoggerFactory.getLogger(HelpJsonWriter.class);

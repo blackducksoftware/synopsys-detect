@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.exitcode;
+package com.synopsys.integration.detect.enumeration;
 
 public enum ExitCodeType {
     SUCCESS(0, "Detect exited successfully."),

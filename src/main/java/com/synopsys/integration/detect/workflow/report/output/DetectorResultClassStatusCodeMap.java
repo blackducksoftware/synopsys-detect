@@ -25,6 +25,7 @@ package com.synopsys.integration.detect.workflow.report.output;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.synopsys.integration.detect.enumeration.DetectorStatusCode;
 import com.synopsys.integration.detectable.detectable.result.CargoLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExcludedDetectableResult;
@@ -50,10 +51,9 @@ import com.synopsys.integration.detector.result.NotNestableDetectorResult;
 import com.synopsys.integration.detector.result.NotSelfNestableDetectorResult;
 import com.synopsys.integration.detector.result.PassedDetectorResult;
 import com.synopsys.integration.detector.result.YieldedDetectorResult;
-import com.synopsys.integration.detect.status.DetectorStatusCode;
 
 public class DetectorResultClassStatusCodeMap {
-    
+
     private Map<Class, DetectorStatusCode> resultClassesToStatusCodes;
 
     public DetectorResultClassStatusCodeMap() {

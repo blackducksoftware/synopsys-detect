@@ -1,5 +1,5 @@
 /**
- * detect-configuration
+ * synopsys-detect
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,27 +20,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.exception;
+package com.synopsys.integration.detect.tool.detector.extraction;
 
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detector.base.DetectorType;
 
-public class DetectUserFriendlyException extends Exception {
-    private static final long serialVersionUID = 1L;
+public class ExtractionId {
+    private final Integer id;
+    private final String extractionType;
 
-    private final ExitCodeType exitCodeType;
-
-    public DetectUserFriendlyException(final String message, final ExitCodeType exitCodeType) {
-        super(message);
-        this.exitCodeType = exitCodeType;
+    public ExtractionId(final DetectorType detectorType, final Integer id) {
+        extractionType = detectorType.toString();
+        this.id = id;
     }
 
-    public DetectUserFriendlyException(final String message, final Throwable cause, final ExitCodeType exitCodeType) {
-        super(message, cause);
-        this.exitCodeType = exitCodeType;
+    public ExtractionId(final String extractionType, final Integer id) {
+        this.id = id;
+        this.extractionType = extractionType;
     }
 
-    public ExitCodeType getExitCodeType() {
-        return exitCodeType;
+    public String toUniqueString() {
+        return extractionType + "-" + id;
     }
 
+    public Integer getId() {
+        return id;
+    }
 }

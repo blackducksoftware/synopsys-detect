@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
-import com.synopsys.integration.detect.status.DetectorStatusCode;
+import com.synopsys.integration.detect.enumeration.DetectorStatusCode;
 
 public class FormattedDetectorOutput {
     @SerializedName("folder")

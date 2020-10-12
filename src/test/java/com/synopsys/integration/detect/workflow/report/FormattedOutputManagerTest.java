@@ -22,7 +22,7 @@ import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.result.DetectorResult;
-import com.synopsys.integration.detect.status.DetectorStatusCode;
+import com.synopsys.integration.detect.enumeration.DetectorStatusCode;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class FormattedOutputManagerTest {

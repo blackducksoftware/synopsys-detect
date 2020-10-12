@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.status;
+package com.synopsys.integration.detect.enumeration;
 
 public enum DetectorStatusCode {
     CARGO_LOCKFILE_NOT_FOUND("A Cargo.toml was located in the target project, but the Cargo.lock file was NOT located."),
@@ -47,7 +47,7 @@ public enum DetectorStatusCode {
 
     private String description;
 
-    private DetectorStatusCode(String description) {
+    DetectorStatusCode(String description) {
         this.description = description;
     }
 

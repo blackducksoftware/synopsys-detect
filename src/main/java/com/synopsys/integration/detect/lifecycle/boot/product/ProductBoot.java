@@ -31,9 +31,9 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
+import com.synopsys.integration.detect.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
@@ -69,7 +69,7 @@ public class ProductBoot {
         PolarisRunData polarisRunData = getPolarisRunData(productDecision, polarisConnectivityChecker);
 
         if (productBootOptions.isTestConnections()) {
-            logger.debug(String.format("%s is set to 'true' so Detect will not run.",  DetectProperties.DETECT_TEST_CONNECTION.getProperty().getName()));
+            logger.debug(String.format("%s is set to 'true' so Detect will not run.", DetectProperties.DETECT_TEST_CONNECTION.getProperty().getName()));
             return null;
         }
 
@@ -107,7 +107,7 @@ public class ProductBoot {
         } else {
             if (productBootOptions.isIgnoreConnectionFailures()) {
                 logger.info(String.format("Failed to connect to Black Duck: %s", blackDuckConnectivityResult.getFailureReason()));
-                logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.",  DetectProperties.DETECT_IGNORE_CONNECTION_FAILURES.getProperty().getName()));
+                logger.info(String.format("%s is set to 'true' so Detect will simply disable the Black Duck product.", DetectProperties.DETECT_IGNORE_CONNECTION_FAILURES.getProperty().getName()));
                 return null;
             } else {
                 throw new DetectUserFriendlyException("Could not communicate with Black Duck: " + blackDuckConnectivityResult.getFailureReason(), ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);

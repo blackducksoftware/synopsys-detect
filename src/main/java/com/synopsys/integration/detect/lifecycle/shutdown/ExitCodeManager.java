@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.lifecycle.shutdown;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 

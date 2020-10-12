@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.detect;
 
-import com.synopsys.integration.detect.type.OperatingSystemType;
+import com.synopsys.integration.detect.enumeration.OperatingSystemType;
 
 public class DetectInfo {
     private final OperatingSystemType currentOs;
