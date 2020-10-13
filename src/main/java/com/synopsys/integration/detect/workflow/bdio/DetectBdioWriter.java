@@ -31,9 +31,9 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.model.SpdxCreator;
-import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.DetectUserFriendlyException;
-import com.synopsys.integration.detect.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.configuration.DetectInfo;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 
 public class DetectBdioWriter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());

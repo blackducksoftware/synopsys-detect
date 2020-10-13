@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.workflow.report.output;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.synopsys.integration.detect.enumeration.DetectorStatusCode;
+import com.synopsys.integration.detect.configuration.enumeration.DetectorStatusCode;
 import com.synopsys.integration.detectable.detectable.result.CargoLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExcludedDetectableResult;

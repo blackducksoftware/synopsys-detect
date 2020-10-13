@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.detect.workflow.project;
 
-import com.synopsys.integration.detect.configuration.enums.DefaultVersionNameScheme;
+import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
 
 public class ProjectNameVersionOptions {
     public final String sourcePathName;

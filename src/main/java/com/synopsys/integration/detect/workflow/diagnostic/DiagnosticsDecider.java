@@ -24,7 +24,7 @@ package com.synopsys.integration.detect.workflow.diagnostic;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.help.DetectArgumentState;
+import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 
 public class DiagnosticsDecider {
     private final DetectArgumentState detectArgumentState;

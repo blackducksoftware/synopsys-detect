@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.util.filter;
 import java.util.Optional;
 
 import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
-import com.synopsys.integration.detect.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 
 public class DetectToolFilter {
     private final ExcludeIncludeEnumFilter<DetectTool> excludedIncludedFilter;
