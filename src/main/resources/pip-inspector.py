@@ -17,15 +17,18 @@
 # KIND, either express or implied. See the License for the
 # specific language governing permissions and limitations
 # under the License.
-#
+
 
 # Uncomment for debugging. Can't use localhost. https://www.jetbrains.com/help/pycharm/remote-debugging-with-product.html#remote-debug-config
 # import pydevd_pycharm
 # pydevd_pycharm.settrace('<Host IP Address>', port=5002, stdoutToServer=True, stderrToServer=True)
 
+import distutils.dist
 import getopt
+import io
 import os
 import pip
+import re
 import pkg_resources
 import sys
 
@@ -40,60 +43,71 @@ else:
     from pip.req import parse_requirements
     from pip.download import PipSession
 
-def main():
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], 'p:r', ['projectname=', 'requirements='])
-    except getopt.GetoptError as error:
-        print(str(error))
-        print('integration-pip-inspector.py -projectname=<project_name> -requirements=<requirements_path>')
-        sys.exit(2)
 
-    project_name = None
-    requirements_path = None
+class PipInspector:
+    def __init__(self, project_name=None, requirements_path=None):
+        if not os.path.exists(requirements_path):
+            raise "The requirements file %s does not exist." % requirements_path
 
-    for opt, arg in opts:
-        if opt in '--projectname':
-            project_name = arg
-        elif opt in '--requirements':
-            requirements_path = arg
+        self.requirements_path = requirements_path
+        self.project = None
+        self.git_pkg_metadata = None
 
-    project = None
+        if project_name is not None:
+            self.project = resolve_package_by_name(project_name, [])
 
-    if project_name is not None:
-        project = resolve_package_by_name(project_name, [])
+        if self.project is None:
+            self.project = DependencyNode()
+            self.project.name = "n?"
+            self.project.version = "v?"
 
-    if project is None:
-        project = DependencyNode()
-        project.name = 'n?'
-        project.version = 'v?'
+    def _build_git_pkg_metadata(self):
+        if self.git_pkg_metadata is not None:
+            return
+        self.git_pkg_metadata = {}
+        for packages in pkg_resources.working_set.entry_keys.values():
+            for pkg in packages:
+                distribution = pkg_resources.get_distribution(pkg)
+                metadata_str = distribution.get_metadata(distribution.PKG_INFO)
+                metadata_obj = distutils.dist.DistributionMetadata()
+                metadata_obj.read_pkg_file(io.StringIO(metadata_str))
+                if not metadata_obj.url.endswith(".git"):
+                    continue
+                self.git_pkg_metadata[pkg] = metadata_obj.url
 
-    if requirements_path is not None:
-        try:
-            assert os.path.exists(requirements_path), ("The requirements file %s does not exist." % requirements_path)
-            requirements = parse_requirements(requirements_path, session=PipSession())
-            for req in requirements:
-                try:
-                    package_name = None
-                    # In 20.1 of pip, the requirements object changed
-                    if hasattr(req, 'req'):
-                        package_name = req.req.name
-                    if package_name is None:
-                        import re
-                        package_name = re.split('==|>=|<=|>|<', req.requirement)[0]
+    def resolve_git_package(self, requirement):
+        self._build_git_pkg_metadata()
+        for key in self.git_pkg_metadata:
+            if self.git_pkg_metadata[key] in requirement:
+                return resolve_package_by_name(key, [])
+        return None
 
-                    requirement = resolve_package_by_name(package_name, [])
-                    if requirement is None:
-                        raise Exception()
-                    project.children = project.children + [requirement]
-                except:
-                    if req is not None and req.req is not None:
-                        print('--' + req.req.name)
-        except AssertionError:
-            print('r?' + requirements_path)
-        except:
-            print('p?' + requirements_path)
+    def inspect(self):
+        if self.requirements_path is None:
+            print(self.project.render())
+            return
 
-    print(project.render())
+        requirements = parse_requirements(self.requirements_path, session=PipSession())
+        for req in requirements:
+            package_name = None
+            # In 20.1 of pip, the requirements object changed
+            if hasattr(req, "req"):
+                package_name = req.req.name
+            else:
+                package_name = req.requirement
+
+            if package_name.startswith("git+"):
+                requirement = self.resolve_git_package(package_name)
+            else:
+                pkg = re.split("==|>=|<=|>|<", req.requirement)[0]
+                requirement = resolve_package_by_name(pkg, [])
+
+            if requirement is None:
+                print("-- unknown requirement: %s" % package_name)
+                continue
+            self.project.children = self.project.children + [requirement]
+
+        print(self.project.render())
 
 
 class DependencyNode(object):
@@ -111,25 +125,20 @@ class DependencyNode(object):
 
 def get_package_by_name(package_name):
     try:
-        # TODO: By using pkg_resources.Requirement.parse to get the correct key, we may not need to attempt the other methods. Robust tests are needed to confirm.
-        return pkg_resources.working_set.by_key[pkg_resources.Requirement.parse(package_name).key]
-    except:
-        pass
-    try:
         return pkg_resources.working_set.by_key[package_name]
-    except:
+    except KeyError:
         pass
     try:
         return pkg_resources.working_set.by_key[package_name.lower()]
-    except:
+    except KeyError:
         pass
     try:
-        return pkg_resources.working_set.by_key[package_name.replace('-', '_')]
-    except:
+        return pkg_resources.working_set.by_key[package_name.replace("-", "_")]
+    except KeyError:
         pass
     try:
-        return pkg_resources.working_set.by_key[package_name.replace('_', '-')]
-    except:
+        return pkg_resources.working_set.by_key[package_name.replace("_", "-")]
+    except KeyError:
         pass
     return None
 
@@ -144,9 +153,39 @@ def resolve_package_by_name(package_name, history):
     node.version = package.version
     if package_name.lower() not in history:
         for req in package.requires():
-            child_node = resolve_package_by_name(req.key, history + [package_name.lower()])
+            child_node = resolve_package_by_name(
+                req.key, history + [package_name.lower()]
+            )
             if child_node is not None:
                 node.children = node.children + [child_node]
     return node
 
-main()
+
+def main():
+    try:
+        opts, args = getopt.getopt(
+            sys.argv[1:], "p:r", ["projectname=", "requirements="]
+        )
+    except getopt.GetoptError as error:
+        print(str(error))
+        print(
+            "integration-pip-inspector.py -projectname=<project_name>"
+            " -requirements=<requirements_path>"
+        )
+        sys.exit(2)
+
+    project_name = None
+    requirements_path = None
+
+    for opt, arg in opts:
+        if opt in "--projectname":
+            project_name = arg
+        elif opt in "--requirements":
+            requirements_path = arg
+
+    inspector = PipInspector(project_name, requirements_path)
+    inspector.inspect()
+
+
+if __name__ == "__main__":
+    main()
