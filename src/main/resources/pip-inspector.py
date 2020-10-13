@@ -80,18 +80,23 @@ class PipInspector:
         with open(self.requirements_path) as reqs_file:
             requirements = reqs_file.readlines()
 
+        parse_error = False
         for package_name in requirements:
             if package_name.startswith("git+"):
                 requirement = self.resolve_git_package(package_name)
             else:
-                pkg = re.split("==|>=|<=|>|<", package_name)[0]
+                pkg = re.split("==|>=|<=|>|<", package_name)[0].strip()
                 requirement = resolve_package_by_name(pkg, [])
 
             if requirement is None:
-                print("-- unknown requirement: %s" % package_name)
+                print("--" + package_name)
+                parse_error = True
                 continue
+
             self.project.children = self.project.children + [requirement]
 
+        if parse_error:
+            print("p?" + self.requirements_path)
         print(self.project.render())
 
 
@@ -148,9 +153,7 @@ def resolve_package_by_name(package_name, history):
 
 def main():
     try:
-        opts, args = getopt.getopt(
-            sys.argv[1:], "p:r", ["projectname=", "requirements="]
-        )
+        opts, _ = getopt.getopt(sys.argv[1:], "p:r", ["projectname=", "requirements="])
     except getopt.GetoptError as error:
         print(str(error))
         print(
