@@ -27,27 +27,17 @@ import distutils.dist
 import getopt
 import io
 import os
-import pip
-import re
 import pkg_resources
+import re
 import sys
-
-pip_major_version = int(pip.__version__.split(".")[0])
-if pip_major_version >= 20:
-    from pip._internal.req import parse_requirements
-    from pip._internal.network.session import PipSession
-elif pip_major_version >= 10:
-    from pip._internal.req import parse_requirements
-    from pip._internal.download import PipSession
-else:
-    from pip.req import parse_requirements
-    from pip.download import PipSession
 
 
 class PipInspector:
     def __init__(self, project_name=None, requirements_path=None):
         if not os.path.exists(requirements_path):
-            raise "The requirements file %s does not exist." % requirements_path
+            raise FileNotFoundError(
+                "The requirements file %s does not exist." % requirements_path
+            )
 
         self.requirements_path = requirements_path
         self.project = None
@@ -87,19 +77,14 @@ class PipInspector:
             print(self.project.render())
             return
 
-        requirements = parse_requirements(self.requirements_path, session=PipSession())
-        for req in requirements:
-            package_name = None
-            # In 20.1 of pip, the requirements object changed
-            if hasattr(req, "req"):
-                package_name = req.req.name
-            else:
-                package_name = req.requirement
+        with open(self.requirements_path) as reqs_file:
+            requirements = reqs_file.readlines()
 
+        for package_name in requirements:
             if package_name.startswith("git+"):
                 requirement = self.resolve_git_package(package_name)
             else:
-                pkg = re.split("==|>=|<=|>|<", req.requirement)[0]
+                pkg = re.split("==|>=|<=|>|<", package_name)[0]
                 requirement = resolve_package_by_name(pkg, [])
 
             if requirement is None:
@@ -169,7 +154,7 @@ def main():
     except getopt.GetoptError as error:
         print(str(error))
         print(
-            "integration-pip-inspector.py -projectname=<project_name>"
+            "pip-inspector.py -projectname=<project_name>"
             " -requirements=<requirements_path>"
         )
         sys.exit(2)
