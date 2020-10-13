@@ -77,26 +77,25 @@ class PipInspector:
             print(self.project.render())
             return
 
+        requirements = []
         with open(self.requirements_path) as reqs_file:
-            requirements = reqs_file.readlines()
+            for req in reqs_file.readlines():
+                if req.strip():
+                    requirements.append(req.strip())
 
-        parse_error = False
         for package_name in requirements:
             if package_name.startswith("git+"):
                 requirement = self.resolve_git_package(package_name)
             else:
-                pkg = re.split("==|>=|<=|>|<", package_name)[0].strip()
-                requirement = resolve_package_by_name(pkg, [])
+                package_name = re.split("==|>=|<=|>|<", package_name)[0]
+                requirement = resolve_package_by_name(package_name, [])
 
             if requirement is None:
                 print("--" + package_name)
-                parse_error = True
                 continue
 
             self.project.children = self.project.children + [requirement]
 
-        if parse_error:
-            print("p?" + self.requirements_path)
         print(self.project.render())
 
 
@@ -171,7 +170,11 @@ def main():
         elif opt in "--requirements":
             requirements_path = arg
 
-    inspector = PipInspector(project_name, requirements_path)
+    try:
+        inspector = PipInspector(project_name, requirements_path)
+    except FileNotFoundError:
+        print("r?" + requirements_path)
+
     inspector.inspect()
 
 
