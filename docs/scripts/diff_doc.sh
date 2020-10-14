@@ -40,6 +40,13 @@ cd ${oldVersion}
 git clone https://github.com/blackducksoftware/synopsys-detect.git
 cd synopsys-detect
 git checkout tags/${oldVersion}
+
+# Write the header
+echo "Generating diffs from:" > ${intermediateOutputFilePath}
+git status >> ${intermediateOutputFilePath}
+git show >>${intermediateOutputFilePath}
+echo "" >> ${intermediateOutputFilePath}
+
 ./gradlew docs
 
 cd "${workingDir}"
@@ -48,11 +55,18 @@ cd ${newVersion}
 git clone https://github.com/blackducksoftware/synopsys-detect.git
 cd synopsys-detect
 git checkout tags/${newVersion}
+
+# Write the header
+echo "Generating diffs up through:" >> ${intermediateOutputFilePath}
+git status >> ${intermediateOutputFilePath}
+git show >>${intermediateOutputFilePath}
+echo "" >> ${intermediateOutputFilePath}
+
 ./gradlew docs
 cd docs/generated
 
 # Do the diffing
-find . -name "*.md" -exec ${diffOneScript} ${oldVersion} {} \; > ${intermediateOutputFilePath}
+find . -name "*.md" -exec ${diffOneScript} ${oldVersion} {} \; >> ${intermediateOutputFilePath}
 
 # Provide output file
 cd "${userDir}"
