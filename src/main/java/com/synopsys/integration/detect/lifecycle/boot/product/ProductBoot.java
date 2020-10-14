@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.service.BlackDuckService;
+import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -115,7 +115,7 @@ public class ProductBoot {
         }
     }
 
-    private boolean shouldUsePhoneHome(AnalyticsConfigurationService analyticsConfigurationService, BlackDuckService blackDuckService) {
+    private boolean shouldUsePhoneHome(AnalyticsConfigurationService analyticsConfigurationService, BlackDuckApiClient blackDuckService) {
         try {
             AnalyticsSetting analyticsSetting = analyticsConfigurationService.fetchAnalyticsSetting(blackDuckService);
             return analyticsSetting.isEnabled();

@@ -30,20 +30,20 @@ import java.util.concurrent.Callable;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
-import com.synopsys.integration.blackduck.http.RequestFactory;
-import com.synopsys.integration.blackduck.service.BlackDuckService;
+import com.synopsys.integration.blackduck.http.BlackDuckRequestFactory;
+import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.util.NameVersion;
 
 public class ImpactAnalysisCallable implements Callable<ImpactAnalysisOutput> {
     private final Gson gson;
-    private final BlackDuckService blackDuckService;
+    private final BlackDuckApiClient blackDuckService;
     private final ImpactAnalysis impactAnalysis;
     private final NameVersion projectAndVersion;
     private final String codeLocationName;
-    private final RequestFactory requestFactory;
+    private final BlackDuckRequestFactory requestFactory;
 
-    public ImpactAnalysisCallable(Gson gson, BlackDuckService blackDuckService, ImpactAnalysis impactAnalysis, RequestFactory requestFactory) {
+    public ImpactAnalysisCallable(Gson gson, BlackDuckApiClient blackDuckService, ImpactAnalysis impactAnalysis, BlackDuckRequestFactory requestFactory) {
         this.gson = gson;
         this.blackDuckService = blackDuckService;
         this.impactAnalysis = impactAnalysis;

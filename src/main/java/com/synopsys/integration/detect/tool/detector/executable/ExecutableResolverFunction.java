@@ -28,5 +28,5 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 
 @FunctionalInterface
 public interface ExecutableResolverFunction {
-    File resolve(String executableName) throws DetectableException;
+    File resolve() throws DetectableException;
 }

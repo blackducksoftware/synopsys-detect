@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.core.BlackDuckView;
 import com.synopsys.integration.blackduck.api.core.response.LinkMultipleResponses;
-import com.synopsys.integration.blackduck.service.BlackDuckService;
+import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -44,7 +44,7 @@ public class DetectCustomFieldService {
     public static final LinkMultipleResponses<CustomFieldView> CUSTOM_FIELDS_LINK = new LinkMultipleResponses<>("custom-fields", CustomFieldView.class);
     public static final LinkMultipleResponses<CustomFieldOptionView> CUSTOM_FIELDS_OPTION_LIST_LINK = new LinkMultipleResponses<>("custom-field-option-list", CustomFieldOptionView.class);
 
-    private List<CustomFieldOperation> determineOperations(final CustomFieldDocument customFieldDocument, final ProjectVersionWrapper projectVersionWrapper, final BlackDuckService blackDuckService) throws DetectUserFriendlyException {
+    private List<CustomFieldOperation> determineOperations(final CustomFieldDocument customFieldDocument, final ProjectVersionWrapper projectVersionWrapper, final BlackDuckApiClient blackDuckService) throws DetectUserFriendlyException {
         final List<CustomFieldView> projectFields = retrieveCustomFields(projectVersionWrapper.getProjectView(), blackDuckService);
         final List<CustomFieldView> versionFields = retrieveCustomFields(projectVersionWrapper.getProjectVersionView(), blackDuckService);
         final List<CustomFieldOperation> projectOperations = pairOperationFromViews(customFieldDocument.getProject(), projectFields, "project", blackDuckService);
@@ -56,7 +56,7 @@ public class DetectCustomFieldService {
     }
 
     //radio, multiselect, and dropdown
-    private void executeCustomFieldOperations(final List<CustomFieldOperation> operations, final BlackDuckService blackDuckService) throws DetectUserFriendlyException {
+    private void executeCustomFieldOperations(final List<CustomFieldOperation> operations, final BlackDuckApiClient blackDuckService) throws DetectUserFriendlyException {
         for (final CustomFieldOperation operation : operations) {
             final CustomFieldView fieldView = operation.customField;
             fieldView.setValues(operation.values);
@@ -68,7 +68,8 @@ public class DetectCustomFieldService {
         }
     }
 
-    private List<CustomFieldOperation> pairOperationFromViews(final List<CustomFieldElement> elements, final List<CustomFieldView> views, final String targetName, final BlackDuckService blackDuckService) throws DetectUserFriendlyException {
+    private List<CustomFieldOperation> pairOperationFromViews(final List<CustomFieldElement> elements, final List<CustomFieldView> views, final String targetName, final BlackDuckApiClient blackDuckService)
+        throws DetectUserFriendlyException {
         final List<CustomFieldOperation> operations = new ArrayList<>();
         for (final CustomFieldElement element : elements) {
             final Optional<CustomFieldView> fieldView = views.stream()
@@ -104,7 +105,7 @@ public class DetectCustomFieldService {
         return operations;
     }
 
-    private List<CustomFieldView> retrieveCustomFields(final BlackDuckView view, final BlackDuckService blackDuckService) {
+    private List<CustomFieldView> retrieveCustomFields(final BlackDuckView view, final BlackDuckApiClient blackDuckService) {
         try {
             return blackDuckService.getAllResponses(view, CUSTOM_FIELDS_LINK);
         } catch (final IntegrationException | NoSuchElementException e) {
@@ -112,7 +113,7 @@ public class DetectCustomFieldService {
         }
     }
 
-    private List<CustomFieldOptionView> retrieveCustomFieldOptions(final BlackDuckView view, final BlackDuckService blackDuckService) {
+    private List<CustomFieldOptionView> retrieveCustomFieldOptions(final BlackDuckView view, final BlackDuckApiClient blackDuckService) {
         try {
             return blackDuckService.getAllResponses(view, CUSTOM_FIELDS_OPTION_LIST_LINK);
         } catch (final IntegrationException | NoSuchElementException e) {
@@ -120,7 +121,7 @@ public class DetectCustomFieldService {
         }
     }
 
-    public void updateCustomFields(final ProjectVersionWrapper projectVersionWrapper, final CustomFieldDocument customFieldDocument, final BlackDuckService blackDuckService) throws DetectUserFriendlyException {
+    public void updateCustomFields(final ProjectVersionWrapper projectVersionWrapper, final CustomFieldDocument customFieldDocument, final BlackDuckApiClient blackDuckService) throws DetectUserFriendlyException {
         final List<CustomFieldOperation> customFieldOperations = determineOperations(customFieldDocument, projectVersionWrapper, blackDuckService);
         executeCustomFieldOperations(customFieldOperations, blackDuckService);
     }

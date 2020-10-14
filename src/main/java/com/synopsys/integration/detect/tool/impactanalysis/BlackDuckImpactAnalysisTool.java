@@ -42,7 +42,7 @@ import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
-import com.synopsys.integration.blackduck.service.BlackDuckService;
+import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.dataservice.CodeLocationService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
@@ -77,14 +77,14 @@ public class BlackDuckImpactAnalysisTool {
     private final ImpactAnalysisOptions impactAnalysisOptions;
     private final EventSystem eventSystem;
     private final ImpactAnalysisUploadService impactAnalysisUploadService;
-    private final BlackDuckService blackDuckService;
+    private final BlackDuckApiClient blackDuckService;
     private final CodeLocationService codeLocationService; // TODO: Use this when upgrading to blackduck-common:49.2.0
     private final boolean online;
 
     public static BlackDuckImpactAnalysisTool ONLINE(DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager, ImpactAnalysisOptions impactAnalysisOptions, BlackDuckServicesFactory blackDuckServicesFactory,
         EventSystem eventSystem) {
         ImpactAnalysisUploadService impactAnalysisService = ImpactAnalysisUploadService.create(blackDuckServicesFactory);
-        BlackDuckService blackDuckService = blackDuckServicesFactory.getBlackDuckService();
+        BlackDuckApiClient blackDuckService = blackDuckServicesFactory.getBlackDuckService();
         CodeLocationService codeLocationService = blackDuckServicesFactory.createCodeLocationService();
         return new BlackDuckImpactAnalysisTool(directoryManager, codeLocationNameManager, impactAnalysisOptions, eventSystem, impactAnalysisService, blackDuckService, codeLocationService, true);
     }
@@ -94,7 +94,7 @@ public class BlackDuckImpactAnalysisTool {
     }
 
     private BlackDuckImpactAnalysisTool(DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager, ImpactAnalysisOptions impactAnalysisOptions, EventSystem eventSystem,
-        ImpactAnalysisUploadService impactAnalysisUploadService, BlackDuckService blackDuckService, CodeLocationService codeLocationService, boolean online) {
+        ImpactAnalysisUploadService impactAnalysisUploadService, BlackDuckApiClient blackDuckService, CodeLocationService codeLocationService, boolean online) {
         this.directoryManager = directoryManager;
         this.codeLocationNameManager = codeLocationNameManager;
         this.impactAnalysisOptions = impactAnalysisOptions;

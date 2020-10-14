@@ -25,10 +25,11 @@ package com.synopsys.integration.detect.util.filter;
 import java.util.Set;
 
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
+import com.synopsys.integration.util.TokenizerUtils;
 
 public class DetectOverrideableFilter extends ExcludedIncludedWildcardFilter implements DetectFilter {
     public DetectOverrideableFilter(final String toExclude, final String toInclude) {
-        super(toExclude, toInclude);
+        super(TokenizerUtils.createSetFromString(toExclude), TokenizerUtils.createSetFromString(toInclude));
     }
 
     @Override
