@@ -474,6 +474,7 @@ public class DetectConfigurationFactory {
 
     public DetectExecutableOptions createExecutablePaths() {
         return new DetectExecutableOptions(
+            getValue(DetectProperties.DETECT_PYTHON_PYTHON3),
             getPathOrNull(DetectProperties.DETECT_BASH_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_BAZEL_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CONDA_PATH.getProperty()),

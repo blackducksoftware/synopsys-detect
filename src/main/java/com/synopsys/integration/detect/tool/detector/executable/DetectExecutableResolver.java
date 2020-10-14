@@ -24,10 +24,7 @@ package com.synopsys.integration.detect.tool.detector.executable;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
@@ -72,29 +69,24 @@ public class DetectExecutableResolver
         this.detectExecutableOptions = detectExecutableOptions;
     }
 
-    private File resolve(String executableName, boolean cache, ExecutableResolverFunction... resolvers) throws DetectableException {
-        if (cache && cachedExecutables.containsKey(executableName)) {
-            return cachedExecutables.get(executableName);
-        }
+    private File resolve(@Nullable String cacheKey, ExecutableResolverFunction... resolvers) throws DetectableException {
         File resolved = null;
         for (ExecutableResolverFunction resolver : resolvers) {
-            resolved = resolver.resolve(executableName);
+            resolved = resolver.resolve();
             if (resolved != null)
                 break;
         }
-        if (cache) {
-            cachedExecutables.put(executableName, resolved);
+        if (cacheKey != null) {
+            cachedExecutables.put(cacheKey, resolved);
         }
         return resolved;
     }
 
-    private File resolveWithOverride(String executableName, boolean cache, @Nullable Path override, ExecutableResolverFunction... resolvers) throws DetectableException {
-        List<ExecutableResolverFunction> modifiedResolvers = new ArrayList<>();
-        if (override != null) {
-            modifiedResolvers.add((it) -> resolveOverride(override));
+    private File resolveCache(String cacheKey) {
+        if (cachedExecutables.containsKey(cacheKey)) {
+            return cachedExecutables.get(cacheKey);
         }
-        modifiedResolvers.addAll(Arrays.asList(resolvers));
-        return resolve(executableName, cache, modifiedResolvers.toArray(new ExecutableResolverFunction[] {}));
+        return null;
     }
 
     private File resolveOverride(final Path executableOverride) throws DetectableException {
@@ -114,11 +106,21 @@ public class DetectExecutableResolver
     }
 
     private File resolveCachedSystemExecutable(String executableName, Path override) throws DetectableException {
-        return resolveWithOverride(executableName, true, override, systemPathExecutableFinder::findExecutable);
+        return resolveCachedSystemExecutable(executableName, executableName, override); //executableName is the cache key
     }
 
-    private File resolveLocalNonCachedExecutable(String executableName, final DetectableEnvironment environment, Path override) throws DetectableException {
-        return resolveWithOverride(executableName, false, override, systemPathExecutableFinder::findExecutable, exe -> directoryExecutableFinder.findExecutable(exe, environment.getDirectory()));
+    private File resolveCachedSystemExecutable(String cacheKey, String executableName, Path override) throws DetectableException {
+        return resolve(cacheKey,
+            () -> resolveOverride(override),
+            () -> resolveCache(cacheKey),
+            () -> systemPathExecutableFinder.findExecutable(executableName));
+    }
+
+    private File resolveLocalNonCachedExecutable(String localName, String systemName, final DetectableEnvironment environment, Path override) throws DetectableException {
+        return resolve(/* not cached */ null,
+            () -> resolveOverride(override),
+            () -> directoryExecutableFinder.findExecutable(localName, environment.getDirectory()),
+            () -> systemPathExecutableFinder.findExecutable(systemName));
     }
 
     @Override
@@ -148,17 +150,17 @@ public class DetectExecutableResolver
 
     @Override
     public File resolveGradle(final DetectableEnvironment environment) throws DetectableException {
-        return resolveLocalNonCachedExecutable("gradle", environment, detectExecutableOptions.getGradleUserPath());
+        return resolveLocalNonCachedExecutable("gradlew", "gradle", environment, detectExecutableOptions.getGradleUserPath());
     }
 
     @Override
     public File resolveMaven(final DetectableEnvironment environment) throws DetectableException {
-        return resolveLocalNonCachedExecutable("maven", environment, detectExecutableOptions.getMavenUserPath());
+        return resolveLocalNonCachedExecutable("mvnw", "mvn", environment, detectExecutableOptions.getMavenUserPath());
     }
 
     @Override
     public File resolveNpm(final DetectableEnvironment environment) throws DetectableException {
-        return resolveLocalNonCachedExecutable("npm", environment, detectExecutableOptions.getNpmUserPath());
+        return resolveLocalNonCachedExecutable("npm", "npm", environment, detectExecutableOptions.getNpmUserPath());
     }
 
     @Override
@@ -168,7 +170,7 @@ public class DetectExecutableResolver
 
     @Override
     public File resolvePip() throws DetectableException {
-        return resolveCachedSystemExecutable("pip", null);
+        return resolveCachedSystemExecutable(detectExecutableOptions.isPython3() ? "pip3" : "pip", null);
     }
 
     @Override
@@ -178,7 +180,7 @@ public class DetectExecutableResolver
 
     @Override
     public File resolvePython() throws DetectableException {
-        return resolveCachedSystemExecutable("python", detectExecutableOptions.getPythonUserPath());
+        return resolveCachedSystemExecutable(detectExecutableOptions.isPython3() ? "python3" : "python", detectExecutableOptions.getPythonUserPath());
     }
 
     @Override
