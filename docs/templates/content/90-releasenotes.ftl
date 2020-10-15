@@ -11,7 +11,7 @@
 * Upon connecting to Black Duck, the users roles and groups, which are only used in DEBUG-level logging, are no longer fetched unless logging level is DEBUG or higher.
 * The error messages produced for binary scan file upload failures have been improved.
 * The "detectors" field in the status.json file now features status data with more-expressive error codes derived from the runtime class of a detectable result.
-* Detect will follow 302 redirects when communicating with Black Duck.
+* Detect will follow 308 redirects when communicating with Black Duck.
 
 ### Resolved issues
 * (IDETECT-2038, IDETECT-2203) Resolved an issue where the Gradle Inspector would produce false positives in Gradle as a result of dependency replacement from the root project.
