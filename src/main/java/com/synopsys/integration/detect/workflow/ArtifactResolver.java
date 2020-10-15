@@ -38,7 +38,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.SilentIntLogger;
+import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.rest.request.Request;
@@ -99,7 +99,7 @@ public class ArtifactResolver {
         String propertyUrl = apiUrl + "?properties=" + propertyKey;
         logger.debug(String.format("Downloading property: %s", propertyUrl));
         Request request = new Request.Builder().url(new HttpUrl(propertyUrl)).build();
-        IntHttpClient restConnection = connectionFactory.createConnection(propertyUrl, new SilentIntLogger());
+        IntHttpClient restConnection = connectionFactory.createConnection(propertyUrl, new Slf4jIntLogger(logger));
         try (Response response = restConnection.execute(request)) {
             try (InputStreamReader reader = new InputStreamReader(response.getContent())) {
                 logger.debug("Downloaded property, attempting to parse response.");
@@ -136,7 +136,7 @@ public class ArtifactResolver {
     public File downloadArtifact(File target, String source) throws IntegrationException, IOException {
         logger.debug(String.format("Downloading for artifact to '%s' from '%s'.", target.getAbsolutePath(), source));
         Request request = new Request.Builder().url(new HttpUrl(source)).build();
-        IntHttpClient restConnection = connectionFactory.createConnection(source, new SilentIntLogger());
+        IntHttpClient restConnection = connectionFactory.createConnection(source, new Slf4jIntLogger(logger));
         try (Response response = restConnection.execute(request)) {
             logger.debug("Deleting existing file.");
             FileUtils.deleteQuietly(target);
