@@ -67,7 +67,7 @@ public class Pipelines {
         Pipeline mavenInstallPipeline = (new PipelineBuilder())
                                             .addIntermediateStep(new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor,
                                                 Arrays.asList(CQUERY_COMMAND, "--noimplicit_deps", CQUERY_OPTIONS_PLACEHOLDER, "kind(j.*import, deps(${detect.bazel.target}))", OUTPUT_FLAG, "build"), false))
-                                            .addIntermediateStep(new IntermediateStepSplitEach("\n"))
+                                            .addIntermediateStep(new IntermediateStepSplitEach("\r?\n"))
                                             .addIntermediateStep(new IntermediateStepFilter(".*maven_coordinates=.*"))
                                             .addIntermediateStep(new IntermediateStepReplaceInEach(".*\"maven_coordinates=", ""))
                                             .addIntermediateStep(new IntermediateStepReplaceInEach("\".*", ""))
