@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -65,9 +66,10 @@ public class PodlockParser {
 
         final Map<DependencyId, Forge> forgeOverrides = createForgeOverrideMap(podfileLock);
 
+        List<String> knownPods = determineAllPodNames(podfileLock);
         for (final Pod pod : podfileLock.getPods()) {
             logger.trace(String.format("Processing pod %s", pod.getName()));
-            processPod(pod, forgeOverrides, lazyBuilder);
+            processPod(pod, forgeOverrides, lazyBuilder, knownPods);
         }
 
         for (final Pod dependency : podfileLock.getDependencies()) {
@@ -112,7 +114,16 @@ public class PodlockParser {
         return Forge.COCOAPODS;
     }
 
-    private void processPod(final Pod pod, final Map<DependencyId, Forge> forgeOverrides, final LazyExternalIdDependencyGraphBuilder lazyBuilder) {
+    private List<String> determineAllPodNames(PodfileLock podfileLock) {
+        return podfileLock.getPods().stream()
+                   .map(Pod::getName)
+                   .map(this::parseRawPodName)
+                   .filter(Optional::isPresent)
+                   .map(Optional::get)
+                   .collect(Collectors.toList());
+    }
+
+    private void processPod(final Pod pod, final Map<DependencyId, Forge> forgeOverrides, final LazyExternalIdDependencyGraphBuilder lazyBuilder, List<String> knownPods) {
         final String podText = pod.getName();
         final Optional<DependencyId> dependencyIdMaybe = parseDependencyId(podText);
         final String name = parseCorrectPodName(podText).orElse(null);
@@ -128,8 +139,16 @@ public class PodlockParser {
             for (final String child : pod.getDependencies()) {
                 logger.trace(String.format("Processing pod dependency %s", child));
                 final Optional<DependencyId> childId = parseDependencyId(child);
-                if (childId.isPresent() && !dependencyId.equals(childId.get())) {
-                    lazyBuilder.addParentWithChild(dependencyId, childId.get());
+                final Optional<String> childName = parseRawPodName(child);
+                if (childId.isPresent() && childName.isPresent() && !dependencyId.equals(childId.get())) {
+                    //Some transitives may appear but are not actually present in the pod list.
+                    //This supposedly happens because platform specific transitives are present but not actually used.
+                    //So here if a transitive appears but is not actually a pod, we filter it out.
+                    if (knownPods.contains(childName.get())) {
+                        lazyBuilder.addParentWithChild(dependencyId, childId.get());
+                    } else {
+                        logger.info("Transitive POD not included because it is not an actual POD: " + childName.toString());
+                    }
                 }
             }
         }
