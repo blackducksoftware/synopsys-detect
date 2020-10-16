@@ -38,7 +38,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.SilentIntLogger;
+import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.rest.request.Request;
@@ -49,7 +49,7 @@ public class ArtifactResolver {
     private final ConnectionFactory connectionFactory;
     private final Gson gson;
 
-    public ArtifactResolver(final ConnectionFactory connectionFactory, final Gson gson) {
+    public ArtifactResolver(ConnectionFactory connectionFactory, Gson gson) {
         this.connectionFactory = connectionFactory;
         this.gson = gson;
     }
@@ -64,17 +64,17 @@ public class ArtifactResolver {
      * @param overrideArtifactPattern The pattern to use when the override version is provided of the full artifact location.
      * @return the location of the artifact
      */
-    public String resolveArtifactLocation(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey, final String overrideVersion, final String overrideArtifactPattern) throws IntegrationException, IOException {
+    public String resolveArtifactLocation(String artifactoryBaseUrl, String repositoryUrl, String propertyKey, String overrideVersion, String overrideArtifactPattern) throws IntegrationException, IOException {
         if (StringUtils.isNotBlank(overrideVersion) && StringUtils.isNotBlank(overrideArtifactPattern)) {
             logger.debug("An override version was provided, will resolve using the given version.");
-            final String repoUrl = artifactoryBaseUrl + repositoryUrl;
-            final String versionUrl = overrideArtifactPattern.replace(ArtifactoryConstants.VERSION_PLACEHOLDER, overrideVersion);
-            final String artifactUrl = repoUrl + versionUrl;
+            String repoUrl = artifactoryBaseUrl + repositoryUrl;
+            String versionUrl = overrideArtifactPattern.replace(ArtifactoryConstants.VERSION_PLACEHOLDER, overrideVersion);
+            String artifactUrl = repoUrl + versionUrl;
             logger.debug(String.format("Determined the artifact url is: %s", artifactUrl));
             return artifactUrl;
         } else {
             logger.debug("Will find version from artifactory.");
-            final String apiUrl = artifactoryBaseUrl + "api/storage/" + repositoryUrl;
+            String apiUrl = artifactoryBaseUrl + "api/storage/" + repositoryUrl;
             logger.debug(String.format("Checking '%s' for property '%s'.", apiUrl, propertyKey));
             return downloadProperty(apiUrl, propertyKey);
         }
@@ -87,42 +87,42 @@ public class ArtifactResolver {
      * @param propertyKey        The property to find, such as DETECT_GRADLE_INSPECTOR_LATEST_0
      * @return the calculated version of the artifact
      */
-    public String resolveArtifactVersion(final String artifactoryBaseUrl, final String repositoryUrl, final String propertyKey) throws IntegrationException, IOException {
+    public String resolveArtifactVersion(String artifactoryBaseUrl, String repositoryUrl, String propertyKey) throws IntegrationException, IOException {
         logger.debug(String.format("Resolving artifact version from repository %s with property %s", repositoryUrl, propertyKey));
-        final String apiUrl = artifactoryBaseUrl + "api/storage/" + repositoryUrl;
-        final String artifactVersion = downloadProperty(apiUrl, propertyKey);
+        String apiUrl = artifactoryBaseUrl + "api/storage/" + repositoryUrl;
+        String artifactVersion = downloadProperty(apiUrl, propertyKey);
         logger.debug(String.format("Resolved version online: %s", artifactVersion));
         return artifactVersion;
     }
 
-    private String downloadProperty(final String apiUrl, final String propertyKey) throws IntegrationException, IOException {
-        final String propertyUrl = apiUrl + "?properties=" + propertyKey;
+    private String downloadProperty(String apiUrl, String propertyKey) throws IntegrationException, IOException {
+        String propertyUrl = apiUrl + "?properties=" + propertyKey;
         logger.debug(String.format("Downloading property: %s", propertyUrl));
-        final Request request = new Request.Builder().url(new HttpUrl(propertyUrl)).build();
-        final IntHttpClient restConnection = connectionFactory.createConnection(propertyUrl, new SilentIntLogger());
-        try (final Response response = restConnection.execute(request)) {
-            try (final InputStreamReader reader = new InputStreamReader(response.getContent())) {
+        Request request = new Request.Builder().url(new HttpUrl(propertyUrl)).build();
+        IntHttpClient restConnection = connectionFactory.createConnection(propertyUrl, new Slf4jIntLogger(logger));
+        try (Response response = restConnection.execute(request)) {
+            try (InputStreamReader reader = new InputStreamReader(response.getContent())) {
                 logger.debug("Downloaded property, attempting to parse response.");
-                final JsonObject json = gson.fromJson(reader, JsonElement.class).getAsJsonObject();
-                final JsonObject propertyMap = json.getAsJsonObject("properties");
-                final JsonArray propertyUrls = propertyMap.getAsJsonArray(propertyKey);
-                final String foundProperty = propertyUrls.get(0).getAsString();
+                JsonObject json = gson.fromJson(reader, JsonElement.class).getAsJsonObject();
+                JsonObject propertyMap = json.getAsJsonObject("properties");
+                JsonArray propertyUrls = propertyMap.getAsJsonArray(propertyKey);
+                String foundProperty = propertyUrls.get(0).getAsString();
                 logger.debug(String.format("Successfully parsed property: %s", propertyUrls));
                 return foundProperty;
             }
         }
     }
 
-    public String parseFileName(final String source) {
-        final String[] pieces = source.split("/");
+    public String parseFileName(String source) {
+        String[] pieces = source.split("/");
         return pieces[pieces.length - 1];
     }
 
-    public File downloadOrFindArtifact(final File targetDir, final String source) throws IntegrationException, IOException {
+    public File downloadOrFindArtifact(File targetDir, String source) throws IntegrationException, IOException {
         logger.debug("Downloading or finding artifact.");
-        final String fileName = parseFileName(source);
+        String fileName = parseFileName(source);
         logger.debug(String.format("Determined filename would be: %s", fileName));
-        final File fileTarget = new File(targetDir, fileName);
+        File fileTarget = new File(targetDir, fileName);
         logger.debug(String.format("Looking for artifact at '%s' or downloading from '%s'.", fileTarget.getAbsolutePath(), source));
         if (fileTarget.exists()) {
             logger.debug("Artifact exists. Returning existing file.");
@@ -133,15 +133,15 @@ public class ArtifactResolver {
         }
     }
 
-    public File downloadArtifact(final File target, final String source) throws IntegrationException, IOException {
+    public File downloadArtifact(File target, String source) throws IntegrationException, IOException {
         logger.debug(String.format("Downloading for artifact to '%s' from '%s'.", target.getAbsolutePath(), source));
-        final Request request = new Request.Builder().url(new HttpUrl(source)).build();
-        final IntHttpClient restConnection = connectionFactory.createConnection(source, new SilentIntLogger());
-        try (final Response response = restConnection.execute(request)) {
+        Request request = new Request.Builder().url(new HttpUrl(source)).build();
+        IntHttpClient restConnection = connectionFactory.createConnection(source, new Slf4jIntLogger(logger));
+        try (Response response = restConnection.execute(request)) {
             logger.debug("Deleting existing file.");
             FileUtils.deleteQuietly(target);
             logger.debug("Writing to file.");
-            final InputStream jarBytesInputStream = response.getContent();
+            InputStream jarBytesInputStream = response.getContent();
             FileUtils.copyInputStreamToFile(jarBytesInputStream, target);
             logger.debug("Successfully wrote response to file.");
             return target;
