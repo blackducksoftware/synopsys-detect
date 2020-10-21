@@ -30,14 +30,14 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfoFactory;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPackageManagerResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPkgDetailsResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.NotOwnedByAnyPkgException;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class DpkgPackageManagerTest {
 
@@ -77,8 +77,8 @@ public class DpkgPackageManagerTest {
         String pkgMgrVersionOutput = sb.toString();
 
         final String packageName = "libc6-dev";
-        ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput("", 0, pkgMgrVersionOutput, ""));
+        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
+        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput(0, pkgMgrVersionOutput, ""));
 
         DpkgPkgDetailsResolver dpkgVersionResolver = new DpkgPkgDetailsResolver();
         DpkgPackageManagerResolver pkgMgr = new DpkgPackageManagerResolver(dpkgVersionResolver);
@@ -132,8 +132,8 @@ public class DpkgPackageManagerTest {
         String pkgMgrVersionOutput = sb.toString();
 
         final String packageName = "login";
-        ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput("", 0, pkgMgrVersionOutput, ""));
+        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
+        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput(0, pkgMgrVersionOutput, ""));
 
         DpkgPkgDetailsResolver dpkgVersionResolver = new DpkgPkgDetailsResolver();
         DpkgPackageManagerResolver pkgMgr = new DpkgPackageManagerResolver(dpkgVersionResolver);

@@ -30,15 +30,15 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class DpkgVersionResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public Optional<String> resolvePackageVersion(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String packageName) {
+    public Optional<String> resolvePackageVersion(ClangPackageManagerInfo currentPackageManager, DetectableExecutableRunner executableRunner, File workingDirectory, String packageName) {
         try {
             List<String> args = new ArrayList<>(currentPackageManager.getPkgInfoArgs().get());
             args.add(packageName);

@@ -32,15 +32,16 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableResult;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class MavenCliExtractor {
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final MavenCodeLocationPackager mavenCodeLocationPackager;
 
-    public MavenCliExtractor(ExecutableRunner executableRunner, MavenCodeLocationPackager mavenCodeLocationPackager) {
+    public MavenCliExtractor(DetectableExecutableRunner executableRunner, MavenCodeLocationPackager mavenCodeLocationPackager) {
         this.executableRunner = executableRunner;
         this.mavenCodeLocationPackager = mavenCodeLocationPackager;
     }
@@ -57,8 +58,13 @@ public class MavenCliExtractor {
         arguments.add("dependency:tree");
         arguments.add("-T1"); // Force maven to use a single thread to ensure the tree output is in the correct order.
 
-        ExecutableResult mvnExecutableResult = ExecutableResult.wrap(executableRunner, directory, mavenExe, arguments);
-        if (!mvnExecutableResult.isSuccessful()) {
+        ExecutableOutput mvnExecutableResult;
+        try {
+            mvnExecutableResult = executableRunner.execute(directory, mavenExe, arguments);
+        } catch (ExecutableRunnerException e) {
+            return Extraction.fromFailedExecutable(e);
+        }
+        if (mvnExecutableResult.getReturnCode() != 0) {
             return Extraction.fromFailedExecutable(mvnExecutableResult);
         }
 

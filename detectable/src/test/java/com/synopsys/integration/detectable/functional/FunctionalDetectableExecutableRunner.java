@@ -31,15 +31,21 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.synopsys.integration.detectable.detectable.executable.Executable;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.executable.Executable;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
-public class FunctionalExecutableRunner implements ExecutableRunner {
-    private final Map<Executable, ExecutableOutput> executableExecutableOutputMap = new HashMap<>();
+public class FunctionalDetectableExecutableRunner implements DetectableExecutableRunner {
+    private final Map<FunctionalExecutable, ExecutableOutput> executableExecutableOutputMap = new HashMap<>();
 
     public void addExecutableOutput(@NotNull final Executable executable, @NotNull final ExecutableOutput executableOutput) {
-        executableExecutableOutputMap.put(executable, executableOutput);
+        executableExecutableOutputMap.put(new FunctionalExecutable(executable), executableOutput);
+    }
+
+    @Override
+    public @NotNull ExecutableOutput execute(final File workingDirectory, final List<String> command) throws ExecutableRunnerException {
+        return execute(new Executable(workingDirectory, new HashMap<>(), command));
     }
 
     @NotNull
@@ -74,11 +80,12 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
     @NotNull
     @Override
     public ExecutableOutput execute(@NotNull final Executable executable) {
-        final ExecutableOutput executableOutput = executableExecutableOutputMap.get(executable);
+
+        final ExecutableOutput executableOutput = executableExecutableOutputMap.get(new FunctionalExecutable(executable));
         if (executableOutput == null) {
             final StringBuilder errorMessage = new StringBuilder("Missing mocked executable output for:")
                                                    .append(System.lineSeparator())
-                                                   .append(executable.getMaskedExecutableDescription())
+                                                   .append(executable.getExecutableDescription())
                                                    .append(System.lineSeparator());
 
             errorMessage.append("Executable Output Map Contents:").append(System.lineSeparator());
@@ -87,7 +94,7 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
 
                 errorMessage.append("Key: ")
                     .append(System.lineSeparator())
-                    .append(key.getMaskedExecutableDescription())
+                    .append(key.getReferencedExecutable().getExecutableDescription())
                     .append(System.lineSeparator());
                 errorMessage.append("Standard Output: ")
                     .append(System.lineSeparator())
@@ -110,8 +117,4 @@ public class FunctionalExecutableRunner implements ExecutableRunner {
         return executableOutput;
     }
 
-    @Override
-    public @NotNull Executable translate(final File workingDirectory, final File exeFile, final List<String> args) {
-        return new Executable(workingDirectory, new HashMap<>(), exeFile.getPath(), args);
-    }
 }

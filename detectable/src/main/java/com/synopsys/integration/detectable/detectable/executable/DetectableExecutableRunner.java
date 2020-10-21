@@ -27,7 +27,15 @@ import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
 
-public interface ExecutableRunner {
+import com.synopsys.integration.executable.Executable;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
+
+//This is essentially temporary as we migrate to Integration commons executable runner and allow detectables to throw exceptions.
+public interface DetectableExecutableRunner {
+    @NotNull
+    ExecutableOutput execute(final File workingDirectory, List<String> command) throws ExecutableRunnerException;
+
     @NotNull
     ExecutableOutput execute(final File workingDirectory, final String exeCmd, final String... args) throws ExecutableRunnerException;
 
@@ -42,7 +50,4 @@ public interface ExecutableRunner {
 
     @NotNull
     ExecutableOutput execute(Executable executable) throws ExecutableRunnerException;
-
-    @NotNull
-    Executable translate(final File workingDirectory, final File exeFile, final List<String> args);
 }

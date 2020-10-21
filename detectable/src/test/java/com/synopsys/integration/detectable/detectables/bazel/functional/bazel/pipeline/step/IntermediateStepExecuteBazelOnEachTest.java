@@ -32,21 +32,21 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepExecuteBazelOnEach;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class IntermediateStepExecuteBazelOnEachTest {
 
     @Test
     public void testNoInput() throws ExecutableRunnerException, IntegrationException {
         File workspaceDir = new File(".");
-        ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         File bazelExe = new File("/usr/bin/bazel");
         List<String> bazelArgs = new ArrayList<>();
         bazelArgs.add("cquery");

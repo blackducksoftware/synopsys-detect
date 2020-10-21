@@ -33,9 +33,9 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detect.tool.detector.executable.ExecutedExecutable;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 
 public class DiagnosticExecutableCapture {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -48,14 +48,14 @@ public class DiagnosticExecutableCapture {
         eventSystem.registerListener(Event.Executable, this::executableFinished);
     }
 
-    private void executableFinished(final ExecutableOutput executableOutput) {
+    private void executableFinished(final ExecutedExecutable executed) {
         final File errorOut = new File(executableDirectory, "EXE-" + executables + "-ERR.xout");
         final File standardOut = new File(executableDirectory, "EXE-" + executables + "-STD.xout");
-        indexToCommand.put(executables, executableOutput.getCommandDescription());
+        indexToCommand.put(executables, executed.getExecutable().getExecutableDescription());
 
         try {
-            FileUtils.writeStringToFile(errorOut, executableOutput.getErrorOutput(), Charset.defaultCharset());
-            FileUtils.writeStringToFile(standardOut, executableOutput.getStandardOutput(), Charset.defaultCharset());
+            FileUtils.writeStringToFile(errorOut, executed.getOutput().getErrorOutput(), Charset.defaultCharset());
+            FileUtils.writeStringToFile(standardOut, executed.getOutput().getStandardOutput(), Charset.defaultCharset());
         } catch (final IOException e) {
             logger.error("Failed to capture executable output.", e);
         }

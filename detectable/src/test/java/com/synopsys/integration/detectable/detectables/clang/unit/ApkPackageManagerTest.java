@@ -32,15 +32,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfoFactory;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.ApkArchitectureResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.ApkPackageManagerResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.NotOwnedByAnyPkgException;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class ApkPackageManagerTest {
     @Test
@@ -72,8 +72,8 @@ public class ApkPackageManagerTest {
     public void canParseArchitecture() throws ExecutableRunnerException {
         final String exampleOutput = "x86_64\n";
 
-        final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        Mockito.when(executableRunner.execute(null, "apk", Arrays.asList("info", "--print-arch"))).thenReturn(new ExecutableOutput("", 0, exampleOutput, ""));
+        final DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
+        Mockito.when(executableRunner.execute(null, "apk", Arrays.asList("info", "--print-arch"))).thenReturn(new ExecutableOutput(0, exampleOutput, ""));
 
         final ApkArchitectureResolver architectureResolver = new ApkArchitectureResolver();
         final Optional<String> architecture = architectureResolver.resolveArchitecture(new ClangPackageManagerInfoFactory().apk(), null, executableRunner);

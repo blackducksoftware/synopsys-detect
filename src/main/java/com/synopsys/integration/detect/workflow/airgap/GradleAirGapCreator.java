@@ -40,10 +40,10 @@ import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 import ch.qos.logback.core.util.FileUtil;
 import freemarker.template.Configuration;
@@ -55,10 +55,10 @@ public class GradleAirGapCreator {
 
     private final GradleResolver gradleResolver;
     private final GradleInspectorInstaller gradleInspectorInstaller;
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final Configuration configuration;
 
-    public GradleAirGapCreator(final GradleResolver gradleResolver, final GradleInspectorInstaller gradleInspectorInstaller, final ExecutableRunner executableRunner, final Configuration configuration) {
+    public GradleAirGapCreator(final GradleResolver gradleResolver, final GradleInspectorInstaller gradleInspectorInstaller, final DetectableExecutableRunner executableRunner, final Configuration configuration) {
         this.gradleResolver = gradleResolver;
         this.gradleInspectorInstaller = gradleInspectorInstaller;
         this.executableRunner = executableRunner;

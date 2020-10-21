@@ -10,9 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManager;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfoFactory;
@@ -25,6 +23,8 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.reso
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPackageManagerResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPkgDetailsResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.RpmPackageManagerResolver;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class ClangPackageManagerRunnerTest {
     private final File dependencyFile = new File("/usr/include/X11/Core.h");
@@ -150,7 +150,7 @@ public class ClangPackageManagerRunnerTest {
         ClangPackageManager currentPackageManager = new ClangPackageManager(packageManagerInfo, packageResolver);
 
         File workingDirectory = new File("test");
-        ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
 
         List<String> fileSpecificGetOwnerArgs = new ArrayList<>(packageManagerInfo.getPkgMgrGetOwnerCmdArgs());
         fileSpecificGetOwnerArgs.add(dependencyFile.getAbsolutePath());
@@ -159,12 +159,12 @@ public class ClangPackageManagerRunnerTest {
             List<String> fileSpecificGetDetailsArgs = new ArrayList<>(packageManagerInfo.getPkgInfoArgs().get());
             fileSpecificGetDetailsArgs.add(pkgName);
             String pkgMgrGetDetailsQueryFileOutput = String.format(pkgMgrDetailsQueryResultPattern, dependencyFile);
-            ExecutableOutput pkgMgrGetDetailsQueryFileResult = new ExecutableOutput("", 0, pkgMgrGetDetailsQueryFileOutput, "");
+            ExecutableOutput pkgMgrGetDetailsQueryFileResult = new ExecutableOutput(0, pkgMgrGetDetailsQueryFileOutput, "");
             Mockito.when(executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetDetailsArgs)).thenReturn(pkgMgrGetDetailsQueryFileResult);
         }
 
         String pkgMgrGetOwnerQueryFileOutput = String.format(pkgMgrOwnerQueryResultPattern, dependencyFile.getAbsolutePath());
-        ExecutableOutput pkgMgrGetOwnerQueryFileResult = new ExecutableOutput("", 0, pkgMgrGetOwnerQueryFileOutput, "");
+        ExecutableOutput pkgMgrGetOwnerQueryFileResult = new ExecutableOutput(0, pkgMgrGetOwnerQueryFileOutput, "");
         Mockito.when(executableRunner.execute(workingDirectory, packageManagerInfo.getPkgMgrCmdString(), fileSpecificGetOwnerArgs)).thenReturn(pkgMgrGetOwnerQueryFileResult);
 
         ClangPackageManagerRunner runner = new ClangPackageManagerRunner();

@@ -32,13 +32,13 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfoFactory;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.NotOwnedByAnyPkgException;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.RpmPackageManagerResolver;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class RpmPackageManagerTest {
 
@@ -94,7 +94,7 @@ public class RpmPackageManagerTest {
 
         final RpmPackageManagerResolver resolver = new RpmPackageManagerResolver(new Gson());
         final ClangPackageManagerInfo currentPackageManager = null;
-        final ExecutableRunner executableRunner = null;
+        final DetectableExecutableRunner executableRunner = null;
         final File workingDirectory = null;
         final String queryPackageOutput = "{ epoch: \"(none)\", name: \"glibc-headers\", version: \"2.17-222.el7\", arch: \"x86_64\" }\n" +
                                               "{ epoch: \"3\", name: \"test-package\", version: \"test-version\", arch: \"test_arch\" }\n";

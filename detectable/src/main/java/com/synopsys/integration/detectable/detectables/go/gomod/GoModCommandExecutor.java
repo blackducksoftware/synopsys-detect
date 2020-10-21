@@ -29,14 +29,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class GoModCommandExecutor {
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
 
-    public GoModCommandExecutor(final ExecutableRunner executableRunner) {
+    public GoModCommandExecutor(final DetectableExecutableRunner executableRunner) {
         this.executableRunner = executableRunner;
     }
 

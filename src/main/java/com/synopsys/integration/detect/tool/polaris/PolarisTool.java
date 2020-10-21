@@ -39,10 +39,10 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
-import com.synopsys.integration.detectable.detectable.executable.Executable;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.executable.Executable;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.polaris.common.cli.PolarisDownloadUtility;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
@@ -52,12 +52,13 @@ public class PolarisTool {
     private static final String POLARIS_DESCRIPTION_KEY = "POLARIS";
 
     private final DirectoryManager directoryManager;
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final EventSystem eventSystem;
     private final PropertyConfiguration detectConfiguration;
     private final PolarisServerConfig polarisServerConfig;
 
-    public PolarisTool(final EventSystem eventSystem, final DirectoryManager directoryManager, final ExecutableRunner executableRunner, final PropertyConfiguration detectConfiguration, final PolarisServerConfig polarisServerConfig) {
+    public PolarisTool(final EventSystem eventSystem, final DirectoryManager directoryManager, final DetectableExecutableRunner executableRunner, final PropertyConfiguration detectConfiguration,
+        final PolarisServerConfig polarisServerConfig) {
         this.directoryManager = directoryManager;
         this.executableRunner = executableRunner;
         this.eventSystem = eventSystem;
@@ -100,7 +101,7 @@ public class PolarisTool {
                 arguments.add("analyze");
             }
 
-            final Executable swipExecutable = new Executable(projectDirectory, environmentVariables, polarisCliPath.get(), arguments);
+            final Executable swipExecutable = Executable.create(projectDirectory, environmentVariables, polarisCliPath.get(), arguments);
             try {
                 final ExecutableOutput output = executableRunner.execute(swipExecutable);
                 if (output.getReturnCode() == 0) {

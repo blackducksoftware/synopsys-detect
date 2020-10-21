@@ -32,16 +32,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.ClangPackageManagerResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.NotOwnedByAnyPkgException;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class ClangPackageManagerRunner {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public boolean applies(final ClangPackageManager currentPackageManager, final File workingDirectory, final ExecutableRunner executor) {
+    public boolean applies(final ClangPackageManager currentPackageManager, final File workingDirectory, final DetectableExecutableRunner executor) {
         final ClangPackageManagerInfo packageManagerInfo = currentPackageManager.getPackageManagerInfo();
         try {
             final ExecutableOutput versionOutput = executor.execute(workingDirectory, packageManagerInfo.getPkgMgrName(), packageManagerInfo.getCheckPresenceCommandArgs());
@@ -60,7 +60,7 @@ public class ClangPackageManagerRunner {
         return false;
     }
 
-    public PackageDetailsResult getAllPackages(final ClangPackageManager currentPackageManager, final File workingDirectory, final ExecutableRunner executableRunner, final Set<File> dependencyFiles) {
+    public PackageDetailsResult getAllPackages(final ClangPackageManager currentPackageManager, final File workingDirectory, final DetectableExecutableRunner executableRunner, final Set<File> dependencyFiles) {
         final Set<PackageDetails> packageDetails = new HashSet<>();
         final Set<File> unRecognizedDependencyFiles = new HashSet<>();
         for (final File dependencyFile : dependencyFiles) {
@@ -72,7 +72,7 @@ public class ClangPackageManagerRunner {
         return new PackageDetailsResult(packageDetails, unRecognizedDependencyFiles);
     }
 
-    public PackageDetailsResult getPackages(final ClangPackageManager currentPackageManager, final File workingDirectory, final ExecutableRunner executableRunner, final File dependencyFile) {
+    public PackageDetailsResult getPackages(final ClangPackageManager currentPackageManager, final File workingDirectory, final DetectableExecutableRunner executableRunner, final File dependencyFile) {
         final ClangPackageManagerInfo packageManagerInfo = currentPackageManager.getPackageManagerInfo();
         final Set<PackageDetails> dependencyDetails = new HashSet<>();
         final Set<File> unRecognizedDependencyFiles = new HashSet<>();

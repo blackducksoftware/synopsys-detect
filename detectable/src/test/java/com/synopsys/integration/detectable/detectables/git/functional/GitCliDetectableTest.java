@@ -31,10 +31,10 @@ import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
+import com.synopsys.integration.executable.ExecutableOutput;
 
 public class GitCliDetectableTest extends DetectableFunctionalTest {
     public GitCliDetectableTest() throws IOException {
@@ -46,11 +46,11 @@ public class GitCliDetectableTest extends DetectableFunctionalTest {
         addDirectory(Paths.get(".git"));
 
         final String gitRemoteUrlOutput = "https://github.com/blackducksoftware/synopsys-detect";
-        final ExecutableOutput gitConfigExecutableOutput = new ExecutableOutput("git config", 0, gitRemoteUrlOutput, "");
+        final ExecutableOutput gitConfigExecutableOutput = new ExecutableOutput(0, gitRemoteUrlOutput, "");
         addExecutableOutput(gitConfigExecutableOutput, "git", "config", "--get", "remote.origin.url");
 
         final String gitBranchOutput = "branch-version";
-        final ExecutableOutput gitBranchExecutableOutput = new ExecutableOutput("git branch", 0, gitBranchOutput, "");
+        final ExecutableOutput gitBranchExecutableOutput = new ExecutableOutput(0, gitBranchOutput, "");
         addExecutableOutput(gitBranchExecutableOutput, "git", "rev-parse", "--abbrev-ref", "HEAD");
     }
 

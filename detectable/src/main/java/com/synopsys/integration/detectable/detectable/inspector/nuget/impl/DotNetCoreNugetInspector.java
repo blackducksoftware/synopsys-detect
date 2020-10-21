@@ -27,18 +27,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspector;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class DotNetCoreNugetInspector implements NugetInspector {
     private final File dotnetExe;
     private final String inspectorDll;
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
 
-    public DotNetCoreNugetInspector(final File dotnetExe, final String inspectorDll, final ExecutableRunner executableRunner) {
+    public DotNetCoreNugetInspector(final File dotnetExe, final String inspectorDll, final DetectableExecutableRunner executableRunner) {
         this.dotnetExe = dotnetExe;
         this.inspectorDll = inspectorDll;
         this.executableRunner = executableRunner;

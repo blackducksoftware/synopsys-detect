@@ -9,21 +9,21 @@ import org.mockito.Mockito;
 
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphTransformer;
 import com.synopsys.integration.detectable.detectables.go.gomod.ReplacementDataExtractor;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class GoModCliExtractorTest {
 
     @Test
     public void handleMultipleReplacementsForOneComponentTest() throws ExecutableRunnerException {
-        ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         File directory = new File("");
         File goExe = new File("");
 
@@ -54,7 +54,7 @@ public class GoModCliExtractorTest {
         String standardOutput = String.join("\n", Arrays.asList(
             "git.daimler.com/c445/t1"
         ));
-        return new ExecutableOutput("", 0, standardOutput, "");
+        return new ExecutableOutput(0, standardOutput, "");
     }
 
     private ExecutableOutput goListJsonOutput() {
@@ -77,13 +77,13 @@ public class GoModCliExtractorTest {
             "\t}",
             "}"
         ));
-        return new ExecutableOutput("", 0, standardOutput, "");
+        return new ExecutableOutput(0, standardOutput, "");
     }
 
     private ExecutableOutput goModGraphOutput() {
         String standardOutput = String.join("\n", Arrays.asList(
             "github.com/codegangsta/negroni@v1.0.0 github.com/sirupsen/logrus@v1.1.1"
         ));
-        return new ExecutableOutput("", 0, standardOutput, "");
+        return new ExecutableOutput(0, standardOutput, "");
     }
 }
