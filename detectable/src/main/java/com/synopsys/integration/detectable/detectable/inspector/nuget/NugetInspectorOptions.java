@@ -28,12 +28,12 @@ import java.util.Optional;
 
 public class NugetInspectorOptions {
     private final boolean ignoreFailures;
-    private final String excludedModules;
-    private final String includedModules;
+    private final List<String> excludedModules;
+    private final List<String> includedModules;
     private final List<String> packagesRepoUrl;
     private final Path nugetConfigPath;
 
-    public NugetInspectorOptions(final boolean ignoreFailures, final String excludedModules, final String includedModules, final List<String> packagesRepoUrl, final Path nugetConfigPath) {
+    public NugetInspectorOptions(boolean ignoreFailures, List<String> excludedModules, List<String> includedModules, List<String> packagesRepoUrl, Path nugetConfigPath) {
         this.ignoreFailures = ignoreFailures;
         this.excludedModules = excludedModules;
         this.includedModules = includedModules;
@@ -45,12 +45,12 @@ public class NugetInspectorOptions {
         return ignoreFailures;
     }
 
-    public Optional<String> getExcludedModules() {
-        return Optional.ofNullable(excludedModules);
+    public List<String> getExcludedModules() {
+        return excludedModules;
     }
 
-    public Optional<String> getIncludedModules() {
-        return Optional.ofNullable(includedModules);
+    public List<String> getIncludedModules() {
+        return includedModules;
     }
 
     public List<String> getPackagesRepoUrl() {

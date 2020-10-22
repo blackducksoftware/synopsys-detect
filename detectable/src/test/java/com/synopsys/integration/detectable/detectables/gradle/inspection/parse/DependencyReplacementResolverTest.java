@@ -5,47 +5,44 @@ import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleGav;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.ReplacedGradleGav;
 
 public class DependencyReplacementResolverTest {
     @Test
     public void testReplacement() {
-        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        Dependency resolved = new Dependency(externalIdFactory.createMavenExternalId("group", "name", "version"));
-        Dependency replaced = new Dependency(externalIdFactory.createMavenExternalId("replacedGroup", "replacedName", "replacedVersion"));
-
+        GradleGav resolvedGradleGav = new GradleGav("group", "name", "version");
+        ReplacedGradleGav replacedGradleGav = new ReplacedGradleGav("replacedGroup", "replacedName", "replacedVersion");
         DependencyReplacementResolver dependencyReplacementResolver = DependencyReplacementResolver.createRootResolver();
 
-        dependencyReplacementResolver.addReplacementData(replaced, resolved);
+        dependencyReplacementResolver.addReplacementData(replacedGradleGav, resolvedGradleGav);
 
-        Optional<Dependency> replacedDependency = dependencyReplacementResolver.getReplacement(replaced);
+        Optional<GradleGav> replacedDependency = dependencyReplacementResolver.getReplacement(replacedGradleGav);
         Assertions.assertTrue(replacedDependency.isPresent());
-        Assertions.assertEquals(resolved, replacedDependency.get());
+        Assertions.assertEquals(resolvedGradleGav, replacedDependency.get());
 
-        Optional<Dependency> notReplacedDependency = dependencyReplacementResolver.getReplacement(resolved);
+        Optional<GradleGav> notReplacedDependency = dependencyReplacementResolver.getReplacement(resolvedGradleGav);
         Assertions.assertFalse(notReplacedDependency.isPresent());
     }
 
     @Test
     public void testReplacementWithStructure() {
-        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        Dependency resolvedDependency = new Dependency(externalIdFactory.createMavenExternalId("group", "name", "version"));
-        Dependency replacedDependency = new Dependency(externalIdFactory.createMavenExternalId("replacedGroup", "replacedName", "replacedVersion"));
+        GradleGav resolvedGradleGav = new GradleGav("group", "name", "version");
 
+        ReplacedGradleGav replacedGradleGav = new ReplacedGradleGav("replacedGroup", "replacedName", "replacedVersion");
         DependencyReplacementResolver rootResolver = DependencyReplacementResolver.createRootResolver();
-        rootResolver.addReplacementData(replacedDependency, resolvedDependency);
+        rootResolver.addReplacementData(replacedGradleGav, resolvedGradleGav);
 
-        Dependency secondReplacedDependency = new Dependency(externalIdFactory.createMavenExternalId("subReplacedGroup", "subReplacedName", "subReplacedVersion"));
+        ReplacedGradleGav secondReplacedGradleGav = new ReplacedGradleGav("subReplacedGroup", "subReplacedName", "subReplacedVersion");
         DependencyReplacementResolver subResolver = DependencyReplacementResolver.createFromParentResolver(rootResolver);
-        subResolver.addReplacementData(secondReplacedDependency, resolvedDependency);
+        subResolver.addReplacementData(secondReplacedGradleGav, resolvedGradleGav);
 
-        Optional<Dependency> rootReplacedDependency = subResolver.getReplacement(replacedDependency);
+        Optional<GradleGav> rootReplacedDependency = subResolver.getReplacement(replacedGradleGav);
         Assertions.assertTrue(rootReplacedDependency.isPresent());
-        Assertions.assertEquals(resolvedDependency, rootReplacedDependency.get());
+        Assertions.assertEquals(resolvedGradleGav, rootReplacedDependency.get());
 
-        Optional<Dependency> subReplacedDependency = subResolver.getReplacement(secondReplacedDependency);
+        Optional<GradleGav> subReplacedDependency = subResolver.getReplacement(secondReplacedGradleGav);
         Assertions.assertTrue(subReplacedDependency.isPresent());
-        Assertions.assertEquals(resolvedDependency, subReplacedDependency.get());
+        Assertions.assertEquals(resolvedGradleGav, subReplacedDependency.get());
     }
 }

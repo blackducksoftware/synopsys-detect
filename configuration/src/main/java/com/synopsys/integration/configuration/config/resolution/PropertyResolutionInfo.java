@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.configuration.config.resolution;
 
-import org.antlr.v4.runtime.misc.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.util.Assert;
 
 public class PropertyResolutionInfo {

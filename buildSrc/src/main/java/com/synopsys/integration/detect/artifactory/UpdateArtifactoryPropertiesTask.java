@@ -45,7 +45,6 @@ import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
 import com.synopsys.integration.rest.support.AuthenticationSupport;
-import com.synopsys.integration.rest.support.UrlSupport;
 
 public class UpdateArtifactoryPropertiesTask extends DefaultTask {
     private final IntLogger logger = new Slf4jIntLogger(getLogger());
@@ -70,7 +69,7 @@ public class UpdateArtifactoryPropertiesTask extends DefaultTask {
         String artifactoryRepository = getExtensionProperty(Common.PROPERTY_ARTIFACTORY_REPO);
         String artifactoryDownloadUrl = getExtensionProperty(Common.PROPERTY_DOWNLOAD_ARTIFACTORY_URL);
 
-        AuthenticatingIntHttpClient httpClient = new BasicAuthHttpClient(logger, 200, true, ProxyInfo.NO_PROXY_INFO, new AuthenticationSupport(new UrlSupport()), artifactoryDeployerUsername, artifactoryDeployerPassword);
+        AuthenticatingIntHttpClient httpClient = new BasicAuthHttpClient(logger, 200, true, ProxyInfo.NO_PROXY_INFO, new AuthenticationSupport(), artifactoryDeployerUsername, artifactoryDeployerPassword);
 
         String majorVersion = projectVersion.split("\\.")[0];
         String latestPropertyKey = "DETECT_LATEST";

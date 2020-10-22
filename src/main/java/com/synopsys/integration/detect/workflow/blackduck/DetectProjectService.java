@@ -39,7 +39,7 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.api.generated.view.TagView;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestBuilder;
 import com.synopsys.integration.blackduck.http.BlackDuckRequestFilter;
-import com.synopsys.integration.blackduck.service.BlackDuckService;
+import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.dataservice.ProjectBomService;
 import com.synopsys.integration.blackduck.service.dataservice.ProjectMappingService;
@@ -48,8 +48,8 @@ import com.synopsys.integration.blackduck.service.dataservice.ProjectUsersServic
 import com.synopsys.integration.blackduck.service.dataservice.TagService;
 import com.synopsys.integration.blackduck.service.model.ProjectSyncModel;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.util.NameVersion;
@@ -72,7 +72,7 @@ public class DetectProjectService {
 
     public ProjectVersionWrapper createOrUpdateBlackDuckProject(final NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException {
         final ProjectService projectService = blackDuckServicesFactory.createProjectService();
-        final BlackDuckService blackDuckService = blackDuckServicesFactory.getBlackDuckService();
+        final BlackDuckApiClient blackDuckService = blackDuckServicesFactory.getBlackDuckService();
         final ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion);
         final boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
         final ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
@@ -104,7 +104,7 @@ public class DetectProjectService {
         return projectVersionWrapper;
     }
 
-    private void mapToParentProjectVersion(final BlackDuckService blackDuckService, final ProjectService projectService, final ProjectBomService projectBomService, final String parentProjectName, final String parentVersionName,
+    private void mapToParentProjectVersion(final BlackDuckApiClient blackDuckService, final ProjectService projectService, final ProjectBomService projectBomService, final String parentProjectName, final String parentVersionName,
         final ProjectVersionWrapper projectVersionWrapper)
         throws DetectUserFriendlyException {
         if (StringUtils.isNotBlank(parentProjectName) || StringUtils.isNotBlank(parentVersionName)) {
@@ -242,7 +242,7 @@ public class DetectProjectService {
         }
     }
 
-    public Optional<HttpUrl> findLatestProjectVersionCloneUrl(final BlackDuckService blackDuckService, final ProjectService projectService, final String projectName) throws DetectUserFriendlyException {
+    public Optional<HttpUrl> findLatestProjectVersionCloneUrl(final BlackDuckApiClient blackDuckService, final ProjectService projectService, final String projectName) throws DetectUserFriendlyException {
         try {
             final Optional<ProjectView> projectView = projectService.getProjectByName(projectName);
             if (projectView.isPresent()) {

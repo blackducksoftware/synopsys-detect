@@ -30,21 +30,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
+import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class DotNetRuntimeFinder {
     private static final String DOTNET_LIST_RUNTIMES_COMMAND = "--list-runtimes";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final DetectExecutableResolver executableResolver;
     private final File workingDir;
 
-    public DotNetRuntimeFinder(final ExecutableRunner executableRunner, final DetectExecutableResolver executableResolver, final File workingDir) {
+    public DotNetRuntimeFinder(final DetectableExecutableRunner executableRunner, final DetectExecutableResolver executableResolver, final File workingDir) {
         this.executableRunner = executableRunner;
         this.executableResolver = executableResolver;
         this.workingDir = workingDir;

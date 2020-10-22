@@ -26,13 +26,12 @@ import java.io.IOException;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.core.BlackDuckPath;
-import com.synopsys.integration.blackduck.service.BlackDuckService;
+import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpMethod;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.Response;
-import com.synopsys.integration.rest.support.UrlSupport;
 
 public class AnalyticsConfigurationService {
     private static final BlackDuckPath INTEGRATION_SETTINGS_PATH = new BlackDuckPath("/api/internal/integration-settings");
@@ -44,8 +43,8 @@ public class AnalyticsConfigurationService {
         this.gson = gson;
     }
 
-    public AnalyticsSetting fetchAnalyticsSetting(BlackDuckService blackDuckService) throws IntegrationException, IOException {
-        HttpUrl url = new UrlSupport().appendRelativeUrl(blackDuckService.getUrl(INTEGRATION_SETTINGS_PATH), "/analytics");
+    public AnalyticsSetting fetchAnalyticsSetting(BlackDuckApiClient blackDuckService) throws IntegrationException, IOException {
+        HttpUrl url = blackDuckService.getUrl(INTEGRATION_SETTINGS_PATH).appendRelativeUrl("/analytics");
 
         Request request = new Request.Builder()
                               .url(url)

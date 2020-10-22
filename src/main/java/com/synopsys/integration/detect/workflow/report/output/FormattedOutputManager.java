@@ -32,8 +32,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.synopsys.integration.configuration.util.Bds;
-import com.synopsys.integration.detect.DetectInfo;
+import com.synopsys.integration.common.util.Bds;
+import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -41,7 +41,6 @@ import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
-import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.util.NameVersion;
@@ -67,7 +66,7 @@ public class FormattedOutputManager {
 
     public FormattedOutput createFormattedOutput(DetectInfo detectInfo) {
         FormattedOutput formattedOutput = new FormattedOutput();
-        formattedOutput.formatVersion = "0.3.0";
+        formattedOutput.formatVersion = "0.4.0";
         formattedOutput.detectVersion = detectInfo.getDetectVersion();
 
         formattedOutput.results = Bds.of(detectResults)
@@ -116,7 +115,8 @@ public class FormattedOutputManager {
         detectorOutput.extracted = evaluation.wasExtractionSuccessful();
         detectorOutput.discoverable = evaluation.wasDiscoverySuccessful();
         detectorOutput.status = evaluation.getStatus().name();
-        detectorOutput.statusCode = formatResultNameToStatusCode(evaluation.getResultClassName());
+        DetectorResultClassStatusCodeMap detectorResultClassStatusCodeMap = new DetectorResultClassStatusCodeMap();
+        detectorOutput.statusCode = detectorResultClassStatusCodeMap.getStatusCode(evaluation.getResultClass());
         detectorOutput.statusReason = evaluation.getStatusReason();
 
         if (evaluation.getDiscovery() != null) {
@@ -133,15 +133,6 @@ public class FormattedOutputManager {
         }
 
         return detectorOutput;
-    }
-
-    private String formatResultNameToStatusCode(String resultName) {
-        String[] classnamePieces = resultName.split("\\.");
-        String actualResultName = classnamePieces[classnamePieces.length-1].replace("DetectResult", "").replace("DetectorResult", "").replace("DetectableResult", "");
-
-        return actualResultName
-                   .replaceAll("([a-z])([A-Z]+)", "$1_$2")
-                   .toUpperCase();
     }
 
     private void detectorsComplete(final DetectorToolResult detectorToolResult) {

@@ -31,9 +31,9 @@ import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
+import com.synopsys.integration.executable.ExecutableOutput;
 
 public class GitCliCommitHashDetectableTest extends DetectableFunctionalTest {
     public GitCliCommitHashDetectableTest() throws IOException {
@@ -45,19 +45,19 @@ public class GitCliCommitHashDetectableTest extends DetectableFunctionalTest {
         addDirectory(Paths.get(".git"));
 
         final String gitRemoteUrlOutput = "https://github.com/blackducksoftware/synopsys-detect";
-        final ExecutableOutput gitConfigExecutableOutput = new ExecutableOutput("git config", 0, gitRemoteUrlOutput, "");
+        final ExecutableOutput gitConfigExecutableOutput = new ExecutableOutput(0, gitRemoteUrlOutput, "");
         addExecutableOutput(gitConfigExecutableOutput, "git", "config", "--get", "remote.origin.url");
 
         final String gitBranchOutput = "HEAD";
-        final ExecutableOutput gitBranchExecutableOutput = new ExecutableOutput("git rev-parse --abbrev-ref", 0, gitBranchOutput, "");
+        final ExecutableOutput gitBranchExecutableOutput = new ExecutableOutput(0, gitBranchOutput, "");
         addExecutableOutput(gitBranchExecutableOutput, "git", "rev-parse", "--abbrev-ref", "HEAD");
 
         final String gitLogOutput = "(HEAD -> develop, origin/develop, origin/HEAD)";
-        final ExecutableOutput gitLogExecutableOutput = new ExecutableOutput("git log", 0, gitLogOutput, "");
+        final ExecutableOutput gitLogExecutableOutput = new ExecutableOutput(0, gitLogOutput, "");
         addExecutableOutput(gitLogExecutableOutput, "git", "log", "-n", "1", "--pretty=%d", "HEAD");
 
         final String gitCommitHash = "9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c";
-        final ExecutableOutput gitCommitExecutableOutput = new ExecutableOutput("git rev-parse", 0, gitCommitHash, "");
+        final ExecutableOutput gitCommitExecutableOutput = new ExecutableOutput(0, gitCommitHash, "");
         addExecutableOutput(gitCommitExecutableOutput, "git", "rev-parse", "HEAD");
     }
 

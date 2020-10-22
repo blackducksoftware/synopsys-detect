@@ -31,11 +31,14 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,6 +56,7 @@ import com.synopsys.integration.detect.docs.model.DeprecatedPropertyTableGroup;
 import com.synopsys.integration.detect.docs.model.Detector;
 import com.synopsys.integration.detect.docs.model.SimplePropertyTableGroup;
 import com.synopsys.integration.detect.docs.model.SplitGroup;
+import com.synopsys.integration.detect.docs.model.DetectorStatusCodes;
 import com.synopsys.integration.detect.docs.pages.AdvancedPropertyTablePage;
 import com.synopsys.integration.detect.docs.pages.DeprecatedPropertyTablePage;
 import com.synopsys.integration.detect.docs.pages.DetectorsPage;
@@ -76,7 +80,8 @@ public class GenerateDocsTask extends DefaultTask {
         final HelpJsonData helpJson = new Gson().fromJson(reader, HelpJsonData.class);
 
         final File outputDir = project.file("docs/generated");
-        final File troubleshootingDir = new File(outputDir, "advanced/troubleshooting");
+        final File advancedDir = new File(outputDir,"advanced");
+        final File troubleshootingDir = new File(advancedDir, "troubleshooting");
 
         FileUtils.deleteDirectory(outputDir);
         troubleshootingDir.mkdirs();
@@ -84,6 +89,8 @@ public class GenerateDocsTask extends DefaultTask {
         final TemplateProvider templateProvider = new TemplateProvider(project.file("docs/templates"), project.getVersion().toString());
 
         createFromFreemarker(templateProvider, troubleshootingDir, "exit-codes", new ExitCodePage(helpJson.getExitCodes()));
+
+        createFromFreemarker(templateProvider, advancedDir, "status-file", new DetectorStatusCodes(helpJson.getDetectorStatusCodes()));
 
         handleDetectors(templateProvider, outputDir, helpJson);
         handleProperties(templateProvider, outputDir, helpJson);

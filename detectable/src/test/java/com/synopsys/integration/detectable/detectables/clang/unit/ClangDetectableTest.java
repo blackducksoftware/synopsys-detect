@@ -30,7 +30,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
@@ -45,7 +45,7 @@ public class ClangDetectableTest {
 
     @Test
     public void testApplicable() {
-        final ExecutableRunner executableRunner = null;
+        final DetectableExecutableRunner executableRunner = null;
         final List<ClangPackageManager> availablePackageManagers = new ArrayList<>(0);
         final ClangExtractor clangExtractor = null;
         final ClangPackageManagerRunner packageManagerRunner = null;

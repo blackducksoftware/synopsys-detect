@@ -30,10 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -45,7 +45,7 @@ public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
     }
 
     @Override
-    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, ExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput)
+    public List<PackageDetails> resolvePackages(ClangPackageManagerInfo currentPackageManager, DetectableExecutableRunner executableRunner, File workingDirectory, String queryPackageOutput)
         throws ExecutableRunnerException, NotOwnedByAnyPkgException {
         List<PackageDetails> packageDetailsList = new ArrayList<>();
         String[] packageLines = queryPackageOutput.split("\n");

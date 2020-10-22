@@ -50,10 +50,11 @@ import org.zeroturnaround.zip.ZipUtil;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.detect.Application;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detectable.detectable.executable.Executable;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
+import com.synopsys.integration.executable.Executable;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.synopsys.integration.executable.ProcessBuilderRunner;
+import com.synopsys.integration.log.Slf4jIntLogger;
 
 import freemarker.template.TemplateException;
 
@@ -226,8 +227,8 @@ public final class BatteryTest {
         shellArguments.add("-o");
         shellArguments.add(target.toString());
 
-        Executable executable = new Executable(outputDirectory, new HashMap<>(), "curl", shellArguments);
-        SimpleExecutableRunner executableRunner = new SimpleExecutableRunner();
+        Executable executable = Executable.create(outputDirectory, new HashMap<>(), "curl", shellArguments);
+        ProcessBuilderRunner executableRunner = new ProcessBuilderRunner(new Slf4jIntLogger(logger));
         return executableRunner.execute(executable);
     }
 
@@ -259,8 +260,8 @@ public final class BatteryTest {
             environmentVariables.put("DETECT_LATEST_RELEASE_VERSION", detectVersion);
         }
 
-        Executable executable = new Executable(outputDirectory, environmentVariables, target, shellArguments);
-        SimpleExecutableRunner executableRunner = new SimpleExecutableRunner();
+        Executable executable = Executable.create(outputDirectory, environmentVariables, target, shellArguments);
+        ProcessBuilderRunner executableRunner = new ProcessBuilderRunner(new Slf4jIntLogger(logger));
         ExecutableOutput result = executableRunner.execute(executable);
 
         Assertions.assertEquals(0, result.getReturnCode(), "Detect returned a non-zero exit code:" + result.getReturnCode());
@@ -285,8 +286,8 @@ public final class BatteryTest {
         javaArguments.add(detectJar);
         javaArguments.addAll(detectArguments);
 
-        SimpleExecutableRunner executableRunner = new SimpleExecutableRunner();
-        ExecutableOutput result = executableRunner.execute(outputDirectory, java, javaArguments);
+        ProcessBuilderRunner executableRunner = new ProcessBuilderRunner(new Slf4jIntLogger(logger));
+        ExecutableOutput result = executableRunner.execute(Executable.create(outputDirectory, java, javaArguments));
 
         Assertions.assertEquals(0, result.getReturnCode(), "Detect returned a non-zero exit code:" + result.getReturnCode());
 

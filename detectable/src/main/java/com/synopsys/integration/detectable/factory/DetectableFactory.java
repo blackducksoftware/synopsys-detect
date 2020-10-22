@@ -32,7 +32,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
@@ -40,6 +40,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.CpanRe
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
+import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.LernaResolver;
@@ -54,7 +55,6 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftR
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
-import com.synopsys.integration.detectable.detectable.inspector.go.GoResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectable;
@@ -117,7 +117,10 @@ import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleExtra
 import com.synopsys.integration.detectable.detectables.go.gogradle.GoGradleLockParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphTransformer;
+import com.synopsys.integration.detectable.detectables.go.gomod.ReplacementDataExtractor;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetectable;
 import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorExtractor;
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
@@ -216,11 +219,11 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransforme
 public class DetectableFactory {
 
     private final FileFinder fileFinder;
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final ExternalIdFactory externalIdFactory;
     private final Gson gson;
 
-    public DetectableFactory(FileFinder fileFinder, ExecutableRunner executableRunner, ExternalIdFactory externalIdFactory, Gson gson) {
+    public DetectableFactory(FileFinder fileFinder, DetectableExecutableRunner executableRunner, ExternalIdFactory externalIdFactory, Gson gson) {
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;
@@ -505,8 +508,20 @@ public class DetectableFactory {
         return new GoModGraphParser(externalIdFactory);
     }
 
+    private GoModCommandExecutor goModCommandExecutor() {
+        return new GoModCommandExecutor(executableRunner);
+    }
+
+    private GoModGraphTransformer goModGraphTransformer() {
+        return new GoModGraphTransformer(replacementDataExtractor());
+    }
+
+    private ReplacementDataExtractor replacementDataExtractor() {
+        return new ReplacementDataExtractor(gson);
+    }
+
     private GoModCliExtractor goModCliExtractor() {
-        return new GoModCliExtractor(executableRunner, goModGraphParser());
+        return new GoModCliExtractor(goModCommandExecutor(), goModGraphParser(), goModGraphTransformer());
     }
 
     private GoVndrExtractor goVndrExtractor() {

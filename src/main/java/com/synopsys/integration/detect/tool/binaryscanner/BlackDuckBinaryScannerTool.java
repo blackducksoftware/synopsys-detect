@@ -44,8 +44,8 @@ import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanO
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanUploadService;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.util.DetectZipUtil;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -149,22 +149,40 @@ public class BlackDuckBinaryScannerTool {
             eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.SUCCESS));
             return codeLocationCreationData;
         } catch (IntegrationException e) {
-            logger.error("Failed to upload binary scan file: " + e.getMessage());
             eventSystem.publishEvent(Event.StatusSummary, new Status(STATUS_KEY, StatusType.FAILURE));
             eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.EXCEPTION, Arrays.asList(e.getMessage())));
             throw new DetectUserFriendlyException("Failed to upload binary scan file.", e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         }
     }
 
+    // BinaryScanBatchOutput used to do this, but our understanding of what needs to happen has been
+    // changing rapidly. Once we're confident we know what it should do, it should presumably move back there.
     private void throwExceptionForError(BinaryScanBatchOutput binaryScanBatchOutput) throws BlackDuckIntegrationException {
         for (BinaryScanOutput binaryScanOutput : binaryScanBatchOutput) {
             if (binaryScanOutput.getResult() == Result.FAILURE) {
+                // Black Duck responses are single-line message (loggable as-is), but nginx Bad Gateway responses are
+                // multi-line html with the message embedded (that mess up the log).
+                // cleanResponse() attempts to produce something reasonable to log in either case
+                String cleanedBlackDuckResponse = cleanResponse(binaryScanOutput.getResponse());
                 String uploadErrorMessage = String.format("Error when uploading binary scan: %s (Black Duck response: %s)",
                     binaryScanOutput.getErrorMessage().orElse(binaryScanOutput.getStatusMessage()),
-                    binaryScanOutput.getResponse());
+                    cleanedBlackDuckResponse);
                 logger.error(uploadErrorMessage);
                 throw new BlackDuckIntegrationException(uploadErrorMessage);
             }
         }
+    }
+
+    private String cleanResponse(String response) {
+        if (StringUtils.isBlank(response)) {
+            return "";
+        }
+        String lengthLimitedResponse = StringUtils.substring(response, 0, 200);
+        if (!lengthLimitedResponse.equals(response)) {
+            lengthLimitedResponse = lengthLimitedResponse + "...";
+        }
+        String[] searchList = { "\n", "\r" };
+        String[] replacementList = { " ", "" };
+        return StringUtils.replaceEachRepeatedly(lengthLimitedResponse, searchList, replacementList);
     }
 }

@@ -25,19 +25,18 @@ package com.synopsys.integration.detectable.detectables.go.gomod;
 import java.io.File;
 import java.util.List;
 
-import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
 
 public class GoModCliExtractor {
     private final GoModCommandExecutor goModCommandExecutor;
     private final GoModGraphTransformer goModGraphTransformer;
     private final GoModGraphParser goModGraphParser;
 
-    public GoModCliExtractor(final ExecutableRunner executableRunner, GoModGraphParser goModGraphParser) {
+    public GoModCliExtractor(final GoModCommandExecutor executor, GoModGraphParser goModGraphParser, GoModGraphTransformer goModGraphTransformer) {
         this.goModGraphParser = goModGraphParser;
-        this.goModCommandExecutor = new GoModCommandExecutor(executableRunner);
-        this.goModGraphTransformer = new GoModGraphTransformer();
+        this.goModCommandExecutor = executor;
+        this.goModGraphTransformer = goModGraphTransformer;
     }
 
     public Extraction extract(File directory, File goExe) {

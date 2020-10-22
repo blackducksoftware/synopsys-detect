@@ -16,11 +16,11 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
+import com.synopsys.integration.executable.ExecutableOutput;
 
 public class BitbakeDetectableTest extends DetectableFunctionalTest {
     private static final Logger logger = LoggerFactory.getLogger(BitbakeDetectableTest.class);

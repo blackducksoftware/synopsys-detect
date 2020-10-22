@@ -30,14 +30,14 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfoFactory;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPackageManagerResolver;
-import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgVersionResolver;
+import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.DpkgPkgDetailsResolver;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.resolver.NotOwnedByAnyPkgException;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class DpkgPackageManagerTest {
 
@@ -49,7 +49,7 @@ public class DpkgPackageManagerTest {
         sb.append("garbage\n");
         sb.append("nonsense\n");
         sb.append("libc6-dev:amd64: /usr/include/stdlib.h\n");
-        final String pkgMgrOwnedByOutput = sb.toString();
+        String pkgMgrOwnedByOutput = sb.toString();
 
         sb = new StringBuilder();
         sb.append("Package: libc6-dev\n");
@@ -74,16 +74,16 @@ public class DpkgPackageManagerTest {
         sb.append("Homepage: https://www.gnu.org/software/libc/libc.html\n");
         sb.append("Original-Maintainer: GNU Libc Maintainers <debian-glibc@lists.debian.org>\n");
 
-        final String pkgMgrVersionOutput = sb.toString();
+        String pkgMgrVersionOutput = sb.toString();
 
         final String packageName = "libc6-dev";
-        final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput("", 0, pkgMgrVersionOutput, ""));
+        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
+        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput(0, pkgMgrVersionOutput, ""));
 
-        final DpkgVersionResolver dpkgVersionResolver = new DpkgVersionResolver();
-        final DpkgPackageManagerResolver pkgMgr = new DpkgPackageManagerResolver(dpkgVersionResolver);
+        DpkgPkgDetailsResolver dpkgVersionResolver = new DpkgPkgDetailsResolver();
+        DpkgPackageManagerResolver pkgMgr = new DpkgPackageManagerResolver(dpkgVersionResolver);
 
-        final List<PackageDetails> pkgs = pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().dpkg(), executableRunner, null, pkgMgrOwnedByOutput);
+        List<PackageDetails> pkgs = pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().dpkg(), executableRunner, null, pkgMgrOwnedByOutput);
 
         assertEquals(1, pkgs.size());
         assertEquals("libc6-dev", pkgs.get(0).getPackageName());
@@ -98,7 +98,7 @@ public class DpkgPackageManagerTest {
         sb.append("garbage\n");
         sb.append("nonsense\n");
         sb.append("login:amd64: /usr/include/stdlib.h\n");
-        final String pkgMgrOwnedByOutput = sb.toString();
+        String pkgMgrOwnedByOutput = sb.toString();
 
         sb = new StringBuilder();
 
@@ -129,16 +129,16 @@ public class DpkgPackageManagerTest {
         sb.append("Homepage: https://github.com/shadow-maint/shadow\n");
         sb.append("Original-Maintainer: Shadow package maintainers <pkg-shadow-devel@lists.alioth.debian.org>\n");
 
-        final String pkgMgrVersionOutput = sb.toString();
+        String pkgMgrVersionOutput = sb.toString();
 
         final String packageName = "login";
-        final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
-        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput("", 0, pkgMgrVersionOutput, ""));
+        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
+        Mockito.when(executableRunner.execute(null, "dpkg", Arrays.asList("-s", packageName))).thenReturn(new ExecutableOutput(0, pkgMgrVersionOutput, ""));
 
-        final DpkgVersionResolver dpkgVersionResolver = new DpkgVersionResolver();
-        final DpkgPackageManagerResolver pkgMgr = new DpkgPackageManagerResolver(dpkgVersionResolver);
+        DpkgPkgDetailsResolver dpkgVersionResolver = new DpkgPkgDetailsResolver();
+        DpkgPackageManagerResolver pkgMgr = new DpkgPackageManagerResolver(dpkgVersionResolver);
 
-        final List<PackageDetails> pkgs = pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().dpkg(), executableRunner, null, pkgMgrOwnedByOutput);
+        List<PackageDetails> pkgs = pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().dpkg(), executableRunner, null, pkgMgrOwnedByOutput);
 
         assertEquals(1, pkgs.size());
         assertEquals("login", pkgs.get(0).getPackageName());

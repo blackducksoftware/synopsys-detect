@@ -26,17 +26,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspector;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class ExeNugetInspector implements NugetInspector {
     private final String inspectorExe;
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
 
-    public ExeNugetInspector(final ExecutableRunner executableRunner, final String inspectorExe) {
+    public ExeNugetInspector(final DetectableExecutableRunner executableRunner, final String inspectorExe) {
         this.executableRunner = executableRunner;
         this.inspectorExe = inspectorExe;
     }

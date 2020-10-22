@@ -36,10 +36,11 @@ import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.bdio2.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
-import com.synopsys.integration.detect.DetectInfo;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.DetectInfo;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationResult;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -54,16 +55,19 @@ public class BdioManager {
 
     private final DetectInfo detectInfo;
     private final SimpleBdioFactory simpleBdioFactory;
+    private final ExternalIdFactory externalIdFactory;
     private final Bdio2Factory bdio2Factory;
     private final BdioCodeLocationCreator bdioCodeLocationCreator;
     private final DirectoryManager directoryManager;
     private final IntegrationEscapeUtil integrationEscapeUtil;
     private final CodeLocationNameManager codeLocationNameManager;
 
-    public BdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final Bdio2Factory bdio2Factory, final IntegrationEscapeUtil integrationEscapeUtil, final CodeLocationNameManager codeLocationNameManager,
+    public BdioManager(final DetectInfo detectInfo, final SimpleBdioFactory simpleBdioFactory, final ExternalIdFactory externalIdFactory, final Bdio2Factory bdio2Factory,
+        final IntegrationEscapeUtil integrationEscapeUtil, final CodeLocationNameManager codeLocationNameManager,
         final BdioCodeLocationCreator codeLocationManager, final DirectoryManager directoryManager) {
         this.detectInfo = detectInfo;
         this.simpleBdioFactory = simpleBdioFactory;
+        this.externalIdFactory = externalIdFactory;
         this.bdio2Factory = bdio2Factory;
         this.integrationEscapeUtil = integrationEscapeUtil;
         this.codeLocationNameManager = codeLocationNameManager;
@@ -85,7 +89,7 @@ public class BdioManager {
             final DependencyGraph aggregateDependencyGraph = aggregateBdioTransformer.aggregateCodeLocations(directoryManager.getSourceDirectory(), codeLocations, aggregateOptions.getAggregateMode());
             final boolean aggregateHasDependencies = !aggregateDependencyGraph.getRootDependencies().isEmpty();
 
-            final ExternalId projectExternalId = simpleBdioFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
+            final ExternalId projectExternalId = externalIdFactory.createNameVersionExternalId(new Forge("/", "DETECT"), projectNameVersion.getName(), projectNameVersion.getVersion());
             final String codeLocationName = codeLocationNameManager.createAggregateCodeLocationName(projectNameVersion);
 
             String ext = useBdio2 ? ".bdio" : ".jsonld";

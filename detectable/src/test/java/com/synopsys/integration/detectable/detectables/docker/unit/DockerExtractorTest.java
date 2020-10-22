@@ -42,15 +42,15 @@ import org.mockito.Mockito;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.detectable.executable.Executable;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
 import com.synopsys.integration.detectable.detectables.docker.DockerInspectorInfo;
 import com.synopsys.integration.detectable.detectables.docker.DockerProperties;
 import com.synopsys.integration.detectable.detectables.docker.ImageIdentifierType;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.executable.Executable;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class DockerExtractorTest {
     private static File fakeContainerFileSystemFile;
@@ -77,7 +77,7 @@ public class DockerExtractorTest {
         final String image = "ubuntu:latest";
         final String imageId = null;
         final String tar = null;
-        final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        final DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
 
         final Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, null, executableRunner);
 
@@ -87,7 +87,7 @@ public class DockerExtractorTest {
         final ArgumentCaptor<Executable> executableArgumentCaptor = ArgumentCaptor.forClass(Executable.class);
         Mockito.verify(executableRunner).execute(executableArgumentCaptor.capture());
         final Executable executableToVerify = executableArgumentCaptor.getValue();
-        final List<String> command = executableToVerify.getCommand();
+        final List<String> command = executableToVerify.getCommandWithArguments();
         assertTrue(command.get(0).endsWith("/fake/test/java"));
         assertEquals("-jar", command.get(1));
         assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
@@ -103,7 +103,7 @@ public class DockerExtractorTest {
         final String image = "ubuntu:latest";
         final String imageId = null;
         final String tar = null;
-        final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        final DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
 
         final Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, fakeSquashedImageFile, executableRunner);
 
@@ -114,7 +114,7 @@ public class DockerExtractorTest {
         final ArgumentCaptor<Executable> executableArgumentCaptor = ArgumentCaptor.forClass(Executable.class);
         Mockito.verify(executableRunner).execute(executableArgumentCaptor.capture());
         final Executable executableToVerify = executableArgumentCaptor.getValue();
-        final List<String> command = executableToVerify.getCommand();
+        final List<String> command = executableToVerify.getCommandWithArguments();
         assertTrue(command.get(0).endsWith("/fake/test/java"));
         assertEquals("-jar", command.get(1));
         assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
@@ -130,7 +130,7 @@ public class DockerExtractorTest {
         final String image = null;
         final String imageId = null;
         final String tar = fakeDockerTarFile.getAbsolutePath();
-        final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        final DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
 
         final Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, null, executableRunner);
 
@@ -140,7 +140,7 @@ public class DockerExtractorTest {
         final ArgumentCaptor<Executable> executableArgumentCaptor = ArgumentCaptor.forClass(Executable.class);
         Mockito.verify(executableRunner).execute(executableArgumentCaptor.capture());
         final Executable executableToVerify = executableArgumentCaptor.getValue();
-        final List<String> command = executableToVerify.getCommand();
+        final List<String> command = executableToVerify.getCommandWithArguments();
         assertTrue(command.get(0).endsWith("/fake/test/java"));
         assertEquals("-jar", command.get(1));
         assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
@@ -157,7 +157,7 @@ public class DockerExtractorTest {
         final String image = null;
         final String imageId = null;
         final String tar = fakeDockerTarFile.getAbsolutePath();
-        final ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        final DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
 
         final Extraction extraction = extract(image, imageId, tar, null, null, executableRunner);
 
@@ -168,7 +168,7 @@ public class DockerExtractorTest {
         final ArgumentCaptor<Executable> executableArgumentCaptor = ArgumentCaptor.forClass(Executable.class);
         Mockito.verify(executableRunner).execute(executableArgumentCaptor.capture());
         final Executable executableToVerify = executableArgumentCaptor.getValue();
-        final List<String> command = executableToVerify.getCommand();
+        final List<String> command = executableToVerify.getCommandWithArguments();
         assertTrue(command.get(0).endsWith("/fake/test/java"));
         assertEquals("-jar", command.get(1));
         assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
@@ -187,7 +187,7 @@ public class DockerExtractorTest {
         final File outputDirectoryWithPopulatedResultsFile = new File(DockerExtractorTest.class.getClassLoader().getSystemResource("detectables/functional/docker/unit/outputDirectoryWithPopulatedResultsFile").toURI());
         final File outputDirectoryWithNonPopulatedResultsFile = new File(DockerExtractorTest.class.getClassLoader().getSystemResource("detectables/functional/docker/unit/outputDirectoryWithNonPopulatedResultsFile").toURI());
 
-        ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         FileFinder fileFinder = Mockito.mock(FileFinder.class);
         Mockito.when(fileFinder.findFile(outputDirectoryWithPopulatedResultsFile, DockerExtractor.RESULTS_FILENAME_PATTERN)).thenReturn(new File(outputDirectoryWithPopulatedResultsFile, "results.json"));
         Mockito.when(fileFinder.findFile(outputDirectoryWithNonPopulatedResultsFile, DockerExtractor.RESULTS_FILENAME_PATTERN)).thenReturn(new File(outputDirectoryWithNonPopulatedResultsFile, "results.json"));
@@ -199,7 +199,7 @@ public class DockerExtractorTest {
         assertEquals(testString, dockerExtractor.getImageIdentifierFromOutputDirectoryIfImageIdPresent(outputDirectoryWithNonPopulatedResultsFile, testString, ImageIdentifierType.IMAGE_ID));
     }
 
-    private DockerExtractor getMockDockerExtractor(ExecutableRunner executableRunner, FileFinder fileFinder) {
+    private DockerExtractor getMockDockerExtractor(DetectableExecutableRunner executableRunner, FileFinder fileFinder) {
         final BdioTransformer bdioTransformer = Mockito.mock(BdioTransformer.class);
         final ExternalIdFactory externalIdFactory = Mockito.mock(ExternalIdFactory.class);
         final Gson gson = new Gson();
@@ -210,7 +210,7 @@ public class DockerExtractorTest {
     private Extraction extract(final String image, final String imageId, final String tar,
         File returnedContainerFileSystemFile,
         File returnedSquashedImageFile,
-        final ExecutableRunner executableRunner) {
+        final DetectableExecutableRunner executableRunner) {
         final FileFinder fileFinder = Mockito.mock(FileFinder.class);
         final DockerExtractor dockerExtractor = getMockDockerExtractor(executableRunner, fileFinder);
 

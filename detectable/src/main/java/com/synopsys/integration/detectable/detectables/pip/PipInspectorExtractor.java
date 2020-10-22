@@ -31,18 +31,18 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class PipInspectorExtractor {
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final PipInspectorTreeParser pipInspectorTreeParser;
 
-    public PipInspectorExtractor(final ExecutableRunner executableRunner, final PipInspectorTreeParser pipInspectorTreeParser) {
+    public PipInspectorExtractor(final DetectableExecutableRunner executableRunner, final PipInspectorTreeParser pipInspectorTreeParser) {
         this.executableRunner = executableRunner;
         this.pipInspectorTreeParser = pipInspectorTreeParser;
     }

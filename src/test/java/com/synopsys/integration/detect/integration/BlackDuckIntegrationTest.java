@@ -39,7 +39,7 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionCompo
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
-import com.synopsys.integration.blackduck.service.BlackDuckService;
+import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.dataservice.CodeLocationService;
 import com.synopsys.integration.blackduck.service.dataservice.ProjectBomService;
@@ -59,7 +59,7 @@ public abstract class BlackDuckIntegrationTest {
 
     protected static IntLogger logger;
     protected static BlackDuckServicesFactory blackDuckServicesFactory;
-    protected static BlackDuckService blackDuckService;
+    protected static BlackDuckApiClient blackDuckService;
     protected static ProjectService projectService;
     protected static ProjectBomService projectBomService;
     protected static CodeLocationService codeLocationService;

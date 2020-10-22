@@ -38,10 +38,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.synopsys.integration.detect.tool.detector.impl.ExtractionEnvironmentProvider;
+import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -226,7 +226,7 @@ public class DetectorTool {
                     } else if (detectorEvaluation.wasExtractionException()) {
                         statusType = StatusType.FAILURE;
                     } else {
-                        logger.warn("An issue occurred in the detector system, an unknown evaluation status was created. Please don't do this again.");
+                        logger.warn("An issue occurred in the detector system, an unknown evaluation status was created. Please contact support.");
                         statusType = StatusType.FAILURE;
                     }
                 } else if (detectorEvaluation.isFallbackExtractable() || detectorEvaluation.isPreviousExtractable()) {

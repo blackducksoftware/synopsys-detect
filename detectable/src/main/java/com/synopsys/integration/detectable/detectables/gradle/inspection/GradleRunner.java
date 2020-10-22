@@ -31,15 +31,15 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 public class GradleRunner {
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
 
-    public GradleRunner(ExecutableRunner executableRunner) {
+    public GradleRunner(DetectableExecutableRunner executableRunner) {
         this.executableRunner = executableRunner;
     }
 

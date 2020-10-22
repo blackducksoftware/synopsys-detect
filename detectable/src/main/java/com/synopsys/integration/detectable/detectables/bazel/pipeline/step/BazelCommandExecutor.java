@@ -31,18 +31,18 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class BazelCommandExecutor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final File workspaceDir;
     private final File bazelExe;
 
-    public BazelCommandExecutor(ExecutableRunner executableRunner, File workspaceDir, File bazelExe) {
+    public BazelCommandExecutor(DetectableExecutableRunner executableRunner, File workspaceDir, File bazelExe) {
         this.executableRunner = executableRunner;
         this.workspaceDir = workspaceDir;
         this.bazelExe = bazelExe;

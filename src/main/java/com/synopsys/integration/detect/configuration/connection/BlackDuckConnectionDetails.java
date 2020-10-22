@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.configuration.connection;
 import java.util.Map;
 import java.util.Optional;
 
-import org.antlr.v4.runtime.misc.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BlackDuckConnectionDetails {

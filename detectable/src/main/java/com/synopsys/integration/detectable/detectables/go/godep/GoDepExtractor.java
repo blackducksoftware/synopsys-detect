@@ -25,7 +25,7 @@ package com.synopsys.integration.detectable.detectables.go.godep;
 import java.io.InputStream;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.detectable.Extraction;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.go.godep.parse.GoLockParser;
 

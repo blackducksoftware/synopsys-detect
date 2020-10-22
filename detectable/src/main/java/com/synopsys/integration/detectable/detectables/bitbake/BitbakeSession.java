@@ -30,13 +30,13 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeRecipe;
 import com.synopsys.integration.detectable.detectables.bitbake.parse.BitbakeRecipesParser;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class BitbakeSession {
     private static final String TASK_DEPENDS_FILE_NAME = "task-depends.dot";
@@ -44,14 +44,15 @@ public class BitbakeSession {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final FileFinder fileFinder;
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final BitbakeRecipesParser bitbakeRecipesParser;
     private final File workingDirectory;
     private final File buildEnvScript;
     private final List<String> sourceArguments;
     private final File bashExecutable;
 
-    public BitbakeSession(final FileFinder fileFinder, final ExecutableRunner executableRunner, final BitbakeRecipesParser bitbakeRecipesParser, final File workingDirectory, final File buildEnvScript, final List<String> sourceArguments,
+    public BitbakeSession(final FileFinder fileFinder, final DetectableExecutableRunner executableRunner, final BitbakeRecipesParser bitbakeRecipesParser, final File workingDirectory, final File buildEnvScript,
+        final List<String> sourceArguments,
         final File bashExecutable) {
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;

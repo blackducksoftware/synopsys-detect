@@ -31,21 +31,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.npm.cli.parse.NpmCliParser;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.model.NpmParseResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.executable.ExecutableOutput;
 
 public class NpmCliExtractor {
     public static final String OUTPUT_FILE = "detect_npm_proj_dependencies.json";
     public static final String ERROR_FILE = "detect_npm_error.json";
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final NpmCliParser npmCliParser;
 
-    public NpmCliExtractor(final ExecutableRunner executableRunner, final NpmCliParser npmCliParser) {
+    public NpmCliExtractor(final DetectableExecutableRunner executableRunner, final NpmCliParser npmCliParser) {
         this.executableRunner = executableRunner;
         this.npmCliParser = npmCliParser;
     }

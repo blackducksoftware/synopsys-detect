@@ -5,8 +5,7 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 buildscript {
     ext {
         springBootVersion = '2.2.4.RELEASE'
-        blackDuckCommonVersion = '49.1.0'
-        polarisCommonVersion = '0.21.0'
+        blackDuckCommonVersion = '50.0.0'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
@@ -15,22 +14,23 @@ buildscript {
 
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-        classpath "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
-        classpath "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
     }
 }
 
-plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.3.31' apply false
-}
-
 group = 'com.synopsys.integration'
-version = '6.6.0-SIGQA3-SNAPSHOT'
+version = '6.7.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 apply from: 'docs.gradle'
+
+final def resources = new File("${projectDir}/src/main/resources")
+final def versionFile = new File(resources, "version.txt")
+resources.mkdirs()
+versionFile.delete()
+versionFile << version
 
 def createArtifactName() {
     return "${buildDir}/libs/${project.name}-${version}.jar"
@@ -38,24 +38,6 @@ def createArtifactName() {
 
 def createBatteryPath() {
     return "${buildDir}/battery/"
-}
-
-allprojects {
-    apply plugin: 'org.jetbrains.kotlin.jvm'
-    apply plugin: 'io.spring.dependency-management'
-
-    dependencies {
-        implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-        implementation 'org.jetbrains.kotlin:kotlin-reflect'
-        implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
-        implementation 'com.paypal.digraph:digraph-parser:1.0'
-        implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0'
-        implementation 'com.fasterxml.jackson.core:jackson-core:2.10.0'
-        implementation 'com.synopsys:method-analyzer-core:0.1.0'
-
-        testImplementation 'org.mockito:mockito-core:2.+'
-        testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
-    }
 }
 
 subprojects {
@@ -66,11 +48,16 @@ subprojects {
     license {
         header rootProject.file('LICENSE')
     }
+}
 
-    dependencyManagement {
-        imports {
-            mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-        }
+allprojects {
+    dependencies {
+        implementation "org.slf4j:slf4j-api:1.7.30"
+        implementation "org.apache.commons:commons-lang3:3.10" /* this could be managed by blackduck common */
+        implementation 'org.jetbrains:annotations:19.0.0'
+
+        testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
+        testImplementation 'org.mockito:mockito-core:2.+'
     }
 }
 
@@ -96,37 +83,30 @@ test {
 }
 
 dependencies {
+    implementation project(':common')
     implementation project(':configuration')
-    implementation project(':detect-configuration')
     implementation project(':detectable')
     implementation project(':detector')
+    implementation project(':polaris')
 
-    implementation 'org.zeroturnaround:zt-zip:1.13'
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    implementation 'org.jetbrains.kotlin:kotlin-reflect'
-    implementation "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
-    implementation 'org.yaml:snakeyaml:1.24'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+
+    implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
+    implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
+    implementation 'com.synopsys:method-analyzer-core:0.1.0'
 
     implementation 'org.apache.maven.shared:maven-invoker:3.0.0'
-    implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
-    implementation 'com.moandjiezana.toml:toml4j:0.7.1'
+    implementation "org.springframework.boot:spring-boot"
+    implementation 'org.yaml:snakeyaml:1.24'
+    implementation 'org.zeroturnaround:zt-zip:1.13'
     implementation 'org.freemarker:freemarker:2.3.26-incubating'
-    implementation 'org.springframework.boot:spring-boot-starter'
 
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
+    // spring-boot-starter-test *can* provide these, but we choose to be more explicit about the dependencies we ACTUALLY use
+    testImplementation 'org.assertj:assertj-core:3.13.2'
+    testImplementation 'org.skyscreamer:jsonassert:1.5.0'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0'
     testImplementation project(':configuration').sourceSets.test.output
-
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = '1.8'
-}
-
-compileTestKotlin {
-    kotlinOptions.jvmTarget = '1.8'
 }
 
 springBoot { mainClassName = 'com.synopsys.integration.detect.Application' }

@@ -27,9 +27,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.util.Set;
 
+import org.apache.commons.compress.utils.Sets;
 import org.junit.jupiter.api.Test;
 
-import com.google.common.collect.Sets;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.WorkspaceRuleChooser;
 import com.synopsys.integration.exception.IntegrationException;

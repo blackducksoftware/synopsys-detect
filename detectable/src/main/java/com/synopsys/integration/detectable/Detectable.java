@@ -28,6 +28,8 @@ import java.util.List;
 
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 public abstract class Detectable {
     protected DetectableEnvironment environment;

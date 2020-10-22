@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.configuration.util.Bds;
+import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detect.workflow.nameversion.decision.ArbitraryNameVersionDecision;
 import com.synopsys.integration.detect.workflow.nameversion.decision.NameVersionDecision;
 import com.synopsys.integration.detect.workflow.nameversion.decision.UniqueDetectorDecision;

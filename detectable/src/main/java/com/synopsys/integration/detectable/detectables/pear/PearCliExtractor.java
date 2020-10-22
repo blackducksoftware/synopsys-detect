@@ -34,29 +34,29 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.pear.model.PackageDependency;
 import com.synopsys.integration.detectable.detectables.pear.parse.PearListParser;
 import com.synopsys.integration.detectable.detectables.pear.parse.PearPackageDependenciesParser;
 import com.synopsys.integration.detectable.detectables.pear.parse.PearPackageXmlParser;
 import com.synopsys.integration.detectable.detectables.pear.transform.PearDependencyGraphTransformer;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.util.NameVersion;
 
 public class PearCliExtractor {
     private static final String PACKAGE_XML_FILENAME = "package.xml";
 
     private final ExternalIdFactory externalIdFactory;
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final PearDependencyGraphTransformer pearDependencyGraphTransformer;
     private final PearPackageXmlParser pearPackageXmlParser;
     private final PearPackageDependenciesParser pearPackageDependenciesParser;
     private final PearListParser pearListParser;
 
-    public PearCliExtractor(final ExternalIdFactory externalIdFactory, final ExecutableRunner executableRunner, final PearDependencyGraphTransformer pearDependencyGraphTransformer, final PearPackageXmlParser pearPackageXmlParser,
+    public PearCliExtractor(final ExternalIdFactory externalIdFactory, final DetectableExecutableRunner executableRunner, final PearDependencyGraphTransformer pearDependencyGraphTransformer, final PearPackageXmlParser pearPackageXmlParser,
         final PearPackageDependenciesParser pearPackageDependenciesParser, final PearListParser pearListParser) {
         this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;

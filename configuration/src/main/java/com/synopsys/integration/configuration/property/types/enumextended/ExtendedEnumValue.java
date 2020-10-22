@@ -24,11 +24,11 @@ package com.synopsys.integration.configuration.property.types.enumextended;
 
 import java.util.Optional;
 
-import org.antlr.v4.runtime.misc.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.util.Assert;
 
-import com.synopsys.integration.configuration.util.Bdo;
+import com.synopsys.integration.common.util.Bdo;
 
 public class ExtendedEnumValue<E extends Enum<E>, B extends Enum<B>> {
     @Nullable

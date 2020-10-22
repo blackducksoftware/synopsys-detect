@@ -28,24 +28,24 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.pip.model.PipFreeze;
 import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraph;
 import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipEnvJsonGraphParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvTransformer;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class PipenvExtractor {
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final PipenvTransformer pipenvTransformer;
     private final PipenvFreezeParser pipenvFreezeParser;
     private final PipEnvJsonGraphParser pipEnvJsonGraphParser;
 
-    public PipenvExtractor(final ExecutableRunner executableRunner, final PipenvTransformer pipenvTransformer, final PipenvFreezeParser pipenvFreezeParser, final PipEnvJsonGraphParser pipEnvJsonGraphParser) {
+    public PipenvExtractor(final DetectableExecutableRunner executableRunner, final PipenvTransformer pipenvTransformer, final PipenvFreezeParser pipenvFreezeParser, final PipEnvJsonGraphParser pipEnvJsonGraphParser) {
         this.executableRunner = executableRunner;
         this.pipenvTransformer = pipenvTransformer;
         this.pipenvFreezeParser = pipenvFreezeParser;

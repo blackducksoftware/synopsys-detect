@@ -30,6 +30,7 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
+import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
@@ -44,17 +45,6 @@ public class ConfigTestUtils {
     @NotNull
     public static PropertyConfiguration configOf(@NotNull final Pair<String, String>... properties) {
         return configOf(propertySourceOf("map", properties));
-    }
-
-    // TODO: Remove function when Kotlin to Java conversion is complete.
-    @SafeVarargs
-    @NotNull
-    public static PropertyConfiguration configOf(@NotNull final kotlin.Pair<String, String>... properties) {
-        final Map<String, String> propertyMap = Bds.of(properties)
-                                                    .map(kPair -> Pair.of(kPair.component1(), kPair.component2()))
-                                                    .toMap(Pair::getLeft, Pair::getRight);
-
-        return configOf(new MapPropertySource("map", propertyMap));
     }
 
     @SafeVarargs

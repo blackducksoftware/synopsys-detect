@@ -38,13 +38,16 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatc
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
+import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.tool.detector.DetectExecutableRunner;
-import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
-import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
+import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
+import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
+import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
+import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
+import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecutableFinder;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
@@ -71,13 +74,9 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGen
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleLocalExecutableFinder;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.PipInspectorResolver;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
@@ -117,7 +116,7 @@ public class RunBeanConfiguration {
 
     @Bean
     public FileFinder fullFileFinder() {
-        return new SimpleFileFinder();
+        return new WildcardFileFinder();
     }
 
     //Be mindful of using this file finder, it filters based on detector exclusions, it's VERY DIFFERENT from the FULL file finder above.
@@ -169,33 +168,23 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public ExecutableRunner executableRunner() {
+    public DetectableExecutableRunner executableRunner() {
         return DetectExecutableRunner.newDebug(eventSystem);
     }
 
     @Bean
-    public SimpleExecutableFinder simpleExecutableFinder() {
-        return SimpleExecutableFinder.forCurrentOperatingSystem(fullFileFinder());
+    public DirectoryExecutableFinder directoryExecutableFinder() {
+        return DirectoryExecutableFinder.forCurrentOperatingSystem(fullFileFinder());
     }
 
     @Bean
-    public SimpleLocalExecutableFinder simpleLocalExecutableFinder() {
-        return new SimpleLocalExecutableFinder(simpleExecutableFinder());
-    }
-
-    @Bean
-    public SimpleSystemExecutableFinder simpleSystemExecutableFinder() {
-        return new SimpleSystemExecutableFinder(simpleExecutableFinder());
-    }
-
-    @Bean
-    public SimpleExecutableResolver simpleExecutableResolver() {
-        return new SimpleExecutableResolver(detectableOptionFactory.createCachedExecutableResolverOptions(), simpleLocalExecutableFinder(), simpleSystemExecutableFinder());
+    public SystemPathExecutableFinder systemExecutableFinder() {
+        return new SystemPathExecutableFinder(directoryExecutableFinder());
     }
 
     @Bean
     public DetectExecutableResolver detectExecutableResolver() {
-        return new DetectExecutableResolver(simpleExecutableResolver(), detectConfigurationFactory.createExecutablePaths());
+        return new DetectExecutableResolver(directoryExecutableFinder(), systemExecutableFinder(), detectConfigurationFactory.createExecutablePaths());
     }
 
     //#region Detectables
@@ -223,7 +212,7 @@ public class RunBeanConfiguration {
             locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion().orElse(null));
         }
 
-        final ExecutableRunner executableRunner = executableRunner();
+        final DetectableExecutableRunner executableRunner = executableRunner();
         final DetectExecutableResolver executableResolver = detectExecutableResolver();
         final DotNetRuntimeFinder runtimeFinder = new DotNetRuntimeFinder(executableRunner, executableResolver, directoryManager.getPermanentDirectory());
         final DotNetRuntimeManager dotNetRuntimeManager = new DotNetRuntimeManager(runtimeFinder, new DotNetRuntimeParser());

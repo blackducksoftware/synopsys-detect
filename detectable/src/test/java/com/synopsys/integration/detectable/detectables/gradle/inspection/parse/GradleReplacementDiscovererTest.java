@@ -7,35 +7,39 @@ import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.bdio.model.dependency.Dependency;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleGav;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleTreeNode;
+import com.synopsys.integration.detectable.detectables.gradle.inspection.model.ReplacedGradleGav;
 
 public class GradleReplacementDiscovererTest {
     @Test
     public void testPopulation() {
-        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        GradleReplacementDiscoverer gradleReplacementDiscoverer = new GradleReplacementDiscoverer(externalIdFactory);
+        GradleReplacementDiscoverer gradleReplacementDiscoverer = new GradleReplacementDiscoverer();
         DependencyReplacementResolver dependencyReplacementResolver = DependencyReplacementResolver.createRootResolver();
 
         List<GradleTreeNode> gradleTreeNodes = new ArrayList<>();
-        GradleGav resolvedGav = new GradleGav("artifact", "version", "group");
-        GradleGav replacedGav = new GradleGav("replacedArtifact", "replacedVersion", "replacedGroup");
+        GradleGav resolvedGav = new GradleGav("group", "artifact", "version");
+        ReplacedGradleGav replacedGav = new ReplacedGradleGav("replacedGroup", "replacedArtifact", "replacedVersion");
+        ReplacedGradleGav replacedNoVersionGav = new ReplacedGradleGav("replacedGroup", "replacedArtifact");
+        GradleGav unrelatedGradleGav = new GradleGav("unrelatedGroup", "unrelatedArtifact", "unrelatedVersion");
+
         gradleTreeNodes.add(GradleTreeNode.newProject(0, "foo"));
-        gradleTreeNodes.add(GradleTreeNode.newGav(1, "unrelatedArtifact", "unrelatedVersion", "unrelatedGroup"));
-        gradleTreeNodes.add(GradleTreeNode.newGavWithReplacement(1, resolvedGav.getArtifact(), resolvedGav.getVersion(), resolvedGav.getName(), replacedGav.getArtifact(), replacedGav.getVersion(), replacedGav.getName()));
+        gradleTreeNodes.add(GradleTreeNode.newGav(1, resolvedGav));
+        gradleTreeNodes.add(GradleTreeNode.newGavWithReplacement(1, resolvedGav, replacedGav));
+        gradleTreeNodes.add(GradleTreeNode.newGavWithReplacement(1, resolvedGav, replacedNoVersionGav));
+        gradleTreeNodes.add(GradleTreeNode.newGav(1, unrelatedGradleGav));
 
         gradleReplacementDiscoverer.populateFromTreeNodes(dependencyReplacementResolver, gradleTreeNodes);
 
-        Dependency resolvedDependency = new Dependency(resolvedGav.getArtifact(), resolvedGav.getVersion(), externalIdFactory.createMavenExternalId(resolvedGav.getName(), resolvedGav.getArtifact(), resolvedGav.getVersion()));
-        Dependency replacedDependency = new Dependency(replacedGav.getArtifact(), replacedGav.getVersion(), externalIdFactory.createMavenExternalId(replacedGav.getName(), replacedGav.getArtifact(), replacedGav.getVersion()));
-        Optional<Dependency> replacement = dependencyReplacementResolver.getReplacement(replacedDependency);
+        Optional<GradleGav> replacement = dependencyReplacementResolver.getReplacement(replacedGav);
         Assertions.assertTrue(replacement.isPresent());
-        Assertions.assertEquals(resolvedDependency, replacement.get());
+        Assertions.assertEquals(resolvedGav, replacement.get());
 
-        Dependency unrelatedDependency = new Dependency(externalIdFactory.createMavenExternalId(resolvedGav.getName(), resolvedGav.getArtifact(), resolvedGav.getVersion()));
-        Optional<Dependency> unrelated = dependencyReplacementResolver.getReplacement(unrelatedDependency);
+        Optional<GradleGav> replacementNoVersion = dependencyReplacementResolver.getReplacement(replacedNoVersionGav);
+        Assertions.assertTrue(replacementNoVersion.isPresent());
+        Assertions.assertEquals(resolvedGav, replacementNoVersion.get());
+
+        Optional<GradleGav> unrelated = dependencyReplacementResolver.getReplacement(unrelatedGradleGav);
         Assertions.assertFalse(unrelated.isPresent());
     }
 

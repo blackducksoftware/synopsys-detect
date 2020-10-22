@@ -26,17 +26,17 @@ import java.io.File;
 import java.util.List;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.cpan.parse.CpanListParser;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.executable.ExecutableOutput;
 
 public class CpanCliExtractor {
     private final CpanListParser cpanListParser;
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
 
-    public CpanCliExtractor(final CpanListParser cpanListParser, final ExecutableRunner executableRunner) {
+    public CpanCliExtractor(final CpanListParser cpanListParser, final DetectableExecutableRunner executableRunner) {
         this.cpanListParser = cpanListParser;
         this.executableRunner = executableRunner;
     }

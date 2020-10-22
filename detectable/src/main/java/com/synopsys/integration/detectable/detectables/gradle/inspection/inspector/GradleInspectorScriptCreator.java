@@ -27,9 +27,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,43 +49,47 @@ public class GradleInspectorScriptCreator {
 
     private final Configuration configuration;
 
-    public GradleInspectorScriptCreator(final Configuration configuration) {
+    public GradleInspectorScriptCreator(Configuration configuration) {
         this.configuration = configuration;
     }
 
-    public File createOfflineGradleInspector(final File templateFile, final GradleInspectorScriptOptions scriptOptions, final String airGapLibraryPaths) throws DetectableException {
+    public File createOfflineGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions, String airGapLibraryPaths) throws DetectableException {
         return createGradleInspector(templateFile, scriptOptions, null, airGapLibraryPaths);
     }
 
-    public File createOnlineGradleInspector(final File templateFile, final GradleInspectorScriptOptions scriptOptions, final String resolvedOnlineInspectorVersion) throws DetectableException {
+    public File createOnlineGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions, String resolvedOnlineInspectorVersion) throws DetectableException {
         return createGradleInspector(templateFile, scriptOptions, resolvedOnlineInspectorVersion, null);
     }
 
-    private File createGradleInspector(final File templateFile, final GradleInspectorScriptOptions scriptOptions, final String resolvedOnlineInspectorVersion, final String airGapLibraryPaths) throws DetectableException {
+    private File createGradleInspector(File templateFile, GradleInspectorScriptOptions scriptOptions, String resolvedOnlineInspectorVersion, String airGapLibraryPaths) throws DetectableException {
         logger.debug("Generating the gradle script file.");
-        final Map<String, String> gradleScriptData = new HashMap<>();
+        Map<String, String> gradleScriptData = new HashMap<>();
 
         gradleScriptData.put("airGapLibsPath", StringEscapeUtils.escapeJava(Optional.ofNullable(airGapLibraryPaths).orElse("")));
         gradleScriptData.put("gradleInspectorVersion", StringEscapeUtils.escapeJava(Optional.ofNullable(resolvedOnlineInspectorVersion).orElse("")));
-        gradleScriptData.put("excludedProjectNames", scriptOptions.getExcludedProjectNames().orElse(""));
-        gradleScriptData.put("includedProjectNames", scriptOptions.getIncludedProjectNames().orElse(""));
-        gradleScriptData.put("excludedConfigurationNames", scriptOptions.getExcludedConfigurationNames().orElse(""));
-        gradleScriptData.put("includedConfigurationNames", scriptOptions.getIncludedConfigurationNames().orElse(""));
+        gradleScriptData.put("excludedProjectNames", toCommaSeparatedString(scriptOptions.getExcludedProjectNames()));
+        gradleScriptData.put("includedProjectNames", toCommaSeparatedString(scriptOptions.getIncludedProjectNames()));
+        gradleScriptData.put("excludedConfigurationNames", toCommaSeparatedString(scriptOptions.getExcludedConfigurationNames()));
+        gradleScriptData.put("includedConfigurationNames", toCommaSeparatedString(scriptOptions.getIncludedConfigurationNames()));
         gradleScriptData.put("customRepositoryUrl", scriptOptions.getGradleInspectorRepositoryUrl());
 
         try {
             populateGradleScriptWithData(templateFile, gradleScriptData);
-        } catch (final IOException | TemplateException e) {
+        } catch (IOException | TemplateException e) {
             throw new DetectableException("Failed to generate the Gradle Inspector script from the given template file: " + templateFile.toString(), e);
         }
         logger.trace(String.format("Successfully created Gradle Inspector: %s", templateFile.toString()));
         return templateFile;
     }
 
-    private void populateGradleScriptWithData(final File targetFile, final Map<String, String> gradleScriptData) throws IOException, TemplateException {
-        final Template gradleScriptTemplate = configuration.getTemplate(GRADLE_SCRIPT_TEMPLATE_FILENAME);
-        try (final Writer fileWriter = new FileWriter(targetFile)) {
+    private void populateGradleScriptWithData(File targetFile, Map<String, String> gradleScriptData) throws IOException, TemplateException {
+        Template gradleScriptTemplate = configuration.getTemplate(GRADLE_SCRIPT_TEMPLATE_FILENAME);
+        try (Writer fileWriter = new FileWriter(targetFile)) {
             gradleScriptTemplate.process(gradleScriptData, fileWriter);
         }
+    }
+
+    private String toCommaSeparatedString(List<String> list) {
+        return StringUtils.joinWith(",", list.toArray());
     }
 }

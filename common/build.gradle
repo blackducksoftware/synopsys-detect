@@ -1,0 +1,4 @@
+dependencies {
+    implementation "com.synopsys.integration:integration-common:24.0.0"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+}

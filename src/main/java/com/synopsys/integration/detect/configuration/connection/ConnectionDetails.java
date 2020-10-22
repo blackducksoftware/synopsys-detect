@@ -25,7 +25,7 @@ package com.synopsys.integration.detect.configuration.connection;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.antlr.v4.runtime.misc.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 

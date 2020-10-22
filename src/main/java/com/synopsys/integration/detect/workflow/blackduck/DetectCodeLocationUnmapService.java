@@ -29,19 +29,19 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.generated.view.CodeLocationView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.service.BlackDuckService;
+import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.dataservice.CodeLocationService;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DetectCodeLocationUnmapService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final BlackDuckService blackDuckService;
+    private final BlackDuckApiClient blackDuckService;
     private final CodeLocationService codeLocationService;
 
-    public DetectCodeLocationUnmapService(final BlackDuckService blackDuckService, final CodeLocationService codeLocationService) {
+    public DetectCodeLocationUnmapService(final BlackDuckApiClient blackDuckService, final CodeLocationService codeLocationService) {
         this.blackDuckService = blackDuckService;
         this.codeLocationService = codeLocationService;
     }

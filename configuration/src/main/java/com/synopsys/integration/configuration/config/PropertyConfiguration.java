@@ -31,7 +31,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.antlr.v4.runtime.misc.NotNull;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.util.Assert;
 
 import com.synopsys.integration.configuration.config.resolution.NoPropertyResolution;

@@ -37,11 +37,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectable.executable.Executable;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommand;
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
+import com.synopsys.integration.executable.Executable;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class FilePathGenerator {
     private static final String COMPILER_OUTPUT_FILE_OPTION = "-o";
@@ -50,11 +50,11 @@ public class FilePathGenerator {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static final Random random = new Random();
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final CompileCommandParser compileCommandParser;
     private final DependenyListFileParser dependenyListFileParser;
 
-    public FilePathGenerator(final ExecutableRunner executableRunner, final CompileCommandParser compileCommandParser, final DependenyListFileParser dependenyListFileParser) {
+    public FilePathGenerator(final DetectableExecutableRunner executableRunner, final CompileCommandParser compileCommandParser, final DependenyListFileParser dependenyListFileParser) {
         this.executableRunner = executableRunner;
         this.compileCommandParser = compileCommandParser;
         this.dependenyListFileParser = dependenyListFileParser;
@@ -81,7 +81,7 @@ public class FilePathGenerator {
         try {
             final List<String> command = compileCommandParser.parseCommand(compileCommand, optionOverrides);
             command.addAll(Arrays.asList("-M", "-MF", depsMkFile.getAbsolutePath()));
-            final Executable executable = new Executable(new File(compileCommand.directory), Collections.emptyMap(), command);
+            final Executable executable = Executable.create(new File(compileCommand.directory), Collections.emptyMap(), command);
             executableRunner.execute(executable);
         } catch (final ExecutableRunnerException e) {
             logger.debug(String.format("Error generating dependencies file for command '%s': %s", compileCommand.command, e.getMessage()));

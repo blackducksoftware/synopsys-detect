@@ -28,7 +28,7 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.help.DetectArgumentState;
+import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 
 class DiagnosticsDeciderTest {
     @Test

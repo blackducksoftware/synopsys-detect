@@ -26,16 +26,16 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class ApkArchitectureResolver {
     private Optional<String> architecture = Optional.empty();
     private boolean hasAttemptedResolution = false;
 
-    public Optional<String> resolveArchitecture(ClangPackageManagerInfo currentPackageManager, File workingDirectory, ExecutableRunner executableRunner) throws ExecutableRunnerException {
+    public Optional<String> resolveArchitecture(ClangPackageManagerInfo currentPackageManager, File workingDirectory, DetectableExecutableRunner executableRunner) throws ExecutableRunnerException {
         if (hasAttemptedResolution) {
             return architecture;
         }

@@ -53,22 +53,23 @@ import com.synopsys.integration.configuration.property.types.path.TildeInPathRes
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.configuration.source.SpringConfigurationPropertySource;
-import com.synopsys.integration.detect.DetectInfo;
 import com.synopsys.integration.detect.RunBeanConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
-import com.synopsys.integration.detect.configuration.DetectGroup;
+import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
-import com.synopsys.integration.detect.help.DetectArgumentState;
-import com.synopsys.integration.detect.help.DetectArgumentStateParser;
-import com.synopsys.integration.detect.help.json.HelpJsonDetector;
-import com.synopsys.integration.detect.help.json.HelpJsonWriter;
-import com.synopsys.integration.detect.help.print.DetectInfoPrinter;
-import com.synopsys.integration.detect.help.print.HelpPrinter;
+import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.configuration.enumeration.OperatingSystemType;
+import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
+import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
+import com.synopsys.integration.detect.configuration.help.json.HelpJsonDetector;
+import com.synopsys.integration.detect.configuration.help.json.HelpJsonWriter;
+import com.synopsys.integration.detect.configuration.help.print.DetectInfoPrinter;
+import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.interactive.InteractiveOption;
 import com.synopsys.integration.detect.interactive.mode.DefaultInteractiveMode;
@@ -83,13 +84,15 @@ import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
+import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
-import com.synopsys.integration.detect.tool.detector.impl.DetectDetectableFactory;
-import com.synopsys.integration.detect.tool.detector.impl.DetectExecutableResolver;
+import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
+import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
+import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
+import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecutableFinder;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
-import com.synopsys.integration.detect.type.OperatingSystemType;
 import com.synopsys.integration.detect.util.filter.DetectFilter;
 import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
@@ -113,13 +116,8 @@ import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
-import com.synopsys.integration.detectable.detectable.executable.impl.CachedExecutableResolverOptions;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableFinder;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableResolver;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleLocalExecutableFinder;
-import com.synopsys.integration.detectable.detectable.executable.impl.SimpleSystemExecutableFinder;
-import com.synopsys.integration.detectable.detectable.file.impl.SimpleFileFinder;
+import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
@@ -324,7 +322,7 @@ public class DetectBoot {
 
         Map<String, String> additionalNotes = new HashMap<>();
 
-        List<Property> deprecatedProperties =  DetectProperties.allProperties()
+        List<Property> deprecatedProperties = DetectProperties.allProperties()
                                                   .stream()
                                                   .filter(property -> property.getPropertyDeprecationInfo() != null)
                                                   .collect(Collectors.toList());
@@ -356,7 +354,7 @@ public class DetectBoot {
         PropertyConfigurationHelpContext detectConfigurationReporter = new PropertyConfigurationHelpContext(detectConfiguration);
         InfoLogReportWriter infoLogReportWriter = new InfoLogReportWriter();
         if (!fullConfiguration) {
-            detectConfigurationReporter.printCurrentValues(infoLogReportWriter::writeLine,  DetectProperties.allProperties(), additionalNotes);
+            detectConfigurationReporter.printCurrentValues(infoLogReportWriter::writeLine, DetectProperties.allProperties(), additionalNotes);
         }
 
         //Next check for options that are just plain bad, ie giving an detector type we don't know about.
@@ -367,12 +365,12 @@ public class DetectBoot {
         }
 
         if (usedFailureProperties.size() > 0) {
-            detectConfigurationReporter.printPropertyErrors(infoLogReportWriter::writeLine,  DetectProperties.allProperties(), deprecationMessages);
+            detectConfigurationReporter.printPropertyErrors(infoLogReportWriter::writeLine, DetectProperties.allProperties(), deprecationMessages);
 
             logger.warn(StringUtils.repeat("=", 60));
             logger.warn("Configuration is using deprecated properties that must be updated for this major version.");
             logger.warn("You MUST fix these deprecation issues for detect to proceed.");
-            logger.warn("To ignore these messages and force detect to exit with success supply --" +  DetectProperties.DETECT_FORCE_SUCCESS.getProperty().getKey() + "=true");
+            logger.warn("To ignore these messages and force detect to exit with success supply --" + DetectProperties.DETECT_FORCE_SUCCESS.getProperty().getKey() + "=true");
             logger.warn("This will not force detect to run, but it will pretend to have succeeded.");
             logger.warn(StringUtils.repeat("=", 60));
 
@@ -412,16 +410,14 @@ public class DetectBoot {
         ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
 
-        //TODO: This is awful, why is making this so convoluted.
-        SimpleFileFinder fileFinder = new SimpleFileFinder();
-        SimpleExecutableFinder simpleExecutableFinder = SimpleExecutableFinder.forCurrentOperatingSystem(fileFinder);
-        SimpleLocalExecutableFinder localExecutableFinder = new SimpleLocalExecutableFinder(simpleExecutableFinder);
-        SimpleSystemExecutableFinder simpleSystemExecutableFinder = new SimpleSystemExecutableFinder(simpleExecutableFinder);
-        SimpleExecutableResolver executableResolver = new SimpleExecutableResolver(new CachedExecutableResolverOptions(false), localExecutableFinder, simpleSystemExecutableFinder);
-        DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(executableResolver, detectConfigurationFactory.createExecutablePaths());
+        FileFinder fileFinder = new WildcardFileFinder();
+        DirectoryExecutableFinder directoryExecutableFinder = DirectoryExecutableFinder.forCurrentOperatingSystem(fileFinder);
+        SystemPathExecutableFinder systemPathExecutableFinder = new SystemPathExecutableFinder(directoryExecutableFinder);
+        DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(directoryExecutableFinder, systemPathExecutableFinder, detectConfigurationFactory.createExecutablePaths());
+
         GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
-        SimpleExecutableRunner simpleExecutableRunner = new SimpleExecutableRunner();
-        GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, gradleInspectorInstaller, simpleExecutableRunner, configuration);
+        DetectExecutableRunner runner = DetectExecutableRunner.newDebug(eventSystem);
+        GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, gradleInspectorInstaller, runner, configuration);
 
         NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactResolver));
         DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));

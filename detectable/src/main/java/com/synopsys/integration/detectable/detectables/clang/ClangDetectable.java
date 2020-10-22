@@ -30,11 +30,9 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
@@ -42,6 +40,8 @@ import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetecta
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManager;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerRunner;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "C or C++", forge = "Derived from the Linux distribution.", requirementsMarkdown = "File: compile_commands.json. <br /><br /> Executable: Linux package manager.")
 public class ClangDetectable extends Detectable {
@@ -52,13 +52,14 @@ public class ClangDetectable extends Detectable {
     private final ClangDetectableOptions options;
     private File jsonCompilationDatabaseFile = null;
     private final FileFinder fileFinder;
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final List<ClangPackageManager> availablePackageManagers;
     private final ClangPackageManagerRunner packageManagerRunner;
 
     private ClangPackageManager selectedPackageManager;
 
-    public ClangDetectable(final DetectableEnvironment environment, final ExecutableRunner executableRunner, final FileFinder fileFinder, final List<ClangPackageManager> availablePackageManagers, final ClangExtractor clangExtractor,
+    public ClangDetectable(final DetectableEnvironment environment, final DetectableExecutableRunner executableRunner, final FileFinder fileFinder, final List<ClangPackageManager> availablePackageManagers,
+        final ClangExtractor clangExtractor,
         final ClangDetectableOptions options, final ClangPackageManagerRunner packageManagerRunner) {
         super(environment);
         this.fileFinder = fileFinder;

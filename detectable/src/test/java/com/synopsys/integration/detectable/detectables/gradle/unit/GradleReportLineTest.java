@@ -55,7 +55,7 @@ public class GradleReportLineTest {
     @Test
     public void testParsingWinningIndicatorIn4_6() {
         final String line = "+--- org.springframework.boot:spring-boot-starter -> 2.0.0.RELEASE";
-        final String[] expected = new String[] {
+        String[] expected = new String[] {
             "spring-boot-starter",
             "2.0.0.RELEASE",
             "org.springframework.boot:spring-boot-starter:2.0.0.RELEASE"
@@ -66,7 +66,7 @@ public class GradleReportLineTest {
     @Test
     public void testParsingWinningIndicator() {
         final String line = "+--- org.springframework.boot:spring-boot-starter: -> 1.4.3.RELEASE";
-        final String[] expected = new String[] {
+        String[] expected = new String[] {
             "spring-boot-starter",
             "1.4.3.RELEASE",
             "org.springframework.boot:spring-boot-starter:1.4.3.RELEASE"
@@ -77,7 +77,7 @@ public class GradleReportLineTest {
     @Test
     public void testParsingWinningIndcatorWithFullGav() {
         final String line = "|    |    |    |    +--- org.bouncycastle:bcprov-jdk15:1.46 -> org.bouncycastle:bcprov-jdk15on:1.47";
-        final String[] expected = new String[] {
+        String[] expected = new String[] {
             "bcprov-jdk15on",
             "1.47",
             "org.bouncycastle:bcprov-jdk15on:1.47"
@@ -88,7 +88,7 @@ public class GradleReportLineTest {
     @Test
     public void testParsingWinningIndicatorLine() {
         final String line = "|    \\--- com.squareup.okhttp3:okhttp-urlconnection:3.4.2 (*)";
-        final String[] expected = new String[] {
+        String[] expected = new String[] {
             "okhttp-urlconnection",
             "3.4.2",
             "com.squareup.okhttp3:okhttp-urlconnection:3.4.2"
@@ -99,7 +99,7 @@ public class GradleReportLineTest {
     @Test
     public void testParsingStandardLine() {
         final String line = "|    +--- com.blackducksoftware.integration:integration-bdio:12.1.0";
-        final String[] expected = new String[] {
+        String[] expected = new String[] {
             "integration-bdio",
             "12.1.0",
             "com.blackducksoftware.integration:integration-bdio:12.1.0"
@@ -107,13 +107,13 @@ public class GradleReportLineTest {
         assertDependency(line, expected);
     }
 
-    private void assertDependency(final String line, final String[] expectedResults) {
-        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
-        final GradleReportLineParser gradleReportLineParser = new GradleReportLineParser();
-        final GradleTreeNode gradleTreeNode = gradleReportLineParser.parseLine(line);
-        final GradleGav gav = gradleTreeNode.getGav().get();
-        final ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getArtifact(), gav.getVersion());
-        final Dependency dependency = new Dependency(gav.getArtifact(), gav.getVersion(), externalId);
+    private void assertDependency(String line, String[] expectedResults) {
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        GradleReportLineParser gradleReportLineParser = new GradleReportLineParser();
+        GradleTreeNode gradleTreeNode = gradleReportLineParser.parseLine(line);
+        GradleGav gav = gradleTreeNode.getGav().get();
+        ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getGroup(), gav.getArtifact(), gav.getVersion());
+        Dependency dependency = new Dependency(gav.getArtifact(), gav.getVersion(), externalId);
 
         Assertions.assertEquals(expectedResults[0], dependency.getName());
         Assertions.assertEquals(expectedResults[1], dependency.getVersion());

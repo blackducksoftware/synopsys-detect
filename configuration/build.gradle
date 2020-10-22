@@ -1,16 +1,16 @@
-plugins {
-    id 'java'
-}
+apply plugin: 'io.spring.dependency-management'
 
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+    }
 }
 
 dependencies {
+    implementation project(":common")
     implementation "org.springframework.boot:spring-boot"
     implementation "org.springframework:spring-core"
 
     testImplementation "org.springframework:spring-test"
+    testImplementation "org.apache.commons:commons-collections4:4.2"
 }

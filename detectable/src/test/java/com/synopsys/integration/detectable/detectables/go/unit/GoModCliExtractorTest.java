@@ -7,33 +7,39 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.Extraction;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphParser;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphTransformer;
+import com.synopsys.integration.detectable.detectables.go.gomod.ReplacementDataExtractor;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class GoModCliExtractorTest {
 
     @Test
     public void handleMultipleReplacementsForOneComponentTest() throws ExecutableRunnerException {
-        ExecutableRunner executableRunner = Mockito.mock(ExecutableRunner.class);
+        DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         File directory = new File("");
         File goExe = new File("");
 
-        String[] goListArgs = {"list", "-m"};
+        String[] goListArgs = { "list", "-m" };
         Mockito.when(executableRunner.execute(directory, goExe, goListArgs)).thenReturn(goListOutput());
 
-        String[] goListJsonArgs = {"list", "-m", "-u", "-json", "all"};
+        String[] goListJsonArgs = { "list", "-m", "-u", "-json", "all" };
         Mockito.when(executableRunner.execute(directory, goExe, goListJsonArgs)).thenReturn(goListJsonOutput());
 
-        String[] goModGraphArgs = {"mod", "graph"};
+        String[] goModGraphArgs = { "mod", "graph" };
         Mockito.when(executableRunner.execute(directory, goExe, goModGraphArgs)).thenReturn(goModGraphOutput());
 
         GoModGraphParser goModGraphParser = new GoModGraphParser(new ExternalIdFactory());
-        GoModCliExtractor goModCliExtractor = new GoModCliExtractor(executableRunner, goModGraphParser);
+        GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner);
+        GoModGraphTransformer goModGraphTransformer = new GoModGraphTransformer(new ReplacementDataExtractor(new GsonBuilder().create()));
+        GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModCommandExecutor, goModGraphParser, goModGraphTransformer);
 
         boolean wasSuccessful = true;
         Extraction extraction = goModCliExtractor.extract(directory, goExe);
@@ -48,7 +54,7 @@ public class GoModCliExtractorTest {
         String standardOutput = String.join("\n", Arrays.asList(
             "git.daimler.com/c445/t1"
         ));
-        return new ExecutableOutput("", 0, standardOutput, "");
+        return new ExecutableOutput(0, standardOutput, "");
     }
 
     private ExecutableOutput goListJsonOutput() {
@@ -71,13 +77,13 @@ public class GoModCliExtractorTest {
             "\t}",
             "}"
         ));
-        return new ExecutableOutput("", 0, standardOutput, "");
+        return new ExecutableOutput(0, standardOutput, "");
     }
 
     private ExecutableOutput goModGraphOutput() {
         String standardOutput = String.join("\n", Arrays.asList(
             "github.com/codegangsta/negroni@v1.0.0 github.com/sirupsen/logrus@v1.1.1"
         ));
-        return new ExecutableOutput("", 0, standardOutput, "");
+        return new ExecutableOutput(0, standardOutput, "");
     }
 }
