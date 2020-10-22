@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -32,11 +33,11 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.bdio.model.Forge;
-import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
 import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.util.NameVersion;
 
 public class YarnTransformer {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -46,7 +47,7 @@ public class YarnTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph transform(YarnLockResult yarnLockResult, boolean productionOnly, MissingYarnDependencyHandler missingYarnDependencyHandler) throws MissingExternalIdException {
+    public DependencyGraph transform(YarnLockResult yarnLockResult, boolean productionOnly, List<NameVersion> externalDependencies) throws MissingExternalIdException {
         LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
         addRootNodesToGraph(graphBuilder, yarnLockResult.getPackageJson(), productionOnly);
@@ -66,17 +67,17 @@ public class YarnTransformer {
             }
         }
 
-        return graphBuilder.build((dependencyId, lazyDependencyInfo) -> missingYarnDependencyHandler.handleMissingYarnDependency(logger, externalIdFactory, dependencyId, lazyDependencyInfo, yarnLockResult.getYarnLockFilePath()));
-    }
+        return graphBuilder.build((dependencyId, lazyDependencyInfo) -> {
+            Optional<NameVersion> externalDependency = externalDependencies.stream().filter(it -> it.getName().equals(lazyDependencyInfo.getName())).findFirst();
+            Optional<ExternalId> externalId = externalDependency.map(it -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, it.getName(), it.getVersion()));
 
-    public static ExternalId handleMissingExternalIds(Logger missingDependencyLogger, ExternalIdFactory externalIdFactory, DependencyId dependencyId, LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo,
-        String yarnLockFilePath) {
-        DependencyId dependencyIdToLog = Optional.ofNullable(lazyDependencyInfo)
-                                             .map(LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo::getAliasId)
-                                             .orElse(dependencyId);
-
-        missingDependencyLogger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from %s.", dependencyIdToLog, yarnLockFilePath));
-        return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, dependencyId.toString());
+            if (externalId.isPresent()) {
+                return externalId.get();
+            } else {
+                logger.warn(String.format("Missing yarn dependency. Dependency '%s' is missing from %s.", dependencyId, yarnLockResult.getYarnLockFilePath()));
+                return externalIdFactory.createNameVersionExternalId(Forge.NPMJS, dependencyId.toString());
+            }
+        });
     }
 
     private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, PackageJson packageJson, boolean productionOnly) {
