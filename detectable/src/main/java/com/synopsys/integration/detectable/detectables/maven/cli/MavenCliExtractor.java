@@ -33,9 +33,10 @@ import org.apache.commons.lang3.StringUtils;
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class MavenCliExtractor {
     private final DetectableExecutableRunner executableRunner;
@@ -47,7 +48,7 @@ public class MavenCliExtractor {
     }
 
     //TODO: Limit 'extractors' to 'execute' and 'read', delegate all other work.
-    public Extraction extract(File directory, File mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) {
+    public Extraction extract(File directory, File mavenExe, MavenCliExtractorOptions mavenCliExtractorOptions) throws ExecutableFailedException {
         String[] mavenCommand = mavenCliExtractorOptions.getMavenBuildCommand()
                                     .map(cmd -> cmd.replace("dependency:tree", ""))
                                     .map(String::trim)
@@ -58,15 +59,7 @@ public class MavenCliExtractor {
         arguments.add("dependency:tree");
         arguments.add("-T1"); // Force maven to use a single thread to ensure the tree output is in the correct order.
 
-        ExecutableOutput mvnExecutableResult;
-        try {
-            mvnExecutableResult = executableRunner.execute(directory, mavenExe, arguments);
-        } catch (ExecutableRunnerException e) {
-            return Extraction.fromFailedExecutable(e);
-        }
-        if (mvnExecutableResult.getReturnCode() != 0) {
-            return Extraction.fromFailedExecutable(mvnExecutableResult);
-        }
+        ExecutableOutput mvnExecutableResult = executableRunner.executeSuccessfully(Executable.create(directory, mavenExe, arguments));
 
         List<String> mavenOutput = mvnExecutableResult.getStandardOutputAsList();
         List<String> excludedScopes = mavenCliExtractorOptions.getMavenExcludedScopes();

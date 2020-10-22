@@ -32,8 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.executable.ExecutableOutput;
-import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.util.NameVersion;
 
 public class Extraction {
@@ -44,7 +43,6 @@ public class Extraction {
 
     //if your an error you might have one of these filled.
     private final Exception error;
-    private final ExecutableRunnerException executableRunnerException;
     //end
 
     private final String description;
@@ -63,19 +61,14 @@ public class Extraction {
         this.metaData = builder.metaData;
         this.relevantFiles = builder.relevantFiles;
         this.unrecognizedPaths = builder.unrecognizedPaths;
-        this.executableRunnerException = builder.executableRunnerException;
 
         if (result == null) {
             throw new IllegalArgumentException("An extraction requires a result type.");
         }
     }
 
-    public static Extraction fromFailedExecutable(ExecutableRunnerException executableRunnerException) {
+    public static Extraction fromFailedExecutable(ExecutableFailedException executableRunnerException) {
         return new Extraction.Builder().exception(executableRunnerException).build();
-    }
-
-    public static Extraction fromFailedExecutable(ExecutableOutput output) {
-        return new Extraction.Builder().build(); //TODO: implement
     }
 
     public <T> Optional<T> getMetaData(final ExtractionMetadata<T> extractionMetadata) {
@@ -131,7 +124,6 @@ public class Extraction {
         private final List<CodeLocation> codeLocations = new ArrayList<>();
         private final List<File> relevantFiles = new ArrayList<>();
         private final List<File> unrecognizedPaths = new ArrayList<>();
-        public ExecutableRunnerException executableRunnerException;
         private ExtractionResultType result;
         private Exception error;
         private String description;
@@ -188,12 +180,6 @@ public class Extraction {
         public Builder failure(final String description) {
             this.result = ExtractionResultType.FAILURE;
             this.description = description;
-            return this;
-        }
-
-        public Builder exception(ExecutableRunnerException executableRunnerException) {
-            this.result = ExtractionResultType.EXCEPTION;
-            this.executableRunnerException = executableRunnerException;
             return this;
         }
 

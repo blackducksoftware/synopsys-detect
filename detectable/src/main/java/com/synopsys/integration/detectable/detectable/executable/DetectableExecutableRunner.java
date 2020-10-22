@@ -50,4 +50,7 @@ public interface DetectableExecutableRunner {
 
     @NotNull
     ExecutableOutput execute(Executable executable) throws ExecutableRunnerException;
+
+    @NotNull
+    ExecutableOutput executeSuccessfully(Executable executable) throws ExecutableFailedException; //Returns output if and only if executable return code was zero, otherwise throws.
 }

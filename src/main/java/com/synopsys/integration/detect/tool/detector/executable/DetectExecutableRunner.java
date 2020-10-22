@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
@@ -112,5 +113,18 @@ public class DetectExecutableRunner implements DetectableExecutableRunner {
             }
         }
         return output;
+    }
+
+    @Override
+    public @NotNull ExecutableOutput executeSuccessfully(final Executable executable) throws ExecutableFailedException {
+        try {
+            ExecutableOutput executableOutput = execute(executable);
+            if (executableOutput.getReturnCode() != 0) {
+                throw new ExecutableFailedException(executable, executableOutput);
+            }
+            return executableOutput;
+        } catch (ExecutableRunnerException e) {
+            throw new ExecutableFailedException(executable, e);
+        }
     }
 }
