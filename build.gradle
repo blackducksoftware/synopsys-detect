@@ -5,8 +5,7 @@ import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 buildscript {
     ext {
         springBootVersion = '2.2.4.RELEASE'
-        blackDuckCommonVersion = '49.1.0'
-        polarisCommonVersion = '0.21.0'
+        blackDuckCommonVersion = '50.0.0'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
@@ -26,6 +25,12 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 apply from: 'docs.gradle'
+
+final def resources = new File("${projectDir}/src/main/resources")
+final def versionFile = new File(resources, "version.txt")
+resources.mkdirs()
+versionFile.delete()
+versionFile << version
 
 def createArtifactName() {
     return "${buildDir}/libs/${project.name}-${version}.jar"
@@ -80,15 +85,14 @@ test {
 dependencies {
     implementation project(':common')
     implementation project(':configuration')
-    implementation project(':detect-configuration')
     implementation project(':detectable')
     implementation project(':detector')
+    implementation project(':polaris')
 
     implementation 'ch.qos.logback:logback-classic:1.2.3'
 
     implementation 'com.esotericsoftware.yamlbeans:yamlbeans:1.11'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8'
-    implementation "com.synopsys.integration:polaris-common:${polarisCommonVersion}"
     implementation "com.synopsys.integration:blackduck-common:${blackDuckCommonVersion}"
     implementation 'com.synopsys:method-analyzer-core:0.1.0'
 

@@ -25,8 +25,8 @@ package com.synopsys.integration.detect.airgap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.synopsys.integration.detect.help.DetectArgumentState;
-import com.synopsys.integration.detect.help.DetectArgumentStateParser;
+import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
+import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
 import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectors;
 

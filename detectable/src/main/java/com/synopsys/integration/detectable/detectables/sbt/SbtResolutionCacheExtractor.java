@@ -40,13 +40,13 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.sbt.model.SbtDependencyModule;
 import com.synopsys.integration.detectable.detectables.sbt.model.SbtProject;
 import com.synopsys.integration.detectable.detectables.sbt.model.SbtReport;
 import com.synopsys.integration.detectable.detectables.sbt.parse.SbtReportParser;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.util.ExcludedIncludedWildcardFilter;
 
 public class SbtResolutionCacheExtractor {
@@ -245,7 +245,7 @@ public class SbtResolutionCacheExtractor {
 
         SbtReportParser parser = new SbtReportParser();
         SbtDependencyResolver resolver = new SbtDependencyResolver(externalIdFactory);
-        ExcludedIncludedWildcardFilter filter = new ExcludedIncludedWildcardFilter(StringUtils.joinWith(",", exclude.toArray()), StringUtils.joinWith(",", include.toArray()));
+        ExcludedIncludedWildcardFilter filter = ExcludedIncludedWildcardFilter.fromCollections(exclude, include);
         SbtModuleAggregator aggregator = new SbtModuleAggregator();
 
         List<SbtDependencyModule> modules = new ArrayList<>();

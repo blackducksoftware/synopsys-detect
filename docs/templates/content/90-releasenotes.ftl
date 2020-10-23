@@ -4,6 +4,7 @@
 ### Resolved issues
 * (IDETECT-2221) Resolved an issue where the Docker Inspector logging level was not set correctly when property logging.level.detect was used.
 * (IDETECT-2213) Resolved an issue that could cause the CLANG detector to omit some components on Debian-based Linux systems.
+* (IDETECT-2216) Resolved an issue that caused non-ASCII characters in binary scan metadata (filename, code location name, project name, and version name) to be converted to '?' characters when submitted to Black Duck.
 
 ## Version 6.6.0
 ### Changed features
@@ -11,7 +12,7 @@
 * Upon connecting to Black Duck, the users roles and groups, which are only used in DEBUG-level logging, are no longer fetched unless logging level is DEBUG or higher.
 * The error messages produced for binary scan file upload failures have been improved.
 * The "detectors" field in the status.json file now features status data with more-expressive error codes derived from the runtime class of a detectable result.
-* Detect will follow 302 redirects when communicating with Black Duck.
+* Detect will follow 308 redirects when communicating with Black Duck.
 
 ### Resolved issues
 * (IDETECT-2038, IDETECT-2203) Resolved an issue where the Gradle Inspector would produce false positives in Gradle as a result of dependency replacement from the root project.

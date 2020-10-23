@@ -56,19 +56,19 @@ import com.synopsys.integration.configuration.property.types.enumfilterable.Filt
 import com.synopsys.integration.configuration.property.types.path.NullablePathProperty;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.property.types.path.PathValue;
-import com.synopsys.integration.detect.DetectTool;
 import com.synopsys.integration.detect.PropertyConfigUtils;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
-import com.synopsys.integration.detect.configuration.enums.DefaultVersionNameScheme;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorExcludedDirectories;
+import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
-import com.synopsys.integration.detect.tool.detector.FilteredFileFinder;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
 import com.synopsys.integration.detect.tool.detector.file.DetectDetectorFileFilter;
+import com.synopsys.integration.detect.tool.detector.file.FilteredFileFinder;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
@@ -317,8 +317,8 @@ public class DetectConfigurationFactory {
         List<String> excludedDirectories = new ArrayList<>();
         excludedDirectories.addAll(userProvidedExcludedDirectories);
         if (detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS.getProperty())) {
-            List<String> defaultExcluded = Arrays.stream(DetectorSearchExcludedDirectories.values())
-                                               .map(DetectorSearchExcludedDirectories::getDirectoryName)
+            List<String> defaultExcluded = Arrays.stream(DefaultDetectorExcludedDirectories.values())
+                                               .map(DefaultDetectorExcludedDirectories::getDirectoryName)
                                                .collect(Collectors.toList());
             excludedDirectories.addAll(defaultExcluded);
         }
@@ -474,6 +474,7 @@ public class DetectConfigurationFactory {
 
     public DetectExecutableOptions createExecutablePaths() {
         return new DetectExecutableOptions(
+            getValue(DetectProperties.DETECT_PYTHON_PYTHON3),
             getPathOrNull(DetectProperties.DETECT_BASH_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_BAZEL_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CONDA_PATH.getProperty()),

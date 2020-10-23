@@ -34,11 +34,11 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyStatus
 import com.synopsys.integration.blackduck.api.generated.view.ComponentPolicyRulesView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
-import com.synopsys.integration.blackduck.service.BlackDuckService;
+import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.dataservice.ProjectBomService;
 import com.synopsys.integration.blackduck.service.model.PolicyStatusDescription;
 import com.synopsys.integration.common.util.Bdo;
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -48,10 +48,10 @@ public class PolicyChecker {
     private final Logger logger = LoggerFactory.getLogger(PolicyChecker.class);
 
     private final EventSystem eventSystem;
-    private final BlackDuckService blackDuckService;
+    private final BlackDuckApiClient blackDuckService;
     private final ProjectBomService projectBomService;
 
-    public PolicyChecker(final EventSystem eventSystem, final BlackDuckService blackDuckService, final ProjectBomService projectBomService) {
+    public PolicyChecker(final EventSystem eventSystem, final BlackDuckApiClient blackDuckService, final ProjectBomService projectBomService) {
         this.eventSystem = eventSystem;
         this.blackDuckService = blackDuckService;
         this.projectBomService = projectBomService;

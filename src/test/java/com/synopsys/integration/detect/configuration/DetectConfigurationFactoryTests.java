@@ -34,7 +34,6 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.common.util.Bdo;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.rest.credentials.Credentials;
 
 public class DetectConfigurationFactoryTests {

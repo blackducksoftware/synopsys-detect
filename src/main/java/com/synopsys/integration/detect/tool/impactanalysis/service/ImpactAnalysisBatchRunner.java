@@ -30,17 +30,17 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
-import com.synopsys.integration.blackduck.service.BlackDuckService;
+import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.log.IntLogger;
 
 public class ImpactAnalysisBatchRunner {
     private final IntLogger logger;
-    private final BlackDuckService blackDuckService;
+    private final BlackDuckApiClient blackDuckService;
     private final ExecutorService executorService;
     private final Gson gson;
 
-    public ImpactAnalysisBatchRunner(IntLogger logger, BlackDuckService blackDuckService, ExecutorService executorService, Gson gson) {
+    public ImpactAnalysisBatchRunner(IntLogger logger, BlackDuckApiClient blackDuckService, ExecutorService executorService, Gson gson) {
         this.logger = logger;
         this.blackDuckService = blackDuckService;
         this.executorService = executorService;

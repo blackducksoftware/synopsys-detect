@@ -1,8 +1,8 @@
 rootProject.name = 'synopsys-detect'
 
-include "detect-configuration"
 include 'detectable'
 include 'detector'
 include 'configuration'
 include 'common'
+include 'polaris'
 

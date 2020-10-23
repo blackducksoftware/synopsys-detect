@@ -34,14 +34,13 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
-import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 
-//import com.synopsys.integration.detect.DetectInfo;
-//import com.synopsys.integration.detect.exception.DetectUserFriendlyException;
-//import com.synopsys.integration.detect.help.DetectOption;
-//import com.synopsys.integration.detect.help.DetectOptionManager;
-//import com.synopsys.integration.detect.type.OperatingSystemType;
+//import com.synopsys.integration.detect.configuration.DetectInfo;
+//import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+//import com.synopsys.integration.detect.configuration.help.DetectOption;
+//import com.synopsys.integration.detect.configuration.help.DetectOptionManager;
+//import com.synopsys.integration.detect.configuration.enumeration.OperatingSystemType;
 
 public class DetectConfigrationTest {
 

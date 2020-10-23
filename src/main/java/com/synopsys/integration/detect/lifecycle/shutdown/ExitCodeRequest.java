@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.detect.lifecycle.shutdown;
 
-import com.synopsys.integration.detect.exitcode.ExitCodeType;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 
 public class ExitCodeRequest {
     private final ExitCodeType exitCodeType;

@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.synopsys.integration.blackduck.phonehome.BlackDuckPhoneHomeHelper;
-import com.synopsys.integration.detect.DetectInfo;
+import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.phonehome.PhoneHomeResponse;
 
