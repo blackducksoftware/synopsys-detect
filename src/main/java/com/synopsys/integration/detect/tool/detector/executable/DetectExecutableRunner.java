@@ -22,6 +22,10 @@
  */
 package com.synopsys.integration.detect.tool.detector.executable;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,36 +35,71 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detectable.detectable.executable.Executable;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.executable.Executable;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
+import com.synopsys.integration.executable.ProcessBuilderRunner;
+import com.synopsys.integration.log.Slf4jIntLogger;
 
-public class DetectExecutableRunner extends ProcessBuilderExecutableRunner {
+public class DetectExecutableRunner implements DetectableExecutableRunner {
+    private final Logger logger;
     private final EventSystem eventSystem;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final boolean shouldLogOutput;
+    private ProcessBuilderRunner runner;
 
-    public DetectExecutableRunner(final Consumer<String> outputConsumer, final Consumer<String> traceConsumer, EventSystem eventSystem, boolean shouldLogOutput) {
-        super(outputConsumer, traceConsumer);
+    private DetectExecutableRunner(Logger logger, final Consumer<String> outputConsumer, final Consumer<String> traceConsumer, EventSystem eventSystem, boolean shouldLogOutput) {
+        this.logger = logger;
+        runner = new ProcessBuilderRunner(new Slf4jIntLogger(logger), outputConsumer, traceConsumer);
         this.eventSystem = eventSystem;
         this.shouldLogOutput = shouldLogOutput;
+
     }
 
     public static DetectExecutableRunner newDebug(EventSystem eventSystem) {
-        Logger logger = LoggerFactory.getLogger(ProcessBuilderExecutableRunner.class);
-        return new DetectExecutableRunner(logger::debug, logger::trace, eventSystem, true);
+        Logger logger = LoggerFactory.getLogger(DetectExecutableRunner.class);
+        return new DetectExecutableRunner(logger, logger::debug, logger::trace, eventSystem, true);
     }
 
     public static DetectExecutableRunner newInfo(EventSystem eventSystem) {
-        Logger logger = LoggerFactory.getLogger(ProcessBuilderExecutableRunner.class);
-        return new DetectExecutableRunner(logger::info, logger::trace, eventSystem, false);
+        Logger logger = LoggerFactory.getLogger(DetectExecutableRunner.class);
+        return new DetectExecutableRunner(logger, logger::info, logger::trace, eventSystem, false);
+    }
+
+    @Override
+    public @NotNull ExecutableOutput execute(final File workingDirectory, final List<String> command) throws ExecutableRunnerException {
+        return execute(Executable.create(workingDirectory, command));
+    }
+
+    @NotNull
+    @Override
+    public ExecutableOutput execute(final File workingDirectory, final String exeCmd, final String... args) throws ExecutableRunnerException {
+        return execute(Executable.create(workingDirectory, new HashMap<>(), exeCmd, Arrays.asList(args)));
+    }
+
+    @NotNull
+    @Override
+    public ExecutableOutput execute(final File workingDirectory, final String exeCmd, final List<String> args) throws ExecutableRunnerException {
+        return execute(Executable.create(workingDirectory, new HashMap<>(), exeCmd, args));
+    }
+
+    @NotNull
+    @Override
+    public ExecutableOutput execute(final File workingDirectory, final File exeFile, final String... args) throws ExecutableRunnerException {
+        return execute(Executable.create(workingDirectory, new HashMap<>(), exeFile.getAbsolutePath(), Arrays.asList(args)));
+    }
+
+    @NotNull
+    @Override
+    public ExecutableOutput execute(final File workingDirectory, final File exeFile, final List<String> args) throws ExecutableRunnerException {
+        return execute(Executable.create(workingDirectory, new HashMap<>(), exeFile.getAbsolutePath(), args));
     }
 
     @NotNull
     @Override
     public ExecutableOutput execute(final Executable executable) throws ExecutableRunnerException {
-        final ExecutableOutput output = super.execute(executable);
-        eventSystem.publishEvent(Event.Executable, output);
+        final ExecutableOutput output = runner.execute(executable);
+        eventSystem.publishEvent(Event.Executable, new ExecutedExecutable(output, executable));
         if (output.getReturnCode() != 0 && shouldLogOutput && !logger.isDebugEnabled() && !logger.isTraceEnabled()) {
             if (StringUtils.isNotBlank(output.getStandardOutput())) {
                 logger.info("Standard Output: ");

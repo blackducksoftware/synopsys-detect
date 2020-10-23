@@ -74,7 +74,7 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGen
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
@@ -168,7 +168,7 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public ExecutableRunner executableRunner() {
+    public DetectableExecutableRunner executableRunner() {
         return DetectExecutableRunner.newDebug(eventSystem);
     }
 
@@ -212,7 +212,7 @@ public class RunBeanConfiguration {
             locator = new OnlineNugetInspectorLocator(installer, directoryManager, installerOptions.getNugetInspectorVersion().orElse(null));
         }
 
-        final ExecutableRunner executableRunner = executableRunner();
+        final DetectableExecutableRunner executableRunner = executableRunner();
         final DetectExecutableResolver executableResolver = detectExecutableResolver();
         final DotNetRuntimeFinder runtimeFinder = new DotNetRuntimeFinder(executableRunner, executableResolver, directoryManager.getPermanentDirectory());
         final DotNetRuntimeManager dotNetRuntimeManager = new DotNetRuntimeManager(runtimeFinder, new DotNetRuntimeParser());

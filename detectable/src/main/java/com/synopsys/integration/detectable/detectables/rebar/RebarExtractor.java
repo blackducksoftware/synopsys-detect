@@ -28,18 +28,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.Executable;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.rebar.model.RebarParseResult;
 import com.synopsys.integration.detectable.detectables.rebar.parse.Rebar3TreeParser;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.executable.Executable;
 
 public class RebarExtractor {
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final Rebar3TreeParser rebarTreeParser;
 
-    public RebarExtractor(final ExecutableRunner executableRunner, final Rebar3TreeParser rebarTreeParser) {
+    public RebarExtractor(final DetectableExecutableRunner executableRunner, final Rebar3TreeParser rebarTreeParser) {
         this.executableRunner = executableRunner;
         this.rebarTreeParser = rebarTreeParser;
     }
@@ -54,7 +54,7 @@ public class RebarExtractor {
             final List<String> arguments = new ArrayList<>();
             arguments.add("tree");
 
-            final Executable rebar3TreeExe = new Executable(directory, envVars, rebarExe.toString(), arguments);
+            final Executable rebar3TreeExe = Executable.create(directory, envVars, rebarExe.toString(), arguments);
             final List<String> output = executableRunner.execute(rebar3TreeExe).getStandardOutputAsList();
             final RebarParseResult parseResult = rebarTreeParser.parseRebarTreeOutput(output);
 

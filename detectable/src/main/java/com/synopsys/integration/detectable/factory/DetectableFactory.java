@@ -32,7 +32,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.bdio.BdioTransformer;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
@@ -219,11 +219,11 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransforme
 public class DetectableFactory {
 
     private final FileFinder fileFinder;
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final ExternalIdFactory externalIdFactory;
     private final Gson gson;
 
-    public DetectableFactory(FileFinder fileFinder, ExecutableRunner executableRunner, ExternalIdFactory externalIdFactory, Gson gson) {
+    public DetectableFactory(FileFinder fileFinder, DetectableExecutableRunner executableRunner, ExternalIdFactory externalIdFactory, Gson gson) {
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;
         this.externalIdFactory = externalIdFactory;

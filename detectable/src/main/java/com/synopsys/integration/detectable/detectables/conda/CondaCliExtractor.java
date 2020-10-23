@@ -29,17 +29,17 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.conda.parser.CondaListParser;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.executable.ExecutableOutput;
 
 public class CondaCliExtractor {
     private final CondaListParser condaListParser;
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
 
-    public CondaCliExtractor(CondaListParser condaListParser, ExecutableRunner executableRunner) {
+    public CondaCliExtractor(CondaListParser condaListParser, DetectableExecutableRunner executableRunner) {
         this.condaListParser = condaListParser;
         this.executableRunner = executableRunner;
     }

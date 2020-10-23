@@ -24,20 +24,20 @@ package com.synopsys.integration.detectable.detectables.swift;
 
 import java.io.File;
 
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.swift.model.SwiftPackage;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class SwiftExtractor {
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final SwiftCliParser swiftCliParser;
     private final SwiftPackageTransformer swiftPackageTransformer;
 
-    public SwiftExtractor(final ExecutableRunner executableRunner, final SwiftCliParser swiftCliParser, final SwiftPackageTransformer swiftPackageTransformer) {
+    public SwiftExtractor(final DetectableExecutableRunner executableRunner, final SwiftCliParser swiftCliParser, final SwiftPackageTransformer swiftPackageTransformer) {
         this.executableRunner = executableRunner;
         this.swiftCliParser = swiftCliParser;
         this.swiftPackageTransformer = swiftPackageTransformer;

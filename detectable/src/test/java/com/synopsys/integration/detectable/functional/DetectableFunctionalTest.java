@@ -42,16 +42,16 @@ import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
-import com.synopsys.integration.detectable.detectable.executable.Executable;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detectable.factory.DetectableFactory;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
+import com.synopsys.integration.executable.Executable;
+import com.synopsys.integration.executable.ExecutableOutput;
 
 public abstract class DetectableFunctionalTest {
 
@@ -68,7 +68,7 @@ public abstract class DetectableFunctionalTest {
     private final Path outputDirectory;
 
     @NotNull
-    private final FunctionalExecutableRunner executableRunner;
+    private final FunctionalDetectableExecutableRunner executableRunner;
 
     @NotNull
     public final DetectableFactory detectableFactory;
@@ -80,7 +80,7 @@ public abstract class DetectableFunctionalTest {
         this.sourceDirectory = tempDirectory.resolve("source");
         this.outputDirectory = tempDirectory.resolve("output");
 
-        this.executableRunner = new FunctionalExecutableRunner();
+        this.executableRunner = new FunctionalDetectableExecutableRunner();
 
         final FileFinder fileFinder = new WildcardFileFinder();
         final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
@@ -180,7 +180,7 @@ public abstract class DetectableFunctionalTest {
     @NotNull
     public ExecutableOutput createStandardOutput(final String... outputLines) {
         final String output = String.join(System.lineSeparator(), outputLines);
-        return new ExecutableOutput("executable", 0, output, "");
+        return new ExecutableOutput(0, output, "");
     }
 
     @NotNull

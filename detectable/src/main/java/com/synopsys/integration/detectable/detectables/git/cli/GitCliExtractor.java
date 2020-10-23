@@ -30,11 +30,11 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.Slf4jIntLogger;
 
@@ -43,10 +43,10 @@ public class GitCliExtractor {
 
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final GitUrlParser gitUrlParser;
 
-    public GitCliExtractor(final ExecutableRunner executableRunner, final GitUrlParser gitUrlParser) {
+    public GitCliExtractor(final DetectableExecutableRunner executableRunner, final GitUrlParser gitUrlParser) {
         this.executableRunner = executableRunner;
         this.gitUrlParser = gitUrlParser;
     }

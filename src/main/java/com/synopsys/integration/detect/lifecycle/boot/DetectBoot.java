@@ -84,8 +84,8 @@ import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
+import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
-import com.synopsys.integration.detect.tool.detector.executable.ProcessBuilderExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecutableFinder;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
@@ -406,8 +406,8 @@ public class DetectBoot {
         DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(directoryExecutableFinder, systemPathExecutableFinder, detectConfigurationFactory.createExecutablePaths());
 
         GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
-        ProcessBuilderExecutableRunner processBuilderExecutableRunner = new ProcessBuilderExecutableRunner();
-        GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, gradleInspectorInstaller, processBuilderExecutableRunner, configuration);
+        DetectExecutableRunner runner = DetectExecutableRunner.newDebug(eventSystem);
+        GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, gradleInspectorInstaller, runner, configuration);
 
         NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactResolver));
         DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));

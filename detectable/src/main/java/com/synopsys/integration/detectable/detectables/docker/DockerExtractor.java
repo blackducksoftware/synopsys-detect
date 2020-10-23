@@ -48,16 +48,16 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.SimpleBdioDocument;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionMetadata;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.Executable;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunner;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableRunnerException;
+import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.docker.model.DockerImageInfo;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionMetadata;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.executable.Executable;
+import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class DockerExtractor {
     public static final ExtractionMetadata<File> DOCKER_TAR_META_DATA = new ExtractionMetadata<>("dockerTar", File.class);
@@ -72,14 +72,14 @@ public class DockerExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final FileFinder fileFinder;
-    private final ExecutableRunner executableRunner;
+    private final DetectableExecutableRunner executableRunner;
     private final BdioTransformer bdioTransformer;
     private final ExternalIdFactory externalIdFactory;
     private final Gson gson;
 
     private ImageIdentifierType imageIdentifierType;
 
-    public DockerExtractor(FileFinder fileFinder, ExecutableRunner executableRunner, BdioTransformer bdioTransformer, ExternalIdFactory externalIdFactory, Gson gson) {
+    public DockerExtractor(FileFinder fileFinder, DetectableExecutableRunner executableRunner, BdioTransformer bdioTransformer, ExternalIdFactory externalIdFactory, Gson gson) {
         this.fileFinder = fileFinder;
         this.executableRunner = executableRunner;
         this.bdioTransformer = bdioTransformer;
@@ -133,7 +133,7 @@ public class DockerExtractor {
             "load",
             "-i",
             imageToImport.getCanonicalPath());
-        Executable dockerImportImageExecutable = new Executable(directory, environmentVariables, dockerExe.toString(), dockerImportArguments);
+        Executable dockerImportImageExecutable = Executable.create(directory, environmentVariables, dockerExe.toString(), dockerImportArguments);
         ExecutableOutput exeOut = executableRunner.execute(dockerImportImageExecutable);
         if (exeOut.getReturnCode() != 0) {
             throw new IntegrationException(String.format("Command %s %s returned %d: %s",
@@ -157,7 +157,7 @@ public class DockerExtractor {
         if (dockerInspectorInfo.hasAirGapImageFiles()) {
             importTars(dockerInspectorInfo.getAirGapInspectorImageTarFiles(), outputDirectory, environmentVariables, dockerExe);
         }
-        Executable dockerExecutable = new Executable(outputDirectory, environmentVariables, javaExe.getAbsolutePath(), dockerArguments);
+        Executable dockerExecutable = Executable.create(outputDirectory, environmentVariables, javaExe.getAbsolutePath(), dockerArguments);
         executableRunner.execute(dockerExecutable);
 
         File scanFile = null;
