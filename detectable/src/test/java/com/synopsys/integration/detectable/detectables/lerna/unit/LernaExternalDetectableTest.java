@@ -17,16 +17,16 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectable.executable.ExecutableOutput;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaOptions;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmLockfileOptions;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
+import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.util.NameVersion;
 
 public class LernaExternalDetectableTest extends DetectableFunctionalTest {
@@ -52,7 +52,7 @@ public class LernaExternalDetectableTest extends DetectableFunctionalTest {
             "}"
         );
 
-        ExecutableOutput executableOutput = createStandardOutput(
+        final ExecutableOutput executableOutput = createStandardOutput(
             "[",
             "  {",
             "    \"name\": \"packageA\",",
@@ -70,20 +70,20 @@ public class LernaExternalDetectableTest extends DetectableFunctionalTest {
         );
         addExecutableOutput(executableOutput, "lerna", "ls", "--all", "--json");
 
-        Path packagesDirectory = addDirectory(Paths.get("packages"));
+        final Path packagesDirectory = addDirectory(Paths.get("packages"));
 
-        Path packageADirectory = addDirectory(packagesDirectory.resolve("packageA"));
+        final Path packageADirectory = addDirectory(packagesDirectory.resolve("packageA"));
         addPackageJson(packageADirectory, "packageA", "1.2.3",
             new NameVersion("packageB", "~1")
         );
 
-        Path packageBDirectory = addDirectory(packagesDirectory.resolve("packageB"));
+        final Path packageBDirectory = addDirectory(packagesDirectory.resolve("packageB"));
         addPackageJson(packageBDirectory, "packageB", "3.2.1");
 
     }
 
-    private void addPackageJson(Path directory, String packageName, String packageVersion, NameVersion... dependencies) throws IOException {
-        PackageJson packageJson = new PackageJson();
+    private void addPackageJson(final Path directory, final String packageName, final String packageVersion, final NameVersion... dependencies) throws IOException {
+        final PackageJson packageJson = new PackageJson();
         packageJson.name = packageName;
         packageJson.version = packageVersion;
         packageJson.dependencies = Arrays.stream(dependencies)
@@ -94,21 +94,21 @@ public class LernaExternalDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull DetectableEnvironment environment) {
-        YarnLockOptions yarnLockOptions = Mockito.mock(YarnLockOptions.class);
-        NpmLockfileOptions npmLockFileOptions = new NpmLockfileOptions(true);
-        LernaOptions lernaOptions = new LernaOptions(false);
+    public Detectable create(@NotNull final DetectableEnvironment environment) {
+        final YarnLockOptions yarnLockOptions = Mockito.mock(YarnLockOptions.class);
+        final NpmLockfileOptions npmLockFileOptions = new NpmLockfileOptions(true);
+        final LernaOptions lernaOptions = new LernaOptions(false);
 
         return detectableFactory.createLernaDetectable(environment, () -> new File("lerna"), yarnLockOptions, npmLockFileOptions, lernaOptions);
     }
 
     @Override
-    public void assertExtraction(@NotNull Extraction extraction) {
+    public void assertExtraction(@NotNull final Extraction extraction) {
         Assertions.assertEquals(3, extraction.getCodeLocations().size(), "Expected one code location from root, and two from a non-private packages.");
 
-        CodeLocation codeLocationA = extraction.getCodeLocations().get(1);
+        final CodeLocation codeLocationA = extraction.getCodeLocations().get(1);
         Assertions.assertEquals("packageA", codeLocationA.getExternalId().map(ExternalId::getName).orElse(null), "Package A should be the second code location.");
-        NameVersionGraphAssert rootGraphAssert = new NameVersionGraphAssert(Forge.NPMJS, codeLocationA.getDependencyGraph());
+        final NameVersionGraphAssert rootGraphAssert = new NameVersionGraphAssert(Forge.NPMJS, codeLocationA.getDependencyGraph());
         rootGraphAssert.hasDependency("packageB", "3.2.1");
     }
 
