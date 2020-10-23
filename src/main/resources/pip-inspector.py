@@ -61,15 +61,17 @@ class PipInspector:
                 metadata_str = distribution.get_metadata(distribution.PKG_INFO)
                 metadata_obj = distutils.dist.DistributionMetadata()
                 metadata_obj.read_pkg_file(io.StringIO(metadata_str))
-                if not metadata_obj.url.endswith(".git"):
-                    continue
-                self.git_pkg_metadata[pkg] = metadata_obj.url
+                self.git_pkg_metadata[pkg] = {
+                    "name": metadata_obj.name.lower(),
+                    "url": metadata_obj.url.lower(),
+                }
 
     def resolve_git_package(self, requirement):
         self._build_git_pkg_metadata()
-        for key in self.git_pkg_metadata:
-            if self.git_pkg_metadata[key] in requirement:
-                return resolve_package_by_name(key, [])
+        req = requirement.lower()
+        for pkg, metadata in self.git_pkg_metadata.items():
+            if metadata["name"] in req or metadata["url"] in req:
+                return resolve_package_by_name(pkg, [])
         return None
 
     def inspect(self):
@@ -80,11 +82,12 @@ class PipInspector:
         requirements = []
         with open(self.requirements_path) as reqs_file:
             for req in reqs_file.readlines():
-                if req.strip():
+                req = req.strip()
+                if req and req[0] != "#":
                     requirements.append(req.strip())
 
         for package_name in requirements:
-            if package_name.startswith("git+"):
+            if "git+" in package_name or "@" in package_name:
                 requirement = self.resolve_git_package(package_name)
             else:
                 package_name = re.split("==|>=|<=|>|<", package_name)[0]
@@ -175,7 +178,10 @@ def main():
     except FileNotFoundError:
         print("r?" + requirements_path)
 
-    inspector.inspect()
+    try:
+        inspector.inspect()
+    except:
+        print("p?" + requirements_path)
 
 
 if __name__ == "__main__":
