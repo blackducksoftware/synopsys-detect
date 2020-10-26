@@ -29,11 +29,11 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
-import com.synopsys.integration.detectable.detectables.yarn.parse.MissingYarnDependencyHandler;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
+import com.synopsys.integration.util.NameVersion;
 
 public class YarnPackager {
     private final Gson gson;
@@ -48,22 +48,18 @@ public class YarnPackager {
         this.yarnLockOptions = yarnLockOptions;
     }
 
-    public YarnResult generateYarnResult(String packageJsonText, List<String> yarnLockLines, String yarnLockFilePath, MissingYarnDependencyHandler missingYarnDependencyHandler) {
+    public YarnResult generateYarnResult(String packageJsonText, List<String> yarnLockLines, String yarnLockFilePath, List<NameVersion> externalDependencies) {
         PackageJson packageJson = gson.fromJson(packageJsonText, PackageJson.class);
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
         YarnLockResult yarnLockResult = new YarnLockResult(packageJson, yarnLockFilePath, yarnLock);
 
         try {
-            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, yarnLockOptions.useProductionOnly(), missingYarnDependencyHandler);
+            DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, yarnLockOptions.useProductionOnly(), externalDependencies);
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
             return YarnResult.success(packageJson.name, packageJson.version, codeLocation);
         } catch (MissingExternalIdException exception) {
             return YarnResult.failure(exception);
         }
-    }
-
-    public YarnTransformer getYarnTransformer() {
-        return yarnTransformer;
     }
 }

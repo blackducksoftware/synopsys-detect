@@ -55,6 +55,7 @@ public class LernaDetectable extends Detectable {
     private final LernaExtractor lernaExtractor;
 
     private File lernaExecutable;
+    private File packageJson;
 
     public LernaDetectable(DetectableEnvironment environment, FileFinder fileFinder, LernaResolver lernaResolver, LernaExtractor lernaExtractor) {
         super(environment);
@@ -84,6 +85,11 @@ public class LernaDetectable extends Detectable {
             return new FilesNotFoundDetectableResult(PACKAGE_LOCK_JSON, YARN_LOCK);
         }
 
+        packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
+        if (packageJson == null) {
+            return new FilesNotFoundDetectableResult(PACKAGE_JSON);
+        }
+
         lernaExecutable = lernaResolver.resolveLerna();
         if (lernaExecutable == null) {
             return new ExecutableNotFoundDetectableResult("lerna");
@@ -94,6 +100,6 @@ public class LernaDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return lernaExtractor.extract(environment, lernaExecutable);
+        return lernaExtractor.extract(environment.getDirectory(), packageJson, lernaExecutable);
     }
 }
