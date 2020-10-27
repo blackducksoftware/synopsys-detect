@@ -34,6 +34,7 @@ import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class GoModCommandExecutor {
+    private static final String FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH = "Querying for the go mod graph failed:";
     private final DetectableExecutableRunner executableRunner;
 
     public GoModCommandExecutor(final DetectableExecutableRunner executableRunner) {
@@ -52,16 +53,16 @@ public class GoModCommandExecutor {
             String version = matcher.group();
             String[] parts = version.split("\\.");
             if (Integer.parseInt(parts[0]) > 1 || Integer.parseInt(parts[1]) >= 14) {
-                return execute(directory, goExe, "Querying for the go mod graph failed:", "list", "-mod=readonly", "-m", "-u", "-json", "all");
+                return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "list", "-mod=readonly", "-m", "-u", "-json", "all");
             } else {
-                return execute(directory, goExe, "Querying for the go mod graph failed:", "list", "-m", "-u", "-json", "all");
+                return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "list", "-m", "-u", "-json", "all");
             }
         }
         return new ArrayList<>();
     }
 
     List<String> generateGoModGraphOutput(File directory, File goExe) throws ExecutableRunnerException, DetectableException {
-        return execute(directory, goExe, "Querying for the go mod graph failed:", "mod", "graph");
+        return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "mod", "graph");
     }
 
     private List<String> execute(File directory, File goExe, String failureMessage, String... arguments) throws DetectableException, ExecutableRunnerException {
