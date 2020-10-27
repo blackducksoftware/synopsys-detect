@@ -32,20 +32,20 @@ import com.paypal.digraph.parser.GraphParser;
 import com.synopsys.integration.detectable.detectables.bitbake.model.BitbakeGraph;
 
 public class GraphParserTransformer {
-    public BitbakeGraph transform(final GraphParser graphParser) {
-        final BitbakeGraph bitbakeGraph = new BitbakeGraph();
+    public BitbakeGraph transform(GraphParser graphParser) {
+        BitbakeGraph bitbakeGraph = new BitbakeGraph();
 
-        for (final GraphNode graphNode : graphParser.getNodes().values()) {
-            final String name = getNameFromNode(graphNode);
-            final String version = getVersionFromNode(graphNode).orElse(null);
+        for (GraphNode graphNode : graphParser.getNodes().values()) {
+            String name = getNameFromNode(graphNode);
+            String version = getVersionFromNode(graphNode).orElse(null);
             if (version != null) {
                 bitbakeGraph.addNode(name, version);
             }
         }
 
-        for (final GraphEdge graphEdge : graphParser.getEdges().values()) {
-            final String parent = getNameFromNode(graphEdge.getNode1());
-            final String child = getNameFromNode(graphEdge.getNode2());
+        for (GraphEdge graphEdge : graphParser.getEdges().values()) {
+            String parent = getNameFromNode(graphEdge.getNode1());
+            String child = getNameFromNode(graphEdge.getNode2());
             if (!parent.equals(child)) {
                 bitbakeGraph.addChild(parent, child);
             }
@@ -54,18 +54,18 @@ public class GraphParserTransformer {
         return bitbakeGraph;
     }
 
-    private String getNameFromNode(final GraphNode graphNode) {
-        final String[] nodeIdPieces = graphNode.getId().split(".do_");
-        return nodeIdPieces[0].replaceAll("\"", "");
+    private String getNameFromNode(GraphNode graphNode) {
+        String[] nodeIdPieces = graphNode.getId().split(".do_");
+        return nodeIdPieces[0].replace("\"", "");
     }
 
-    private Optional<String> getVersionFromNode(final GraphNode graphNode) {
-        final Optional<String> attribute = getLabelAttribute(graphNode);
+    private Optional<String> getVersionFromNode(GraphNode graphNode) {
+        Optional<String> attribute = getLabelAttribute(graphNode);
         return attribute.map(this::getVersionFromLabel);
     }
 
-    private Optional<String> getLabelAttribute(final GraphNode graphNode) {
-        final String attribute = (String) graphNode.getAttribute("label");
+    private Optional<String> getLabelAttribute(GraphNode graphNode) {
+        String attribute = (String) graphNode.getAttribute("label");
         Optional<String> result = Optional.empty();
 
         if (StringUtils.isNotBlank(attribute)) {
@@ -75,8 +75,8 @@ public class GraphParserTransformer {
         return result;
     }
 
-    private String getVersionFromLabel(final String label) {
-        final String[] components = label.split("\\\\n:|\\\\n");
+    private String getVersionFromLabel(String label) {
+        String[] components = label.split("\\\\n:|\\\\n");
         return components[1];
     }
 }
