@@ -35,32 +35,53 @@ public class InteractiveModeDecisionTree implements DecisionTree {
         this.existingPropertySources = new ArrayList<>(existingPropertySources);
     }
 
-    public void traverse(Interactions interactions) {
-        interactions.printWelcome();
+    public void traverse(InteractivePropertySourceBuilder propertySourceBuilder, InteractiveWriter writer) {
+        writer.println("***** Welcome to Detect Interactive Mode *****");
+        writer.println();
 
-        Boolean connectToHub = interactions.askYesOrNo("Would you like to connect to a Black Duck server?");
+        Boolean connectToHub = writer.askYesOrNo("Would you like to connect to a Black Duck server?");
         if (connectToHub) {
             BlackDuckConnectionDecisionBranch blackDuckConnectionDecisionBranch = new BlackDuckConnectionDecisionBranch(existingPropertySources);
-            blackDuckConnectionDecisionBranch.traverse(interactions);
+            blackDuckConnectionDecisionBranch.traverse(propertySourceBuilder, writer);
 
-            Boolean customDetails = interactions.askYesOrNo("Would you like to provide a project name and version to use?");
+            Boolean customDetails = writer.askYesOrNo("Would you like to provide a project name and version to use?");
             if (customDetails) {
-                interactions.setPropertyFromQuestion(DetectProperties.DETECT_PROJECT_NAME.getProperty(), "What is the project name?");
-                interactions.setPropertyFromQuestion(DetectProperties.DETECT_PROJECT_VERSION_NAME.getProperty(), "What is the project version?");
+                propertySourceBuilder.setPropertyFromQuestion(DetectProperties.DETECT_PROJECT_NAME.getProperty(), "What is the project name?");
+                propertySourceBuilder.setPropertyFromQuestion(DetectProperties.DETECT_PROJECT_VERSION_NAME.getProperty(), "What is the project version?");
             }
         } else {
-            interactions.setProperty(DetectProperties.BLACKDUCK_OFFLINE_MODE.getProperty(), "true");
+            propertySourceBuilder.setProperty(DetectProperties.BLACKDUCK_OFFLINE_MODE.getProperty(), "true");
         }
 
-        Boolean scan = interactions.askYesOrNo("Would you like run a CLI scan?");
+        Boolean scan = writer.askYesOrNo("Would you like run a CLI scan?");
         if (scan) {
             CliDecisionBranch cliDecisionBranch = new CliDecisionBranch(connectToHub);
-            cliDecisionBranch.traverse(interactions);
+            cliDecisionBranch.traverse(propertySourceBuilder, writer);
         } else {
-            interactions.setProperty(DetectProperties.DETECT_TOOLS_EXCLUDED.getProperty(), "SIGNATURE_SCAN");
+            propertySourceBuilder.setProperty(DetectProperties.DETECT_TOOLS_EXCLUDED.getProperty(), "SIGNATURE_SCAN");
         }
 
-        interactions.saveAndEndInteractiveMode();
+        writer.println("Interactive Mode Successful!");
+        writer.println();
+
+        Boolean saveSettings = writer.askYesOrNo("Would you like to save these settings to an application.properties file?");
+        if (saveSettings) {
+            Boolean customName = writer.askYesOrNo("Would you like save these settings to a profile?");
+            if (customName) {
+                String profileName = writer.askQuestion("What is the profile name?");
+
+                propertySourceBuilder.saveToApplicationProperties(profileName);
+
+                writer.println();
+                writer.println("In the future, to use this profile add the following option:");
+                writer.println();
+                writer.println("--spring.profiles.active=" + profileName);
+            } else {
+                propertySourceBuilder.saveToApplicationProperties();
+            }
+        }
+
+        writer.promptToStartDetect();
     }
 
 }

@@ -162,7 +162,7 @@ public class DetectBoot {
         printDetectInfo(detectInfo);
 
         if (detectArgumentState.isInteractive()) {
-            InteractiveManager interactiveManager = new InteractiveManager();
+            InteractiveManager interactiveManager = new InteractiveManager(System.console(), System.in, System.out);
             MapPropertySource interactivePropertySource = interactiveManager.getInteractivePropertySource(propertySources);
             propertySources.add(0, interactivePropertySource);
         }

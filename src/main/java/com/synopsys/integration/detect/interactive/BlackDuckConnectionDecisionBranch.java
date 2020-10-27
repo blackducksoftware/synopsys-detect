@@ -42,19 +42,19 @@ public class BlackDuckConnectionDecisionBranch implements DecisionTree {
         this.existingPropertySources = existingPropertySources;
     }
 
-    public void traverse(Interactions interactions) {
+    public void traverse(InteractivePropertySourceBuilder propertySourceBuilder, InteractiveWriter writer) {
         boolean connected = false;
         boolean skipConnectionTest = false;
         BlackDuckServerDecisionBranch blackDuckServerDecisionBranch = new BlackDuckServerDecisionBranch();
 
         while (!connected && !skipConnectionTest) {
-            blackDuckServerDecisionBranch.traverse(interactions);
+            blackDuckServerDecisionBranch.traverse(propertySourceBuilder, writer);
 
-            Boolean testHub = interactions.askYesOrNo("Would you like to test the Black Duck connection now?");
+            Boolean testHub = writer.askYesOrNo("Would you like to test the Black Duck connection now?");
             if (testHub) {
                 ConnectionResult connectionAttempt = null;
                 try {
-                    MapPropertySource interactivePropertySource = interactions.createPropertySource();
+                    MapPropertySource interactivePropertySource = propertySourceBuilder.build();
                     List<PropertySource> propertySources = new ArrayList<>(this.existingPropertySources);
                     propertySources.add(interactivePropertySource);
                     PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
@@ -63,20 +63,20 @@ public class BlackDuckConnectionDecisionBranch implements DecisionTree {
                     BlackDuckServerConfig blackDuckServerConfig = blackDuckConfigFactory.createServerConfig(new SilentIntLogger());
                     connectionAttempt = blackDuckServerConfig.attemptConnection(new SilentIntLogger());
                 } catch (Exception e) {
-                    interactions.println("Failed to test connection.");
-                    interactions.println(e.toString());
-                    interactions.println("");
+                    writer.println("Failed to test connection.");
+                    writer.println(e.toString());
+                    writer.println("");
                 }
 
                 if (connectionAttempt != null && connectionAttempt.isSuccess()) {
                     connected = true;
                 } else {
                     connected = false;
-                    interactions.println("Failed to connect.");
+                    writer.println("Failed to connect.");
                     if (connectionAttempt != null) {
-                        interactions.println(connectionAttempt.getFailureMessage().orElse("Unknown reason."));
+                        writer.println(connectionAttempt.getFailureMessage().orElse("Unknown reason."));
                     }
-                    skipConnectionTest = !interactions.askYesOrNo("Would you like to retry entering Black Duck information?");
+                    skipConnectionTest = !writer.askYesOrNo("Would you like to retry entering Black Duck information?");
                 }
             } else {
                 skipConnectionTest = true;

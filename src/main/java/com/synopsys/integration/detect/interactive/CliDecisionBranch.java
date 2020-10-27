@@ -31,21 +31,21 @@ public class CliDecisionBranch implements DecisionTree {
         this.connectedToBlackDuck = connectedToBlackDuck;
     }
 
-    public void traverse(Interactions interactions) {
+    public void traverse(InteractivePropertySourceBuilder propertySourceBuilder, InteractiveWriter writer) {
         if (connectedToBlackDuck) {
-            Boolean upload = interactions.askYesOrNo("Would you like to upload CLI scan results to the Black Duck server?");
+            Boolean upload = writer.askYesOrNo("Would you like to upload CLI scan results to the Black Duck server?");
             if (!upload) {
-                interactions.setProperty(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN.getProperty(), "true");
+                propertySourceBuilder.setProperty(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN.getProperty(), "true");
             }
         }
 
-        Boolean customScanner = interactions.askYesOrNo("Would you like to provide a custom scanner?");
+        Boolean customScanner = writer.askYesOrNo("Would you like to provide a custom scanner?");
         if (customScanner) {
-            Boolean downloadCustomScanner = interactions.askYesOrNo("Would you like to download the custom scanner?");
+            Boolean downloadCustomScanner = writer.askYesOrNo("Would you like to download the custom scanner?");
             if (downloadCustomScanner) {
-                interactions.setPropertyFromQuestion(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL.getProperty(), "What is the scanner host url?");
+                propertySourceBuilder.setPropertyFromQuestion(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL.getProperty(), "What is the scanner host url?");
             } else {
-                interactions.setPropertyFromQuestion(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH.getProperty(), "What is the location of your offline scanner?");
+                propertySourceBuilder.setPropertyFromQuestion(DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH.getProperty(), "What is the location of your offline scanner?");
             }
         }
     }
