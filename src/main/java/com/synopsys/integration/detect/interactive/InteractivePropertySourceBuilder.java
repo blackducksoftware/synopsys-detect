@@ -37,6 +37,7 @@ import com.synopsys.integration.configuration.source.MapPropertySource;
 public class InteractivePropertySourceBuilder {
     private final Map<Property, InteractiveOption> propertyToOptionMap = new HashMap<>();
     private final InteractiveWriter interactiveWriter;
+    public static final String PROPERTY_SOURCE_NAME = "interactive";
 
     public InteractivePropertySourceBuilder(InteractiveWriter interactiveWriter) {
         this.interactiveWriter = interactiveWriter;
@@ -103,7 +104,7 @@ public class InteractivePropertySourceBuilder {
     public MapPropertySource build() {
         Map<String, String> interactivePropertyMap = propertyToOptionMap.values().stream()
                                                          .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), InteractiveOption::getInteractiveValue));
-        return new MapPropertySource("interactive", interactivePropertyMap);
+        return new MapPropertySource(PROPERTY_SOURCE_NAME, interactivePropertyMap);
     }
 
 }

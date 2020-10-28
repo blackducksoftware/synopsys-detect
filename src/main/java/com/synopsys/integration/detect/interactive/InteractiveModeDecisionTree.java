@@ -22,11 +22,15 @@
  */
 package com.synopsys.integration.detect.interactive;
 
+import static com.synopsys.integration.detect.configuration.DetectProperties.BLACKDUCK_OFFLINE_MODE;
+import static com.synopsys.integration.detect.configuration.DetectProperties.DETECT_PROJECT_NAME;
+import static com.synopsys.integration.detect.configuration.DetectProperties.DETECT_PROJECT_VERSION_NAME;
+import static com.synopsys.integration.detect.configuration.DetectProperties.DETECT_TOOLS_EXCLUDED;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.synopsys.integration.configuration.source.PropertySource;
-import com.synopsys.integration.detect.configuration.DetectProperties;
 
 public class InteractiveModeDecisionTree implements DecisionTree {
     private final List<PropertySource> existingPropertySources;
@@ -35,6 +39,7 @@ public class InteractiveModeDecisionTree implements DecisionTree {
         this.existingPropertySources = new ArrayList<>(existingPropertySources);
     }
 
+    @Override
     public void traverse(InteractivePropertySourceBuilder propertySourceBuilder, InteractiveWriter writer) {
         writer.println("***** Welcome to Detect Interactive Mode *****");
         writer.println();
@@ -46,11 +51,11 @@ public class InteractiveModeDecisionTree implements DecisionTree {
 
             Boolean customDetails = writer.askYesOrNo("Would you like to provide a project name and version to use?");
             if (customDetails) {
-                propertySourceBuilder.setPropertyFromQuestion(DetectProperties.DETECT_PROJECT_NAME.getProperty(), "What is the project name?");
-                propertySourceBuilder.setPropertyFromQuestion(DetectProperties.DETECT_PROJECT_VERSION_NAME.getProperty(), "What is the project version?");
+                propertySourceBuilder.setPropertyFromQuestion(DETECT_PROJECT_NAME.getProperty(), "What is the project name?");
+                propertySourceBuilder.setPropertyFromQuestion(DETECT_PROJECT_VERSION_NAME.getProperty(), "What is the project version?");
             }
         } else {
-            propertySourceBuilder.setProperty(DetectProperties.BLACKDUCK_OFFLINE_MODE.getProperty(), "true");
+            propertySourceBuilder.setProperty(BLACKDUCK_OFFLINE_MODE.getProperty(), "true");
         }
 
         Boolean scan = writer.askYesOrNo("Would you like run a CLI scan?");
@@ -58,7 +63,7 @@ public class InteractiveModeDecisionTree implements DecisionTree {
             CliDecisionBranch cliDecisionBranch = new CliDecisionBranch(connectToHub);
             cliDecisionBranch.traverse(propertySourceBuilder, writer);
         } else {
-            propertySourceBuilder.setProperty(DetectProperties.DETECT_TOOLS_EXCLUDED.getProperty(), "SIGNATURE_SCAN");
+            propertySourceBuilder.setProperty(DETECT_TOOLS_EXCLUDED.getProperty(), "SIGNATURE_SCAN");
         }
 
         writer.println("Interactive Mode Successful!");
