@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
@@ -53,18 +54,23 @@ public abstract class Detectable {
      * Perform project information discovery and try not to throw an exception. Instead return a discovery built with an exception.
      */
     public Discovery discover(final ExtractionEnvironment extractionEnvironment) {
-        final Extraction extraction = extract(extractionEnvironment);
-        if (extraction.isSuccess()) {
-            return new Discovery.Builder().success(extraction).build();
-        } else {
-            return new Discovery.Builder().failure("The extraction was not a success.").build();
+        try {
+            final Extraction extraction = extract(extractionEnvironment);
+            if (extraction.isSuccess()) {
+                return new Discovery.Builder().success(extraction).build();
+            } else {
+                return new Discovery.Builder().failure("The extraction was not a success.").build();
+            }
+        } catch (ExecutableFailedException e) {
+            return new Discovery.Builder().failure("The extraction was not a success. An executable returned a non-zero exit code.").build();
         }
+
     }
 
     /*
      * Perform the extraction and try not to throw an exception. Instead return an extraction built with an exception.
      */
-    public abstract Extraction extract(ExtractionEnvironment extractionEnvironment);
+    public abstract Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException;
 
     public List<File> getFoundRelevantFiles() {
         return relevantFiles;

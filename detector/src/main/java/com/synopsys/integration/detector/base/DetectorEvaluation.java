@@ -26,15 +26,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Discovery;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detector.evaluation.SearchEnvironment;
 import com.synopsys.integration.detector.result.DetectorResult;
-import com.synopsys.integration.detector.result.FailedDetectorResult;
-import com.synopsys.integration.detector.result.PassedDetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class DetectorEvaluation {
@@ -167,22 +169,30 @@ public class DetectorEvaluation {
         return DetectorStatusType.FAILURE;
     }
 
-    public Class getResultClass() {
+    @Nullable
+    public DetectorStatusCode getStatusCode() {
+        Class resultClass = null;
         if (!isSearchable()) {
-            return searchable.getResultClass();
+            resultClass = searchable.getResultClass();
+        } else if (!isApplicable()) {
+            resultClass = applicable.getResultClass();
+        } else if (!isExtractable()) {
+            resultClass = extractable.getResultClass();
         }
-        if (!isApplicable()) {
-            return applicable.getResultClass();
+        if (resultClass != null) {
+            return DetectorResultStatusCodeLookup.standardLookup.getStatusCode(resultClass);
+        } else if (!extraction.isSuccess()) {
+            if (extraction.getError() instanceof ExecutableFailedException) {
+                return DetectorStatusCode.EXECUTABLE_FAILED;
+            } else {
+                return DetectorStatusCode.EXTRACTION_FAILED;
+            }
+        } else {
+            return DetectorStatusCode.PASSED;
         }
-        if (!isExtractable()) {
-            return extractable.getResultClass();
-        }
-        if (extraction.getResult() != Extraction.ExtractionResultType.SUCCESS) {
-            return FailedDetectorResult.class; // TODO (IDETECT-2189)
-        }
-        return PassedDetectorResult.class;
     }
 
+    @NotNull
     public String getStatusReason() {
         if (!isSearchable()) {
             return searchable.getDescription();
@@ -194,7 +204,18 @@ public class DetectorEvaluation {
             return extractable.getDescription();
         }
         if (extraction.getResult() != Extraction.ExtractionResultType.SUCCESS) {
-            return "See logs for further explanation"; // TODO (IDETECT-2189)
+            if (extraction.getError() instanceof ExecutableFailedException) {
+                ExecutableFailedException failedException = (ExecutableFailedException) extraction.getError();
+                if (failedException.getExecutableOutput() != null && failedException.getExecutableOutput().getReturnCode() != 0) {
+                    return "Failed to execute command, returned non-zero: " + failedException.getExecutable().getExecutableDescription();
+                } else if (failedException.getExecutableException() != null) {
+                    return "Failed to execute command, " + failedException.getExecutableException().getMessage() + " : " + failedException.getExecutable().getExecutableDescription();
+                } else {
+                    return "Failed to execute command, unknown reason: " + failedException.getExecutable().getExecutableDescription();
+                }
+            } else {
+                return "See logs for further explanation";
+            }
         }
         return "Passed";
     }
@@ -268,9 +289,5 @@ public class DetectorEvaluation {
 
     public void setFallbackFrom(final DetectorEvaluation fallbackFrom) {
         this.fallbackFrom = fallbackFrom;
-    }
-
-    public enum DetectorStatusType {
-        SUCCESS, FAILURE, DEFERRED
     }
 }

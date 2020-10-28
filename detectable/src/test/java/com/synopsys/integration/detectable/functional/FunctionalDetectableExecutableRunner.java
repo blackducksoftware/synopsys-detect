@@ -32,6 +32,7 @@ import java.util.Map;
 import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
@@ -117,4 +118,12 @@ public class FunctionalDetectableExecutableRunner implements DetectableExecutabl
         return executableOutput;
     }
 
+    @Override
+    public @NotNull ExecutableOutput executeSuccessfully(final Executable executable) throws ExecutableFailedException {
+        ExecutableOutput output = execute(executable);
+        if (output.getReturnCode() != 0)
+            throw new ExecutableFailedException(executable, output);
+
+        return output;
+    }
 }

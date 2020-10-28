@@ -115,8 +115,7 @@ public class FormattedOutputManager {
         detectorOutput.extracted = evaluation.wasExtractionSuccessful();
         detectorOutput.discoverable = evaluation.wasDiscoverySuccessful();
         detectorOutput.status = evaluation.getStatus().name();
-        DetectorResultClassStatusCodeMap detectorResultClassStatusCodeMap = new DetectorResultClassStatusCodeMap();
-        detectorOutput.statusCode = detectorResultClassStatusCodeMap.getStatusCode(evaluation.getResultClass());
+        detectorOutput.statusCode = evaluation.getStatusCode();
         detectorOutput.statusReason = evaluation.getStatusReason();
 
         if (evaluation.getDiscovery() != null) {

@@ -68,7 +68,7 @@ public class MavenPomDetectableTest extends DetectableFunctionalTest {
             "11063 [main] [INFO] |     \\- org.powermock:powermock-api-support:jar:1.6.6:test"
 
         );
-        addExecutableOutput(mavenDependencyTreeOutput, "maven", "test", "dependency:tree", "-T1");
+        addExecutableOutput(mavenDependencyTreeOutput, new File("maven").getAbsolutePath(), "test", "dependency:tree", "-T1");
     }
 
     @NotNull

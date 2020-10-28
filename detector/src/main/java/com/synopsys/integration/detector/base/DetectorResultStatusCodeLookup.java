@@ -20,12 +20,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.report.output;
+package com.synopsys.integration.detector.base;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.synopsys.integration.detect.configuration.enumeration.DetectorStatusCode;
+import org.jetbrains.annotations.Nullable;
+
 import com.synopsys.integration.detectable.detectable.result.CargoLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExcludedDetectableResult;
@@ -35,6 +36,7 @@ import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetecta
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.GoPkgLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.MaxDepthExceededDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NotNestableDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NotSelfNestableDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFoundDetectableResult;
@@ -52,11 +54,13 @@ import com.synopsys.integration.detector.result.NotSelfNestableDetectorResult;
 import com.synopsys.integration.detector.result.PassedDetectorResult;
 import com.synopsys.integration.detector.result.YieldedDetectorResult;
 
-public class DetectorResultClassStatusCodeMap {
+public class DetectorResultStatusCodeLookup {
+
+    public static DetectorResultStatusCodeLookup standardLookup = new DetectorResultStatusCodeLookup();
 
     private Map<Class, DetectorStatusCode> resultClassesToStatusCodes;
 
-    public DetectorResultClassStatusCodeMap() {
+    private DetectorResultStatusCodeLookup() {
         this.resultClassesToStatusCodes = populateMap();
     }
 
@@ -77,6 +81,7 @@ public class DetectorResultClassStatusCodeMap {
         map.put(GoPkgLockfileNotFoundDetectableResult.class, DetectorStatusCode.GO_PKG_LOCKFILE_NOT_FOUND);
         map.put(InspectorNotFoundDetectableResult.class, DetectorStatusCode.INSPECTOR_NOT_FOUND);
         map.put(MaxDepthExceededDetectorResult.class, DetectorStatusCode.MAX_DEPTH_EXCEEDED);
+        map.put(MaxDepthExceededDetectableResult.class, DetectorStatusCode.MAX_DEPTH_EXCEEDED);
         map.put(NotNestableDetectorResult.class, DetectorStatusCode.NOT_NESTABLE);
         map.put(NotNestableDetectableResult.class, DetectorStatusCode.NOT_NESTABLE);
         map.put(NotSelfNestableDetectorResult.class, DetectorStatusCode.NOT_SELF_NESTABLE);
@@ -92,11 +97,8 @@ public class DetectorResultClassStatusCodeMap {
         return map;
     }
 
-    public Map<Class, DetectorStatusCode> getMap() {
-        return resultClassesToStatusCodes;
-    }
-
+    @Nullable
     public DetectorStatusCode getStatusCode(Class resultClass) {
-        return resultClassesToStatusCodes.get(resultClass);
+        return resultClassesToStatusCodes.getOrDefault(resultClass, null);
     }
 }

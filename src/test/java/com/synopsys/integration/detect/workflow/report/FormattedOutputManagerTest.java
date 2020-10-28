@@ -20,9 +20,9 @@ import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
+import com.synopsys.integration.detector.base.DetectorStatusCode;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.result.DetectorResult;
-import com.synopsys.integration.detect.configuration.enumeration.DetectorStatusCode;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
 public class FormattedOutputManagerTest {
@@ -59,7 +59,7 @@ public class FormattedOutputManagerTest {
         FormattedOutput formattedOutput = formattedOutputManager.createFormattedOutput(detectInfo);
         FormattedDetectorOutput detectorOutput = formattedOutput.detectors.get(0);
 
-        Assertions.assertEquals( "FAILURE", detectorOutput.status);
+        Assertions.assertEquals("FAILURE", detectorOutput.status);
         Assertions.assertEquals(DetectorStatusCode.EXECUTABLE_NOT_FOUND, detectorOutput.statusCode);
         Assertions.assertEquals("No go executable was found.", detectorOutput.statusReason);
     }

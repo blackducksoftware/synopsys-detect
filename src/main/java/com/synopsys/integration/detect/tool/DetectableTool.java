@@ -49,6 +49,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExceptionDetectableResult;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
@@ -111,7 +112,12 @@ public class DetectableTool {
         logger.debug("Extractable passed.");
 
         final ExtractionEnvironment extractionEnvironment = extractionEnvironmentProvider.createExtractionEnvironment(name);
-        final Extraction extraction = detectable.extract(extractionEnvironment);
+        Extraction extraction;
+        try {
+            extraction = detectable.extract(extractionEnvironment);
+        } catch (ExecutableFailedException e) {
+            extraction = Extraction.fromFailedExecutable(e);
+        }
 
         if (!extraction.isSuccess()) {
             logger.error("Extraction was not success.");
