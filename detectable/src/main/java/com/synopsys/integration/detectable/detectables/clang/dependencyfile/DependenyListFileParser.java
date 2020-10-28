@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,9 +65,11 @@ public class DependenyListFileParser {
         final String[] deps = depsListString.split("\\s+");
         final List<String> depsList = new ArrayList<>(deps.length);
         for (final String includeFile : deps) {
-            final String canonicalIncludeFile = toCanonical(includeFile);
-            logger.trace(String.format("\t%s", canonicalIncludeFile));
-            depsList.add(canonicalIncludeFile);
+            if (StringUtils.isNotBlank(includeFile)) {
+                final String canonicalIncludeFile = toCanonical(includeFile);
+                logger.trace(String.format("\t%s", canonicalIncludeFile));
+                depsList.add(canonicalIncludeFile);
+            }
         }
         return depsList;
     }
