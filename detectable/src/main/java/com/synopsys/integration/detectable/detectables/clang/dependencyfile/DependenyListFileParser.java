@@ -66,9 +66,7 @@ public class DependenyListFileParser {
         final List<String> depsList = new ArrayList<>(deps.length);
         for (final String includeFile : deps) {
             if (StringUtils.isNotBlank(includeFile)) {
-                final String canonicalIncludeFile = toCanonical(includeFile);
-                logger.trace(String.format("\t%s", canonicalIncludeFile));
-                depsList.add(canonicalIncludeFile);
+                depsList.add(toCanonical(includeFile));
             }
         }
         return depsList;
