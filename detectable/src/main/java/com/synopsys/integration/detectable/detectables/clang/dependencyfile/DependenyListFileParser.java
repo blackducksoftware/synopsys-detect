@@ -23,8 +23,9 @@
 package com.synopsys.integration.detectable.detectables.clang.dependencyfile;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -61,9 +62,25 @@ public class DependenyListFileParser {
         logger.trace(String.format("dependencies, backslashes removed: %s", depsListString));
 
         final String[] deps = depsListString.split("\\s+");
+        final List<String> depsList = new ArrayList<>(deps.length);
         for (final String includeFile : deps) {
-            logger.trace(String.format("\t%s", includeFile));
+            final String canonicalIncludeFile = toCanonical(includeFile);
+            logger.trace(String.format("\t%s", canonicalIncludeFile));
+            depsList.add(canonicalIncludeFile);
         }
-        return Arrays.asList(deps);
+        return depsList;
+    }
+
+    private String toCanonical(final String rawPath) {
+        final File targetFile = new File(rawPath);
+        final String canonicalPath;
+        try {
+            canonicalPath = targetFile.getCanonicalPath();
+        } catch (final IOException e) {
+            logger.warn(String.format("Unable to convert %s to canonical path", rawPath));
+            return rawPath;
+        }
+        logger.trace(String.format("Canonicalized %s to %s", rawPath, canonicalPath));
+        return canonicalPath;
     }
 }
