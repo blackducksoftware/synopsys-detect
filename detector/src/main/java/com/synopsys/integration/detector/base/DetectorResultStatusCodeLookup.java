@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detector
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
