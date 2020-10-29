@@ -17,16 +17,16 @@ public class DependencyListFileParserTest {
 
     @Test
     @ExtendWith(TempDirectory.class)
-    public void testSimple(@TempDirectory.TempDir final Path tempOutputDirectory) throws IOException {
-        final File baseDir = tempOutputDirectory.toFile();
-        final File sourceFile = new File(baseDir, "src/test/resources/detectables/functional/clang/src/process.c");
-        final File includeFile1 = new File(baseDir, "src/test/resources/detectables/functional/clang/include/stdc-predef.h");
-        final File includeFile2 = new File(baseDir, "src/test/resources/detectables/functional/clang/include/assert.h");
-        final String fileContents = String.format("dependencies: %s \\\n %s %s\\\n",
+    public void testSimple(@TempDirectory.TempDir Path tempOutputDirectory) throws IOException {
+        File baseDir = tempOutputDirectory.toFile();
+        File sourceFile = new File(baseDir, "src/test/resources/detectables/functional/clang/src/process.c");
+        File includeFile1 = new File(baseDir, "src/test/resources/detectables/functional/clang/include/stdc-predef.h");
+        File includeFile2 = new File(baseDir, "src/test/resources/detectables/functional/clang/include/assert.h");
+        String fileContents = String.format("dependencies: %s \\\n %s %s\\\n",
             sourceFile.getAbsolutePath(), includeFile1.getAbsolutePath(), includeFile2.getAbsolutePath());
 
-        final DependenyListFileParser parser = new DependenyListFileParser();
-        final List<String> deps = parser.parseDepsMk(fileContents);
+        DependenyListFileParser parser = new DependenyListFileParser();
+        List<String> deps = parser.parseDepsMk(fileContents);
 
         assertTrue(deps.contains(sourceFile.toPath().normalize().toString()));
         assertTrue(deps.contains(includeFile1.toPath().normalize().toString()));
@@ -35,17 +35,17 @@ public class DependencyListFileParserTest {
 
     @Test
     @ExtendWith(TempDirectory.class)
-    public void testNonCanonical(@TempDirectory.TempDir final Path tempOutputDirectory) throws IOException {
-        final File baseDir = tempOutputDirectory.toFile();
-        final File sourceFile = new File(baseDir, "src/test/resources/detectables/functional/clang/src/process.c");
-        final File includeFile1 = new File(baseDir, "src/test/resources/detectables/functional/clang/include/stdc-predef.h");
-        final File includeFile2 = new File(baseDir, "src/test/resources/../../test/resources/detectables/functional/clang/include/assert.h");
-        final String fileContents = String.format("dependencies: %s \\\n %s %s\\\n",
+    public void testNonCanonical(@TempDirectory.TempDir Path tempOutputDirectory) throws IOException {
+        File baseDir = tempOutputDirectory.toFile();
+        File sourceFile = new File(baseDir, "src/test/resources/detectables/functional/clang/src/process.c");
+        File includeFile1 = new File(baseDir, "src/test/resources/detectables/functional/clang/include/stdc-predef.h");
+        File includeFile2 = new File(baseDir, "src/test/resources/../../test/resources/detectables/functional/clang/include/assert.h");
+        String fileContents = String.format("dependencies: %s \\\n %s %s\\\n",
             sourceFile.getAbsolutePath(), includeFile1.getAbsolutePath(), includeFile2.getAbsolutePath());
 
-        final DependenyListFileParser parser = new DependenyListFileParser();
-        final List<String> deps = parser.parseDepsMk(fileContents);
-        
+        DependenyListFileParser parser = new DependenyListFileParser();
+        List<String> deps = parser.parseDepsMk(fileContents);
+
         assertTrue(deps.contains(sourceFile.toPath().normalize().toString()));
         assertTrue(deps.contains(includeFile1.toPath().normalize().toString()));
         assertTrue(deps.contains(includeFile2.toPath().normalize().toString()));
