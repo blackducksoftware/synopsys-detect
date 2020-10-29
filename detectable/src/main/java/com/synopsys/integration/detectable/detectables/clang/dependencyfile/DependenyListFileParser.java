@@ -25,9 +25,10 @@ package com.synopsys.integration.detectable.detectables.clang.dependencyfile;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -63,12 +64,10 @@ public class DependenyListFileParser {
         logger.trace(String.format("dependencies, backslashes removed: %s", depsListString));
 
         final String[] deps = depsListString.split("\\s+");
-        final List<String> depsList = new ArrayList<>(deps.length);
-        for (final String includeFile : deps) {
-            if (StringUtils.isNotBlank(includeFile)) {
-                depsList.add(normalize(includeFile));
-            }
-        }
+        final List<String> depsList = Arrays.stream(deps)
+                                          .filter(StringUtils::isNotBlank)
+                                          .map(this::normalize)
+                                          .collect(Collectors.toList());
         return depsList;
     }
 
