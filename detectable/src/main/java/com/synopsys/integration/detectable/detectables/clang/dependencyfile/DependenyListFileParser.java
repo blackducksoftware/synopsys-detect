@@ -23,8 +23,8 @@
 package com.synopsys.integration.detectable.detectables.clang.dependencyfile;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -66,22 +66,15 @@ public class DependenyListFileParser {
         final List<String> depsList = new ArrayList<>(deps.length);
         for (final String includeFile : deps) {
             if (StringUtils.isNotBlank(includeFile)) {
-                depsList.add(toCanonical(includeFile));
+                depsList.add(normalize(includeFile));
             }
         }
         return depsList;
     }
 
-    private String toCanonical(final String rawPath) {
-        final File targetFile = new File(rawPath);
-        final String canonicalPath;
-        try {
-            canonicalPath = targetFile.getCanonicalPath();
-        } catch (final IOException e) {
-            logger.warn(String.format("Unable to convert %s to canonical path", rawPath));
-            return rawPath;
-        }
-        logger.trace(String.format("Canonicalized %s to %s", rawPath, canonicalPath));
-        return canonicalPath;
+    private String normalize(final String rawPath) {
+        final String normalizedPath = Paths.get(rawPath).normalize().toString();
+        logger.trace(String.format("Normalized %s to %s", rawPath, normalizedPath));
+        return normalizedPath;
     }
 }
