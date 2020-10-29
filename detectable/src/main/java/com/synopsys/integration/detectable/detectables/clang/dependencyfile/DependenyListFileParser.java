@@ -24,11 +24,14 @@ package com.synopsys.integration.detectable.detectables.clang.dependencyfile;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,9 +64,16 @@ public class DependenyListFileParser {
         logger.trace(String.format("dependencies, backslashes removed: %s", depsListString));
 
         final String[] deps = depsListString.split("\\s+");
-        for (final String includeFile : deps) {
-            logger.trace(String.format("\t%s", includeFile));
-        }
-        return Arrays.asList(deps);
+        final List<String> depsList = Arrays.stream(deps)
+                                          .filter(StringUtils::isNotBlank)
+                                          .map(this::normalize)
+                                          .collect(Collectors.toList());
+        return depsList;
+    }
+
+    private String normalize(final String rawPath) {
+        final String normalizedPath = Paths.get(rawPath).normalize().toString();
+        logger.trace(String.format("Normalized %s to %s", rawPath, normalizedPath));
+        return normalizedPath;
     }
 }
