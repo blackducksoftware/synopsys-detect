@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
 
-import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependenyListFileParser;
+import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyListFileParser;
 
 public class DependencyListFileParserTest {
 
@@ -25,7 +25,7 @@ public class DependencyListFileParserTest {
         String fileContents = String.format("dependencies: %s \\\n %s %s\\\n",
             sourceFile.getAbsolutePath(), includeFile1.getAbsolutePath(), includeFile2.getAbsolutePath());
 
-        DependenyListFileParser parser = new DependenyListFileParser();
+        DependencyListFileParser parser = new DependencyListFileParser();
         List<String> deps = parser.parseDepsMk(fileContents);
 
         assertTrue(deps.contains(sourceFile.toPath().normalize().toString()));
@@ -43,7 +43,7 @@ public class DependencyListFileParserTest {
         String fileContents = String.format("dependencies: %s \\\n %s %s\\\n",
             sourceFile.getAbsolutePath(), includeFile1.getAbsolutePath(), includeFile2.getAbsolutePath());
 
-        DependenyListFileParser parser = new DependenyListFileParser();
+        DependencyListFileParser parser = new DependencyListFileParser();
         List<String> deps = parser.parseDepsMk(fileContents);
 
         assertTrue(deps.contains(sourceFile.toPath().normalize().toString()));
