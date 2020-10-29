@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -41,7 +42,6 @@ import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.skyscreamer.jsonassert.JSONParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +59,7 @@ import com.synopsys.integration.log.Slf4jIntLogger;
 import freemarker.template.TemplateException;
 
 public final class BatteryTest {
+    private static final String ENVIRONMENT_VARIABLE_BATTERY_TESTS_PATH = "BATTERY_TESTS_PATH";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final List<BatteryExecutable> executables = new ArrayList<>();
 
@@ -93,6 +94,13 @@ public final class BatteryTest {
     public BatteryTest(String testName, String resourcePrefix) {
         this.testName = testName;
         this.resourcePrefix = resourcePrefix;
+    }
+
+    private void checkAndCleanupBatteryDirectory() {
+        if (StringUtils.isBlank(System.getenv().get(ENVIRONMENT_VARIABLE_BATTERY_TESTS_PATH))) {
+            logger.info("The environment variable {} not set cleaning up battery directory.", ENVIRONMENT_VARIABLE_BATTERY_TESTS_PATH);
+            FileUtils.deleteQuietly(batteryDirectory);
+        }
     }
 
     private List<String> prefixResources(String... resourceFiles) {
@@ -181,6 +189,8 @@ public final class BatteryTest {
             assertBdio();
         } catch (ExecutableRunnerException | IOException | JSONException | TemplateException | BdioCompare.BdioCompareException e) {
             Assertions.assertNull(e, "An exception should not have been thrown!");
+        } finally {
+            checkAndCleanupBatteryDirectory();
         }
     }
 
@@ -317,9 +327,17 @@ public final class BatteryTest {
     }
 
     private void checkEnvironment() {
-        Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get("BATTERY_TESTS_PATH")), "The environment variable BATTERY_TESTS_PATH must be set.");
-
-        batteryDirectory = new File(System.getenv("BATTERY_TESTS_PATH"));
+        if (StringUtils.isNotBlank(System.getenv().get(ENVIRONMENT_VARIABLE_BATTERY_TESTS_PATH))) {
+            logger.info("The environment variable BATTERY_TESTS_PATH is set.");
+            batteryDirectory = new File(System.getenv(ENVIRONMENT_VARIABLE_BATTERY_TESTS_PATH));
+        } else {
+            try {
+                batteryDirectory = Files.createTempDirectory("detect_battery").toFile();
+            } catch (IOException ex) {
+                logger.error("Error initializing battery directory.", ex);
+            }
+        }
+        logger.info("Battery test directory: {}", batteryDirectory.getAbsolutePath());
         if (!batteryDirectory.exists()) {
             Assertions.assertTrue(batteryDirectory.mkdirs(), String.format("Failed to create battery directory at: %s", batteryDirectory.getAbsolutePath()));
         }
