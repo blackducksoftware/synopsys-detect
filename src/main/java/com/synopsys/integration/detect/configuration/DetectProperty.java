@@ -53,9 +53,9 @@ public class DetectProperty<T extends Property> {
         this.property = property;
     }
 
-    public DetectProperty<T> setInfo(String name, String fromVersion) {
+    public DetectProperty<T> setInfo(String name, DetectPropertyFromVersion fromVersion) {
         this.name = name;
-        this.fromVersion = fromVersion;
+        this.fromVersion = fromVersion.getVersion();
         return this;
     }
 

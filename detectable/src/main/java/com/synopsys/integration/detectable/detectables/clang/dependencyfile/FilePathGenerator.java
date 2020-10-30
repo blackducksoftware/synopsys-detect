@@ -52,18 +52,18 @@ public class FilePathGenerator {
     private static final Random random = new Random();
     private final DetectableExecutableRunner executableRunner;
     private final CompileCommandParser compileCommandParser;
-    private final DependenyListFileParser dependenyListFileParser;
+    private final DependencyListFileParser dependenyListFileParser;
 
-    public FilePathGenerator(final DetectableExecutableRunner executableRunner, final CompileCommandParser compileCommandParser, final DependenyListFileParser dependenyListFileParser) {
+    public FilePathGenerator(DetectableExecutableRunner executableRunner, CompileCommandParser compileCommandParser, DependencyListFileParser dependenyListFileParser) {
         this.executableRunner = executableRunner;
         this.compileCommandParser = compileCommandParser;
         this.dependenyListFileParser = dependenyListFileParser;
     }
 
-    public List<String> fromCompileCommand(final File workingDir, final CompileCommand compileCommand, final boolean cleanup) {
-        final Optional<File> depsMkFile = generateDepsMkFile(workingDir, compileCommand);
+    public List<String> fromCompileCommand(File workingDir, CompileCommand compileCommand, boolean cleanup) {
+        Optional<File> depsMkFile = generateDepsMkFile(workingDir, compileCommand);
         if (depsMkFile.isPresent()) {
-            final List<String> files = dependenyListFileParser.parseDepsMk(depsMkFile.get());
+            List<String> files = dependenyListFileParser.parseDepsMk(depsMkFile.get());
             if (cleanup) {
                 FileUtils.deleteQuietly(depsMkFile.get());
             }
@@ -73,31 +73,31 @@ public class FilePathGenerator {
         }
     }
 
-    private Optional<File> generateDepsMkFile(final File workingDir, final CompileCommand compileCommand) {
-        final String depsMkFilename = deriveDependenciesListFilename(compileCommand);
-        final File depsMkFile = new File(workingDir, depsMkFilename);
-        final Map<String, String> optionOverrides = new HashMap<>(1);
+    private Optional<File> generateDepsMkFile(File workingDir, CompileCommand compileCommand) {
+        String depsMkFilename = deriveDependenciesListFilename(compileCommand);
+        File depsMkFile = new File(workingDir, depsMkFilename);
+        Map<String, String> optionOverrides = new HashMap<>(1);
         optionOverrides.put(COMPILER_OUTPUT_FILE_OPTION, REPLACEMENT_OUTPUT_FILENAME);
         try {
-            final List<String> command = compileCommandParser.parseCommand(compileCommand, optionOverrides);
+            List<String> command = compileCommandParser.parseCommand(compileCommand, optionOverrides);
             command.addAll(Arrays.asList("-M", "-MF", depsMkFile.getAbsolutePath()));
-            final Executable executable = Executable.create(new File(compileCommand.directory), Collections.emptyMap(), command);
+            Executable executable = Executable.create(new File(compileCommand.directory), Collections.emptyMap(), command);
             executableRunner.execute(executable);
-        } catch (final ExecutableRunnerException e) {
+        } catch (ExecutableRunnerException e) {
             logger.debug(String.format("Error generating dependencies file for command '%s': %s", compileCommand.command, e.getMessage()));
             return Optional.empty();
         }
         return Optional.of(depsMkFile);
     }
 
-    private String deriveDependenciesListFilename(final CompileCommand compileCommand) {
-        final int randomInt = random.nextInt(1000);
-        final String sourceFilenameBase = getFilenameBase(compileCommand.file);
+    private String deriveDependenciesListFilename(CompileCommand compileCommand) {
+        int randomInt = random.nextInt(1000);
+        String sourceFilenameBase = getFilenameBase(compileCommand.file);
         return String.format(DEPS_MK_FILENAME_PATTERN, sourceFilenameBase, randomInt);
     }
 
-    private String getFilenameBase(final String filePathString) {
-        final Path filePath = new File(filePathString).toPath();
+    private String getFilenameBase(String filePathString) {
+        Path filePath = new File(filePathString).toPath();
         return FilenameUtils.removeExtension(filePath.getFileName().toString());
     }
 }

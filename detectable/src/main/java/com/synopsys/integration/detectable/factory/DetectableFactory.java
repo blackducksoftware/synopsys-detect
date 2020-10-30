@@ -78,7 +78,7 @@ import com.synopsys.integration.detectable.detectables.clang.compilecommand.Comp
 import com.synopsys.integration.detectable.detectables.clang.compilecommand.CompileCommandParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.ClangPackageDetailsTransformer;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyFileDetailGenerator;
-import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependenyListFileParser;
+import com.synopsys.integration.detectable.detectables.clang.dependencyfile.DependencyListFileParser;
 import com.synopsys.integration.detectable.detectables.clang.dependencyfile.FilePathGenerator;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerFactory;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfoFactory;
@@ -408,8 +408,8 @@ public class DetectableFactory {
         return new FilePathGenerator(executableRunner, compileCommandParser(), dependenyListFileParser());
     }
 
-    private DependenyListFileParser dependenyListFileParser() {
-        return new DependenyListFileParser();
+    private DependencyListFileParser dependenyListFileParser() {
+        return new DependencyListFileParser();
     }
 
     private DependencyFileDetailGenerator dependencyFileDetailGenerator() {
