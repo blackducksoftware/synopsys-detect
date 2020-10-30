@@ -24,14 +24,11 @@ package com.synopsys.integration.detectable.detectables.gradle.inspection.model;
 
 import java.util.Optional;
 
-import org.jetbrains.annotations.Nullable;
-
 public class GradleTreeNode {
-    public GradleTreeNode(NodeType nodeType, int level, @Nullable GradleGav gav, @Nullable ReplacedGradleGav replacedGav, @Nullable String projectName) {
+    public GradleTreeNode(final NodeType nodeType, final int level, final GradleGav gav, final String projectName) {
         this.nodeType = nodeType;
         this.level = level;
         this.gav = gav;
-        this.replacedGav = replacedGav;
         this.projectName = projectName;
     }
 
@@ -41,10 +38,6 @@ public class GradleTreeNode {
 
     public Optional<GradleGav> getGav() {
         return Optional.ofNullable(gav);
-    }
-
-    public Optional<ReplacedGradleGav> getReplacedGav() {
-        return Optional.ofNullable(replacedGav);
     }
 
     public Optional<String> getProjectName() {
@@ -64,22 +57,17 @@ public class GradleTreeNode {
     private final NodeType nodeType;
     private final int level;
     private final GradleGav gav;
-    private final ReplacedGradleGav replacedGav;
     private final String projectName;
 
-    public static GradleTreeNode newProject(int level, String projectName) {
-        return new GradleTreeNode(NodeType.PROJECT, level, null, null, projectName);
+    public static GradleTreeNode newProject(final int level) {
+        return new GradleTreeNode(NodeType.PROJECT, level, null, "");
     }
 
-    public static GradleTreeNode newGav(int level, GradleGav resolvedGav) {
-        return new GradleTreeNode(NodeType.GAV, level, resolvedGav, null, null);
+    public static GradleTreeNode newGav(final int level, final String artifact, final String version, final String name) {
+        return new GradleTreeNode(NodeType.GAV, level, new GradleGav(artifact, version, name), null);
     }
 
-    public static GradleTreeNode newGavWithReplacement(int level, GradleGav resolvedGav, ReplacedGradleGav replacedGav) {
-        return new GradleTreeNode(NodeType.GAV, level, resolvedGav, replacedGav, null);
-    }
-
-    public static GradleTreeNode newUnknown(int level) {
-        return new GradleTreeNode(NodeType.UNKOWN, level, null, null, null);
+    public static GradleTreeNode newUnknown(final int level) {
+        return new GradleTreeNode(NodeType.UNKOWN, level, null, null);
     }
 }

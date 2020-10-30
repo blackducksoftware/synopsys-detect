@@ -1,2 +1,0 @@
-compile - Dependencies for source set 'main' (deprecated, use 'implementation' instead).
-\--- org.glassfish.jaxb:jaxb-runtime:2.3.1
