@@ -1415,13 +1415,15 @@ for Synopsys Detect as previously described.</p>
 whose names match the Synopsys Detect proxy property names.
 Configuring detect.ps1 for your proxy involves
 setting those environment variables before running detect.ps1.
+Note that typically, the PowerShell script is run from a Command window, using "powershell script.ps1" so these should be run in that Command window.
 For example:</p>
-<pre><code>${Env:blackduck.proxy.host} = $ProxyHost
-${Env:blackduck.proxy.port} = $ProxyPort
-${Env:blackduck.proxy.password} = $ProxyUsername
-${Env:blackduck.proxy.username} = $ProxyPassword
+<pre><code>set BLACKDUCK_PROXY_HOST=$ProxyHost
+set BLACKDUCK_PROXY_PORT=$ProxyPort
+set BLACKDUCK_PROXY_PASSWORD=$ProxyUsername
+set BLACKDUCK_PROXY_USERNAME=$ProxyPassword
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 </code></pre>
+<p>For additional information on these properties, including alternate key formats, see the <a href="../advanced/script-configuration/">Shell script configuration reference</a>.</p>
 <p>When using detect.ps1 to execute Synopsys Detect, Synopsys Detect also receives the proxy details
 from these environment variables, so no additional configuration is required for Synopsys Detect.</p>
                 

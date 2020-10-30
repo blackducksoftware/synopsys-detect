@@ -1312,9 +1312,11 @@
 <p>In Bash, an environment variable is set as follows:</p>
 <pre><code>export ENV_VAR_NAME=value
 </code></pre>
-<p>In PowerShell, an environment variable is set as follows:</p>
-<pre><code>$Env:ENV_VAR_NAME = value
-</code></pre>
+<p>In Command or Batch, an environment variable is set as follows:
+    set ENV_VAR_NAME=value</p>
+<p>In PowerShell, an environment variable is set as follows:
+    $Env:ENV_VAR_NAME = value
+Note it is generally recommended to run the Detect PowerShell script from a Command line, not from within PowerShell itself.</p>
 <table>
 <thead>
 <tr>
@@ -1409,8 +1411,34 @@
 <td>1</td>
 <td>Set this variable to 1 to download, but not run, the Synopsys Detect .jar file. The PowerShell script does not currently support this setting.</td>
 </tr>
+<tr>
+<td>BLACKDUCK_PROXY_HOST (PowerShell only)</td>
+<td>Proxy host to use to download detect</td>
+<td></td>
+<td>When set, the PowerShell script will use the configured proxy information to download detect. Supports both environment variable styles (see below).</td>
+</tr>
+<tr>
+<td>BLACKDUCK_PROXY_PORT (PowerShell only)</td>
+<td>Proxy port to use to download detect</td>
+<td></td>
+<td>When set, the PowerShell script will use the configured proxy information to download detect. Supports both environment variable styles (see below).</td>
+</tr>
+<tr>
+<td>BLACKDUCK_PROXY_USERNAME (PowerShell only)</td>
+<td>Proxy username to use to download detect</td>
+<td></td>
+<td>When set, the PowerShell script will use the configured proxy information to download detect. Supports both environment variable styles (see below).</td>
+</tr>
+<tr>
+<td>BLACKDUCK_PROXY_PASSWORD (PowerShell only)</td>
+<td>Proxy password to use to download detect</td>
+<td></td>
+<td>When set, the PowerShell script will use the configured proxy information to download detect. Supports both environment variable styles (see below).</td>
+</tr>
 </tbody>
 </table>
+<p>Note that proxy environment variables can be provided to the PowerShell script in both 'Bash' and 'PowerShell' formats. For example a given property name can be specified as "PROPERTY_NAME" or "property.name".
+Note that the proxy can only be provided to the PowerShell script as environment variables.</p>
                 
                   
                 
