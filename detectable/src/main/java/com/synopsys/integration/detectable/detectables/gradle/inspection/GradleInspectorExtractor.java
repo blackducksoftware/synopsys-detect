@@ -33,9 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleReport;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.DependencyReplacementResolver;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReplacementDiscoverer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;

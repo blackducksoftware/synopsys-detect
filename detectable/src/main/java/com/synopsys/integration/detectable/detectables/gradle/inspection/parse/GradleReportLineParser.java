@@ -71,7 +71,7 @@ public class GradleReportLineParser {
         return line;
     }
 
-    private GradleGavPieces parseGav(String line) {
+    private List<String> parseGav(String line) {
         String cleanedOutput = StringUtils.trimToEmpty(line);
         cleanedOutput = cleanedOutput.substring(cleanedOutput.indexOf(COMPONENT_PREFIX) + COMPONENT_PREFIX.length());
 

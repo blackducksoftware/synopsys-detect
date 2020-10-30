@@ -50,7 +50,7 @@ public class GradleReportTransformer {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public CodeLocation transform(GradleReport gradleReport, DependencyReplacementResolver dependencyReplacementResolver) {
+    public CodeLocation transform(GradleReport gradleReport) {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
 
         for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
