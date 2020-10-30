@@ -10,6 +10,7 @@
 * (IDETECT-2291) Reverted replacement data support. Detect will report exactly what gradle reports. This reverts IDETECT-2038, IDETECT-2203.
 * (IDETECT-2241) Resolved an issue where platform dependenct cocoapods will throw an exception when they are not installed.
 
+
 ## Version 6.6.0
 ### Changed features
 * The Docker Inspector now works on Windows 10 Enterprise.
