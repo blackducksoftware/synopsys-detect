@@ -36,12 +36,15 @@ import com.synopsys.integration.log.SilentIntLogger;
 import com.synopsys.integration.rest.client.ConnectionResult;
 
 public class BlackDuckConnectionDecisionBranch implements DecisionTree {
+    public static final String SHOULD_TEST_CONNECTION = "Would you like to test the Black Duck connection now?";
+    public static final String SHOULD_RETRY_CONNECTION = "Would you like to retry entering Black Duck information?";
     private final List<PropertySource> existingPropertySources;
 
     public BlackDuckConnectionDecisionBranch(List<PropertySource> existingPropertySources) {
         this.existingPropertySources = existingPropertySources;
     }
 
+    @Override
     public void traverse(InteractivePropertySourceBuilder propertySourceBuilder, InteractiveWriter writer) {
         boolean connected = false;
         boolean skipConnectionTest = false;
@@ -50,7 +53,7 @@ public class BlackDuckConnectionDecisionBranch implements DecisionTree {
         while (!connected && !skipConnectionTest) {
             blackDuckServerDecisionBranch.traverse(propertySourceBuilder, writer);
 
-            Boolean testHub = writer.askYesOrNo("Would you like to test the Black Duck connection now?");
+            Boolean testHub = writer.askYesOrNo(SHOULD_TEST_CONNECTION);
             if (testHub) {
                 ConnectionResult connectionAttempt = null;
                 try {
@@ -76,7 +79,7 @@ public class BlackDuckConnectionDecisionBranch implements DecisionTree {
                     if (connectionAttempt != null) {
                         writer.println(connectionAttempt.getFailureMessage().orElse("Unknown reason."));
                     }
-                    skipConnectionTest = !writer.askYesOrNo("Would you like to retry entering Black Duck information?");
+                    skipConnectionTest = !writer.askYesOrNo(SHOULD_RETRY_CONNECTION);
                 }
             } else {
                 skipConnectionTest = true;

@@ -31,8 +31,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.synopsys.integration.configuration.source.PropertySource;
+import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 
 public class InteractiveModeDecisionTree implements DecisionTree {
+    public static final String SHOULD_SAVE_TO_APPLICATION_PROPERTIES = "Would you like to save these settings to an application.properties file?";
+    public static final String SHOULD_SAVE_TO_PROFILE = "Would you like save these settings to a profile?";
+    public static final String SET_PROFILE_NAME = "What is the profile name?";
+    public static final String SHOULD_CONNECT_TO_BLACKDUCK = "Would you like to connect to a Black Duck server?";
+    public static final String SHOULD_SET_PROJECT_NAME_VERSON = "Would you like to provide a project name and version to use?";
+    public static final String SET_PROJECT_NAME = "What is the project name?";
+    public static final String SET_PROJECT_VERSION = "What is the project version?";
+    public static final String SHOULD_RUN_CLI_SCAN = "Would you like to run a CLI scan?";
+
     private final List<PropertySource> existingPropertySources;
 
     public InteractiveModeDecisionTree(List<PropertySource> existingPropertySources) {
@@ -44,36 +54,36 @@ public class InteractiveModeDecisionTree implements DecisionTree {
         writer.println("***** Welcome to Detect Interactive Mode *****");
         writer.println();
 
-        Boolean connectToHub = writer.askYesOrNo("Would you like to connect to a Black Duck server?");
+        Boolean connectToHub = writer.askYesOrNo(SHOULD_CONNECT_TO_BLACKDUCK);
         if (connectToHub) {
             BlackDuckConnectionDecisionBranch blackDuckConnectionDecisionBranch = new BlackDuckConnectionDecisionBranch(existingPropertySources);
             blackDuckConnectionDecisionBranch.traverse(propertySourceBuilder, writer);
 
-            Boolean customDetails = writer.askYesOrNo("Would you like to provide a project name and version to use?");
+            Boolean customDetails = writer.askYesOrNo(SHOULD_SET_PROJECT_NAME_VERSON);
             if (customDetails) {
-                propertySourceBuilder.setPropertyFromQuestion(DETECT_PROJECT_NAME.getProperty(), "What is the project name?");
-                propertySourceBuilder.setPropertyFromQuestion(DETECT_PROJECT_VERSION_NAME.getProperty(), "What is the project version?");
+                propertySourceBuilder.setPropertyFromQuestion(DETECT_PROJECT_NAME.getProperty(), SET_PROJECT_NAME);
+                propertySourceBuilder.setPropertyFromQuestion(DETECT_PROJECT_VERSION_NAME.getProperty(), SET_PROJECT_VERSION);
             }
         } else {
-            propertySourceBuilder.setProperty(BLACKDUCK_OFFLINE_MODE.getProperty(), "true");
+            propertySourceBuilder.setProperty(BLACKDUCK_OFFLINE_MODE.getProperty(), Boolean.TRUE.toString());
         }
 
-        Boolean scan = writer.askYesOrNo("Would you like run a CLI scan?");
+        Boolean scan = writer.askYesOrNo(SHOULD_RUN_CLI_SCAN);
         if (scan) {
             CliDecisionBranch cliDecisionBranch = new CliDecisionBranch(connectToHub);
             cliDecisionBranch.traverse(propertySourceBuilder, writer);
         } else {
-            propertySourceBuilder.setProperty(DETECT_TOOLS_EXCLUDED.getProperty(), "SIGNATURE_SCAN");
+            propertySourceBuilder.setProperty(DETECT_TOOLS_EXCLUDED.getProperty(), DetectTool.SIGNATURE_SCAN.name());
         }
 
         writer.println("Interactive Mode Successful!");
         writer.println();
 
-        Boolean saveSettings = writer.askYesOrNo("Would you like to save these settings to an application.properties file?");
+        Boolean saveSettings = writer.askYesOrNo(SHOULD_SAVE_TO_APPLICATION_PROPERTIES);
         if (saveSettings) {
-            Boolean customName = writer.askYesOrNo("Would you like save these settings to a profile?");
+            Boolean customName = writer.askYesOrNo(SHOULD_SAVE_TO_PROFILE);
             if (customName) {
-                String profileName = writer.askQuestion("What is the profile name?");
+                String profileName = writer.askQuestion(SET_PROFILE_NAME);
 
                 propertySourceBuilder.saveToApplicationProperties(profileName);
 
