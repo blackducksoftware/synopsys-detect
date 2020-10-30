@@ -85,8 +85,8 @@ public class GradleReportTransformer {
             }
 
             final GradleGav gav = currentNode.getGav().get(); // TODO: Why are we not doing an isPresent() check here?
-            final ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getArtifact(), gav.getVersion());
-            final Dependency currentDependency = new Dependency(gav.getArtifact(), gav.getVersion(), externalId);
+            final ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getGroup(), gav.getVersion());
+            final Dependency currentDependency = new Dependency(gav.getGroup(), gav.getVersion(), externalId);
 
             if (history.isEmpty()) {
                 graph.addChildToRoot(currentDependency);

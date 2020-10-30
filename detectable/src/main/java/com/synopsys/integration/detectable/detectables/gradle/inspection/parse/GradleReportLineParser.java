@@ -53,10 +53,10 @@ public class GradleReportLineParser {
                 logger.trace(String.format("The line can not be reasonably split in to the necessary parts: %s", line)); //All project lines: +--- org.springframework.boot:spring-boot-starter-activemq (n)
                 return GradleTreeNode.newUnknown(level);
             } else {
-                final String group = gav.get(0);
-                final String artifact = gav.get(1);
+                final String name = gav.get(0);
+                final String group = gav.get(1);
                 final String version = gav.get(2);
-                return GradleTreeNode.newGav(level, artifact, version, group);
+                return GradleTreeNode.newGav(level, name, group, version);
             }
         }
     }

@@ -26,12 +26,12 @@ import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
 
 public class GradleGav implements GradleGavId {
     private final String name;
-    private final String artifact;
+    private final String group;
     private final String version;
 
-    public GradleGav(String name, String artifact, String version) {
+    public GradleGav(String name, String group, String version) {
         this.name = name;
-        this.artifact = artifact;
+        this.group = group;
         this.version = version;
     }
 
@@ -39,8 +39,8 @@ public class GradleGav implements GradleGavId {
         return name;
     }
 
-    public String getArtifact() {
-        return artifact;
+    public String getGroup() {
+        return group;
     }
 
     public String getVersion() {
@@ -49,6 +49,6 @@ public class GradleGav implements GradleGavId {
 
     @Override
     public StringDependencyId toDependencyId() {
-        return new StringDependencyId(String.format("%s:%s:%s", getName(), getArtifact(), getVersion()));
+        return new StringDependencyId(String.format("%s:%s:%s", getName(), getGroup(), getVersion()));
     }
 }

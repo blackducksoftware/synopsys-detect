@@ -63,8 +63,8 @@ public class GradleTreeNode {
         return new GradleTreeNode(NodeType.PROJECT, level, null, "");
     }
 
-    public static GradleTreeNode newGav(final int level, final String artifact, final String version, final String name) {
-        return new GradleTreeNode(NodeType.GAV, level, new GradleGav(artifact, version, name), null);
+    public static GradleTreeNode newGav(final int level, final String name, final String group, final String version) {
+        return new GradleTreeNode(NodeType.GAV, level, new GradleGav(name, group, version), null);
     }
 
     public static GradleTreeNode newUnknown(final int level) {
