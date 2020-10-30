@@ -52,7 +52,7 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
     public static final String SIGNATURE_SCAN_CODE_LOCATION_SUFFIX = "/synopsys-detect-junit/happy-path scan";
     public static final String DETECTABLE_CODE_LOCATION_SUFFIX = "/detectable/com.synopsys.integration/detectable/%s gradle/bom";
     public static final String SYNOPSYS_DETECT_CODE_LOCATION_SUFFIX = "/com.synopsys.integration/synopsys-detect/%s gradle/bom";
-    public static final String DETECT_CONFIGURATION_CODE_LOCATION_SUFFIX = "/configuration/com.synopsys.integration/configuration/%s gradle/bom";
+    public static final String COMMON_CODE_LOCATION_SUFFIX = "/common/com.synopsys.integration/common/%s gradle/bom";
     public static final String CONFIGURATION_CODE_LOCATION_SUFFIX = "/configuration/com.synopsys.integration/configuration/%s gradle/bom";
     public static final String DETECTOR_CODE_LOCATION_SUFFIX = "/detector/com.synopsys.integration/detector/%s gradle/bom";
     public static final String POLARIS_CODE_LOCATION_SUFFIX = "/polaris/com.synopsys.integration/polaris/%s gradle/bom";
@@ -65,16 +65,16 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
         if (null != projectToDelete) {
             try {
                 blackDuckService.delete(projectToDelete);
-            } catch (final IntegrationException e) {
+            } catch (IntegrationException e) {
                 e.printStackTrace();
             }
         }
 
         if (null != codeLocationsToDelete) {
-            for (final CodeLocationView toDelete : codeLocationsToDelete) {
+            for (CodeLocationView toDelete : codeLocationsToDelete) {
                 try {
                     blackDuckService.delete(toDelete);
-                } catch (final IntegrationException e) {
+                } catch (IntegrationException e) {
                     e.printStackTrace();
                 }
             }
@@ -83,37 +83,37 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
 
     @Test
     public void testBomCreatedInBlackDuck() throws Exception {
-        final Path buildGradle = Paths.get("build.gradle");
-        final Optional<String> versionLine = lines(buildGradle).map(String::trim).filter(line -> line.startsWith("version")).findFirst();
-        final String version = StringUtils.substringBetween(versionLine.get(), "'");
+        Path buildGradle = Paths.get("build.gradle");
+        Optional<String> versionLine = lines(buildGradle).map(String::trim).filter(line -> line.startsWith("version")).findFirst();
+        String version = StringUtils.substringBetween(versionLine.get(), "'");
 
-        final List<String> codeLocationNameSuffixesToCheck = new ArrayList<>();
+        List<String> codeLocationNameSuffixesToCheck = new ArrayList<>();
         codeLocationNameSuffixesToCheck.add(SIGNATURE_SCAN_CODE_LOCATION_SUFFIX);
         codeLocationNameSuffixesToCheck.add(String.format(DETECTABLE_CODE_LOCATION_SUFFIX, version));
         codeLocationNameSuffixesToCheck.add(String.format(SYNOPSYS_DETECT_CODE_LOCATION_SUFFIX, version));
-        codeLocationNameSuffixesToCheck.add(String.format(DETECT_CONFIGURATION_CODE_LOCATION_SUFFIX, version));
+        codeLocationNameSuffixesToCheck.add(String.format(COMMON_CODE_LOCATION_SUFFIX, version));
         codeLocationNameSuffixesToCheck.add(String.format(CONFIGURATION_CODE_LOCATION_SUFFIX, version));
         codeLocationNameSuffixesToCheck.add(String.format(DETECTOR_CODE_LOCATION_SUFFIX, version));
         codeLocationNameSuffixesToCheck.add(String.format(POLARIS_CODE_LOCATION_SUFFIX, version));
 
         final String projectName = "synopsys-detect-junit";
         final String projectVersionName = "happy-path";
-        final ProjectVersionWrapper projectVersionWrapper = assertProjectVersionReady(projectName, projectVersionName);
+        ProjectVersionWrapper projectVersionWrapper = assertProjectVersionReady(projectName, projectVersionName);
         projectToDelete = projectVersionWrapper.getProjectView();
 
-        final List<String> detectArgs = getInitialArgs(projectName, projectVersionName);
+        List<String> detectArgs = getInitialArgs(projectName, projectVersionName);
         detectArgs.add("--detect.wait.for.results=true");
         Application.main(detectArgs.toArray(new String[0]));
 
         codeLocationsToDelete = blackDuckService.getAllResponses(projectVersionWrapper.getProjectVersionView(), ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
-        final Set<String> createdCodeLocationNames = codeLocationsToDelete.stream().map(CodeLocationView::getName).collect(Collectors.toSet());
+        Set<String> createdCodeLocationNames = codeLocationsToDelete.stream().map(CodeLocationView::getName).collect(Collectors.toSet());
         createdCodeLocationNames.forEach(System.out::println);
         codeLocationNameSuffixesToCheck.forEach(System.out::println);
 
         assertEquals(codeLocationNameSuffixesToCheck.size(), createdCodeLocationNames.size());
         int matches = 0;
-        for (final String suffix : codeLocationNameSuffixesToCheck) {
-            for (final String codeLocationName : createdCodeLocationNames) {
+        for (String suffix : codeLocationNameSuffixesToCheck) {
+            for (String codeLocationName : createdCodeLocationNames) {
                 if (codeLocationName.endsWith(suffix)) {
                     matches++;
                     break;
@@ -122,9 +122,9 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
         }
         assertEquals(codeLocationNameSuffixesToCheck.size(), matches);
 
-        final List<ProjectVersionComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(projectVersionWrapper.getProjectVersionView());
+        List<ProjectVersionComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(projectVersionWrapper.getProjectVersionView());
         // We used to look for blackduck-common, but we adopt new versions faster than KB can pick them up
-        final Optional<ProjectVersionComponentView> blackDuckCommonComponent = bomComponents.stream().filter(ProjectVersionComponentView -> "jackson-core".equals(ProjectVersionComponentView.getComponentName())).findFirst();
+        Optional<ProjectVersionComponentView> blackDuckCommonComponent = bomComponents.stream().filter(ProjectVersionComponentView -> "jackson-core".equals(ProjectVersionComponentView.getComponentName())).findFirst();
         assertTrue(blackDuckCommonComponent.isPresent());
     }
 
