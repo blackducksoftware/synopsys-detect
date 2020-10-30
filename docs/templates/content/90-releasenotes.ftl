@@ -7,6 +7,8 @@
 * (IDETECT-2213) Resolved an issue that could cause the CLANG detector to omit some components on Debian-based Linux systems.
 * (IDETECT-2284) Resolved an issue that could cause the CLANG detector to omit some components for projects using the clang/clang++ compiler when source files reference include files using non-canonical paths.
 * (IDETECT-2216) Resolved an issue that caused non-ASCII characters in binary scan metadata (filename, code location name, project name, and version name) to be converted to '?' characters when submitted to Black Duck.
+* (IDETECT-2291) Reverted replacement data support. Detect will report exactly what gradle reports. This reverts IDETECT-2038, IDETECT-2203.
+* (IDETECT-2241) Resolved an issue where platform dependenct cocoapods will throw an exception when they are not installed.
 
 ## Version 6.6.0
 ### Changed features
