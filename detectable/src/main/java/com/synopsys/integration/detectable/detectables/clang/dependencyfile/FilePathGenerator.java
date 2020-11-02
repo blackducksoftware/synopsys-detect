@@ -52,18 +52,18 @@ public class FilePathGenerator {
     private static final Random random = new Random();
     private final DetectableExecutableRunner executableRunner;
     private final CompileCommandParser compileCommandParser;
-    private final DependencyListFileParser dependenyListFileParser;
+    private final DependencyListFileParser dependencyListFileParser;
 
-    public FilePathGenerator(DetectableExecutableRunner executableRunner, CompileCommandParser compileCommandParser, DependencyListFileParser dependenyListFileParser) {
+    public FilePathGenerator(DetectableExecutableRunner executableRunner, CompileCommandParser compileCommandParser, DependencyListFileParser dependencyListFileParser) {
         this.executableRunner = executableRunner;
         this.compileCommandParser = compileCommandParser;
-        this.dependenyListFileParser = dependenyListFileParser;
+        this.dependencyListFileParser = dependencyListFileParser;
     }
 
     public List<String> fromCompileCommand(File workingDir, CompileCommand compileCommand, boolean cleanup) {
         Optional<File> depsMkFile = generateDepsMkFile(workingDir, compileCommand);
         if (depsMkFile.isPresent()) {
-            List<String> files = dependenyListFileParser.parseDepsMk(depsMkFile.get());
+            List<String> files = dependencyListFileParser.parseDepsMk(depsMkFile.get());
             if (cleanup) {
                 FileUtils.deleteQuietly(depsMkFile.get());
             }

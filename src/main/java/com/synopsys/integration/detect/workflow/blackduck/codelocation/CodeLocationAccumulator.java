@@ -36,7 +36,7 @@ public class CodeLocationAccumulator {
     private final List<CodeLocationCreationData<? extends CodeLocationBatchOutput<? extends CodeLocationOutput>>> waitableCodeLocations = new ArrayList<>();
     private final Set<String> nonWaitableCodeLocations = new HashSet<>();
 
-    public void addWaitableCodeLocation(CodeLocationCreationData<? extends CodeLocationBatchOutput<? extends CodeLocationOutput>> creationData) {
+    public <O extends CodeLocationOutput, T extends CodeLocationBatchOutput<O>> void addWaitableCodeLocation(CodeLocationCreationData<T> creationData) {
         waitableCodeLocations.add(creationData);
     }
 

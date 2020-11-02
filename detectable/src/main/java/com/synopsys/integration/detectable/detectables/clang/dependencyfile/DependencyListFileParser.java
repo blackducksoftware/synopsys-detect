@@ -28,6 +28,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -37,6 +38,13 @@ import org.slf4j.LoggerFactory;
 
 public class DependencyListFileParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private Pattern newLinePattern;
+    private Pattern backslashPattern;
+
+    public DependencyListFileParser() {
+        this.newLinePattern = Pattern.compile("\n");
+        this.backslashPattern = Pattern.compile("\\\\");
+    }
 
     public List<String> parseDepsMk(File depsMkFile) {
         try {
@@ -56,18 +64,17 @@ public class DependencyListFileParser {
         }
         String depsListString = depsMkTextParts[1];
         logger.trace(String.format("dependencies: %s", depsListString));
-
-        depsListString = depsListString.replaceAll("\n", " ");
+        depsListString = newLinePattern.matcher(depsListString).replaceAll(" ");
         logger.trace(String.format("dependencies, newlines removed: %s", depsListString));
 
-        depsListString = depsListString.replaceAll("\\\\", " ");
+        depsListString = backslashPattern.matcher(depsListString).replaceAll(" ");
         logger.trace(String.format("dependencies, backslashes removed: %s", depsListString));
 
         String[] deps = depsListString.split("\\s+");
         List<String> depsList = Arrays.stream(deps)
-                                          .filter(StringUtils::isNotBlank)
-                                          .map(this::normalize)
-                                          .collect(Collectors.toList());
+                                    .filter(StringUtils::isNotBlank)
+                                    .map(this::normalize)
+                                    .collect(Collectors.toList());
         return depsList;
     }
 
