@@ -27,6 +27,11 @@ import static com.synopsys.integration.detect.configuration.DetectProperties.DET
 import static com.synopsys.integration.detect.configuration.DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH;
 
 public class CliDecisionBranch implements DecisionTree {
+    public static final String SHOULD_UPLOAD_TO_BLACK_DUCK = "Would you like to upload CLI scan results to the Black Duck server?";
+    public static final String SHOULD_USE_CUSTOM_SCANNER = "Would you like to provide a custom scanner?";
+    public static final String SHOULD_DOWNLOAD_CUSTOM_SCANNER = "Would you like to download the custom scanner?";
+    public static final String SET_SCANNER_HOST_URL = "What is the scanner host url?";
+    public static final String SET_SCANNER_OFFLINE_LOCAL_PATH = "What is the location of your offline scanner?";
     private final boolean connectedToBlackDuck;
 
     public CliDecisionBranch(boolean connectedToBlackDuck) {
@@ -36,19 +41,19 @@ public class CliDecisionBranch implements DecisionTree {
     @Override
     public void traverse(InteractivePropertySourceBuilder propertySourceBuilder, InteractiveWriter writer) {
         if (connectedToBlackDuck) {
-            Boolean upload = writer.askYesOrNo("Would you like to upload CLI scan results to the Black Duck server?");
+            Boolean upload = writer.askYesOrNo(SHOULD_UPLOAD_TO_BLACK_DUCK);
             if (!upload) {
-                propertySourceBuilder.setProperty(DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN.getProperty(), "true");
+                propertySourceBuilder.setProperty(DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN, Boolean.TRUE.toString());
             }
         }
 
-        Boolean customScanner = writer.askYesOrNo("Would you like to provide a custom scanner?");
+        Boolean customScanner = writer.askYesOrNo(SHOULD_USE_CUSTOM_SCANNER);
         if (customScanner) {
-            Boolean downloadCustomScanner = writer.askYesOrNo("Would you like to download the custom scanner?");
+            Boolean downloadCustomScanner = writer.askYesOrNo(SHOULD_DOWNLOAD_CUSTOM_SCANNER);
             if (downloadCustomScanner) {
-                propertySourceBuilder.setPropertyFromQuestion(DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL.getProperty(), "What is the scanner host url?");
+                propertySourceBuilder.setPropertyFromQuestion(DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL, SET_SCANNER_HOST_URL);
             } else {
-                propertySourceBuilder.setPropertyFromQuestion(DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH.getProperty(), "What is the location of your offline scanner?");
+                propertySourceBuilder.setPropertyFromQuestion(DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH, SET_SCANNER_OFFLINE_LOCAL_PATH);
             }
         }
     }

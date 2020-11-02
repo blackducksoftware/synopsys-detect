@@ -61,11 +61,11 @@ public class InteractiveModeDecisionTree implements DecisionTree {
 
             Boolean customDetails = writer.askYesOrNo(SHOULD_SET_PROJECT_NAME_VERSON);
             if (customDetails) {
-                propertySourceBuilder.setPropertyFromQuestion(DETECT_PROJECT_NAME.getProperty(), SET_PROJECT_NAME);
-                propertySourceBuilder.setPropertyFromQuestion(DETECT_PROJECT_VERSION_NAME.getProperty(), SET_PROJECT_VERSION);
+                propertySourceBuilder.setPropertyFromQuestion(DETECT_PROJECT_NAME, SET_PROJECT_NAME);
+                propertySourceBuilder.setPropertyFromQuestion(DETECT_PROJECT_VERSION_NAME, SET_PROJECT_VERSION);
             }
         } else {
-            propertySourceBuilder.setProperty(BLACKDUCK_OFFLINE_MODE.getProperty(), Boolean.TRUE.toString());
+            propertySourceBuilder.setProperty(BLACKDUCK_OFFLINE_MODE, Boolean.TRUE.toString());
         }
 
         Boolean scan = writer.askYesOrNo(SHOULD_RUN_CLI_SCAN);
@@ -73,7 +73,7 @@ public class InteractiveModeDecisionTree implements DecisionTree {
             CliDecisionBranch cliDecisionBranch = new CliDecisionBranch(connectToHub);
             cliDecisionBranch.traverse(propertySourceBuilder, writer);
         } else {
-            propertySourceBuilder.setProperty(DETECT_TOOLS_EXCLUDED.getProperty(), DetectTool.SIGNATURE_SCAN.name());
+            propertySourceBuilder.setProperty(DETECT_TOOLS_EXCLUDED, DetectTool.SIGNATURE_SCAN.name());
         }
 
         writer.println("Interactive Mode Successful!");

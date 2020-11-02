@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.source.MapPropertySource;
+import com.synopsys.integration.detect.configuration.DetectProperty;
 
 public class InteractivePropertySourceBuilder {
     private final Map<Property, InteractiveOption> propertyToOptionMap = new HashMap<>();
@@ -43,24 +44,25 @@ public class InteractivePropertySourceBuilder {
         this.interactiveWriter = interactiveWriter;
     }
 
-    public void setPropertyFromQuestion(Property detectProperty, String question) {
+    public <T extends Property> void setPropertyFromQuestion(DetectProperty<T> detectProperty, String question) {
         String value = interactiveWriter.askQuestion(question);
         setProperty(detectProperty, value);
     }
 
-    public void setPropertyFromSecretQuestion(Property detectProperty, String question) {
+    public <T extends Property> void setPropertyFromSecretQuestion(DetectProperty<T> detectProperty, String question) {
         String value = interactiveWriter.askSecretQuestion(question);
         setProperty(detectProperty, value);
     }
 
-    public void setProperty(Property detectProperty, String value) {
+    public <T extends Property> void setProperty(DetectProperty<T> detectProperty, String value) {
         InteractiveOption option;
-        if (!propertyToOptionMap.containsKey(detectProperty)) {
+        T propertyToSet = detectProperty.getProperty();
+        if (!propertyToOptionMap.containsKey(propertyToSet)) {
             option = new InteractiveOption();
-            option.setDetectProperty(detectProperty);
-            propertyToOptionMap.put(detectProperty, option);
+            option.setDetectProperty(propertyToSet);
+            propertyToOptionMap.put(propertyToSet, option);
         } else {
-            option = propertyToOptionMap.get(detectProperty);
+            option = propertyToOptionMap.get(propertyToSet);
         }
         option.setInteractiveValue(value);
     }
@@ -87,13 +89,10 @@ public class InteractivePropertySourceBuilder {
         }
 
         File applicationsProperty = new File(directory, fileName);
-        OutputStream outputStream;
-        try {
-            outputStream = new FileOutputStream(applicationsProperty);
+        try (OutputStream outputStream = new FileOutputStream(applicationsProperty)) {
             properties.store(outputStream, "Automatically generated during Detect Interactive Mode.");
             interactiveWriter.println();
             interactiveWriter.println("Successfully saved to '" + applicationsProperty.getCanonicalPath() + "'!");
-            outputStream.close();
         } catch (IOException e) {
             interactiveWriter.println(e);
             interactiveWriter.println("Failed to write to application.properties.");
