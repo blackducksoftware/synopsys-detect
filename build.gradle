@@ -18,7 +18,7 @@ buildscript {
 }
 
 group = 'com.synopsys.integration'
-version = '6.7.0-SNAPSHOT'
+version = '6.8.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -154,7 +154,7 @@ task createAirGapZip(type: JavaExec) {
     classpath = files(createArtifactName())
     classpath += sourceSets.main.runtimeClasspath
     main = 'com.synopsys.integration.detect.Application'
-    args = ["--detect.output.path=${buildDir}/libs/", '-z']
+    args = ['--detect.gradle.path=gradlew', "--detect.output.path=${buildDir}/libs/", '-z']
     standardOutput = new ByteArrayOutputStream()
     doLast {
         createAirGapZip.ext.airGapPath = parseAirGapZipPath(standardOutput)

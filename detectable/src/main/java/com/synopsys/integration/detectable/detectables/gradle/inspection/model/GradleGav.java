@@ -25,22 +25,22 @@ package com.synopsys.integration.detectable.detectables.gradle.inspection.model;
 import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
 
 public class GradleGav implements GradleGavId {
+    private final String name;
     private final String group;
-    private final String artifact;
     private final String version;
 
-    public GradleGav(String group, String artifact, String version) {
+    public GradleGav(String name, String group, String version) {
+        this.name = name;
         this.group = group;
-        this.artifact = artifact;
         this.version = version;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getGroup() {
         return group;
-    }
-
-    public String getArtifact() {
-        return artifact;
     }
 
     public String getVersion() {
@@ -49,6 +49,6 @@ public class GradleGav implements GradleGavId {
 
     @Override
     public StringDependencyId toDependencyId() {
-        return new StringDependencyId(String.format("%s:%s:%s", getGroup(), getArtifact(), getVersion()));
+        return new StringDependencyId(String.format("%s:%s:%s", getName(), getGroup(), getVersion()));
     }
 }

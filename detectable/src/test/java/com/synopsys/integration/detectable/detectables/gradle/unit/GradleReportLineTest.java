@@ -112,8 +112,8 @@ public class GradleReportLineTest {
         GradleReportLineParser gradleReportLineParser = new GradleReportLineParser();
         GradleTreeNode gradleTreeNode = gradleReportLineParser.parseLine(line);
         GradleGav gav = gradleTreeNode.getGav().get();
-        ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getGroup(), gav.getArtifact(), gav.getVersion());
-        Dependency dependency = new Dependency(gav.getArtifact(), gav.getVersion(), externalId);
+        ExternalId externalId = externalIdFactory.createMavenExternalId(gav.getName(), gav.getGroup(), gav.getVersion());
+        Dependency dependency = new Dependency(gav.getGroup(), gav.getVersion(), externalId);
 
         Assertions.assertEquals(expectedResults[0], dependency.getName());
         Assertions.assertEquals(expectedResults[1], dependency.getVersion());

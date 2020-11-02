@@ -24,7 +24,6 @@ package com.synopsys.integration.detectable.detectables.gradle.functional;
 
 import java.io.File;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONException;
@@ -40,10 +39,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleConfiguration;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleReport;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.DependencyReplacementResolver;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReplacementDiscoverer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
@@ -52,86 +48,36 @@ import com.synopsys.integration.detectable.util.graph.MavenGraphAssert;
 @UnitTest
 public class GradleReportParserFunctionalTest {
 
-    // IDETECT-2038
-    @Test
-    void overriddenDependencyTest() {
-        GradleReportParser gradleReportParser = new GradleReportParser();
-        DependencyReplacementResolver rootDependencyReplacementResolver = DependencyReplacementResolver.createRootResolver();
-
-        File gradleReportFile = FunctionalTestFiles.asFile("/gradle/overridden-dependency/test_dependencyGraph.txt");
-        Optional<GradleReport> rootGradleReport = gradleReportParser.parseReport(gradleReportFile);
-        Assertions.assertTrue(rootGradleReport.isPresent());
-        assertGradleReport(gradleReportFile, rootDependencyReplacementResolver, mavenGraphAssert -> {
-            mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.3");
-            mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.2");
-            mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.1");
-        });
-
-        GradleReplacementDiscoverer gradleReplacementDiscoverer = new GradleReplacementDiscoverer();
-        GradleReport gradleReport = rootGradleReport.get();
-        for (GradleConfiguration configuration : gradleReport.getConfigurations()) {
-            gradleReplacementDiscoverer.populateFromTreeNodes(rootDependencyReplacementResolver, configuration.getChildren());
-        }
-
-        File fooGradleReportFile = FunctionalTestFiles.asFile("/gradle/overridden-dependency/foo_dependencyGraph.txt");
-        assertGradleReport(fooGradleReportFile, rootDependencyReplacementResolver, mavenGraphAssert -> {
-            mavenGraphAssert.hasDependency("org.glassfish.jaxb:jaxb-runtime:2.3.3");
-            mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.2");
-            mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.1");
-        });
-
-        File barGradleReportFile = FunctionalTestFiles.asFile("/gradle/overridden-dependency/bar_dependencyGraph.txt");
-        assertGradleReport(barGradleReportFile, rootDependencyReplacementResolver, mavenGraphAssert -> {
-            mavenGraphAssert.hasDependency("org.glassfish.jaxb:jaxb-runtime:2.3.3");
-            mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.2");
-            mavenGraphAssert.hasNoDependency("org.glassfish.jaxb:jaxb-runtime:2.3.1");
-        });
-    }
-
-    private void assertGradleReport(File gradleReportFile, DependencyReplacementResolver dependencyReplacementResolver, Consumer<MavenGraphAssert> graphAssertConsumer) {
-        GradleReportParser gradleReportParser = new GradleReportParser();
-        GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory());
-
-        Optional<GradleReport> gradleReport = gradleReportParser.parseReport(gradleReportFile);
-        Assertions.assertTrue(gradleReport.isPresent());
-        CodeLocation codeLocation = transformer.transform(gradleReport.get(), dependencyReplacementResolver);
-        Assertions.assertNotNull(codeLocation);
-        MavenGraphAssert graphAssert = new MavenGraphAssert(codeLocation.getDependencyGraph());
-
-        graphAssertConsumer.accept(graphAssert);
-    }
-
     @Test
     void extractCodeLocationTest() {
         Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS); //Does not work on windows due to path issues.
 
-        GradleReportParser gradleReportParser = new GradleReportParser();
-        Optional<GradleReport> gradleReport = gradleReportParser.parseReport(FunctionalTestFiles.asFile("/gradle/dependencyGraph.txt"));
+        final GradleReportParser gradleReportParser = new GradleReportParser();
+        final Optional<GradleReport> gradleReport = gradleReportParser.parseReport(FunctionalTestFiles.asFile("/gradle/dependencyGraph.txt"));
         Assertions.assertTrue(gradleReport.isPresent());
-        GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory());
-        DependencyReplacementResolver dependencyReplacementResolver = DependencyReplacementResolver.createRootResolver();
-        CodeLocation codeLocation = transformer.transform(gradleReport.get(), dependencyReplacementResolver);
+        final GradleReportTransformer transformer = new GradleReportTransformer(new ExternalIdFactory());
+        final CodeLocation codeLocation = transformer.transform(gradleReport.get());
         Assertions.assertNotNull(codeLocation);
 
         Assertions.assertEquals("hub-detect", gradleReport.get().getProjectName());
         Assertions.assertEquals("2.0.0-SNAPSHOT", gradleReport.get().getProjectVersionName());
 
-        String actual = new Gson().toJson(codeLocation);
+        final String actual = new Gson().toJson(codeLocation);
 
         try {
             JSONAssert.assertEquals(FunctionalTestFiles.asString("/gradle/dependencyGraph-expected.json"), actual, false);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Test
     void complexTest() {
-        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/parse-tests/complex_dependencyGraph.txt");
+        final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/parse-tests/complex_dependencyGraph.txt");
         Assertions.assertTrue(codeLocation.isPresent());
-        DependencyGraph graph = codeLocation.get().getDependencyGraph();
+        final DependencyGraph graph = codeLocation.get().getDependencyGraph();
 
-        MavenGraphAssert graphAssert = new MavenGraphAssert(graph);
+        final MavenGraphAssert graphAssert = new MavenGraphAssert(graph);
         graphAssert.hasDependency("non-project:with-nested:1.0.0");
         graphAssert.hasDependency("solo:component:4.12");
         graphAssert.hasDependency("some.group:child:2.2.2");
@@ -151,24 +97,23 @@ public class GradleReportParserFunctionalTest {
         graphAssert.hasRootDependency("some.group:parent:5.0.0");
         graphAssert.hasRootDependency("terminal:child:6.2.3");
 
-        ExternalId parent = graphAssert.hasDependency("some.group:parent:5.0.0");
-        ExternalId child = graphAssert.hasDependency("some.group:child:2.2.2");
+        final ExternalId parent = graphAssert.hasDependency("some.group:parent:5.0.0");
+        final ExternalId child = graphAssert.hasDependency("some.group:child:2.2.2");
         graphAssert.hasParentChildRelationship(parent, child);
     }
 
-    private Optional<CodeLocation> buildCodeLocation(String resource) {
-        File file = FunctionalTestFiles.asFile(resource);
-        GradleReportParser gradleReportParser = new GradleReportParser();
-        GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory());
-        DependencyReplacementResolver dependencyReplacementResolver = DependencyReplacementResolver.createRootResolver();
+    private Optional<CodeLocation> buildCodeLocation(final String resource) {
+        final File file = FunctionalTestFiles.asFile(resource);
+        final GradleReportParser gradleReportParser = new GradleReportParser();
+        final GradleReportTransformer gradleReportTransformer = new GradleReportTransformer(new ExternalIdFactory());
 
         return gradleReportParser.parseReport(file)
-                   .map(gradleReport -> gradleReportTransformer.transform(gradleReport, dependencyReplacementResolver));
+                   .map(gradleReportTransformer::transform);
     }
 
     @Test
     void testImplementationsGraph() {
-        Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/gradle_implementations_dependencyGraph.txt");
+        final Optional<CodeLocation> codeLocation = buildCodeLocation("/gradle/gradle_implementations_dependencyGraph.txt");
         Assertions.assertTrue(codeLocation.isPresent());
         System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(codeLocation.get()));
     }

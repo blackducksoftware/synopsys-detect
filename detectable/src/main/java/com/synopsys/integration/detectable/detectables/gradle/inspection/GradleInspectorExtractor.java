@@ -33,9 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.model.GradleReport;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.DependencyReplacementResolver;
-import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReplacementDiscoverer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
@@ -72,40 +69,29 @@ public class GradleInspectorExtractor {
                 throw new IntegrationException("The gradle inspector returned a non-zero exit code: " + gradleExecutableOutput.getReturnCode());
             }
 
-            List<CodeLocation> codeLocations = new ArrayList<>();
+            File rootProjectMetadataFile = fileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
+            List<File> reportFiles = fileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
 
+            List<CodeLocation> codeLocations = new ArrayList<>();
             String projectName = null;
             String projectVersion = null;
-            File rootProjectMetadataFile = fileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
-            if (rootProjectMetadataFile != null) {
-                Optional<NameVersion> projectNameVersion = gradleRootMetadataParser.parseRootProjectNameVersion(rootProjectMetadataFile);
-                if (projectNameVersion.isPresent()) {
-                    projectName = projectNameVersion.get().getName();
-                    projectVersion = projectNameVersion.get().getVersion();
-                }
-            } else {
-                logger.warn("Gradle inspector did not create a meta data report so no project version information was found.");
-            }
-
-            DependencyReplacementResolver rootReplacementResolver = DependencyReplacementResolver.createRootResolver();
-            GradleReplacementDiscoverer gradleReplacementDiscoverer = new GradleReplacementDiscoverer();
-            File rootReportFile = fileFinder.findFile(outputDirectory, String.format("%s_dependencyGraph.txt", projectName));
-
-            Optional.ofNullable(rootReportFile)
-                .map(gradleReportParser::parseReport)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(GradleReport::getConfigurations)
-                .ifPresent(configurations -> configurations.forEach(configuration -> gradleReplacementDiscoverer.populateFromTreeNodes(rootReplacementResolver, configuration.getChildren())));
-
-            List<File> reportFiles = fileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
             if (reportFiles != null) {
                 reportFiles.stream()
                     .map(gradleReportParser::parseReport)
                     .filter(Optional::isPresent)
                     .map(Optional::get)
-                    .map(report -> gradleReportTransformer.transform(report, rootReplacementResolver))
+                    .map(gradleReportTransformer::transform)
                     .forEach(codeLocations::add);
+
+                if (rootProjectMetadataFile != null) {
+                    Optional<NameVersion> projectNameVersion = gradleRootMetadataParser.parseRootProjectNameVersion(rootProjectMetadataFile);
+                    if (projectNameVersion.isPresent()) {
+                        projectName = projectNameVersion.get().getName();
+                        projectVersion = projectNameVersion.get().getVersion();
+                    }
+                } else {
+                    logger.warn("Gradle inspector did not create a meta data report so no project version information was found.");
+                }
             }
 
             return new Extraction.Builder()
