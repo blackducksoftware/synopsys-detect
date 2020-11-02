@@ -41,13 +41,16 @@ ${powershell_script_name} derives proxy details from environment variables
 whose names match the ${solution_name} proxy property names.
 Configuring ${powershell_script_name} for your proxy involves
 setting those environment variables before running ${powershell_script_name}.
+Note that typically, the PowerShell script is run from a Command window, using "powershell script.ps1" so these should be run in that Command window.
 For example:
 
-    ${r"${Env:blackduck.proxy.host}"} = $ProxyHost
-    ${r"${Env:blackduck.proxy.port}"} = $ProxyPort
-    ${r"${Env:blackduck.proxy.password}"} = $ProxyUsername
-    ${r"${Env:blackduck.proxy.username}"} = $ProxyPassword
+    ${r"set BLACKDUCK_PROXY_HOST"}=$ProxyHost
+    ${r"set BLACKDUCK_PROXY_PORT"}=$ProxyPort
+    ${r"set BLACKDUCK_PROXY_PASSWORD"}=$ProxyUsername
+    ${r"set BLACKDUCK_PROXY_USERNAME"}=$ProxyPassword
     powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+
+For additional information on these properties, including alternate key formats, see the [Shell script configuration reference](../advanced/script-configuration/).
 
 When using ${powershell_script_name} to execute ${solution_name}, ${solution_name} also receives the proxy details
 from these environment variables, so no additional configuration is required for ${solution_name}.

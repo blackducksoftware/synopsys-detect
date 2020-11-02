@@ -6,11 +6,12 @@ In Bash, an environment variable is set as follows:
 
     export ENV_VAR_NAME=value
 
+In Command or Batch, an environment variable is set as follows:
+    set ENV_VAR_NAME=value
+
 In PowerShell, an environment variable is set as follows:
-
     $Env:ENV_VAR_NAME = value
-
-
+Note it is generally recommended to run the Detect PowerShell script from a Command line, not from within PowerShell itself.
 
 | Variable             | Purpose                                             | Value           | Notes                                      |
 | -------------------- | --------------------------------------------------- | --------------- | ------------------------------------------ |
@@ -28,3 +29,10 @@ In PowerShell, an environment variable is set as follows:
 | DETECT_CURL_OPTS (Bash only) | Add the given options to any curl commands executed | curl command options (a string) | Use this variable to add options to the curl command used to download files such as the ${solution_name} .jar file. For example, you can use this variable to set proxy settings for curl. The PowerShell script does not support this as it does not use curl. To supply proxy information to the PowerShell you can simply set the ${solution_name} proxy settings as environment variables. |
 | DETECT_JAVA_OPTS (Bash only) | Add the given options to the java command | java command options (a string) | Use this variable to add options to the java command used to execute ${solution_name}. The PowerShell script does not currently support this setting. |
 | DETECT_DOWNLOAD_ONLY (Bash only) | Download the ${solution_name} .jar file, but do not run it | 1 | Set this variable to 1 to download, but not run, the ${solution_name} .jar file. The PowerShell script does not currently support this setting. |
+| BLACKDUCK_PROXY_HOST (PowerShell only) | Proxy host to use to download detect | | When set, the PowerShell script will use the configured proxy information to download detect. Supports both environment variable styles (see below). |
+| BLACKDUCK_PROXY_PORT (PowerShell only) | Proxy port to use to download detect | | When set, the PowerShell script will use the configured proxy information to download detect. Supports both environment variable styles (see below). |
+| BLACKDUCK_PROXY_USERNAME (PowerShell only) | Proxy username to use to download detect | | When set, the PowerShell script will use the configured proxy information to download detect. Supports both environment variable styles (see below). |
+| BLACKDUCK_PROXY_PASSWORD (PowerShell only) | Proxy password to use to download detect | | When set, the PowerShell script will use the configured proxy information to download detect. Supports both environment variable styles (see below). |
+
+Note that proxy environment variables can be provided to the PowerShell script in both 'Bash' and 'PowerShell' formats. For example a given property name can be specified as "PROPERTY_NAME" or "property.name".
+Note that the proxy can only be provided to the PowerShell script as environment variables.
