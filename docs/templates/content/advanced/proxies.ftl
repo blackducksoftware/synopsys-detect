@@ -2,9 +2,10 @@
 
 When running behind a proxy:
 
-1. The script (${bash_script_name} or ${powershell_script_name}) requires proxy details to do a version
+1. The one-liner cannot be used to download the scripts, they do not know about proxy. The scripts must be already downloaded.
+2. The script (${bash_script_name} or ${powershell_script_name}) requires proxy details to do a version
 check on, and/or download the ${solution_name} .jar file.
-1. ${solution_name}; in other words, the code in the .jar file, requires proxy details to download inspectors and
+3. ${solution_name}; in other words, the code in the .jar file, requires proxy details to download inspectors and
 connect to ${blackduck_product_name} and ${polaris_product_name}.
 
 ## Providing proxy details to ${solution_name}
@@ -48,14 +49,11 @@ For example:
     ${r"set BLACKDUCK_PROXY_PORT"}=$ProxyPort
     ${r"set BLACKDUCK_PROXY_PASSWORD"}=$ProxyUsername
     ${r"set BLACKDUCK_PROXY_USERNAME"}=$ProxyPassword
-    powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+    powershell "Import-Module FULL_PATH_TO_DOWNLOADED_SCRIPT/detect.ps1; detect"
 
 For additional information on these properties, including alternate key formats, see the [Shell script configuration reference](../advanced/script-configuration/).
 
 When using ${powershell_script_name} to execute ${solution_name}, ${solution_name} also receives the proxy details
 from these environment variables, so no additional configuration is required for ${solution_name}.
-
-
-
 
 
