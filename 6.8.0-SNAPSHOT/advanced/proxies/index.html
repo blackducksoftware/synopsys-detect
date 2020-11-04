@@ -1383,6 +1383,7 @@
                 <h1 id="running-behind-a-proxy">Running behind a proxy<a class="headerlink" href="#running-behind-a-proxy" title="Permanent link">#</a></h1>
 <p>When running behind a proxy:</p>
 <ol>
+<li>The one-liner cannot be used to download the scripts, they do not know about proxy. The scripts must be already downloaded.</li>
 <li>The script (detect.sh or detect.ps1) requires proxy details to do a version
 check on, and/or download the Synopsys Detect .jar file.</li>
 <li>Synopsys Detect; in other words, the code in the .jar file, requires proxy details to download inspectors and
@@ -1421,7 +1422,7 @@ For example:</p>
 set BLACKDUCK_PROXY_PORT=$ProxyPort
 set BLACKDUCK_PROXY_PASSWORD=$ProxyUsername
 set BLACKDUCK_PROXY_USERNAME=$ProxyPassword
-powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
+powershell "Import-Module FULL_PATH_TO_DOWNLOADED_SCRIPT/detect.ps1; detect"
 </code></pre>
 <p>For additional information on these properties, including alternate key formats, see the <a href="../advanced/script-configuration/">Shell script configuration reference</a>.</p>
 <p>When using detect.ps1 to execute Synopsys Detect, Synopsys Detect also receives the proxy details
