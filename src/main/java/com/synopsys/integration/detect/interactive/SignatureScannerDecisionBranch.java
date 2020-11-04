@@ -26,15 +26,15 @@ import static com.synopsys.integration.detect.configuration.DetectProperties.DET
 import static com.synopsys.integration.detect.configuration.DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL;
 import static com.synopsys.integration.detect.configuration.DetectProperties.DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH;
 
-public class CliDecisionBranch implements DecisionTree {
-    public static final String SHOULD_UPLOAD_TO_BLACK_DUCK = "Would you like to upload CLI scan results to the Black Duck server?";
-    public static final String SHOULD_USE_CUSTOM_SCANNER = "Would you like to provide a custom scanner?";
-    public static final String SHOULD_DOWNLOAD_CUSTOM_SCANNER = "Would you like to download the custom scanner?";
-    public static final String SET_SCANNER_HOST_URL = "What is the scanner host url?";
-    public static final String SET_SCANNER_OFFLINE_LOCAL_PATH = "What is the location of your offline scanner?";
+public class SignatureScannerDecisionBranch implements DecisionTree {
+    public static final String SHOULD_UPLOAD_TO_BLACK_DUCK = "Would you like to upload signature scan results to the Black Duck server?";
+    public static final String SHOULD_USE_CUSTOM_SCANNER = "Would you like to provide a custom signature scanner?";
+    public static final String SHOULD_DOWNLOAD_CUSTOM_SCANNER = "Would you like to download the custom signature scanner?";
+    public static final String SET_SCANNER_HOST_URL = "What is the signature scanner host url?";
+    public static final String SET_SCANNER_OFFLINE_LOCAL_PATH = "What is the location of your offline signature scanner?";
     private final boolean connectedToBlackDuck;
 
-    public CliDecisionBranch(boolean connectedToBlackDuck) {
+    public SignatureScannerDecisionBranch(boolean connectedToBlackDuck) {
         this.connectedToBlackDuck = connectedToBlackDuck;
     }
 

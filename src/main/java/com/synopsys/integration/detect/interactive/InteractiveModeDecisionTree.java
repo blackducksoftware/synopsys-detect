@@ -41,7 +41,7 @@ public class InteractiveModeDecisionTree implements DecisionTree {
     public static final String SHOULD_SET_PROJECT_NAME_VERSON = "Would you like to provide a project name and version to use?";
     public static final String SET_PROJECT_NAME = "What is the project name?";
     public static final String SET_PROJECT_VERSION = "What is the project version?";
-    public static final String SHOULD_RUN_CLI_SCAN = "Would you like to run a CLI scan?";
+    public static final String SHOULD_RUN_SIGNATURE_SCAN = "Would you like to run a signature scan?";
 
     private final List<PropertySource> existingPropertySources;
 
@@ -68,10 +68,10 @@ public class InteractiveModeDecisionTree implements DecisionTree {
             propertySourceBuilder.setProperty(BLACKDUCK_OFFLINE_MODE, Boolean.TRUE.toString());
         }
 
-        Boolean scan = writer.askYesOrNo(SHOULD_RUN_CLI_SCAN);
+        Boolean scan = writer.askYesOrNo(SHOULD_RUN_SIGNATURE_SCAN);
         if (scan) {
-            CliDecisionBranch cliDecisionBranch = new CliDecisionBranch(connectToHub);
-            cliDecisionBranch.traverse(propertySourceBuilder, writer);
+            SignatureScannerDecisionBranch signatureScannerDecisionBranch = new SignatureScannerDecisionBranch(connectToHub);
+            signatureScannerDecisionBranch.traverse(propertySourceBuilder, writer);
         } else {
             propertySourceBuilder.setProperty(DETECT_TOOLS_EXCLUDED, DetectTool.SIGNATURE_SCAN.name());
         }

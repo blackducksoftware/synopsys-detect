@@ -18,17 +18,17 @@ import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisio
 import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SHOULD_SET_PROXY_PASSWORD;
 import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SHOULD_TRUST_CERTS;
 import static com.synopsys.integration.detect.interactive.BlackDuckServerDecisionBranch.SHOULD_USE_API_TOKEN;
-import static com.synopsys.integration.detect.interactive.CliDecisionBranch.SET_SCANNER_HOST_URL;
-import static com.synopsys.integration.detect.interactive.CliDecisionBranch.SET_SCANNER_OFFLINE_LOCAL_PATH;
-import static com.synopsys.integration.detect.interactive.CliDecisionBranch.SHOULD_DOWNLOAD_CUSTOM_SCANNER;
-import static com.synopsys.integration.detect.interactive.CliDecisionBranch.SHOULD_UPLOAD_TO_BLACK_DUCK;
-import static com.synopsys.integration.detect.interactive.CliDecisionBranch.SHOULD_USE_CUSTOM_SCANNER;
 import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SET_PROJECT_NAME;
 import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SET_PROJECT_VERSION;
 import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SHOULD_CONNECT_TO_BLACKDUCK;
-import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SHOULD_RUN_CLI_SCAN;
+import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SHOULD_RUN_SIGNATURE_SCAN;
 import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SHOULD_SAVE_TO_APPLICATION_PROPERTIES;
 import static com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree.SHOULD_SET_PROJECT_NAME_VERSON;
+import static com.synopsys.integration.detect.interactive.SignatureScannerDecisionBranch.SET_SCANNER_HOST_URL;
+import static com.synopsys.integration.detect.interactive.SignatureScannerDecisionBranch.SET_SCANNER_OFFLINE_LOCAL_PATH;
+import static com.synopsys.integration.detect.interactive.SignatureScannerDecisionBranch.SHOULD_DOWNLOAD_CUSTOM_SCANNER;
+import static com.synopsys.integration.detect.interactive.SignatureScannerDecisionBranch.SHOULD_UPLOAD_TO_BLACK_DUCK;
+import static com.synopsys.integration.detect.interactive.SignatureScannerDecisionBranch.SHOULD_USE_CUSTOM_SCANNER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -68,7 +68,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
         testTraverse(
             Bds.mapOf(
                 Pair.of(SHOULD_CONNECT_TO_BLACKDUCK, NO),
-                Pair.of(SHOULD_RUN_CLI_SCAN, NO),
+                Pair.of(SHOULD_RUN_SIGNATURE_SCAN, NO),
                 Pair.of(SHOULD_SAVE_TO_APPLICATION_PROPERTIES, NO)
             ),
             Bds.mapOf(
@@ -100,7 +100,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
 
                 Pair.of(SHOULD_TEST_CONNECTION, NO),
                 Pair.of(SHOULD_SET_PROJECT_NAME_VERSON, NO),
-                Pair.of(SHOULD_RUN_CLI_SCAN, NO),
+                Pair.of(SHOULD_RUN_SIGNATURE_SCAN, NO),
                 Pair.of(SHOULD_SAVE_TO_APPLICATION_PROPERTIES, NO)
             ),
             Bds.mapOf(
@@ -135,7 +135,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
                 Pair.of(SET_PROJECT_NAME, EXPECTED_PROJECT_NAME),
                 Pair.of(SET_PROJECT_VERSION, EXPECTED_VERSION_NAME),
 
-                Pair.of(SHOULD_RUN_CLI_SCAN, NO),
+                Pair.of(SHOULD_RUN_SIGNATURE_SCAN, NO),
                 Pair.of(SHOULD_SAVE_TO_APPLICATION_PROPERTIES, NO)
             ),
             Bds.mapOf(
@@ -164,7 +164,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
                 Pair.of(SHOULD_CONFIGURE_PROXY, NO),
                 Pair.of(SHOULD_TEST_CONNECTION, NO),
                 Pair.of(SHOULD_SET_PROJECT_NAME_VERSON, NO),
-                Pair.of(SHOULD_RUN_CLI_SCAN, NO),
+                Pair.of(SHOULD_RUN_SIGNATURE_SCAN, NO),
                 Pair.of(SHOULD_SAVE_TO_APPLICATION_PROPERTIES, NO)
             ),
             Bds.mapOf(
@@ -193,7 +193,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
                 Pair.of(SHOULD_RETRY_CONNECTION, NO),
 
                 Pair.of(SHOULD_SET_PROJECT_NAME_VERSON, NO),
-                Pair.of(SHOULD_RUN_CLI_SCAN, NO),
+                Pair.of(SHOULD_RUN_SIGNATURE_SCAN, NO),
                 Pair.of(SHOULD_SAVE_TO_APPLICATION_PROPERTIES, NO)
             ),
             Bds.mapOf(
@@ -218,7 +218,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
                 Pair.of(SHOULD_TEST_CONNECTION, NO),
                 Pair.of(SHOULD_SET_PROJECT_NAME_VERSON, NO),
 
-                Pair.of(SHOULD_RUN_CLI_SCAN, YES),
+                Pair.of(SHOULD_RUN_SIGNATURE_SCAN, YES),
                 Pair.of(SHOULD_UPLOAD_TO_BLACK_DUCK, YES),
                 Pair.of(SHOULD_USE_CUSTOM_SCANNER, YES),
                 Pair.of(SHOULD_DOWNLOAD_CUSTOM_SCANNER, YES),
@@ -248,7 +248,7 @@ public class InteractiveModeDecisionTreeEndToEndTest {
                 Pair.of(SHOULD_TEST_CONNECTION, NO),
                 Pair.of(SHOULD_SET_PROJECT_NAME_VERSON, NO),
 
-                Pair.of(SHOULD_RUN_CLI_SCAN, YES),
+                Pair.of(SHOULD_RUN_SIGNATURE_SCAN, YES),
                 Pair.of(SHOULD_UPLOAD_TO_BLACK_DUCK, NO),
                 Pair.of(SHOULD_USE_CUSTOM_SCANNER, YES),
                 Pair.of(SHOULD_DOWNLOAD_CUSTOM_SCANNER, NO),
