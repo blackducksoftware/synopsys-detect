@@ -247,4 +247,5 @@ public class RunBeanConfiguration {
         CodeLocationNameManager codeLocationNameManager) {
         return new BlackDuckSignatureScanner(directoryManager, fullFileFinder(), codeLocationNameManager, blackDuckSignatureScannerOptions, eventSystem, scanBatchRunner, blackDuckServerConfig);
     }
+
 }

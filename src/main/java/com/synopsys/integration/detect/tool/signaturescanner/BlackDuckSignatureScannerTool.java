@@ -43,6 +43,8 @@ import com.synopsys.integration.detect.configuration.DetectUserFriendlyException
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.SilentIntLogger;
@@ -65,6 +67,8 @@ public class BlackDuckSignatureScannerTool {
         DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         ConnectionFactory connectionFactory = detectContext.getBean(ConnectionFactory.class);
         DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
+        CodeLocationNameGenerator codeLocationNameService = detectContext.getBean(CodeLocationNameGenerator.class);
+        CodeLocationNameManager codeLocationNameManager = detectContext.getBean(CodeLocationNameManager.class, codeLocationNameService);
 
         Optional<BlackDuckServerConfig> blackDuckServerConfig = Optional.empty();
         if (blackDuckRunData.isOnline() && blackDuckRunData.getBlackDuckServerConfig().isPresent()) {
@@ -108,7 +112,7 @@ public class BlackDuckSignatureScannerTool {
 
         try {
             // When offline, server config is null, otherwise scanner is created the same way online/offline.
-            BlackDuckSignatureScanner blackDuckSignatureScanner = detectContext.getBean(BlackDuckSignatureScanner.class, signatureScannerOptions, scanBatchRunner, blackDuckServerConfig.orElse(null));
+            BlackDuckSignatureScanner blackDuckSignatureScanner = detectContext.getBean(BlackDuckSignatureScanner.class, signatureScannerOptions, scanBatchRunner, blackDuckServerConfig.orElse(null), codeLocationNameManager);
             if (blackDuckServerConfig.isPresent() && blackDuckRunData.getBlackDuckServicesFactory().isPresent()) {
                 logger.debug("Signature scan is online.");
                 // Since we are online, we need to calculate the notification task range to wait for code locations.
