@@ -28,29 +28,33 @@ import com.synopsys.integration.executable.ExecutableRunnerException;
 
 public class ExecutableFailedException extends Exception {
     private static final long serialVersionUID = -4117278710469900787L;
-    private final ExecutableOutput executableOutput;
-    private final Executable executable;
+    private final int returnCode;
+    private final String executableDescription;
     private final ExecutableRunnerException executableException;
 
-    public ExecutableFailedException(final Executable executable, final ExecutableRunnerException executableException) {
+    public ExecutableFailedException(Executable executable, ExecutableRunnerException executableException) {
         super(executableException);
         this.executableException = executableException;
-        this.executable = executable;
-        executableOutput = null;
+        this.returnCode = 0;
+        this.executableDescription = executable.getExecutableDescription();
     }
 
-    public ExecutableFailedException(final Executable executable, ExecutableOutput executableOutput) {
-        this.executableOutput = executableOutput;
-        this.executable = executable;
+    public ExecutableFailedException(Executable executable, ExecutableOutput executableOutput) {
+        this.returnCode = executableOutput.getReturnCode();
+        this.executableDescription = executable.getExecutableDescription();
         executableException = null;
     }
 
-    public ExecutableOutput getExecutableOutput() {
-        return executableOutput;
+    public boolean hasReturnCode() {
+        return returnCode != 0;
     }
 
-    public Executable getExecutable() {
-        return executable;
+    public int getReturnCode() {
+        return returnCode;
+    }
+
+    public String getExecutableDescription() {
+        return executableDescription;
     }
 
     public ExecutableRunnerException getExecutableException() {
