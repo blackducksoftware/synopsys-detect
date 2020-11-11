@@ -70,6 +70,9 @@ import com.synopsys.integration.detect.configuration.help.json.HelpJsonWriter;
 import com.synopsys.integration.detect.configuration.help.print.DetectInfoPrinter;
 import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
+import com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree;
+import com.synopsys.integration.detect.interactive.InteractivePropertySourceBuilder;
+import com.synopsys.integration.detect.interactive.InteractiveWriter;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
@@ -162,8 +165,14 @@ public class DetectBoot {
         printDetectInfo(detectInfo);
 
         if (detectArgumentState.isInteractive()) {
-            InteractiveManager interactiveManager = new InteractiveManager(System.console(), System.in, System.out);
-            MapPropertySource interactivePropertySource = interactiveManager.getInteractivePropertySource(propertySources);
+            InteractiveWriter writer = InteractiveWriter.defaultWriter(System.console(), System.in, System.out);
+            InteractivePropertySourceBuilder propertySourceBuilder = new InteractivePropertySourceBuilder(writer);
+            InteractiveManager interactiveManager = new InteractiveManager(propertySourceBuilder, writer);
+
+            // TODO: Ideally we should be able to share the BlackDuckConnectivityChecker from elsewhere in the boot --rotte NOV 2020
+            InteractiveModeDecisionTree interactiveModeDecisionTree = new InteractiveModeDecisionTree(new BlackDuckConnectivityChecker(), propertySources);
+            MapPropertySource interactivePropertySource = interactiveManager.getInteractivePropertySource(interactiveModeDecisionTree);
+
             propertySources.add(0, interactivePropertySource);
         }
         PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);

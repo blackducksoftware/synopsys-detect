@@ -22,15 +22,38 @@
  */
 package com.synopsys.integration.detect.interactive;
 
+import java.io.Console;
+import java.io.InputStream;
 import java.io.PrintStream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detect.interactive.reader.ConsoleInteractiveReader;
 import com.synopsys.integration.detect.interactive.reader.InteractiveReader;
+import com.synopsys.integration.detect.interactive.reader.ScannerInteractiveReader;
 
 public class InteractiveWriter {
     private final PrintStream printStream;
     private final InteractiveReader interactiveReader;
+
+    public static InteractiveWriter defaultWriter(Console console, InputStream systemIn, PrintStream sysOut) {
+        Logger staticLogger = LoggerFactory.getLogger(InteractiveWriter.class);
+
+        // Using an UncloseablePrintStream so we don't accidentally close System.out
+        PrintStream interactivePrintStream = new UncloseablePrintStream(sysOut);
+        InteractiveReader interactiveReader;
+
+        if (console != null) {
+            interactiveReader = new ConsoleInteractiveReader(console);
+        } else {
+            staticLogger.warn("It may be insecure to enter passwords because you are running in a virtual console.");
+            interactiveReader = new ScannerInteractiveReader(systemIn);
+        }
+
+        return new InteractiveWriter(interactivePrintStream, interactiveReader);
+    }
 
     public InteractiveWriter(PrintStream printStream, InteractiveReader interactiveReader) {
         this.printStream = printStream;
@@ -72,7 +95,7 @@ public class InteractiveWriter {
     public Boolean askYesOrNoWithMessage(String question, String message) {
         printStream.print(question);
         if (StringUtils.isNotBlank(message)) {
-            printStream.print(message);
+            printStream.print(" " + message);
         }
         printStream.print(" (Y|n)");
         printStream.println();

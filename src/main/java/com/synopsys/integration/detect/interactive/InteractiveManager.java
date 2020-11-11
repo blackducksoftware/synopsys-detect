@@ -22,56 +22,26 @@
  */
 package com.synopsys.integration.detect.interactive;
 
-import java.io.Console;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.configuration.source.MapPropertySource;
-import com.synopsys.integration.configuration.source.PropertySource;
-import com.synopsys.integration.detect.interactive.reader.ConsoleInteractiveReader;
-import com.synopsys.integration.detect.interactive.reader.InteractiveReader;
-import com.synopsys.integration.detect.interactive.reader.ScannerInteractiveReader;
 
 public class InteractiveManager {
-    private final Logger logger = LoggerFactory.getLogger(InteractiveManager.class);
-    private final Console console;
-    private final InputStream systemIn;
-    private final PrintStream sysOut;
+    private final InteractivePropertySourceBuilder propertySourceBuilder;
+    private final InteractiveWriter writer;
 
-    public InteractiveManager(Console console, InputStream systemIn, PrintStream sysOut) {
-        this.console = console;
-        this.systemIn = systemIn;
-        this.sysOut = sysOut;
+    public InteractiveManager(InteractivePropertySourceBuilder propertySourceBuilder, InteractiveWriter writer) {
+        this.propertySourceBuilder = propertySourceBuilder;
+        this.writer = writer;
     }
 
-    public MapPropertySource getInteractivePropertySource(List<PropertySource> existingPropertySources) {
-        // Using an UncloseablePrintStream so we don't accidentally close System.out
-        try (PrintStream interactivePrintStream = new UncloseablePrintStream(sysOut)) {
-            InteractiveReader interactiveReader;
+    public MapPropertySource getInteractivePropertySource(DecisionTree rootDecisionTree) {
+        writer.println("");
+        writer.println("Interactive flag found.");
+        writer.println("Starting interactive mode.");
+        writer.println("");
 
-            if (console != null) {
-                interactiveReader = new ConsoleInteractiveReader(console);
-            } else {
-                logger.warn("It may be insecure to enter passwords because you are running in a virtual console.");
-                interactiveReader = new ScannerInteractiveReader(systemIn);
-            }
+        rootDecisionTree.traverse(propertySourceBuilder, writer);
 
-            InteractiveWriter writer = new InteractiveWriter(interactivePrintStream, interactiveReader);
-            InteractivePropertySourceBuilder propertySourceBuilder = new InteractivePropertySourceBuilder(writer);
+        return propertySourceBuilder.build();
 
-            writer.println("");
-            writer.println("Interactive flag found.");
-            writer.println("Starting interactive mode.");
-            writer.println("");
-
-            InteractiveModeDecisionTree interactiveModeDialogueTree = new InteractiveModeDecisionTree(existingPropertySources);
-            interactiveModeDialogueTree.traverse(propertySourceBuilder, writer);
-
-            return propertySourceBuilder.build();
-        }
     }
 }

@@ -52,9 +52,9 @@ public class BlackDuckServerDecisionBranch implements DecisionTree {
     public static final String SHOULD_TRUST_CERTS = "Would you like to automatically trust certificates?";
     public static final String SET_BLACKDUCK_SERVER_URL = "What is the Black Duck server url?";
     public static final String WARNING_BLACKDUCK_PASSWORD =
-        "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable +" + BLACKDUCK_PASSWORD.getProperty().getKeyAsEnvironmentVariable() + ".";
+        "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable " + BLACKDUCK_PASSWORD.getProperty().getKeyAsEnvironmentVariable() + ".";
     public static final String WARNING_PROXY_PASSWORD =
-        "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable +" + BLACKDUCK_PROXY_PASSWORD.getProperty().getKeyAsEnvironmentVariable() + ".";
+        "WARNING: If you choose to save the settings, this password will be stored in plain text. You can set this password as an environment variable " + BLACKDUCK_PROXY_PASSWORD.getProperty().getKeyAsEnvironmentVariable() + ".";
     public static final String INFO_API_TOKEN_PREFERRED = "You can now configure Black Duck with either an API token -OR- a username and password. The API token must already exist on the Black Duck server, but it is the preferred approach to configure your connection.";
 
     @Override
