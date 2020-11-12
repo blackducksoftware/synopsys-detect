@@ -1,5 +1,9 @@
 # Release notes
 
+## Version 6.8.0
+### Resolved issues
+* (IDETECT-2216) Resolved an issue that prevented non-ASCII filenames from being correctly transmitted to Black Duck during a binary scan file upload.
+
 ## Version 6.7.0
 ### Resolved issues
 * (IDETECT-2285) Resolved an issue that could cause Detect to fail to authenticate with Black Duck with the error message "No Bearer token found when authenticating.".
