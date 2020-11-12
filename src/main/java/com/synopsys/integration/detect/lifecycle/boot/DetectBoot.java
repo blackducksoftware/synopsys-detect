@@ -63,7 +63,6 @@ import com.synopsys.integration.detect.configuration.connection.ConnectionDetail
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.configuration.enumeration.OperatingSystemType;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonDetector;
@@ -71,8 +70,9 @@ import com.synopsys.integration.detect.configuration.help.json.HelpJsonWriter;
 import com.synopsys.integration.detect.configuration.help.print.DetectInfoPrinter;
 import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
-import com.synopsys.integration.detect.interactive.InteractiveOption;
-import com.synopsys.integration.detect.interactive.mode.DefaultInteractiveMode;
+import com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree;
+import com.synopsys.integration.detect.interactive.InteractivePropertySourceBuilder;
+import com.synopsys.integration.detect.interactive.InteractiveWriter;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
@@ -121,6 +121,7 @@ import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
+import com.synopsys.integration.util.OperatingSystemType;
 
 import freemarker.template.Configuration;
 
@@ -164,10 +165,14 @@ public class DetectBoot {
         printDetectInfo(detectInfo);
 
         if (detectArgumentState.isInteractive()) {
-            List<InteractiveOption> interactiveOptions = startInteractiveMode(propertySources);
-            Map<String, String> interactivePropertyMap = interactiveOptions.stream()
-                                                             .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), InteractiveOption::getInteractiveValue));
-            PropertySource interactivePropertySource = new MapPropertySource("interactive", interactivePropertyMap);
+            InteractiveWriter writer = InteractiveWriter.defaultWriter(System.console(), System.in, System.out);
+            InteractivePropertySourceBuilder propertySourceBuilder = new InteractivePropertySourceBuilder(writer);
+            InteractiveManager interactiveManager = new InteractiveManager(propertySourceBuilder, writer);
+
+            // TODO: Ideally we should be able to share the BlackDuckConnectivityChecker from elsewhere in the boot --rotte NOV 2020
+            InteractiveModeDecisionTree interactiveModeDecisionTree = new InteractiveModeDecisionTree(new BlackDuckConnectivityChecker(), propertySources);
+            MapPropertySource interactivePropertySource = interactiveManager.getInteractivePropertySource(interactiveModeDecisionTree);
+
             propertySources.add(0, interactivePropertySource);
         }
         PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
@@ -379,12 +384,6 @@ public class DetectBoot {
         }
 
         return Optional.empty();
-    }
-
-    private List<InteractiveOption> startInteractiveMode(List<PropertySource> propertySources) {
-        InteractiveManager interactiveManager = new InteractiveManager();
-        DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(propertySources);
-        return interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
     }
 
     private DetectArgumentState parseDetectArgumentState(String[] sourceArgs) {

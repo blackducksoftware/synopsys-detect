@@ -22,14 +22,14 @@
  */
 package com.synopsys.integration.detect.configuration;
 
-import com.synopsys.integration.detect.configuration.enumeration.OperatingSystemType;
+import com.synopsys.integration.util.OperatingSystemType;
 
 public class DetectInfo {
     private final OperatingSystemType currentOs;
     private final String detectVersion;
     private final int majorVersion;
 
-    public DetectInfo(final String detectVersionText, final int majorVersion, final OperatingSystemType currentOs) {
+    public DetectInfo(String detectVersionText, int majorVersion, OperatingSystemType currentOs) {
         this.detectVersion = detectVersionText;
         this.currentOs = currentOs;
         this.majorVersion = majorVersion;
