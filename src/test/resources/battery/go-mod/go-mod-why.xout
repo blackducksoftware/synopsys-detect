@@ -1,0 +1,1230 @@
+# github.com/sagikazarmark/modern-go-application
+github.com/sagikazarmark/modern-go-application
+
+# cloud.google.com/go
+(main module does not need module cloud.google.com/go)
+
+# cloud.google.com/go/bigquery
+(main module does not need module cloud.google.com/go/bigquery)
+
+# cloud.google.com/go/datastore
+(main module does not need module cloud.google.com/go/datastore)
+
+# cloud.google.com/go/firestore
+(main module does not need module cloud.google.com/go/firestore)
+
+# cloud.google.com/go/pubsub
+(main module does not need module cloud.google.com/go/pubsub)
+
+# cloud.google.com/go/storage
+(main module does not need module cloud.google.com/go/storage)
+
+# contrib.go.opencensus.io/exporter/ocagent
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/ocagent
+
+# contrib.go.opencensus.io/exporter/prometheus
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/prometheus
+
+# contrib.go.opencensus.io/integrations/ocsql
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/integrations/ocsql
+
+# dmitri.shuralyov.com/gpu/mtl
+(main module does not need module dmitri.shuralyov.com/gpu/mtl)
+
+# emperror.dev/emperror
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+emperror.dev/emperror
+
+# emperror.dev/errors
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+emperror.dev/errors
+
+# emperror.dev/handler/logur
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+emperror.dev/handler/logur
+
+# github.com/99designs/gqlgen
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/99designs/gqlgen/graphql/handler
+
+# github.com/AppsFlyer/go-sundheit
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/AppsFlyer/go-sundheit
+
+# github.com/BurntSushi/toml
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+github.com/pelletier/go-toml
+github.com/pelletier/go-toml.test
+github.com/BurntSushi/toml
+
+# github.com/BurntSushi/xgb
+(main module does not need module github.com/BurntSushi/xgb)
+
+# github.com/DATA-DOG/go-sqlmock
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/facebook/ent/dialect/sql
+github.com/facebook/ent/dialect/sql.test
+github.com/DATA-DOG/go-sqlmock
+
+# github.com/Knetic/govaluate
+(main module does not need module github.com/Knetic/govaluate)
+
+# github.com/OneOfOne/xxhash
+(main module does not need module github.com/OneOfOne/xxhash)
+
+# github.com/Shopify/sarama
+(main module does not need module github.com/Shopify/sarama)
+
+# github.com/Shopify/toxiproxy
+(main module does not need module github.com/Shopify/toxiproxy)
+
+# github.com/ThreeDotsLabs/watermill
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/ThreeDotsLabs/watermill/components/cqrs
+
+# github.com/VividCortex/gohistogram
+(main module does not need module github.com/VividCortex/gohistogram)
+
+# github.com/afex/hystrix-go
+(main module does not need module github.com/afex/hystrix-go)
+
+# github.com/agnivade/levenshtein
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/99designs/gqlgen/graphql/handler
+github.com/99designs/gqlgen/graphql/executor
+github.com/vektah/gqlparser/v2/validator
+github.com/agnivade/levenshtein
+
+# github.com/alecthomas/template
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/prometheus
+github.com/prometheus/statsd_exporter/pkg/mapper
+github.com/prometheus/common/log
+gopkg.in/alecthomas/kingpin.v2
+github.com/alecthomas/template
+
+# github.com/alecthomas/units
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/prometheus
+github.com/prometheus/statsd_exporter/pkg/mapper
+github.com/prometheus/common/log
+gopkg.in/alecthomas/kingpin.v2
+github.com/alecthomas/units
+
+# github.com/andreyvit/diff
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/99designs/gqlgen/graphql/handler
+github.com/99designs/gqlgen/graphql
+github.com/vektah/gqlparser/v2/ast
+github.com/vektah/gqlparser/v2/ast.test
+github.com/andreyvit/diff
+
+# github.com/antihax/optional
+(main module does not need module github.com/antihax/optional)
+
+# github.com/apache/thrift
+(main module does not need module github.com/apache/thrift)
+
+# github.com/arbovm/levenshtein
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/99designs/gqlgen/graphql/handler
+github.com/99designs/gqlgen/graphql/executor
+github.com/vektah/gqlparser/v2/validator
+github.com/agnivade/levenshtein
+github.com/agnivade/levenshtein.test
+github.com/arbovm/levenshtein
+
+# github.com/armon/circbuf
+(main module does not need module github.com/armon/circbuf)
+
+# github.com/armon/consul-api
+(main module does not need module github.com/armon/consul-api)
+
+# github.com/armon/go-metrics
+(main module does not need module github.com/armon/go-metrics)
+
+# github.com/armon/go-radix
+(main module does not need module github.com/armon/go-radix)
+
+# github.com/aryann/difflib
+(main module does not need module github.com/aryann/difflib)
+
+# github.com/aslakhellesoy/gox
+(main module does not need module github.com/aslakhellesoy/gox)
+
+# github.com/aws/aws-lambda-go
+(main module does not need module github.com/aws/aws-lambda-go)
+
+# github.com/aws/aws-sdk-go
+(main module does not need module github.com/aws/aws-sdk-go)
+
+# github.com/aws/aws-sdk-go-v2
+(main module does not need module github.com/aws/aws-sdk-go-v2)
+
+# github.com/beorn7/perks
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/prometheus
+github.com/prometheus/client_golang/prometheus
+github.com/beorn7/perks/quantile
+
+# github.com/bgentry/speakeasy
+(main module does not need module github.com/bgentry/speakeasy)
+
+# github.com/bketelsen/crypt
+(main module does not need module github.com/bketelsen/crypt)
+
+# github.com/casbin/casbin/v2
+(main module does not need module github.com/casbin/casbin/v2)
+
+# github.com/cenkalti/backoff
+(main module does not need module github.com/cenkalti/backoff)
+
+# github.com/cenkalti/backoff/v3
+github.com/sagikazarmark/modern-go-application/internal/platform/watermill
+github.com/ThreeDotsLabs/watermill/message/router/middleware
+github.com/cenkalti/backoff/v3
+
+# github.com/census-instrumentation/opencensus-proto
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/ocagent
+github.com/census-instrumentation/opencensus-proto/gen-go/agent/common/v1
+
+# github.com/cespare/xxhash
+(main module does not need module github.com/cespare/xxhash)
+
+# github.com/cespare/xxhash/v2
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/prometheus
+github.com/prometheus/client_golang/prometheus
+github.com/cespare/xxhash/v2
+
+# github.com/chzyer/logex
+(main module does not need module github.com/chzyer/logex)
+
+# github.com/chzyer/readline
+(main module does not need module github.com/chzyer/readline)
+
+# github.com/chzyer/test
+(main module does not need module github.com/chzyer/test)
+
+# github.com/clbanning/x2j
+(main module does not need module github.com/clbanning/x2j)
+
+# github.com/client9/misspell
+(main module does not need module github.com/client9/misspell)
+
+# github.com/cloudflare/tableflip
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/cloudflare/tableflip
+
+# github.com/cncf/udpa/go
+(main module does not need module github.com/cncf/udpa/go)
+
+# github.com/cockroachdb/datadriven
+(main module does not need module github.com/cockroachdb/datadriven)
+
+# github.com/codahale/hdrhistogram
+(main module does not need module github.com/codahale/hdrhistogram)
+
+# github.com/coreos/bbolt
+(main module does not need module github.com/coreos/bbolt)
+
+# github.com/coreos/etcd
+(main module does not need module github.com/coreos/etcd)
+
+# github.com/coreos/go-semver
+(main module does not need module github.com/coreos/go-semver)
+
+# github.com/coreos/go-systemd
+(main module does not need module github.com/coreos/go-systemd)
+
+# github.com/coreos/pkg
+(main module does not need module github.com/coreos/pkg)
+
+# github.com/cpuguy83/go-md2man/v2
+(main module does not need module github.com/cpuguy83/go-md2man/v2)
+
+# github.com/creack/pty
+(main module does not need module github.com/creack/pty)
+
+# github.com/cucumber/gherkin-go/v13
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/sagikazarmark/todobackend-go-kit/todo
+github.com/sagikazarmark/todobackend-go-kit/todo.test
+github.com/go-bdd/gobdd
+github.com/cucumber/gherkin-go/v13
+
+# github.com/cucumber/messages-go/v12
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/sagikazarmark/todobackend-go-kit/todo
+github.com/sagikazarmark/todobackend-go-kit/todo.test
+github.com/go-bdd/gobdd
+github.com/cucumber/messages-go/v12
+
+# github.com/davecgh/go-spew
+github.com/sagikazarmark/modern-go-application/internal/platform/database
+github.com/sagikazarmark/modern-go-application/internal/platform/database.test
+github.com/stretchr/testify/assert
+github.com/davecgh/go-spew/spew
+
+# github.com/dgrijalva/jwt-go
+(main module does not need module github.com/dgrijalva/jwt-go)
+
+# github.com/dgryski/go-sip13
+(main module does not need module github.com/dgryski/go-sip13)
+
+# github.com/dgryski/trifles
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/99designs/gqlgen/graphql/handler
+github.com/99designs/gqlgen/graphql/executor
+github.com/vektah/gqlparser/v2/validator
+github.com/agnivade/levenshtein
+github.com/agnivade/levenshtein.test
+github.com/dgryski/trifles/leven
+
+# github.com/dustin/go-humanize
+(main module does not need module github.com/dustin/go-humanize)
+
+# github.com/eapache/go-resiliency
+(main module does not need module github.com/eapache/go-resiliency)
+
+# github.com/eapache/go-xerial-snappy
+(main module does not need module github.com/eapache/go-xerial-snappy)
+
+# github.com/eapache/queue
+(main module does not need module github.com/eapache/queue)
+
+# github.com/edsrzf/mmap-go
+(main module does not need module github.com/edsrzf/mmap-go)
+
+# github.com/envoyproxy/go-control-plane
+(main module does not need module github.com/envoyproxy/go-control-plane)
+
+# github.com/envoyproxy/protoc-gen-validate
+(main module does not need module github.com/envoyproxy/protoc-gen-validate)
+
+# github.com/facebook/ent
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/facebook/ent/dialect/sql
+
+# github.com/fatih/color
+(main module does not need module github.com/fatih/color)
+
+# github.com/felixge/httpsnoop
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/gorilla/handlers
+github.com/felixge/httpsnoop
+
+# github.com/fortytw2/leaktest
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/AppsFlyer/go-sundheit
+github.com/AppsFlyer/go-sundheit.test
+github.com/fortytw2/leaktest
+
+# github.com/franela/goblin
+(main module does not need module github.com/franela/goblin)
+
+# github.com/franela/goreq
+(main module does not need module github.com/franela/goreq)
+
+# github.com/fsnotify/fsnotify
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+github.com/fsnotify/fsnotify
+
+# github.com/ghodss/yaml
+(main module does not need module github.com/ghodss/yaml)
+
+# github.com/go-bdd/assert
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/sagikazarmark/todobackend-go-kit/todo
+github.com/sagikazarmark/todobackend-go-kit/todo.test
+github.com/go-bdd/gobdd
+github.com/go-bdd/gobdd.test
+github.com/go-bdd/assert
+
+# github.com/go-bdd/gobdd
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/sagikazarmark/todobackend-go-kit/todo
+github.com/sagikazarmark/todobackend-go-kit/todo.test
+github.com/go-bdd/gobdd
+
+# github.com/go-bindata/go-bindata
+(main module does not need module github.com/go-bindata/go-bindata)
+
+# github.com/go-chi/chi
+(main module does not need module github.com/go-chi/chi)
+
+# github.com/go-gl/glfw
+(main module does not need module github.com/go-gl/glfw)
+
+# github.com/go-gl/glfw/v3.3/glfw
+(main module does not need module github.com/go-gl/glfw/v3.3/glfw)
+
+# github.com/go-kit/kit
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/go-kit/kit/endpoint
+
+# github.com/go-logfmt/logfmt
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/go-kit/kit/transport/grpc
+github.com/go-kit/kit/log
+github.com/go-logfmt/logfmt
+
+# github.com/go-openapi/inflect
+(main module does not need module github.com/go-openapi/inflect)
+
+# github.com/go-sql-driver/mysql
+github.com/sagikazarmark/modern-go-application/internal/platform/database
+github.com/go-sql-driver/mysql
+
+# github.com/go-stack/stack
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/go-kit/kit/transport/grpc
+github.com/go-kit/kit/log
+github.com/go-kit/kit/log.test
+github.com/go-stack/stack
+
+# github.com/gobuffalo/here
+github.com/sagikazarmark/modern-go-application/internal/app/mga/landing/landingdriver
+github.com/markbates/pkger
+github.com/markbates/pkger/here
+github.com/gobuffalo/here
+
+# github.com/gofrs/uuid
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/sagikazarmark/todobackend-go-kit/todo
+github.com/sagikazarmark/todobackend-go-kit/todo.test
+github.com/go-bdd/gobdd
+github.com/cucumber/messages-go/v12
+github.com/gofrs/uuid
+
+# github.com/gogo/googleapis
+(main module does not need module github.com/gogo/googleapis)
+
+# github.com/gogo/protobuf
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/ThreeDotsLabs/watermill/components/cqrs
+github.com/gogo/protobuf/proto
+
+# github.com/golang/glog
+(main module does not need module github.com/golang/glog)
+
+# github.com/golang/groupcache
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+go.opencensus.io/trace
+github.com/golang/groupcache/lru
+
+# github.com/golang/mock
+(main module does not need module github.com/golang/mock)
+
+# github.com/golang/protobuf
+github.com/sagikazarmark/modern-go-application/internal/app/todocli/command
+github.com/golang/protobuf/ptypes/wrappers
+
+# github.com/golang/snappy
+(main module does not need module github.com/golang/snappy)
+
+# github.com/google/btree
+(main module does not need module github.com/google/btree)
+
+# github.com/google/go-cmp
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/ocagent
+contrib.go.opencensus.io/exporter/ocagent.test
+github.com/google/go-cmp/cmp
+
+# github.com/google/gofuzz
+(main module does not need module github.com/google/gofuzz)
+
+# github.com/google/martian
+(main module does not need module github.com/google/martian)
+
+# github.com/google/pprof
+(main module does not need module github.com/google/pprof)
+
+# github.com/google/renameio
+(main module does not need module github.com/google/renameio)
+
+# github.com/google/uuid
+github.com/sagikazarmark/modern-go-application/internal/app/mga/todo/todoadapter/ent
+github.com/facebook/ent/dialect
+github.com/google/uuid
+
+# github.com/googleapis/gax-go/v2
+(main module does not need module github.com/googleapis/gax-go/v2)
+
+# github.com/goph/idgen
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/goph/idgen/ulidgen
+
+# github.com/gopherjs/gopherjs
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+gopkg.in/ini.v1
+gopkg.in/ini.v1.test
+github.com/smartystreets/goconvey/convey
+github.com/jtolds/gls
+github.com/gopherjs/gopherjs/js
+
+# github.com/gorilla/context
+(main module does not need module github.com/gorilla/context)
+
+# github.com/gorilla/handlers
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/gorilla/handlers
+
+# github.com/gorilla/mux
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/gorilla/mux
+
+# github.com/gorilla/websocket
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/99designs/gqlgen/graphql/handler
+github.com/99designs/gqlgen/graphql/handler/transport
+github.com/gorilla/websocket
+
+# github.com/grpc-ecosystem/go-grpc-middleware
+(main module does not need module github.com/grpc-ecosystem/go-grpc-middleware)
+
+# github.com/grpc-ecosystem/go-grpc-prometheus
+(main module does not need module github.com/grpc-ecosystem/go-grpc-prometheus)
+
+# github.com/grpc-ecosystem/grpc-gateway
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/ocagent
+github.com/census-instrumentation/opencensus-proto/gen-go/agent/metrics/v1
+github.com/grpc-ecosystem/grpc-gateway/runtime
+
+# github.com/hashicorp/consul/api
+(main module does not need module github.com/hashicorp/consul/api)
+
+# github.com/hashicorp/consul/sdk
+(main module does not need module github.com/hashicorp/consul/sdk)
+
+# github.com/hashicorp/errwrap
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/ThreeDotsLabs/watermill/components/cqrs
+github.com/hashicorp/go-multierror
+github.com/hashicorp/errwrap
+
+# github.com/hashicorp/go-cleanhttp
+(main module does not need module github.com/hashicorp/go-cleanhttp)
+
+# github.com/hashicorp/go-immutable-radix
+(main module does not need module github.com/hashicorp/go-immutable-radix)
+
+# github.com/hashicorp/go-msgpack
+(main module does not need module github.com/hashicorp/go-msgpack)
+
+# github.com/hashicorp/go-multierror
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/ThreeDotsLabs/watermill/components/cqrs
+github.com/hashicorp/go-multierror
+
+# github.com/hashicorp/go-rootcerts
+(main module does not need module github.com/hashicorp/go-rootcerts)
+
+# github.com/hashicorp/go-sockaddr
+(main module does not need module github.com/hashicorp/go-sockaddr)
+
+# github.com/hashicorp/go-syslog
+(main module does not need module github.com/hashicorp/go-syslog)
+
+# github.com/hashicorp/go-uuid
+(main module does not need module github.com/hashicorp/go-uuid)
+
+# github.com/hashicorp/go-version
+(main module does not need module github.com/hashicorp/go-version)
+
+# github.com/hashicorp/go.net
+(main module does not need module github.com/hashicorp/go.net)
+
+# github.com/hashicorp/golang-lru
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/prometheus
+github.com/prometheus/statsd_exporter/pkg/mapper
+github.com/hashicorp/golang-lru
+
+# github.com/hashicorp/hcl
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+github.com/hashicorp/hcl
+
+# github.com/hashicorp/logutils
+(main module does not need module github.com/hashicorp/logutils)
+
+# github.com/hashicorp/mdns
+(main module does not need module github.com/hashicorp/mdns)
+
+# github.com/hashicorp/memberlist
+(main module does not need module github.com/hashicorp/memberlist)
+
+# github.com/hashicorp/serf
+(main module does not need module github.com/hashicorp/serf)
+
+# github.com/hpcloud/tail
+(main module does not need module github.com/hpcloud/tail)
+
+# github.com/hudl/fargo
+(main module does not need module github.com/hudl/fargo)
+
+# github.com/ianlancetaylor/demangle
+(main module does not need module github.com/ianlancetaylor/demangle)
+
+# github.com/inconshreveable/mousetrap
+github.com/sagikazarmark/modern-go-application/cmd/todocli
+github.com/spf13/cobra
+github.com/inconshreveable/mousetrap
+
+# github.com/influxdata/influxdb1-client
+(main module does not need module github.com/influxdata/influxdb1-client)
+
+# github.com/jessevdk/go-flags
+(main module does not need module github.com/jessevdk/go-flags)
+
+# github.com/jmespath/go-jmespath
+(main module does not need module github.com/jmespath/go-jmespath)
+
+# github.com/jonboulle/clockwork
+(main module does not need module github.com/jonboulle/clockwork)
+
+# github.com/json-iterator/go
+(main module does not need module github.com/json-iterator/go)
+
+# github.com/jstemmer/go-junit-report
+(main module does not need module github.com/jstemmer/go-junit-report)
+
+# github.com/jtolds/gls
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+gopkg.in/ini.v1
+gopkg.in/ini.v1.test
+github.com/smartystreets/goconvey/convey
+github.com/jtolds/gls
+
+# github.com/julienschmidt/httprouter
+(main module does not need module github.com/julienschmidt/httprouter)
+
+# github.com/kisielk/errcheck
+(main module does not need module github.com/kisielk/errcheck)
+
+# github.com/kisielk/gotool
+(main module does not need module github.com/kisielk/gotool)
+
+# github.com/konsorten/go-windows-terminal-sequences
+(main module does not need module github.com/konsorten/go-windows-terminal-sequences)
+
+# github.com/kr/logfmt
+(main module does not need module github.com/kr/logfmt)
+
+# github.com/kr/pretty
+(main module does not need module github.com/kr/pretty)
+
+# github.com/kr/pty
+(main module does not need module github.com/kr/pty)
+
+# github.com/kr/text
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+gopkg.in/yaml.v2
+gopkg.in/yaml.v2.test
+gopkg.in/check.v1
+github.com/niemeyer/pretty
+github.com/kr/text
+
+# github.com/lib/pq
+(main module does not need module github.com/lib/pq)
+
+# github.com/lightstep/lightstep-tracer-common/golang/gogo
+(main module does not need module github.com/lightstep/lightstep-tracer-common/golang/gogo)
+
+# github.com/lightstep/lightstep-tracer-go
+(main module does not need module github.com/lightstep/lightstep-tracer-go)
+
+# github.com/lithammer/shortuuid/v3
+github.com/sagikazarmark/modern-go-application/internal/platform/watermill
+github.com/ThreeDotsLabs/watermill/pubsub/gochannel
+github.com/lithammer/shortuuid/v3
+
+# github.com/logrusorgru/aurora
+(main module does not need module github.com/logrusorgru/aurora)
+
+# github.com/lyft/protoc-gen-validate
+(main module does not need module github.com/lyft/protoc-gen-validate)
+
+# github.com/magiconair/properties
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+github.com/magiconair/properties
+
+# github.com/markbates/pkger
+github.com/sagikazarmark/modern-go-application/internal/app/mga/landing/landingdriver
+github.com/markbates/pkger
+
+# github.com/matryer/moq
+(main module does not need module github.com/matryer/moq)
+
+# github.com/mattn/go-colorable
+(main module does not need module github.com/mattn/go-colorable)
+
+# github.com/mattn/go-isatty
+(main module does not need module github.com/mattn/go-isatty)
+
+# github.com/mattn/go-runewidth
+github.com/sagikazarmark/modern-go-application/internal/app/todocli/command
+github.com/olekukonko/tablewriter
+github.com/mattn/go-runewidth
+
+# github.com/mattn/go-sqlite3
+(main module does not need module github.com/mattn/go-sqlite3)
+
+# github.com/matttproud/golang_protobuf_extensions
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/prometheus
+github.com/prometheus/client_golang/prometheus
+github.com/prometheus/common/expfmt
+github.com/matttproud/golang_protobuf_extensions/pbutil
+
+# github.com/mccutchen/go-httpbin
+github.com/sagikazarmark/modern-go-application/internal/app/mga/httpbin
+github.com/mccutchen/go-httpbin/httpbin
+
+# github.com/miekg/dns
+(main module does not need module github.com/miekg/dns)
+
+# github.com/mitchellh/cli
+(main module does not need module github.com/mitchellh/cli)
+
+# github.com/mitchellh/go-homedir
+(main module does not need module github.com/mitchellh/go-homedir)
+
+# github.com/mitchellh/go-testing-interface
+(main module does not need module github.com/mitchellh/go-testing-interface)
+
+# github.com/mitchellh/gox
+(main module does not need module github.com/mitchellh/gox)
+
+# github.com/mitchellh/iochan
+(main module does not need module github.com/mitchellh/iochan)
+
+# github.com/mitchellh/mapstructure
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+github.com/mitchellh/mapstructure
+
+# github.com/modern-go/concurrent
+(main module does not need module github.com/modern-go/concurrent)
+
+# github.com/modern-go/reflect2
+(main module does not need module github.com/modern-go/reflect2)
+
+# github.com/moogar0880/problems
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/sagikazarmark/appkit/transport/http
+github.com/moogar0880/problems
+
+# github.com/mwitkow/go-conntrack
+(main module does not need module github.com/mwitkow/go-conntrack)
+
+# github.com/nats-io/jwt
+(main module does not need module github.com/nats-io/jwt)
+
+# github.com/nats-io/nats-server/v2
+(main module does not need module github.com/nats-io/nats-server/v2)
+
+# github.com/nats-io/nats.go
+(main module does not need module github.com/nats-io/nats.go)
+
+# github.com/nats-io/nkeys
+(main module does not need module github.com/nats-io/nkeys)
+
+# github.com/nats-io/nuid
+(main module does not need module github.com/nats-io/nuid)
+
+# github.com/niemeyer/pretty
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+gopkg.in/yaml.v2
+gopkg.in/yaml.v2.test
+gopkg.in/check.v1
+github.com/niemeyer/pretty
+
+# github.com/oklog/oklog
+(main module does not need module github.com/oklog/oklog)
+
+# github.com/oklog/run
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/oklog/run
+
+# github.com/oklog/ulid
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/goph/idgen/ulidgen
+github.com/oklog/ulid
+
+# github.com/olekukonko/tablewriter
+github.com/sagikazarmark/modern-go-application/internal/app/todocli/command
+github.com/olekukonko/tablewriter
+
+# github.com/onsi/ginkgo
+(main module does not need module github.com/onsi/ginkgo)
+
+# github.com/onsi/gomega
+(main module does not need module github.com/onsi/gomega)
+
+# github.com/op/go-logging
+(main module does not need module github.com/op/go-logging)
+
+# github.com/opentracing-contrib/go-observer
+(main module does not need module github.com/opentracing-contrib/go-observer)
+
+# github.com/opentracing/basictracer-go
+(main module does not need module github.com/opentracing/basictracer-go)
+
+# github.com/opentracing/opentracing-go
+(main module does not need module github.com/opentracing/opentracing-go)
+
+# github.com/openzipkin-contrib/zipkin-go-opentracing
+(main module does not need module github.com/openzipkin-contrib/zipkin-go-opentracing)
+
+# github.com/openzipkin/zipkin-go
+(main module does not need module github.com/openzipkin/zipkin-go)
+
+# github.com/pact-foundation/pact-go
+(main module does not need module github.com/pact-foundation/pact-go)
+
+# github.com/pascaldekloe/goe
+(main module does not need module github.com/pascaldekloe/goe)
+
+# github.com/pborman/uuid
+(main module does not need module github.com/pborman/uuid)
+
+# github.com/pelletier/go-toml
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+github.com/pelletier/go-toml
+
+# github.com/performancecopilot/speed
+(main module does not need module github.com/performancecopilot/speed)
+
+# github.com/pierrec/lz4
+(main module does not need module github.com/pierrec/lz4)
+
+# github.com/pkg/errors
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+emperror.dev/errors
+github.com/pkg/errors
+
+# github.com/pkg/profile
+(main module does not need module github.com/pkg/profile)
+
+# github.com/pmezard/go-difflib
+github.com/sagikazarmark/modern-go-application/internal/platform/database
+github.com/sagikazarmark/modern-go-application/internal/platform/database.test
+github.com/stretchr/testify/assert
+github.com/pmezard/go-difflib/difflib
+
+# github.com/posener/complete
+(main module does not need module github.com/posener/complete)
+
+# github.com/prometheus/client_golang
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/prometheus
+github.com/prometheus/client_golang/prometheus
+
+# github.com/prometheus/client_model
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/prometheus
+github.com/prometheus/client_golang/prometheus
+github.com/prometheus/client_model/go
+
+# github.com/prometheus/common
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/prometheus
+github.com/prometheus/client_golang/prometheus
+github.com/prometheus/common/expfmt
+
+# github.com/prometheus/procfs
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/prometheus
+github.com/prometheus/client_golang/prometheus
+github.com/prometheus/procfs
+
+# github.com/prometheus/statsd_exporter
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/prometheus
+github.com/prometheus/statsd_exporter/pkg/mapper
+
+# github.com/prometheus/tsdb
+(main module does not need module github.com/prometheus/tsdb)
+
+# github.com/rcrowley/go-metrics
+(main module does not need module github.com/rcrowley/go-metrics)
+
+# github.com/rogpeppe/fastuuid
+(main module does not need module github.com/rogpeppe/fastuuid)
+
+# github.com/rogpeppe/go-internal
+(main module does not need module github.com/rogpeppe/go-internal)
+
+# github.com/rs/cors
+(main module does not need module github.com/rs/cors)
+
+# github.com/russross/blackfriday/v2
+(main module does not need module github.com/russross/blackfriday/v2)
+
+# github.com/ryanuber/columnize
+(main module does not need module github.com/ryanuber/columnize)
+
+# github.com/sagikazarmark/appkit
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/sagikazarmark/appkit/buildinfo
+
+# github.com/sagikazarmark/kitx
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/sagikazarmark/kitx/correlation
+
+# github.com/sagikazarmark/ocmux
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/sagikazarmark/ocmux
+
+# github.com/sagikazarmark/todobackend-go-kit
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/sagikazarmark/todobackend-go-kit/todo
+
+# github.com/sagikazarmark/todobackend-go-kit/api
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/sagikazarmark/todobackend-go-kit/api/todo/v1
+
+# github.com/samuel/go-zookeeper
+(main module does not need module github.com/samuel/go-zookeeper)
+
+# github.com/sean-/seed
+(main module does not need module github.com/sean-/seed)
+
+# github.com/sergi/go-diff
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/99designs/gqlgen/graphql/handler
+github.com/99designs/gqlgen/graphql
+github.com/vektah/gqlparser/v2/ast
+github.com/vektah/gqlparser/v2/ast.test
+github.com/andreyvit/diff
+github.com/sergi/go-diff/diffmatchpatch
+
+# github.com/shurcooL/httpfs
+(main module does not need module github.com/shurcooL/httpfs)
+
+# github.com/shurcooL/sanitized_anchor_name
+(main module does not need module github.com/shurcooL/sanitized_anchor_name)
+
+# github.com/shurcooL/vfsgen
+(main module does not need module github.com/shurcooL/vfsgen)
+
+# github.com/sirupsen/logrus
+github.com/sagikazarmark/modern-go-application/internal/platform/log
+github.com/sirupsen/logrus
+
+# github.com/smartystreets/assertions
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+gopkg.in/ini.v1
+gopkg.in/ini.v1.test
+github.com/smartystreets/goconvey/convey
+github.com/smartystreets/assertions
+
+# github.com/smartystreets/goconvey
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+gopkg.in/ini.v1
+gopkg.in/ini.v1.test
+github.com/smartystreets/goconvey/convey
+
+# github.com/soheilhy/cmux
+(main module does not need module github.com/soheilhy/cmux)
+
+# github.com/sony/gobreaker
+(main module does not need module github.com/sony/gobreaker)
+
+# github.com/spaolacci/murmur3
+(main module does not need module github.com/spaolacci/murmur3)
+
+# github.com/spf13/afero
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+github.com/spf13/afero
+
+# github.com/spf13/cast
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+github.com/spf13/cast
+
+# github.com/spf13/cobra
+github.com/sagikazarmark/modern-go-application/cmd/todocli
+github.com/spf13/cobra
+
+# github.com/spf13/jwalterweatherman
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+github.com/spf13/jwalterweatherman
+
+# github.com/spf13/pflag
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/pflag
+
+# github.com/spf13/viper
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+
+# github.com/streadway/amqp
+(main module does not need module github.com/streadway/amqp)
+
+# github.com/streadway/handy
+(main module does not need module github.com/streadway/handy)
+
+# github.com/stretchr/objx
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/AppsFlyer/go-sundheit
+github.com/AppsFlyer/go-sundheit.test
+github.com/stretchr/testify/mock
+github.com/stretchr/objx
+
+# github.com/stretchr/testify
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application.test
+github.com/stretchr/testify/require
+
+# github.com/subosito/gotenv
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+github.com/subosito/gotenv
+
+# github.com/tmc/grpc-websocket-proxy
+(main module does not need module github.com/tmc/grpc-websocket-proxy)
+
+# github.com/ugorji/go
+(main module does not need module github.com/ugorji/go)
+
+# github.com/urfave/cli
+(main module does not need module github.com/urfave/cli)
+
+# github.com/urfave/cli/v2
+(main module does not need module github.com/urfave/cli/v2)
+
+# github.com/vektah/dataloaden
+(main module does not need module github.com/vektah/dataloaden)
+
+# github.com/vektah/gqlparser/v2
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/99designs/gqlgen/graphql/handler
+github.com/vektah/gqlparser/v2/gqlerror
+
+# github.com/xiang90/probing
+(main module does not need module github.com/xiang90/probing)
+
+# github.com/xordataexchange/crypt
+(main module does not need module github.com/xordataexchange/crypt)
+
+# github.com/yuin/goldmark
+(main module does not need module github.com/yuin/goldmark)
+
+# go.etcd.io/bbolt
+(main module does not need module go.etcd.io/bbolt)
+
+# go.etcd.io/etcd
+(main module does not need module go.etcd.io/etcd)
+
+# go.opencensus.io
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+go.opencensus.io/plugin/ocgrpc
+
+# go.uber.org/atomic
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+emperror.dev/errors
+go.uber.org/multierr
+go.uber.org/atomic
+
+# go.uber.org/multierr
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+emperror.dev/errors
+go.uber.org/multierr
+
+# go.uber.org/tools
+(main module does not need module go.uber.org/tools)
+
+# go.uber.org/zap
+(main module does not need module go.uber.org/zap)
+
+# golang.org/x/crypto
+(main module does not need module golang.org/x/crypto)
+
+# golang.org/x/exp
+(main module does not need module golang.org/x/exp)
+
+# golang.org/x/image
+(main module does not need module golang.org/x/image)
+
+# golang.org/x/lint
+(main module does not need module golang.org/x/lint)
+
+# golang.org/x/mobile
+(main module does not need module golang.org/x/mobile)
+
+# golang.org/x/mod
+(main module does not need module golang.org/x/mod)
+
+# golang.org/x/net
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+google.golang.org/grpc
+golang.org/x/net/trace
+
+# golang.org/x/oauth2
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/sagikazarmark/todobackend-go-kit/todo/tododriver
+github.com/sagikazarmark/todobackend-go-kit/todo/tododriver.test
+github.com/sagikazarmark/todobackend-go-kit/api/todo/v1/client/rest
+golang.org/x/oauth2
+
+# golang.org/x/sync
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/ocagent
+google.golang.org/api/support/bundler
+golang.org/x/sync/semaphore
+
+# golang.org/x/sys
+github.com/sagikazarmark/modern-go-application/internal/platform/log
+github.com/sirupsen/logrus
+golang.org/x/sys/unix
+
+# golang.org/x/text
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+github.com/spf13/afero
+golang.org/x/text/transform
+
+# golang.org/x/time
+(main module does not need module golang.org/x/time)
+
+# golang.org/x/tools
+(main module does not need module golang.org/x/tools)
+
+# golang.org/x/xerrors
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+go.opencensus.io/plugin/ocgrpc
+go.opencensus.io/plugin/ocgrpc.test
+github.com/google/go-cmp/cmp/cmpopts
+golang.org/x/xerrors
+
+# google.golang.org/api
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/ocagent
+google.golang.org/api/support/bundler
+
+# google.golang.org/appengine
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/sagikazarmark/todobackend-go-kit/todo/tododriver
+github.com/sagikazarmark/todobackend-go-kit/todo/tododriver.test
+github.com/sagikazarmark/todobackend-go-kit/api/todo/v1/client/rest
+golang.org/x/oauth2
+golang.org/x/oauth2/internal
+google.golang.org/appengine/urlfetch
+
+# google.golang.org/genproto
+github.com/sagikazarmark/modern-go-application/internal/app/todocli/command
+google.golang.org/genproto/googleapis/rpc/errdetails
+
+# google.golang.org/grpc
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+google.golang.org/grpc
+
+# google.golang.org/protobuf
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+github.com/sagikazarmark/todobackend-go-kit/api/todo/v1
+google.golang.org/protobuf/reflect/protoreflect
+
+# gopkg.in/alecthomas/kingpin.v2
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+contrib.go.opencensus.io/exporter/prometheus
+github.com/prometheus/statsd_exporter/pkg/mapper
+github.com/prometheus/common/log
+gopkg.in/alecthomas/kingpin.v2
+
+# gopkg.in/check.v1
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+gopkg.in/yaml.v2
+gopkg.in/yaml.v2.test
+gopkg.in/check.v1
+
+# gopkg.in/cheggaaa/pb.v1
+(main module does not need module gopkg.in/cheggaaa/pb.v1)
+
+# gopkg.in/errgo.v2
+(main module does not need module gopkg.in/errgo.v2)
+
+# gopkg.in/fsnotify.v1
+(main module does not need module gopkg.in/fsnotify.v1)
+
+# gopkg.in/gcfg.v1
+(main module does not need module gopkg.in/gcfg.v1)
+
+# gopkg.in/ini.v1
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+gopkg.in/ini.v1
+
+# gopkg.in/resty.v1
+(main module does not need module gopkg.in/resty.v1)
+
+# gopkg.in/tomb.v1
+(main module does not need module gopkg.in/tomb.v1)
+
+# gopkg.in/warnings.v0
+(main module does not need module gopkg.in/warnings.v0)
+
+# gopkg.in/yaml.v2
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+github.com/spf13/viper
+gopkg.in/yaml.v2
+
+# gopkg.in/yaml.v3
+github.com/sagikazarmark/modern-go-application/internal/platform/database
+github.com/sagikazarmark/modern-go-application/internal/platform/database.test
+github.com/stretchr/testify/assert
+gopkg.in/yaml.v3
+
+# honnef.co/go/tools
+(main module does not need module honnef.co/go/tools)
+
+# logur.dev/adapter/logrus
+github.com/sagikazarmark/modern-go-application/internal/platform/log
+logur.dev/adapter/logrus
+
+# logur.dev/integration/watermill
+github.com/sagikazarmark/modern-go-application/internal/app/mga
+logur.dev/integration/watermill
+
+# logur.dev/logur
+github.com/sagikazarmark/modern-go-application/cmd/modern-go-application
+logur.dev/logur
+
+# rsc.io/binaryregexp
+(main module does not need module rsc.io/binaryregexp)
+
+# rsc.io/quote/v3
+(main module does not need module rsc.io/quote/v3)
+
+# rsc.io/sampler
+(main module does not need module rsc.io/sampler)
+
+# sigs.k8s.io/yaml
+(main module does not need module sigs.k8s.io/yaml)
+
+# sourcegraph.com/sourcegraph/appdash
+(main module does not need module sourcegraph.com/sourcegraph/appdash)
+
+# sourcegraph.com/sourcegraph/appdash-data
+(main module does not need module sourcegraph.com/sourcegraph/appdash-data)
