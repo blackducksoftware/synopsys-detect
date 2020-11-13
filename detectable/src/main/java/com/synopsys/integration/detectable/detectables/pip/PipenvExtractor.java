@@ -29,9 +29,9 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectables.pip.model.NameVersionCodeLocation;
 import com.synopsys.integration.detectable.detectables.pip.model.PipFreeze;
 import com.synopsys.integration.detectable.detectables.pip.model.PipenvGraph;
-import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipEnvJsonGraphParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvFreezeParser;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipenvTransformer;
@@ -45,53 +45,53 @@ public class PipenvExtractor {
     private final PipenvFreezeParser pipenvFreezeParser;
     private final PipEnvJsonGraphParser pipEnvJsonGraphParser;
 
-    public PipenvExtractor(final DetectableExecutableRunner executableRunner, final PipenvTransformer pipenvTransformer, final PipenvFreezeParser pipenvFreezeParser, final PipEnvJsonGraphParser pipEnvJsonGraphParser) {
+    public PipenvExtractor(DetectableExecutableRunner executableRunner, PipenvTransformer pipenvTransformer, PipenvFreezeParser pipenvFreezeParser, PipEnvJsonGraphParser pipEnvJsonGraphParser) {
         this.executableRunner = executableRunner;
         this.pipenvTransformer = pipenvTransformer;
         this.pipenvFreezeParser = pipenvFreezeParser;
         this.pipEnvJsonGraphParser = pipEnvJsonGraphParser;
     }
 
-    public Extraction extract(final File directory, final File pythonExe, final File pipenvExe, final File setupFile, final String providedProjectName, final String providedProjectVersionName, final boolean includeOnlyProjectTree) {
-        final Extraction extraction;
+    public Extraction extract(File directory, File pythonExe, File pipenvExe, File setupFile, String providedProjectName, String providedProjectVersionName, boolean includeOnlyProjectTree) {
+        Extraction extraction;
 
         try {
-            final String projectName = resolveProjectName(directory, pythonExe, setupFile, providedProjectName);
-            final String projectVersionName = resolveProjectVersionName(directory, pythonExe, setupFile, providedProjectVersionName);
+            String projectName = resolveProjectName(directory, pythonExe, setupFile, providedProjectName);
+            String projectVersionName = resolveProjectVersionName(directory, pythonExe, setupFile, providedProjectVersionName);
 
-            final ExecutableOutput pipFreezeOutput = executableRunner.execute(directory, pipenvExe, Arrays.asList("run", "pip", "freeze"));
-            final ExecutableOutput graphOutput = executableRunner.execute(directory, pipenvExe, Arrays.asList("graph", "--bare", "--json-tree"));
+            ExecutableOutput pipFreezeOutput = executableRunner.execute(directory, pipenvExe, Arrays.asList("run", "pip", "freeze"));
+            ExecutableOutput graphOutput = executableRunner.execute(directory, pipenvExe, Arrays.asList("graph", "--bare", "--json-tree"));
 
-            final PipFreeze pipFreeze = pipenvFreezeParser.parse(pipFreezeOutput.getStandardOutputAsList());
-            final PipenvGraph pipenvGraph = pipEnvJsonGraphParser.parse(graphOutput.getStandardOutput());
-            final PipenvResult result = pipenvTransformer.transform(projectName, projectVersionName, pipFreeze, pipenvGraph, includeOnlyProjectTree);
+            PipFreeze pipFreeze = pipenvFreezeParser.parse(pipFreezeOutput.getStandardOutputAsList());
+            PipenvGraph pipenvGraph = pipEnvJsonGraphParser.parse(graphOutput.getStandardOutput());
+            NameVersionCodeLocation result = pipenvTransformer.transform(projectName, projectVersionName, pipFreeze, pipenvGraph, includeOnlyProjectTree);
 
             return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             extraction = new Extraction.Builder().exception(e).build();
         }
 
         return extraction;
     }
 
-    private String resolveProjectName(final File directory, final File pythonExe, final File setupFile, final String providedProjectName) throws ExecutableRunnerException {
+    private String resolveProjectName(File directory, File pythonExe, File setupFile, String providedProjectName) throws ExecutableRunnerException {
         String projectName = providedProjectName;
 
         if (StringUtils.isBlank(projectName) && setupFile != null && setupFile.exists()) {
-            final List<String> arguments = Arrays.asList(setupFile.getAbsolutePath(), "--name");
-            final List<String> output = executableRunner.execute(directory, pythonExe, arguments).getStandardOutputAsList();
+            List<String> arguments = Arrays.asList(setupFile.getAbsolutePath(), "--name");
+            List<String> output = executableRunner.execute(directory, pythonExe, arguments).getStandardOutputAsList();
             projectName = output.get(output.size() - 1).replace('_', '-').trim();
         }
 
         return projectName;
     }
 
-    private String resolveProjectVersionName(final File directory, final File pythonExe, final File setupFile, final String providedProjectVersionName) throws ExecutableRunnerException {
+    private String resolveProjectVersionName(File directory, File pythonExe, File setupFile, String providedProjectVersionName) throws ExecutableRunnerException {
         String projectVersionName = providedProjectVersionName;
 
         if (StringUtils.isBlank(projectVersionName) && setupFile != null && setupFile.exists()) {
-            final List<String> arguments = Arrays.asList(setupFile.getAbsolutePath(), "--version");
-            final List<String> output = executableRunner.execute(directory, pythonExe, arguments).getStandardOutputAsList();
+            List<String> arguments = Arrays.asList(setupFile.getAbsolutePath(), "--version");
+            List<String> output = executableRunner.execute(directory, pythonExe, arguments).getStandardOutputAsList();
             projectVersionName = output.get(output.size() - 1).trim();
         }
 

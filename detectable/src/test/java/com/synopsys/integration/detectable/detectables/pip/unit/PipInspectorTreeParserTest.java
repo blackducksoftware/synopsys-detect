@@ -34,7 +34,7 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.UnitTest;
-import com.synopsys.integration.detectable.detectables.pip.model.PipenvResult;
+import com.synopsys.integration.detectable.detectables.pip.model.NameVersionCodeLocation;
 import com.synopsys.integration.detectable.detectables.pip.parser.PipInspectorTreeParser;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
@@ -49,7 +49,7 @@ public class PipInspectorTreeParserTest {
 
     @Test
     public void validTest() {
-        final List<String> pipInspectorOutput = Arrays.asList(
+        List<String> pipInspectorOutput = Arrays.asList(
             "projectName==projectVersionName",
             "   with-dashes==1.0.0",
             "   Uppercase==2.0.0",
@@ -57,12 +57,12 @@ public class PipInspectorTreeParserTest {
             "   test==4.0.0"
         );
 
-        final Optional<PipenvResult> validParse = parser.parse(pipInspectorOutput, "");
+        Optional<NameVersionCodeLocation> validParse = parser.parse(pipInspectorOutput, "");
         Assertions.assertTrue(validParse.isPresent());
         Assertions.assertEquals("projectName", validParse.get().getProjectName());
         Assertions.assertEquals("projectVersionName", validParse.get().getProjectVersion());
 
-        final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, validParse.get().getCodeLocation().getDependencyGraph());
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, validParse.get().getCodeLocation().getDependencyGraph());
         graphAssert.hasRootDependency("with-dashes", "1.0.0");
         graphAssert.hasRootDependency("Uppercase", "2.0.0");
         graphAssert.hasRootDependency("test", "4.0.0");
@@ -73,20 +73,20 @@ public class PipInspectorTreeParserTest {
 
     @Test
     public void invalidParseTest() {
-        final List<String> invalidText = new ArrayList<>();
+        List<String> invalidText = new ArrayList<>();
         invalidText.add("i am not a valid file");
         invalidText.add("the status should be optional.empty()");
-        final Optional<PipenvResult> invalidParse = parser.parse(invalidText, "");
+        Optional<NameVersionCodeLocation> invalidParse = parser.parse(invalidText, "");
         Assertions.assertFalse(invalidParse.isPresent());
     }
 
     @Test
     public void errorTest() {
-        final List<String> invalidText = new ArrayList<>();
+        List<String> invalidText = new ArrayList<>();
         invalidText.add(PipInspectorTreeParser.UNKNOWN_PACKAGE_PREFIX + "probably_an_internal_dependency_PY");
         invalidText.add(PipInspectorTreeParser.UNPARSEABLE_REQUIREMENTS_PREFIX + "/not/a/real/path/encrypted/requirements.txt");
         invalidText.add(PipInspectorTreeParser.UNKNOWN_REQUIREMENTS_PREFIX + "/not/a/real/path/requirements.txt");
-        final Optional<PipenvResult> invalidParse = parser.parse(invalidText, "");
+        Optional<NameVersionCodeLocation> invalidParse = parser.parse(invalidText, "");
         Assertions.assertFalse(invalidParse.isPresent());
     }
 }
