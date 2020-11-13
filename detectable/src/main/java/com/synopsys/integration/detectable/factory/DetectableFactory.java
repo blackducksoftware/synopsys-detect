@@ -86,6 +86,11 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Clan
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockExtractor;
 import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockParser;
+import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliCodeLocationPackager;
+import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
+import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractor;
+import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractorOptions;
+import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliExtractor;
@@ -325,6 +330,10 @@ public class DetectableFactory {
         return new MavenParseDetectable(environment, fileFinder, mavenParseExtractor(), mavenParseOptions);
     }
 
+    public ConanCliDetectable createConanCliDetectable(DetectableEnvironment environment, ConanResolver conanResolver, ConanCliExtractorOptions conanCliExtractorOptions) {
+        return new ConanCliDetectable(environment, fileFinder, conanResolver, conanCliExtractor(), conanCliExtractorOptions);
+    }
+
     public NpmCliDetectable createNpmCliDetectable(DetectableEnvironment environment, NpmResolver npmResolver, NpmCliExtractorOptions npmCliExtractorOptions) {
         return new NpmCliDetectable(environment, fileFinder, npmResolver, npmCliExtractor(), npmPackageJsonDiscoverer(), npmCliExtractorOptions);
     }
@@ -556,8 +565,16 @@ public class DetectableFactory {
         return new MavenCodeLocationPackager(externalIdFactory);
     }
 
+    private ConanCliCodeLocationPackager conanCodeLocationPackager() {
+        return new ConanCliCodeLocationPackager(externalIdFactory);
+    }
+
     private MavenCliExtractor mavenCliExtractor() {
         return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager());
+    }
+
+    private ConanCliExtractor conanCliExtractor() {
+        return new ConanCliExtractor(executableRunner, conanCodeLocationPackager());
     }
 
     private NpmCliParser npmCliDependencyFinder() {

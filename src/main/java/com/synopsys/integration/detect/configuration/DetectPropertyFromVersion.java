@@ -41,9 +41,10 @@ public enum DetectPropertyFromVersion {
     VERSION_6_1_0("6.1.0"),
     VERSION_6_2_0("6.2.0"),
     VERSION_6_4_0("6.4.0"),
-    VERSION_6_5_0("6.5.0");
+    VERSION_6_5_0("6.5.0"),
+    VERSION_6_8_0("6.8.0");
 
-    private String version;
+    private final String version;
 
     DetectPropertyFromVersion(String version) {
         this.version = version;

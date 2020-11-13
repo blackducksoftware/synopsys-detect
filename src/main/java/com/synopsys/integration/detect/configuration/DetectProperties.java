@@ -207,6 +207,12 @@ public class DetectProperties {
             .setHelp("The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN);
 
+    public static final DetectProperty<NullablePathProperty> DETECT_CONAN_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.conan.path"))
+            .setInfo("Bazel Executable", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("The path to the Bazel executable.")
+            .setGroups(DetectGroup.BAZEL, DetectGroup.GLOBAL);
+    
     public static final DetectProperty<NullablePathProperty> DETECT_BDIO_OUTPUT_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.bdio.output.path"))
             .setInfo("BDIO Output Directory", DetectPropertyFromVersion.VERSION_3_0_0)

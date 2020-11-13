@@ -97,10 +97,10 @@ import com.synopsys.integration.rest.proxy.ProxyInfoBuilder;
 
 public class DetectConfigurationFactory {
 
-    private PropertyConfiguration detectConfiguration;
-    private PathResolver pathResolver;
+    private final PropertyConfiguration detectConfiguration;
+    private final PathResolver pathResolver;
 
-    public DetectConfigurationFactory(final PropertyConfiguration detectConfiguration, final PathResolver pathResolver) {
+    public DetectConfigurationFactory(PropertyConfiguration detectConfiguration, PathResolver pathResolver) {
         this.detectConfiguration = detectConfiguration;
         this.pathResolver = pathResolver;
     }
@@ -477,6 +477,7 @@ public class DetectConfigurationFactory {
             getValue(DetectProperties.DETECT_PYTHON_PYTHON3),
             getPathOrNull(DetectProperties.DETECT_BASH_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_BAZEL_PATH.getProperty()),
+            getPathOrNull(DetectProperties.DETECT_CONAN_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CONDA_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CPAN_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CPANM_PATH.getProperty()),

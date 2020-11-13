@@ -30,6 +30,7 @@ public enum DetectorType {
     BITBAKE,
     CARGO,
     COCOAPODS,
+    CONAN_CLI,
     CONDA,
     CPAN,
     CRAN,
