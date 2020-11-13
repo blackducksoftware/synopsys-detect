@@ -67,6 +67,10 @@ public class GoModCommandExecutor {
         return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "mod", "graph");
     }
 
+    List<String> generateGoModWhyOutput(File directory, File goExe) throws ExecutableRunnerException, DetectableException {
+        return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "mod", "why", "-m", "all");
+    }
+
     private List<String> execute(File directory, File goExe, String failureMessage, String... arguments) throws DetectableException, ExecutableRunnerException {
         ExecutableOutput output = executableRunner.execute(directory, goExe, arguments);
 

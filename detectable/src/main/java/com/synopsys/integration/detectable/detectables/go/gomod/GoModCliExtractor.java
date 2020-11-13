@@ -25,15 +25,15 @@ package com.synopsys.integration.detectable.detectables.go.gomod;
 import java.io.File;
 import java.util.List;
 
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class GoModCliExtractor {
     private final GoModCommandExecutor goModCommandExecutor;
     private final GoModGraphTransformer goModGraphTransformer;
     private final GoModGraphParser goModGraphParser;
 
-    public GoModCliExtractor(final GoModCommandExecutor executor, GoModGraphParser goModGraphParser, GoModGraphTransformer goModGraphTransformer) {
+    public GoModCliExtractor(GoModCommandExecutor executor, GoModGraphParser goModGraphParser, GoModGraphTransformer goModGraphTransformer) {
         this.goModGraphParser = goModGraphParser;
         this.goModCommandExecutor = executor;
         this.goModGraphTransformer = goModGraphTransformer;
@@ -44,8 +44,9 @@ public class GoModCliExtractor {
             List<String> listOutput = goModCommandExecutor.generateGoListOutput(directory, goExe);
             List<String> listUJsonOutput = goModCommandExecutor.generateGoListUJsonOutput(directory, goExe);
             List<String> modGraphOutput = goModCommandExecutor.generateGoModGraphOutput(directory, goExe);
+            List<String> modWhyOutput = goModCommandExecutor.generateGoModWhyOutput(directory, goExe);
             List<String> finalModGraphOutput = goModGraphTransformer.transformGoModGraphOutput(modGraphOutput, listUJsonOutput);
-            final List<CodeLocation> codeLocations = goModGraphParser.parseListAndGoModGraph(listOutput, finalModGraphOutput);
+            List<CodeLocation> codeLocations = goModGraphParser.parseListAndGoModGraph(listOutput, finalModGraphOutput);
             return new Extraction.Builder().success(codeLocations).build();//no project info - hoping git can help with that.
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();

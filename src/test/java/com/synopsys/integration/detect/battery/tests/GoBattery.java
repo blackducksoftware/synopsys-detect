@@ -32,7 +32,7 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 public class GoBattery {
     @Test
     void lock() {
-        final BatteryTest test = new BatteryTest("dep-lock");
+        BatteryTest test = new BatteryTest("dep-lock");
         test.sourceDirectoryNamed("rooms");
         test.sourceFileFromResource("Gopkg.lock");
         test.git("https://github.com/thenrich/rooms", "master");
@@ -42,7 +42,7 @@ public class GoBattery {
 
     @Test
     void conf() {
-        final BatteryTest test = new BatteryTest("go_vndr-lock");
+        BatteryTest test = new BatteryTest("go_vndr-lock");
         test.sourceDirectoryNamed("linux-vndr");
         test.sourceFileFromResource("vendor.conf");
         test.git("https://github.com/moby/moby.git", "master");
@@ -53,6 +53,16 @@ public class GoBattery {
     @Test
     void mod() {
         BatteryTest test = new BatteryTest("go-mod");
+        test.executableFromResourceFiles(DetectProperties.DETECT_GO_PATH.getProperty(), "go-list.xout", "go-version.xout", "go-list-u-json.xout", "go-mod-graph.xout");
+        test.sourceDirectoryNamed("source");
+        test.sourceFileFromResource("go.mod");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void modUnlinked() {
+        BatteryTest test = new BatteryTest("go-mod-unlinked", "go-mod/go-unlinked-dependencies");
         test.executableFromResourceFiles(DetectProperties.DETECT_GO_PATH.getProperty(), "go-list.xout", "go-version.xout", "go-list-u-json.xout", "go-mod-graph.xout");
         test.sourceDirectoryNamed("source");
         test.sourceFileFromResource("go.mod");
