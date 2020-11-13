@@ -1,5 +1,13 @@
 package com.synopsys.integration.detectable.detectables.conan.cli;
 
 public class ConanCliExtractorOptions {
-    // TODO path to conan goes here?
+    private final boolean includeDevDependencies;
+
+    public ConanCliExtractorOptions(boolean includeDevDependencies) {
+        this.includeDevDependencies = includeDevDependencies;
+    }
+
+    public boolean shouldIncludeDevDependencies() {
+        return includeDevDependencies;
+    }
 }

@@ -7,12 +7,14 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class ConanCliCodeLocationPackager {
     private final ExternalIdFactory externalIdFactory;
+    private final ConanInfoParser conanInfoParser;
 
-    public ConanCliCodeLocationPackager(ExternalIdFactory externalIdFactory) {
+    public ConanCliCodeLocationPackager(ExternalIdFactory externalIdFactory, ConanInfoParser conanInfoParser) {
         this.externalIdFactory = externalIdFactory;
+        this.conanInfoParser = conanInfoParser;
     }
 
     public List<ConanParseResult> extractCodeLocations(String sourcePath, List<String> conanOutput) {
-        return Arrays.asList(new ConanParseResult());
+        return Arrays.asList(conanInfoParser.generateCodeLocation("tbd conan info output string"));
     }
 }

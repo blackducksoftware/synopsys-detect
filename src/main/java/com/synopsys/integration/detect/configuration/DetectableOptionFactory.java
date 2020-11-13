@@ -180,8 +180,8 @@ public class DetectableOptionFactory {
     }
 
     public ConanCliExtractorOptions createConanCliOptions() {
-        // TODO path to conan goes here?
-        return new ConanCliExtractorOptions();
+        // TODO need a property for dev (build_requires) dependencies
+        return new ConanCliExtractorOptions(true);
     }
 
     public NpmCliExtractorOptions createNpmCliExtractorOptions() {
