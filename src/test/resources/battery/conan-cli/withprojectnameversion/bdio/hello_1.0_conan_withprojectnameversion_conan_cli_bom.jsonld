@@ -1,0 +1,63 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "tbdproject/tbdprojectversion/conan-minimal conan_cli/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-6.8.0-SNAPSHOT",
+        "Tool: IntegrationBdio-22.0.0"
+      ],
+      "spdx:created": "2020-11-13T20:33:04.960Z"
+    },
+    "@id": "uuid:01fe4899-0d3a-4788-90f3-472b7e39f6a6",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "tbdproject",
+    "revision": "tbdprojectversion",
+    "@id": "http:detect/conan-minimal",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "detect",
+      "externalId": "conan-minimal",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "detect",
+          "separator": "/"
+        },
+        "pieces": [
+          "conan-minimal",
+          null
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:conan/tbdpkg/1.0%40user%2Fchannel%23rrev%3Apkgid%23pkgrev",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "tbdpkg",
+    "revision": "tbdpkgversion",
+    "@id": "http:conan/tbdpkg/1.0%40user%2Fchannel%23rrev%3Apkgid%23pkgrev",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "tbdpkg/1.0@user/channel#rrev:pkgid#pkgrev",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "tbdpkg",
+          "1.0@user/channel#rrev:pkgid#pkgrev"
+        ]
+      }
+    },
+    "relationship": []
+  }
+]

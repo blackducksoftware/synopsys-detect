@@ -2,8 +2,16 @@ package com.synopsys.integration.detectable.detectables.conan.cli.graph;
 
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ConanGraphNode {
-    private final String ref; // conanfile.txt or package/version[@user/channel]
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    // if rootNode: conanfile.{txt,py}[ (projectname/version)]
+    // else       : package/version[@user/channel]
+    private final String ref;
+
     private final String recipeRevision;
     private final String packageId;
     private final String packageRevision;
@@ -19,6 +27,17 @@ public class ConanGraphNode {
         this.requiresRefs = requiresRefs;
         this.buildRequiresRefs = buildRequiresRefs;
         this.requiredByRefs = requiredByRefs;
+    }
+
+    public boolean isRootNode() {
+        if (ref.startsWith("conanfile.") && CollectionUtils.isEmpty(requiredByRefs)) {
+            return true;
+        }
+        if (CollectionUtils.isEmpty(requiredByRefs)) {
+            logger.warn(String.format("Node %s doesn't look like a root node, but its requiredBy list is empty; treating it as a root node"));
+            return true;
+        }
+        return false;
     }
 
     public String getRef() {

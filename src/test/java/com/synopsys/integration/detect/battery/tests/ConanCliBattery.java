@@ -8,13 +8,22 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 
 @Tag("battery")
 public class ConanCliBattery {
-    private static final String CONAN_MINIMAL_OUTPUT_RESOURCE = "conan-info-minimal.xout";
 
     @Test
     void conanMinimal() {
-        BatteryTest test = new BatteryTest("conan-minimal", "conan-cli");
-        test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), CONAN_MINIMAL_OUTPUT_RESOURCE);
+        BatteryTest test = new BatteryTest("conan-minimal", "conan-cli/minimal");
+        test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), "conan-info-minimal.xout");
         test.sourceDirectoryNamed("conan-minimal");
+        test.sourceFileNamed("conanfile.txt");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void conanWithProjectNameVersion() {
+        BatteryTest test = new BatteryTest("conan-withprojectnameversion", "conan-cli/withprojectnameversion");
+        test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), "conan-info-withprojectnameversion.xout");
+        test.sourceDirectoryNamed("conan-withprojectnameversion");
         test.sourceFileNamed("conanfile.txt");
         test.expectBdioResources();
         test.run();

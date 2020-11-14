@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.conan.cli;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,26 +13,53 @@ import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectables.conan.cli.graph.ConanGraphNode;
 
 public class ConanInfoParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final ConanInfoNodeParser conanInfoNodeParser;
+
+    public ConanInfoParser(ConanInfoNodeParser conanInfoNodeParser) {
+        this.conanInfoNodeParser = conanInfoNodeParser;
+    }
 
     public ConanParseResult generateCodeLocation(String conanInfoOutput) {
-
+        List<ConanGraphNode> graphNodes = new ArrayList<>();
         List<String> conanInfoOutputLines = Arrays.asList(conanInfoOutput.split("\n"));
         int lineIndex = 0;
         while (lineIndex < conanInfoOutputLines.size()) {
             String line = conanInfoOutputLines.get(lineIndex);
             System.out.println(line);
-            int indentDepth = measureIndentDepth(line);
+            int indentDepth = conanInfoNodeParser.measureIndentDepth(line);
             if (lineIndex > 0 && indentDepth > 0) {
-                int nodeLastLineIndex = parseNode(conanInfoOutputLines, lineIndex - 1);
-                lineIndex = nodeLastLineIndex;
+                ConanInfoNodeParseResult nodeParseResult = conanInfoNodeParser.parseNode(conanInfoOutputLines, lineIndex - 1);
+                graphNodes.add(nodeParseResult.getConanGraphNode());
+                lineIndex = nodeParseResult.getLastParsedLineIndex();
             }
             lineIndex++;
         }
         System.out.printf("Reached end of Conan info output\n");
 
+        Optional<ConanGraphNode> rootNode = graphNodes.stream().filter(ConanGraphNode::isRootNode).findFirst();
+        String projectName = "Unknown";
+        String projectVersion = "Unknown";
+        if (rootNode.isPresent()) {
+            String ref = rootNode.get().getRef();
+            String[] refParts = ref.split("\\s");
+            if (refParts.length == 2) {
+                if (refParts[1].startsWith("(") && refParts[1].endsWith(")")) {
+                    String nameVersion = refParts[1].substring(1, refParts[1].length() - 1);
+                    String[] projectVersionParts = nameVersion.split("/");
+                    if (projectVersionParts.length == 2) {
+                        projectName = projectVersionParts[0];
+                        projectVersion = projectVersionParts[1];
+                    }
+                }
+            } else {
+                projectName = ref;
+                projectVersion = "Unknown";
+            }
+        }
         // TODO eventually should use ExternalIdFactory; doubt it can handle these IDs
         //ExternalIdFactory f;
         List<Dependency> dependencies = new ArrayList<>();
@@ -43,50 +71,6 @@ public class ConanInfoParser {
         MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         dependencyGraph.addChildrenToRoot(dependencies);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
-        return new ConanParseResult("tbdproject", "tbdprojectversion", codeLocation);
-    }
-
-    private int parseNode(List<String> lines, int nodeStartIndex) {
-        String nodeHeaderLine = lines.get(nodeStartIndex);
-        if (nodeHeaderLine.matches(".+ (.+/.+)")) {
-            System.out.printf("Line '%s' has name (name/version)\n", nodeHeaderLine);
-        } else {
-            System.out.printf("Line '%s' has a different format\n", nodeHeaderLine);
-        }
-        for (int i = nodeStartIndex + 1; i < lines.size(); i++) {
-            String nodeBodyLine = lines.get(i);
-            int indentDepth = measureIndentDepth(nodeBodyLine);
-            if (indentDepth > 0) {
-                System.out.printf("Slewing past node line '%s'\n", nodeBodyLine);
-            } else {
-                System.out.printf("Reached end of node\n");
-                return i - 1;
-            }
-        }
-        System.out.printf("Reached end of output\n");
-        return lines.size() - 1;
-    }
-
-    private int measureIndentDepth(String line) {
-        int leadingSpaceCount = countLeadingSpaces(line);
-        if ((leadingSpaceCount % 4) != 0) {
-            logger.warn(String.format("Leading space count for '%s' is %d; expected it to be divisible by 4",
-                line, leadingSpaceCount));
-        }
-        return countLeadingSpaces(line) / 4;
-    }
-
-    private int countLeadingSpaces(String line) {
-        int leadingSpaceCount = 0;
-        for (int i = 0; i < line.length(); i++) {
-            if (line.charAt(i) == ' ') {
-                leadingSpaceCount++;
-            } else if (line.charAt(i) == '\t') {
-                leadingSpaceCount += 4;
-            } else {
-                break;
-            }
-        }
-        return leadingSpaceCount;
+        return new ConanParseResult(projectName, projectVersion, codeLocation);
     }
 }

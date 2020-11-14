@@ -89,6 +89,7 @@ import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockP
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractor;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractorOptions;
+import com.synopsys.integration.detectable.detectables.conan.cli.ConanInfoNodeParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanInfoParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
@@ -570,7 +571,7 @@ public class DetectableFactory {
     }
 
     private ConanCliExtractor conanCliExtractor() {
-        return new ConanCliExtractor(executableRunner, new ConanInfoParser());
+        return new ConanCliExtractor(executableRunner, new ConanInfoParser(new ConanInfoNodeParser()));
     }
 
     private NpmCliParser npmCliDependencyFinder() {
