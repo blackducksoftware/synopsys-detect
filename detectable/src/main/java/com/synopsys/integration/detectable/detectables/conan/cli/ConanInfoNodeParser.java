@@ -1,6 +1,8 @@
 package com.synopsys.integration.detectable.detectables.conan.cli;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +16,19 @@ public class ConanInfoNodeParser {
         ConanGraphNodeBuilder nodeBuilder = new ConanGraphNodeBuilder();
         String nodeHeaderLine = conanInfoOutputLines.get(nodeStartIndex);
         nodeBuilder.setRef(nodeHeaderLine);
+        ///////////////////
+        // Maybe nodeBuilder should do this and also set more fields?
+        // Use node builder to remove code from node so it's a data obj (builder sets root field too)
+        StringTokenizer tokenizer = new StringTokenizer(nodeHeaderLine, " \t(/)");
+        try {
+            System.out.printf("ref token 1: %s\n", tokenizer.nextToken());
+            System.out.printf("ref token 2: %s\n", tokenizer.nextToken());
+            System.out.printf("ref token 3: %s\n", tokenizer.nextToken());
+            System.out.printf("ref token 4: %s\n", tokenizer.nextToken());
+        } catch (NoSuchElementException e) {
+            System.out.printf("ref token: no more elements\n");
+        }
+        ////////////////
         for (int i = nodeStartIndex + 1; i < conanInfoOutputLines.size(); i++) {
             String nodeBodyLine = conanInfoOutputLines.get(i);
             int indentDepth = measureIndentDepth(nodeBodyLine);

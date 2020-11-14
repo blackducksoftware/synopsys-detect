@@ -1,33 +1,33 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "tbdproject/tbdprojectversion/conan-minimal conan_cli/bom",
+    "spdx:name": "hello/1.0/conan-withprojectnameversion conan_cli/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-6.8.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.0"
       ],
-      "spdx:created": "2020-11-13T20:33:04.960Z"
+      "spdx:created": "2020-11-14T18:36:52.087Z"
     },
-    "@id": "uuid:01fe4899-0d3a-4788-90f3-472b7e39f6a6",
+    "@id": "uuid:7125e878-b68d-4cd9-a441-342b1bf821b1",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
-    "name": "tbdproject",
-    "revision": "tbdprojectversion",
-    "@id": "http:detect/conan-minimal",
+    "name": "hello",
+    "revision": "1.0",
+    "@id": "http:detect/conan-withprojectnameversion",
     "@type": "Project",
     "externalIdentifier": {
       "externalSystemTypeId": "detect",
-      "externalId": "conan-minimal",
+      "externalId": "conan-withprojectnameversion",
       "externalIdMetaData": {
         "forge": {
           "name": "detect",
           "separator": "/"
         },
         "pieces": [
-          "conan-minimal",
+          "conan-withprojectnameversion",
           null
         ]
       }
