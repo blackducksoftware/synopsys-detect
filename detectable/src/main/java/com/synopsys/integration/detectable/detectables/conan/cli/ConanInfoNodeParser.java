@@ -1,7 +1,6 @@
 package com.synopsys.integration.detectable.detectables.conan.cli;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
@@ -13,52 +12,49 @@ public class ConanInfoNodeParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public ConanInfoNodeParseResult parseNode(List<String> conanInfoOutputLines, int nodeStartIndex) {
-        ConanGraphNodeBuilder nodeBuilder = new ConanGraphNodeBuilder();
         String nodeHeaderLine = conanInfoOutputLines.get(nodeStartIndex);
+        logger.info(String.format("Parsing: %s", nodeHeaderLine));
+        ConanGraphNodeBuilder nodeBuilder = new ConanGraphNodeBuilder();
         nodeBuilder.setRef(nodeHeaderLine);
-        ///////////////////
-        // Maybe nodeBuilder should do this and also set more fields?
-        // Use node builder to remove code from node so it's a data obj (builder sets root field too)
-        StringTokenizer tokenizer = new StringTokenizer(nodeHeaderLine, " \t(/)");
-        try {
-            System.out.printf("ref token 1: %s\n", tokenizer.nextToken());
-            System.out.printf("ref token 2: %s\n", tokenizer.nextToken());
-            System.out.printf("ref token 3: %s\n", tokenizer.nextToken());
-            System.out.printf("ref token 4: %s\n", tokenizer.nextToken());
-        } catch (NoSuchElementException e) {
-            System.out.printf("ref token: no more elements\n");
-        }
-        ////////////////
+        int bodyLineCount = 0;
         for (int i = nodeStartIndex + 1; i < conanInfoOutputLines.size(); i++) {
             String nodeBodyLine = conanInfoOutputLines.get(i);
             int indentDepth = measureIndentDepth(nodeBodyLine);
-            if ((indentDepth == 1) && (nodeBodyLine.trim().startsWith("ID: "))) {
-                i = parseId(conanInfoOutputLines, i, nodeBuilder);
-            } else if (indentDepth > 0) {
-                System.out.printf("Slewing past node line '%s'\n", nodeBodyLine);
+            if (indentDepth == 0) {
+                if (bodyLineCount == 0) {
+                    System.out.printf("This wasn't a node\n");
+                    return new ConanInfoNodeParseResult(nodeStartIndex);
+                } else {
+                    System.out.printf("Reached end of node\n");
+                    return new ConanInfoNodeParseResult(i - 1, nodeBuilder.build());
+                }
             } else {
-                System.out.printf("Reached end of node\n");
-                return new ConanInfoNodeParseResult(i - 1, nodeBuilder.build());
+                bodyLineCount++;
             }
+            i = parseBodyElement(conanInfoOutputLines, i, nodeBuilder);
         }
         System.out.printf("Reached end of conan info output\n");
         return new ConanInfoNodeParseResult(conanInfoOutputLines.size() - 1, nodeBuilder.build());
     }
 
-    public int measureIndentDepth(String line) {
+    private int parseBodyElement(List<String> conanInfoOutputLines, int bodyElementLineIndex, ConanGraphNodeBuilder nodeBuilder) {
+        StringTokenizer stringTokenizer = new StringTokenizer(conanInfoOutputLines.get(bodyElementLineIndex).trim(), ": ");
+        String key = stringTokenizer.nextToken();
+        if ("ID".equals(key)) {
+            String value = stringTokenizer.nextToken();
+            System.out.printf("Found Package ID: %s\n", value);
+            nodeBuilder.setPackageId(value);
+        }
+        return bodyElementLineIndex;
+    }
+
+    private int measureIndentDepth(String line) {
         int leadingSpaceCount = countLeadingSpaces(line);
         if ((leadingSpaceCount % 4) != 0) {
             logger.warn(String.format("Leading space count for '%s' is %d; expected it to be divisible by 4",
                 line, leadingSpaceCount));
         }
         return countLeadingSpaces(line) / 4;
-    }
-
-    private int parseId(List<String> conanInfoOutputLines, int idIndex, ConanGraphNodeBuilder builder) {
-        String idLine = conanInfoOutputLines.get(idIndex).trim();
-        String[] idLineParts = idLine.split("\\s");
-        builder.setPackageId(idLineParts[1]);
-        return idIndex;
     }
 
     private int countLeadingSpaces(String line) {

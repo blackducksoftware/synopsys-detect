@@ -1,7 +1,7 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "tbdproject/tbdprojectversion/conan-minimal conan_cli/bom",
+    "spdx:name": "Unknown/Unknown/conan-minimal conan_cli/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-6.8.0-SNAPSHOT",
@@ -14,8 +14,8 @@
     "relationship": []
   },
   {
-    "name": "tbdproject",
-    "revision": "tbdprojectversion",
+    "name": "Unknown",
+    "revision": "Unknown",
     "@id": "http:detect/conan-minimal",
     "@type": "Project",
     "externalIdentifier": {

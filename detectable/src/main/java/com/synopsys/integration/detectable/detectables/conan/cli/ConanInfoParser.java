@@ -28,14 +28,11 @@ public class ConanInfoParser {
         List<String> conanInfoOutputLines = Arrays.asList(conanInfoOutput.split("\n"));
         int lineIndex = 0;
         while (lineIndex < conanInfoOutputLines.size()) {
-            String line = conanInfoOutputLines.get(lineIndex);
-            System.out.println(line);
-            int indentDepth = conanInfoNodeParser.measureIndentDepth(line);
-            if (lineIndex > 0 && indentDepth > 0) {
-                ConanInfoNodeParseResult nodeParseResult = conanInfoNodeParser.parseNode(conanInfoOutputLines, lineIndex - 1);
-                graphNodes.add(nodeParseResult.getConanGraphNode());
-                lineIndex = nodeParseResult.getLastParsedLineIndex();
+            ConanInfoNodeParseResult nodeParseResult = conanInfoNodeParser.parseNode(conanInfoOutputLines, lineIndex);
+            if (nodeParseResult.getConanGraphNode().isPresent()) {
+                graphNodes.add(nodeParseResult.getConanGraphNode().get());
             }
+            lineIndex = nodeParseResult.getLastParsedLineIndex();
             lineIndex++;
         }
         System.out.printf("Reached end of Conan info output\n");
@@ -44,20 +41,11 @@ public class ConanInfoParser {
         String projectName = "Unknown";
         String projectVersion = "Unknown";
         if (rootNode.isPresent()) {
-            String ref = rootNode.get().getRef();
-            String[] refParts = ref.split("\\s");
-            if (refParts.length == 2) {
-                if (refParts[1].startsWith("(") && refParts[1].endsWith(")")) {
-                    String nameVersion = refParts[1].substring(1, refParts[1].length() - 1);
-                    String[] projectVersionParts = nameVersion.split("/");
-                    if (projectVersionParts.length == 2) {
-                        projectName = projectVersionParts[0];
-                        projectVersion = projectVersionParts[1];
-                    }
-                }
-            } else {
-                projectName = ref;
-                projectVersion = "Unknown";
+            if (rootNode.get().getName() != null) {
+                projectName = rootNode.get().getName();
+            }
+            if (rootNode.get().getVersion() != null) {
+                projectVersion = rootNode.get().getVersion();
             }
         }
         // TODO eventually should use ExternalIdFactory; doubt it can handle these IDs

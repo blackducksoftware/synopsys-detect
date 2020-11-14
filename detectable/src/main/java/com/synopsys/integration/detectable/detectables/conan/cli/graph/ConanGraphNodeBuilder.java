@@ -1,11 +1,21 @@
 package com.synopsys.integration.detectable.detectables.conan.cli.graph;
 
 import java.util.List;
+import java.util.StringTokenizer;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConanGraphNodeBuilder {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private String ref;
+    private String filename;
+    private String name;
+    private String version;
+    private String user;
+    private String channel;
     private String recipeRevision;
     private String packageId;
     private String packageRevision;
@@ -14,15 +24,8 @@ public class ConanGraphNodeBuilder {
     private List<String> requiredByRefs;
 
     public ConanGraphNodeBuilder setRef(String ref) {
+        ref = ref.trim();
         this.ref = ref;
-        // TODO TEMP
-        if (ref.matches("[^(/]+ ([^/]+/[^/]+)$")) {
-            System.out.printf("Node ref '%s' has name (name/version)\n", ref);
-        } else if (ref.matches("[^/ ]+/[^/ ]+$")) {
-            System.out.printf("Node ref '%s' has pkg name/version\n", ref);
-        } else {
-            System.out.printf("Node ref '%s' has no useful information\n", ref);
-        }
         return this;
     }
 
@@ -60,6 +63,43 @@ public class ConanGraphNodeBuilder {
         if (StringUtils.isBlank(ref)) {
             throw new UnsupportedOperationException("ConanGraphNodeBuilder prerequisites have not been met");
         }
-        return new ConanGraphNode(ref, recipeRevision, packageId, packageRevision, requiresRefs, buildRequiresRefs, requiredByRefs);
+        // if rootNode: conanfile.{txt,py}[ (projectname/version)]
+        // else       : package/version[@user/channel]
+        if (ref.startsWith("conanfile.")) {
+            StringTokenizer tokenizer = new StringTokenizer(ref, " \t()/");
+            filename = tokenizer.nextToken();
+            if (tokenizer.hasMoreTokens()) {
+                name = tokenizer.nextToken();
+                if (tokenizer.hasMoreTokens()) {
+                    version = tokenizer.nextToken();
+                }
+            }
+            logger.info(String.format("filename: %s; name: %s; version: %s", filename, name, version));
+        } else {
+            StringTokenizer tokenizer = new StringTokenizer(ref, "/@");
+            name = tokenizer.nextToken();
+            if (tokenizer.hasMoreTokens()) {
+                version = tokenizer.nextToken();
+                if (tokenizer.hasMoreTokens()) {
+                    user = tokenizer.nextToken();
+                    if (tokenizer.hasMoreTokens()) {
+                        channel = tokenizer.nextToken();
+                    }
+                }
+            }
+            logger.info(String.format("name: %s; version: %s; user: %s; channel: %s", name, version, user, channel));
+        }
+        boolean isRootNode = false;
+        if ((filename != null) && CollectionUtils.isEmpty(requiredByRefs)) {
+            isRootNode = true;
+        } else if (CollectionUtils.isEmpty(requiredByRefs)) {
+            logger.warn(String.format("Node %s doesn't look like a root node, but its requiredBy list is empty; treating it as a non-root node", ref));
+            // TODO this may need to change after requiredBy parsing implemented
+            isRootNode = false;
+        } else {
+            isRootNode = false;
+        }
+        return new ConanGraphNode(ref, filename, name, version, user, channel,
+            recipeRevision, packageId, packageRevision, requiresRefs, buildRequiresRefs, requiredByRefs, isRootNode);
     }
 }
