@@ -14,6 +14,7 @@ import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtracto
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModGraphTransformer;
+import com.synopsys.integration.detectable.detectables.go.gomod.GoModWhyParser;
 import com.synopsys.integration.detectable.detectables.go.gomod.ReplacementDataExtractor;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.executable.ExecutableOutput;
@@ -37,9 +38,10 @@ public class GoModCliExtractorTest {
         Mockito.when(executableRunner.execute(directory, goExe, goModGraphArgs)).thenReturn(goModGraphOutput());
 
         GoModGraphParser goModGraphParser = new GoModGraphParser(new ExternalIdFactory());
+        GoModWhyParser goModWhyParser = new GoModWhyParser();
         GoModCommandExecutor goModCommandExecutor = new GoModCommandExecutor(executableRunner);
         GoModGraphTransformer goModGraphTransformer = new GoModGraphTransformer(new ReplacementDataExtractor(new GsonBuilder().create()));
-        GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModCommandExecutor, goModGraphParser, goModGraphTransformer);
+        GoModCliExtractor goModCliExtractor = new GoModCliExtractor(goModCommandExecutor, goModGraphParser, goModGraphTransformer, goModWhyParser);
 
         boolean wasSuccessful = true;
         Extraction extraction = goModCliExtractor.extract(directory, goExe);
