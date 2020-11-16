@@ -50,7 +50,7 @@ public class GoModCliExtractor {
             List<String> modWhyOutput = goModCommandExecutor.generateGoModWhyOutput(directory, goExe);
             Set<String> moduleExclusionList = goModWhyParser.createModuleExclusionList(modWhyOutput);
             List<String> finalModGraphOutput = goModGraphTransformer.transformGoModGraphOutput(modGraphOutput, listUJsonOutput);
-            List<CodeLocation> codeLocations = goModGraphParser.parseListAndGoModGraph(listOutput, finalModGraphOutput);
+            List<CodeLocation> codeLocations = goModGraphParser.parseListAndGoModGraph(listOutput, finalModGraphOutput, moduleExclusionList);
             return new Extraction.Builder().success(codeLocations).build();//no project info - hoping git can help with that.
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
