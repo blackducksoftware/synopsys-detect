@@ -7,9 +7,9 @@
         "Tool: Detect-6.8.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.0"
       ],
-      "spdx:created": "2020-11-13T20:33:04.960Z"
+      "spdx:created": "2020-11-16T01:14:02.010Z"
     },
-    "@id": "uuid:01fe4899-0d3a-4788-90f3-472b7e39f6a6",
+    "@id": "uuid:4d52f739-3c69-4b2a-a10f-6273ad7f3a8e",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -34,27 +34,227 @@
     },
     "relationship": [
       {
-        "related": "http:conan/tbdpkg/1.0%40user%2Fchannel%23rrev%3Apkgid%23pkgrev",
+        "related": "http:conan/string-view-lite/1.6.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/openssl/1.1.1h",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/pcre/8.41",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/bzip2/1.0.8",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/expat/2.2.10",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/sqlite3/3.33.0",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/zlib/1.2.11",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/fmt/7.1.2",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/poco/1.9.4",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
   {
-    "name": "tbdpkg",
-    "revision": "tbdpkgversion",
-    "@id": "http:conan/tbdpkg/1.0%40user%2Fchannel%23rrev%3Apkgid%23pkgrev",
+    "name": "string-view-lite",
+    "revision": "1.6.0",
+    "@id": "http:conan/string-view-lite/1.6.0",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "conan",
-      "externalId": "tbdpkg/1.0@user/channel#rrev:pkgid#pkgrev",
+      "externalId": "string-view-lite/1.6.0",
       "externalIdMetaData": {
         "forge": {
           "name": "conan",
           "separator": "/"
         },
         "pieces": [
-          "tbdpkg",
-          "1.0@user/channel#rrev:pkgid#pkgrev"
+          "string-view-lite",
+          "1.6.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "openssl",
+    "revision": "1.1.1h",
+    "@id": "http:conan/openssl/1.1.1h",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "openssl/1.1.1h",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "openssl",
+          "1.1.1h"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pcre",
+    "revision": "8.41",
+    "@id": "http:conan/pcre/8.41",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "pcre/8.41",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "pcre",
+          "8.41"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "bzip2",
+    "revision": "1.0.8",
+    "@id": "http:conan/bzip2/1.0.8",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "bzip2/1.0.8",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "bzip2",
+          "1.0.8"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "expat",
+    "revision": "2.2.10",
+    "@id": "http:conan/expat/2.2.10",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "expat/2.2.10",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "expat",
+          "2.2.10"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "sqlite3",
+    "revision": "3.33.0",
+    "@id": "http:conan/sqlite3/3.33.0",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "sqlite3/3.33.0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "sqlite3",
+          "3.33.0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "zlib",
+    "revision": "1.2.11",
+    "@id": "http:conan/zlib/1.2.11",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "zlib/1.2.11",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "zlib",
+          "1.2.11"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "fmt",
+    "revision": "7.1.2",
+    "@id": "http:conan/fmt/7.1.2",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "fmt/7.1.2",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "fmt",
+          "7.1.2"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "poco",
+    "revision": "1.9.4",
+    "@id": "http:conan/poco/1.9.4",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "poco/1.9.4",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "poco",
+          "1.9.4"
         ]
       }
     },

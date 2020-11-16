@@ -24,18 +24,7 @@ public class ConanInfoParser {
     }
 
     public ConanParseResult generateCodeLocation(String conanInfoOutput) {
-        List<ConanGraphNode> graphNodes = new ArrayList<>();
-        List<String> conanInfoOutputLines = Arrays.asList(conanInfoOutput.split("\n"));
-        int lineIndex = 0;
-        while (lineIndex < conanInfoOutputLines.size()) {
-            ConanInfoNodeParseResult nodeParseResult = conanInfoNodeParser.parseNode(conanInfoOutputLines, lineIndex);
-            if (nodeParseResult.getConanGraphNode().isPresent()) {
-                graphNodes.add(nodeParseResult.getConanGraphNode().get());
-            }
-            lineIndex = nodeParseResult.getLastParsedLineIndex();
-            lineIndex++;
-        }
-        System.out.printf("Reached end of Conan info output\n");
+        List<ConanGraphNode> graphNodes = generateGraphNodes(conanInfoOutput);
 
         Optional<ConanGraphNode> rootNode = graphNodes.stream().filter(ConanGraphNode::isRootNode).findFirst();
         String projectName = "Unknown";
@@ -50,15 +39,40 @@ public class ConanInfoParser {
         }
         // TODO eventually should use ExternalIdFactory; doubt it can handle these IDs
         //ExternalIdFactory f;
+        // The KB supports two forms:
+        // <name>/<version>@<user>/<channel>#<recipe_revision>
+        // <name>/<version>@<user>/<channel>#<recipe_revision>:<package_id>#<package_revision>
         List<Dependency> dependencies = new ArrayList<>();
-        ExternalId externalId = new ExternalId(new Forge("/", "conan"));
-        externalId.setName("tbdpkg");
-        externalId.setVersion("1.0@user/channel#rrev:pkgid#pkgrev");
-        Dependency dep = new Dependency("tbdpkg", "tbdpkgversion", externalId);
-        dependencies.add(dep);
+        for (ConanGraphNode node : graphNodes) {
+            if (!node.isRootNode()) {
+                ExternalId externalId = new ExternalId(new Forge("/", "conan"));
+                externalId.setName(node.getName());
+                // appending @user/channel#rrev:pkgid#pkgrev to version seems to work just fine
+                externalId.setVersion(node.getVersion());
+                Dependency dep = new Dependency(node.getName(), node.getVersion(), externalId);
+                dependencies.add(dep);
+            }
+        }
+
         MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         dependencyGraph.addChildrenToRoot(dependencies);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
         return new ConanParseResult(projectName, projectVersion, codeLocation);
+    }
+
+    private List<ConanGraphNode> generateGraphNodes(String conanInfoOutput) {
+        List<ConanGraphNode> graphNodes = new ArrayList<>();
+        List<String> conanInfoOutputLines = Arrays.asList(conanInfoOutput.split("\n"));
+        int lineIndex = 0;
+        while (lineIndex < conanInfoOutputLines.size()) {
+            ConanInfoNodeParseResult nodeParseResult = conanInfoNodeParser.parseNode(conanInfoOutputLines, lineIndex);
+            if (nodeParseResult.getConanGraphNode().isPresent()) {
+                graphNodes.add(nodeParseResult.getConanGraphNode().get());
+            }
+            lineIndex = nodeParseResult.getLastParsedLineIndex();
+            lineIndex++;
+        }
+        System.out.printf("Reached end of Conan info output\n");
+        return graphNodes;
     }
 }
