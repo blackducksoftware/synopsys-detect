@@ -1,5 +1,9 @@
 # Release notes
 
+## Version 6.8.0
+### Resolved issues
+* (IDETECT-2216) Resolved an issue that prevented non-ASCII filenames from being correctly transmitted to Black Duck during a binary scan file upload.
+
 ## Version 6.7.0
 ### Resolved issues
 * (IDETECT-2285) Resolved an issue that could cause Detect to fail to authenticate with Black Duck with the error message "No Bearer token found when authenticating.".
@@ -9,7 +13,7 @@
 * (IDETECT-2216) Resolved an issue that caused non-ASCII characters in binary scan metadata (filename, code location name, project name, and version name) to be converted to '?' characters when submitted to Black Duck.
 * (IDETECT-2291) Reverted replacement data support. Detect will report exactly what gradle reports. This reverts IDETECT-2038, IDETECT-2203.
 * (IDETECT-2241) Resolved an issue where platform dependent cocoapods will throw an exception when they are not installed.
-
+* (IDETECT-2289) Resolved an issue that could cause Black Duck API token-based authorization to fail with "411 Length Required" HTTP status when communicating with Black Duck through a proxy.
 
 ## Version 6.6.0
 ### Changed features
