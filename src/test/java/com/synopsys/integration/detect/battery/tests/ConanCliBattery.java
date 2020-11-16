@@ -28,4 +28,14 @@ public class ConanCliBattery {
         test.expectBdioResources();
         test.run();
     }
+
+    @Test
+    void conanWithUserChannel() {
+        BatteryTest test = new BatteryTest("conan-withuserchannel", "conan-cli/withuserchannel");
+        test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), "conan-info-withuserchannel.xout");
+        test.sourceDirectoryNamed("conan-withuserchannel");
+        test.sourceFileNamed("conanfile.txt");
+        test.expectBdioResources();
+        test.run();
+    }
 }

@@ -28,9 +28,8 @@ public class ConanInfoNodeParser {
                     System.out.printf("Reached end of node\n");
                     return new ConanInfoNodeParseResult(i - 1, nodeBuilder.build());
                 }
-            } else {
-                bodyLineCount++;
             }
+            bodyLineCount++;
             i = parseBodyElement(conanInfoOutputLines, i, nodeBuilder);
         }
         System.out.printf("Reached end of conan info output\n");

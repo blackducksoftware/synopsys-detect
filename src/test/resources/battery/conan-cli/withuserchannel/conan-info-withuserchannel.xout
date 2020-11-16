@@ -1,0 +1,60 @@
+protobuf/3.6.1@bincrafters/stable: Not found in local cache, looking in remotes...
+protobuf/3.6.1@bincrafters/stable: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+protobuf/3.6.1@bincrafters/stable: Downloaded recipe revision 0
+protoc_installer/3.6.1@bincrafters/stable: Not found in local cache, looking in remotes...
+protoc_installer/3.6.1@bincrafters/stable: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+protoc_installer/3.6.1@bincrafters/stable: Downloaded recipe revision 0
+conanfile.txt
+    ID: 5c5788771a85ed2974a31e46ab77c9e2d0dc65b3
+    BuildID: None
+    Requires:
+        protobuf/3.6.1@bincrafters/stable
+    Build Requires:
+        protoc_installer/3.6.1@bincrafters/stable
+protobuf/3.6.1@bincrafters/stable
+    ID: b911f48570f9bb2902d9e83b2b9ebf9d376c8c56
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/bincrafters/conan-protobuf
+    Homepage: https://github.com/protocolbuffers/protobuf
+    License: BSD-3-Clause
+    Author: Bincrafters <bincrafters@gmail.com>
+    Description: Protocol Buffers - Google's data interchange format
+    Topics: conan, protobuf, protocol-buffers, protocol-compiler, serialization, rpc, protocol-compiler
+    Provides: protobuf
+    Recipe: Downloaded
+    Revision: 0
+    Package revision: 0
+    Binary: Download
+    Binary remote: conan-center
+    Creation date: 2019-08-13 12:30:09
+    Required by:
+        conanfile.txt
+        protoc_installer/3.6.1@bincrafters/stable
+protoc_installer/3.6.1@bincrafters/stable
+    ID: 25c81eab3877cbaef5f20ea104197e80631b7664
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/bincrafters/conan-protobuf
+    Homepage: https://github.com/protocolbuffers/protobuf
+    License: BSD-3-Clause
+    Author: Bincrafters <bincrafters@gmail.com>
+    Description: Protocol Buffers - Google's data interchange format
+    Topics: conan, protobuf, protocol-buffers, protocol-compiler, serialization, rpc, protocol-compiler
+    Provides: protoc_installer
+    Recipe: Downloaded
+    Revision: 0
+    Package revision: None
+    Binary: Missing
+    Binary remote: conan-center
+    Creation date: 2019-08-08 07:30:30
+    Required by:
+        conanfile.txt
+    Build Requires:
+        protobuf/3.6.1@bincrafters/stable

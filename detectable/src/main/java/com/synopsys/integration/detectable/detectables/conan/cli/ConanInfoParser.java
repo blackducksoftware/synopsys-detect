@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,17 +27,12 @@ public class ConanInfoParser {
     public ConanParseResult generateCodeLocation(String conanInfoOutput) {
         List<ConanGraphNode> graphNodes = generateGraphNodes(conanInfoOutput);
 
+        // Need to build graph from list
+
         Optional<ConanGraphNode> rootNode = graphNodes.stream().filter(ConanGraphNode::isRootNode).findFirst();
-        String projectName = "Unknown";
-        String projectVersion = "Unknown";
-        if (rootNode.isPresent()) {
-            if (rootNode.get().getName() != null) {
-                projectName = rootNode.get().getName();
-            }
-            if (rootNode.get().getVersion() != null) {
-                projectVersion = rootNode.get().getVersion();
-            }
-        }
+        String projectName = getStringValue(rootNode, ConanGraphNode::getName).orElse("Unknown");
+        String projectVersion = getStringValue(rootNode, ConanGraphNode::getVersion).orElse("Unknown");
+
         // TODO eventually should use ExternalIdFactory; doubt it can handle these IDs
         //ExternalIdFactory f;
         // The KB supports two forms:
@@ -48,7 +44,7 @@ public class ConanInfoParser {
                 ExternalId externalId = new ExternalId(new Forge("/", "conan"));
                 externalId.setName(node.getName());
                 // appending @user/channel#rrev:pkgid#pkgrev to version seems to work just fine
-                externalId.setVersion(node.getVersion());
+                externalId.setVersion(generateExternalIdVersionString(node));
                 Dependency dep = new Dependency(node.getName(), node.getVersion(), externalId);
                 dependencies.add(dep);
             }
@@ -58,6 +54,27 @@ public class ConanInfoParser {
         dependencyGraph.addChildrenToRoot(dependencies);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
         return new ConanParseResult(projectName, projectVersion, codeLocation);
+    }
+
+    private String generateExternalIdVersionString(ConanGraphNode node) {
+        return String.format("%s@%s/%s#%s:%s#%s",
+            node.getVersion(),
+            node.getUser() == null ? "_" : node.getUser(),
+            node.getChannel() == null ? "_" : node.getChannel(),
+            node.getRecipeRevision() == null ? "0" : node.getRecipeRevision(),
+            node.getPackageId() == null ? "0" : node.getPackageId(),
+            node.getPackageRevision() == null ? "0" : node.getPackageRevision());
+    }
+
+    // TODO modify ConanGraphNode to return optional?
+    private Optional<String> getStringValue(Optional<ConanGraphNode> node, Function<ConanGraphNode, String> stringGetter) {
+        if (node.isPresent()) {
+            String value = stringGetter.apply(node.get());
+            if (value != null) {
+                return Optional.of(value);
+            }
+        }
+        return Optional.empty();
     }
 
     private List<ConanGraphNode> generateGraphNodes(String conanInfoOutput) {
