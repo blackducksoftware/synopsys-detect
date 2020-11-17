@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.conan.cli.graph;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -59,9 +60,10 @@ public class ConanGraphNodeBuilder {
         return this;
     }
 
-    public ConanGraphNode build() {
-        if (StringUtils.isBlank(ref)) {
-            throw new UnsupportedOperationException("ConanGraphNodeBuilder prerequisites have not been met");
+    public Optional<ConanGraphNode> build() {
+        if (StringUtils.isBlank(ref) || StringUtils.isBlank(packageId)) {
+            logger.debug("This wasn't a node");
+            return Optional.empty();
         }
         // if rootNode: conanfile.{txt,py}[ (projectname/version)]
         // else       : package/version[@user/channel]
@@ -99,7 +101,8 @@ public class ConanGraphNodeBuilder {
         } else {
             isRootNode = false;
         }
-        return new ConanGraphNode(ref, filename, name, version, user, channel,
+        ConanGraphNode node = new ConanGraphNode(ref, filename, name, version, user, channel,
             recipeRevision, packageId, packageRevision, requiresRefs, buildRequiresRefs, requiredByRefs, isRootNode);
+        return Optional.of(node);
     }
 }

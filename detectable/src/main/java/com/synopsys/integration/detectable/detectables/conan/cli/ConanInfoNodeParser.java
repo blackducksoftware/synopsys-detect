@@ -3,6 +3,7 @@ package com.synopsys.integration.detectable.detectables.conan.cli;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,17 +38,28 @@ public class ConanInfoNodeParser {
     }
 
     private int parseBodyElement(List<String> conanInfoOutputLines, int bodyElementLineIndex, ConanGraphNodeBuilder nodeBuilder) {
-        StringTokenizer stringTokenizer = new StringTokenizer(conanInfoOutputLines.get(bodyElementLineIndex).trim(), ": ");
+        StringTokenizer stringTokenizer = new StringTokenizer(conanInfoOutputLines.get(bodyElementLineIndex).trim(), ":");
         String key = stringTokenizer.nextToken();
-        if ("ID".equals(key)) {
-            String value = stringTokenizer.nextToken();
-            System.out.printf("Found Package ID: %s\n", value);
-            nodeBuilder.setPackageId(value);
+        if (stringTokenizer.hasMoreTokens()) {
+            String value = stringTokenizer.nextToken().trim();
+            if ("ID".equals(key)) {
+                System.out.printf("Found Package ID: %s\n", value);
+                nodeBuilder.setPackageId(value);
+            } else if ("Revision".equals(key)) {
+                System.out.printf("Found Recipe Revision: %s\n", value);
+                nodeBuilder.setRecipeRevision(value);
+            } else if ("Package revision".equals(key)) {
+                System.out.printf("Found Package Revision: %s\n", value);
+                nodeBuilder.setPackageRevision(value);
+            }
         }
         return bodyElementLineIndex;
     }
 
     private int measureIndentDepth(String line) {
+        if (StringUtils.isBlank(line)) {
+            return 0;
+        }
         int leadingSpaceCount = countLeadingSpaces(line);
         if ((leadingSpaceCount % 4) != 0) {
             logger.warn(String.format("Leading space count for '%s' is %d; expected it to be divisible by 4",

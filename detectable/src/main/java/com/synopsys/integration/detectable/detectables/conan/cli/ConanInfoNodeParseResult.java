@@ -13,9 +13,9 @@ public class ConanInfoNodeParseResult {
         this.conanGraphNode = Optional.empty();
     }
 
-    public ConanInfoNodeParseResult(int lastParsedLineIndex, ConanGraphNode conanGraphNode) {
+    public ConanInfoNodeParseResult(int lastParsedLineIndex, Optional<ConanGraphNode> conanGraphNode) {
         this.lastParsedLineIndex = lastParsedLineIndex;
-        this.conanGraphNode = Optional.of(conanGraphNode);
+        this.conanGraphNode = conanGraphNode;
     }
 
     public int getLastParsedLineIndex() {

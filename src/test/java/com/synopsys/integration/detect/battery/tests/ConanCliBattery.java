@@ -38,4 +38,14 @@ public class ConanCliBattery {
         test.expectBdioResources();
         test.run();
     }
+
+    @Test
+    void conanWithRevisions() {
+        BatteryTest test = new BatteryTest("conan-withrevisions", "conan-cli/withrevisions");
+        test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), "conan-info-withrevisions.xout");
+        test.sourceDirectoryNamed("conan-withrevisions");
+        test.sourceFileNamed("conanfile.py");
+        test.expectBdioResources();
+        test.run();
+    }
 }
