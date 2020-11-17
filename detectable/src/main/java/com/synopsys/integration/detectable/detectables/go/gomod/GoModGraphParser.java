@@ -54,14 +54,18 @@ public class GoModGraphParser {
             if (parts.length != 2) {
                 logger.warn("Unknown graph line format: " + line);
             } else {
-                Dependency to = parseDependency(parts[1]);
-                if (rootModule.equals(parts[0])) {
-                    if (!moduleExclusionList.contains(to.getName())) {
+                String fromModule = parts[0];
+                String toModule = parts[1];
+                Dependency to = parseDependency(toModule);
+                boolean includeToDependency = !moduleExclusionList.contains(to.getName());
+                if (rootModule.equals(fromModule)) {
+                    if (includeToDependency) {
                         mutableDependencyGraph.addChildToRoot(to);
                     }
                 } else {
-                    Dependency from = parseDependency(parts[0]);
-                    if (!moduleExclusionList.contains(from.getName())) {
+                    Dependency from = parseDependency(fromModule);
+                    boolean includeFromDependency = !moduleExclusionList.contains(from.getName());
+                    if (includeToDependency && includeFromDependency) {
                         mutableDependencyGraph.addChildWithParent(to, from);
                     }
                 }
