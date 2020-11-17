@@ -7,9 +7,9 @@
         "Tool: Detect-6.8.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.0"
       ],
-      "spdx:created": "2020-11-16T22:24:56.720Z"
+      "spdx:created": "2020-11-17T15:55:41.733Z"
     },
-    "@id": "uuid:1005a21f-c257-4e5b-b370-a8dd4f182130",
+    "@id": "uuid:d6935986-bf16-4149-91cd-63f753a85266",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -34,35 +34,14 @@
     },
     "relationship": [
       {
-        "related": "http:conan/protoc_installer/3.6.1%40bincrafters%2Fstable%230%3A25c81eab3877cbaef5f20ea104197e80631b7664%230",
+        "related": "http:conan/protobuf/3.6.1%40bincrafters%2Fstable%230%3Ab911f48570f9bb2902d9e83b2b9ebf9d376c8c56%230",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:conan/protobuf/3.6.1%40bincrafters%2Fstable%230%3Ab911f48570f9bb2902d9e83b2b9ebf9d376c8c56%230",
+        "related": "http:conan/protoc_installer/3.6.1%40bincrafters%2Fstable%230",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
-  },
-  {
-    "name": "protoc_installer",
-    "revision": "3.6.1",
-    "@id": "http:conan/protoc_installer/3.6.1%40bincrafters%2Fstable%230%3A25c81eab3877cbaef5f20ea104197e80631b7664%230",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "conan",
-      "externalId": "protoc_installer/3.6.1@bincrafters/stable#0:25c81eab3877cbaef5f20ea104197e80631b7664#0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "conan",
-          "separator": "/"
-        },
-        "pieces": [
-          "protoc_installer",
-          "3.6.1@bincrafters/stable#0:25c81eab3877cbaef5f20ea104197e80631b7664#0"
-        ]
-      }
-    },
-    "relationship": []
   },
   {
     "name": "protobuf",
@@ -80,6 +59,27 @@
         "pieces": [
           "protobuf",
           "3.6.1@bincrafters/stable#0:b911f48570f9bb2902d9e83b2b9ebf9d376c8c56#0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "protoc_installer",
+    "revision": "3.6.1",
+    "@id": "http:conan/protoc_installer/3.6.1%40bincrafters%2Fstable%230",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "protoc_installer/3.6.1@bincrafters/stable#0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "protoc_installer",
+          "3.6.1@bincrafters/stable#0"
         ]
       }
     },
