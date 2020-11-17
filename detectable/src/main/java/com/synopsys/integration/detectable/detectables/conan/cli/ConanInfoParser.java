@@ -33,10 +33,16 @@ public class ConanInfoParser {
 
         NameVersion projectNameVersion = deriveProjectNameVersion(graphNodes);
         List<Dependency> dependencies = generateBdioDependencies(graphNodes);
+        CodeLocation codeLocation = generateCodeLocation(dependencies);
+        return new ConanParseResult(projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocation);
+    }
+
+    @NotNull
+    private CodeLocation generateCodeLocation(List<Dependency> dependencies) {
         MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         dependencyGraph.addChildrenToRoot(dependencies);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
-        return new ConanParseResult(projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocation);
+        return codeLocation;
     }
 
     @NotNull
