@@ -33,13 +33,14 @@ public class ExecutableFailedException extends Exception {
     private final ExecutableRunnerException executableException;
 
     public ExecutableFailedException(final Executable executable, final ExecutableRunnerException executableException) {
-        super(executableException);
+        super("An exception occurred running an executable.", executableException);
         this.executableException = executableException;
         this.executable = executable;
         executableOutput = null;
     }
 
     public ExecutableFailedException(final Executable executable, ExecutableOutput executableOutput) {
+        super("An executable returned a non-zero exit code: " + executableOutput.getReturnCode());
         this.executableOutput = executableOutput;
         this.executable = executable;
         executableException = null;
