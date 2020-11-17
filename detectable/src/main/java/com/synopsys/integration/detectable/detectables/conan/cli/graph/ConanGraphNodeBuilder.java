@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.conan.cli.graph;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
@@ -20,9 +21,9 @@ public class ConanGraphNodeBuilder {
     private String recipeRevision;
     private String packageId;
     private String packageRevision;
-    private List<String> requiresRefs;
-    private List<String> buildRequiresRefs;
-    private List<String> requiredByRefs;
+    private final List<String> requiresRefs = new ArrayList<>();
+    private final List<String> buildRequiresRefs = new ArrayList<>();
+    private final List<String> requiredByRefs = new ArrayList<>();
 
     public ConanGraphNodeBuilder setRef(String ref) {
         ref = ref.trim();
@@ -45,22 +46,22 @@ public class ConanGraphNodeBuilder {
         return this;
     }
 
-    public ConanGraphNodeBuilder setRequiresRefs(List<String> requiresRefs) {
-        this.requiresRefs = requiresRefs;
+    public ConanGraphNodeBuilder addRequiresRef(String requiresRef) {
+        this.requiresRefs.add(requiresRef);
         return this;
     }
 
-    public ConanGraphNodeBuilder setBuildRequiresRefs(List<String> buildRequiresRefs) {
-        this.buildRequiresRefs = buildRequiresRefs;
+    public ConanGraphNodeBuilder addBuildRequiresRef(String buildRequiresRef) {
+        this.buildRequiresRefs.add(buildRequiresRef);
         return this;
     }
 
-    public ConanGraphNodeBuilder setRequiredByRefs(List<String> requiredByRefs) {
-        this.requiredByRefs = requiredByRefs;
+    public ConanGraphNodeBuilder addRequiredByRef(String requiredByRef) {
+        this.requiredByRefs.add(requiredByRef);
         return this;
     }
 
-    public Optional<ConanGraphNode> build() {
+    public Optional<ConanNode> build() {
         if (StringUtils.isBlank(ref) || StringUtils.isBlank(packageId)) {
             logger.debug("This wasn't a node");
             return Optional.empty();
@@ -101,7 +102,7 @@ public class ConanGraphNodeBuilder {
         } else {
             isRootNode = false;
         }
-        ConanGraphNode node = new ConanGraphNode(ref, filename, name, version, user, channel,
+        ConanNode node = new ConanNode(ref, filename, name, version, user, channel,
             recipeRevision, packageId, packageRevision, requiresRefs, buildRequiresRefs, requiredByRefs, isRootNode);
         return Optional.of(node);
     }

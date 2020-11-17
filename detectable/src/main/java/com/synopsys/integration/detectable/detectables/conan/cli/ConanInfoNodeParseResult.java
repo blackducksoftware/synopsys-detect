@@ -2,18 +2,18 @@ package com.synopsys.integration.detectable.detectables.conan.cli;
 
 import java.util.Optional;
 
-import com.synopsys.integration.detectable.detectables.conan.cli.graph.ConanGraphNode;
+import com.synopsys.integration.detectable.detectables.conan.cli.graph.ConanNode;
 
 public class ConanInfoNodeParseResult {
     private final int lastParsedLineIndex;
-    private final Optional<ConanGraphNode> conanGraphNode;
+    private final Optional<ConanNode> conanGraphNode;
 
     public ConanInfoNodeParseResult(int lastParsedLineIndex) {
         this.lastParsedLineIndex = lastParsedLineIndex;
         this.conanGraphNode = Optional.empty();
     }
 
-    public ConanInfoNodeParseResult(int lastParsedLineIndex, Optional<ConanGraphNode> conanGraphNode) {
+    public ConanInfoNodeParseResult(int lastParsedLineIndex, Optional<ConanNode> conanGraphNode) {
         this.lastParsedLineIndex = lastParsedLineIndex;
         this.conanGraphNode = conanGraphNode;
     }
@@ -22,7 +22,7 @@ public class ConanInfoNodeParseResult {
         return lastParsedLineIndex;
     }
 
-    public Optional<ConanGraphNode> getConanGraphNode() {
+    public Optional<ConanNode> getConanGraphNode() {
         return conanGraphNode;
     }
 }

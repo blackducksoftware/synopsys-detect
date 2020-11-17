@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public class ConanCliExtractor {
@@ -46,8 +47,13 @@ public class ConanCliExtractor {
         } else if (StringUtils.isNotBlank(standardOutput)) {
             logger.debug("Parsing conan info output.");
             logger.debug(standardOutput);
-            ConanParseResult result = conanInfoParser.generateCodeLocation(standardOutput);
-            return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
+            try {
+                // TODO too many returns?
+                ConanParseResult result = conanInfoParser.generateCodeLocation(standardOutput);
+                return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
+            } catch (IntegrationException e) {
+                return new Extraction.Builder().failure(e.getMessage()).build();
+            }
         } else {
             logger.error("Nothing returned from npm ls -json command");
             return new Extraction.Builder().failure("Npm returned error after running npm ls.").build();

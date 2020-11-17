@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class ConanCliCodeLocationPackager {
     private final ExternalIdFactory externalIdFactory;
@@ -14,7 +15,7 @@ public class ConanCliCodeLocationPackager {
         this.conanInfoParser = conanInfoParser;
     }
 
-    public List<ConanParseResult> extractCodeLocations(String sourcePath, List<String> conanOutput) {
+    public List<ConanParseResult> extractCodeLocations(String sourcePath, List<String> conanOutput) throws IntegrationException {
         return Arrays.asList(conanInfoParser.generateCodeLocation("tbd conan info output string"));
     }
 }
