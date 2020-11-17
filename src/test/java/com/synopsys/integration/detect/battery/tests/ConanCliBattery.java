@@ -48,4 +48,14 @@ public class ConanCliBattery {
         test.expectBdioResources();
         test.run();
     }
+
+    @Test
+    void conanPkgRevOnly() {
+        BatteryTest test = new BatteryTest("conan-pkgrevonly", "conan-cli/pkgrevonly");
+        test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), "conan-info-pkgrevonly.xout");
+        test.sourceDirectoryNamed("conan-pkgrevonly");
+        test.sourceFileNamed("conanfile.txt");
+        test.expectBdioResources();
+        test.run();
+    }
 }

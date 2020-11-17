@@ -27,7 +27,7 @@ public class ConanInfoParser {
     public ConanParseResult generateCodeLocation(String conanInfoOutput) {
         List<ConanGraphNode> graphNodes = generateGraphNodes(conanInfoOutput);
 
-        // Need to build graph from list
+        // TODO Need to build graph from list
 
         Optional<ConanGraphNode> rootNode = graphNodes.stream().filter(ConanGraphNode::isRootNode).findFirst();
         String projectName = getStringValue(rootNode, ConanGraphNode::getName).orElse("Unknown");
@@ -43,7 +43,6 @@ public class ConanInfoParser {
             if (!node.isRootNode()) {
                 ExternalId externalId = new ExternalId(new Forge("/", "conan"));
                 externalId.setName(node.getName());
-                // appending @user/channel#rrev:pkgid#pkgrev to version seems to work just fine
                 externalId.setVersion(generateExternalIdVersionString(node));
                 Dependency dep = new Dependency(node.getName(), node.getVersion(), externalId);
                 dependencies.add(dep);
@@ -57,13 +56,34 @@ public class ConanInfoParser {
     }
 
     private String generateExternalIdVersionString(ConanGraphNode node) {
-        return String.format("%s@%s/%s#%s:%s#%s",
-            node.getVersion(),
-            node.getUser() == null ? "_" : node.getUser(),
-            node.getChannel() == null ? "_" : node.getChannel(),
-            node.getRecipeRevision() == null ? "0" : node.getRecipeRevision(),
-            node.getPackageId() == null ? "0" : node.getPackageId(),
-            node.getPackageRevision() == null ? "0" : node.getPackageRevision());
+        String externalId;
+        if (hasValue(node.getRecipeRevision()) && !hasValue(node.getPackageRevision())) {
+            // generate short form
+            // <name>/<version>@<user>/<channel>#<recipe_revision>
+            externalId = String.format("%s@%s/%s#%s",
+                node.getVersion(),
+                node.getUser() == null ? "_" : node.getUser(),
+                node.getChannel() == null ? "_" : node.getChannel(),
+                node.getRecipeRevision());
+        } else {
+            // generate long form
+            // <name>/<version>@<user>/<channel>#<recipe_revision>:<package_id>#<package_revision>
+            externalId = String.format("%s@%s/%s#%s:%s#%s",
+                node.getVersion(),
+                node.getUser() == null ? "_" : node.getUser(),
+                node.getChannel() == null ? "_" : node.getChannel(),
+                node.getRecipeRevision() == null ? "0" : node.getRecipeRevision(),
+                node.getPackageId() == null ? "0" : node.getPackageId(),
+                node.getPackageRevision() == null ? "0" : node.getPackageRevision());
+        }
+        return externalId;
+    }
+
+    private boolean hasValue(String value) {
+        if ((value == null) || ("None".equals(value))) {
+            return false;
+        }
+        return true;
     }
 
     // TODO modify ConanGraphNode to return optional?
