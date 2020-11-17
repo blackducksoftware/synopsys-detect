@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,7 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.conan.cli.graph.ConanGraphNode;
+import com.synopsys.integration.util.NameVersion;
 
 public class ConanInfoParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -29,10 +31,16 @@ public class ConanInfoParser {
 
         // TODO Need to build graph from list
 
-        Optional<ConanGraphNode> rootNode = graphNodes.stream().filter(ConanGraphNode::isRootNode).findFirst();
-        String projectName = getStringValue(rootNode, ConanGraphNode::getName).orElse("Unknown");
-        String projectVersion = getStringValue(rootNode, ConanGraphNode::getVersion).orElse("Unknown");
+        NameVersion projectNameVersion = deriveProjectNameVersion(graphNodes);
+        List<Dependency> dependencies = generateBdioDependencies(graphNodes);
+        MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        dependencyGraph.addChildrenToRoot(dependencies);
+        CodeLocation codeLocation = new CodeLocation(dependencyGraph);
+        return new ConanParseResult(projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocation);
+    }
 
+    @NotNull
+    private List<Dependency> generateBdioDependencies(List<ConanGraphNode> graphNodes) {
         // TODO eventually should use ExternalIdFactory; doubt it can handle these IDs
         //ExternalIdFactory f;
         // The KB supports two forms:
@@ -48,11 +56,16 @@ public class ConanInfoParser {
                 dependencies.add(dep);
             }
         }
+        return dependencies;
+    }
 
-        MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        dependencyGraph.addChildrenToRoot(dependencies);
-        CodeLocation codeLocation = new CodeLocation(dependencyGraph);
-        return new ConanParseResult(projectName, projectVersion, codeLocation);
+    @NotNull
+    private NameVersion deriveProjectNameVersion(List<ConanGraphNode> graphNodes) {
+        Optional<ConanGraphNode> rootNode = graphNodes.stream().filter(ConanGraphNode::isRootNode).findFirst();
+        String projectName = getStringValue(rootNode, ConanGraphNode::getName).orElse("Unknown");
+        String projectVersion = getStringValue(rootNode, ConanGraphNode::getVersion).orElse("Unknown");
+        NameVersion projectNameVersion = new NameVersion(projectName, projectVersion);
+        return projectNameVersion;
     }
 
     private String generateExternalIdVersionString(ConanGraphNode node) {
