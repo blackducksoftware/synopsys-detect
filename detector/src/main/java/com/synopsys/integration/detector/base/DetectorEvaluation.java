@@ -68,7 +68,7 @@ public class DetectorEvaluation {
         return this.detectorRule;
     }
 
-    public void setExtraction(final Extraction extraction) {
+    public void setExtraction(Extraction extraction) {
         this.extraction = extraction;
     }
 
@@ -76,7 +76,7 @@ public class DetectorEvaluation {
         return extraction;
     }
 
-    public void setExtractionEnvironment(final ExtractionEnvironment extractionEnvironment) {
+    public void setExtractionEnvironment(ExtractionEnvironment extractionEnvironment) {
         this.extractionEnvironment = extractionEnvironment;
     }
 
@@ -108,7 +108,7 @@ public class DetectorEvaluation {
         return isExtractable() && this.discovery != null && this.discovery.getResult() == Discovery.DiscoveryResultType.EXCEPTION;
     }
 
-    public void setSearchable(final DetectorResult searchable) {
+    public void setSearchable(DetectorResult searchable) {
         this.searchable = searchable;
     }
 
@@ -120,7 +120,7 @@ public class DetectorEvaluation {
         return getDetectorResultDescription(searchable).orElse(NO_MESSAGE);
     }
 
-    public void setApplicable(final DetectorResult applicable) {
+    public void setApplicable(DetectorResult applicable) {
         this.applicable = applicable;
     }
 
@@ -128,7 +128,7 @@ public class DetectorEvaluation {
         return isSearchable() && this.applicable != null && this.applicable.getPassed();
     }
 
-    public void setDiscovery(final Discovery discovery) {
+    public void setDiscovery(Discovery discovery) {
         this.discovery = discovery;
     }
 
@@ -140,7 +140,7 @@ public class DetectorEvaluation {
         return getDetectorResultDescription(applicable).orElse(NO_MESSAGE);
     }
 
-    public void setExtractable(final DetectorResult extractable) {
+    public void setExtractable(DetectorResult extractable) {
         this.extractable = extractable;
     }
 
@@ -206,12 +206,12 @@ public class DetectorEvaluation {
         if (extraction.getResult() != Extraction.ExtractionResultType.SUCCESS) {
             if (extraction.getError() instanceof ExecutableFailedException) {
                 ExecutableFailedException failedException = (ExecutableFailedException) extraction.getError();
-                if (failedException.getExecutableOutput() != null && failedException.getExecutableOutput().getReturnCode() != 0) {
-                    return "Failed to execute command, returned non-zero: " + failedException.getExecutable().getExecutableDescription();
+                if (failedException.hasReturnCode()) {
+                    return "Failed to execute command, returned non-zero: " + failedException.getExecutableDescription();
                 } else if (failedException.getExecutableException() != null) {
-                    return "Failed to execute command, " + failedException.getExecutableException().getMessage() + " : " + failedException.getExecutable().getExecutableDescription();
+                    return "Failed to execute command, " + failedException.getExecutableException().getMessage() + " : " + failedException.getExecutableDescription();
                 } else {
-                    return "Failed to execute command, unknown reason: " + failedException.getExecutable().getExecutableDescription();
+                    return "Failed to execute command, unknown reason: " + failedException.getExecutableDescription();
                 }
             } else {
                 return "See logs for further explanation";
@@ -231,7 +231,7 @@ public class DetectorEvaluation {
         return Optional.empty();
     }
 
-    private Optional<String> getDetectorResultDescription(final DetectorResult detectorResult) {
+    private Optional<String> getDetectorResultDescription(DetectorResult detectorResult) {
         String description = null;
 
         if (detectorResult != null) {
@@ -241,7 +241,7 @@ public class DetectorEvaluation {
         return Optional.ofNullable(description);
     }
 
-    public void setSearchEnvironment(final SearchEnvironment searchEnvironment) {
+    public void setSearchEnvironment(SearchEnvironment searchEnvironment) {
         this.searchEnvironment = searchEnvironment;
     }
 
@@ -253,7 +253,7 @@ public class DetectorEvaluation {
         return detectableEnvironment;
     }
 
-    public void setDetectableEnvironment(final DetectableEnvironment detectableEnvironment) {
+    public void setDetectableEnvironment(DetectableEnvironment detectableEnvironment) {
         this.detectableEnvironment = detectableEnvironment;
     }
 
@@ -261,7 +261,7 @@ public class DetectorEvaluation {
         return detectable;
     }
 
-    public void setDetectable(final Detectable detectable) {
+    public void setDetectable(Detectable detectable) {
         this.detectable = detectable;
     }
 
@@ -279,7 +279,7 @@ public class DetectorEvaluation {
         return new ArrayList<>();
     }
 
-    public void setFallbackTo(final DetectorEvaluation fallbackTo) {
+    public void setFallbackTo(DetectorEvaluation fallbackTo) {
         this.fallbackTo = fallbackTo;
     }
 
@@ -287,7 +287,7 @@ public class DetectorEvaluation {
         return fallbackFrom;
     }
 
-    public void setFallbackFrom(final DetectorEvaluation fallbackFrom) {
+    public void setFallbackFrom(DetectorEvaluation fallbackFrom) {
         this.fallbackFrom = fallbackFrom;
     }
 }

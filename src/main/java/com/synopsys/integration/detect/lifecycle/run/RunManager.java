@@ -94,6 +94,7 @@ import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocat
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResultCalculator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -110,6 +111,7 @@ import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
+import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorResolver;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.finder.DetectorFinder;
@@ -137,10 +139,12 @@ public class RunManager {
         DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
         EventSystem eventSystem = detectContext.getBean(EventSystem.class);
-        CodeLocationNameManager codeLocationNameManager = detectContext.getBean(CodeLocationNameManager.class);
+        CodeLocationNameGenerator codeLocationNameService = detectContext.getBean(CodeLocationNameGenerator.class);
+        CodeLocationNameManager codeLocationNameManager = detectContext.getBean(CodeLocationNameManager.class, codeLocationNameService);
         BdioCodeLocationCreator bdioCodeLocationCreator = detectContext.getBean(BdioCodeLocationCreator.class);
         DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
-        DetectDetectableFactory detectDetectableFactory = detectContext.getBean(DetectDetectableFactory.class);
+        NugetInspectorResolver nugetInspectorResolver = detectContext.getBean(NugetInspectorResolver.class);
+        DetectDetectableFactory detectDetectableFactory = detectContext.getBean(DetectDetectableFactory.class, nugetInspectorResolver);
 
         RunResult runResult = new RunResult();
         RunOptions runOptions = detectConfigurationFactory.createRunOptions();
