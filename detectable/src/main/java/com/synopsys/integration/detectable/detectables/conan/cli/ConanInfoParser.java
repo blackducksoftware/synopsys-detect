@@ -22,13 +22,13 @@
  */
 package com.synopsys.integration.detectable.detectables.conan.cli;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,9 +41,8 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.conan.cli.graph.ConanGraphNode;
-import com.synopsys.integration.detectable.detectables.conan.cli.graph.ConanNode;
+import com.synopsys.integration.detectable.detectables.conan.cli.graph.ConanInfoNode;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.util.NameVersion;
 
 public class ConanInfoParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -54,26 +53,24 @@ public class ConanInfoParser {
     }
 
     public ConanParseResult generateCodeLocation(String conanInfoOutput) throws IntegrationException {
-        Map<String, ConanNode> nodes = generateGraphNodes(conanInfoOutput);
-        Optional<ConanNode> rootNode = getRoot(nodes.values());
+        Map<String, ConanInfoNode> nodes = generateGraphNodes(conanInfoOutput);
+        Optional<ConanInfoNode> rootNode = getRoot(nodes.values());
         if (!rootNode.isPresent()) {
             throw new IntegrationException("No root node found in 'conan info' output");
         }
         ConanGraphNode rootGraphNode = new ConanGraphNode(rootNode.get());
         populateGraphUnderNode(rootGraphNode, nodes);
-
-        NameVersion projectNameVersion = deriveProjectNameVersion(nodes.values());
-        List<Dependency> dependencies = generateBdioDependencies(nodes.values());
-        CodeLocation codeLocation = generateCodeLocation(dependencies);
-        return new ConanParseResult(projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocation);
+        MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+        CodeLocation codeLocation = generateCodeLocation(dependencyGraph, rootGraphNode);
+        return new ConanParseResult(rootGraphNode.getConanInfoNode().getName(), rootGraphNode.getConanInfoNode().getVersion(), codeLocation);
     }
 
-    private void populateGraphUnderNode(ConanGraphNode curGraphNode, Map<String, ConanNode> graphNodes) throws IntegrationException {
+    private void populateGraphUnderNode(ConanGraphNode curGraphNode, Map<String, ConanInfoNode> graphNodes) throws IntegrationException {
         // TODO only doing requires, not build requires, for now
-        for (String childRef : curGraphNode.getNode().getRequiresRefs()) {
-            ConanNode childNode = graphNodes.get(childRef);
+        for (String childRef : curGraphNode.getConanInfoNode().getRequiresRefs()) {
+            ConanInfoNode childNode = graphNodes.get(childRef);
             if (childNode == null) {
-                throw new IntegrationException(String.format("%s requires non-existent node %s", curGraphNode.getNode().getRef(), childRef));
+                throw new IntegrationException(String.format("%s requires non-existent node %s", curGraphNode.getConanInfoNode().getRef(), childRef));
             }
             ConanGraphNode childGraphNode = new ConanGraphNode(childNode);
             populateGraphUnderNode(childGraphNode, graphNodes);
@@ -81,50 +78,57 @@ public class ConanInfoParser {
         }
     }
 
+    //    @NotNull
+    //    private CodeLocation generateCodeLocation(List<Dependency> dependencies) {
+    //        MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
+    //        dependencyGraph.addChildrenToRoot(dependencies);
+    //        CodeLocation codeLocation = new CodeLocation(dependencyGraph);
+    //        return codeLocation;
+    //    }
+
     @NotNull
-    private CodeLocation generateCodeLocation(List<Dependency> dependencies) {
-        MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        dependencyGraph.addChildrenToRoot(dependencies);
+    private CodeLocation generateCodeLocation(MutableMapDependencyGraph dependencyGraph, ConanGraphNode rootNode) {
+        addNodeChildrenUnderNode(dependencyGraph, 0, rootNode, null);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
         return codeLocation;
     }
 
+    private void addNodeChildrenUnderNode(MutableMapDependencyGraph dependencyGraph, int depth, ConanGraphNode currentNode, Dependency currentDep) {
+        Consumer<Dependency> childAdder;
+        if (depth == 0) {
+            childAdder = childDep -> dependencyGraph.addChildToRoot(childDep);
+        } else {
+            childAdder = childDep -> dependencyGraph.addChildWithParent(childDep, currentDep);
+        }
+        for (ConanGraphNode childNode : currentNode.getChildren()) {
+            Dependency childDep = generateDependency(childNode);
+            childAdder.accept(childDep);
+            addNodeChildrenUnderNode(dependencyGraph, depth + 1, childNode, childDep);
+        }
+    }
+
     @NotNull
-    private List<Dependency> generateBdioDependencies(Collection<ConanNode> graphNodes) {
+    private Dependency generateDependency(ConanGraphNode graphNode) {
         // TODO eventually should use ExternalIdFactory; doubt it can handle these IDs
         //ExternalIdFactory f;
         // The KB supports two forms:
         // <name>/<version>@<user>/<channel>#<recipe_revision>
         // <name>/<version>@<user>/<channel>#<recipe_revision>:<package_id>#<package_revision>
-        List<Dependency> dependencies = new ArrayList<>();
-        for (ConanNode node : graphNodes) {
-            if (!node.isRootNode()) {
-                ExternalId externalId = new ExternalId(new Forge("/", "conan"));
-                externalId.setName(node.getName());
-                externalId.setVersion(generateExternalIdVersionString(node));
-                Dependency dep = new Dependency(node.getName(), node.getVersion(), externalId);
-                dependencies.add(dep);
-            }
-        }
-        return dependencies;
+        // TODO generate forge once
+        ExternalId externalId = new ExternalId(new Forge("/", "conan"));
+        externalId.setName(graphNode.getConanInfoNode().getName());
+        externalId.setVersion(generateExternalIdVersionString(graphNode.getConanInfoNode()));
+        Dependency dep = new Dependency(graphNode.getConanInfoNode().getName(), graphNode.getConanInfoNode().getVersion(), externalId);
+        return dep;
     }
 
     @NotNull
-    private NameVersion deriveProjectNameVersion(Collection<ConanNode> graphNodes) {
-        Optional<ConanNode> rootNode = getRoot(graphNodes);
-        String projectName = getStringValue(rootNode, ConanNode::getName).orElse("Unknown");
-        String projectVersion = getStringValue(rootNode, ConanNode::getVersion).orElse("Unknown");
-        NameVersion projectNameVersion = new NameVersion(projectName, projectVersion);
-        return projectNameVersion;
-    }
-
-    @NotNull
-    private Optional<ConanNode> getRoot(Collection<ConanNode> graphNodes) {
-        Optional<ConanNode> rootNode = graphNodes.stream().filter(ConanNode::isRootNode).findFirst();
+    private Optional<ConanInfoNode> getRoot(Collection<ConanInfoNode> graphNodes) {
+        Optional<ConanInfoNode> rootNode = graphNodes.stream().filter(ConanInfoNode::isRootNode).findFirst();
         return rootNode;
     }
 
-    private String generateExternalIdVersionString(ConanNode node) {
+    private String generateExternalIdVersionString(ConanInfoNode node) {
         String externalId;
         if (hasValue(node.getRecipeRevision()) && !hasValue(node.getPackageRevision())) {
             // generate short form
@@ -156,7 +160,7 @@ public class ConanInfoParser {
     }
 
     // TODO modify ConanGraphNode to return optional?
-    private Optional<String> getStringValue(Optional<ConanNode> node, Function<ConanNode, String> stringGetter) {
+    private Optional<String> getStringValue(Optional<ConanInfoNode> node, Function<ConanInfoNode, String> stringGetter) {
         if (node.isPresent()) {
             String value = stringGetter.apply(node.get());
             if (value != null) {
@@ -166,8 +170,8 @@ public class ConanInfoParser {
         return Optional.empty();
     }
 
-    private Map<String, ConanNode> generateGraphNodes(String conanInfoOutput) {
-        Map<String, ConanNode> graphNodes = new HashMap<>();
+    private Map<String, ConanInfoNode> generateGraphNodes(String conanInfoOutput) {
+        Map<String, ConanInfoNode> graphNodes = new HashMap<>();
         List<String> conanInfoOutputLines = Arrays.asList(conanInfoOutput.split("\n"));
         int lineIndex = 0;
         while (lineIndex < conanInfoOutputLines.size()) {

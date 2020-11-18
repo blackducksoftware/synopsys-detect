@@ -24,7 +24,7 @@ package com.synopsys.integration.detectable.detectables.conan.cli.graph;
 
 import java.util.List;
 
-public class ConanNode {
+public class ConanInfoNode {
     // if rootNode: conanfile.{txt,py}[ (projectname/version)]
     // else       : package/version[@user/channel]
     private final String ref;
@@ -42,7 +42,7 @@ public class ConanNode {
     private final List<String> requiredByRefs;
     private final boolean rootNode;
 
-    public ConanNode(String ref, String filename, String name, String version, String user, String channel,
+    public ConanInfoNode(String ref, String filename, String name, String version, String user, String channel,
         String recipeRevision, String packageId, String packageRevision, List<String> requiresRefs, List<String> buildRequiresRefs,
         List<String> requiredByRefs, boolean rootNode) {
         this.ref = ref;

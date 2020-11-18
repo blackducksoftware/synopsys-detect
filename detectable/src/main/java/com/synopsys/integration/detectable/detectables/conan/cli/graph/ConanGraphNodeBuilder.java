@@ -83,7 +83,7 @@ public class ConanGraphNodeBuilder {
         return this;
     }
 
-    public Optional<ConanNode> build() {
+    public Optional<ConanInfoNode> build() {
         if (StringUtils.isBlank(ref) || StringUtils.isBlank(packageId)) {
             logger.debug("This wasn't a node");
             return Optional.empty();
@@ -124,7 +124,7 @@ public class ConanGraphNodeBuilder {
         } else {
             isRootNode = false;
         }
-        ConanNode node = new ConanNode(ref, filename, name, version, user, channel,
+        ConanInfoNode node = new ConanInfoNode(ref, filename, name, version, user, channel,
             recipeRevision, packageId, packageRevision, requiresRefs, buildRequiresRefs, requiredByRefs, isRootNode);
         return Optional.of(node);
     }

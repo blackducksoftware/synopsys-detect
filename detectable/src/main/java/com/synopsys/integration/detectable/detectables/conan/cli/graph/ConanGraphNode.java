@@ -26,18 +26,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConanGraphNode {
-    private final ConanNode node;
+    private final ConanInfoNode conanInfoNode;
     private final List<ConanGraphNode> children = new ArrayList<>();
 
-    public ConanGraphNode(ConanNode node) {
-        this.node = node;
+    public ConanGraphNode(ConanInfoNode node) {
+        this.conanInfoNode = node;
     }
 
     public void addChild(ConanGraphNode node) {
         children.add(node);
     }
 
-    public ConanNode getNode() {
-        return node;
+    public ConanInfoNode getConanInfoNode() {
+        return conanInfoNode;
+    }
+
+    public List<ConanGraphNode> getChildren() {
+        return children;
     }
 }
