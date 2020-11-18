@@ -30,7 +30,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.configuration.enumeration.OperatingSystemType;
+import com.synopsys.integration.util.OperatingSystemType;
 import com.synopsys.integration.util.ResourceUtil;
 
 public class DetectInfoUtility {
@@ -41,9 +41,9 @@ public class DetectInfoUtility {
     }
 
     public DetectInfo createDetectInfo() {
-        final String versionText = findDetectVersionFromResources();
-        final int majorVersion = parseMajorVersion(versionText);
-        final OperatingSystemType os = findOperatingSystemType();
+        String versionText = findDetectVersionFromResources();
+        int majorVersion = parseMajorVersion(versionText);
+        OperatingSystemType os = findOperatingSystemType();
         logger.debug("You seem to be running in a " + os + " operating system.");
         return new DetectInfo(versionText, majorVersion, os);
     }
@@ -51,7 +51,7 @@ public class DetectInfoUtility {
     public String findDetectVersionFromResources() {
         try {
             return ResourceUtil.getResourceAsString(this.getClass(), "/version.txt", StandardCharsets.UTF_8.toString());
-        } catch (final IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -69,7 +69,7 @@ public class DetectInfoUtility {
         return OperatingSystemType.LINUX;
     }
 
-    public int parseMajorVersion(final String detectVersionText) {
+    public int parseMajorVersion(String detectVersionText) {
         return Integer.parseInt(detectVersionText.split(Pattern.quote("."))[0]);
     }
 }

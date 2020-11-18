@@ -25,6 +25,7 @@ package com.synopsys.integration.configuration.property;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,7 +38,7 @@ import com.synopsys.integration.configuration.util.ProductMajorVersion;
  * It has no type information and a value cannot be retrieved for it (without a subclass).
  **/
 public abstract class Property {
-    public Property(final String key) {
+    public Property(String key) {
         this.key = key;
     }
 
@@ -137,6 +138,14 @@ public abstract class Property {
 
     public PropertyDeprecationInfo getPropertyDeprecationInfo() {
         return propertyDeprecationInfo;
+    }
+
+    public String getKeyAsEnvironmentVariable() {
+        if (StringUtils.isNotBlank(key)) {
+            return key.replace(".", "_").toUpperCase();
+        }
+
+        return key;
     }
 }
 
