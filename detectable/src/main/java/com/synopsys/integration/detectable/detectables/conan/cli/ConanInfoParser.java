@@ -55,14 +55,12 @@ public class ConanInfoParser {
 
     public ConanParseResult generateCodeLocation(String conanInfoOutput) throws IntegrationException {
         Map<String, ConanNode> nodes = generateGraphNodes(conanInfoOutput);
-
-        // TODO Need to build graph from list
         Optional<ConanNode> rootNode = getRoot(nodes.values());
         if (!rootNode.isPresent()) {
             throw new IntegrationException("No root node found in 'conan info' output");
         }
         ConanGraphNode rootGraphNode = new ConanGraphNode(rootNode.get());
-        populateChildren(rootGraphNode, nodes);
+        populateGraphUnderNode(rootGraphNode, nodes);
 
         NameVersion projectNameVersion = deriveProjectNameVersion(nodes.values());
         List<Dependency> dependencies = generateBdioDependencies(nodes.values());
@@ -70,7 +68,7 @@ public class ConanInfoParser {
         return new ConanParseResult(projectNameVersion.getName(), projectNameVersion.getVersion(), codeLocation);
     }
 
-    private void populateChildren(ConanGraphNode curGraphNode, Map<String, ConanNode> graphNodes) throws IntegrationException {
+    private void populateGraphUnderNode(ConanGraphNode curGraphNode, Map<String, ConanNode> graphNodes) throws IntegrationException {
         // TODO only doing requires, not build requires, for now
         for (String childRef : curGraphNode.getNode().getRequiresRefs()) {
             ConanNode childNode = graphNodes.get(childRef);
@@ -78,7 +76,7 @@ public class ConanInfoParser {
                 throw new IntegrationException(String.format("%s requires non-existent node %s", curGraphNode.getNode().getRef(), childRef));
             }
             ConanGraphNode childGraphNode = new ConanGraphNode(childNode);
-            populateChildren(childGraphNode, graphNodes);
+            populateGraphUnderNode(childGraphNode, graphNodes);
             curGraphNode.addChild(childGraphNode);
         }
     }
