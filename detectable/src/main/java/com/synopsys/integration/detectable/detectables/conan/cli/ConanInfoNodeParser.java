@@ -40,8 +40,9 @@ public class ConanInfoNodeParser {
         ConanGraphNodeBuilder nodeBuilder = new ConanGraphNodeBuilder();
         nodeBuilder.setRef(nodeHeaderLine);
         int bodyLineCount = 0;
-        for (int i = nodeStartIndex + 1; i < conanInfoOutputLines.size(); i++) {
-            String nodeBodyLine = conanInfoOutputLines.get(i);
+        for (int lineIndex = nodeStartIndex + 1; lineIndex < conanInfoOutputLines.size(); lineIndex++) {
+            String nodeBodyLine = conanInfoOutputLines.get(lineIndex);
+            logger.trace(String.format("Parsing line: %d: %s", lineIndex + 1, nodeBodyLine));
             int indentDepth = measureIndentDepth(nodeBodyLine);
             if (indentDepth == 0) {
                 if (bodyLineCount == 0) {
@@ -49,11 +50,11 @@ public class ConanInfoNodeParser {
                     return new ConanInfoNodeParseResult(nodeStartIndex);
                 } else {
                     System.out.printf("Reached end of node\n");
-                    return new ConanInfoNodeParseResult(i - 1, nodeBuilder.build());
+                    return new ConanInfoNodeParseResult(lineIndex - 1, nodeBuilder.build());
                 }
             }
             bodyLineCount++;
-            i = parseBodyElement(conanInfoOutputLines, i, nodeBuilder);
+            lineIndex = parseBodyElement(conanInfoOutputLines, lineIndex, nodeBuilder);
         }
         System.out.printf("Reached end of conan info output\n");
         return new ConanInfoNodeParseResult(conanInfoOutputLines.size() - 1, nodeBuilder.build());
