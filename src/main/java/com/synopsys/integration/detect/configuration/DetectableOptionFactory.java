@@ -49,7 +49,7 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOpti
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
-import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractorOptions;
+import com.synopsys.integration.detectable.detectables.conan.ConanExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
@@ -179,9 +179,9 @@ public class DetectableOptionFactory {
         return new MavenCliExtractorOptions(mavenBuildCommand, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules);
     }
 
-    public ConanCliExtractorOptions createConanCliOptions() {
+    public ConanExtractorOptions createConanCliOptions() {
         Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
-        return new ConanCliExtractorOptions(includeBuildDependencies);
+        return new ConanExtractorOptions(includeBuildDependencies);
     }
 
     public NpmCliExtractorOptions createNpmCliExtractorOptions() {

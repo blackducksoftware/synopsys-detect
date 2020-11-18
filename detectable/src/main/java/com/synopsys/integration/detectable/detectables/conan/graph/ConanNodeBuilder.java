@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.conan.cli.graph;
+package com.synopsys.integration.detectable.detectables.conan.graph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConanGraphNodeBuilder {
+public class ConanNodeBuilder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private String ref;
     private String filename;
@@ -47,43 +47,43 @@ public class ConanGraphNodeBuilder {
     private final List<String> buildRequiresRefs = new ArrayList<>();
     private final List<String> requiredByRefs = new ArrayList<>();
 
-    public ConanGraphNodeBuilder setRef(String ref) {
+    public ConanNodeBuilder setRef(String ref) {
         ref = ref.trim();
         this.ref = ref;
         return this;
     }
 
-    public ConanGraphNodeBuilder setRecipeRevision(String recipeRevision) {
+    public ConanNodeBuilder setRecipeRevision(String recipeRevision) {
         this.recipeRevision = recipeRevision;
         return this;
     }
 
-    public ConanGraphNodeBuilder setPackageId(String packageId) {
+    public ConanNodeBuilder setPackageId(String packageId) {
         this.packageId = packageId;
         return this;
     }
 
-    public ConanGraphNodeBuilder setPackageRevision(String packageRevision) {
+    public ConanNodeBuilder setPackageRevision(String packageRevision) {
         this.packageRevision = packageRevision;
         return this;
     }
 
-    public ConanGraphNodeBuilder addRequiresRef(String requiresRef) {
+    public ConanNodeBuilder addRequiresRef(String requiresRef) {
         this.requiresRefs.add(requiresRef);
         return this;
     }
 
-    public ConanGraphNodeBuilder addBuildRequiresRef(String buildRequiresRef) {
+    public ConanNodeBuilder addBuildRequiresRef(String buildRequiresRef) {
         this.buildRequiresRefs.add(buildRequiresRef);
         return this;
     }
 
-    public ConanGraphNodeBuilder addRequiredByRef(String requiredByRef) {
+    public ConanNodeBuilder addRequiredByRef(String requiredByRef) {
         this.requiredByRefs.add(requiredByRef);
         return this;
     }
 
-    public Optional<ConanInfoNode> build() {
+    public Optional<ConanNode> build() {
         if (StringUtils.isBlank(ref) || StringUtils.isBlank(packageId)) {
             logger.debug("This wasn't a node");
             return Optional.empty();
@@ -124,7 +124,7 @@ public class ConanGraphNodeBuilder {
         } else {
             isRootNode = false;
         }
-        ConanInfoNode node = new ConanInfoNode(ref, filename, name, version, user, channel,
+        ConanNode node = new ConanNode(ref, filename, name, version, user, channel,
             recipeRevision, packageId, packageRevision, requiresRefs, buildRequiresRefs, requiredByRefs, isRootNode);
         return Optional.of(node);
     }

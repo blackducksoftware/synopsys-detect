@@ -30,7 +30,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.conan.cli.graph.ConanInfoNode;
+import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
+import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
+import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class ConanInfoParser {
@@ -44,22 +46,22 @@ public class ConanInfoParser {
     }
 
     public ConanDetectableResult generateCodeLocationFromConanInfoOutput(String conanInfoOutput, boolean includeBuildDependencies) throws IntegrationException {
-        Map<String, ConanInfoNode> nodeMap = generateNodeMap(conanInfoOutput);
+        Map<String, ConanNode> nodeMap = generateNodeMap(conanInfoOutput);
         // Everything from here on should be usable by the future lockfile detectable
         ConanDetectableResult result = conanCodeLocationGenerator.generateCodeLocationFromNodeMap(includeBuildDependencies, nodeMap);
         return result;
     }
 
-    private Map<String, ConanInfoNode> generateNodeMap(String conanInfoOutput) {
-        Map<String, ConanInfoNode> graphNodes = new HashMap<>();
+    private Map<String, ConanNode> generateNodeMap(String conanInfoOutput) {
+        Map<String, ConanNode> graphNodes = new HashMap<>();
         List<String> conanInfoOutputLines = Arrays.asList(conanInfoOutput.split("\n"));
         int lineIndex = 0;
         while (lineIndex < conanInfoOutputLines.size()) {
             String line = conanInfoOutputLines.get(lineIndex);
             logger.trace(String.format("Parsing line: %d: %s", lineIndex + 1, line));
             ConanInfoNodeParseResult nodeParseResult = conanInfoNodeParser.parseNode(conanInfoOutputLines, lineIndex);
-            if (nodeParseResult.getConanGraphNode().isPresent()) {
-                graphNodes.put(nodeParseResult.getConanGraphNode().get().getRef(), nodeParseResult.getConanGraphNode().get());
+            if (nodeParseResult.getConanNode().isPresent()) {
+                graphNodes.put(nodeParseResult.getConanNode().get().getRef(), nodeParseResult.getConanNode().get());
             }
             lineIndex = nodeParseResult.getLastParsedLineIndex();
             lineIndex++;

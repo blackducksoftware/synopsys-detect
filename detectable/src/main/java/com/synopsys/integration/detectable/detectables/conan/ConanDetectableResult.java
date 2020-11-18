@@ -20,28 +20,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.conan.cli.graph;
+package com.synopsys.integration.detectable.detectables.conan;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 
-public class ConanGraphNode {
-    private final ConanInfoNode conanInfoNode;
-    private final List<ConanGraphNode> children = new ArrayList<>();
+public class ConanDetectableResult {
+    private final String projectName;
+    private final String projectVersion;
+    private final CodeLocation codeLocation;
 
-    public ConanGraphNode(ConanInfoNode node) {
-        this.conanInfoNode = node;
+    public ConanDetectableResult(String projectName, String projectVersion, CodeLocation codeLocation) {
+        this.projectName = projectName;
+        this.projectVersion = projectVersion;
+        this.codeLocation = codeLocation;
     }
 
-    public void addChild(ConanGraphNode node) {
-        children.add(node);
+    public String getProjectName() {
+        return projectName;
     }
 
-    public ConanInfoNode getConanInfoNode() {
-        return conanInfoNode;
+    public String getProjectVersion() {
+        return projectVersion;
     }
 
-    public List<ConanGraphNode> getChildren() {
-        return children;
+    public CodeLocation getCodeLocation() {
+        return codeLocation;
     }
 }

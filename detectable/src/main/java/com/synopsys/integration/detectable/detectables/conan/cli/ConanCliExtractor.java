@@ -31,6 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
+import com.synopsys.integration.detectable.detectables.conan.ConanExtractorOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.ExecutableOutput;
@@ -47,7 +49,7 @@ public class ConanCliExtractor {
         //this.conanCliCodeLocationPackager = conanCliCodeLocationPackager;
     }
 
-    public Extraction extract(File projectDir, File conanExe, ConanCliExtractorOptions conanCliExtractorOptions) {
+    public Extraction extract(File projectDir, File conanExe, ConanExtractorOptions conanCliExtractorOptions) {
         //final boolean includeDevDeps = conanCliExtractorOptions.shouldIncludeDevDependencies();
         List<String> exeArgs = new ArrayList<>();
         exeArgs.add("info");

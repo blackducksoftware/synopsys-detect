@@ -30,14 +30,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.conan.cli.graph.ConanGraphNodeBuilder;
+import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 
 public class ConanInfoNodeParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public ConanInfoNodeParseResult parseNode(List<String> conanInfoOutputLines, int nodeStartIndex) {
         String nodeHeaderLine = conanInfoOutputLines.get(nodeStartIndex);
-        ConanGraphNodeBuilder nodeBuilder = new ConanGraphNodeBuilder();
+        ConanNodeBuilder nodeBuilder = new ConanNodeBuilder();
         nodeBuilder.setRef(nodeHeaderLine);
         int bodyLineCount = 0;
         for (int lineIndex = nodeStartIndex + 1; lineIndex < conanInfoOutputLines.size(); lineIndex++) {
@@ -60,7 +60,7 @@ public class ConanInfoNodeParser {
         return new ConanInfoNodeParseResult(conanInfoOutputLines.size() - 1, nodeBuilder.build());
     }
 
-    private int parseBodyElement(List<String> conanInfoOutputLines, int bodyElementLineIndex, ConanGraphNodeBuilder nodeBuilder) {
+    private int parseBodyElement(List<String> conanInfoOutputLines, int bodyElementLineIndex, ConanNodeBuilder nodeBuilder) {
         StringTokenizer stringTokenizer = new StringTokenizer(conanInfoOutputLines.get(bodyElementLineIndex).trim(), ":");
         String key = stringTokenizer.nextToken();
         int lastLineParsed = bodyElementLineIndex; // TODO where should this go?
