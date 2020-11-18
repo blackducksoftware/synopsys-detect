@@ -71,7 +71,7 @@ public class ConanCliExtractor {
             logger.debug(standardOutput);
             try {
                 // TODO too many returns?
-                ConanParseResult result = conanInfoParser.generateCodeLocation(standardOutput);
+                ConanParseResult result = conanInfoParser.generateCodeLocation(standardOutput, conanCliExtractorOptions.shouldIncludeDevDependencies());
                 return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
             } catch (IntegrationException e) {
                 return new Extraction.Builder().failure(e.getMessage()).build();

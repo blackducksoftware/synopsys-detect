@@ -1,21 +1,21 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "Unknown/Unknown/conan-withuserchannel conan_cli/bom",
+    "spdx:name": "conan-withuserchannel/Default Detect Version/conan-withuserchannel conan_cli/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-6.8.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.0"
       ],
-      "spdx:created": "2020-11-17T15:55:41.733Z"
+      "spdx:created": "2020-11-18T21:56:39.034Z"
     },
-    "@id": "uuid:d6935986-bf16-4149-91cd-63f753a85266",
+    "@id": "uuid:65b50c8c-13ce-48a8-b1cf-957c0af3c5e5",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
-    "name": "Unknown",
-    "revision": "Unknown",
+    "name": "conan-withuserchannel",
+    "revision": "Default Detect Version",
     "@id": "http:detect/conan-withuserchannel",
     "@type": "Project",
     "externalIdentifier": {
@@ -83,6 +83,11 @@
         ]
       }
     },
-    "relationship": []
+    "relationship": [
+      {
+        "related": "http:conan/protobuf/3.6.1%40bincrafters%2Fstable%230%3Ab911f48570f9bb2902d9e83b2b9ebf9d376c8c56%230",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   }
 ]

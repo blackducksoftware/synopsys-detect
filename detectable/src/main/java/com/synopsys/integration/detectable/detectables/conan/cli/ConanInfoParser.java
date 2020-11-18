@@ -25,9 +25,11 @@ package com.synopsys.integration.detectable.detectables.conan.cli;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -52,39 +54,34 @@ public class ConanInfoParser {
         this.conanInfoNodeParser = conanInfoNodeParser;
     }
 
-    public ConanParseResult generateCodeLocation(String conanInfoOutput) throws IntegrationException {
+    public ConanParseResult generateCodeLocation(String conanInfoOutput, boolean includeBuildDependencies) throws IntegrationException {
         Map<String, ConanInfoNode> nodes = generateGraphNodes(conanInfoOutput);
         Optional<ConanInfoNode> rootNode = getRoot(nodes.values());
         if (!rootNode.isPresent()) {
             throw new IntegrationException("No root node found in 'conan info' output");
         }
         ConanGraphNode rootGraphNode = new ConanGraphNode(rootNode.get());
-        populateGraphUnderNode(rootGraphNode, nodes);
+        populateGraphUnderNode(rootGraphNode, nodes, includeBuildDependencies);
         MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
         CodeLocation codeLocation = generateCodeLocation(dependencyGraph, rootGraphNode);
         return new ConanParseResult(rootGraphNode.getConanInfoNode().getName(), rootGraphNode.getConanInfoNode().getVersion(), codeLocation);
     }
 
-    private void populateGraphUnderNode(ConanGraphNode curGraphNode, Map<String, ConanInfoNode> graphNodes) throws IntegrationException {
-        // TODO only doing requires, not build requires, for now
-        for (String childRef : curGraphNode.getConanInfoNode().getRequiresRefs()) {
+    private void populateGraphUnderNode(ConanGraphNode curGraphNode, Map<String, ConanInfoNode> graphNodes, boolean includeBuildDependencies) throws IntegrationException {
+        Set<String> dependencyRefs = new HashSet<>(curGraphNode.getConanInfoNode().getRequiresRefs());
+        if (includeBuildDependencies) {
+            dependencyRefs.addAll(curGraphNode.getConanInfoNode().getBuildRequiresRefs());
+        }
+        for (String childRef : dependencyRefs) {
             ConanInfoNode childNode = graphNodes.get(childRef);
             if (childNode == null) {
                 throw new IntegrationException(String.format("%s requires non-existent node %s", curGraphNode.getConanInfoNode().getRef(), childRef));
             }
             ConanGraphNode childGraphNode = new ConanGraphNode(childNode);
-            populateGraphUnderNode(childGraphNode, graphNodes);
+            populateGraphUnderNode(childGraphNode, graphNodes, includeBuildDependencies);
             curGraphNode.addChild(childGraphNode);
         }
     }
-
-    //    @NotNull
-    //    private CodeLocation generateCodeLocation(List<Dependency> dependencies) {
-    //        MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-    //        dependencyGraph.addChildrenToRoot(dependencies);
-    //        CodeLocation codeLocation = new CodeLocation(dependencyGraph);
-    //        return codeLocation;
-    //    }
 
     @NotNull
     private CodeLocation generateCodeLocation(MutableMapDependencyGraph dependencyGraph, ConanGraphNode rootNode) {

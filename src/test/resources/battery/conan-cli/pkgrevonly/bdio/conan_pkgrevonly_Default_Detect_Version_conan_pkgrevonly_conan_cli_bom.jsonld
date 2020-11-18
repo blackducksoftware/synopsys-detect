@@ -1,21 +1,21 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "Unknown/Unknown/conan-pkgrevonly conan_cli/bom",
+    "spdx:name": "conan-pkgrevonly/Default Detect Version/conan-pkgrevonly conan_cli/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-6.8.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.0"
       ],
-      "spdx:created": "2020-11-17T15:36:33.819Z"
+      "spdx:created": "2020-11-18T22:02:36.432Z"
     },
-    "@id": "uuid:cbc2e459-3391-4c74-bdf4-b1f49dfa29ad",
+    "@id": "uuid:81eac1e9-6d6d-4d95-95f4-99731614ad61",
     "@type": "BillOfMaterials",
     "relationship": []
   },
   {
-    "name": "Unknown",
-    "revision": "Unknown",
+    "name": "conan-pkgrevonly",
+    "revision": "Default Detect Version",
     "@id": "http:detect/conan-pkgrevonly",
     "@type": "Project",
     "externalIdentifier": {
@@ -36,7 +36,29 @@
       {
         "related": "http:conan/folly/2019.10.21.00%40_%2F_%237c25691176fe8c9d5033e7efb7ee8c0a",
         "relationshipType": "DYNAMIC_LINK"
-      },
+      }
+    ]
+  },
+  {
+    "name": "folly",
+    "revision": "2019.10.21.00",
+    "@id": "http:conan/folly/2019.10.21.00%40_%2F_%237c25691176fe8c9d5033e7efb7ee8c0a",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "folly/2019.10.21.00@_/_#7c25691176fe8c9d5033e7efb7ee8c0a",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "folly",
+          "2019.10.21.00@_/_#7c25691176fe8c9d5033e7efb7ee8c0a"
+        ]
+      }
+    },
+    "relationship": [
       {
         "related": "http:conan/libunwind/1.3.1%40_%2F_%23697f25fa09c0e0b0201796900404273c",
         "relationshipType": "DYNAMIC_LINK"
@@ -59,10 +81,6 @@
       },
       {
         "related": "http:conan/libiberty/9.1.0%40_%2F_%23836ed6667956ed3e9eee83f4e889cbf0%3A6af9cc7cb931c5ad942174fd7838eb655717c709%23f8803a8e3774797162268df6d1847526",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:conan/libelf/0.8.13%40_%2F_%2314fc23b3e3eee2f8056a84e953dfe460%3A6af9cc7cb931c5ad942174fd7838eb655717c709%2359f939511d11fc29502a571e538031a7",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -108,27 +126,6 @@
     ]
   },
   {
-    "name": "folly",
-    "revision": "2019.10.21.00",
-    "@id": "http:conan/folly/2019.10.21.00%40_%2F_%237c25691176fe8c9d5033e7efb7ee8c0a",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "conan",
-      "externalId": "folly/2019.10.21.00@_/_#7c25691176fe8c9d5033e7efb7ee8c0a",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "conan",
-          "separator": "/"
-        },
-        "pieces": [
-          "folly",
-          "2019.10.21.00@_/_#7c25691176fe8c9d5033e7efb7ee8c0a"
-        ]
-      }
-    },
-    "relationship": []
-  },
-  {
     "name": "libunwind",
     "revision": "1.3.1",
     "@id": "http:conan/libunwind/1.3.1%40_%2F_%23697f25fa09c0e0b0201796900404273c",
@@ -144,6 +141,32 @@
         "pieces": [
           "libunwind",
           "1.3.1@_/_#697f25fa09c0e0b0201796900404273c"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:conan/xz_utils/5.2.4%40_%2F_%23f92e7c137e8c94fe2cb15c2c5d80f3d2%3A6af9cc7cb931c5ad942174fd7838eb655717c709%23816a64ff5217aa98751b928aa8294176",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "xz_utils",
+    "revision": "5.2.4",
+    "@id": "http:conan/xz_utils/5.2.4%40_%2F_%23f92e7c137e8c94fe2cb15c2c5d80f3d2%3A6af9cc7cb931c5ad942174fd7838eb655717c709%23816a64ff5217aa98751b928aa8294176",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "xz_utils/5.2.4@_/_#f92e7c137e8c94fe2cb15c2c5d80f3d2:6af9cc7cb931c5ad942174fd7838eb655717c709#816a64ff5217aa98751b928aa8294176",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "xz_utils",
+          "5.2.4@_/_#f92e7c137e8c94fe2cb15c2c5d80f3d2:6af9cc7cb931c5ad942174fd7838eb655717c709#816a64ff5217aa98751b928aa8294176"
         ]
       }
     },
@@ -168,24 +191,54 @@
         ]
       }
     },
-    "relationship": []
+    "relationship": [
+      {
+        "related": "http:conan/zlib/1.2.11%40_%2F_%230%3A6af9cc7cb931c5ad942174fd7838eb655717c709%230",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/bzip2/1.0.8%40_%2F_%230%3Ada606cf731e334010b0bf6e85a2a6f891b9f36b0%230",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   },
   {
-    "name": "xz_utils",
-    "revision": "5.2.4",
-    "@id": "http:conan/xz_utils/5.2.4%40_%2F_%23f92e7c137e8c94fe2cb15c2c5d80f3d2%3A6af9cc7cb931c5ad942174fd7838eb655717c709%23816a64ff5217aa98751b928aa8294176",
+    "name": "zlib",
+    "revision": "1.2.11",
+    "@id": "http:conan/zlib/1.2.11%40_%2F_%230%3A6af9cc7cb931c5ad942174fd7838eb655717c709%230",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "conan",
-      "externalId": "xz_utils/5.2.4@_/_#f92e7c137e8c94fe2cb15c2c5d80f3d2:6af9cc7cb931c5ad942174fd7838eb655717c709#816a64ff5217aa98751b928aa8294176",
+      "externalId": "zlib/1.2.11@_/_#0:6af9cc7cb931c5ad942174fd7838eb655717c709#0",
       "externalIdMetaData": {
         "forge": {
           "name": "conan",
           "separator": "/"
         },
         "pieces": [
-          "xz_utils",
-          "5.2.4@_/_#f92e7c137e8c94fe2cb15c2c5d80f3d2:6af9cc7cb931c5ad942174fd7838eb655717c709#816a64ff5217aa98751b928aa8294176"
+          "zlib",
+          "1.2.11@_/_#0:6af9cc7cb931c5ad942174fd7838eb655717c709#0"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "bzip2",
+    "revision": "1.0.8",
+    "@id": "http:conan/bzip2/1.0.8%40_%2F_%230%3Ada606cf731e334010b0bf6e85a2a6f891b9f36b0%230",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "bzip2/1.0.8@_/_#0:da606cf731e334010b0bf6e85a2a6f891b9f36b0#0",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "bzip2",
+          "1.0.8@_/_#0:da606cf731e334010b0bf6e85a2a6f891b9f36b0#0"
         ]
       }
     },
@@ -231,28 +284,16 @@
         ]
       }
     },
-    "relationship": []
-  },
-  {
-    "name": "libiberty",
-    "revision": "9.1.0",
-    "@id": "http:conan/libiberty/9.1.0%40_%2F_%23836ed6667956ed3e9eee83f4e889cbf0%3A6af9cc7cb931c5ad942174fd7838eb655717c709%23f8803a8e3774797162268df6d1847526",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "conan",
-      "externalId": "libiberty/9.1.0@_/_#836ed6667956ed3e9eee83f4e889cbf0:6af9cc7cb931c5ad942174fd7838eb655717c709#f8803a8e3774797162268df6d1847526",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "conan",
-          "separator": "/"
-        },
-        "pieces": [
-          "libiberty",
-          "9.1.0@_/_#836ed6667956ed3e9eee83f4e889cbf0:6af9cc7cb931c5ad942174fd7838eb655717c709#f8803a8e3774797162268df6d1847526"
-        ]
+    "relationship": [
+      {
+        "related": "http:conan/libelf/0.8.13%40_%2F_%2314fc23b3e3eee2f8056a84e953dfe460%3A6af9cc7cb931c5ad942174fd7838eb655717c709%2359f939511d11fc29502a571e538031a7",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/zlib/1.2.11%40_%2F_%230%3A6af9cc7cb931c5ad942174fd7838eb655717c709%230",
+        "relationshipType": "DYNAMIC_LINK"
       }
-    },
-    "relationship": []
+    ]
   },
   {
     "name": "libelf",
@@ -276,21 +317,21 @@
     "relationship": []
   },
   {
-    "name": "zlib",
-    "revision": "1.2.11",
-    "@id": "http:conan/zlib/1.2.11%40_%2F_%230%3A6af9cc7cb931c5ad942174fd7838eb655717c709%230",
+    "name": "libiberty",
+    "revision": "9.1.0",
+    "@id": "http:conan/libiberty/9.1.0%40_%2F_%23836ed6667956ed3e9eee83f4e889cbf0%3A6af9cc7cb931c5ad942174fd7838eb655717c709%23f8803a8e3774797162268df6d1847526",
     "@type": "Component",
     "externalIdentifier": {
       "externalSystemTypeId": "conan",
-      "externalId": "zlib/1.2.11@_/_#0:6af9cc7cb931c5ad942174fd7838eb655717c709#0",
+      "externalId": "libiberty/9.1.0@_/_#836ed6667956ed3e9eee83f4e889cbf0:6af9cc7cb931c5ad942174fd7838eb655717c709#f8803a8e3774797162268df6d1847526",
       "externalIdMetaData": {
         "forge": {
           "name": "conan",
           "separator": "/"
         },
         "pieces": [
-          "zlib",
-          "1.2.11@_/_#0:6af9cc7cb931c5ad942174fd7838eb655717c709#0"
+          "libiberty",
+          "9.1.0@_/_#836ed6667956ed3e9eee83f4e889cbf0:6af9cc7cb931c5ad942174fd7838eb655717c709#f8803a8e3774797162268df6d1847526"
         ]
       }
     },
@@ -357,7 +398,12 @@
         ]
       }
     },
-    "relationship": []
+    "relationship": [
+      {
+        "related": "http:conan/openssl/1.1.1h%40_%2F_%230%3A6af9cc7cb931c5ad942174fd7838eb655717c709%230",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   },
   {
     "name": "lz4",
@@ -423,27 +469,6 @@
     "relationship": []
   },
   {
-    "name": "bzip2",
-    "revision": "1.0.8",
-    "@id": "http:conan/bzip2/1.0.8%40_%2F_%230%3Ada606cf731e334010b0bf6e85a2a6f891b9f36b0%230",
-    "@type": "Component",
-    "externalIdentifier": {
-      "externalSystemTypeId": "conan",
-      "externalId": "bzip2/1.0.8@_/_#0:da606cf731e334010b0bf6e85a2a6f891b9f36b0#0",
-      "externalIdMetaData": {
-        "forge": {
-          "name": "conan",
-          "separator": "/"
-        },
-        "pieces": [
-          "bzip2",
-          "1.0.8@_/_#0:da606cf731e334010b0bf6e85a2a6f891b9f36b0#0"
-        ]
-      }
-    },
-    "relationship": []
-  },
-  {
     "name": "glog",
     "revision": "0.4.0",
     "@id": "http:conan/glog/0.4.0%40_%2F_%2384333f1bce37d868e0d3c6f8d025fc12",
@@ -462,7 +487,12 @@
         ]
       }
     },
-    "relationship": []
+    "relationship": [
+      {
+        "related": "http:conan/gflags/2.2.2%40_%2F_%23906109e9e83ad47452e561036a69f2fb%3A21e1281916d3adf618b3bd57f3098f62f2674fd4%23e93dfef60acc52e89de14c6300c62ae4",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
   },
   {
     "name": "gflags",

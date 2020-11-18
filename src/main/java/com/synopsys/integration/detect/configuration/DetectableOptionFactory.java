@@ -180,8 +180,8 @@ public class DetectableOptionFactory {
     }
 
     public ConanCliExtractorOptions createConanCliOptions() {
-        // TODO need a property for dev (build_requires) dependencies
-        return new ConanCliExtractorOptions(true);
+        Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
+        return new ConanCliExtractorOptions(includeBuildDependencies);
     }
 
     public NpmCliExtractorOptions createNpmCliExtractorOptions() {

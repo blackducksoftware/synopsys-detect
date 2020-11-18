@@ -209,10 +209,16 @@ public class DetectProperties {
 
     public static final DetectProperty<NullablePathProperty> DETECT_CONAN_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.conan.path"))
-            .setInfo("Bazel Executable", DetectPropertyFromVersion.VERSION_6_8_0)
-            .setHelp("The path to the Bazel executable.")
-            .setGroups(DetectGroup.BAZEL, DetectGroup.GLOBAL);
-    
+            .setInfo("Conan Executable", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("The path to the conan executable.")
+            .setGroups(DetectGroup.CONAN, DetectGroup.GLOBAL);
+
+    public static final DetectProperty<BooleanProperty> DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES =
+        new DetectProperty<>(new BooleanProperty("detect.conan.include.build.dependencies", true))
+            .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
+            .setGroups(DetectGroup.CONAN, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
+
     public static final DetectProperty<NullablePathProperty> DETECT_BDIO_OUTPUT_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.bdio.output.path"))
             .setInfo("BDIO Output Directory", DetectPropertyFromVersion.VERSION_3_0_0)
