@@ -7,9 +7,9 @@
         "Tool: Detect-6.8.0-SNAPSHOT",
         "Tool: IntegrationBdio-22.0.0"
       ],
-      "spdx:created": "2020-11-18T19:31:22.260Z"
+      "spdx:created": "2020-11-18T22:09:38.753Z"
     },
-    "@id": "uuid:e5bfb7c5-d420-4abd-bf7c-8f57874b3e90",
+    "@id": "uuid:5665d7a5-7abf-4ecd-a18e-1b4dc921662b",
     "@type": "BillOfMaterials",
     "relationship": []
   },
@@ -38,6 +38,10 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
+        "related": "http:conan/fmt/7.1.2%40_%2F_%23a2b90b112a5e19a9569dcb45faf58071%3Ab911f48570f9bb2902d9e83b2b9ebf9d376c8c56%232cf9344376a0a5459def686c41b6b8b8",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
         "related": "http:conan/poco/1.9.4%40_%2F_%230",
         "relationshipType": "DYNAMIC_LINK"
       }
@@ -59,6 +63,27 @@
         "pieces": [
           "string-view-lite",
           "1.6.0@_/_#326afcf276c7c791558045027b294501:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9#b5bfbac520eecdebb6c933c390c5c84e"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "fmt",
+    "revision": "7.1.2",
+    "@id": "http:conan/fmt/7.1.2%40_%2F_%23a2b90b112a5e19a9569dcb45faf58071%3Ab911f48570f9bb2902d9e83b2b9ebf9d376c8c56%232cf9344376a0a5459def686c41b6b8b8",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "fmt/7.1.2@_/_#a2b90b112a5e19a9569dcb45faf58071:b911f48570f9bb2902d9e83b2b9ebf9d376c8c56#2cf9344376a0a5459def686c41b6b8b8",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "fmt",
+          "7.1.2@_/_#a2b90b112a5e19a9569dcb45faf58071:b911f48570f9bb2902d9e83b2b9ebf9d376c8c56#2cf9344376a0a5459def686c41b6b8b8"
         ]
       }
     },
