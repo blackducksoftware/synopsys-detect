@@ -30,6 +30,8 @@ public class GoModWhyParser {
     private static final String MISSING_MODULE_PREFIX = "(main module does not need module";
 
     public Set<String> createModuleExclusionList(List<String> lines) {
+        // find lines that look like the following and extract the module name i.e. cloud.google.com/go:
+        // (main module does not need module cloud.google.com/go)
         Set<String> exclusionModules = new LinkedHashSet<>();
         for (String line : lines) {
             String trimmedLine = line.trim();
