@@ -72,22 +72,28 @@ def main():
             assert os.path.exists(requirements_path), ("The requirements file %s does not exist." % requirements_path)
             requirements = parse_requirements(requirements_path, session=PipSession())
             for req in requirements:
+                package_name = None
                 try:
-                    package_name = None
                     # In 20.1 of pip, the requirements object changed
                     if hasattr(req, 'req'):
                         package_name = req.req.name
                     if package_name is None:
                         import re
-                        package_name = re.split('==|>=|<=|>|<', req.requirement)[0]
+                        # Comparators from: https://www.python.org/dev/peps/pep-0508/#grammar
+                        # (Last updated November 2020)
+                        #
+                        # re matches from left to right, so subsets (e.g. ===) should be before supersets (e.g. ==)
+                        # See: https://docs.python.org/3/library/re.html
+                        # --rotte NOV 2020
+                        package_name = re.split('===|<=|!=|==|>=|~=|<|>', req.requirement)[0]
 
                     requirement = resolve_package_by_name(package_name, [])
                     if requirement is None:
                         raise Exception()
                     project.children = project.children + [requirement]
                 except:
-                    if req is not None and req.req is not None:
-                        print('--' + req.req.name)
+                    if req is not None and package_name is not None:
+                        print('--' + package_name)
         except AssertionError:
             print('r?' + requirements_path)
         except:

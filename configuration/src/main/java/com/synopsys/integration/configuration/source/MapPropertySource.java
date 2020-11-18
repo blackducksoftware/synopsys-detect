@@ -35,7 +35,7 @@ public class MapPropertySource implements PropertySource {
     private String givenName;
     private Map<String, String> normalizedPropertyMap;
 
-    public MapPropertySource(final String givenName, final Map<String, String> underlyingMap) {
+    public MapPropertySource(String givenName, Map<String, String> underlyingMap) {
         this.givenName = givenName;
         this.normalizedPropertyMap = Bds.of(underlyingMap)
                                          .toMap(entry -> KeyUtils.normalizeKey(entry.getKey()), Map.Entry::getValue);
@@ -43,25 +43,25 @@ public class MapPropertySource implements PropertySource {
 
     @Override
     @NotNull
-    public Boolean hasKey(final String key) {
+    public Boolean hasKey(String key) {
         return normalizedPropertyMap.containsKey(key);
     }
 
     @Override
-    @Nullable
+    @NotNull
     public Set<String> getKeys() {
         return normalizedPropertyMap.keySet();
     }
 
     @Override
     @Nullable
-    public String getValue(final String key) {
+    public String getValue(String key) {
         return normalizedPropertyMap.getOrDefault(key, null);
     }
 
     @Override
     @NotNull
-    public String getOrigin(final String key) {
+    public String getOrigin(String key) {
         return givenName;
     }
 

@@ -24,12 +24,12 @@ package com.synopsys.integration.detectable.detectables.pip.model;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 
-public class PipenvResult {
+public class NameVersionCodeLocation {
     private final String projectName;
     private final String projectVersion;
     private final CodeLocation codeLocation;
 
-    public PipenvResult(final String projectName, final String projectVersion, final CodeLocation codeLocation) {
+    public NameVersionCodeLocation(String projectName, String projectVersion, CodeLocation codeLocation) {
         this.projectName = projectName;
         this.projectVersion = projectVersion;
         this.codeLocation = codeLocation;
