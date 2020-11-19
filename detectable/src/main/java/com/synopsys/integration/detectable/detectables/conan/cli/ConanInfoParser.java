@@ -66,7 +66,7 @@ public class ConanInfoParser {
             lineIndex = nodeParseResult.getLastParsedLineIndex();
             lineIndex++;
         }
-        System.out.printf("Reached end of Conan info output\n");
+        logger.trace("Reached end of Conan info output");
         return graphNodes;
     }
 }

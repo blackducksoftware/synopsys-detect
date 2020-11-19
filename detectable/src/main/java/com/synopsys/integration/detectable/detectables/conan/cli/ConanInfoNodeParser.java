@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.conan.cli;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.function.Consumer;
 
@@ -43,27 +44,36 @@ public class ConanInfoNodeParser {
         for (int lineIndex = nodeStartIndex + 1; lineIndex < conanInfoOutputLines.size(); lineIndex++) {
             String nodeBodyLine = conanInfoOutputLines.get(lineIndex);
             logger.trace(String.format("Parsing line: %d: %s", lineIndex + 1, nodeBodyLine));
-            int indentDepth = measureIndentDepth(nodeBodyLine);
-            if (indentDepth == 0) {
-                if (bodyLineCount == 0) {
-                    System.out.printf("This wasn't a node\n");
-                    return new ConanInfoNodeParseResult(nodeStartIndex);
-                } else {
-                    System.out.printf("Reached end of node\n");
-                    return new ConanInfoNodeParseResult(lineIndex - 1, nodeBuilder.build());
-                }
+            Optional<ConanInfoNodeParseResult> result = getResultIfDone(nodeBodyLine, lineIndex, nodeStartIndex, bodyLineCount, nodeBuilder);
+            if (result.isPresent()) {
+                return result.get();
             }
             bodyLineCount++;
             lineIndex = parseBodyElement(conanInfoOutputLines, lineIndex, nodeBuilder);
         }
-        System.out.printf("Reached end of conan info output\n");
+        logger.trace("Reached end of conan info output");
         return new ConanInfoNodeParseResult(conanInfoOutputLines.size() - 1, nodeBuilder.build());
+    }
+
+    private Optional<ConanInfoNodeParseResult> getResultIfDone(String nodeBodyLine, int lineIndex, int nodeStartIndex, int bodyLineCount, ConanNodeBuilder nodeBuilder) {
+        int indentDepth = measureIndentDepth(nodeBodyLine);
+        if (indentDepth > 0) {
+            // Not done parsing node
+            return Optional.empty();
+        }
+        if (bodyLineCount == 0) {
+            logger.trace("This wasn't a node");
+            return Optional.of(new ConanInfoNodeParseResult(nodeStartIndex));
+        } else {
+            logger.trace("Reached end of node");
+            return Optional.of(new ConanInfoNodeParseResult(lineIndex - 1, nodeBuilder.build()));
+        }
     }
 
     private int parseBodyElement(List<String> conanInfoOutputLines, int bodyElementLineIndex, ConanNodeBuilder nodeBuilder) {
         StringTokenizer stringTokenizer = new StringTokenizer(conanInfoOutputLines.get(bodyElementLineIndex).trim(), ":");
         String key = stringTokenizer.nextToken();
-        int lastLineParsed = bodyElementLineIndex; // TODO where should this go?
+        int lastLineParsed = bodyElementLineIndex;
         if ("Requires".equals(key)) {
             lastLineParsed = parseListSubElement(conanInfoOutputLines, bodyElementLineIndex, ref -> nodeBuilder.addRequiresRef(ref));
         } else if ("Build Requires".equals(key)) {
@@ -73,13 +83,13 @@ public class ConanInfoNodeParser {
         } else if (stringTokenizer.hasMoreTokens()) {
             String value = stringTokenizer.nextToken().trim();
             if ("ID".equals(key)) {
-                System.out.printf("Found Package ID: %s\n", value);
+                logger.trace(String.format("Found Package ID: %s", value));
                 nodeBuilder.setPackageId(value);
             } else if ("Revision".equals(key)) {
-                System.out.printf("Found Recipe Revision: %s\n", value);
+                logger.trace(String.format("Found Recipe Revision: %s", value));
                 nodeBuilder.setRecipeRevision(value);
             } else if ("Package revision".equals(key)) {
-                System.out.printf("Found Package Revision: %s\n", value);
+                logger.trace(String.format("Found Package Revision: %s", value));
                 nodeBuilder.setPackageRevision(value);
             }
         }
