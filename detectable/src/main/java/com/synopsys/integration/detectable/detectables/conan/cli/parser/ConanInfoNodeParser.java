@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.conan.cli;
+package com.synopsys.integration.detectable.detectables.conan.cli.parser;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +36,11 @@ import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuil
 public class ConanInfoNodeParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /*
+     * A node looks like this:
+     * ref:
+     *     node body element
+     */
     public ConanInfoNodeParseResult parseNode(List<String> conanInfoOutputLines, int nodeStartIndex) {
         String nodeHeaderLine = conanInfoOutputLines.get(nodeStartIndex);
         ConanNodeBuilder nodeBuilder = new ConanNodeBuilder();
@@ -44,6 +49,7 @@ public class ConanInfoNodeParser {
         for (int lineIndex = nodeStartIndex + 1; lineIndex < conanInfoOutputLines.size(); lineIndex++) {
             String nodeBodyLine = conanInfoOutputLines.get(lineIndex);
             logger.trace(String.format("Parsing line: %d: %s", lineIndex + 1, nodeBodyLine));
+            // Check to see if we've overshot the end of the node
             Optional<ConanInfoNodeParseResult> result = getResultIfDone(nodeBodyLine, lineIndex, nodeStartIndex, bodyLineCount, nodeBuilder);
             if (result.isPresent()) {
                 return result.get();
@@ -58,11 +64,11 @@ public class ConanInfoNodeParser {
     private Optional<ConanInfoNodeParseResult> getResultIfDone(String nodeBodyLine, int lineIndex, int nodeStartIndex, int bodyLineCount, ConanNodeBuilder nodeBuilder) {
         int indentDepth = measureIndentDepth(nodeBodyLine);
         if (indentDepth > 0) {
-            // Not done parsing node
+            // We're not done parsing this node
             return Optional.empty();
         }
         if (bodyLineCount == 0) {
-            logger.trace("This wasn't a node");
+            logger.trace("This wasn't a node (it was just a conan info command log message)");
             return Optional.of(new ConanInfoNodeParseResult(nodeStartIndex));
         } else {
             logger.trace("Reached end of node");
@@ -71,24 +77,25 @@ public class ConanInfoNodeParser {
     }
 
     private int parseBodyElement(List<String> conanInfoOutputLines, int bodyElementLineIndex, ConanNodeBuilder nodeBuilder) {
-        StringTokenizer stringTokenizer = new StringTokenizer(conanInfoOutputLines.get(bodyElementLineIndex).trim(), ":");
-        String key = stringTokenizer.nextToken();
+        StringTokenizer tokenizer = new StringTokenizer(conanInfoOutputLines.get(bodyElementLineIndex).trim(), ":");
+        String key = tokenizer.nextToken();
         int lastLineParsed = bodyElementLineIndex;
-        if ("Requires".equals(key)) {
+        // TODO to make this more extensible: have a list of parsers; give each a swing at it until one says it handled it
+        if ("Requires".equalsIgnoreCase(key)) {
             lastLineParsed = parseListSubElement(conanInfoOutputLines, bodyElementLineIndex, ref -> nodeBuilder.addRequiresRef(ref));
-        } else if ("Build Requires".equals(key)) {
+        } else if ("Build Requires".equalsIgnoreCase(key)) {
             lastLineParsed = parseListSubElement(conanInfoOutputLines, bodyElementLineIndex, ref -> nodeBuilder.addBuildRequiresRef(ref));
-        } else if ("Required By".equals(key)) {
+        } else if ("Required By".equalsIgnoreCase(key)) {
             lastLineParsed = parseListSubElement(conanInfoOutputLines, bodyElementLineIndex, ref -> nodeBuilder.addRequiredByRef(ref));
-        } else if (stringTokenizer.hasMoreTokens()) {
-            String value = stringTokenizer.nextToken().trim();
-            if ("ID".equals(key)) {
+        } else if (tokenizer.hasMoreTokens()) {
+            String value = tokenizer.nextToken().trim();
+            if ("ID".equalsIgnoreCase(key)) {
                 logger.trace(String.format("Found Package ID: %s", value));
                 nodeBuilder.setPackageId(value);
-            } else if ("Revision".equals(key)) {
+            } else if ("Revision".equalsIgnoreCase(key)) {
                 logger.trace(String.format("Found Recipe Revision: %s", value));
                 nodeBuilder.setRecipeRevision(value);
-            } else if ("Package revision".equals(key)) {
+            } else if ("Package revision".equalsIgnoreCase(key)) {
                 logger.trace(String.format("Found Package Revision: %s", value));
                 nodeBuilder.setPackageRevision(value);
             }

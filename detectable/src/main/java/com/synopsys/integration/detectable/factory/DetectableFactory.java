@@ -90,9 +90,9 @@ import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGe
 import com.synopsys.integration.detectable.detectables.conan.ConanExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractor;
-import com.synopsys.integration.detectable.detectables.conan.cli.ConanInfoNodeParser;
-import com.synopsys.integration.detectable.detectables.conan.cli.ConanInfoParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
+import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoNodeParser;
+import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoParser;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliExtractor;
