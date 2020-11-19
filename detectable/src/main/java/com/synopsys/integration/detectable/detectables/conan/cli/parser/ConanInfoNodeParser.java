@@ -24,33 +24,33 @@ package com.synopsys.integration.detectable.detectables.conan.cli.parser;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.StringTokenizer;
-import java.util.function.Consumer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.ElementParser;
-import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.ListElementParser;
-import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.NameValuePairElementParser;
+import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.ElementParserFactory;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 
 public class ConanInfoNodeParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ConanInfoLineAnalyzer conanInfoLineAnalyzer;
+    private final ElementParserFactory elementParserFactory;
 
-    public ConanInfoNodeParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer) {
+    public ConanInfoNodeParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer, ElementParserFactory elementParserFactory) {
         this.conanInfoLineAnalyzer = conanInfoLineAnalyzer;
+        this.elementParserFactory = elementParserFactory;
     }
 
     /*
      * A node looks like this:
      * ref:
-     *     node body element
+     *     node body element (either key: value, key:\nlist-of-values)
      */
     public ConanInfoNodeParseResult parseNode(List<String> conanInfoOutputLines, int nodeStartIndex) {
         String nodeHeaderLine = conanInfoOutputLines.get(nodeStartIndex);
         ConanNodeBuilder nodeBuilder = new ConanNodeBuilder();
+        List<ElementParser> elementParsers = elementParserFactory.createParsersForNode(nodeBuilder);
         nodeBuilder.setRef(nodeHeaderLine);
         int bodyLineCount = 0;
         for (int lineIndex = nodeStartIndex + 1; lineIndex < conanInfoOutputLines.size(); lineIndex++) {
@@ -62,10 +62,22 @@ public class ConanInfoNodeParser {
                 return result.get();
             }
             bodyLineCount++;
-            lineIndex = parseBodyElement(conanInfoOutputLines, lineIndex, nodeBuilder);
+            lineIndex = parseBodyElement(conanInfoOutputLines, lineIndex, elementParsers);
         }
         logger.trace("Reached end of conan info output");
         return new ConanInfoNodeParseResult(conanInfoOutputLines.size() - 1, nodeBuilder.build());
+    }
+
+    private int parseBodyElement(List<String> conanInfoOutputLines, int bodyElementLineIndex, List<ElementParser> elementParsers) {
+        String line = conanInfoOutputLines.get(bodyElementLineIndex);
+        int lastLineParsed = bodyElementLineIndex;
+        for (ElementParser elementParser : elementParsers) {
+            if (elementParser.applies(line)) {
+                lastLineParsed = elementParser.parseElement(conanInfoOutputLines, bodyElementLineIndex);
+                break;
+            }
+        }
+        return lastLineParsed;
     }
 
     private Optional<ConanInfoNodeParseResult> getResultIfDone(String nodeBodyLine, int lineIndex, int nodeStartIndex, int bodyLineCount, ConanNodeBuilder nodeBuilder) {
@@ -83,47 +95,4 @@ public class ConanInfoNodeParser {
         }
     }
 
-    private int parseBodyElement(List<String> conanInfoOutputLines, int bodyElementLineIndex, ConanNodeBuilder nodeBuilder) {
-        ElementParser requiresElementParser = new ListElementParser(conanInfoLineAnalyzer, "Requires", listItem -> nodeBuilder.addRequiresRef(listItem));
-        ElementParser buildRequiresElementParser = new ListElementParser(conanInfoLineAnalyzer, "Build Requires", listItem -> nodeBuilder.addBuildRequiresRef(listItem));
-        ElementParser requiredByElementParser = new ListElementParser(conanInfoLineAnalyzer, "Required By", listItem -> nodeBuilder.addRequiredByRef(listItem));
-
-        ElementParser packageIdParser = new NameValuePairElementParser(conanInfoLineAnalyzer, "ID", parsedValue -> nodeBuilder.setPackageId(parsedValue));
-        ElementParser recipeRevisionParser = new NameValuePairElementParser(conanInfoLineAnalyzer, "Revision", parsedValue -> nodeBuilder.setRecipeRevision(parsedValue));
-        ElementParser packageRevisionParser = new NameValuePairElementParser(conanInfoLineAnalyzer, "Package revision", parsedValue -> nodeBuilder.setPackageRevision(parsedValue));
-
-        String line = conanInfoOutputLines.get(bodyElementLineIndex);
-
-        StringTokenizer tokenizer = new StringTokenizer(conanInfoOutputLines.get(bodyElementLineIndex).trim(), ":");
-        String key = tokenizer.nextToken();
-        int lastLineParsed = bodyElementLineIndex;
-        // TODO to make this more extensible: have a list of parsers; give each a swing at it until one says it handled it
-        if (requiresElementParser.applies(line)) {
-            lastLineParsed = requiresElementParser.parseElement(conanInfoOutputLines, bodyElementLineIndex);
-        } else if (buildRequiresElementParser.applies(line)) {
-            lastLineParsed = buildRequiresElementParser.parseElement(conanInfoOutputLines, bodyElementLineIndex);
-        } else if (requiredByElementParser.applies(line)) {
-            lastLineParsed = requiredByElementParser.parseElement(conanInfoOutputLines, bodyElementLineIndex);
-        } else if (packageIdParser.applies(conanInfoOutputLines.get(bodyElementLineIndex))) {
-            lastLineParsed = packageIdParser.parseElement(conanInfoOutputLines, bodyElementLineIndex);
-        } else if (recipeRevisionParser.applies(conanInfoOutputLines.get(bodyElementLineIndex))) {
-            lastLineParsed = recipeRevisionParser.parseElement(conanInfoOutputLines, bodyElementLineIndex);
-        } else if (packageRevisionParser.applies(conanInfoOutputLines.get(bodyElementLineIndex))) {
-            lastLineParsed = packageRevisionParser.parseElement(conanInfoOutputLines, bodyElementLineIndex);
-        }
-
-        return lastLineParsed;
-    }
-
-    private int parseListSubElement(List<String> conanInfoOutputLines, int subElementLineIndex, Consumer<String> collector) {
-        for (int i = subElementLineIndex + 1; i < conanInfoOutputLines.size(); i++) {
-            String line = conanInfoOutputLines.get(i);
-            int depth = conanInfoLineAnalyzer.measureIndentDepth(line);
-            if (depth != 2) {
-                return i - 1;
-            }
-            collector.accept(conanInfoOutputLines.get(i).trim());
-        }
-        return conanInfoOutputLines.size() - 1;
-    }
 }

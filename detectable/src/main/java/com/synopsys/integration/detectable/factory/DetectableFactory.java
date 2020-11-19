@@ -94,6 +94,7 @@ import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoNodeParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoParser;
+import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.ElementParserFactory;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliExtractor;
@@ -573,7 +574,12 @@ public class DetectableFactory {
     }
 
     private ConanCliExtractor conanCliExtractor() {
-        return new ConanCliExtractor(executableRunner, new ConanInfoParser(new ConanInfoNodeParser(new ConanInfoLineAnalyzer()), new ConanCodeLocationGenerator()));
+        ConanInfoLineAnalyzer conanInfoLineAnalyzer = new ConanInfoLineAnalyzer();
+        ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
+        ElementParserFactory elementParserFactory = new ElementParserFactory(conanInfoLineAnalyzer);
+        ConanInfoNodeParser conanInfoNodeParser = new ConanInfoNodeParser(conanInfoLineAnalyzer, elementParserFactory);
+        ConanInfoParser conanInfoParser = new ConanInfoParser(conanInfoNodeParser, conanCodeLocationGenerator);
+        return new ConanCliExtractor(executableRunner, conanInfoParser);
     }
 
     private NpmCliParser npmCliDependencyFinder() {

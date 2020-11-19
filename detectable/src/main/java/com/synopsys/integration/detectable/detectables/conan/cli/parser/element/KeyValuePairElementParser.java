@@ -9,13 +9,13 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoLineAnalyzer;
 
-public class NameValuePairElementParser implements ElementParser {
+public class KeyValuePairElementParser implements ElementParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ConanInfoLineAnalyzer conanInfoLineAnalyzer;
     private final String targetKey;
     private final Consumer<String> valueConsumer;
 
-    public NameValuePairElementParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer, String targetKey, Consumer<String> valueConsumer) {
+    public KeyValuePairElementParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer, String targetKey, Consumer<String> valueConsumer) {
         this.conanInfoLineAnalyzer = conanInfoLineAnalyzer;
         this.targetKey = targetKey;
         this.valueConsumer = valueConsumer;
