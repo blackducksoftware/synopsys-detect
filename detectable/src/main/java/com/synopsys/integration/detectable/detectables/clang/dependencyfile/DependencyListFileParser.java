@@ -60,14 +60,14 @@ public class DependencyListFileParser {
         depsListString = depsListString.replaceAll("\n", " ");
         logger.trace(String.format("dependencies, newlines removed: %s", depsListString));
 
-        depsListString = depsListString.replaceAll("\\\\", " ");
+        depsListString = depsListString.replaceAll("\\\\", " "); //TODO: This does not work on Windows paths. 
         logger.trace(String.format("dependencies, backslashes removed: %s", depsListString));
 
         String[] deps = depsListString.split("\\s+");
         List<String> depsList = Arrays.stream(deps)
-                                          .filter(StringUtils::isNotBlank)
-                                          .map(this::normalize)
-                                          .collect(Collectors.toList());
+                                    .filter(StringUtils::isNotBlank)
+                                    .map(this::normalize)
+                                    .collect(Collectors.toList());
         return depsList;
     }
 
