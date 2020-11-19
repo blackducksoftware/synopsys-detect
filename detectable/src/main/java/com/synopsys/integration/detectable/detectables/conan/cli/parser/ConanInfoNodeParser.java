@@ -49,7 +49,7 @@ public class ConanInfoNodeParser {
     public ConanInfoNodeParseResult parseNode(List<String> conanInfoOutputLines, int nodeStartIndex) {
         String nodeHeaderLine = conanInfoOutputLines.get(nodeStartIndex);
         ConanNodeBuilder nodeBuilder = new ConanNodeBuilder();
-        nodeBuilder.setRef(nodeHeaderLine);
+        nodeBuilder.setRef(nodeHeaderLine.trim());
         int bodyLineCount = 0;
         for (int lineIndex = nodeStartIndex + 1; lineIndex < conanInfoOutputLines.size(); lineIndex++) {
             String nodeBodyLine = conanInfoOutputLines.get(lineIndex);
@@ -60,21 +60,19 @@ public class ConanInfoNodeParser {
                 return result.get();
             }
             bodyLineCount++;
-            lineIndex = parseBodyElement(nodeBuilder, conanInfoOutputLines, lineIndex, elementParsers);
+            lineIndex = parseBodyElement(nodeBuilder, conanInfoOutputLines, lineIndex);
         }
         logger.trace("Reached end of conan info output");
         return new ConanInfoNodeParseResult(conanInfoOutputLines.size() - 1, nodeBuilder.build());
     }
 
-    private int parseBodyElement(ConanNodeBuilder nodeBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex, List<ElementParser> elementParsers) {
+    private int parseBodyElement(ConanNodeBuilder nodeBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex) {
         String line = conanInfoOutputLines.get(bodyElementLineIndex);
-        int lastLineParsed = bodyElementLineIndex;
-        for (ElementParser elementParser : elementParsers) {
-            if (elementParser.applies(line)) {
-                lastLineParsed = elementParser.parseElement(nodeBuilder, conanInfoOutputLines, bodyElementLineIndex);
-                break;
-            }
-        }
+        int lastLineParsed = elementParsers.stream()
+                                 .filter(ep -> ep.applies(line))
+                                 .findFirst()
+                                 .map(ep -> ep.parseElement(nodeBuilder, conanInfoOutputLines, bodyElementLineIndex))
+                                 .orElse(bodyElementLineIndex);
         return lastLineParsed;
     }
 
