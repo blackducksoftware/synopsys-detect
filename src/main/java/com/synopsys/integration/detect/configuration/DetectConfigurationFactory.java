@@ -111,7 +111,7 @@ public class DetectConfigurationFactory {
             Long timeout = getValue(DetectProperties.DETECT_API_TIMEOUT);
             return timeout / 1000;
         } else {
-            return getValue(DetectProperties.DETECT_REPORT_TIMEOUT);
+            return getValue(DetectProperties.DETECT_TIMEOUT);
         }
     }
 
