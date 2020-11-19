@@ -29,17 +29,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.ElementParser;
-import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.ElementParserFactory;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 
 public class ConanInfoNodeParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ConanInfoLineAnalyzer conanInfoLineAnalyzer;
-    private final ElementParserFactory elementParserFactory;
+    private final List<ElementParser> elementParsers;
 
-    public ConanInfoNodeParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer, ElementParserFactory elementParserFactory) {
+    public ConanInfoNodeParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer, List<ElementParser> elementParsers) {
         this.conanInfoLineAnalyzer = conanInfoLineAnalyzer;
-        this.elementParserFactory = elementParserFactory;
+        this.elementParsers = elementParsers;
     }
 
     /*
@@ -50,7 +49,6 @@ public class ConanInfoNodeParser {
     public ConanInfoNodeParseResult parseNode(List<String> conanInfoOutputLines, int nodeStartIndex) {
         String nodeHeaderLine = conanInfoOutputLines.get(nodeStartIndex);
         ConanNodeBuilder nodeBuilder = new ConanNodeBuilder();
-        List<ElementParser> elementParsers = elementParserFactory.createParsersForNode(nodeBuilder);
         nodeBuilder.setRef(nodeHeaderLine);
         int bodyLineCount = 0;
         for (int lineIndex = nodeStartIndex + 1; lineIndex < conanInfoOutputLines.size(); lineIndex++) {
@@ -62,18 +60,18 @@ public class ConanInfoNodeParser {
                 return result.get();
             }
             bodyLineCount++;
-            lineIndex = parseBodyElement(conanInfoOutputLines, lineIndex, elementParsers);
+            lineIndex = parseBodyElement(nodeBuilder, conanInfoOutputLines, lineIndex, elementParsers);
         }
         logger.trace("Reached end of conan info output");
         return new ConanInfoNodeParseResult(conanInfoOutputLines.size() - 1, nodeBuilder.build());
     }
 
-    private int parseBodyElement(List<String> conanInfoOutputLines, int bodyElementLineIndex, List<ElementParser> elementParsers) {
+    private int parseBodyElement(ConanNodeBuilder nodeBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex, List<ElementParser> elementParsers) {
         String line = conanInfoOutputLines.get(bodyElementLineIndex);
         int lastLineParsed = bodyElementLineIndex;
         for (ElementParser elementParser : elementParsers) {
             if (elementParser.applies(line)) {
-                lastLineParsed = elementParser.parseElement(conanInfoOutputLines, bodyElementLineIndex);
+                lastLineParsed = elementParser.parseElement(nodeBuilder, conanInfoOutputLines, bodyElementLineIndex);
                 break;
             }
         }
