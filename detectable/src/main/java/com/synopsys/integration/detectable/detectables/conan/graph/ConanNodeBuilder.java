@@ -112,7 +112,6 @@ public class ConanNodeBuilder {
                     }
                 }
             }
-            logger.info(String.format("name: %s; version: %s; user: %s; channel: %s", name, version, user, channel));
         }
         boolean isRootNode = false;
         if ((filename != null) && CollectionUtils.isEmpty(requiredByRefs)) {
@@ -126,6 +125,7 @@ public class ConanNodeBuilder {
         }
         ConanNode node = new ConanNode(ref, filename, name, version, user, channel,
             recipeRevision, packageId, packageRevision, requiresRefs, buildRequiresRefs, requiredByRefs, isRootNode);
+        logger.info(String.format("node: %s", node));
         return Optional.of(node);
     }
 }

@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.conan.cli.parser.element
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -34,18 +35,16 @@ public class NodeElementParser {
     private final List<ElementTypeParser> elementParsers = new ArrayList<>();
 
     public NodeElementParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer) {
-        ElementTypeParser requiresElementParser = new ListElementParser(conanInfoLineAnalyzer, "Requires", (ConanNodeBuilder nodeBuilder, String listItem) -> nodeBuilder.addRequiresRef(listItem));
-        elementParsers.add(requiresElementParser);
-        ElementTypeParser buildRequiresElementParser = new ListElementParser(conanInfoLineAnalyzer, "Build Requires", (ConanNodeBuilder nodeBuilder, String listItem) -> nodeBuilder.addBuildRequiresRef(listItem));
-        elementParsers.add(buildRequiresElementParser);
-        ElementTypeParser requiredByElementParser = new ListElementParser(conanInfoLineAnalyzer, "Required By", (ConanNodeBuilder nodeBuilder, String listItem) -> nodeBuilder.addRequiredByRef(listItem));
-        elementParsers.add(requiredByElementParser);
-        ElementTypeParser packageIdParser = new KeyValuePairElementParser(conanInfoLineAnalyzer, "ID", (ConanNodeBuilder nodeBuilder, String parsedValue) -> nodeBuilder.setPackageId(parsedValue));
-        elementParsers.add(packageIdParser);
-        ElementTypeParser recipeRevisionParser = new KeyValuePairElementParser(conanInfoLineAnalyzer, "Revision", (ConanNodeBuilder nodeBuilder, String parsedValue) -> nodeBuilder.setRecipeRevision(parsedValue));
-        elementParsers.add(recipeRevisionParser);
-        ElementTypeParser packageRevisionParser = new KeyValuePairElementParser(conanInfoLineAnalyzer, "Package revision", (ConanNodeBuilder nodeBuilder, String parsedValue) -> nodeBuilder.setPackageRevision(parsedValue));
-        elementParsers.add(packageRevisionParser);
+        createElementTypeParser(() -> new ListElementParser(conanInfoLineAnalyzer, "Requires", (ConanNodeBuilder nodeBuilder, String listItem) -> nodeBuilder.addRequiresRef(listItem)));
+        createElementTypeParser(() -> new ListElementParser(conanInfoLineAnalyzer, "Build Requires", (ConanNodeBuilder nodeBuilder, String listItem) -> nodeBuilder.addBuildRequiresRef(listItem)));
+        createElementTypeParser(() -> new ListElementParser(conanInfoLineAnalyzer, "Required By", (ConanNodeBuilder nodeBuilder, String listItem) -> nodeBuilder.addRequiredByRef(listItem)));
+        createElementTypeParser(() -> new KeyValuePairElementParser(conanInfoLineAnalyzer, "ID", (ConanNodeBuilder nodeBuilder, String parsedValue) -> nodeBuilder.setPackageId(parsedValue)));
+        createElementTypeParser(() -> new KeyValuePairElementParser(conanInfoLineAnalyzer, "Revision", (ConanNodeBuilder nodeBuilder, String parsedValue) -> nodeBuilder.setRecipeRevision(parsedValue)));
+        createElementTypeParser(() -> new KeyValuePairElementParser(conanInfoLineAnalyzer, "Package revision", (ConanNodeBuilder nodeBuilder, String parsedValue) -> nodeBuilder.setPackageRevision(parsedValue)));
+    }
+
+    private void createElementTypeParser(Supplier<ElementTypeParser> elementSupplier) {
+        elementParsers.add(elementSupplier.get());
     }
 
     @NotNull

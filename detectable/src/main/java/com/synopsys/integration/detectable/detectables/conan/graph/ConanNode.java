@@ -24,7 +24,9 @@ package com.synopsys.integration.detectable.detectables.conan.graph;
 
 import java.util.List;
 
-public class ConanNode {
+import com.synopsys.integration.util.Stringable;
+
+public class ConanNode extends Stringable {
     // if rootNode: conanfile.{txt,py}[ (projectname/version)]
     // else       : package/version[@user/channel]
     private final String ref;

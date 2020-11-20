@@ -64,10 +64,9 @@ public class ConanCliExtractor {
         String standardOutput = conanInfoOutput.getStandardOutput();
         String errorOutput = conanInfoOutput.getErrorOutput();
         if (StringUtils.isNotBlank(errorOutput)) {
-            logger.error("Error when running conan info command (command wrote to stderr):");
-            logger.error(errorOutput);
-            return new Extraction.Builder().failure("Conan wrote to stderr while running conan info").build();
-        } else if (StringUtils.isBlank(standardOutput)) {
+            logger.debug(String.format("The conan info command wrote to stderr: %s", errorOutput));
+        }
+        if (StringUtils.isBlank(standardOutput)) {
             logger.error("Nothing returned from conan info command");
             return new Extraction.Builder().failure("Conan info command produced no output").build();
         }

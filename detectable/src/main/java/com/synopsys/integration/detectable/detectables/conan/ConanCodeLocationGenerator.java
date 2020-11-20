@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
@@ -41,9 +43,11 @@ import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class ConanCodeLocationGenerator {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @NotNull
     public ConanDetectableResult generateCodeLocationFromNodeMap(boolean includeBuildDependencies, Map<String, ConanNode> nodes) throws IntegrationException {
+        logger.debug(String.format("Generating code location from %d dependencies", nodes.keySet().size()));
         Optional<ConanNode> rootNode = getRoot(nodes.values());
         if (!rootNode.isPresent()) {
             throw new IntegrationException("No root node found in 'conan info' output");
