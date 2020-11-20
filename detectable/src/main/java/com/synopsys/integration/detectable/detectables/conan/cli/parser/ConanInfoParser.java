@@ -56,7 +56,9 @@ public class ConanInfoParser {
      * Conan info command output: some (irrelevant to us) log messages, followed by a list of nodes.
      * A node looks like this:
      * ref:
-     *     key: value
+     *     key1: value
+     *     key2:
+     *         list of values
      *     ....
      */
     private Map<String, ConanNode> generateNodeMap(String conanInfoOutput) {
