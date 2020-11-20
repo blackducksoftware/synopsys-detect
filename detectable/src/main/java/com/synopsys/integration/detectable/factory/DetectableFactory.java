@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detectable.factory;
 
-import java.util.List;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -96,8 +94,7 @@ import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoNodeParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoParser;
-import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.ElementParser;
-import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.ElementParserFactory;
+import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.NodeElementParser;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliExtractor;
@@ -580,8 +577,8 @@ public class DetectableFactory {
         // TODO this seems like too much stuff to be creating here
         ConanInfoLineAnalyzer conanInfoLineAnalyzer = new ConanInfoLineAnalyzer();
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
-        List<ElementParser> elementParsers = new ElementParserFactory(conanInfoLineAnalyzer).createParsers();
-        ConanInfoNodeParser conanInfoNodeParser = new ConanInfoNodeParser(conanInfoLineAnalyzer, elementParsers);
+        NodeElementParser nodeElementParser = new NodeElementParser(conanInfoLineAnalyzer);
+        ConanInfoNodeParser conanInfoNodeParser = new ConanInfoNodeParser(conanInfoLineAnalyzer, nodeElementParser);
         ConanInfoParser conanInfoParser = new ConanInfoParser(conanInfoNodeParser, conanCodeLocationGenerator);
         return new ConanCliExtractor(executableRunner, conanInfoParser);
     }

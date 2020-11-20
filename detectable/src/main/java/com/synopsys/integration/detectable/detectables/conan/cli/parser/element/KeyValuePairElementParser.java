@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 
-public class KeyValuePairElementParser implements ElementParser {
+public class KeyValuePairElementParser implements ElementTypeParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ConanInfoLineAnalyzer conanInfoLineAnalyzer;
     private final String targetKey;

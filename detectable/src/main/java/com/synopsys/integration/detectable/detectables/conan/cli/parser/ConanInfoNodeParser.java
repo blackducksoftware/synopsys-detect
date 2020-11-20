@@ -28,17 +28,17 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.ElementParser;
+import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.NodeElementParser;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 
 public class ConanInfoNodeParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ConanInfoLineAnalyzer conanInfoLineAnalyzer;
-    private final List<ElementParser> elementParsers;
+    private final NodeElementParser nodeElementParser;
 
-    public ConanInfoNodeParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer, List<ElementParser> elementParsers) {
+    public ConanInfoNodeParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer, NodeElementParser nodeElementParser) {
         this.conanInfoLineAnalyzer = conanInfoLineAnalyzer;
-        this.elementParsers = elementParsers;
+        this.nodeElementParser = nodeElementParser;
     }
 
     /*
@@ -60,20 +60,10 @@ public class ConanInfoNodeParser {
                 return result.get();
             }
             bodyLineCount++;
-            lineIndex = parseBodyElement(nodeBuilder, conanInfoOutputLines, lineIndex);
+            lineIndex = nodeElementParser.parseElement(nodeBuilder, conanInfoOutputLines, lineIndex);
         }
         logger.trace("Reached end of conan info output");
         return new ConanInfoNodeParseResult(conanInfoOutputLines.size() - 1, nodeBuilder.build());
-    }
-
-    private int parseBodyElement(ConanNodeBuilder nodeBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex) {
-        String line = conanInfoOutputLines.get(bodyElementLineIndex);
-        int lastLineParsed = elementParsers.stream()
-                                 .filter(ep -> ep.applies(line))
-                                 .findFirst()
-                                 .map(ep -> ep.parseElement(nodeBuilder, conanInfoOutputLines, bodyElementLineIndex))
-                                 .orElse(bodyElementLineIndex);
-        return lastLineParsed;
     }
 
     private Optional<ConanInfoNodeParseResult> getResultIfDone(String nodeBodyLine, int lineIndex, int nodeStartIndex, int bodyLineCount, ConanNodeBuilder nodeBuilder) {
