@@ -38,8 +38,8 @@ import org.slf4j.LoggerFactory;
 
 public class DependencyListFileParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private Pattern newLinePattern;
-    private Pattern backslashPattern;
+    private final Pattern newLinePattern;
+    private final Pattern backslashPattern;
 
     public DependencyListFileParser() {
         this.newLinePattern = Pattern.compile("\n");
@@ -66,7 +66,6 @@ public class DependencyListFileParser {
         logger.trace(String.format("dependencies: %s", depsListString));
         depsListString = newLinePattern.matcher(depsListString).replaceAll(" ");
         logger.trace(String.format("dependencies, newlines removed: %s", depsListString));
-
         depsListString = backslashPattern.matcher(depsListString).replaceAll(" ");
         logger.trace(String.format("dependencies, backslashes removed: %s", depsListString));
 

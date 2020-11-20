@@ -37,6 +37,7 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.core.env.ConfigurableEnvironment;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.common.util.Bdo;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
@@ -170,7 +171,8 @@ public class Application implements ApplicationRunner {
                 File statusFile = new File(directoryManager.getStatusOutputDirectory(), "status.json");
                 logger.info(String.format("Creating status file: %s", statusFile.toString()));
 
-                String json = gson.toJson(formattedOutputManager.createFormattedOutput(detectInfo));
+                Gson formattedGson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+                String json = formattedGson.toJson(formattedOutputManager.createFormattedOutput(detectInfo));
                 FileUtils.writeStringToFile(statusFile, json, Charset.defaultCharset());
             } else {
                 logger.info("Will not create status file, detect did not boot.");
