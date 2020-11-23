@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
@@ -63,10 +64,16 @@ public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
         logger.trace(String.format("packageLine: %s", queryOutputLine));
         Optional<String> cleanedQueryOutputLine = cleanQueryOutput(queryOutputLine);
         if (!cleanedQueryOutputLine.isPresent()) {
-            logger.debug(String.format("Skipping line: %s", queryOutputLine));
+            logger.debug(String.format("Skipping line: %s (not a package)", queryOutputLine));
             return Optional.empty();
         }
-        RpmPackage rpmPackage = gson.fromJson(cleanedQueryOutputLine.get(), RpmPackage.class);
+        RpmPackage rpmPackage;
+        try {
+            rpmPackage = gson.fromJson(cleanedQueryOutputLine.get(), RpmPackage.class);
+        } catch (JsonSyntaxException e) {
+            logger.debug(String.format("Skipping line: %s (invalid JSON syntax)", queryOutputLine));
+            return Optional.empty();
+        }
         String packageName = rpmPackage.getName();
         String packageVersion = rpmPackage.getVersion();
         String epoch = rpmPackage.getEpoch();

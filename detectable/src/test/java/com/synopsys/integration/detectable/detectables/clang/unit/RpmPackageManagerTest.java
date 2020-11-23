@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.clang.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -142,5 +143,15 @@ public class RpmPackageManagerTest {
         assertTrue(pkg.isPresent());
         assertEquals("glibc-headers", pkg.get().getPackageName());
         assertEquals("2.28-101.el8", pkg.get().getPackageVersion());
+    }
+
+    @Test
+    public void testParseBogusLine() throws NotOwnedByAnyPkgException {
+        RpmPackageManagerResolver resolver = new RpmPackageManagerResolver(new Gson());
+        final String queryPackageOutputLine = "{ epoch: \"(none)\", name: \"glibc-headers\", version: \"2.28-101.el8\", arch: \"x86_64{{{{{{\"  }";
+
+        Optional<PackageDetails> pkg = resolver.generatePackageFromQueryOutputLine(queryPackageOutputLine);
+
+        assertFalse(pkg.isPresent());
     }
 }
