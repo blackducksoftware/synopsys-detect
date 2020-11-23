@@ -63,6 +63,10 @@ public class ConanCliExtractor {
         }
         String standardOutput = conanInfoOutput.getStandardOutput();
         String errorOutput = conanInfoOutput.getErrorOutput();
+        if (StringUtils.isNotBlank(errorOutput) && errorOutput.contains("ERROR: ")) {
+            logger.error(String.format("The conan info command reported errors: %s", errorOutput));
+            return new Extraction.Builder().failure("Conan info command reported errors").build();
+        }
         if (StringUtils.isNotBlank(errorOutput)) {
             logger.debug(String.format("The conan info command wrote to stderr: %s", errorOutput));
         }
