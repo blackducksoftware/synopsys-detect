@@ -121,24 +121,24 @@ public class RpmPackageManagerTest {
     }
 
     @Test
-    public void testParseSingleArch() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
-
+    public void testParseSingleVariant() throws NotOwnedByAnyPkgException {
         RpmPackageManagerResolver resolver = new RpmPackageManagerResolver(new Gson());
         final String queryPackageOutputLine = "{ epoch: \"(none)\", name: \"glibc-headers\", version: \"2.28-101.el8\", arch: \"x86_64\" }";
 
         Optional<PackageDetails> pkg = resolver.generatePackageFromQueryOutputLine(queryPackageOutputLine);
+
         assertTrue(pkg.isPresent());
         assertEquals("glibc-headers", pkg.get().getPackageName());
         assertEquals("2.28-101.el8", pkg.get().getPackageVersion());
     }
 
     @Test
-    public void testParseMultiArch() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
-
+    public void testParseMultipleVariants() throws NotOwnedByAnyPkgException {
         RpmPackageManagerResolver resolver = new RpmPackageManagerResolver(new Gson());
         final String queryPackageOutputLine = "{ epoch: \"(none)\", name: \"glibc-headers\", version: \"2.28-101.el8\", arch: \"x86_64\" }{ epoch: \"(none)\", name: \"glibc-headers\", version: \"2.28-101.el8\", arch: \"i686\" }";
 
         Optional<PackageDetails> pkg = resolver.generatePackageFromQueryOutputLine(queryPackageOutputLine);
+
         assertTrue(pkg.isPresent());
         assertEquals("glibc-headers", pkg.get().getPackageName());
         assertEquals("2.28-101.el8", pkg.get().getPackageVersion());
