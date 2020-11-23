@@ -267,13 +267,13 @@ public class DetectProperties {
     public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_COPYRIGHT_SEARCH =
         new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.copyright.search", false))
             .setInfo("Signature Scanner Copyright Search", DetectPropertyFromVersion.VERSION_6_4_0)
-            .setHelp("When set to true, user will be able to scan and discover copyright names in Black Duck.")
+            .setHelp("When set to true, user will be able to scan and discover copyright names in Black Duck. Corresponding Signature Scanner CLI Argument: --copyright-search.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER);
 
     public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN =
         new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.dry.run", false))
             .setInfo("Signature Scanner Dry Run", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk.")
+            .setHelp("If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk via the Signature Scanner CLI argument: --dryRunWriteDir.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL);
 
     public static final DetectProperty<StringListProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS =
@@ -301,7 +301,7 @@ public class DetectProperties {
         new DetectProperty<>(new ExtendedEnumProperty<>("detect.blackduck.signature.scanner.individual.file.matching", ExtendedEnumValue.ofExtendedValue(ExtendedIndividualFileMatchingMode.NONE), ExtendedIndividualFileMatchingMode.class,
             IndividualFileMatching.class))
             .setInfo("Individual File Matching", DetectPropertyFromVersion.VERSION_6_2_0)
-            .setHelp("Users may set this property to indicate what types of files they want to match")
+            .setHelp("Users may set this property to indicate what types of files they want to match. Corresponding Signature Scanner CLI Argument: --individualFileMatching.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER);
 
     public static final DetectProperty<NullableStringProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL =
@@ -314,7 +314,7 @@ public class DetectProperties {
     public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH =
         new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.license.search", false))
             .setInfo("Signature Scanner License Search", DetectPropertyFromVersion.VERSION_6_2_0)
-            .setHelp("When set to true, user will be able to scan and discover license names in Black Duck")
+            .setHelp("When set to true, user will be able to scan and discover license names in Black Duck. Corresponding Signature Scanner CLI Argument: --license-search.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER);
 
     public static final DetectProperty<NullablePathProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH =
@@ -350,13 +350,13 @@ public class DetectProperties {
         new DetectProperty<>(new ExtendedEnumProperty<>("detect.blackduck.signature.scanner.snippet.matching", ExtendedEnumValue.ofExtendedValue(ExtendedSnippetMode.NONE), ExtendedSnippetMode.class, SnippetMatching.class))
             .setInfo("Snippet Matching", DetectPropertyFromVersion.VERSION_5_5_0)
             .setHelp(
-                "Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help.")
+                "Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --snippet-matching, --snippet-matching-only, --full-snippet-scan.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE =
         new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.upload.source.mode", false))
             .setInfo("Upload source mode", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck.")
+            .setHelp("If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. Corresponding Signature Scanner CLI Argument: --upload-source.")
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullableStringProperty> DETECT_BOM_AGGREGATE_NAME =
