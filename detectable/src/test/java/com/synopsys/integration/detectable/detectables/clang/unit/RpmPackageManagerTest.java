@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 
@@ -44,12 +45,12 @@ public class RpmPackageManagerTest {
 
     @Test
     public void testValidNoEpoch() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
-        final StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         sb.append("{ epoch: \"(none)\", name: \"boost-devel\", version: \"1.53.0-27.el7\", arch: \"x86_64\" }\n");
-        final String pkgMgrOwnedByOutput = sb.toString();
+        String pkgMgrOwnedByOutput = sb.toString();
 
-        final RpmPackageManagerResolver pkgMgr = new RpmPackageManagerResolver(new Gson());
-        final List<PackageDetails> pkgs = pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().rpm(), null, null, pkgMgrOwnedByOutput);
+        RpmPackageManagerResolver pkgMgr = new RpmPackageManagerResolver(new Gson());
+        List<PackageDetails> pkgs = pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().rpm(), null, null, pkgMgrOwnedByOutput);
 
         assertEquals(1, pkgs.size());
         assertEquals("boost-devel", pkgs.get(0).getPackageName());
@@ -59,12 +60,12 @@ public class RpmPackageManagerTest {
 
     @Test
     public void testValidWithEpoch() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
-        final StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         sb.append("{ epoch: \"9\", name: \"boost-devel\", version: \"1.53.0-27.el7\", arch: \"x86_64\" }\n");
-        final String pkgMgrOwnedByOutput = sb.toString();
+        String pkgMgrOwnedByOutput = sb.toString();
 
-        final RpmPackageManagerResolver pkgMgr = new RpmPackageManagerResolver(new Gson());
-        final List<PackageDetails> pkgs = pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().rpm(), null, null, pkgMgrOwnedByOutput);
+        RpmPackageManagerResolver pkgMgr = new RpmPackageManagerResolver(new Gson());
+        List<PackageDetails> pkgs = pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().rpm(), null, null, pkgMgrOwnedByOutput);
 
         assertEquals(1, pkgs.size());
         assertEquals("boost-devel", pkgs.get(0).getPackageName());
@@ -74,13 +75,13 @@ public class RpmPackageManagerTest {
 
     @Test
     public void testInValid() throws ExecutableRunnerException {
-        final StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         sb.append("garbage\n");
         sb.append("nonsense\n");
         sb.append("file /opt/hub-detect/clang-repos/hello_world/hello_world.cpp is not owned by any package\n");
-        final String pkgMgrOwnedByOutput = sb.toString();
+        String pkgMgrOwnedByOutput = sb.toString();
 
-        final RpmPackageManagerResolver pkgMgr = new RpmPackageManagerResolver(new Gson());
+        RpmPackageManagerResolver pkgMgr = new RpmPackageManagerResolver(new Gson());
         try {
             pkgMgr.resolvePackages(new ClangPackageManagerInfoFactory().rpm(), null, null, pkgMgrOwnedByOutput);
             fail("Expected NotOwnedByAnyPkgException");
@@ -92,18 +93,18 @@ public class RpmPackageManagerTest {
     @Test
     public void testResolve() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
 
-        final RpmPackageManagerResolver resolver = new RpmPackageManagerResolver(new Gson());
-        final ClangPackageManagerInfo currentPackageManager = null;
-        final DetectableExecutableRunner executableRunner = null;
-        final File workingDirectory = null;
+        RpmPackageManagerResolver resolver = new RpmPackageManagerResolver(new Gson());
+        ClangPackageManagerInfo currentPackageManager = null;
+        DetectableExecutableRunner executableRunner = null;
+        File workingDirectory = null;
         final String queryPackageOutput = "{ epoch: \"(none)\", name: \"glibc-headers\", version: \"2.17-222.el7\", arch: \"x86_64\" }\n" +
                                               "{ epoch: \"3\", name: \"test-package\", version: \"test-version\", arch: \"test_arch\" }\n";
 
-        final List<PackageDetails> pkgs = resolver.resolvePackages(currentPackageManager, executableRunner, workingDirectory, queryPackageOutput);
+        List<PackageDetails> pkgs = resolver.resolvePackages(currentPackageManager, executableRunner, workingDirectory, queryPackageOutput);
         assertEquals(2, pkgs.size());
         boolean foundGLibcHeaders = false;
         boolean foundTestPkg = false;
-        for (final PackageDetails pkg : pkgs) {
+        for (PackageDetails pkg : pkgs) {
             if (pkg.getPackageName().equals("glibc-headers")) {
                 foundGLibcHeaders = true;
                 assertEquals("2.17-222.el7", pkg.getPackageVersion());
@@ -117,5 +118,29 @@ public class RpmPackageManagerTest {
         }
         assertTrue(foundGLibcHeaders);
         assertTrue(foundTestPkg);
+    }
+
+    @Test
+    public void testParseSingleArch() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
+
+        RpmPackageManagerResolver resolver = new RpmPackageManagerResolver(new Gson());
+        final String queryPackageOutputLine = "{ epoch: \"(none)\", name: \"glibc-headers\", version: \"2.28-101.el8\", arch: \"x86_64\" }";
+
+        Optional<PackageDetails> pkg = resolver.generatePackageFromQueryOutputLine(queryPackageOutputLine);
+        assertTrue(pkg.isPresent());
+        assertEquals("glibc-headers", pkg.get().getPackageName());
+        assertEquals("2.28-101.el8", pkg.get().getPackageVersion());
+    }
+
+    @Test
+    public void testParseMultiArch() throws ExecutableRunnerException, NotOwnedByAnyPkgException {
+
+        RpmPackageManagerResolver resolver = new RpmPackageManagerResolver(new Gson());
+        final String queryPackageOutputLine = "{ epoch: \"(none)\", name: \"glibc-headers\", version: \"2.28-101.el8\", arch: \"x86_64\" }{ epoch: \"(none)\", name: \"glibc-headers\", version: \"2.28-101.el8\", arch: \"i686\" }";
+
+        Optional<PackageDetails> pkg = resolver.generatePackageFromQueryOutputLine(queryPackageOutputLine);
+        assertTrue(pkg.isPresent());
+        assertEquals("glibc-headers", pkg.get().getPackageName());
+        assertEquals("2.28-101.el8", pkg.get().getPackageVersion());
     }
 }
