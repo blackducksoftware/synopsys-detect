@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,33 +63,23 @@ public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
 
     public Optional<PackageDetails> generatePackageFromQueryOutputLine(String queryOutputLine) throws NotOwnedByAnyPkgException {
         logger.trace(String.format("packageLine: %s", queryOutputLine));
-        Optional<String> cleanedQueryOutputLine = cleanQueryOutput(queryOutputLine);
-        if (!cleanedQueryOutputLine.isPresent()) {
+        Optional<String> packageJson = extractPackageJson(queryOutputLine);
+        if (!packageJson.isPresent()) {
             logger.debug(String.format("Skipping line: %s (not a package)", queryOutputLine));
             return Optional.empty();
         }
         RpmPackage rpmPackage;
         try {
-            rpmPackage = gson.fromJson(cleanedQueryOutputLine.get(), RpmPackage.class);
+            rpmPackage = gson.fromJson(packageJson.get(), RpmPackage.class);
         } catch (JsonSyntaxException e) {
-            logger.debug(String.format("Skipping line: %s (invalid JSON syntax)", queryOutputLine));
+            logger.warn(String.format("Skipping rpm 'who owns this file' query output line: %s (invalid JSON syntax)", queryOutputLine));
             return Optional.empty();
         }
-        String packageName = rpmPackage.getName();
-        String packageVersion = rpmPackage.getVersion();
-        String epoch = rpmPackage.getEpoch();
-        if (!NO_VALUE.equals(epoch)) {
-            packageVersion = String.format("%s:%s", epoch, packageVersion);
-        }
-        String arch = "";
-        if (!NO_VALUE.equals(rpmPackage.getArch())) {
-            arch = rpmPackage.getArch();
-        }
-        PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion, arch);
+        PackageDetails dependencyDetails = buildPackageDetails(rpmPackage);
         return Optional.of(dependencyDetails);
     }
 
-    private Optional<String> cleanQueryOutput(String queryOutputLine) throws NotOwnedByAnyPkgException {
+    private Optional<String> extractPackageJson(String queryOutputLine) throws NotOwnedByAnyPkgException {
         queryOutputLine = queryOutputLine.trim();
         if (queryOutputLine.contains(" is not owned by ")) {
             // The file queried is not owned by any package known to pkg mgr
@@ -107,5 +98,21 @@ public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
             // This line contains no package
             return Optional.empty();
         }
+    }
+
+    @NotNull
+    private PackageDetails buildPackageDetails(RpmPackage rpmPackage) {
+        String packageName = rpmPackage.getName();
+        String packageVersion = rpmPackage.getVersion();
+        String epoch = rpmPackage.getEpoch();
+        if (!NO_VALUE.equals(epoch)) {
+            packageVersion = String.format("%s:%s", epoch, packageVersion);
+        }
+        String arch = "";
+        if (!NO_VALUE.equals(rpmPackage.getArch())) {
+            arch = rpmPackage.getArch();
+        }
+        PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion, arch);
+        return dependencyDetails;
     }
 }
