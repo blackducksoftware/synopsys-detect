@@ -88,12 +88,6 @@ public class DetectProperties {
             .setHelp("This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT);
 
-    public static final DetectProperty<NullableStringProperty> BLACKDUCK_PASSWORD =
-        new DetectProperty<>(new NullableStringProperty("blackduck.password"))
-            .setInfo("Black Duck Password", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("Black Duck password.")
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT);
-
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_PROXY_HOST =
         new DetectProperty<>(new NullableStringProperty("blackduck.proxy.host"))
             .setInfo("Proxy Host", DetectPropertyFromVersion.VERSION_4_2_0)
@@ -162,12 +156,6 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("blackduck.url"))
             .setInfo("Black Duck URL", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp("URL of the Black Duck server.")
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT);
-
-    public static final DetectProperty<NullableStringProperty> BLACKDUCK_USERNAME =
-        new DetectProperty<>(new NullableStringProperty("blackduck.username"))
-            .setInfo("Black Duck Username", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("Black Duck username.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT);
 
     public static final DetectProperty<IntegerProperty> DETECT_PARALLEL_PROCESSORS =
@@ -1304,7 +1292,7 @@ public class DetectProperties {
             .setInfo("Blackduck Hub Username", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Hub username.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER)
-            .setDeprecated("This property is changing. Please use --blackduck.username in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
+            .setDeprecated("This property is being removed. Please use --blackduck.api.token in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
     @Deprecated
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_HUB_PASSWORD =
@@ -1312,7 +1300,7 @@ public class DetectProperties {
             .setInfo("Blackduck Hub Password", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Hub password.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER)
-            .setDeprecated("This property is changing. Please use --blackduck.password in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
+            .setDeprecated("This property is being removed. Please use --blackduck.api.token in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
     @Deprecated
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_HUB_API_TOKEN =
@@ -1721,7 +1709,7 @@ public class DetectProperties {
             .setDeprecated(POLARIS_CLI_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     // Detect 6.8.0 Property simplification
-    public static final String USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE = "This property is being removed as part of an effort to improve usability.";
+    public static final String USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE = "This property is being removed as part of an effort to simplify Detect.";
 
     @Deprecated
     public static final DetectProperty<EnumProperty<DefaultVersionNameScheme>> DETECT_DEFAULT_PROJECT_VERSION_SCHEME =
@@ -1749,6 +1737,25 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    // username/password ==> api token
+    public static final String USERNAME_PASSWORD_DEPRECATION_MESSAGE = "This property is being removed. Please use blackduck.api.token in the future.";
+
+    @Deprecated
+    public static final DetectProperty<NullableStringProperty> BLACKDUCK_USERNAME =
+        new DetectProperty<>(new NullableStringProperty("blackduck.username"))
+            .setInfo("Black Duck Username", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("Black Duck username.")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
+            .setDeprecated(USERNAME_PASSWORD_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<NullableStringProperty> BLACKDUCK_PASSWORD =
+        new DetectProperty<>(new NullableStringProperty("blackduck.password"))
+            .setInfo("Black Duck Password", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("Black Duck password.")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
+            .setDeprecated(USERNAME_PASSWORD_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     // Accessor to get all properties
     public static List<Property> allProperties() throws IllegalAccessException {
