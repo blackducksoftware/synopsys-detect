@@ -431,27 +431,6 @@ public class DetectProperties {
             .setHelp("The path to the cpanm executable.")
             .setGroups(DetectGroup.CPAN, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<EnumProperty<DefaultVersionNameScheme>> DETECT_DEFAULT_PROJECT_VERSION_SCHEME =
-        new DetectProperty<>(new EnumProperty<>("detect.default.project.version.scheme", DefaultVersionNameScheme.TEXT, DefaultVersionNameScheme.class))
-            .setInfo("Default Project Version Name Scheme", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The scheme to use when the package managers can not determine a version. See detailed help for more information.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<StringProperty> DETECT_DEFAULT_PROJECT_VERSION_TEXT =
-        new DetectProperty<>(new StringProperty("detect.default.project.version.text", "Default Detect Version"))
-            .setInfo("Default Project Version Name Text", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The text to use as the default project version.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<StringProperty> DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT =
-        new DetectProperty<>(new StringProperty("detect.default.project.version.timeformat", "yyyy-MM-dd'T'HH:mm:ss.SSS"))
-            .setInfo("Default Project Version Name Timestamp Format", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The timestamp format to use as the default project version.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
     public static final DetectProperty<IntegerProperty> DETECT_DETECTOR_SEARCH_DEPTH =
         new DetectProperty<>(new IntegerProperty("detect.detector.search.depth", 0))
             .setInfo("Detector Search Depth", DetectPropertyFromVersion.VERSION_3_2_0)
@@ -1740,6 +1719,36 @@ public class DetectProperties {
             .setHelp("A replacement command to pass to polaris separated by space. Include the analyze or setup command itself. If specified, polaris.arguments will be ignored and this will take precedence.")
             .setGroups(DetectGroup.POLARIS, DetectGroup.DEFAULT, DetectGroup.SOURCE_SCAN)
             .setDeprecated(POLARIS_CLI_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    // Detect 6.8.0 Property simplification
+    public static final String USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE = "This property is being removed as part of an effort to improve usability.";
+
+    @Deprecated
+    public static final DetectProperty<EnumProperty<DefaultVersionNameScheme>> DETECT_DEFAULT_PROJECT_VERSION_SCHEME =
+        new DetectProperty<>(new EnumProperty<>("detect.default.project.version.scheme", DefaultVersionNameScheme.TEXT, DefaultVersionNameScheme.class))
+            .setInfo("Default Project Version Name Scheme", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The scheme to use when the package managers can not determine a version. See detailed help for more information.")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<StringProperty> DETECT_DEFAULT_PROJECT_VERSION_TEXT =
+        new DetectProperty<>(new StringProperty("detect.default.project.version.text", "Default Detect Version"))
+            .setInfo("Default Project Version Name Text", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The text to use as the default project version.")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<StringProperty> DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT =
+        new DetectProperty<>(new StringProperty("detect.default.project.version.timeformat", "yyyy-MM-dd'T'HH:mm:ss.SSS"))
+            .setInfo("Default Project Version Name Timestamp Format", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The timestamp format to use as the default project version.")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     // Accessor to get all properties
     public static List<Property> allProperties() throws IllegalAccessException {
