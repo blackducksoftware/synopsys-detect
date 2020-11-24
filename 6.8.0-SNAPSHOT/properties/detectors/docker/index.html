@@ -1157,13 +1157,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
-    Docker Inspector AirGap Path (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
     Docker Inspector .jar File Path (Advanced)
   </a>
@@ -1187,6 +1180,13 @@
         <li class="md-nav__item">
   <a href="#platform-top-layer-id-advanced" class="md-nav__link">
     Platform Top Layer ID (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-inspector-airgap-path-deprecated" class="md-nav__link">
+    Docker Inspector AirGap Path (Deprecated)
   </a>
   
 </li>
@@ -1443,13 +1443,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#docker-inspector-airgap-path-advanced" class="md-nav__link">
-    Docker Inspector AirGap Path (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#docker-inspector-46jar-file-path-advanced" class="md-nav__link">
     Docker Inspector .jar File Path (Advanced)
   </a>
@@ -1473,6 +1466,13 @@
         <li class="md-nav__item">
   <a href="#platform-top-layer-id-advanced" class="md-nav__link">
     Platform Top Layer ID (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-inspector-airgap-path-deprecated" class="md-nav__link">
+    Docker Inspector AirGap Path (Deprecated)
   </a>
   
 </li>
@@ -1753,49 +1753,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="docker-inspector-airgap-path-advanced">Docker Inspector AirGap Path (Advanced)<a class="headerlink" href="#docker-inspector-airgap-path-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.docker.inspector.air.gap.path
-</code></pre>
-
-<p>The path to the directory containing the Docker Inspector jar and images.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional Path</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="docker-inspector-46jar-file-path-advanced">Docker Inspector .jar File Path (Advanced)<a class="headerlink" href="#docker-inspector-46jar-file-path-advanced" title="Permanent link">#</a></h2>
 <pre><code>--detect.docker.inspector.path
 </code></pre>
@@ -1946,6 +1903,50 @@
 <tr>
 <td>Type</td>
 <td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="docker-inspector-airgap-path-deprecated">Docker Inspector AirGap Path (Deprecated)<a class="headerlink" href="#docker-inspector-airgap-path-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.docker.inspector.air.gap.path
+</code></pre>
+
+<p>The path to the directory containing the Docker Inspector jar and images.</p>
+<p><strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional Path</td>
 </tr>
 <tr>
 <td>Default Value</td>

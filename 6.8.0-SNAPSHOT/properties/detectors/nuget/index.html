@@ -1241,13 +1241,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
-    Nuget Inspector AirGap Path (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#nuget-inspector-version-advanced" class="md-nav__link">
     Nuget Inspector Version (Advanced)
   </a>
@@ -1264,6 +1257,13 @@
         <li class="md-nav__item">
   <a href="#detect-nuget-path-deprecated" class="md-nav__link">
     Detect Nuget Path (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nuget-inspector-airgap-path-deprecated" class="md-nav__link">
+    Nuget Inspector AirGap Path (Deprecated)
   </a>
   
 </li>
@@ -1436,13 +1436,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#nuget-inspector-airgap-path-advanced" class="md-nav__link">
-    Nuget Inspector AirGap Path (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#nuget-inspector-version-advanced" class="md-nav__link">
     Nuget Inspector Version (Advanced)
   </a>
@@ -1459,6 +1452,13 @@
         <li class="md-nav__item">
   <a href="#detect-nuget-path-deprecated" class="md-nav__link">
     Detect Nuget Path (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nuget-inspector-airgap-path-deprecated" class="md-nav__link">
+    Nuget Inspector AirGap Path (Deprecated)
   </a>
   
 </li>
@@ -1740,49 +1740,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="nuget-inspector-airgap-path-advanced">Nuget Inspector AirGap Path (Advanced)<a class="headerlink" href="#nuget-inspector-airgap-path-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.nuget.inspector.air.gap.path
-</code></pre>
-
-<p>The path to the directory containing the nuget inspector nupkg.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional Path</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="nuget-inspector-version-advanced">Nuget Inspector Version (Advanced)<a class="headerlink" href="#nuget-inspector-version-advanced" title="Permanent link">#</a></h2>
 <pre><code>--detect.nuget.inspector.version
 </code></pre>
@@ -1877,6 +1834,50 @@
 
 <p>The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package.</p>
 <p><strong>DEPRECATED: In the future, Detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional Path</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="nuget-inspector-airgap-path-deprecated">Nuget Inspector AirGap Path (Deprecated)<a class="headerlink" href="#nuget-inspector-airgap-path-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.nuget.inspector.air.gap.path
+</code></pre>
+
+<p>The path to the directory containing the nuget inspector nupkg.</p>
+<p><strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
 <table>
 <thead>
 <tr>

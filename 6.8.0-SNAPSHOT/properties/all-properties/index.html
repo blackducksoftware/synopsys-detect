@@ -1424,18 +1424,6 @@
 <td>Scan Name: An override for the name Detect will use for the scan file it creates. If supplied and multiple scans are found, Detect will append an index to each scan name. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../configuration/project/#default-project-version-name-scheme-advanced">detect.default.project.version.scheme</a> <br /> (Advanced)</td>
-<td>default: TEXT <br /><br />  Acceptable Values: TIMESTAMP, TEXT <br /><br />Default Project Version Name Scheme: The scheme to use when the package managers can not determine a version. See detailed help for more information. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../configuration/project/#default-project-version-name-text-advanced">detect.default.project.version.text</a> <br /> (Advanced)</td>
-<td>default: Default Detect Version <br /><br /> Default Project Version Name Text: The text to use as the default project version. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../configuration/project/#default-project-version-name-timestamp-format-advanced">detect.default.project.version.timeformat</a> <br /> (Advanced)</td>
-<td>default: yyyy-MM-dd'T'HH:mm:ss.SSS <br /><br /> Default Project Version Name Timestamp Format: The timestamp format to use as the default project version. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../configuration/project/#application-id-advanced">detect.project.application.id</a> <br /> (Advanced)</td>
 <td>Application ID: Sets the 'Application ID' project setting. <br /><br /></td>
 </tr>
@@ -1487,6 +1475,18 @@
 <td><a href="../configuration/project/#version-distribution-advanced">detect.project.version.distribution</a> <br /> (Advanced)</td>
 <td>default: EXTERNAL <br /><br />  Acceptable Values: EXTERNAL, SAAS, INTERNAL, OPENSOURCE <br /><br />Version Distribution: An override for the Project Version distribution <br /><br /></td>
 </tr>
+<tr>
+<td><a href="../configuration/project/#default-project-version-name-scheme-deprecated">detect.default.project.version.scheme</a> <br /> (Deprecated)</td>
+<td>default: TEXT <br /><br />  Acceptable Values: TIMESTAMP, TEXT <br /><br />Default Project Version Name Scheme: The scheme to use when the package managers can not determine a version. See detailed help for more information. <br /><br /> <strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../configuration/project/#default-project-version-name-text-deprecated">detect.default.project.version.text</a> <br /> (Deprecated)</td>
+<td>default: Default Detect Version <br /><br /> Default Project Version Name Text: The text to use as the default project version. <br /><br /> <strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../configuration/project/#default-project-version-name-timestamp-format-deprecated">detect.default.project.version.timeformat</a> <br /> (Deprecated)</td>
+<td>default: yyyy-MM-dd'T'HH:mm:ss.SSS <br /><br /> Default Project Version Name Timestamp Format: The timestamp format to use as the default project version. <br /><br /> <strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
 </tbody>
 </table>
 <p><a href="../configuration/blackduck server">blackduck server</a></p>
@@ -1507,16 +1507,8 @@
 <td>default: false <br /><br /> Offline Mode: This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../configuration/blackduck server/#black-duck-password">blackduck.password</a></td>
-<td>Black Duck Password: Black Duck password. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../configuration/blackduck server/#black-duck-url">blackduck.url</a></td>
 <td>Black Duck URL: URL of the Black Duck server. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../configuration/blackduck server/#black-duck-username">blackduck.username</a></td>
-<td>Black Duck Username: Black Duck username. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/blackduck server/#report-generation-timeout">detect.report.timeout</a></td>
@@ -1544,11 +1536,11 @@
 </tr>
 <tr>
 <td><a href="../configuration/blackduck server/#blackduck-hub-username-deprecated">blackduck.hub.username</a> <br /> (Deprecated)</td>
-<td>Blackduck Hub Username: Hub username. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.username in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
+<td>Blackduck Hub Username: Hub username. <br /><br /> <strong>DEPRECATED: This property is being removed. Please use --blackduck.api.token in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/blackduck server/#blackduck-hub-password-deprecated">blackduck.hub.password</a> <br /> (Deprecated)</td>
-<td>Blackduck Hub Password: Hub password. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.password in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
+<td>Blackduck Hub Password: Hub password. <br /><br /> <strong>DEPRECATED: This property is being removed. Please use --blackduck.api.token in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/blackduck server/#blackduck-hub-api-token-deprecated">blackduck.hub.api.token</a> <br /> (Deprecated)</td>
@@ -1598,6 +1590,14 @@
 <td><a href="../configuration/blackduck server/#check-for-valid-black-duck-connection-deprecated">detect.disable.without.blackduck</a> <br /> (Deprecated)</td>
 <td>default: false <br /><br /> Check For Valid Black Duck Connection: If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.ignore.connection.failures in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
 </tr>
+<tr>
+<td><a href="../configuration/blackduck server/#black-duck-username-deprecated">blackduck.username</a> <br /> (Deprecated)</td>
+<td>Black Duck Username: Black Duck username. <br /><br /> <strong>DEPRECATED: This property is being removed. Please use blackduck.api.token in the future. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../configuration/blackduck server/#black-duck-password-deprecated">blackduck.password</a> <br /> (Deprecated)</td>
+<td>Black Duck Password: Black Duck password. <br /><br /> <strong>DEPRECATED: This property is being removed. Please use blackduck.api.token in the future. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
 </tbody>
 </table>
 <p><a href="../detectors/docker">docker</a></p>
@@ -1634,10 +1634,6 @@
 <td>Docker Passthrough: Additional properties may be passed to the docker inspector by adding the prefix detect.docker.passthrough. The keys will be given to docker inspector without the prefix. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../detectors/docker/#docker-inspector-airgap-path-advanced">detect.docker.inspector.air.gap.path</a> <br /> (Advanced)</td>
-<td>Docker Inspector AirGap Path: The path to the directory containing the Docker Inspector jar and images. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../detectors/docker/#docker-inspector-46jar-file-path-advanced">detect.docker.inspector.path</a> <br /> (Advanced)</td>
 <td>Docker Inspector .jar File Path: This is used to override using the hosted Docker Inspector .jar file by binary repository url. You can use a compatible (the same major version that Detect downloads by default) local Docker Inspector .jar file at this path. <br /><br /></td>
 </tr>
@@ -1652,6 +1648,10 @@
 <tr>
 <td><a href="../detectors/docker/#platform-top-layer-id-advanced">detect.docker.platform.top.layer.id</a> <br /> (Advanced)</td>
 <td>Platform Top Layer ID: To exclude components from platform layers from the results, assign to this property the ID of the top layer of the platform image. Get the platform top layer ID from the output of 'docker inspect platformimage:tag'. The platform top layer ID is the last item in RootFS.Layers. For more information, see 'Isolating application components' in the Docker Inspector documentation. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../detectors/docker/#docker-inspector-airgap-path-deprecated">detect.docker.inspector.air.gap.path</a> <br /> (Deprecated)</td>
+<td>Docker Inspector AirGap Path: The path to the directory containing the Docker Inspector jar and images. <br /><br /> <strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 </tbody>
 </table>
@@ -2015,10 +2015,6 @@
 <td>Nuget Modules Included: The names of the projects in a solution to include (overrides exclude). <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../detectors/nuget/#nuget-inspector-airgap-path-advanced">detect.nuget.inspector.air.gap.path</a> <br /> (Advanced)</td>
-<td>Nuget Inspector AirGap Path: The path to the directory containing the nuget inspector nupkg. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../detectors/nuget/#nuget-inspector-version-advanced">detect.nuget.inspector.version</a> <br /> (Advanced)</td>
 <td>Nuget Inspector Version: Version of the Nuget Inspector. By default Detect will run the latest version that is compatible with the Detect version. <br /><br /></td>
 </tr>
@@ -2029,6 +2025,10 @@
 <tr>
 <td><a href="../detectors/nuget/#detect-nuget-path-deprecated">detect.nuget.path</a> <br /> (Deprecated)</td>
 <td>Detect Nuget Path: The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package. <br /><br /> <strong>DEPRECATED: In the future, Detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../detectors/nuget/#nuget-inspector-airgap-path-deprecated">detect.nuget.inspector.air.gap.path</a> <br /> (Deprecated)</td>
+<td>Nuget Inspector AirGap Path: The path to the directory containing the nuget inspector nupkg. <br /><br /> <strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 </tbody>
 </table>
@@ -2123,16 +2123,16 @@
 <td>Gradle Include Projects: A comma-separated list of Gradle sub-projects to include. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../detectors/gradle/#gradle-inspector-airgap-path-advanced">detect.gradle.inspector.air.gap.path</a> <br /> (Advanced)</td>
-<td>Gradle Inspector AirGap Path: The path to the directory containing the air gap dependencies for the gradle inspector. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../detectors/gradle/#gradle-inspector-version-advanced">detect.gradle.inspector.version</a> <br /> (Advanced)</td>
 <td>Gradle Inspector Version: The version of the Gradle Inspector that Detect should use. By default, Detect will try to automatically determine the correct Gradle Inspector version. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../detectors/gradle/#detect-gradle-inspector-repository-url-deprecated">detect.gradle.inspector.repository.url</a> <br /> (Deprecated)</td>
 <td>Detect Gradle Inspector Repository Url: The respository gradle should use to look for the gradle inspector dependencies. <br /><br /> <strong>DEPRECATED: In the future, the gradle inspector will no longer be downloaded from a custom repository, please use Detect Air Gap instead. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../detectors/gradle/#gradle-inspector-airgap-path-deprecated">detect.gradle.inspector.air.gap.path</a> <br /> (Deprecated)</td>
+<td>Gradle Inspector AirGap Path: The path to the directory containing the air gap dependencies for the gradle inspector. <br /><br /> <strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 </tbody>
 </table>
@@ -2343,11 +2343,11 @@
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#signature-scanner-copyright-search">detect.blackduck.signature.scanner.copyright.search</a></td>
-<td>default: false <br /><br /> Signature Scanner Copyright Search: When set to true, user will be able to scan and discover copyright names in Black Duck. <br /><br /></td>
+<td>default: false <br /><br /> Signature Scanner Copyright Search: When set to true, user will be able to scan and discover copyright names in Black Duck. Corresponding Signature Scanner CLI Argument: --copyright-search. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#signature-scanner-dry-run">detect.blackduck.signature.scanner.dry.run</a></td>
-<td>default: false <br /><br /> Signature Scanner Dry Run: If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk. <br /><br /></td>
+<td>default: false <br /><br /> Signature Scanner Dry Run: If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk via the Signature Scanner CLI argument: --dryRunWriteDir. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#directory-name-exclusion-patterns">detect.blackduck.signature.scanner.exclusion.name.patterns</a></td>
@@ -2363,11 +2363,11 @@
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#individual-file-matching">detect.blackduck.signature.scanner.individual.file.matching</a></td>
-<td>default: NONE <br /><br />  Acceptable Values: NONE, SOURCE, BINARY, ALL <br /><br />Individual File Matching: Users may set this property to indicate what types of files they want to match <br /><br /></td>
+<td>default: NONE <br /><br />  Acceptable Values: NONE, SOURCE, BINARY, ALL <br /><br />Individual File Matching: Users may set this property to indicate what types of files they want to match. Corresponding Signature Scanner CLI Argument: --individualFileMatching. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#signature-scanner-license-search">detect.blackduck.signature.scanner.license.search</a></td>
-<td>default: false <br /><br /> Signature Scanner License Search: When set to true, user will be able to scan and discover license names in Black Duck <br /><br /></td>
+<td>default: false <br /><br /> Signature Scanner License Search: When set to true, user will be able to scan and discover license names in Black Duck. Corresponding Signature Scanner CLI Argument: --license-search. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#signature-scanner-local-path">detect.blackduck.signature.scanner.local.path</a></td>
@@ -2379,11 +2379,11 @@
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#snippet-matching">detect.blackduck.signature.scanner.snippet.matching</a></td>
-<td>default: NONE <br /><br />  Acceptable Values: NONE, SNIPPET_MATCHING, SNIPPET_MATCHING_ONLY, FULL_SNIPPET_MATCHING, FULL_SNIPPET_MATCHING_ONLY <br /><br />Snippet Matching: Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. <br /><br /></td>
+<td>default: NONE <br /><br />  Acceptable Values: NONE, SNIPPET_MATCHING, SNIPPET_MATCHING_ONLY, FULL_SNIPPET_MATCHING, FULL_SNIPPET_MATCHING_ONLY <br /><br />Snippet Matching: Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --snippet-matching, --snippet-matching-only, --full-snippet-scan. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#upload-source-mode">detect.blackduck.signature.scanner.upload.source.mode</a></td>
-<td>default: false <br /><br /> Upload source mode: If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. <br /><br /></td>
+<td>default: false <br /><br /> Upload source mode: If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. Corresponding Signature Scanner CLI Argument: --upload-source. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#signature-scanner-host-url-advanced">detect.blackduck.signature.scanner.host.url</a> <br /> (Advanced)</td>

@@ -1304,6 +1304,29 @@
 </tr>
 </tbody>
 </table>
+<p><a href="../configuration/project">project</a></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../configuration/project/#default-project-version-name-scheme-deprecated">detect.default.project.version.scheme</a></td>
+<td>default: TEXT <br /><br />  Acceptable Values: TIMESTAMP, TEXT <br /><br />Default Project Version Name Scheme: The scheme to use when the package managers can not determine a version. See detailed help for more information. <br /><br /> <strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../configuration/project/#default-project-version-name-text-deprecated">detect.default.project.version.text</a></td>
+<td>default: Default Detect Version <br /><br /> Default Project Version Name Text: The text to use as the default project version. <br /><br /> <strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../configuration/project/#default-project-version-name-timestamp-format-deprecated">detect.default.project.version.timeformat</a></td>
+<td>default: yyyy-MM-dd'T'HH:mm:ss.SSS <br /><br /> Default Project Version Name Timestamp Format: The timestamp format to use as the default project version. <br /><br /> <strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
+</tbody>
+</table>
 <p><a href="../configuration/blackduck server">blackduck server</a></p>
 <table>
 <thead>
@@ -1323,11 +1346,11 @@
 </tr>
 <tr>
 <td><a href="../configuration/blackduck server/#blackduck-hub-username-deprecated">blackduck.hub.username</a></td>
-<td>Blackduck Hub Username: Hub username. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.username in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
+<td>Blackduck Hub Username: Hub username. <br /><br /> <strong>DEPRECATED: This property is being removed. Please use --blackduck.api.token in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/blackduck server/#blackduck-hub-password-deprecated">blackduck.hub.password</a></td>
-<td>Blackduck Hub Password: Hub password. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.password in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
+<td>Blackduck Hub Password: Hub password. <br /><br /> <strong>DEPRECATED: This property is being removed. Please use --blackduck.api.token in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/blackduck server/#blackduck-hub-api-token-deprecated">blackduck.hub.api.token</a></td>
@@ -1376,6 +1399,29 @@
 <tr>
 <td><a href="../configuration/blackduck server/#check-for-valid-black-duck-connection-deprecated">detect.disable.without.blackduck</a></td>
 <td>default: false <br /><br /> Check For Valid Black Duck Connection: If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.ignore.connection.failures in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../configuration/blackduck server/#black-duck-username-deprecated">blackduck.username</a></td>
+<td>Black Duck Username: Black Duck username. <br /><br /> <strong>DEPRECATED: This property is being removed. Please use blackduck.api.token in the future. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../configuration/blackduck server/#black-duck-password-deprecated">blackduck.password</a></td>
+<td>Black Duck Password: Black Duck password. <br /><br /> <strong>DEPRECATED: This property is being removed. Please use blackduck.api.token in the future. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
+</tbody>
+</table>
+<p><a href="../detectors/docker">docker</a></p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../detectors/docker/#docker-inspector-airgap-path-deprecated">detect.docker.inspector.air.gap.path</a></td>
+<td>Docker Inspector AirGap Path: The path to the directory containing the Docker Inspector jar and images. <br /><br /> <strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 </tbody>
 </table>
@@ -1457,6 +1503,10 @@
 <td><a href="../detectors/nuget/#detect-nuget-path-deprecated">detect.nuget.path</a></td>
 <td>Detect Nuget Path: The path to the Nuget executable. Nuget is used to download the classic inspectors nuget package. <br /><br /> <strong>DEPRECATED: In the future, Detect will no longer need a nuget executable as it will download the inspector from Artifactory exclusively. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
 </tr>
+<tr>
+<td><a href="../detectors/nuget/#nuget-inspector-airgap-path-deprecated">detect.nuget.inspector.air.gap.path</a></td>
+<td>Nuget Inspector AirGap Path: The path to the directory containing the nuget inspector nupkg. <br /><br /> <strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
 </tbody>
 </table>
 <p><a href="../detectors/gradle">gradle</a></p>
@@ -1471,6 +1521,10 @@
 <tr>
 <td><a href="../detectors/gradle/#detect-gradle-inspector-repository-url-deprecated">detect.gradle.inspector.repository.url</a></td>
 <td>Detect Gradle Inspector Repository Url: The respository gradle should use to look for the gradle inspector dependencies. <br /><br /> <strong>DEPRECATED: In the future, the gradle inspector will no longer be downloaded from a custom repository, please use Detect Air Gap instead. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../detectors/gradle/#gradle-inspector-airgap-path-deprecated">detect.gradle.inspector.air.gap.path</a></td>
+<td>Gradle Inspector AirGap Path: The path to the directory containing the air gap dependencies for the gradle inspector. <br /><br /> <strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 </tbody>
 </table>

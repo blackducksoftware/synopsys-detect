@@ -889,22 +889,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#black-duck-password" class="md-nav__link">
-    Black Duck Password
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#black-duck-url" class="md-nav__link">
     Black Duck URL
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#black-duck-username" class="md-nav__link">
-    Black Duck Username
   </a>
   
 </li>
@@ -1045,6 +1031,20 @@
         <li class="md-nav__item">
   <a href="#check-for-valid-black-duck-connection-deprecated" class="md-nav__link">
     Check For Valid Black Duck Connection (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#black-duck-username-deprecated" class="md-nav__link">
+    Black Duck Username (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#black-duck-password-deprecated" class="md-nav__link">
+    Black Duck Password (Deprecated)
   </a>
   
 </li>
@@ -1513,22 +1513,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#black-duck-password" class="md-nav__link">
-    Black Duck Password
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#black-duck-url" class="md-nav__link">
     Black Duck URL
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#black-duck-username" class="md-nav__link">
-    Black Duck Username
   </a>
   
 </li>
@@ -1673,6 +1659,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#black-duck-username-deprecated" class="md-nav__link">
+    Black Duck Username (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#black-duck-password-deprecated" class="md-nav__link">
+    Black Duck Password (Deprecated)
+  </a>
+  
+</li>
+      
       
       
       
@@ -1777,97 +1777,11 @@
 </tr>
 </tbody>
 </table>
-<h2 id="black-duck-password">Black Duck Password<a class="headerlink" href="#black-duck-password" title="Permanent link">#</a></h2>
-<pre><code>--blackduck.password
-</code></pre>
-
-<p>Black Duck password.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.2.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="black-duck-url">Black Duck URL<a class="headerlink" href="#black-duck-url" title="Permanent link">#</a></h2>
 <pre><code>--blackduck.url
 </code></pre>
 
 <p>URL of the Black Duck server.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.2.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Optional String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="black-duck-username">Black Duck Username<a class="headerlink" href="#black-duck-username" title="Permanent link">#</a></h2>
-<pre><code>--blackduck.username
-</code></pre>
-
-<p>Black Duck username.</p>
 <table>
 <thead>
 <tr>
@@ -2171,7 +2085,7 @@
 </code></pre>
 
 <p>Hub username.</p>
-<p><strong>DEPRECATED: This property is changing. Please use --blackduck.username in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<p><strong>DEPRECATED: This property is being removed. Please use --blackduck.api.token in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -2215,7 +2129,7 @@
 </code></pre>
 
 <p>Hub password.</p>
-<p><strong>DEPRECATED: This property is changing. Please use --blackduck.password in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<p><strong>DEPRECATED: This property is being removed. Please use --blackduck.api.token in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
 <table>
 <thead>
 <tr>
@@ -2763,6 +2677,94 @@
 <tr>
 <td>Default Value</td>
 <td>false</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="black-duck-username-deprecated">Black Duck Username (Deprecated)<a class="headerlink" href="#black-duck-username-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--blackduck.username
+</code></pre>
+
+<p>Black Duck username.</p>
+<p><strong>DEPRECATED: This property is being removed. Please use blackduck.api.token in the future. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="black-duck-password-deprecated">Black Duck Password (Deprecated)<a class="headerlink" href="#black-duck-password-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--blackduck.password
+</code></pre>
+
+<p>Black Duck password.</p>
+<p><strong>DEPRECATED: This property is being removed. Please use blackduck.api.token in the future. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
 </tr>
 <tr>
 <td>Comma Separated</td>

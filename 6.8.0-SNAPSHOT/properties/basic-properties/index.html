@@ -1411,16 +1411,8 @@
 <td>default: false <br /><br /> Offline Mode: This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../configuration/blackduck server/#black-duck-password">blackduck.password</a></td>
-<td>Black Duck Password: Black Duck password. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../configuration/blackduck server/#black-duck-url">blackduck.url</a></td>
 <td>Black Duck URL: URL of the Black Duck server. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../configuration/blackduck server/#black-duck-username">blackduck.username</a></td>
-<td>Black Duck Username: Black Duck username. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/blackduck server/#report-generation-timeout">detect.report.timeout</a></td>
@@ -1922,11 +1914,11 @@
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#signature-scanner-copyright-search">detect.blackduck.signature.scanner.copyright.search</a></td>
-<td>default: false <br /><br /> Signature Scanner Copyright Search: When set to true, user will be able to scan and discover copyright names in Black Duck. <br /><br /></td>
+<td>default: false <br /><br /> Signature Scanner Copyright Search: When set to true, user will be able to scan and discover copyright names in Black Duck. Corresponding Signature Scanner CLI Argument: --copyright-search. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#signature-scanner-dry-run">detect.blackduck.signature.scanner.dry.run</a></td>
-<td>default: false <br /><br /> Signature Scanner Dry Run: If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk. <br /><br /></td>
+<td>default: false <br /><br /> Signature Scanner Dry Run: If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk via the Signature Scanner CLI argument: --dryRunWriteDir. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#directory-name-exclusion-patterns">detect.blackduck.signature.scanner.exclusion.name.patterns</a></td>
@@ -1942,11 +1934,11 @@
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#individual-file-matching">detect.blackduck.signature.scanner.individual.file.matching</a></td>
-<td>default: NONE <br /><br />  Acceptable Values: NONE, SOURCE, BINARY, ALL <br /><br />Individual File Matching: Users may set this property to indicate what types of files they want to match <br /><br /></td>
+<td>default: NONE <br /><br />  Acceptable Values: NONE, SOURCE, BINARY, ALL <br /><br />Individual File Matching: Users may set this property to indicate what types of files they want to match. Corresponding Signature Scanner CLI Argument: --individualFileMatching. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#signature-scanner-license-search">detect.blackduck.signature.scanner.license.search</a></td>
-<td>default: false <br /><br /> Signature Scanner License Search: When set to true, user will be able to scan and discover license names in Black Duck <br /><br /></td>
+<td>default: false <br /><br /> Signature Scanner License Search: When set to true, user will be able to scan and discover license names in Black Duck. Corresponding Signature Scanner CLI Argument: --license-search. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#signature-scanner-local-path">detect.blackduck.signature.scanner.local.path</a></td>
@@ -1958,11 +1950,11 @@
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#snippet-matching">detect.blackduck.signature.scanner.snippet.matching</a></td>
-<td>default: NONE <br /><br />  Acceptable Values: NONE, SNIPPET_MATCHING, SNIPPET_MATCHING_ONLY, FULL_SNIPPET_MATCHING, FULL_SNIPPET_MATCHING_ONLY <br /><br />Snippet Matching: Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. <br /><br /></td>
+<td>default: NONE <br /><br />  Acceptable Values: NONE, SNIPPET_MATCHING, SNIPPET_MATCHING_ONLY, FULL_SNIPPET_MATCHING, FULL_SNIPPET_MATCHING_ONLY <br /><br />Snippet Matching: Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --snippet-matching, --snippet-matching-only, --full-snippet-scan. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#upload-source-mode">detect.blackduck.signature.scanner.upload.source.mode</a></td>
-<td>default: false <br /><br /> Upload source mode: If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. <br /><br /></td>
+<td>default: false <br /><br /> Upload source mode: If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. Corresponding Signature Scanner CLI Argument: --upload-source. <br /><br /></td>
 </tr>
 </tbody>
 </table>

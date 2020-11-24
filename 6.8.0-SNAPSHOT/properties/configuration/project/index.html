@@ -1093,27 +1093,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#default-project-version-name-scheme-advanced" class="md-nav__link">
-    Default Project Version Name Scheme (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#default-project-version-name-text-advanced" class="md-nav__link">
-    Default Project Version Name Text (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#default-project-version-name-timestamp-format-advanced" class="md-nav__link">
-    Default Project Version Name Timestamp Format (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#application-id-advanced" class="md-nav__link">
     Application ID (Advanced)
   </a>
@@ -1200,6 +1179,27 @@
         <li class="md-nav__item">
   <a href="#version-distribution-advanced" class="md-nav__link">
     Version Distribution (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#default-project-version-name-scheme-deprecated" class="md-nav__link">
+    Default Project Version Name Scheme (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#default-project-version-name-text-deprecated" class="md-nav__link">
+    Default Project Version Name Text (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#default-project-version-name-timestamp-format-deprecated" class="md-nav__link">
+    Default Project Version Name Timestamp Format (Deprecated)
   </a>
   
 </li>
@@ -1632,27 +1632,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#default-project-version-name-scheme-advanced" class="md-nav__link">
-    Default Project Version Name Scheme (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#default-project-version-name-text-advanced" class="md-nav__link">
-    Default Project Version Name Text (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#default-project-version-name-timestamp-format-advanced" class="md-nav__link">
-    Default Project Version Name Timestamp Format (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#application-id-advanced" class="md-nav__link">
     Application ID (Advanced)
   </a>
@@ -1739,6 +1718,27 @@
         <li class="md-nav__item">
   <a href="#version-distribution-advanced" class="md-nav__link">
     Version Distribution (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#default-project-version-name-scheme-deprecated" class="md-nav__link">
+    Default Project Version Name Scheme (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#default-project-version-name-text-deprecated" class="md-nav__link">
+    Default Project Version Name Text (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#default-project-version-name-timestamp-format-deprecated" class="md-nav__link">
+    Default Project Version Name Timestamp Format (Deprecated)
   </a>
   
 </li>
@@ -2364,135 +2364,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="default-project-version-name-scheme-advanced">Default Project Version Name Scheme (Advanced)<a class="headerlink" href="#default-project-version-name-scheme-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.default.project.version.scheme=TIMESTAMP,TEXT 
-</code></pre>
-
-<p>The scheme to use when the package managers can not determine a version. See detailed help for more information.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>DefaultVersionNameScheme</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>TEXT</td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>Yes</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>TIMESTAMP, TEXT</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>Yes</td>
-</tr>
-</tbody>
-</table>
-<h2 id="default-project-version-name-text-advanced">Default Project Version Name Text (Advanced)<a class="headerlink" href="#default-project-version-name-text-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.default.project.version.text=Default Detect Version
-</code></pre>
-
-<p>The text to use as the default project version.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>Default Detect Version</td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="default-project-version-name-timestamp-format-advanced">Default Project Version Name Timestamp Format (Advanced)<a class="headerlink" href="#default-project-version-name-timestamp-format-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.default.project.version.timeformat=yyyy-MM-dd'T'HH:mm:ss.SSS
-</code></pre>
-
-<p>The timestamp format to use as the default project version.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>String</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>yyyy-MM-dd'T'HH:mm:ss.SSS</td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="application-id-advanced">Application ID (Advanced)<a class="headerlink" href="#application-id-advanced" title="Permanent link">#</a></h2>
 <pre><code>--detect.project.application.id
 </code></pre>
@@ -3049,6 +2920,138 @@
 <tr>
 <td>Strict</td>
 <td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="default-project-version-name-scheme-deprecated">Default Project Version Name Scheme (Deprecated)<a class="headerlink" href="#default-project-version-name-scheme-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.default.project.version.scheme=TIMESTAMP,TEXT 
+</code></pre>
+
+<p>The scheme to use when the package managers can not determine a version. See detailed help for more information.</p>
+<p><strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>DefaultVersionNameScheme</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>TEXT</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>TIMESTAMP, TEXT</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="default-project-version-name-text-deprecated">Default Project Version Name Text (Deprecated)<a class="headerlink" href="#default-project-version-name-text-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.default.project.version.text=Default Detect Version
+</code></pre>
+
+<p>The text to use as the default project version.</p>
+<p><strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>Default Detect Version</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="default-project-version-name-timestamp-format-deprecated">Default Project Version Name Timestamp Format (Deprecated)<a class="headerlink" href="#default-project-version-name-timestamp-format-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.default.project.version.timeformat=yyyy-MM-dd'T'HH:mm:ss.SSS
+</code></pre>
+
+<p>The timestamp format to use as the default project version.</p>
+<p><strong>DEPRECATED: This property is being removed as part of an effort to simplify Detect. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>yyyy-MM-dd'T'HH:mm:ss.SSS</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
 </tr>
 </tbody>
 </table>
