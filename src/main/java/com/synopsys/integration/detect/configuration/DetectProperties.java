@@ -527,13 +527,6 @@ public class DetectProperties {
             .setHelp("The Docker image ID to inspect.")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH);
 
-    public static final DetectProperty<NullablePathProperty> DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH =
-        new DetectProperty<>(new NullablePathProperty("detect.docker.inspector.air.gap.path"))
-            .setInfo("Docker Inspector AirGap Path", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The path to the directory containing the Docker Inspector jar and images.")
-            .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
     public static final DetectProperty<NullablePathProperty> DETECT_DOCKER_INSPECTOR_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.docker.inspector.path"))
             .setInfo("Docker Inspector .jar File Path", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -653,16 +646,6 @@ public class DetectProperties {
             .setHelp("A comma-separated list of Gradle sub-projects to include.",
                 "As Detect examines the Gradle project for dependencies, if this property is set, Detect will include only those sub-projects specified via this property that are not excluded. Leaving this unset implies 'include all'. Exclusion rules always win. This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<NullablePathProperty> DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH =
-        new DetectProperty<>(new NullablePathProperty("detect.gradle.inspector.air.gap.path"))
-            .setInfo("Gradle Inspector AirGap Path", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp(
-                "The path to the directory containing the air gap dependencies for the gradle inspector.",
-                "Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory."
-            )
-            .setGroups(DetectGroup.GRADLE, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_INSPECTOR_VERSION =
@@ -832,13 +815,6 @@ public class DetectProperties {
             .setInfo("Nuget Modules Included", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The names of the projects in a solution to include (overrides exclude).")
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<NullablePathProperty> DETECT_NUGET_INSPECTOR_AIR_GAP_PATH =
-        new DetectProperty<>(new NullablePathProperty("detect.nuget.inspector.air.gap.path"))
-            .setInfo("Nuget Inspector AirGap Path", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The path to the directory containing the nuget inspector nupkg.")
-            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<NullableStringProperty> DETECT_NUGET_INSPECTOR_VERSION =
@@ -1735,6 +1711,36 @@ public class DetectProperties {
             .setInfo("Default Project Version Name Timestamp Format", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The timestamp format to use as the default project version.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<NullablePathProperty> DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.docker.inspector.air.gap.path"))
+            .setInfo("Docker Inspector AirGap Path", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The path to the directory containing the Docker Inspector jar and images.")
+            .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<NullablePathProperty> DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.gradle.inspector.air.gap.path"))
+            .setInfo("Gradle Inspector AirGap Path", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp(
+                "The path to the directory containing the air gap dependencies for the gradle inspector.",
+                "Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory."
+            )
+            .setGroups(DetectGroup.GRADLE, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<NullablePathProperty> DETECT_NUGET_INSPECTOR_AIR_GAP_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.nuget.inspector.air.gap.path"))
+            .setInfo("Nuget Inspector AirGap Path", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The path to the directory containing the nuget inspector nupkg.")
+            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
