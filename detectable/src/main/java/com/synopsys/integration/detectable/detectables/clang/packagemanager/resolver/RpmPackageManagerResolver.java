@@ -25,11 +25,14 @@ package com.synopsys.integration.detectable.detectables.clang.packagemanager.res
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerInfo;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.PackageDetails;
@@ -50,32 +53,66 @@ public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
         List<PackageDetails> packageDetailsList = new ArrayList<>();
         String[] packageLines = queryPackageOutput.split("\n");
         for (String packageLine : packageLines) {
-            logger.trace(String.format("packageLine: %s", packageLine));
-            if (!valid(packageLine)) {
-                logger.debug(String.format("Skipping line: %s", packageLine));
-                continue;
+            Optional<PackageDetails> dependencyDetails = generatePackageFromQueryOutputLine(packageLine);
+            if (dependencyDetails.isPresent()) {
+                packageDetailsList.add(dependencyDetails.get());
             }
-            RpmPackage rpmPackage = gson.fromJson(packageLine, RpmPackage.class);
-            String packageName = rpmPackage.getName();
-            String packageVersion = rpmPackage.getVersion();
-            String epoch = rpmPackage.getEpoch();
-            if (!NO_VALUE.equals(epoch)) {
-                packageVersion = String.format("%s:%s", epoch, packageVersion);
-            }
-            String arch = "";
-            if (!NO_VALUE.equals(rpmPackage.getArch())) {
-                arch = rpmPackage.getArch();
-            }
-            PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion, arch);
-            packageDetailsList.add(dependencyDetails);
         }
         return packageDetailsList;
     }
 
-    private boolean valid(String packageLine) throws NotOwnedByAnyPkgException {
-        if (packageLine.contains(" is not owned by ")) {
-            throw new NotOwnedByAnyPkgException(packageLine);
+    public Optional<PackageDetails> generatePackageFromQueryOutputLine(String queryOutputLine) throws NotOwnedByAnyPkgException {
+        logger.trace(String.format("packageLine: %s", queryOutputLine));
+        Optional<String> packageJson = extractPackageJson(queryOutputLine);
+        if (!packageJson.isPresent()) {
+            logger.debug(String.format("Skipping line: %s (not a package)", queryOutputLine));
+            return Optional.empty();
         }
-        return packageLine.contains("epoch:") && packageLine.contains("name:") && packageLine.contains("version:") && packageLine.contains("arch:");
+        RpmPackage rpmPackage;
+        try {
+            rpmPackage = gson.fromJson(packageJson.get(), RpmPackage.class);
+        } catch (JsonSyntaxException e) {
+            logger.warn(String.format("Skipping rpm 'who owns this file' query output line: %s (invalid JSON syntax)", queryOutputLine));
+            return Optional.empty();
+        }
+        PackageDetails dependencyDetails = buildPackageDetails(rpmPackage);
+        return Optional.of(dependencyDetails);
+    }
+
+    private Optional<String> extractPackageJson(String queryOutputLine) throws NotOwnedByAnyPkgException {
+        queryOutputLine = queryOutputLine.trim();
+        if (queryOutputLine.contains(" is not owned by ")) {
+            // The file queried is not owned by any package known to pkg mgr
+            throw new NotOwnedByAnyPkgException(queryOutputLine);
+        }
+        if (queryOutputLine.contains("epoch:") && queryOutputLine.contains("name:") && queryOutputLine.contains("version:") && queryOutputLine.contains("arch:")) {
+            int indexOfSecondPkgVariant = queryOutputLine.indexOf('{', 1);
+            if (indexOfSecondPkgVariant < 0) {
+                // This line contains a single package variant; it's fine as-is
+                return Optional.of(queryOutputLine);
+            } else {
+                // This line contains multiple package variants; return first variant
+                return Optional.of(queryOutputLine.substring(0, indexOfSecondPkgVariant));
+            }
+        } else {
+            // This line contains no package
+            return Optional.empty();
+        }
+    }
+
+    @NotNull
+    private PackageDetails buildPackageDetails(RpmPackage rpmPackage) {
+        String packageName = rpmPackage.getName();
+        String packageVersion = rpmPackage.getVersion();
+        String epoch = rpmPackage.getEpoch();
+        if (!NO_VALUE.equals(epoch)) {
+            packageVersion = String.format("%s:%s", epoch, packageVersion);
+        }
+        String arch = "";
+        if (!NO_VALUE.equals(rpmPackage.getArch())) {
+            arch = rpmPackage.getArch();
+        }
+        PackageDetails dependencyDetails = new PackageDetails(packageName, packageVersion, arch);
+        return dependencyDetails;
     }
 }
