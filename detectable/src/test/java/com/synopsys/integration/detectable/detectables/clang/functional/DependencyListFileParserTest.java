@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.apache.commons.lang3.SystemUtils;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junitpioneer.jupiter.TempDirectory;
@@ -18,6 +20,8 @@ public class DependencyListFileParserTest {
     @Test
     @ExtendWith(TempDirectory.class)
     public void testSimple(@TempDirectory.TempDir Path tempOutputDirectory) throws IOException {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+
         File baseDir = tempOutputDirectory.toFile();
         File sourceFile = new File(baseDir, "src/test/resources/detectables/functional/clang/src/process.c");
         File includeFile1 = new File(baseDir, "src/test/resources/detectables/functional/clang/include/stdc-predef.h");
@@ -36,6 +40,8 @@ public class DependencyListFileParserTest {
     @Test
     @ExtendWith(TempDirectory.class)
     public void testNonCanonical(@TempDirectory.TempDir Path tempOutputDirectory) throws IOException {
+        Assumptions.assumeFalse(SystemUtils.IS_OS_WINDOWS);
+
         File baseDir = tempOutputDirectory.toFile();
         File sourceFile = new File(baseDir, "src/test/resources/detectables/functional/clang/src/process.c");
         File includeFile1 = new File(baseDir, "src/test/resources/detectables/functional/clang/include/stdc-predef.h");

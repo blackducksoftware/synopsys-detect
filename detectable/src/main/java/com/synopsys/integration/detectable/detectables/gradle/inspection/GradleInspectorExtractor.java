@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.gradle.inspection;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,13 +33,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportParser;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleReportTransformer;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.parse.GradleRootMetadataParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.util.NameVersion;
 
@@ -61,13 +61,9 @@ public class GradleInspectorExtractor {
         this.gradleRootMetadataParser = gradleRootMetadataParser;
     }
 
-    public Extraction extract(File directory, File gradleExe, @Nullable String gradleCommand, ProxyInfo proxyInfo, File gradleInspector, File outputDirectory) {
+    public Extraction extract(File directory, File gradleExe, @Nullable String gradleCommand, ProxyInfo proxyInfo, File gradleInspector, File outputDirectory) throws ExecutableFailedException {
         try {
-            ExecutableOutput gradleExecutableOutput = gradleRunner.runGradleDependencies(directory, gradleExe, gradleInspector, gradleCommand, proxyInfo, outputDirectory);
-
-            if (gradleExecutableOutput.getReturnCode() != 0) {
-                throw new IntegrationException("The gradle inspector returned a non-zero exit code: " + gradleExecutableOutput.getReturnCode());
-            }
+            gradleRunner.runGradleDependencies(directory, gradleExe, gradleInspector, gradleCommand, proxyInfo, outputDirectory);
 
             File rootProjectMetadataFile = fileFinder.findFile(outputDirectory, "rootProjectMetadata.txt");
             List<File> reportFiles = fileFinder.findFiles(outputDirectory, "*_dependencyGraph.txt");
@@ -99,7 +95,7 @@ public class GradleInspectorExtractor {
                        .projectName(projectName)
                        .projectVersion(projectVersion)
                        .build();
-        } catch (Exception e) {
+        } catch (IOException e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
