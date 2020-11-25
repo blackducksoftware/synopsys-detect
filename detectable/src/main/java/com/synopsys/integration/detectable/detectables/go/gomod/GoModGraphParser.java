@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.go.gomod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,25 +41,33 @@ public class GoModGraphParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ExternalIdFactory externalIdFactory;
 
-    public GoModGraphParser(final ExternalIdFactory externalIdFactory) {
+    public GoModGraphParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    DependencyGraph parseGoModGraph(final List<String> goModGraph, final String rootModule) {
-        final MutableDependencyGraph mutableDependencyGraph = new MutableMapDependencyGraph();
+    DependencyGraph parseGoModGraph(List<String> goModGraph, String rootModule, Set<String> moduleExclusionList) {
+        MutableDependencyGraph mutableDependencyGraph = new MutableMapDependencyGraph();
 
-        for (final String line : goModGraph) {
+        for (String line : goModGraph) {
             //example: github.com/gomods/athens cloud.google.com/go@v0.26.0
-            final String[] parts = line.split(" ");
+            String[] parts = line.split(" ");
             if (parts.length != 2) {
                 logger.warn("Unknown graph line format: " + line);
             } else {
-                final Dependency to = parseDependency(parts[1]);
-                if (rootModule.equals(parts[0])) {
-                    mutableDependencyGraph.addChildToRoot(to);
+                String fromModule = parts[0];
+                String toModule = parts[1];
+                Dependency to = parseDependency(toModule);
+                boolean includeToDependency = !moduleExclusionList.contains(to.getName());
+                if (rootModule.equals(fromModule)) {
+                    if (includeToDependency) {
+                        mutableDependencyGraph.addChildToRoot(to);
+                    }
                 } else {
-                    final Dependency from = parseDependency(parts[0]);
-                    mutableDependencyGraph.addChildWithParent(to, from);
+                    Dependency from = parseDependency(fromModule);
+                    boolean includeFromDependency = !moduleExclusionList.contains(from.getName());
+                    if (includeToDependency && includeFromDependency) {
+                        mutableDependencyGraph.addChildWithParent(to, from);
+                    }
                 }
             }
         }
@@ -66,17 +75,17 @@ public class GoModGraphParser {
         return mutableDependencyGraph;
     }
 
-    private Dependency parseDependency(final String dependencyPart) {
+    private Dependency parseDependency(String dependencyPart) {
         if (dependencyPart.contains("@")) {
-            final String[] parts = dependencyPart.split("@");
+            String[] parts = dependencyPart.split("@");
             if (parts.length != 2) {
                 logger.warn("Unknown graph dependency format, using entire line as name: " + dependencyPart);
                 return new Dependency(dependencyPart, externalIdFactory.createNameVersionExternalId(Forge.GOLANG, dependencyPart, null));
             } else {
-                final String name = parts[0];
+                String name = parts[0];
                 String version = parts[1];
                 if (version.contains("-")) { //The KB only supports the git hash, unfortunately we must strip out the rest. This gets just the commit has from a go.mod psuedo version.
-                    final String[] versionPieces = version.split("-");
+                    String[] versionPieces = version.split("-");
                     version = versionPieces[versionPieces.length - 1];
                 }
                 return new Dependency(name, version, externalIdFactory.createNameVersionExternalId(Forge.GOLANG, name, version));
@@ -86,10 +95,10 @@ public class GoModGraphParser {
         }
     }
 
-    public List<CodeLocation> parseListAndGoModGraph(final List<String> listOutput, final List<String> modGraphOutput) {
-        final List<CodeLocation> codeLocations = new ArrayList<>();
-        for (final String module : listOutput) {
-            final DependencyGraph graph = parseGoModGraph(modGraphOutput, module);
+    public List<CodeLocation> parseListAndGoModGraph(List<String> listOutput, List<String> modGraphOutput, Set<String> moduleExclusionList) {
+        List<CodeLocation> codeLocations = new ArrayList<>();
+        for (String module : listOutput) {
+            DependencyGraph graph = parseGoModGraph(modGraphOutput, module, moduleExclusionList);
             codeLocations.add(new CodeLocation(graph, externalIdFactory.createNameVersionExternalId(Forge.GOLANG, module, null)));
         }
         return codeLocations;
