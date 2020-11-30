@@ -138,13 +138,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<IntegerProperty> BLACKDUCK_TIMEOUT =
-        new DetectProperty<>(new IntegerProperty("blackduck.timeout", 120))
-            .setInfo("Black Duck Timeout", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("The time to wait for network connections to complete (in seconds).")
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
-            .setCategory(DetectCategory.Advanced);
-
     public static final DetectProperty<BooleanProperty> BLACKDUCK_TRUST_CERT =
         new DetectProperty<>(new BooleanProperty("blackduck.trust.cert", false))
             .setInfo("Trust All SSL Certificates", DetectPropertyFromVersion.VERSION_4_2_0)
@@ -1093,12 +1086,6 @@ public class DetectProperties {
             .setHelp("If true will use Python 3 if available on class path.")
             .setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<LongProperty> DETECT_REPORT_TIMEOUT =
-        new DetectProperty<>(new LongProperty("detect.report.timeout", 300L))
-            .setInfo("Report Generation Timeout", DetectPropertyFromVersion.VERSION_5_2_0)
-            .setHelp(
-                "The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.GLOBAL);
 
     public static final DetectProperty<EnumListProperty<DetectorType>> DETECT_REQUIRED_DETECTOR_TYPES =
         new DetectProperty<>(new EnumListProperty<>("detect.required.detector.types", emptyList(), DetectorType.class))
@@ -1181,6 +1168,13 @@ public class DetectProperties {
             .setHelp("Test the connection to Black Duck with the current configuration.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.GLOBAL);
 
+    public static final DetectProperty<LongProperty> DETECT_TIMEOUT =
+        new DetectProperty<>(new LongProperty("detect.timeout", 300L))
+            .setInfo("Detect Timeout", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("The amount of time in seconds Detect will wait for network connection, for scans to finish, and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced);
+
     public static final DetectProperty<FilterableEnumListProperty<DetectTool>> DETECT_TOOLS =
         new DetectProperty<>(new FilterableEnumListProperty<>("detect.tools", emptyList(), DetectTool.class))
             .setInfo("Detect Tools Included", DetectPropertyFromVersion.VERSION_5_0_0)
@@ -1227,6 +1221,14 @@ public class DetectProperties {
 
     //#region Deprecated Properties
     public static final String POLARIS_CLI_DEPRECATION_MESSAGE = "This property is being removed. Detect will no longer invoke the Polaris CLI.";
+
+    @Deprecated
+    public static final DetectProperty<IntegerProperty> BLACKDUCK_TIMEOUT =
+        new DetectProperty<>(new IntegerProperty("blackduck.timeout", 120))
+            .setInfo("Black Duck Timeout", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("The time to wait for network connections to complete (in seconds).")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
+            .setDeprecated("This property is now deprecated.  Please use --detect.timeout in the future.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<StringProperty> DETECT_BITBAKE_REFERENCE_IMPL =
@@ -1651,6 +1653,15 @@ public class DetectProperties {
                 DetectMajorVersion.SIX,
                 DetectMajorVersion.SEVEN
             );
+
+    @Deprecated
+    public static final DetectProperty<LongProperty> DETECT_REPORT_TIMEOUT =
+        new DetectProperty<>(new LongProperty("detect.report.timeout", 300L))
+            .setInfo("Report Generation Timeout", DetectPropertyFromVersion.VERSION_5_2_0)
+            .setHelp(
+                "The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.GLOBAL)
+            .setDeprecated("This property is now deprecated.  Please use --detect.timeout in the future.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<NullableStringProperty> POLARIS_URL =
