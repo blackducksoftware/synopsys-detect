@@ -91,8 +91,6 @@ public class RunBeanConfiguration {
     @Autowired
     public DetectRun detectRun;
     @Autowired
-    public DetectInfo detectInfo;
-    @Autowired
     public PropertyConfiguration detectConfiguration;
     @Autowired
     public DetectConfigurationFactory detectConfigurationFactory;
@@ -201,7 +199,7 @@ public class RunBeanConfiguration {
     }
 
     @Bean()
-    public NugetInspectorResolver nugetInspectorResolver() throws DetectUserFriendlyException {
+    public NugetInspectorResolver nugetInspectorResolver(DetectInfo detectInfo) throws DetectUserFriendlyException {
         NugetLocatorOptions installerOptions = detectableOptionFactory.createNugetInstallerOptions();
         NugetInspectorLocator locator;
         Optional<File> nugetAirGapPath = airGapManager().getNugetInspectorAirGapFile();
