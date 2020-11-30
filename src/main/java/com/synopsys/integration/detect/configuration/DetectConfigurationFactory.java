@@ -107,12 +107,19 @@ public class DetectConfigurationFactory {
 
     //#region Prefer These Over Any Property
     public Long findTimeoutInSeconds() {
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_API_TIMEOUT.getProperty())) {
-            Long timeout = getValue(DetectProperties.DETECT_API_TIMEOUT);
-            return timeout / 1000;
-        } else {
-            return getValue(DetectProperties.DETECT_TIMEOUT);
+        long timeout = getValue(DetectProperties.DETECT_TIMEOUT);
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_TIMEOUT.getProperty())) {
+            return timeout;
         }
+
+        // If no timeout was passed, check deprecated properties.
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_API_TIMEOUT.getProperty())) {
+            // DETECT_API_TIMEOUT is read in milliseconds.
+            timeout = getValue(DetectProperties.DETECT_API_TIMEOUT) / 1000;
+        } else if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_REPORT_TIMEOUT.getProperty())) {
+            timeout = getValue(DetectProperties.DETECT_REPORT_TIMEOUT);
+        }
+        return timeout;
     }
 
     public int findParallelProcessors() {
