@@ -91,8 +91,6 @@ public class RunBeanConfiguration {
     @Autowired
     public DetectRun detectRun;
     @Autowired
-    public PropertyConfiguration detectConfiguration;
-    @Autowired
     public DetectConfigurationFactory detectConfigurationFactory;
     @Autowired
     public DirectoryManager directoryManager;
@@ -139,7 +137,7 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public CodeLocationNameGenerator codeLocationNameService() {
+    public CodeLocationNameGenerator codeLocationNameService(PropertyConfiguration detectConfiguration) {
         String codeLocationNameOverride = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_CODE_LOCATION_NAME.getProperty()).orElse(null);
         return new CodeLocationNameGenerator(codeLocationNameOverride);
     }
