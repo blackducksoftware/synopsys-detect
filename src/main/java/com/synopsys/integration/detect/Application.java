@@ -119,7 +119,7 @@ public class Application implements ApplicationRunner {
         boolean printOutput = true;
         boolean shouldForceSuccess = false;
 
-        Optional<DetectBootResult> detectBootResultOptional = executeDetectBoot(detectRun, applicationArguments, eventSystem, detectContext, exitCodeManager);
+        Optional<DetectBootResult> detectBootResultOptional = bootApplication(detectRun, applicationArguments, eventSystem, detectContext, exitCodeManager);
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
@@ -169,7 +169,7 @@ public class Application implements ApplicationRunner {
         exitApplication(finalExitCode, shouldForceSuccess);
     }
 
-    private Optional<DetectBootResult> executeDetectBoot(DetectRun detectRun, ApplicationArguments applicationArguments, EventSystem eventSystem, DetectContext detectContext, ExitCodeManager exitCodeManager) {
+    private Optional<DetectBootResult> bootApplication(DetectRun detectRun, ApplicationArguments applicationArguments, EventSystem eventSystem, DetectContext detectContext, ExitCodeManager exitCodeManager) {
         Optional<DetectBootResult> bootResult = Optional.empty();
         try {
             logger.debug("Detect boot begin.");
