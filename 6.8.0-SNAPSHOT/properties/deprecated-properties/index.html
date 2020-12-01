@@ -1337,6 +1337,10 @@
 </thead>
 <tbody>
 <tr>
+<td><a href="../configuration/blackduck server/#black-duck-timeout-deprecated">blackduck.timeout</a></td>
+<td>default: 120 <br /><br /> Black Duck Timeout: The time to wait for network connections to complete (in seconds). <br /><br /> <strong>DEPRECATED: This property is now deprecated.  Please use --detect.timeout in the future. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+</tr>
+<tr>
 <td><a href="../configuration/blackduck server/#blackduck-hub-url-deprecated">blackduck.hub.url</a></td>
 <td>Blackduck Hub Url: URL of the Hub server. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --blackduck.url in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
 </tr>
@@ -1399,6 +1403,10 @@
 <tr>
 <td><a href="../configuration/blackduck server/#check-for-valid-black-duck-connection-deprecated">detect.disable.without.blackduck</a></td>
 <td>default: false <br /><br /> Check For Valid Black Duck Connection: If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.ignore.connection.failures in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../configuration/blackduck server/#report-generation-timeout-deprecated">detect.report.timeout</a></td>
+<td>default: 300 <br /><br /> Report Generation Timeout: The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  Please use --detect.timeout in the future. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/blackduck server/#black-duck-username-deprecated">blackduck.username</a></td>

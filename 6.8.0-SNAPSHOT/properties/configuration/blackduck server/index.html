@@ -896,13 +896,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#report-generation-timeout" class="md-nav__link">
-    Report Generation Timeout
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#test-connection-to-black-duck" class="md-nav__link">
     Test Connection to Black Duck
   </a>
@@ -910,15 +903,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#black-duck-timeout-advanced" class="md-nav__link">
-    Black Duck Timeout (Advanced)
+  <a href="#trust-all-ssl-certificates-advanced" class="md-nav__link">
+    Trust All SSL Certificates (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#trust-all-ssl-certificates-advanced" class="md-nav__link">
-    Trust All SSL Certificates (Advanced)
+  <a href="#detect-timeout-advanced" class="md-nav__link">
+    Detect Timeout (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#black-duck-timeout-deprecated" class="md-nav__link">
+    Black Duck Timeout (Deprecated)
   </a>
   
 </li>
@@ -1031,6 +1031,13 @@
         <li class="md-nav__item">
   <a href="#check-for-valid-black-duck-connection-deprecated" class="md-nav__link">
     Check For Valid Black Duck Connection (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#report-generation-timeout-deprecated" class="md-nav__link">
+    Report Generation Timeout (Deprecated)
   </a>
   
 </li>
@@ -1520,13 +1527,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#report-generation-timeout" class="md-nav__link">
-    Report Generation Timeout
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#test-connection-to-black-duck" class="md-nav__link">
     Test Connection to Black Duck
   </a>
@@ -1534,15 +1534,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#black-duck-timeout-advanced" class="md-nav__link">
-    Black Duck Timeout (Advanced)
+  <a href="#trust-all-ssl-certificates-advanced" class="md-nav__link">
+    Trust All SSL Certificates (Advanced)
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#trust-all-ssl-certificates-advanced" class="md-nav__link">
-    Trust All SSL Certificates (Advanced)
+  <a href="#detect-timeout-advanced" class="md-nav__link">
+    Detect Timeout (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#black-duck-timeout-deprecated" class="md-nav__link">
+    Black Duck Timeout (Deprecated)
   </a>
   
 </li>
@@ -1655,6 +1662,13 @@
         <li class="md-nav__item">
   <a href="#check-for-valid-black-duck-connection-deprecated" class="md-nav__link">
     Check For Valid Black Duck Connection (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#report-generation-timeout-deprecated" class="md-nav__link">
+    Report Generation Timeout (Deprecated)
   </a>
   
 </li>
@@ -1820,49 +1834,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="report-generation-timeout">Report Generation Timeout<a class="headerlink" href="#report-generation-timeout" title="Permanent link">#</a></h2>
-<pre><code>--detect.report.timeout=300
-</code></pre>
-
-<p>The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>5.2.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Long</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>300</td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="test-connection-to-black-duck">Test Connection to Black Duck<a class="headerlink" href="#test-connection-to-black-duck" title="Permanent link">#</a></h2>
 <pre><code>--detect.test.connection=false
 </code></pre>
@@ -1906,49 +1877,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="black-duck-timeout-advanced">Black Duck Timeout (Advanced)<a class="headerlink" href="#black-duck-timeout-advanced" title="Permanent link">#</a></h2>
-<pre><code>--blackduck.timeout=120
-</code></pre>
-
-<p>The time to wait for network connections to complete (in seconds).</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>4.2.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Integer</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>120</td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
 <h2 id="trust-all-ssl-certificates-advanced">Trust All SSL Certificates (Advanced)<a class="headerlink" href="#trust-all-ssl-certificates-advanced" title="Permanent link">#</a></h2>
 <pre><code>--blackduck.trust.cert=false
 </code></pre>
@@ -1973,6 +1901,93 @@
 <tr>
 <td>Default Value</td>
 <td>false</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-timeout-advanced">Detect Timeout (Advanced)<a class="headerlink" href="#detect-timeout-advanced" title="Permanent link">#</a></h2>
+<pre><code>--detect.timeout=300
+</code></pre>
+
+<p>The amount of time in seconds Detect will wait for network connection, for scans to finish, and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.</p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.8.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Long</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>300</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="black-duck-timeout-deprecated">Black Duck Timeout (Deprecated)<a class="headerlink" href="#black-duck-timeout-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--blackduck.timeout=120
+</code></pre>
+
+<p>The time to wait for network connections to complete (in seconds).</p>
+<p><strong>DEPRECATED: This property is now deprecated.  Please use --detect.timeout in the future. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>120</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2677,6 +2692,50 @@
 <tr>
 <td>Default Value</td>
 <td>false</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="report-generation-timeout-deprecated">Report Generation Timeout (Deprecated)<a class="headerlink" href="#report-generation-timeout-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.report.timeout=300
+</code></pre>
+
+<p>The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.</p>
+<p><strong>DEPRECATED: This property is now deprecated.  Please use --detect.timeout in the future. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>5.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Long</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>300</td>
 </tr>
 <tr>
 <td>Comma Separated</td>

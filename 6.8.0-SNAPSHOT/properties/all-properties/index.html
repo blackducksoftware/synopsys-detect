@@ -1511,20 +1511,20 @@
 <td>Black Duck URL: URL of the Black Duck server. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../configuration/blackduck server/#report-generation-timeout">detect.report.timeout</a></td>
-<td>default: 300 <br /><br /> Report Generation Timeout: The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time. <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../configuration/blackduck server/#test-connection-to-black-duck">detect.test.connection</a></td>
 <td>default: false <br /><br /> Test Connection to Black Duck: Test the connection to Black Duck with the current configuration. <br /><br /></td>
 </tr>
 <tr>
-<td><a href="../configuration/blackduck server/#black-duck-timeout-advanced">blackduck.timeout</a> <br /> (Advanced)</td>
-<td>default: 120 <br /><br /> Black Duck Timeout: The time to wait for network connections to complete (in seconds). <br /><br /></td>
-</tr>
-<tr>
 <td><a href="../configuration/blackduck server/#trust-all-ssl-certificates-advanced">blackduck.trust.cert</a> <br /> (Advanced)</td>
 <td>default: false <br /><br /> Trust All SSL Certificates: If true, automatically trust the certificate for the current run of Detect only. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/blackduck server/#detect-timeout-advanced">detect.timeout</a> <br /> (Advanced)</td>
+<td>default: 300 <br /><br /> Detect Timeout: The amount of time in seconds Detect will wait for network connection, for scans to finish, and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/blackduck server/#black-duck-timeout-deprecated">blackduck.timeout</a> <br /> (Deprecated)</td>
+<td>default: 120 <br /><br /> Black Duck Timeout: The time to wait for network connections to complete (in seconds). <br /><br /> <strong>DEPRECATED: This property is now deprecated.  Please use --detect.timeout in the future. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/blackduck server/#blackduck-hub-url-deprecated">blackduck.hub.url</a> <br /> (Deprecated)</td>
@@ -1589,6 +1589,10 @@
 <tr>
 <td><a href="../configuration/blackduck server/#check-for-valid-black-duck-connection-deprecated">detect.disable.without.blackduck</a> <br /> (Deprecated)</td>
 <td>default: false <br /><br /> Check For Valid Black Duck Connection: If true, during initialization Detect will check for Black Duck connectivity and exit with status code 0 if it cannot connect. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.ignore.connection.failures in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
+</tr>
+<tr>
+<td><a href="../configuration/blackduck server/#report-generation-timeout-deprecated">detect.report.timeout</a> <br /> (Deprecated)</td>
+<td>default: 300 <br /><br /> Report Generation Timeout: The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  Please use --detect.timeout in the future. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/blackduck server/#black-duck-username-deprecated">blackduck.username</a> <br /> (Deprecated)</td>
