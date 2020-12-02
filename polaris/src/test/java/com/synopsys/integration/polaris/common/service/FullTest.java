@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.StringUtils;
 
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
@@ -23,11 +24,14 @@ import com.synopsys.integration.polaris.common.model.IssueResourcesSingle;
 
 public class FullTest {
     @Test
-    @Ignore
     public void testPolaris() throws IntegrationException {
+        String polarisUrl = System.getenv("POLARIS_URL");
+        String polarisAccessToken = System.getenv("POLARIS_ACCESS_TOKEN");
+        Assumptions.assumeTrue(StringUtils.isNotBlank(polarisUrl));
+        Assumptions.assumeTrue(StringUtils.isNotBlank(polarisAccessToken));
         PolarisServerConfigBuilder polarisServerConfigBuilder = PolarisServerConfig.newBuilder();
-        polarisServerConfigBuilder.setUrl(System.getenv("POLARIS_URL"));
-        polarisServerConfigBuilder.setAccessToken(System.getenv("POLARIS_ACCESS_TOKEN"));
+        polarisServerConfigBuilder.setUrl(polarisUrl);
+        polarisServerConfigBuilder.setAccessToken(polarisAccessToken);
 
         PolarisServerConfig polarisServerConfig = polarisServerConfigBuilder.build();
         IntLogger logger = new PrintStreamIntLogger(System.out, LogLevel.INFO);
