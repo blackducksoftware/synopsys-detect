@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.git.cli;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 import com.synopsys.integration.log.IntLogger;
@@ -76,7 +78,7 @@ public class GitCliExtractor {
     }
 
     private String getRepoName(final File gitExecutable, final File directory) throws ExecutableRunnerException, IntegrationException, MalformedURLException {
-        final String remoteUrlString = runGitSingleLinesResponse(gitExecutable, directory, "config", "--get", "remote.origin.url");
+        final String remoteUrlString = runGitSingleLinesResponseSecretly(gitExecutable, directory, "config", "--get", "remote.origin.url");
         return gitUrlParser.getRepoName(remoteUrlString);
     }
 
@@ -110,8 +112,14 @@ public class GitCliExtractor {
     }
 
     private String runGitSingleLinesResponse(final File gitExecutable, final File directory, final String... commands) throws ExecutableRunnerException, IntegrationException {
-        final ExecutableOutput gitOutput = executableRunner.execute(directory, gitExecutable, commands);
+        return verifyOutputAndGetFirstLine(executableRunner.execute(directory, gitExecutable, Arrays.asList(commands)));
+    }
 
+    private String runGitSingleLinesResponseSecretly(final File gitExecutable, final File directory, final String... commands) throws ExecutableRunnerException, IntegrationException {
+        return verifyOutputAndGetFirstLine(executableRunner.executeSecretly(Executable.create(directory, gitExecutable, Arrays.asList(commands))));
+    }
+
+    private String verifyOutputAndGetFirstLine(ExecutableOutput gitOutput) throws IntegrationException {
         if (gitOutput.getReturnCode() != 0) {
             throw new IntegrationException("git returned a non-zero status code.");
         }
