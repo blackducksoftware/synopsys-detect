@@ -39,6 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.ExcludeIncludeEnumFilter;
@@ -48,10 +49,13 @@ import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnviro
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.event.EventType;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliDetectable;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorType;
@@ -125,13 +129,104 @@ public class DetectorToolTest {
         DetectorTool tool = new DetectorTool(detectorFinder, extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher);
 
         File directory = new File(".");
-        GoModCliDetectable detectable = createDetectable();
+        Extraction extraction = createSuccessExtraction();
+        GoModCliDetectable detectable = createDetectable(extraction);
+        DetectorRule<GoModCliDetectable> rule = createRule(detectable);
+        DetectorRuleSet detectorRuleSet = createRuleSet(rule);
+        DetectorFinderOptions detectorFinderOptions = createFinderOptions();
+        DetectorEvaluationOptions evaluationOptions = createEvaluationOptions();
+        String projectBomTool = DetectorType.GO_MOD.name();
+        DetectorEvaluationTree evaluationTree = createEvaluationTree(extraction, directory, rule, detectorRuleSet);
+        Mockito.when(detectorFinder.findDetectors(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Optional.of(evaluationTree));
+
+        DetectorToolResult result = tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, new ArrayList<>());
+        assertFalse(result.getApplicableDetectorTypes().isEmpty());
+        assertTrue(result.getBomToolCodeLocations().isEmpty());
+        assertFalse(result.getBomToolProjectNameVersion().isPresent());
+        assertTrue(result.getCodeLocationMap().isEmpty());
+        assertTrue(result.getFailedDetectorTypes().isEmpty());
+        assertTrue(result.getRootDetectorEvaluationTree().isPresent());
+    }
+
+    @Test
+    public void testPreferredDetectorMissingSuccess() throws DetectUserFriendlyException, DetectorFinderDirectoryListException, DetectableException {
+        ExtractionEnvironmentProvider extractionEnvironmentProvider = Mockito.mock(ExtractionEnvironmentProvider.class);
+        DetectorFinder detectorFinder = Mockito.mock(DetectorFinder.class);
+        EventSystem eventSystem = Mockito.mock(EventSystem.class);
+        CodeLocationConverter codeLocationConverter = Mockito.mock(CodeLocationConverter.class);
+        DetectorIssuePublisher detectorIssuePublisher = Mockito.mock(DetectorIssuePublisher.class);
+
+        DetectorTool tool = new DetectorTool(detectorFinder, extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher);
+
+        File directory = new File(".");
+        Extraction extraction = createSuccessExtraction();
+        GoModCliDetectable detectable = createDetectable(extraction);
         DetectorRule<GoModCliDetectable> rule = createRule(detectable);
         DetectorRuleSet detectorRuleSet = createRuleSet(rule);
         DetectorFinderOptions detectorFinderOptions = createFinderOptions();
         DetectorEvaluationOptions evaluationOptions = createEvaluationOptions();
         final String projectBomTool = "testBomTool";
-        DetectorEvaluationTree evaluationTree = createEvaluationTree(directory, rule, detectorRuleSet);
+        DetectorEvaluationTree evaluationTree = createEvaluationTree(extraction, directory, rule, detectorRuleSet);
+        Mockito.when(detectorFinder.findDetectors(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Optional.of(evaluationTree));
+
+        DetectorToolResult result = tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, new ArrayList<>());
+        assertFalse(result.getApplicableDetectorTypes().isEmpty());
+        assertTrue(result.getBomToolCodeLocations().isEmpty());
+        assertFalse(result.getBomToolProjectNameVersion().isPresent());
+        assertTrue(result.getCodeLocationMap().isEmpty());
+        assertTrue(result.getFailedDetectorTypes().isEmpty());
+        assertTrue(result.getRootDetectorEvaluationTree().isPresent());
+    }
+
+    @Test
+    public void testExtractionFailed() throws DetectUserFriendlyException, DetectorFinderDirectoryListException, DetectableException {
+        ExtractionEnvironmentProvider extractionEnvironmentProvider = Mockito.mock(ExtractionEnvironmentProvider.class);
+        DetectorFinder detectorFinder = Mockito.mock(DetectorFinder.class);
+        EventSystem eventSystem = Mockito.mock(EventSystem.class);
+        CodeLocationConverter codeLocationConverter = Mockito.mock(CodeLocationConverter.class);
+        DetectorIssuePublisher detectorIssuePublisher = Mockito.mock(DetectorIssuePublisher.class);
+
+        DetectorTool tool = new DetectorTool(detectorFinder, extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher);
+
+        File directory = new File(".");
+        Extraction extraction = createFailExtraction();
+        GoModCliDetectable detectable = createDetectable(extraction);
+        DetectorRule<GoModCliDetectable> rule = createRule(detectable);
+        DetectorRuleSet detectorRuleSet = createRuleSet(rule);
+        DetectorFinderOptions detectorFinderOptions = createFinderOptions();
+        DetectorEvaluationOptions evaluationOptions = createEvaluationOptions();
+        final String projectBomTool = "testBomTool";
+        DetectorEvaluationTree evaluationTree = createEvaluationTree(extraction, directory, rule, detectorRuleSet);
+        Mockito.when(detectorFinder.findDetectors(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Optional.of(evaluationTree));
+
+        DetectorToolResult result = tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, new ArrayList<>());
+        assertFalse(result.getApplicableDetectorTypes().isEmpty());
+        assertTrue(result.getBomToolCodeLocations().isEmpty());
+        assertFalse(result.getBomToolProjectNameVersion().isPresent());
+        assertTrue(result.getCodeLocationMap().isEmpty());
+        assertTrue(result.getFailedDetectorTypes().isEmpty());
+        assertTrue(result.getRootDetectorEvaluationTree().isPresent());
+    }
+
+    @Test
+    public void testExtractionException() throws DetectUserFriendlyException, DetectorFinderDirectoryListException, DetectableException {
+        ExtractionEnvironmentProvider extractionEnvironmentProvider = Mockito.mock(ExtractionEnvironmentProvider.class);
+        DetectorFinder detectorFinder = Mockito.mock(DetectorFinder.class);
+        EventSystem eventSystem = Mockito.mock(EventSystem.class);
+        CodeLocationConverter codeLocationConverter = Mockito.mock(CodeLocationConverter.class);
+        DetectorIssuePublisher detectorIssuePublisher = Mockito.mock(DetectorIssuePublisher.class);
+
+        DetectorTool tool = new DetectorTool(detectorFinder, extractionEnvironmentProvider, eventSystem, codeLocationConverter, detectorIssuePublisher);
+
+        File directory = new File(".");
+        Extraction extraction = createExceptionExtraction();
+        GoModCliDetectable detectable = createDetectable(extraction);
+        DetectorRule<GoModCliDetectable> rule = createRule(detectable);
+        DetectorRuleSet detectorRuleSet = createRuleSet(rule);
+        DetectorFinderOptions detectorFinderOptions = createFinderOptions();
+        DetectorEvaluationOptions evaluationOptions = createEvaluationOptions();
+        final String projectBomTool = "testBomTool";
+        DetectorEvaluationTree evaluationTree = createEvaluationTree(extraction, directory, rule, detectorRuleSet);
         Mockito.when(detectorFinder.findDetectors(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(Optional.of(evaluationTree));
 
         DetectorToolResult result = tool.performDetectors(directory, detectorRuleSet, detectorFinderOptions, evaluationOptions, projectBomTool, new ArrayList<>());
@@ -151,12 +246,50 @@ public class DetectorToolTest {
         }
     }
 
-    private GoModCliDetectable createDetectable() throws DetectableException {
+    private GoModCliDetectable createDetectable(Extraction extraction) throws DetectableException {
+        File relevantFile = new File("go.mod");
+        List<File> relevantFiles = Collections.singletonList(relevantFile);
         GoModCliDetectable detectable = Mockito.mock(GoModCliDetectable.class);
+        if (extraction.isSuccess()) {
+            Mockito.when(detectable.extractable()).thenReturn(new PassedDetectableResult());
+        } else {
+            Mockito.when(detectable.extractable()).thenReturn(new FailedDetectableResult());
+        }
         Mockito.when(detectable.applicable()).thenReturn(new PassedDetectableResult());
-        Mockito.when(detectable.extractable()).thenReturn(new PassedDetectableResult());
-        //Mockito.when(detectable.extract(Mockito.any())).thenReturn();
+        Mockito.when(detectable.getFoundRelevantFiles()).thenReturn(relevantFiles);
+        Mockito.when(detectable.extract(Mockito.any())).thenReturn(extraction);
         return detectable;
+    }
+
+    private Extraction.Builder createExtractionBuilder() {
+        File relevantFile = new File("go.mod");
+        DependencyGraph dependencyGraph = Mockito.mock(DependencyGraph.class);
+        CodeLocation codeLocation = new CodeLocation(dependencyGraph, relevantFile);
+        Extraction.Builder builder = new Extraction.Builder();
+        return builder.relevantFiles(relevantFile)
+                   .codeLocations(codeLocation)
+                   .projectName("test-project")
+                   .projectVersion("1.0")
+                   .unrecognizedPaths(Collections.emptyList());
+
+    }
+
+    private Extraction createSuccessExtraction() {
+        return createExtractionBuilder()
+                   .success()
+                   .build();
+    }
+
+    private Extraction createFailExtraction() {
+        return createExtractionBuilder()
+                   .failure("JUnit extraction failure")
+                   .build();
+    }
+
+    private Extraction createExceptionExtraction() {
+        return createExtractionBuilder()
+                   .exception(new RuntimeException("JUnit Extraction Exception"))
+                   .build();
     }
 
     private DetectorRule<GoModCliDetectable> createRule(GoModCliDetectable detectable) {
@@ -185,13 +318,14 @@ public class DetectorToolTest {
 
     }
 
-    private DetectorEvaluationTree createEvaluationTree(File directory, DetectorRule<GoModCliDetectable> rule, DetectorRuleSet detectorRuleSet) {
+    private DetectorEvaluationTree createEvaluationTree(Extraction extraction, File directory, DetectorRule<GoModCliDetectable> rule, DetectorRuleSet detectorRuleSet) {
         DetectorEvaluation detectorEvaluation = new DetectorEvaluation(rule);
         ExecutableNotFoundDetectableResult result = new ExecutableNotFoundDetectableResult("go");
         DetectorResult extractableResult = new DetectorResult(result.getPassed(), result.toDescription(), result.getClass());
         detectorEvaluation.setExtractable(extractableResult);
-        detectorEvaluation.setApplicable(new DetectorResult(true, "", null));
-        detectorEvaluation.setSearchable(new DetectorResult(true, "", null));
+        detectorEvaluation.setExtraction(extraction);
+        detectorEvaluation.setApplicable(new DetectorResult(extraction.isSuccess(), "", null));
+        detectorEvaluation.setSearchable(new DetectorResult(extraction.isSuccess(), "", null));
         detectorEvaluation.setDetectableEnvironment(new DetectableEnvironment(new File("")));
         return new DetectorEvaluationTree(directory, 0, detectorRuleSet, Collections.singletonList(detectorEvaluation), new HashSet<>());
     }
