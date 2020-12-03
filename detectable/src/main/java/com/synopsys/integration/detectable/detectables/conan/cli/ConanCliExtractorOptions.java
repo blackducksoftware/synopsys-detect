@@ -20,12 +20,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.conan;
+package com.synopsys.integration.detectable.detectables.conan.cli;
 
-public class ConanExtractorOptions {
+public class ConanCliExtractorOptions {
     private final boolean includeDevDependencies;
 
-    public ConanExtractorOptions(boolean includeDevDependencies) {
+    public ConanCliExtractorOptions(boolean includeDevDependencies) {
         this.includeDevDependencies = includeDevDependencies;
     }
 

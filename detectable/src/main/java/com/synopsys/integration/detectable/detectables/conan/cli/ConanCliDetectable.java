@@ -34,7 +34,6 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
-import com.synopsys.integration.detectable.detectables.conan.ConanExtractorOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -47,13 +46,13 @@ public class ConanCliDetectable extends Detectable {
     private final FileFinder fileFinder;
     private final ConanResolver conanResolver;
     private final ConanCliExtractor conanCliExtractor;
-    private final ConanExtractorOptions conanCliExtractorOptions;
+    private final ConanCliExtractorOptions conanCliExtractorOptions;
 
     private File conanFile;
     private File conanExe;
 
     public ConanCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, ConanResolver conanResolver, ConanCliExtractor conanCliExtractor,
-        ConanExtractorOptions conanCliExtractorOptions) {
+        ConanCliExtractorOptions conanCliExtractorOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.conanResolver = conanResolver;

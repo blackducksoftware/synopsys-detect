@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
-import com.synopsys.integration.detectable.detectables.conan.ConanExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.exception.IntegrationException;
@@ -48,7 +47,7 @@ public class ConanCliExtractor {
         this.conanInfoParser = conanInfoParser;
     }
 
-    public Extraction extract(File projectDir, File conanExe, ConanExtractorOptions conanCliExtractorOptions) {
+    public Extraction extract(File projectDir, File conanExe, ConanCliExtractorOptions conanCliExtractorOptions) {
         List<String> exeArgs = new ArrayList<>();
         exeArgs.add("info");
         exeArgs.add(projectDir.getAbsolutePath()); // TODO What if conanfile is in a subdir?
