@@ -46,6 +46,7 @@ public class ConanInfoParser {
     }
 
     public ConanDetectableResult generateCodeLocationFromConanInfoOutput(String conanInfoOutput, boolean includeBuildDependencies) throws IntegrationException {
+        logger.trace(String.format("Parsing conan info output:\n%s", conanInfoOutput));
         Map<String, ConanNode> nodeMap = generateNodeMap(conanInfoOutput);
         // The future lockfile detectable will also generate a nodeMap; once a nodeMap is generated, processing (translation to a codelocation) is identical
         ConanDetectableResult result = conanCodeLocationGenerator.generateCodeLocationFromNodeMap(includeBuildDependencies, nodeMap);

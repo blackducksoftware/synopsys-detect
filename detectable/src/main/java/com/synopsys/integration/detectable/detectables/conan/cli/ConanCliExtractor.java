@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +49,50 @@ public class ConanCliExtractor {
     }
 
     public Extraction extract(File projectDir, File conanExe, ConanCliExtractorOptions conanCliExtractorOptions) {
-        // TODO refactor this out
+        List<String> exeArgs = generateConanInfoCmdArgs(projectDir, conanCliExtractorOptions);
+        ExecutableOutput conanInfoOutput;
+        try {
+            conanInfoOutput = executableRunner.execute(projectDir, conanExe, exeArgs);
+        } catch (Exception e) {
+            logger.error(String.format("Exception thrown executing conan info command: %s", e.getMessage()));
+            return new Extraction.Builder().exception(e).build();
+        }
+        if (!wasSuccess(conanInfoOutput)) {
+            return new Extraction.Builder().failure("Conan info command reported errors").build();
+        }
+        if (!producedOutput(conanInfoOutput)) {
+            return new Extraction.Builder().failure("Conan info command produced no output").build();
+        }
+        try {
+            ConanDetectableResult result = conanInfoParser.generateCodeLocationFromConanInfoOutput(conanInfoOutput.getStandardOutput(), conanCliExtractorOptions.shouldIncludeDevDependencies());
+            return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
+        } catch (IntegrationException e) {
+            return new Extraction.Builder().failure(e.getMessage()).build();
+        }
+    }
+
+    private boolean wasSuccess(ExecutableOutput conanInfoOutput) {
+        String errorOutput = conanInfoOutput.getErrorOutput();
+        if (StringUtils.isNotBlank(errorOutput) && errorOutput.contains("ERROR: ")) {
+            logger.error(String.format("The conan info command reported errors: %s", errorOutput));
+            return false;
+        }
+        if (StringUtils.isNotBlank(errorOutput)) {
+            logger.debug(String.format("The conan info command wrote to stderr: %s", errorOutput));
+        }
+        return true;
+    }
+
+    private boolean producedOutput(ExecutableOutput conanInfoOutput) {
+        String standardOutput = conanInfoOutput.getStandardOutput();
+        if (StringUtils.isBlank(standardOutput)) {
+            logger.error("Nothing returned from conan info command");
+            return false;
+        }
+    }
+
+    @NotNull
+    private List<String> generateConanInfoCmdArgs(File projectDir, ConanCliExtractorOptions conanCliExtractorOptions) {
         List<String> exeArgs = new ArrayList<>();
         exeArgs.add("info");
         if (conanCliExtractorOptions.getAdditionalArguments().isPresent()) {
@@ -57,35 +101,7 @@ public class ConanCliExtractor {
                 exeArgs.add(additionalArg);
             }
         }
-        // TODO this should be the recipe file?
-        exeArgs.add(projectDir.getAbsolutePath()); // TODO What if conanfile is in a subdir?
-
-        ExecutableOutput conanInfoOutput;
-        try {
-            conanInfoOutput = executableRunner.execute(projectDir, conanExe, exeArgs);
-        } catch (Exception e) {
-            logger.error(String.format("Exception thrown executing conan info command: %s", e.getMessage()));
-            return new Extraction.Builder().exception(e).build();
-        }
-        String standardOutput = conanInfoOutput.getStandardOutput();
-        String errorOutput = conanInfoOutput.getErrorOutput();
-        if (StringUtils.isNotBlank(errorOutput) && errorOutput.contains("ERROR: ")) {
-            logger.error(String.format("The conan info command reported errors: %s", errorOutput));
-            return new Extraction.Builder().failure("Conan info command reported errors").build();
-        }
-        if (StringUtils.isNotBlank(errorOutput)) {
-            logger.debug(String.format("The conan info command wrote to stderr: %s", errorOutput));
-        }
-        if (StringUtils.isBlank(standardOutput)) {
-            logger.error("Nothing returned from conan info command");
-            return new Extraction.Builder().failure("Conan info command produced no output").build();
-        }
-        logger.trace(String.format("Parsing conan info output:\n%s", standardOutput));
-        try {
-            ConanDetectableResult result = conanInfoParser.generateCodeLocationFromConanInfoOutput(standardOutput, conanCliExtractorOptions.shouldIncludeDevDependencies());
-            return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
-        } catch (IntegrationException e) {
-            return new Extraction.Builder().failure(e.getMessage()).build();
-        }
+        exeArgs.add(projectDir.getAbsolutePath());
+        return exeArgs;
     }
 }
