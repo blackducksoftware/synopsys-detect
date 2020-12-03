@@ -47,11 +47,11 @@ public class GitCliDetectableTest extends DetectableFunctionalTest {
 
         final String gitRemoteUrlOutput = "https://github.com/blackducksoftware/synopsys-detect";
         final ExecutableOutput gitConfigExecutableOutput = new ExecutableOutput(0, gitRemoteUrlOutput, "");
-        addExecutableOutput(gitConfigExecutableOutput, "git", "config", "--get", "remote.origin.url");
+        addExecutableOutput(gitConfigExecutableOutput, "C:\\git", "config", "--get", "remote.origin.url");
 
         final String gitBranchOutput = "branch-version";
         final ExecutableOutput gitBranchExecutableOutput = new ExecutableOutput(0, gitBranchOutput, "");
-        addExecutableOutput(gitBranchExecutableOutput, "git", "rev-parse", "--abbrev-ref", "HEAD");
+        addExecutableOutput(gitBranchExecutableOutput, "C:\\git", "rev-parse", "--abbrev-ref", "HEAD");
     }
 
     @NotNull
@@ -60,7 +60,7 @@ public class GitCliDetectableTest extends DetectableFunctionalTest {
         class GitExeResolver implements GitResolver {
             @Override
             public File resolveGit() {
-                return new File("git");
+                return new File("C:\\git");
             }
         }
 

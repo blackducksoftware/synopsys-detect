@@ -46,25 +46,25 @@ public class GitCliCommitHashDetectableTest extends DetectableFunctionalTest {
 
         final String gitRemoteUrlOutput = "https://github.com/blackducksoftware/synopsys-detect";
         final ExecutableOutput gitConfigExecutableOutput = new ExecutableOutput(0, gitRemoteUrlOutput, "");
-        addExecutableOutput(gitConfigExecutableOutput, "git", "config", "--get", "remote.origin.url");
+        addExecutableOutput(gitConfigExecutableOutput, "C:\\git", "config", "--get", "remote.origin.url");
 
         final String gitBranchOutput = "HEAD";
         final ExecutableOutput gitBranchExecutableOutput = new ExecutableOutput(0, gitBranchOutput, "");
-        addExecutableOutput(gitBranchExecutableOutput, "git", "rev-parse", "--abbrev-ref", "HEAD");
+        addExecutableOutput(gitBranchExecutableOutput, "C:\\git", "rev-parse", "--abbrev-ref", "HEAD");
 
         final String gitLogOutput = "(HEAD -> develop, origin/develop, origin/HEAD)";
         final ExecutableOutput gitLogExecutableOutput = new ExecutableOutput(0, gitLogOutput, "");
-        addExecutableOutput(gitLogExecutableOutput, "git", "log", "-n", "1", "--pretty=%d", "HEAD");
+        addExecutableOutput(gitLogExecutableOutput, "C:\\git", "log", "-n", "1", "--pretty=%d", "HEAD");
 
         final String gitCommitHash = "9ec2a2bcfa8651b6e096b06d72b1b9290b429e3c";
         final ExecutableOutput gitCommitExecutableOutput = new ExecutableOutput(0, gitCommitHash, "");
-        addExecutableOutput(gitCommitExecutableOutput, "git", "rev-parse", "HEAD");
+        addExecutableOutput(gitCommitExecutableOutput, "C:\\git", "rev-parse", "HEAD");
     }
 
     @NotNull
     @Override
     public Detectable create(@NotNull final DetectableEnvironment environment) {
-        return detectableFactory.createGitCliDetectable(environment, () -> new File("git"));
+        return detectableFactory.createGitCliDetectable(environment, () -> new File("C:\\git"));
     }
 
     @Override
