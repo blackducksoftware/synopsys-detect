@@ -192,13 +192,25 @@ public class DetectProperties {
         new DetectProperty<>(new NullablePathProperty("detect.conan.path"))
             .setInfo("Conan Executable", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp("The path to the conan executable.")
-            .setGroups(DetectGroup.CONAN, DetectGroup.GLOBAL);
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
+
+    public static final DetectProperty<NullablePathProperty> DETECT_CONAN_LOCKFILE_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.conan.lockfile.path"))
+            .setInfo("Conan Lockfile", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("The path to the conan lockfile to apply when running 'conan info' to get the dependency graph. If set, Detect will execute the command 'conan info --lockfile {lockfile} .'")
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<BooleanProperty> DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES =
         new DetectProperty<>(new BooleanProperty("detect.conan.include.build.dependencies", true))
             .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
-            .setGroups(DetectGroup.CONAN, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
+
+    public static final DetectProperty<NullableStringProperty> DETECT_CONAN_ARGUMENTS =
+        new DetectProperty<>(new NullableStringProperty("detect.conan.arguments"))
+            .setInfo("Additional Conan Arguments", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("A space-separated list of additional arguments to add to the 'conan info' command line when running Detect against a Conan project. Detect will execute the command 'conan info {additional arguments} .'")
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullablePathProperty> DETECT_BDIO_OUTPUT_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.bdio.output.path"))
@@ -1098,7 +1110,6 @@ public class DetectProperties {
             .setHelp("If true will use Python 3 if available on class path.")
             .setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL);
 
-
     public static final DetectProperty<EnumListProperty<DetectorType>> DETECT_REQUIRED_DETECTOR_TYPES =
         new DetectProperty<>(new EnumListProperty<>("detect.required.detector.types", emptyList(), DetectorType.class))
             .setInfo("Required Detect Types", DetectPropertyFromVersion.VERSION_4_3_0)
@@ -1183,7 +1194,8 @@ public class DetectProperties {
     public static final DetectProperty<LongProperty> DETECT_TIMEOUT =
         new DetectProperty<>(new LongProperty("detect.timeout", 300L))
             .setInfo("Detect Timeout", DetectPropertyFromVersion.VERSION_6_8_0)
-            .setHelp("The amount of time in seconds Detect will wait for network connection, for scans to finish, and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
+            .setHelp(
+                "The amount of time in seconds Detect will wait for network connection, for scans to finish, and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
