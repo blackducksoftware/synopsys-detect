@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.StringUtils;
+
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.log.LogLevel;
@@ -19,38 +23,43 @@ import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
 import com.synopsys.integration.polaris.common.model.IssueResourcesSingle;
 
 public class FullTest {
-    public static void main(final String[] args) throws IntegrationException {
-        final PolarisServerConfigBuilder polarisServerConfigBuilder = PolarisServerConfig.newBuilder();
-        polarisServerConfigBuilder.setUrl(System.getenv("POLARIS_URL"));
-        polarisServerConfigBuilder.setAccessToken(System.getenv("POLARIS_ACCESS_TOKEN"));
+    @Test
+    public void testPolaris() throws IntegrationException {
+        String polarisUrl = System.getenv("POLARIS_URL");
+        String polarisAccessToken = System.getenv("POLARIS_ACCESS_TOKEN");
+        Assumptions.assumeTrue(StringUtils.isNotBlank(polarisUrl));
+        Assumptions.assumeTrue(StringUtils.isNotBlank(polarisAccessToken));
+        PolarisServerConfigBuilder polarisServerConfigBuilder = PolarisServerConfig.newBuilder();
+        polarisServerConfigBuilder.setUrl(polarisUrl);
+        polarisServerConfigBuilder.setAccessToken(polarisAccessToken);
 
-        final PolarisServerConfig polarisServerConfig = polarisServerConfigBuilder.build();
-        final IntLogger logger = new PrintStreamIntLogger(System.out, LogLevel.INFO);
-        final PolarisServicesFactory polarisServicesFactory = polarisServerConfig.createPolarisServicesFactory(logger);
+        PolarisServerConfig polarisServerConfig = polarisServerConfigBuilder.build();
+        IntLogger logger = new PrintStreamIntLogger(System.out, LogLevel.INFO);
+        PolarisServicesFactory polarisServicesFactory = polarisServerConfig.createPolarisServicesFactory(logger);
 
-        final ProjectService projectService = polarisServicesFactory.createProjectService();
-        final BranchService branchService = polarisServicesFactory.createBranchService();
-        final IssueService issueService = polarisServicesFactory.createIssueService();
+        ProjectService projectService = polarisServicesFactory.createProjectService();
+        BranchService branchService = polarisServicesFactory.createBranchService();
+        IssueService issueService = polarisServicesFactory.createIssueService();
 
-        final List<ProjectV0Resource> allProjects = projectService.getAllProjects();
+        List<ProjectV0Resource> allProjects = projectService.getAllProjects();
         allProjects.stream().forEach(System.out::println);
 
-        final Optional<ProjectV0Resource> project = projectService.getProjectByName("integration-common");
+        Optional<ProjectV0Resource> project = projectService.getProjectByName("integration-common");
         System.out.println(project.get().getId());
 
-        final Optional<BranchV0Resource> branch = branchService.getBranchForProjectByName(project.get().getId(), "17.0.1-SNAPSHOT");
+        Optional<BranchV0Resource> branch = branchService.getBranchForProjectByName(project.get().getId(), "17.0.1-SNAPSHOT");
         System.out.println(branch.get().getId());
 
-        final List<IssueV0Resource> queryIssues = issueService.getIssuesForProjectAndBranch(project.get().getId(), branch.get().getId());
+        List<IssueV0Resource> queryIssues = issueService.getIssuesForProjectAndBranch(project.get().getId(), branch.get().getId());
         queryIssues.stream().forEach(System.out::println);
-        final List<String> issueKeys = queryIssues.stream().map(queryIssue -> queryIssue.getAttributes().getIssueKey()).collect(Collectors.toList());
+        List<String> issueKeys = queryIssues.stream().map(queryIssue -> queryIssue.getAttributes().getIssueKey()).collect(Collectors.toList());
 
-        for (final String issueKey : issueKeys) {
-            final IssueResourcesSingle issueResourcesSingle = issueService.getIssueForProjectBranchAndIssueKeyWithDefaultIncluded(project.get().getId(), branch.get().getId(), issueKey);
-            final Optional<IssueTypeV0Resource> optionalIssueType = issueService.getIssueTypeFromPopulatedIssueResources(issueResourcesSingle);
-            final String fullName = optionalIssueType.map(IssueTypeV0Resource::getAttributes).map(IssueTypeV0Attributes::getName).orElse("Unknown name");
-            final String subTool = issueResourcesSingle.getData().map(IssueV0Resource::getAttributes).map(IssueV0Attributes::getSubTool).orElse("Unknown sub-tool");
-            final String sourcePath = issueResourcesSingle.getSourcePath();
+        for (String issueKey : issueKeys) {
+            IssueResourcesSingle issueResourcesSingle = issueService.getIssueForProjectBranchAndIssueKeyWithDefaultIncluded(project.get().getId(), branch.get().getId(), issueKey);
+            Optional<IssueTypeV0Resource> optionalIssueType = issueService.getIssueTypeFromPopulatedIssueResources(issueResourcesSingle);
+            String fullName = optionalIssueType.map(IssueTypeV0Resource::getAttributes).map(IssueTypeV0Attributes::getName).orElse("Unknown name");
+            String subTool = issueResourcesSingle.getData().map(IssueV0Resource::getAttributes).map(IssueV0Attributes::getSubTool).orElse("Unknown sub-tool");
+            String sourcePath = issueResourcesSingle.getSourcePath();
             System.out.println(subTool + ": " + fullName + " [" + sourcePath + "]");
         }
     }

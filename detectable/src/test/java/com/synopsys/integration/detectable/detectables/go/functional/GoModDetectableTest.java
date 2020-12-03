@@ -66,11 +66,22 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
             "github.com/sirupsen/logrus@v1.1.1 github.com/davecgh/go-spew@v1.1.1"
         );
         addExecutableOutput(goModGraphOutput, "go", "mod", "graph");
+
+        ExecutableOutput goModWhyOutput = createStandardOutput(
+            "# github.com/gomods/athens",
+            "github.com/codegangsta/negroni",
+            "github.com/sirupsen/logrus",
+            "",
+            "# github.com/sirupsen/logrus",
+            "github.com/davecgh/go-spew"
+        );
+
+        addExecutableOutput(goModWhyOutput, "go", "mod", "why", "-m", "all");
     }
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         class GoResolverTest implements GoResolver {
             @Override
             public File resolveGo() throws DetectableException {
@@ -81,7 +92,7 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(2, extraction.getCodeLocations().size());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(0).getDependencyGraph());
