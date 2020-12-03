@@ -51,10 +51,6 @@ public class ConanCliExtractor {
         // TODO refactor this out
         List<String> exeArgs = new ArrayList<>();
         exeArgs.add("info");
-        if (conanCliExtractorOptions.getLockfilePath().isPresent()) {
-            exeArgs.add("--lockfile");
-            exeArgs.add(conanCliExtractorOptions.getLockfilePath().get());
-        }
         if (conanCliExtractorOptions.getAdditionalArguments().isPresent()) {
             String[] additionalArgs = conanCliExtractorOptions.getAdditionalArguments().get().split(" +");
             for (String additionalArg : additionalArgs) {

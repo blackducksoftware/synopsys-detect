@@ -25,18 +25,12 @@ package com.synopsys.integration.detectable.detectables.conan.cli;
 import java.util.Optional;
 
 public class ConanCliExtractorOptions {
-    private final String lockfilePath;
     private final String additionalArguments;
     private final boolean includeDevDependencies;
 
-    public ConanCliExtractorOptions(String lockfilePath, String additionalArguments, boolean includeDevDependencies) {
-        this.lockfilePath = lockfilePath;
+    public ConanCliExtractorOptions(String additionalArguments, boolean includeDevDependencies) {
         this.additionalArguments = additionalArguments;
         this.includeDevDependencies = includeDevDependencies;
-    }
-
-    public Optional<String> getLockfilePath() {
-        return Optional.ofNullable(lockfilePath);
     }
 
     public Optional<String> getAdditionalArguments() {

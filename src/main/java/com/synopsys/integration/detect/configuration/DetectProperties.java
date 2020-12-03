@@ -194,13 +194,6 @@ public class DetectProperties {
             .setHelp("The path to the conan executable.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
-    // TODO should this be a PathValue?
-    public static final DetectProperty<NullableStringProperty> DETECT_CONAN_LOCKFILE_PATH =
-        new DetectProperty<>(new NullableStringProperty("detect.conan.lockfile.path"))
-            .setInfo("Conan Lockfile", DetectPropertyFromVersion.VERSION_6_8_0)
-            .setHelp("The path to the conan lockfile to apply when running 'conan info' to get the dependency graph. If set, Detect will execute the command 'conan info --lockfile {lockfile} .'")
-            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
-
     public static final DetectProperty<BooleanProperty> DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES =
         new DetectProperty<>(new BooleanProperty("detect.conan.include.build.dependencies", true))
             .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
