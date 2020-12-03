@@ -48,10 +48,21 @@ public class ConanCliExtractor {
     }
 
     public Extraction extract(File projectDir, File conanExe, ConanCliExtractorOptions conanCliExtractorOptions) {
+        // TODO refactor this out
         List<String> exeArgs = new ArrayList<>();
         exeArgs.add("info");
+        if (conanCliExtractorOptions.getLockfilePath().isPresent()) {
+            exeArgs.add("--lockfile");
+            exeArgs.add(conanCliExtractorOptions.getLockfilePath().get());
+        }
+        if (conanCliExtractorOptions.getAdditionalArguments().isPresent()) {
+            String[] additionalArgs = conanCliExtractorOptions.getAdditionalArguments().get().split(" +");
+            for (String additionalArg : additionalArgs) {
+                exeArgs.add(additionalArg);
+            }
+        }
+        // TODO this should be the recipe file?
         exeArgs.add(projectDir.getAbsolutePath()); // TODO What if conanfile is in a subdir?
-        // TODO do we want a property so user can add additional arguments?
 
         ExecutableOutput conanInfoOutput;
         try {
