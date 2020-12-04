@@ -20,11 +20,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.executable.resolver;
+package com.synopsys.integration.detectable;
 
-import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import java.io.File;
+import java.util.Arrays;
 
-public interface GitResolver {
-    ExecutableTarget resolveGit() throws DetectableException;
+import com.synopsys.integration.executable.Executable;
+
+public class ExecutableUtils {
+    public static Executable createFromTarget(File directory, ExecutableTarget target, String[] commands) {
+        return Executable.create(directory, target.toCommand(), Arrays.asList(commands)); //TODO Add similar create to library and replace.
+    }
 }

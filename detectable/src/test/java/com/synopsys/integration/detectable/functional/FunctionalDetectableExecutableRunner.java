@@ -78,6 +78,11 @@ public class FunctionalDetectableExecutableRunner implements DetectableExecutabl
         return execute(new Executable(workingDirectory, new HashMap<>(), command));
     }
 
+    @Override
+    public @NotNull ExecutableOutput executeSecretly(final Executable executable) throws ExecutableRunnerException {
+        return execute(executable);//Functional tests don't care about 'secret' executions (where secret means the output might contain something secret like credentials).
+    }
+
     @NotNull
     @Override
     public ExecutableOutput execute(@NotNull final Executable executable) {
