@@ -26,7 +26,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -110,11 +110,7 @@ public class DetectorTool {
         logger.info("Searching for detectors. This may take a while.");
         detectorEvaluator.searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
 
-        Set<DetectorType> applicable = detectorEvaluations.stream()
-                                           .filter(DetectorEvaluation::isApplicable)
-                                           .map(DetectorEvaluation::getDetectorRule)
-                                           .map(DetectorRule::getDetectorType)
-                                           .collect(Collectors.toSet());
+        Set<DetectorType> applicable = determineApplicableDetectors(detectorEvaluations);
 
         eventSystem.publishEvent(Event.ApplicableCompleted, applicable);
         eventSystem.publishEvent(Event.SearchCompleted, rootEvaluation);
@@ -135,7 +131,7 @@ public class DetectorTool {
         eventSystem.publishEvent(Event.ExtractionCount, extractionCount);
         eventSystem.publishEvent(Event.DiscoveryCount, extractionCount); //right now discovery and extraction are the same. -jp 8/14/19
 
-        logger.debug("Total number of detectors: " + extractionCount);
+        logger.debug("Total number of detectors: {}", extractionCount);
 
         logger.debug("Starting detector project discovery.");
 
@@ -172,6 +168,14 @@ public class DetectorTool {
         return detectorToolResult;
     }
 
+    private Set<DetectorType> determineApplicableDetectors(List<DetectorEvaluation> detectorEvaluations) {
+        return detectorEvaluations.stream()
+                   .filter(DetectorEvaluation::isApplicable)
+                   .map(DetectorEvaluation::getDetectorRule)
+                   .map(DetectorRule::getDetectorType)
+                   .collect(Collectors.toSet());
+    }
+
     private DetectorNameVersionHandler createNameVersionHandler(String projectDetector) {
         Optional<DetectorType> preferredProjectDetector = Optional.empty();
         if (StringUtils.isNotBlank(projectDetector)) {
@@ -188,11 +192,24 @@ public class DetectorTool {
         return detectorNameVersionHandler;
     }
 
+    private Optional<DetectorType> preferredDetectorTypeFromString(String detectorTypeRaw) {
+        String detectorType = detectorTypeRaw.trim().toUpperCase();
+        if (StringUtils.isNotBlank(detectorType)) {
+            if (DetectorType.getPossibleNames().contains(detectorType)) {
+                return Optional.of(DetectorType.valueOf(detectorType));
+            } else {
+                logger.info("A valid preferred detector type was not provided, deciding project name automatically.");
+                return Optional.empty();
+            }
+        }
+        return Optional.empty();
+    }
+
     private Map<DetectorType, StatusType> extractStatus(List<DetectorEvaluation> detectorEvaluations) {
-        Map<DetectorType, StatusType> statusMap = new HashMap<>();
+        EnumMap<DetectorType, StatusType> statusMap = new EnumMap<>(DetectorType.class);
         for (DetectorEvaluation detectorEvaluation : detectorEvaluations) {
             DetectorType detectorType = detectorEvaluation.getDetectorType();
-            Optional<StatusType> foundStatusType = findDetectorExtractionStatus(detectorEvaluation);
+            Optional<StatusType> foundStatusType = determineDetectorExtractionStatus(detectorEvaluation);
             if (foundStatusType.isPresent()) {
                 StatusType statusType = foundStatusType.get();
                 if (statusType == StatusType.FAILURE || !statusMap.containsKey(detectorType)) {
@@ -203,17 +220,17 @@ public class DetectorTool {
         return statusMap;
     }
 
-    public Optional<StatusType> findDetectorExtractionStatus(DetectorEvaluation detectorEvaluation) {
+    private Optional<StatusType> determineDetectorExtractionStatus(DetectorEvaluation detectorEvaluation) {
         StatusType statusType = null;
         if (detectorEvaluation.isApplicable()) {
             if (detectorEvaluation.isExtractable()) {
-                boolean logWarning = detectorEvaluation.wasExtractionFailure() || detectorEvaluation.wasExtractionException();
                 if (detectorEvaluation.wasExtractionSuccessful()) {
                     statusType = StatusType.SUCCESS;
                 } else {
                     statusType = StatusType.FAILURE;
                 }
-                if (logWarning) {
+                boolean extractionUnknownFailure = !detectorEvaluation.wasExtractionFailure() && !detectorEvaluation.wasExtractionException();
+                if (extractionUnknownFailure) {
                     logger.warn("An issue occurred in the detector system, an unknown evaluation status was created. Please contact support.");
                 }
             } else if (detectorEvaluation.isFallbackExtractable() || detectorEvaluation.isPreviousExtractable()) {
@@ -232,19 +249,6 @@ public class DetectorTool {
                    .map(Map::entrySet)
                    .flatMap(Collection::stream)
                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    private Optional<DetectorType> preferredDetectorTypeFromString(String detectorTypeRaw) {
-        String detectorType = detectorTypeRaw.trim().toUpperCase();
-        if (StringUtils.isNotBlank(detectorType)) {
-            if (DetectorType.getPossibleNames().contains(detectorType)) {
-                return Optional.of(DetectorType.valueOf(detectorType));
-            } else {
-                logger.info("A valid preferred detector type was not provided, deciding project name automatically.");
-                return Optional.empty();
-            }
-        }
-        return Optional.empty();
     }
 
     private void publishStatusEvents(Map<DetectorType, StatusType> statusMap) {
@@ -267,7 +271,7 @@ public class DetectorTool {
                     eventSystem.publishEvent(Event.CustomerFileOfInterest, file);
                 }
                 List<File> paths = detectorEvaluation.getExtraction().getUnrecognizedPaths();
-                if (paths != null && paths.size() > 0) {
+                if (paths != null && !paths.isEmpty()) {
                     eventSystem.publishEvent(Event.UnrecognizedPaths, new UnrecognizedPaths(detectorEvaluation.getDetectorRule().getDetectorType().toString(), paths));
                 }
             }
@@ -278,9 +282,9 @@ public class DetectorTool {
         Set<DetectorType> missingDetectors = requiredDetectors.stream()
                                                  .filter(it -> !applicable.contains(it))
                                                  .collect(Collectors.toSet());
-        if (missingDetectors.size() > 0) {
+        if (!missingDetectors.isEmpty()) {
             String missingDetectorDisplay = missingDetectors.stream().map(Enum::toString).collect(Collectors.joining(","));
-            logger.error("One or more required detector types were not found: " + missingDetectorDisplay);
+            logger.error("One or more required detector types were not found: {}", missingDetectorDisplay);
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR_REQUIRED));
         }
     }
