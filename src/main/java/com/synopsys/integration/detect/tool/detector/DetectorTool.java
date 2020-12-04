@@ -272,7 +272,7 @@ public class DetectorTool {
                 }
                 List<File> paths = detectorEvaluation.getExtraction().getUnrecognizedPaths();
                 if (paths != null && !paths.isEmpty()) {
-                    eventSystem.publishEvent(Event.UnrecognizedPaths, new UnrecognizedPaths(detectorEvaluation.getDetectorRule().getDetectorType().toString(), paths));
+                    eventSystem.publishEvent(Event.UnrecognizedPaths, new UnrecognizedPaths(detectorEvaluation.getDetectorType().toString(), paths));
                 }
             }
         }

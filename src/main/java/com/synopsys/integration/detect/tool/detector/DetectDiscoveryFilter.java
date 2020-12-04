@@ -61,13 +61,13 @@ public class DetectDiscoveryFilter implements DiscoveryFilter {
 
             if (StringUtils.isNotBlank(projectName)) {
                 NameVersion nameVersion = new NameVersion(projectName, projectVersion);
-                return new DetectorProjectInfo(detectorEvaluation.getDetectorRule().getDetectorType(), detectorEvaluation.getSearchEnvironment().getDepth(), nameVersion);
+                return new DetectorProjectInfo(detectorEvaluation.getDetectorType(), detectorEvaluation.getSearchEnvironment().getDepth(), nameVersion);
             }
         }
         return null;
     }
 
     private DetectorProjectInfoMetadata toMetadataProjectInfo(DetectorEvaluation detectorEvaluation) {
-        return new DetectorProjectInfoMetadata(detectorEvaluation.getDetectorRule().getDetectorType(), detectorEvaluation.getSearchEnvironment().getDepth());
+        return new DetectorProjectInfoMetadata(detectorEvaluation.getDetectorType(), detectorEvaluation.getSearchEnvironment().getDepth());
     }
 }
