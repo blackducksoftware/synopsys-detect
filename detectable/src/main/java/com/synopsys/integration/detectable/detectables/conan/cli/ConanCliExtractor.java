@@ -89,6 +89,7 @@ public class ConanCliExtractor {
             logger.error("Nothing returned from conan info command");
             return false;
         }
+        return true;
     }
 
     @NotNull
