@@ -149,30 +149,10 @@ public class DetectorTool {
 
         logger.debug("Finished detectors.");
         Map<DetectorType, StatusType> statusMap = extractStatus(detectorEvaluations);
-        statusMap.forEach((detectorType, statusType) -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(detectorType, statusType)));
-        if (statusMap.containsValue(StatusType.FAILURE)) {
-            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "One or more detectors were not successful."));
-        }
-
-        logger.debug("Publishing file events.");
-        for (DetectorEvaluation detectorEvaluation : detectorEvaluations) {
-            if (detectorEvaluation.getDetectable() != null) {
-                for (File file : detectorEvaluation.getDetectable().getFoundRelevantFiles()) {
-                    eventSystem.publishEvent(Event.CustomerFileOfInterest, file);
-                }
-            }
-            if (detectorEvaluation.getExtraction() != null) {
-                for (File file : detectorEvaluation.getExtraction().getRelevantFiles()) {
-                    eventSystem.publishEvent(Event.CustomerFileOfInterest, file);
-                }
-                List<File> paths = detectorEvaluation.getExtraction().getUnrecognizedPaths();
-                if (paths != null && paths.size() > 0) {
-                    eventSystem.publishEvent(Event.UnrecognizedPaths, new UnrecognizedPaths(detectorEvaluation.getDetectorRule().getDetectorType().toString(), paths));
-                }
-            }
-        }
-
+        publishStatusEvents(statusMap);
+        publishFileEvents(detectorEvaluations);
         detectorIssuePublisher.publishEvents(eventSystem, rootEvaluation);
+        publishMissingDetectorEvents(requiredDetectors, applicable);
 
         Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(detectorEvaluations, directory);
 
@@ -184,8 +164,6 @@ public class DetectorTool {
             rootEvaluation,
             codeLocationMap
         );
-
-        handleMissingDetectors(requiredDetectors, applicable);
 
         //Completed.
         logger.debug("Finished running detectors.");
@@ -213,31 +191,38 @@ public class DetectorTool {
     private Map<DetectorType, StatusType> extractStatus(List<DetectorEvaluation> detectorEvaluations) {
         Map<DetectorType, StatusType> statusMap = new HashMap<>();
         for (DetectorEvaluation detectorEvaluation : detectorEvaluations) {
-            DetectorType detectorType = detectorEvaluation.getDetectorRule().getDetectorType();
-            if (detectorEvaluation.isApplicable()) {
-                StatusType statusType;
-                if (detectorEvaluation.isExtractable()) {
-                    if (detectorEvaluation.wasExtractionSuccessful()) {
-                        statusType = StatusType.SUCCESS;
-                    } else if (detectorEvaluation.wasExtractionFailure()) {
-                        statusType = StatusType.FAILURE;
-                    } else if (detectorEvaluation.wasExtractionException()) {
-                        statusType = StatusType.FAILURE;
-                    } else {
-                        logger.warn("An issue occurred in the detector system, an unknown evaluation status was created. Please contact support.");
-                        statusType = StatusType.FAILURE;
-                    }
-                } else if (detectorEvaluation.isFallbackExtractable() || detectorEvaluation.isPreviousExtractable()) {
-                    statusType = StatusType.SUCCESS;
-                } else {
-                    statusType = StatusType.FAILURE;
-                }
+            DetectorType detectorType = detectorEvaluation.getDetectorType();
+            Optional<StatusType> foundStatusType = findDetectorExtractionStatus(detectorEvaluation);
+            if (foundStatusType.isPresent()) {
+                StatusType statusType = foundStatusType.get();
                 if (statusType == StatusType.FAILURE || !statusMap.containsKey(detectorType)) {
                     statusMap.put(detectorType, statusType);
                 }
             }
         }
         return statusMap;
+    }
+
+    public Optional<StatusType> findDetectorExtractionStatus(DetectorEvaluation detectorEvaluation) {
+        StatusType statusType = null;
+        if (detectorEvaluation.isApplicable()) {
+            if (detectorEvaluation.isExtractable()) {
+                boolean logWarning = detectorEvaluation.wasExtractionFailure() || detectorEvaluation.wasExtractionException();
+                if (detectorEvaluation.wasExtractionSuccessful()) {
+                    statusType = StatusType.SUCCESS;
+                } else {
+                    statusType = StatusType.FAILURE;
+                }
+                if (logWarning) {
+                    logger.warn("An issue occurred in the detector system, an unknown evaluation status was created. Please contact support.");
+                }
+            } else if (detectorEvaluation.isFallbackExtractable() || detectorEvaluation.isPreviousExtractable()) {
+                statusType = StatusType.SUCCESS;
+            } else {
+                statusType = StatusType.FAILURE;
+            }
+        }
+        return Optional.ofNullable(statusType);
     }
 
     private Map<CodeLocation, DetectCodeLocation> createCodeLocationMap(List<DetectorEvaluation> detectorEvaluations, File directory) {
@@ -262,7 +247,34 @@ public class DetectorTool {
         return Optional.empty();
     }
 
-    private void handleMissingDetectors(List<DetectorType> requiredDetectors, Set<DetectorType> applicable) {
+    private void publishStatusEvents(Map<DetectorType, StatusType> statusMap) {
+        statusMap.forEach((detectorType, statusType) -> eventSystem.publishEvent(Event.StatusSummary, new DetectorStatus(detectorType, statusType)));
+        if (statusMap.containsValue(StatusType.FAILURE)) {
+            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "One or more detectors were not successful."));
+        }
+    }
+
+    private void publishFileEvents(List<DetectorEvaluation> detectorEvaluations) {
+        logger.debug("Publishing file events.");
+        for (DetectorEvaluation detectorEvaluation : detectorEvaluations) {
+            if (detectorEvaluation.getDetectable() != null) {
+                for (File file : detectorEvaluation.getDetectable().getFoundRelevantFiles()) {
+                    eventSystem.publishEvent(Event.CustomerFileOfInterest, file);
+                }
+            }
+            if (detectorEvaluation.getExtraction() != null) {
+                for (File file : detectorEvaluation.getExtraction().getRelevantFiles()) {
+                    eventSystem.publishEvent(Event.CustomerFileOfInterest, file);
+                }
+                List<File> paths = detectorEvaluation.getExtraction().getUnrecognizedPaths();
+                if (paths != null && paths.size() > 0) {
+                    eventSystem.publishEvent(Event.UnrecognizedPaths, new UnrecognizedPaths(detectorEvaluation.getDetectorRule().getDetectorType().toString(), paths));
+                }
+            }
+        }
+    }
+
+    private void publishMissingDetectorEvents(List<DetectorType> requiredDetectors, Set<DetectorType> applicable) {
         Set<DetectorType> missingDetectors = requiredDetectors.stream()
                                                  .filter(it -> !applicable.contains(it))
                                                  .collect(Collectors.toSet());
