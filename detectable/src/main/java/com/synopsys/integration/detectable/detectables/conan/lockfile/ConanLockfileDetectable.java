@@ -20,9 +20,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.conan.cli;
+package com.synopsys.integration.detectable.detectables.conan.lockfile;
 
 import java.io.File;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -31,57 +34,54 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
-@DetectableInfo(language = "C/C++", forge = "conan", requirementsMarkdown = "Files: conanfile.txt or conanfile.py. <br /><br /> Executable: conan.")
-public class ConanCliDetectable extends Detectable {
-    public static final String CONANFILETXT = "conanfile.txt";
-    public static final String CONANFILEPY = "conanfile.py";
+@DetectableInfo(language = "C/C++", forge = "conan", requirementsMarkdown = "Files: conan.lock.")
+public class ConanLockfileDetectable extends Detectable {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    public static final String CONANLOCKFILE = "conan.lock";
     private final FileFinder fileFinder;
-    private final ConanResolver conanResolver;
-    private final ConanCliExtractor conanCliExtractor;
-    private final ConanCliExtractorOptions conanCliExtractorOptions;
+    private final ConanLockfileExtractor conanLockfileExtractor;
+    private final ConanLockfileExtractorOptions conanLockfileExtractorOptions;
+    private File lockfile;
 
-    private File conanExe;
-
-    public ConanCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, ConanResolver conanResolver, ConanCliExtractor conanCliExtractor,
-        ConanCliExtractorOptions conanCliExtractorOptions) {
+    public ConanLockfileDetectable(DetectableEnvironment environment, FileFinder fileFinder, ConanLockfileExtractor conanLockfileExtractor,
+        ConanLockfileExtractorOptions conanLockfileExtractorOptions) {
         super(environment);
         this.fileFinder = fileFinder;
-        this.conanResolver = conanResolver;
-        this.conanCliExtractor = conanCliExtractor;
-        this.conanCliExtractorOptions = conanCliExtractorOptions;
+        this.conanLockfileExtractor = conanLockfileExtractor;
+        this.conanLockfileExtractorOptions = conanLockfileExtractorOptions;
     }
 
     @Override
     public DetectableResult applicable() {
-        File conanTxtFile = fileFinder.findFile(environment.getDirectory(), CONANFILETXT);
-        if (conanTxtFile == null) {
-            File conanPyFile = fileFinder.findFile(environment.getDirectory(), CONANFILEPY);
-            if (conanPyFile == null) {
-                return new FileNotFoundDetectableResult(CONANFILETXT);
+        if (conanLockfileExtractorOptions.getLockfilePath().isPresent()) {
+            File userProvidedLockfile = new File(conanLockfileExtractorOptions.getLockfilePath().get());
+            if (userProvidedLockfile.exists()) {
+                lockfile = userProvidedLockfile;
+            } else {
+                return new FileNotFoundDetectableResult(conanLockfileExtractorOptions.getLockfilePath().get());
             }
         }
+        File discoveredLockfile = fileFinder.findFile(environment.getDirectory(), CONANLOCKFILE);
+        if (discoveredLockfile == null) {
+            return new FileNotFoundDetectableResult(CONANLOCKFILE);
+        }
+        lockfile = discoveredLockfile;
         return new PassedDetectableResult();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        conanExe = conanResolver.resolveConan(environment);
-
-        if (conanExe == null) {
-            return new ExecutableNotFoundDetectableResult("conan");
-        }
-
         return new PassedDetectableResult();
     }
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
-        return conanCliExtractor.extract(environment.getDirectory(), conanExe, conanCliExtractorOptions);
+        logger.info("*** CONAN LOCKFILE extract() called.");
+        return new Extraction.Builder().failure("Conan lockfile extractor not yet implemented").build();
     }
 }

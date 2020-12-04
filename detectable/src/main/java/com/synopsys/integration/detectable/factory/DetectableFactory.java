@@ -95,6 +95,9 @@ import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInf
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoNodeParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.NodeElementParser;
+import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileDetectable;
+import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractor;
+import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliExtractor;
@@ -335,6 +338,10 @@ public class DetectableFactory {
         return new MavenParseDetectable(environment, fileFinder, mavenParseExtractor(), mavenParseOptions);
     }
 
+    public ConanLockfileDetectable createConanLockfileDetectable(DetectableEnvironment environment, ConanLockfileExtractorOptions conanLockfileExtractorOptions) {
+        return new ConanLockfileDetectable(environment, fileFinder, conanLockfileExtractor(), conanLockfileExtractorOptions);
+    }
+    
     public ConanCliDetectable createConanCliDetectable(DetectableEnvironment environment, ConanResolver conanResolver, ConanCliExtractorOptions conanCliExtractorOptions) {
         return new ConanCliDetectable(environment, fileFinder, conanResolver, conanCliExtractor(), conanCliExtractorOptions);
     }
@@ -576,6 +583,11 @@ public class DetectableFactory {
 
     private MavenCliExtractor mavenCliExtractor() {
         return new MavenCliExtractor(executableRunner, mavenCodeLocationPackager());
+    }
+
+    private ConanLockfileExtractor conanLockfileExtractor() {
+        //ConanLockfileParser conanLockfileParser = new ConanLockfileParser();
+        return new ConanLockfileExtractor();
     }
 
     private ConanCliExtractor conanCliExtractor() {
