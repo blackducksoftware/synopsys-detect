@@ -120,24 +120,24 @@ public class ConanCodeLocationGenerator {
 
     private String generateExternalIdVersionString(ConanNode node) {
         String externalId;
-        if (hasValue(node.getRecipeRevision()) && !hasValue(node.getPackageRevision())) {
-            // generate short form
-            // <name>/<version>@<user>/<channel>#<recipe_revision>
-            externalId = String.format("%s@%s/%s#%s",
-                node.getVersion(),
-                node.getUser() == null ? "_" : node.getUser(),
-                node.getChannel() == null ? "_" : node.getChannel(),
-                node.getRecipeRevision());
-        } else {
+        if (hasValue(node.getRecipeRevision()) && hasValue(node.getPackageRevision())) {
             // generate long form
             // <name>/<version>@<user>/<channel>#<recipe_revision>:<package_id>#<package_revision>
             externalId = String.format("%s@%s/%s#%s:%s#%s",
                 node.getVersion(),
                 node.getUser() == null ? "_" : node.getUser(),
                 node.getChannel() == null ? "_" : node.getChannel(),
-                node.getRecipeRevision() == null ? "0" : node.getRecipeRevision(),
+                node.getRecipeRevision(),
                 node.getPackageId() == null ? "0" : node.getPackageId(),
-                node.getPackageRevision() == null ? "0" : node.getPackageRevision());
+                node.getPackageRevision());
+        } else {
+            // generate short form
+            // <name>/<version>@<user>/<channel>#<recipe_revision>
+            externalId = String.format("%s@%s/%s#%s",
+                node.getVersion(),
+                node.getUser() == null ? "_" : node.getUser(),
+                node.getChannel() == null ? "_" : node.getChannel(),
+                node.getRecipeRevision() == null ? "0" : node.getRecipeRevision());
         }
         return externalId;
     }
