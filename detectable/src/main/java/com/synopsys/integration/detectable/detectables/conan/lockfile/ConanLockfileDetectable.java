@@ -97,6 +97,7 @@ public class ConanLockfileDetectable extends Detectable {
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
         logger.info("*** CONAN LOCKFILE extract() called.");
+        conanLockfileExtractor.extract(lockfile);
         return new Extraction.Builder().failure("Conan lockfile extractor not yet implemented").build();
     }
 }

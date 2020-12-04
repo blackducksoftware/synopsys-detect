@@ -341,7 +341,7 @@ public class DetectableFactory {
     public ConanLockfileDetectable createConanLockfileDetectable(DetectableEnvironment environment, ConanLockfileExtractorOptions conanLockfileExtractorOptions) {
         return new ConanLockfileDetectable(environment, fileFinder, conanLockfileExtractor(), conanLockfileExtractorOptions);
     }
-    
+
     public ConanCliDetectable createConanCliDetectable(DetectableEnvironment environment, ConanResolver conanResolver, ConanCliExtractorOptions conanCliExtractorOptions) {
         return new ConanCliDetectable(environment, fileFinder, conanResolver, conanCliExtractor(), conanCliExtractorOptions);
     }
@@ -587,7 +587,7 @@ public class DetectableFactory {
 
     private ConanLockfileExtractor conanLockfileExtractor() {
         //ConanLockfileParser conanLockfileParser = new ConanLockfileParser();
-        return new ConanLockfileExtractor();
+        return new ConanLockfileExtractor(gson);
     }
 
     private ConanCliExtractor conanCliExtractor() {

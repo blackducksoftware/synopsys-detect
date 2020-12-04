@@ -22,10 +22,40 @@
  */
 package com.synopsys.integration.detectable.detectables.conan.lockfile;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.extraction.Extraction;
+
 public class ConanLockfileExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    ////private final ConanLockfileParser conanLockfileParser;
+    // TODO can we use this?
+    //private ExternalIdFactory externalIdFactory;
+    private final Gson gson;
+
+    public ConanLockfileExtractor(Gson gson /*, final ExternalIdFactory externalIdFactory */) {
+        this.gson = gson;
+        // this.externalIdFactory = externalIdFactory;
+    }
+
+    public Extraction extract(File lockfile) {
+        try {
+            ConanLockfileParser conanLockfileParser = new ConanLockfileParser();
+            String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
+            logger.debug(conanLockfileContents);
+
+            DependencyGraph dependencyGraph = conanLockfileParser.parse(gson, conanLockfileContents);
+            CodeLocation codeLocation = new CodeLocation(dependencyGraph);
+            return new Extraction.Builder().success(codeLocation).build();
+        } catch (Exception e) {
+            return new Extraction.Builder().exception(e).build();
+        }
+    }
 }
