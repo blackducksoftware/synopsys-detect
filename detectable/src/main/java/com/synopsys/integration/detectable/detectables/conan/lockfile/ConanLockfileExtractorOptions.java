@@ -24,11 +24,16 @@ package com.synopsys.integration.detectable.detectables.conan.lockfile;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ConanLockfileExtractorOptions {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final String lockfilePath;
     private final boolean includeDevDependencies;
 
     public ConanLockfileExtractorOptions(String lockfilePath, boolean includeDevDependencies) {
+        logger.debug(String.format("******* ConanLockfileExtractorOptions ctor: lockfilePath: %s", lockfilePath));
         this.lockfilePath = lockfilePath;
         this.includeDevDependencies = includeDevDependencies;
     }

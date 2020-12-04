@@ -35,6 +35,7 @@ import com.synopsys.integration.detectable.detectable.executable.ExecutableFaile
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.GivenFileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
@@ -59,23 +60,37 @@ public class ConanLockfileDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         if (conanLockfileExtractorOptions.getLockfilePath().isPresent()) {
-            File userProvidedLockfile = new File(conanLockfileExtractorOptions.getLockfilePath().get());
-            if (userProvidedLockfile.exists()) {
-                lockfile = userProvidedLockfile;
-            } else {
-                return new FileNotFoundDetectableResult(conanLockfileExtractorOptions.getLockfilePath().get());
-            }
+            logger.debug(String.format("Conan Lockfile detectable applies because user supplied lockfile path %s", conanLockfileExtractorOptions.getLockfilePath().get()));
+            return new PassedDetectableResult();
         }
         File discoveredLockfile = fileFinder.findFile(environment.getDirectory(), CONANLOCKFILE);
         if (discoveredLockfile == null) {
             return new FileNotFoundDetectableResult(CONANLOCKFILE);
         }
+        logger.debug(String.format("Conan Lockfile detectable applies because Detect found the default lockfile %s", discoveredLockfile.getAbsolutePath()));
         lockfile = discoveredLockfile;
         return new PassedDetectableResult();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
+        if (conanLockfileExtractorOptions.getLockfilePath().isPresent()) {
+            logger.debug(String.format("Checking the existence/readability of given lockfile %s", conanLockfileExtractorOptions.getLockfilePath().get()));
+            File userProvidedLockfile = new File(conanLockfileExtractorOptions.getLockfilePath().get());
+            if (userProvidedLockfile.exists()) {
+                logger.debug(String.format("Lockfile %s exists", conanLockfileExtractorOptions.getLockfilePath().get()));
+                if (userProvidedLockfile.canRead()) {
+                    logger.debug(String.format("Lockfile %s is readable", conanLockfileExtractorOptions.getLockfilePath().get()));
+                    lockfile = userProvidedLockfile;
+                } else {
+                    logger.debug(String.format("Lockfile %s is not readable", conanLockfileExtractorOptions.getLockfilePath().get()));
+                    return new GivenFileNotFoundDetectableResult(conanLockfileExtractorOptions.getLockfilePath().get());
+                }
+            } else {
+                logger.debug(String.format("Lockfile %s does not exist", conanLockfileExtractorOptions.getLockfilePath().get()));
+                return new GivenFileNotFoundDetectableResult(conanLockfileExtractorOptions.getLockfilePath().get());
+            }
+        }
         return new PassedDetectableResult();
     }
 
