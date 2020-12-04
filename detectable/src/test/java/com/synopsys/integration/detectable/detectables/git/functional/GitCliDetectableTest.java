@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.git.functional;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -31,6 +30,7 @@ import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
@@ -59,8 +59,8 @@ public class GitCliDetectableTest extends DetectableFunctionalTest {
     public Detectable create(@NotNull final DetectableEnvironment environment) {
         class GitExeResolver implements GitResolver {
             @Override
-            public File resolveGit() {
-                return new File("git");
+            public ExecutableTarget resolveGit() {
+                return ExecutableTarget.forCommand("git");
             }
         }
 

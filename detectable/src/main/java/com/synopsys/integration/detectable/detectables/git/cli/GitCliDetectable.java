@@ -26,8 +26,7 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
@@ -36,6 +35,8 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "various", forge = "N/A", requirementsMarkdown = "Directory: .git. <br /><br /> Executable: git.")
 public class GitCliDetectable extends Detectable {
@@ -45,7 +46,7 @@ public class GitCliDetectable extends Detectable {
     private final GitCliExtractor gitCliExtractor;
     private final GitResolver gitResolver;
 
-    private File gitExecutable;
+    private ExecutableTarget gitExecutable;
 
     public GitCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final GitCliExtractor gitCliExtractor, final GitResolver gitResolver) {
         super(environment);
