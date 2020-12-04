@@ -96,6 +96,10 @@ public class ConanCliExtractor {
     private List<String> generateConanInfoCmdArgs(File projectDir, ConanCliExtractorOptions conanCliExtractorOptions) {
         List<String> exeArgs = new ArrayList<>();
         exeArgs.add("info");
+        if (conanCliExtractorOptions.getLockfilePath().isPresent()) {
+            exeArgs.add("--lockfile");
+            exeArgs.add(conanCliExtractorOptions.getLockfilePath().get());
+        }
         if (conanCliExtractorOptions.getAdditionalArguments().isPresent()) {
             String[] additionalArgs = conanCliExtractorOptions.getAdditionalArguments().get().split(" +");
             for (String additionalArg : additionalArgs) {

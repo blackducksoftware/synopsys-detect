@@ -180,9 +180,10 @@ public class DetectableOptionFactory {
     }
 
     public ConanCliExtractorOptions createConanCliOptions() {
+        String lockfilePath = getNullableValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH);
         String additionalArguments = getNullableValue(DetectProperties.DETECT_CONAN_ARGUMENTS);
         Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
-        return new ConanCliExtractorOptions(additionalArguments, includeBuildDependencies);
+        return new ConanCliExtractorOptions(lockfilePath, additionalArguments, includeBuildDependencies);
     }
 
     public NpmCliExtractorOptions createNpmCliExtractorOptions() {

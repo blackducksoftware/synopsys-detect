@@ -206,6 +206,13 @@ public class DetectProperties {
             .setHelp("A space-separated list of additional arguments to add to the 'conan info' command line when running Detect against a Conan project. Detect will execute the command 'conan info {additional arguments} .'")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
+    // TODO should this be a PathValue?
+    public static final DetectProperty<NullableStringProperty> DETECT_CONAN_LOCKFILE_PATH =
+        new DetectProperty<>(new NullableStringProperty("detect.conan.lockfile.path"))
+            .setInfo("Conan Lockfile", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("The path to the conan lockfile to apply when running 'conan info' to get the dependency graph. If set, Detect will execute the command 'conan info --lockfile {lockfile} .'")
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
+    
     public static final DetectProperty<NullablePathProperty> DETECT_BDIO_OUTPUT_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.bdio.output.path"))
             .setInfo("BDIO Output Directory", DetectPropertyFromVersion.VERSION_3_0_0)
