@@ -29,16 +29,16 @@ import com.synopsys.integration.util.Stringable;
 
 public class ConanLockfileGraph extends Stringable {
     @SerializedName("nodes")
-    private final Map<String, ConanLockfileNode> nodeMap;
+    private final Map<Integer, ConanLockfileNode> nodeMap;
     @SerializedName("revisions_enabled")
     private final boolean revisionsEnabled;
 
-    public ConanLockfileGraph(Map<String, ConanLockfileNode> nodeMap, boolean revisionsEnabled) {
+    public ConanLockfileGraph(Map<Integer, ConanLockfileNode> nodeMap, boolean revisionsEnabled) {
         this.nodeMap = nodeMap;
         this.revisionsEnabled = revisionsEnabled;
     }
 
-    public Map<String, ConanLockfileNode> getNodeMap() {
+    public Map<Integer, ConanLockfileNode> getNodeMap() {
         return nodeMap;
     }
 

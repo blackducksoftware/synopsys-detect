@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.conan.lockfile;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +39,15 @@ public class ConanLockfileParser {
         MutableDependencyGraph graph = new MutableMapDependencyGraph();
         ConanLockfileData conanLockfileData = gson.fromJson(conanLockfileContents, ConanLockfileData.class);
         logger.trace(String.format("conanLockfileData: %s", conanLockfileData));
+        if (!conanLockfileData.getConanLockfileGraph().isRevisionsEnabled()) {
+            logger.warn("The Conan revisions feature is not enabled, which will significantly reduce Black Duck's ability to identify dependencies");
+        } else {
+            logger.trace("The Conan revisions feature is enabled");
+        }
+        logger.info(String.format("Node 0 path: %s", conanLockfileData.getConanLockfileGraph().getNodeMap().get(0).getPath().get()));
+        for (Map.Entry<Integer, ConanLockfileNode> entry : conanLockfileData.getConanLockfileGraph().getNodeMap().entrySet()) {
+            logger.info(String.format("%d: %s:%s#%s", entry.getKey(), entry.getValue().getRef().orElse("?"), entry.getValue().getPackageId().orElse("?"), entry.getValue().getPackageRevision().orElse("?")));
+        }
         //        for (final PackageData pkg : vendorJsonData.getPackages()) {
         //            if (StringUtils.isNotBlank(pkg.getPath()) && StringUtils.isNotBlank(pkg.getRevision())) {
         //                final ExternalId dependencyExternalId = externalIdFactory.createNameVersionExternalId(Forge.GOLANG, pkg.getPath(), pkg.getRevision());
