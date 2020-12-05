@@ -98,6 +98,7 @@ import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileDetectable;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractor;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractorOptions;
+import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.ConanLockfileParser;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliExtractor;
@@ -586,12 +587,13 @@ public class DetectableFactory {
     }
 
     private ConanLockfileExtractor conanLockfileExtractor() {
-        //ConanLockfileParser conanLockfileParser = new ConanLockfileParser();
-        return new ConanLockfileExtractor(gson);
+        ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
+        ConanLockfileParser conanLockfileParser = new ConanLockfileParser(conanCodeLocationGenerator);
+        return new ConanLockfileExtractor(gson, conanCodeLocationGenerator, conanLockfileParser);
     }
 
     private ConanCliExtractor conanCliExtractor() {
-        // TODO this seems like too much stuff to be creating here
+        // TODO this seems like a lot of stuff to be creating here
         ConanInfoLineAnalyzer conanInfoLineAnalyzer = new ConanInfoLineAnalyzer();
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
         NodeElementParser nodeElementParser = new NodeElementParser(conanInfoLineAnalyzer);

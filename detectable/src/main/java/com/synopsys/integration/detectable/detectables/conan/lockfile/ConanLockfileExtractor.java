@@ -30,8 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
+import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
+import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.ConanLockfileParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class ConanLockfileExtractor {
@@ -39,21 +40,23 @@ public class ConanLockfileExtractor {
     // TODO can we use this?
     //private ExternalIdFactory externalIdFactory;
     private final Gson gson;
+    private final ConanCodeLocationGenerator conanCodeLocationGenerator;
+    private final ConanLockfileParser conanLockfileParser;
 
-    public ConanLockfileExtractor(Gson gson /*, final ExternalIdFactory externalIdFactory */) {
+    public ConanLockfileExtractor(Gson gson, ConanCodeLocationGenerator conanCodeLocationGenerator, ConanLockfileParser conanLockfileParser) {
         this.gson = gson;
+        this.conanCodeLocationGenerator = conanCodeLocationGenerator;
+        this.conanLockfileParser = conanLockfileParser;
         // this.externalIdFactory = externalIdFactory;
     }
 
-    public Extraction extract(File lockfile) {
+    public Extraction extract(File lockfile, ConanLockfileExtractorOptions conanLockfileExtractorOptions) {
         try {
-            ConanLockfileParser conanLockfileParser = new ConanLockfileParser();
             String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
             logger.debug(conanLockfileContents);
-
-            DependencyGraph dependencyGraph = conanLockfileParser.parse(gson, conanLockfileContents);
-            CodeLocation codeLocation = new CodeLocation(dependencyGraph);
-            return new Extraction.Builder().success(codeLocation).build();
+            ConanDetectableResult result = conanLockfileParser.generateCodeLocationFromConanLockfileContents(gson,
+                conanLockfileContents, conanLockfileExtractorOptions.shouldIncludeDevDependencies());
+            return new Extraction.Builder().success(result.getCodeLocation()).build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }

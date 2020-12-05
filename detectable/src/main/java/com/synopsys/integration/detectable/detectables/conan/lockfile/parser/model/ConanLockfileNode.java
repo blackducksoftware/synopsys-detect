@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.conan.lockfile;
+package com.synopsys.integration.detectable.detectables.conan.lockfile.parser.model;
 
 import java.util.List;
 import java.util.Optional;

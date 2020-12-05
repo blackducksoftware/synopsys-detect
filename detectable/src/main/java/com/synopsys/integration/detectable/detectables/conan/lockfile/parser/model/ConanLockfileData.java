@@ -20,29 +20,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.conan.lockfile;
-
-import java.util.Map;
+package com.synopsys.integration.detectable.detectables.conan.lockfile.parser.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.synopsys.integration.util.Stringable;
 
-public class ConanLockfileGraph extends Stringable {
-    @SerializedName("nodes")
-    private final Map<Integer, ConanLockfileNode> nodeMap;
-    @SerializedName("revisions_enabled")
-    private final boolean revisionsEnabled;
+public class ConanLockfileData extends Stringable {
+    @SerializedName("graph_lock")
+    private final ConanLockfileGraph conanLockfileGraph;
+    private final String version;
 
-    public ConanLockfileGraph(Map<Integer, ConanLockfileNode> nodeMap, boolean revisionsEnabled) {
-        this.nodeMap = nodeMap;
-        this.revisionsEnabled = revisionsEnabled;
+    public ConanLockfileData(ConanLockfileGraph conanLockfileGraph, String version) {
+        this.conanLockfileGraph = conanLockfileGraph;
+        this.version = version;
     }
 
-    public Map<Integer, ConanLockfileNode> getNodeMap() {
-        return nodeMap;
+    public ConanLockfileGraph getConanLockfileGraph() {
+        return conanLockfileGraph;
     }
 
-    public boolean isRevisionsEnabled() {
-        return revisionsEnabled;
+    public String getVersion() {
+        return version;
     }
 }
