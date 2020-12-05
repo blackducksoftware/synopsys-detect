@@ -50,7 +50,7 @@ public class ConanCodeLocationGenerator {
         logger.debug(String.format("Generating code location from %d dependencies", nodes.keySet().size()));
         Optional<ConanNode> rootNode = getRoot(nodes.values());
         if (!rootNode.isPresent()) {
-            throw new IntegrationException("No root node found in 'conan info' output");
+            throw new IntegrationException("No root node found");
         }
         ConanGraphNode rootGraphNode = new ConanGraphNode(rootNode.get());
         populateGraphUnderNode(rootGraphNode, nodes, includeBuildDependencies);

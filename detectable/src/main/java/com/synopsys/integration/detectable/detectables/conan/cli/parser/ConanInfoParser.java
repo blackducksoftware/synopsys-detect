@@ -45,6 +45,7 @@ public class ConanInfoParser {
         this.conanCodeLocationGenerator = conanCodeLocationGenerator;
     }
 
+    // TODO: There ought to be tests for this method
     public ConanDetectableResult generateCodeLocationFromConanInfoOutput(String conanInfoOutput, boolean includeBuildDependencies) throws IntegrationException {
         logger.trace(String.format("Parsing conan info output:\n%s", conanInfoOutput));
         Map<String, ConanNode> nodeMap = generateNodeMap(conanInfoOutput);

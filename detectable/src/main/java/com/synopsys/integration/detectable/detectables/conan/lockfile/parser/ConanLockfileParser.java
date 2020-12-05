@@ -32,6 +32,7 @@ import com.google.gson.Gson;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
+import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.model.ConanLockfileData;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.model.ConanLockfileNode;
 import com.synopsys.integration.exception.IntegrationException;
@@ -77,6 +78,27 @@ public class ConanLockfileParser {
         logger.info(String.format("Node 0 path: %s", conanLockfileData.getConanLockfileGraph().getNodeMap().get(0).getPath().orElse("?")));
         for (Map.Entry<Integer, ConanLockfileNode> entry : conanLockfileData.getConanLockfileGraph().getNodeMap().entrySet()) {
             logger.info(String.format("%d: %s:%s#%s", entry.getKey(), entry.getValue().getRef().orElse("?"), entry.getValue().getPackageId().orElse("?"), entry.getValue().getPackageRevision().orElse("?")));
+
+            ConanLockfileNode lockfileNode = entry.getValue();
+            // TODO The rrev needs to be parsed off the ref!
+            // What about user/channel??
+            String nodeMapKey;
+            if (lockfileNode.getRef().isPresent()) {
+                nodeMapKey = lockfileNode.getRef().get();
+            } else if (lockfileNode.getPackageRevision().isPresent()) {
+                nodeMapKey = lockfileNode.getPath().get();
+            } else {
+                nodeMapKey = "???";
+            }
+            //String nodeMapKey = lockfileNode.getRef().orElse(lockfileNode.getPath().get());
+            ConanNodeBuilder nodeBuilder = new ConanNodeBuilder();
+            nodeBuilder.setRef(nodeMapKey);
+            if (lockfileNode.getPackageId().isPresent()) {
+                nodeBuilder.setPackageId(lockfileNode.getPackageId().get());
+            }
+            if (lockfileNode.getPackageRevision().isPresent()) {
+                nodeBuilder.setPackageRevision(lockfileNode.getPackageRevision().get());
+            }
         }
 
         // OLD:
