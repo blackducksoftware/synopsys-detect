@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.git.functional;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -31,6 +30,7 @@ import org.junit.jupiter.api.Assertions;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
@@ -47,11 +47,11 @@ public class GitCliDetectableTest extends DetectableFunctionalTest {
 
         final String gitRemoteUrlOutput = "https://github.com/blackducksoftware/synopsys-detect";
         final ExecutableOutput gitConfigExecutableOutput = new ExecutableOutput(0, gitRemoteUrlOutput, "");
-        addExecutableOutput(gitConfigExecutableOutput, "C:\\git", "config", "--get", "remote.origin.url");
+        addExecutableOutput(gitConfigExecutableOutput, "git", "config", "--get", "remote.origin.url");
 
         final String gitBranchOutput = "branch-version";
         final ExecutableOutput gitBranchExecutableOutput = new ExecutableOutput(0, gitBranchOutput, "");
-        addExecutableOutput(gitBranchExecutableOutput, "C:\\git", "rev-parse", "--abbrev-ref", "HEAD");
+        addExecutableOutput(gitBranchExecutableOutput, "git", "rev-parse", "--abbrev-ref", "HEAD");
     }
 
     @NotNull
@@ -59,8 +59,8 @@ public class GitCliDetectableTest extends DetectableFunctionalTest {
     public Detectable create(@NotNull final DetectableEnvironment environment) {
         class GitExeResolver implements GitResolver {
             @Override
-            public File resolveGit() {
-                return new File("C:\\git");
+            public ExecutableTarget resolveGit() {
+                return ExecutableTarget.forCommand("git");
             }
         }
 

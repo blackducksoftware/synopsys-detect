@@ -20,11 +20,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.executable.resolver;
+package com.synopsys.integration.detectable.util;
 
-import com.synopsys.integration.detectable.ExecutableTarget;
-import com.synopsys.integration.detectable.detectable.exception.DetectableException;
+import com.synopsys.integration.executable.ExecutableOutput;
 
-public interface GitResolver {
-    ExecutableTarget resolveGit() throws DetectableException;
+public class ExecutableOutputUtil {
+    public static ExecutableOutput success(String line) {
+        return new ExecutableOutput(0, line, "");
+    }
 }
