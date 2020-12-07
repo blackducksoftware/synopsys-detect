@@ -35,10 +35,8 @@ import com.synopsys.integration.common.util.Bds;
 
 public class YarnLockParser {
     private static final String COMMENT_PREFIX = "#";
-    private static final String VERSION_PREFIX = "version \"";
-    private static final String VERSION_PREFIX_ALT = "version: ";
+    private static final String[] VERSION_TOKENS = new String[] { "version \"", "version: " };
 
-    private static final String VERSION_SUFFIX = "\"";
     private static final String OPTIONAL_DEPENDENCIES_TOKEN = "optionalDependencies:";
     private static final String PEER_DEPENDENCIES_TOKEN = "peerDependencies:"; // these dependencies have to be installed in the parent. Not actual dependencies as far as hub is concerned. - jp
     private static final String META_PEER_DEPENDENCIES_TOKEN = "peerDependenciesMeta:";
@@ -83,10 +81,8 @@ public class YarnLockParser {
                 currentDependencies.clear();
                 currentSection = YarnLockSections.DEPENDENCIES;
                 ids = parseMultipleEntryLine(line);
-            } else if (level == 1 && trimmedLine.startsWith(VERSION_PREFIX)) {
+            } else if (level == 1 && StringUtils.startsWithAny(trimmedLine, VERSION_TOKENS)) {
                 resolvedVersion = parseVersionFromLine(trimmedLine);
-            } else if (level == 1 && trimmedLine.startsWith(VERSION_PREFIX_ALT)) {
-                resolvedVersion = parseVersionAltFromLine(trimmedLine);
             } else if (level == 1 && trimmedLine.startsWith(OPTIONAL_DEPENDENCIES_TOKEN)) {
                 currentSection = YarnLockSections.OPTIONAL_DEPENDENCIES;
             } else if (level == 1 && trimmedLine.startsWith(META_DEPENDENCIES_TOKEN)) {
@@ -112,7 +108,6 @@ public class YarnLockParser {
         if (StringUtils.isNotBlank(resolvedVersion)) {
             entries.add(new YarnLockEntry(ids, resolvedVersion, Bds.of(currentDependencies.values()).map(ParsedYarnLockDependency::toDependency).toList()));
         }
-
         return new YarnLock(entries);
     }
 
@@ -187,12 +182,11 @@ public class YarnLockParser {
     }
 
     private String parseVersionFromLine(String line) {
-        String rawVersion = line.substring(VERSION_PREFIX.length(), line.lastIndexOf(VERSION_SUFFIX));
-        return removeWrappingQuotes(rawVersion);
-    }
-
-    private String parseVersionAltFromLine(String line) {
-        String rawVersion = StringUtils.substringAfter(line, VERSION_PREFIX_ALT);
-        return removeWrappingQuotes(rawVersion);
+        for (String token : VERSION_TOKENS) {
+            if (line.startsWith(token)) {
+                return removeWrappingQuotes(StringUtils.substringAfter(line, token));
+            }
+        }
+        return line;
     }
 }
