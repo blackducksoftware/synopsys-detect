@@ -31,72 +31,8 @@ import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.log.IntLogger;
 
 public class DetectStatusLogger {
+
     public void logDetectStatus(IntLogger logger, List<Status> statusSummaries, List<DetectResult> detectResults, List<DetectIssue> detectIssues, ExitCodeType exitCodeType) {
-        // sort by type, and within type, sort by description
-        statusSummaries.sort((left, right) -> {
-            if (left.getClass() == right.getClass()) {
-                return left.getDescriptionKey().compareTo(right.getDescriptionKey());
-            } else {
-                return left.getClass().getName().compareTo(right.getClass().getName());
-            }
-        });
-        logger.info("");
-        logger.info("");
-
-        if (!detectIssues.isEmpty()) {
-            logger.info("======== Detect Issues ========");
-            logger.info("");
-            detectIssues.stream().collect(Collectors.groupingBy(DetectIssue::getType));
-            List<DetectIssue> detectors = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.DETECTOR).collect(Collectors.toList());
-            if (detectors.size() > 0) {
-                logger.info("DETECTORS:");
-                detectors.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
-                logger.info("");
-            }
-            List<DetectIssue> exceptions = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.EXCEPTION).collect(Collectors.toList());
-            if (exceptions.size() > 0) {
-                logger.info("EXCEPTIONS:");
-                exceptions.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
-                logger.info("");
-            }
-            List<DetectIssue> deprecations = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.DEPRECATION).collect(Collectors.toList());
-            if (deprecations.size() > 0) {
-                logger.info("DEPRECATIONS:");
-                deprecations.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
-                logger.info("");
-            }
-        }
-
-        if (!detectResults.isEmpty()) {
-            logger.info("======== Detect Result ========");
-            logger.info("");
-            for (DetectResult detectResult : detectResults) {
-                logger.info(detectResult.getResultMessage());
-            }
-            logger.info("");
-        }
-
-        logger.info("======== Detect Status ========");
-        logger.info("");
-        Class<? extends Status> previousSummaryClass = null;
-
-        for (Status status : statusSummaries) {
-            if (previousSummaryClass != null && !previousSummaryClass.equals(status.getClass())) {
-                logger.info("");
-            }
-            logger.info(String.format("%s: %s", status.getDescriptionKey(), status.getStatusType().toString()));
-
-            previousSummaryClass = status.getClass();
-        }
-
-        logger.info(String.format("Overall Status: %s - %s", exitCodeType.toString(), exitCodeType.getDescription()));
-        logger.info("");
-        logger.info("===============================");
-        logger.info("");
-
-    }
-
-    public void logDetectStatus2(IntLogger logger, List<Status> statusSummaries, List<DetectResult> detectResults, List<DetectIssue> detectIssues, ExitCodeType exitCodeType) {
         logger.info("");
         logger.info("");
 
@@ -108,7 +44,6 @@ public class DetectStatusLogger {
         logger.info("");
         logger.info("===============================");
         logger.info("");
-
     }
 
     private void logDetectIssues(IntLogger logger, List<DetectIssue> detectIssues) {
