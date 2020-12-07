@@ -49,7 +49,7 @@ public class ConanInfoNodeParser {
     public ConanInfoNodeParseResult parseNode(List<String> conanInfoOutputLines, int nodeStartIndex) {
         String nodeHeaderLine = conanInfoOutputLines.get(nodeStartIndex);
         ConanNodeBuilder nodeBuilder = new ConanNodeBuilder();
-        nodeBuilder.setRef(nodeHeaderLine.trim());
+        nodeBuilder.setRefFromConanInfo(nodeHeaderLine.trim());
         int bodyLineCount = 0;
         for (int lineIndex = nodeStartIndex + 1; lineIndex < conanInfoOutputLines.size(); lineIndex++) {
             String nodeBodyLine = conanInfoOutputLines.get(lineIndex);

@@ -31,7 +31,8 @@ import com.synopsys.integration.util.Stringable;
 public class ConanLockfileNode extends Stringable {
     private final String path;
     private final String ref;
-    private final List<String> requires;
+    // TODO NEED build_requires
+    private final List<Integer> requires;
 
     @SerializedName("package_id")
     private final String packageId;
@@ -39,7 +40,7 @@ public class ConanLockfileNode extends Stringable {
     @SerializedName("prev")
     private final String packageRevision;
 
-    public ConanLockfileNode(String path, String ref, List<String> requires, String packageId, String packageRevision) {
+    public ConanLockfileNode(String path, String ref, List<Integer> requires, String packageId, String packageRevision) {
         this.path = path;
         this.ref = ref;
         this.requires = requires;
@@ -55,7 +56,7 @@ public class ConanLockfileNode extends Stringable {
         return Optional.ofNullable(ref);
     }
 
-    public List<String> getRequires() {
+    public List<Integer> getRequires() {
         return requires;
     }
 

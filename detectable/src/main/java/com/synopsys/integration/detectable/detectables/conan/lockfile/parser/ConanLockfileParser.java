@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.conan.lockfile.parser;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,29 +79,23 @@ public class ConanLockfileParser {
         logger.info(String.format("Node 0 path: %s", conanLockfileData.getConanLockfileGraph().getNodeMap().get(0).getPath().orElse("?")));
         for (Map.Entry<Integer, ConanLockfileNode> entry : conanLockfileData.getConanLockfileGraph().getNodeMap().entrySet()) {
             logger.info(String.format("%d: %s:%s#%s", entry.getKey(), entry.getValue().getRef().orElse("?"), entry.getValue().getPackageId().orElse("?"), entry.getValue().getPackageRevision().orElse("?")));
-
             ConanLockfileNode lockfileNode = entry.getValue();
-            // TODO The rrev needs to be parsed off the ref!
-            // What about user/channel??
-            String nodeMapKey;
-            if (lockfileNode.getRef().isPresent()) {
-                nodeMapKey = lockfileNode.getRef().get();
-            } else if (lockfileNode.getPackageRevision().isPresent()) {
-                nodeMapKey = lockfileNode.getPath().get();
-            } else {
-                nodeMapKey = "???";
-            }
-            //String nodeMapKey = lockfileNode.getRef().orElse(lockfileNode.getPath().get());
             ConanNodeBuilder nodeBuilder = new ConanNodeBuilder();
-            nodeBuilder.setRef(nodeMapKey);
+            // TODO builder should be able to take lockfileNode and build from that!! or maybe it's a separate builder?
+            nodeBuilder.setRefFromLockfile(lockfileNode.getRef().orElse(null));
+            nodeBuilder.setPath(lockfileNode.getPath().orElse(null));
             if (lockfileNode.getPackageId().isPresent()) {
                 nodeBuilder.setPackageId(lockfileNode.getPackageId().get());
             }
             if (lockfileNode.getPackageRevision().isPresent()) {
                 nodeBuilder.setPackageRevision(lockfileNode.getPackageRevision().get());
             }
+            Optional<ConanNode> conanNode = nodeBuilder.build();
+            if (conanNode.isPresent()) {
+                graphNodes.put(conanNode.get().getRef(), conanNode.get());
+            }
         }
-
+        logger.info(String.format("ConanNode map: %s", graphNodes));
         // OLD:
         //        List<String> conanInfoOutputLines = Arrays.asList(conanInfoOutput.split("\n"));
         //        int lineIndex = 0;

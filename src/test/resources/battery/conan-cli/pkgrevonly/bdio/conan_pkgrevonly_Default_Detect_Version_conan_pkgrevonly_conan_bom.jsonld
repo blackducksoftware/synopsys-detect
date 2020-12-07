@@ -1,7 +1,7 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "conan-pkgrevonly/Default Detect Version/conan-pkgrevonly conan_cli/bom",
+    "spdx:name": "conan-pkgrevonly/Default Detect Version/conan-pkgrevonly conan/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-6.8.0-SNAPSHOT",

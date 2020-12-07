@@ -1,7 +1,7 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "pkgb/0.1/conan-withrevisions conan_cli/bom",
+    "spdx:name": "pkgb/0.1/conan-withrevisions conan/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-6.8.0-SNAPSHOT",

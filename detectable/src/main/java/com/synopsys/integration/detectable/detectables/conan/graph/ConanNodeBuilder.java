@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 public class ConanNodeBuilder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private String ref;
-    private String filename;
+    private String path;
     private String name;
     private String version;
     private String user;
@@ -46,10 +46,80 @@ public class ConanNodeBuilder {
     private final List<String> requiresRefs = new ArrayList<>();
     private final List<String> buildRequiresRefs = new ArrayList<>();
     private final List<String> requiredByRefs = new ArrayList<>();
+    private boolean valid = true;
 
-    public ConanNodeBuilder setRef(String ref) {
+    public ConanNodeBuilder setRefFromLockfile(String ref) {
+        if (StringUtils.isBlank(ref)) {
+            return this;
+        }
+        // TODO some of this is duplicated in build; I think it should be done here only
+        // Move all that kind of stuff to setters (from build())?
+        // build should just build, not set fields
         ref = ref.trim();
+        StringTokenizer tokenizer = new StringTokenizer(ref, "@/#");
+        if (!ref.startsWith("conanfile.")) {
+            if (tokenizer.hasMoreTokens()) {
+                name = tokenizer.nextToken();
+            }
+            if (tokenizer.hasMoreTokens()) {
+                version = tokenizer.nextToken();
+            }
+            if (ref.contains("@")) {
+                user = tokenizer.nextToken();
+                channel = tokenizer.nextToken();
+            }
+            if (ref.contains("#")) {
+                recipeRevision = tokenizer.nextToken();
+            }
+        }
         this.ref = ref;
+        return this;
+    }
+
+    public ConanNodeBuilder setRefFromConanInfo(String ref) {
+        if (StringUtils.isBlank(ref)) {
+            return this;
+        }
+        // if rootNode: conanfile.{txt,py}[ (projectname/version)]
+        // else       : package/version[@user/channel]
+        if (ref.startsWith("conanfile.")) {
+            StringTokenizer tokenizer = new StringTokenizer(ref, " \t()/");
+            path = tokenizer.nextToken();
+            if (tokenizer.hasMoreTokens()) {
+                name = tokenizer.nextToken();
+                if (tokenizer.hasMoreTokens()) {
+                    version = tokenizer.nextToken();
+                }
+            }
+            logger.info(String.format("path: %s; name: %s; version: %s", path, name, version));
+        } else {
+            StringTokenizer tokenizer = new StringTokenizer(ref, "/@");
+            name = tokenizer.nextToken();
+            if (name.contains(" ")) {
+                valid = false;
+                return this;
+            }
+            if (tokenizer.hasMoreTokens()) {
+                version = tokenizer.nextToken();
+                if (version.contains(" ")) {
+                    valid = false;
+                    return this;
+                } else if (tokenizer.hasMoreTokens()) {
+                    user = tokenizer.nextToken();
+                    if (tokenizer.hasMoreTokens()) {
+                        channel = tokenizer.nextToken();
+                    }
+                }
+            }
+        }
+        this.ref = ref;
+        return this;
+    }
+
+    public ConanNodeBuilder setPath(String path) {
+        if (path != null) {
+            this.path = path.trim();
+        }
         return this;
     }
 
@@ -84,37 +154,45 @@ public class ConanNodeBuilder {
     }
 
     public Optional<ConanNode> build() {
-        if (StringUtils.isBlank(ref) || StringUtils.isBlank(packageId)) {
+        if (StringUtils.isBlank(ref) && StringUtils.isBlank(path)) {
+            valid = false;
+        }
+        if (!valid) {
             logger.debug("This wasn't a node");
             return Optional.empty();
         }
-        // if rootNode: conanfile.{txt,py}[ (projectname/version)]
-        // else       : package/version[@user/channel]
-        if (ref.startsWith("conanfile.")) {
-            StringTokenizer tokenizer = new StringTokenizer(ref, " \t()/");
-            filename = tokenizer.nextToken();
-            if (tokenizer.hasMoreTokens()) {
-                name = tokenizer.nextToken();
-                if (tokenizer.hasMoreTokens()) {
-                    version = tokenizer.nextToken();
-                }
-            }
-            logger.info(String.format("filename: %s; name: %s; version: %s", filename, name, version));
-        } else {
-            StringTokenizer tokenizer = new StringTokenizer(ref, "/@");
-            name = tokenizer.nextToken();
-            if (tokenizer.hasMoreTokens()) {
-                version = tokenizer.nextToken();
-                if (tokenizer.hasMoreTokens()) {
-                    user = tokenizer.nextToken();
-                    if (tokenizer.hasMoreTokens()) {
-                        channel = tokenizer.nextToken();
-                    }
-                }
-            }
-        }
+        // if CLI rootNode: conanfile.{txt,py}[ (projectname/version)]
+        // if lck rootNode: ref=null; path=conanfile.{txt,py}
+        // else           : package/version[@user/channel]
+        //        if (StringUtils.isBlank(path) && StringUtils.isNotBlank(ref) && ref.startsWith("conanfile.")) {
+        //            StringTokenizer tokenizer = new StringTokenizer(ref, " \t()/");
+        //            path = tokenizer.nextToken();
+        //            if (tokenizer.hasMoreTokens()) {
+        //                name = tokenizer.nextToken();
+        //                if (tokenizer.hasMoreTokens()) {
+        //                    version = tokenizer.nextToken();
+        //                }
+        //            }
+        //            logger.info(String.format("path: %s; name: %s; version: %s", path, name, version));
+        //        }
+        if (StringUtils.isBlank(ref) && StringUtils.isNotBlank(path)) {
+            ref = path;
+        } //else {
+        //            StringTokenizer tokenizer = new StringTokenizer(ref, "/@");
+        //            name = tokenizer.nextToken();
+        //            if (tokenizer.hasMoreTokens()) {
+        //                version = tokenizer.nextToken();
+        //                if (tokenizer.hasMoreTokens()) {
+        //                    user = tokenizer.nextToken();
+        //                    if (tokenizer.hasMoreTokens()) {
+        //                        channel = tokenizer.nextToken();
+        //                    }
+        //                }
+        //            }
+        //        }
         boolean isRootNode = false;
-        if ((filename != null) && CollectionUtils.isEmpty(requiredByRefs)) {
+        // TODO revisit this
+        if ((path != null) && CollectionUtils.isEmpty(requiredByRefs)) {
             isRootNode = true;
         } else if (CollectionUtils.isEmpty(requiredByRefs)) {
             logger.warn(String.format("Node %s doesn't look like a root node, but its requiredBy list is empty; treating it as a non-root node", ref));
@@ -123,7 +201,7 @@ public class ConanNodeBuilder {
         } else {
             isRootNode = false;
         }
-        ConanNode node = new ConanNode(ref, filename, name, version, user, channel,
+        ConanNode node = new ConanNode(ref, path, name, version, user, channel,
             recipeRevision, packageId, packageRevision, requiresRefs, buildRequiresRefs, requiredByRefs, isRootNode);
         logger.info(String.format("node: %s", node));
         return Optional.of(node);

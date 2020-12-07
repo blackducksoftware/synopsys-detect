@@ -1,7 +1,7 @@
 [
   {
     "specVersion": "1.1.0",
-    "spdx:name": "conan-withuserchannel/Default Detect Version/conan-withuserchannel conan_cli/bom",
+    "spdx:name": "conan-withuserchannel/Default Detect Version/conan-withuserchannel conan/bom",
     "creationInfo": {
       "spdx:creator": [
         "Tool: Detect-6.8.0-SNAPSHOT",
