@@ -23,24 +23,42 @@
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import com.synopsys.integration.common.util.Bds;
+
 public class YarnLockParser {
     private static final String COMMENT_PREFIX = "#";
     private static final String VERSION_PREFIX = "version \"";
+    private static final String VERSION_PREFIX_ALT = "version: ";
+
     private static final String VERSION_SUFFIX = "\"";
     private static final String OPTIONAL_DEPENDENCIES_TOKEN = "optionalDependencies:";
+    private static final String PEER_DEPENDENCIES_TOKEN = "peerDependencies:"; // these dependencies have to be installed in the parent. Not actual dependencies as far as hub is concerned. - jp
+    private static final String META_PEER_DEPENDENCIES_TOKEN = "peerDependenciesMeta:";
+    private static final String META_DEPENDENCIES_TOKEN = "dependenciesMeta:";
+
+    private enum YarnLockSections {
+        DEPENDENCIES,
+        META_DEPENDENCIES,
+        OPTIONAL_DEPENDENCIES,
+        PEER_DEPENDENCIES,
+        META_PEER_DEPENDENCIES
+    }
 
     public YarnLock parseYarnLock(List<String> yarnLockFileAsList) {
         List<YarnLockEntry> entries = new ArrayList<>();
         String resolvedVersion = "";
-        List<YarnLockDependency> dependencies = new ArrayList<>();
+        Map<String, ParsedYarnLockDependency> currentDependencies = new HashMap<>();
+
         List<YarnLockEntryId> ids;
-        boolean inOptionalDependencies = false;
+        YarnLockSections currentSection = YarnLockSections.DEPENDENCIES;
 
         List<String> cleanedYarnLockFileAsList = cleanList(yarnLockFileAsList);
 
@@ -54,27 +72,45 @@ public class YarnLockParser {
         ids = parseMultipleEntryLine(cleanedYarnLockFileAsList.get(indexOfFirstLevelZeroLine));
 
         List<String> yarnLinesThatMatter = cleanedYarnLockFileAsList.subList(indexOfFirstLevelZeroLine + 1, cleanedYarnLockFileAsList.size());
-
+        String currentMetaDependencyName = "";
         for (String line : yarnLinesThatMatter) {
 
             String trimmedLine = line.trim();
             int level = countIndent(line);
             if (level == 0) {
-                entries.add(new YarnLockEntry(ids, resolvedVersion, dependencies));
+                entries.add(new YarnLockEntry(ids, resolvedVersion, currentDependencies.values().stream().map(ParsedYarnLockDependency::toDependency).collect(Collectors.toList())));
                 resolvedVersion = "";
-                dependencies = new ArrayList<>();
-                inOptionalDependencies = false;
+                currentDependencies.clear();
+                currentSection = YarnLockSections.DEPENDENCIES;
                 ids = parseMultipleEntryLine(line);
             } else if (level == 1 && trimmedLine.startsWith(VERSION_PREFIX)) {
                 resolvedVersion = parseVersionFromLine(trimmedLine);
+            } else if (level == 1 && trimmedLine.startsWith(VERSION_PREFIX_ALT)) {
+                resolvedVersion = parseVersionAltFromLine(trimmedLine);
             } else if (level == 1 && trimmedLine.startsWith(OPTIONAL_DEPENDENCIES_TOKEN)) {
-                inOptionalDependencies = true;
-            } else if (level == 2) {
-                dependencies.add(parseDependencyFromLine(trimmedLine, inOptionalDependencies));
+                currentSection = YarnLockSections.OPTIONAL_DEPENDENCIES;
+            } else if (level == 1 && trimmedLine.startsWith(META_DEPENDENCIES_TOKEN)) {
+                currentSection = YarnLockSections.META_DEPENDENCIES;
+            } else if (level == 1 && trimmedLine.startsWith(PEER_DEPENDENCIES_TOKEN)) {
+                currentSection = YarnLockSections.PEER_DEPENDENCIES;
+            } else if (level == 1 && trimmedLine.startsWith(META_PEER_DEPENDENCIES_TOKEN)) {
+                currentSection = YarnLockSections.META_PEER_DEPENDENCIES;
+            } else if (level == 2 && currentSection == YarnLockSections.DEPENDENCIES || currentSection == YarnLockSections.OPTIONAL_DEPENDENCIES) {
+                ParsedYarnLockDependency yarnLockDependency = parseDependencyFromLine(trimmedLine);
+                if (currentSection == YarnLockSections.OPTIONAL_DEPENDENCIES) {
+                    yarnLockDependency.setOptional(true);
+                }
+                currentDependencies.put(yarnLockDependency.getName(), yarnLockDependency);
+            } else if (level == 2 && currentSection == YarnLockSections.META_DEPENDENCIES) {
+                currentMetaDependencyName = parseMetaDependencyNameFromLine(line);
+            } else if (level == 3 && currentSection == YarnLockSections.META_DEPENDENCIES) {
+                if (line.contains("optional: true")) {
+                    currentDependencies.get(currentMetaDependencyName).setOptional(true);
+                }
             }
         }
         if (StringUtils.isNotBlank(resolvedVersion)) {
-            entries.add(new YarnLockEntry(ids, resolvedVersion, dependencies));
+            entries.add(new YarnLockEntry(ids, resolvedVersion, Bds.of(currentDependencies.values()).map(ParsedYarnLockDependency::toDependency).toList()));
         }
 
         return new YarnLock(entries);
@@ -108,9 +144,18 @@ public class YarnLockParser {
         return count;
     }
 
-    private YarnLockDependency parseDependencyFromLine(String line, boolean optional) {
-        String[] pieces = StringUtils.split(line, " ", 2);
-        return new YarnLockDependency(removeWrappingQuotes(pieces[0]), removeWrappingQuotes(pieces[1]), optional);
+    private String parseMetaDependencyNameFromLine(String line) {
+        return removeWrappingQuotes(StringUtils.substringBefore(line, ":"));
+    }
+
+    private ParsedYarnLockDependency parseDependencyFromLine(String line) {
+        String[] pieces;
+        if (line.contains(":")) {
+            pieces = StringUtils.split(line, ":", 2);
+        } else {
+            pieces = StringUtils.split(line, " ", 2);
+        }
+        return new ParsedYarnLockDependency(removeWrappingQuotes(pieces[0]), removeWrappingQuotes(pieces[1]));
     }
 
     private String removeWrappingQuotes(String s) {
@@ -143,6 +188,11 @@ public class YarnLockParser {
 
     private String parseVersionFromLine(String line) {
         String rawVersion = line.substring(VERSION_PREFIX.length(), line.lastIndexOf(VERSION_SUFFIX));
+        return removeWrappingQuotes(rawVersion);
+    }
+
+    private String parseVersionAltFromLine(String line) {
+        String rawVersion = StringUtils.substringAfter(line, VERSION_PREFIX_ALT);
         return removeWrappingQuotes(rawVersion);
     }
 }
