@@ -40,13 +40,18 @@ public class ConanNode extends Stringable {
     private final String packageId;
     private final String packageRevision;
     private final List<String> requiresRefs;
+    private final List<Integer> requiresIndices;
     private final List<String> buildRequiresRefs;
-    private final List<String> requiredByRefs;
+    private final List<Integer> buildRequiresIndices;
     private final boolean rootNode;
 
     public ConanNode(String ref, String filename, String name, String version, String user, String channel,
-        String recipeRevision, String packageId, String packageRevision, List<String> requiresRefs, List<String> buildRequiresRefs,
-        List<String> requiredByRefs, boolean rootNode) {
+        String recipeRevision, String packageId, String packageRevision,
+        List<String> requiresRefs,
+        List<Integer> requiresIndices,
+        List<String> buildRequiresRefs,
+        List<Integer> buildRequiresIndices,
+        boolean rootNode) {
         this.ref = ref;
         this.filename = filename;
         this.name = name;
@@ -57,8 +62,9 @@ public class ConanNode extends Stringable {
         this.packageId = packageId;
         this.packageRevision = packageRevision;
         this.requiresRefs = requiresRefs;
+        this.requiresIndices = requiresIndices;
         this.buildRequiresRefs = buildRequiresRefs;
-        this.requiredByRefs = requiredByRefs;
+        this.buildRequiresIndices = buildRequiresIndices;
         this.rootNode = rootNode;
     }
 
@@ -102,12 +108,16 @@ public class ConanNode extends Stringable {
         return requiresRefs;
     }
 
+    public List<Integer> getRequiresIndices() {
+        return requiresIndices;
+    }
+
     public List<String> getBuildRequiresRefs() {
         return buildRequiresRefs;
     }
 
-    public List<String> getRequiredByRefs() {
-        return requiredByRefs;
+    public List<Integer> getBuildRequiresIndices() {
+        return buildRequiresIndices;
     }
 
     public boolean isRootNode() {

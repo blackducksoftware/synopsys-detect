@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.StringTokenizer;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +43,16 @@ public class ConanNodeBuilder {
     private String packageId;
     private String packageRevision;
     private final List<String> requiresRefs = new ArrayList<>();
+    private List<Integer> requiresIndices;
     private final List<String> buildRequiresRefs = new ArrayList<>();
-    private final List<String> requiredByRefs = new ArrayList<>();
+    private List<Integer> buildRequiresIndices;
     private boolean valid = true;
+    private boolean forcedRootNode = false;
+
+    public ConanNodeBuilder forceRootNode() {
+        forcedRootNode = true;
+        return this;
+    }
 
     public ConanNodeBuilder setRefFromLockfile(String ref) {
         if (StringUtils.isBlank(ref)) {
@@ -143,13 +149,18 @@ public class ConanNodeBuilder {
         return this;
     }
 
+    public ConanNodeBuilder setRequiresIndices(List<Integer> requiresIndices) {
+        this.requiresIndices = requiresIndices;
+        return this;
+    }
+
     public ConanNodeBuilder addBuildRequiresRef(String buildRequiresRef) {
         this.buildRequiresRefs.add(buildRequiresRef);
         return this;
     }
 
-    public ConanNodeBuilder addRequiredByRef(String requiredByRef) {
-        this.requiredByRefs.add(requiredByRef);
+    public ConanNodeBuilder setBuildRequiresIndices(List<Integer> buildRequiresIndices) {
+        this.buildRequiresIndices = buildRequiresIndices;
         return this;
     }
 
@@ -191,18 +202,21 @@ public class ConanNodeBuilder {
         //            }
         //        }
         boolean isRootNode = false;
-        // TODO revisit this
-        if ((path != null) && CollectionUtils.isEmpty(requiredByRefs)) {
+        if (forcedRootNode) {
             isRootNode = true;
-        } else if (CollectionUtils.isEmpty(requiredByRefs)) {
-            logger.warn(String.format("Node %s doesn't look like a root node, but its requiredBy list is empty; treating it as a non-root node", ref));
-            // TODO this may need to change after requiredBy parsing implemented
-            isRootNode = false;
-        } else {
-            isRootNode = false;
+        } else if ((path != null)) {
+            isRootNode = true;
+        }
+        if (requiresIndices == null) {
+            requiresIndices = new ArrayList<>(0);
+        }
+        if (buildRequiresIndices == null) {
+            buildRequiresIndices = new ArrayList<>(0);
         }
         ConanNode node = new ConanNode(ref, path, name, version, user, channel,
-            recipeRevision, packageId, packageRevision, requiresRefs, buildRequiresRefs, requiredByRefs, isRootNode);
+            recipeRevision, packageId, packageRevision,
+            requiresRefs, requiresIndices, buildRequiresRefs, buildRequiresIndices,
+            isRootNode);
         logger.info(String.format("node: %s", node));
         return Optional.of(node);
     }

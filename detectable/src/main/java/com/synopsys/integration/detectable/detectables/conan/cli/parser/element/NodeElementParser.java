@@ -37,7 +37,8 @@ public class NodeElementParser {
     public NodeElementParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer) {
         createElementTypeParser(() -> new ListElementParser(conanInfoLineAnalyzer, "Requires", (ConanNodeBuilder nodeBuilder, String listItem) -> nodeBuilder.addRequiresRef(listItem)));
         createElementTypeParser(() -> new ListElementParser(conanInfoLineAnalyzer, "Build Requires", (ConanNodeBuilder nodeBuilder, String listItem) -> nodeBuilder.addBuildRequiresRef(listItem)));
-        createElementTypeParser(() -> new ListElementParser(conanInfoLineAnalyzer, "Required By", (ConanNodeBuilder nodeBuilder, String listItem) -> nodeBuilder.addRequiredByRef(listItem)));
+        // TODO remove:
+        // createElementTypeParser(() -> new ListElementParser(conanInfoLineAnalyzer, "Required By", (ConanNodeBuilder nodeBuilder, String listItem) -> nodeBuilder.addRequiredByRef(listItem)));
         createElementTypeParser(() -> new KeyValuePairElementParser(conanInfoLineAnalyzer, "ID", (ConanNodeBuilder nodeBuilder, String parsedValue) -> nodeBuilder.setPackageId(parsedValue)));
         createElementTypeParser(() -> new KeyValuePairElementParser(conanInfoLineAnalyzer, "Revision", (ConanNodeBuilder nodeBuilder, String parsedValue) -> nodeBuilder.setRecipeRevision(parsedValue)));
         createElementTypeParser(() -> new KeyValuePairElementParser(conanInfoLineAnalyzer, "Package revision", (ConanNodeBuilder nodeBuilder, String parsedValue) -> nodeBuilder.setPackageRevision(parsedValue)));

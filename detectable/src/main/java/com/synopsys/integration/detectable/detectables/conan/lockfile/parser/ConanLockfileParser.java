@@ -81,6 +81,9 @@ public class ConanLockfileParser {
             logger.info(String.format("%d: %s:%s#%s", entry.getKey(), entry.getValue().getRef().orElse("?"), entry.getValue().getPackageId().orElse("?"), entry.getValue().getPackageRevision().orElse("?")));
             ConanLockfileNode lockfileNode = entry.getValue();
             ConanNodeBuilder nodeBuilder = new ConanNodeBuilder();
+            if (entry.getKey() == 0) {
+                nodeBuilder.forceRootNode();
+            }
             // TODO builder should be able to take lockfileNode and build from that!! or maybe it's a separate builder?
             nodeBuilder.setRefFromLockfile(lockfileNode.getRef().orElse(null));
             nodeBuilder.setPath(lockfileNode.getPath().orElse(null));
@@ -90,6 +93,8 @@ public class ConanLockfileParser {
             if (lockfileNode.getPackageRevision().isPresent()) {
                 nodeBuilder.setPackageRevision(lockfileNode.getPackageRevision().get());
             }
+            nodeBuilder.setRequiresIndices(lockfileNode.getRequires());
+            nodeBuilder.setBuildRequiresIndices(lockfileNode.getBuildRequires());
             Optional<ConanNode> conanNode = nodeBuilder.build();
             if (conanNode.isPresent()) {
                 graphNodes.put(conanNode.get().getRef(), conanNode.get());
