@@ -2494,7 +2494,7 @@
 </tbody>
 </table>
 <h2 id="clone-project-categories-advanced">Clone Project Categories (Advanced)<a class="headerlink" href="#clone-project-categories-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.project.clone.categories=COMPONENT_DATA,VULN_DATA,LICENSE_TERM_FULFILLMENT 
+<pre><code>--detect.project.clone.categories=COMPONENT_DATA,VULN_DATA,LICENSE_TERM_FULFILLMENT,CUSTOM_FIELD_DATA 
 </code></pre>
 
 <p>An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set.</p>
@@ -2528,7 +2528,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>COMPONENT_DATA, VULN_DATA, LICENSE_TERM_FULFILLMENT</td>
+<td>COMPONENT_DATA, VULN_DATA, LICENSE_TERM_FULFILLMENT, CUSTOM_FIELD_DATA</td>
 </tr>
 <tr>
 <td>Strict</td>
@@ -2899,7 +2899,7 @@
 </tr>
 <tr>
 <td>Type</td>
-<td>LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType</td>
+<td>ProjectVersionDistributionType</td>
 </tr>
 <tr>
 <td>Default Value</td>
