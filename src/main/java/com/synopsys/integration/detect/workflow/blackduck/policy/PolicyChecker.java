@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
-import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyStatusType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionComponentPolicyStatusType;
 import com.synopsys.integration.blackduck.api.generated.view.ComponentPolicyRulesView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionComponentView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
@@ -85,7 +85,7 @@ public class PolicyChecker {
 
         final List<ProjectVersionComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(projectVersionView);
         for (final ProjectVersionComponentView projectVersionComponentView : bomComponents) {
-            if (projectVersionComponentView.getPolicyStatus().equals(PolicyStatusType.NOT_IN_VIOLATION)) {
+            if (projectVersionComponentView.getPolicyStatus().equals(ProjectVersionComponentPolicyStatusType.NOT_IN_VIOLATION)) {
                 continue;
             }
 
