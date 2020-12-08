@@ -11,12 +11,14 @@ import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.ConanLockfileParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
+import com.synopsys.integration.detectable.util.GraphCompare;
 import com.synopsys.integration.exception.IntegrationException;
 
 @FunctionalTest
@@ -38,7 +40,16 @@ public class ConanLockfileParserFunctionalTest {
         for (ExternalId rootExternalId : rootExternalIds) {
             System.out.printf("tbd: %s, %s, %s\n", rootExternalId.getForge(), rootExternalId.getName(), rootExternalId.getVersion());
         }
-        //GraphCompare.assertEquals(expectedGraph, result.getCodeLocation().getDependencyGraph());
+
+        DependencyGraph actualDependencyGraph = result.getCodeLocation().getDependencyGraph();
+
+        //        Gson gson = new Gson();
+        //        DependencyGraphSummarizer summarizer = new DependencyGraphSummarizer(gson);
+        //        GraphSummary actualGraphSummary = summarizer.fromGraph(actualDependencyGraph);
+        //        String actualDependencyGraphSummaryJson = gson.toJson(actualGraphSummary);
+        //        FileUtils.writeStringToFile(new File("/tmp/t.json"), actualDependencyGraphSummaryJson, StandardCharsets.UTF_8);
+
+        GraphCompare.assertEqualsResource("/conan/lockfile/noProjectRef_graph.json", actualDependencyGraph);
     }
 
     @Test
@@ -52,7 +63,9 @@ public class ConanLockfileParserFunctionalTest {
         ConanLockfileParser parser = new ConanLockfileParser(conanCodeLocationGenerator);
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
         ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true);
-        System.out.printf("code location name: %s\n", result.getCodeLocation().getExternalId().get().getName());
+
+        assertEquals("chat", result.getProjectName());
+        assertEquals("0.1", result.getProjectVersion());
     }
 
     @Test
@@ -66,6 +79,7 @@ public class ConanLockfileParserFunctionalTest {
         ConanLockfileParser parser = new ConanLockfileParser(conanCodeLocationGenerator);
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
         ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true);
-        System.out.printf("code location name: %s\n", result.getCodeLocation().getExternalId().get().getName());
+
+        assertEquals(1, result.getCodeLocation().getDependencyGraph().getRootDependencies().size());
     }
 }
