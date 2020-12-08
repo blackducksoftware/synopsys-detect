@@ -48,7 +48,8 @@ public class ConanLockfileParser {
 
     public ConanDetectableResult generateCodeLocationFromConanLockfileContents(Gson gson, String conanLockfileContents, boolean includeBuildDependencies) throws IntegrationException {
         logger.trace(String.format("Parsing conan info output:\n%s", conanLockfileContents));
-        Map<String, ConanNode> nodeMap = generateNodeMap(gson, conanLockfileContents);
+        Map<Integer, ConanNode> numberedNodeMap = generateNumberedNodeMap(gson, conanLockfileContents);
+        Map<String, ConanNode> nodeMap = generateNodeMap(numberedNodeMap);
         // The future lockfile detectable will also generate a nodeMap; once a nodeMap is generated, processing (translation to a codelocation) is identical
         ConanDetectableResult result = conanCodeLocationGenerator.generateCodeLocationFromNodeMap(includeBuildDependencies, nodeMap);
         return result;
@@ -67,8 +68,8 @@ public class ConanLockfileParser {
         //        return graph;
     }
 
-    private Map<String, ConanNode> generateNodeMap(Gson gson, String conanLockfileContents) {
-        Map<String, ConanNode> graphNodes = new HashMap<>();
+    private Map<Integer, ConanNode> generateNumberedNodeMap(Gson gson, String conanLockfileContents) {
+        Map<Integer, ConanNode> graphNodes = new HashMap<>();
         ConanLockfileData conanLockfileData = gson.fromJson(conanLockfileContents, ConanLockfileData.class);
         logger.trace(String.format("conanLockfileData: %s", conanLockfileData));
         if (!conanLockfileData.getConanLockfileGraph().isRevisionsEnabled()) {
@@ -97,26 +98,28 @@ public class ConanLockfileParser {
             nodeBuilder.setBuildRequiresIndices(lockfileNode.getBuildRequires());
             Optional<ConanNode> conanNode = nodeBuilder.build();
             if (conanNode.isPresent()) {
-                graphNodes.put(conanNode.get().getRef(), conanNode.get());
+                graphNodes.put(entry.getKey(), conanNode.get());
             }
         }
         logger.info(String.format("ConanNode map: %s", graphNodes));
-        // OLD:
-        //        List<String> conanInfoOutputLines = Arrays.asList(conanInfoOutput.split("\n"));
-        //        int lineIndex = 0;
-        //        while (lineIndex < conanInfoOutputLines.size()) {
-        //            String line = conanInfoOutputLines.get(lineIndex);
-        //            logger.trace(String.format("Parsing line: %d: %s", lineIndex + 1, line));
-        //            // Parse the entire node
-        //            ConanInfoNodeParseResult nodeParseResult = conanInfoNodeParser.parseNode(conanInfoOutputLines, lineIndex);
-        //            if (nodeParseResult.getConanNode().isPresent()) {
-        //                // Some lines that look like the start of nodes aren't actually the start of nodes, and get ignored
-        //                graphNodes.put(nodeParseResult.getConanNode().get().getRef(), nodeParseResult.getConanNode().get());
-        //            }
-        //            lineIndex = nodeParseResult.getLastParsedLineIndex();
-        //            lineIndex++;
-        //        }
         logger.trace("Reached end of Conan lockfile data");
         return graphNodes;
+    }
+
+    private Map<String, ConanNode> generateNodeMap(Map<Integer, ConanNode> numberedNodeMap) {
+        Map<String, ConanNode> nodeMap = new HashMap<>(numberedNodeMap.size());
+        for (Map.Entry<Integer, ConanNode> entry : numberedNodeMap.entrySet()) {
+            // TODO FILL IN requiresRefs
+            for (Integer requiresIndex : entry.getValue().getRequiresIndices()) {
+                String requiresRef = numberedNodeMap.get(requiresIndex).getRef();
+                entry.getValue().addRequiresRef(requiresRef);
+            }
+            for (Integer buildRequiresIndex : entry.getValue().getBuildRequiresIndices()) {
+                String buildRequiresRef = numberedNodeMap.get(buildRequiresIndex).getRef();
+                entry.getValue().addBuildRequiresRef(buildRequiresRef);
+            }
+            nodeMap.put(entry.getValue().getRef(), entry.getValue());
+        }
+        return nodeMap;
     }
 }

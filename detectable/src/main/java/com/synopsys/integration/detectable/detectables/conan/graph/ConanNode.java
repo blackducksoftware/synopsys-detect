@@ -68,6 +68,15 @@ public class ConanNode extends Stringable {
         this.rootNode = rootNode;
     }
 
+    // TODO look for a way to revert this to immutable
+    public void addRequiresRef(String requiresRef) {
+        requiresRefs.add(requiresRef);
+    }
+
+    public void addBuildRequiresRef(String buildRequiresRef) {
+        buildRequiresRefs.add(buildRequiresRef);
+    }
+
     public String getRef() {
         return ref;
     }

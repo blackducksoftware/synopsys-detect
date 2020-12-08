@@ -1,13 +1,17 @@
 package com.synopsys.integration.detectable.detectables.conan.functional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
@@ -29,7 +33,12 @@ public class ConanLockfileParserFunctionalTest {
         ConanLockfileParser parser = new ConanLockfileParser(conanCodeLocationGenerator);
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
         ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true);
-        System.out.printf("code location name: %s\n", result.getCodeLocation().getExternalId().get().getName());
+        assertEquals(3, result.getCodeLocation().getDependencyGraph().getRootDependencies().size());
+        Set<ExternalId> rootExternalIds = result.getCodeLocation().getDependencyGraph().getRootDependencyExternalIds();
+        for (ExternalId rootExternalId : rootExternalIds) {
+            System.out.printf("tbd: %s, %s, %s\n", rootExternalId.getForge(), rootExternalId.getName(), rootExternalId.getVersion());
+        }
+        //GraphCompare.assertEquals(expectedGraph, result.getCodeLocation().getDependencyGraph());
     }
 
     @Test

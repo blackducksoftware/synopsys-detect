@@ -76,6 +76,7 @@ public class ConanCodeLocationGenerator {
         }
     }
 
+    // TODO rename this so it's not "conan info" specific; it's used for lockfile too
     @NotNull
     private CodeLocation generateCodeLocationFromConanInfoOutput(MutableMapDependencyGraph dependencyGraph, ConanGraphNode rootNode) {
         addNodeChildrenUnderNode(dependencyGraph, 0, rootNode, null);
