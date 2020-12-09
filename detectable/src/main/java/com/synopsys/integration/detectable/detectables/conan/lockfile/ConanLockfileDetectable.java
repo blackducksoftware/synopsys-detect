@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.conan.lockfile;
 
 import java.io.File;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,20 +76,12 @@ public class ConanLockfileDetectable extends Detectable {
     @Override
     public DetectableResult extractable() throws DetectableException {
         if (conanLockfileExtractorOptions.getLockfilePath().isPresent()) {
-            logger.debug(String.format("Checking the existence/readability of given lockfile %s", conanLockfileExtractorOptions.getLockfilePath().get()));
-            File userProvidedLockfile = new File(conanLockfileExtractorOptions.getLockfilePath().get());
-            if (userProvidedLockfile.exists()) {
-                logger.debug(String.format("Lockfile %s exists", conanLockfileExtractorOptions.getLockfilePath().get()));
-                if (userProvidedLockfile.canRead()) {
-                    logger.debug(String.format("Lockfile %s is readable", conanLockfileExtractorOptions.getLockfilePath().get()));
-                    lockfile = userProvidedLockfile;
-                } else {
-                    logger.debug(String.format("Lockfile %s is not readable", conanLockfileExtractorOptions.getLockfilePath().get()));
-                    return new GivenFileNotFoundDetectableResult(conanLockfileExtractorOptions.getLockfilePath().get());
-                }
+            String givenLockfilePath = conanLockfileExtractorOptions.getLockfilePath().get();
+            Optional<File> verifiedLockfile = verifyFile(givenLockfilePath);
+            if (verifiedLockfile.isPresent()) {
+                lockfile = verifiedLockfile.get();
             } else {
-                logger.debug(String.format("Lockfile %s does not exist", conanLockfileExtractorOptions.getLockfilePath().get()));
-                return new GivenFileNotFoundDetectableResult(conanLockfileExtractorOptions.getLockfilePath().get());
+                return new GivenFileNotFoundDetectableResult(givenLockfilePath);
             }
         }
         return new PassedDetectableResult();
@@ -97,5 +90,21 @@ public class ConanLockfileDetectable extends Detectable {
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
         return conanLockfileExtractor.extract(lockfile, conanLockfileExtractorOptions);
+    }
+
+    private Optional<File> verifyFile(String filePath) {
+        File userProvidedLockfile = new File(filePath);
+        if (userProvidedLockfile.exists()) {
+            if (userProvidedLockfile.canRead()) {
+                logger.trace(String.format("File %s is readable", filePath));
+                return Optional.of(userProvidedLockfile);
+            } else {
+                logger.debug(String.format("File %s is not readable", filePath));
+                return Optional.empty();
+            }
+        } else {
+            logger.debug(String.format("File %s does not exist", filePath));
+            return Optional.empty();
+        }
     }
 }

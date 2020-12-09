@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
@@ -43,9 +44,11 @@ import com.synopsys.integration.exception.IntegrationException;
 public class ConanLockfileParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ConanCodeLocationGenerator conanCodeLocationGenerator;
+    private final ExternalIdFactory externalIdFactory;
 
-    public ConanLockfileParser(ConanCodeLocationGenerator conanCodeLocationGenerator) {
+    public ConanLockfileParser(ConanCodeLocationGenerator conanCodeLocationGenerator, ExternalIdFactory externalIdFactory) {
         this.conanCodeLocationGenerator = conanCodeLocationGenerator;
+        this.externalIdFactory = externalIdFactory;
     }
 
     public ConanDetectableResult generateCodeLocationFromConanLockfileContents(Gson gson, String conanLockfileContents,
@@ -54,7 +57,7 @@ public class ConanLockfileParser {
         Map<Integer, ConanNode> indexedNodeMap = generateIndexedNodeMap(gson, conanLockfileContents);
         // The lockfile references nodes by (integer) index; generator needs nodes referenced by names (component references)
         Map<String, ConanNode> namedNodeMap = convertToNamedNodeMap(indexedNodeMap);
-        ConanDetectableResult result = conanCodeLocationGenerator.generateCodeLocationFromNodeMap(includeBuildDependencies, preferLongFormExternalIds, namedNodeMap);
+        ConanDetectableResult result = conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory, includeBuildDependencies, preferLongFormExternalIds, namedNodeMap);
         return result;
     }
 
@@ -103,7 +106,8 @@ public class ConanLockfileParser {
         return nodeMap;
     }
 
-    // Translate each of the given map indices to dependency ref, and call the given refAdder to put it where it belongs
+    // Translate each of the given map indices to the corresponding dependency ref,
+    // and call the given refAdder to put it where it belongs
     private void addRefsForGivenIndices(Map<Integer, ConanNode> numberedNodeMap, List<Integer> indices, Consumer<String> refAdder) {
         indices.stream()
             .map(index -> numberedNodeMap.get(index).getRef())

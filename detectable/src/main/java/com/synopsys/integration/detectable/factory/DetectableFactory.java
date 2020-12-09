@@ -588,7 +588,7 @@ public class DetectableFactory {
 
     private ConanLockfileExtractor conanLockfileExtractor() {
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
-        ConanLockfileParser conanLockfileParser = new ConanLockfileParser(conanCodeLocationGenerator);
+        ConanLockfileParser conanLockfileParser = new ConanLockfileParser(conanCodeLocationGenerator, externalIdFactory);
         return new ConanLockfileExtractor(gson, conanCodeLocationGenerator, conanLockfileParser);
     }
 
@@ -598,7 +598,7 @@ public class DetectableFactory {
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
         NodeElementParser nodeElementParser = new NodeElementParser(conanInfoLineAnalyzer);
         ConanInfoNodeParser conanInfoNodeParser = new ConanInfoNodeParser(conanInfoLineAnalyzer, nodeElementParser);
-        ConanInfoParser conanInfoParser = new ConanInfoParser(conanInfoNodeParser, conanCodeLocationGenerator);
+        ConanInfoParser conanInfoParser = new ConanInfoParser(conanInfoNodeParser, conanCodeLocationGenerator, externalIdFactory);
         return new ConanCliExtractor(executableRunner, conanInfoParser);
     }
 

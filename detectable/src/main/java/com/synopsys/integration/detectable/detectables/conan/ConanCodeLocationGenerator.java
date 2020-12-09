@@ -37,6 +37,7 @@ import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanGraphNode;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
@@ -44,9 +45,10 @@ import com.synopsys.integration.exception.IntegrationException;
 
 public class ConanCodeLocationGenerator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Forge conanForge = new Forge("/", "conan");
 
     @NotNull
-    public ConanDetectableResult generateCodeLocationFromNodeMap(boolean includeBuildDependencies, boolean preferLongFormExternalIds, Map<String, ConanNode> nodes) throws IntegrationException {
+    public ConanDetectableResult generateCodeLocationFromNodeMap(ExternalIdFactory externalIdFactory, boolean includeBuildDependencies, boolean preferLongFormExternalIds, Map<String, ConanNode> nodes) throws IntegrationException {
         logger.debug(String.format("Generating code location from %d dependencies", nodes.keySet().size()));
         Optional<ConanNode> rootNode = getRoot(nodes.values());
         if (!rootNode.isPresent()) {
@@ -55,7 +57,7 @@ public class ConanCodeLocationGenerator {
         ConanGraphNode rootGraphNode = new ConanGraphNode(rootNode.get());
         populateGraphUnderNode(rootGraphNode, nodes, includeBuildDependencies);
         MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        CodeLocation codeLocation = generateCodeLocationFromConanInfoOutput(dependencyGraph, rootGraphNode, preferLongFormExternalIds);
+        CodeLocation codeLocation = generateCodeLocationFromConanGraph(externalIdFactory, dependencyGraph, rootGraphNode, preferLongFormExternalIds);
         ConanDetectableResult result = new ConanDetectableResult(rootGraphNode.getConanInfoNode().getName(), rootGraphNode.getConanInfoNode().getVersion(), codeLocation);
         return result;
     }
@@ -76,16 +78,15 @@ public class ConanCodeLocationGenerator {
         }
     }
 
-    // TODO rename this so it's not "conan info" specific; it's used for lockfile too
     @NotNull
-    private CodeLocation generateCodeLocationFromConanInfoOutput(MutableMapDependencyGraph dependencyGraph, ConanGraphNode rootNode,
+    private CodeLocation generateCodeLocationFromConanGraph(ExternalIdFactory externalIdFactory, MutableMapDependencyGraph dependencyGraph, ConanGraphNode rootNode,
         boolean preferLongFormExternalIds) {
-        addNodeChildrenUnderNode(dependencyGraph, 0, rootNode, null, preferLongFormExternalIds);
+        addNodeChildrenUnderNode(externalIdFactory, dependencyGraph, 0, rootNode, null, preferLongFormExternalIds);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
         return codeLocation;
     }
 
-    private void addNodeChildrenUnderNode(MutableMapDependencyGraph dependencyGraph, int depth, ConanGraphNode currentNode, Dependency currentDep,
+    private void addNodeChildrenUnderNode(ExternalIdFactory externalIdFactory, MutableMapDependencyGraph dependencyGraph, int depth, ConanGraphNode currentNode, Dependency currentDep,
         boolean preferLongFormExternalIds) {
         Consumer<Dependency> childAdder;
         if (depth == 0) {
@@ -94,24 +95,20 @@ public class ConanCodeLocationGenerator {
             childAdder = childDep -> dependencyGraph.addChildWithParent(childDep, currentDep);
         }
         for (ConanGraphNode childNode : currentNode.getChildren()) {
-            Dependency childDep = generateDependency(childNode, preferLongFormExternalIds);
+            Dependency childDep = generateDependency(externalIdFactory, childNode, preferLongFormExternalIds);
             childAdder.accept(childDep);
-            addNodeChildrenUnderNode(dependencyGraph, depth + 1, childNode, childDep, preferLongFormExternalIds);
+            addNodeChildrenUnderNode(externalIdFactory, dependencyGraph, depth + 1, childNode, childDep, preferLongFormExternalIds);
         }
     }
 
     @NotNull
-    private Dependency generateDependency(ConanGraphNode graphNode, boolean preferLongFormExternalIds) {
-        // TODO eventually should use ExternalIdFactory; doubt it can handle these IDs
-        //ExternalIdFactory f;
-        // The KB supports two forms:
-        // <name>/<version>@<user>/<channel>#<recipe_revision>
-        // <name>/<version>@<user>/<channel>#<recipe_revision>:<package_id>#<package_revision>
-        // TODO generate forge once
-        ExternalId externalId = new ExternalId(new Forge("/", "conan"));
-        externalId.setName(graphNode.getConanInfoNode().getName());
-        externalId.setVersion(generateExternalIdVersionString(graphNode.getConanInfoNode(), preferLongFormExternalIds));
-        Dependency dep = new Dependency(graphNode.getConanInfoNode().getName(), graphNode.getConanInfoNode().getVersion(), externalId);
+    private Dependency generateDependency(ExternalIdFactory externalIdFactory, ConanGraphNode graphNode, boolean preferLongFormExternalIds) {
+        String depName = graphNode.getConanInfoNode().getName();
+        String depVersion = generateExternalIdVersionString(graphNode.getConanInfoNode(), preferLongFormExternalIds);
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(conanForge, depName, depVersion);
+        Dependency dep = new Dependency(graphNode.getConanInfoNode().getName(),
+            graphNode.getConanInfoNode().getVersion(),
+            externalId);
         return dep;
     }
 

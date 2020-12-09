@@ -30,6 +30,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
@@ -39,10 +40,13 @@ public class ConanInfoParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ConanInfoNodeParser conanInfoNodeParser;
     private final ConanCodeLocationGenerator conanCodeLocationGenerator;
+    private final ExternalIdFactory externalIdFactory;
 
-    public ConanInfoParser(ConanInfoNodeParser conanInfoNodeParser, ConanCodeLocationGenerator conanCodeLocationGenerator) {
+    public ConanInfoParser(ConanInfoNodeParser conanInfoNodeParser, ConanCodeLocationGenerator conanCodeLocationGenerator,
+        ExternalIdFactory externalIdFactory) {
         this.conanInfoNodeParser = conanInfoNodeParser;
         this.conanCodeLocationGenerator = conanCodeLocationGenerator;
+        this.externalIdFactory = externalIdFactory;
     }
 
     // TODO: There ought to be tests for this method
@@ -50,7 +54,8 @@ public class ConanInfoParser {
         logger.trace(String.format("Parsing conan info output:\n%s", conanInfoOutput));
         Map<String, ConanNode> nodeMap = generateNodeMap(conanInfoOutput);
         // The future lockfile detectable will also generate a nodeMap; once a nodeMap is generated, processing (translation to a codelocation) is identical
-        ConanDetectableResult result = conanCodeLocationGenerator.generateCodeLocationFromNodeMap(includeBuildDependencies, preferLongFormExternalIds, nodeMap);
+        ConanDetectableResult result = conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory,
+            includeBuildDependencies, preferLongFormExternalIds, nodeMap);
         return result;
     }
 
