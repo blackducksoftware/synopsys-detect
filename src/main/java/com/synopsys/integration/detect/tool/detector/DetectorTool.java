@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -51,15 +52,22 @@ import com.synopsys.integration.detect.workflow.status.DetectorStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorType;
+import com.synopsys.integration.detector.evaluation.ApplicableEvaluator;
+import com.synopsys.integration.detector.evaluation.DetectorAggregateEvaluationResult;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluator;
+import com.synopsys.integration.detector.evaluation.DiscoveryEvaluator;
+import com.synopsys.integration.detector.evaluation.DiscoveryFilter;
+import com.synopsys.integration.detector.evaluation.Evaluator;
+import com.synopsys.integration.detector.evaluation.ExtractableEvaluator;
+import com.synopsys.integration.detector.evaluation.ExtractionEvaluator;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.finder.DetectorFinderDirectoryListException;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
-import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
 public class DetectorTool {
@@ -103,59 +111,85 @@ public class DetectorTool {
         List<DetectorEvaluation> detectorEvaluations = rootEvaluation.allDescendentEvaluations();
 
         logger.trace("Setting up detector events.");
+        DetectorNameVersionHandler detectorNameVersionHandler = createNameVersionHandler(projectDetector);
+        List<Evaluator> evaluators = createEvaluators(evaluationOptions, detectorNameVersionHandler);
+
         DetectorEvaluatorBroadcaster eventBroadcaster = new DetectorEvaluatorBroadcaster(eventSystem);
-        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions);
+        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions, evaluators);
         detectorEvaluator.setDetectorEvaluatorListener(eventBroadcaster);
 
-        logger.info("Searching for detectors. This may take a while.");
-        detectorEvaluator.searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
+        //        detectorEvaluator.searchAndApplicableEvaluation(rootEvaluation, new HashSet<>());
 
-        Set<DetectorType> applicable = determineApplicableDetectors(detectorEvaluations);
+        //        applicableEvaluator.registerEvaluatorResultCallback((evaluationResult) -> {
+        //            eventSystem.publishEvent(Event.ApplicableCompleted, evaluationResult.getApplicableDetectorTypes());
+        //            eventSystem.publishEvent(Event.SearchCompleted, rootEvaluation);
+        //            logger.info("");
+        //            // Return null is equivalent to the Void return type.
+        //            return null;
+        //        });
 
-        eventSystem.publishEvent(Event.ApplicableCompleted, applicable);
-        eventSystem.publishEvent(Event.SearchCompleted, rootEvaluation);
+        //        logger.info("");
 
-        logger.info("");
+        //        logger.debug("Starting detector preparation.");
+        //        detectorEvaluator.extractableEvaluation(rootEvaluation);
+        //        extractableEvaluator.registerEvaluatorResultCallback((evaluationResult) -> {
+        //            eventSystem.publishEvent(Event.PreparationsCompleted, rootEvaluation);
+        //            logger.debug("Counting detectors that will be evaluated.");
+        //
+        //            Integer extractionCount = evaluationResult.getExtractionCount();
+        //            eventSystem.publishEvent(Event.ExtractionCount, extractionCount);
+        //            eventSystem.publishEvent(Event.DiscoveryCount, extractionCount); //right now discovery and extraction are the same. -jp 8/14/19
+        //
+        //            logger.debug("Total number of detectors: {}", extractionCount);
+        //            // Return null is equivalent to the Void return type.
+        //            return null;
+        //        });
 
-        logger.debug("Starting detector preparation.");
-        detectorEvaluator.extractableEvaluation(rootEvaluation);
-        eventSystem.publishEvent(Event.PreparationsCompleted, rootEvaluation);
+        //        logger.debug("Preparing detectors for discovery and extraction.");
+        //detectorEvaluator.setupDiscoveryAndExtractions(rootEvaluation, extractionEnvironmentProvider::createExtractionEnvironment);
 
-        logger.debug("Preparing detectors for discovery and extraction.");
-        detectorEvaluator.setupDiscoveryAndExtractions(rootEvaluation, extractionEnvironmentProvider::createExtractionEnvironment);
+        //        logger.debug("Counting detectors that will be evaluated.");
+        //
+        //        Integer extractionCount = Math.toIntExact(detectorEvaluations.stream()
+        //                                                      .filter(DetectorEvaluation::isExtractable)
+        //                                                      .count());
+        //        eventSystem.publishEvent(Event.ExtractionCount, extractionCount);
+        //        eventSystem.publishEvent(Event.DiscoveryCount, extractionCount); //right now discovery and extraction are the same. -jp 8/14/19
+        //
+        //        logger.debug("Total number of detectors: {}", extractionCount);
 
-        logger.debug("Counting detectors that will be evaluated.");
-        Integer extractionCount = Math.toIntExact(detectorEvaluations.stream()
-                                                      .filter(DetectorEvaluation::isExtractable)
-                                                      .count());
-        eventSystem.publishEvent(Event.ExtractionCount, extractionCount);
-        eventSystem.publishEvent(Event.DiscoveryCount, extractionCount); //right now discovery and extraction are the same. -jp 8/14/19
+        //        logger.debug("Starting detector project discovery.");
+        //
+        //        DetectorNameVersionHandler detectorNameVersionHandler = createNameVersionHandler(projectDetector);
+        //        detectorEvaluator.discoveryEvaluation(rootEvaluation, new DetectDiscoveryFilter(eventSystem, detectorNameVersionHandler));
+        //        discoveryEvaluator.registerEvaluatorResultCallback(detectorAggregateEvaluationResult -> {
+        //            eventSystem.publishEvent(Event.DiscoveriesCompleted, rootEvaluation);
+        //            // Return null is equivalent to the Void return type.
+        //            return null;
+        //        });
 
-        logger.debug("Total number of detectors: {}", extractionCount);
-
-        logger.debug("Starting detector project discovery.");
-
-        DetectorNameVersionHandler detectorNameVersionHandler = createNameVersionHandler(projectDetector);
-        detectorEvaluator.discoveryEvaluation(rootEvaluation, new DetectDiscoveryFilter(eventSystem, detectorNameVersionHandler));
-        eventSystem.publishEvent(Event.DiscoveriesCompleted, rootEvaluation);
-
-        logger.debug("Starting detector extraction.");
-        detectorEvaluator.extractionEvaluation(rootEvaluation);
-        eventSystem.publishEvent(Event.ExtractionsCompleted, rootEvaluation);
+        //        logger.debug("Starting detector extraction.");
+        //        detectorEvaluator.extractionEvaluation(rootEvaluation);
+        //        extractionEvaluator.registerEvaluatorResultCallback(detectorAggregateEvaluationResult -> {
+        //            eventSystem.publishEvent(Event.ExtractionsCompleted, rootEvaluation);
+        //            // Return null is equivalent to the Void return type.
+        //            return null;
+        //        });
+        DetectorAggregateEvaluationResult evaluationResult = detectorEvaluator.evaluate(rootEvaluation);
 
         logger.debug("Finished detectors.");
         Map<DetectorType, StatusType> statusMap = extractStatus(detectorEvaluations);
         publishStatusEvents(statusMap);
         publishFileEvents(detectorEvaluations);
         detectorIssuePublisher.publishEvents(eventSystem, rootEvaluation);
-        publishMissingDetectorEvents(requiredDetectors, applicable);
+        publishMissingDetectorEvents(requiredDetectors, evaluationResult.getApplicableDetectorTypes());
 
         Map<CodeLocation, DetectCodeLocation> codeLocationMap = createCodeLocationMap(detectorEvaluations, directory);
 
         DetectorToolResult detectorToolResult = new DetectorToolResult(
             detectorNameVersionHandler.finalDecision().getChosenNameVersion().orElse(null),
             new ArrayList<>(codeLocationMap.values()),
-            applicable,
+            evaluationResult.getApplicableDetectorTypes(),
             new HashSet<>(),
             rootEvaluation,
             codeLocationMap
@@ -168,13 +202,80 @@ public class DetectorTool {
         return detectorToolResult;
     }
 
-    private Set<DetectorType> determineApplicableDetectors(List<DetectorEvaluation> detectorEvaluations) {
-        return detectorEvaluations.stream()
-                   .filter(DetectorEvaluation::isApplicable)
-                   .map(DetectorEvaluation::getDetectorRule)
-                   .map(DetectorRule::getDetectorType)
-                   .collect(Collectors.toSet());
+    private List<Evaluator> createEvaluators(DetectorEvaluationOptions evaluationOptions, DetectorNameVersionHandler detectorNameVersionHandler) {
+        ApplicableEvaluator applicableEvaluator = createApplicableEvaluator(evaluationOptions);
+        ExtractableEvaluator extractableEvaluator = createExtractableEvaluator(evaluationOptions, extractionEnvironmentProvider::createExtractionEnvironment);
+        DiscoveryEvaluator discoveryEvaluator = createDiscoveryEvaluator(evaluationOptions, detectorNameVersionHandler);
+        ExtractionEvaluator extractionEvaluator = createExtractionEvaluator(evaluationOptions);
+        List<Evaluator> evaluators = new ArrayList<>();
+        evaluators.add(applicableEvaluator);
+        evaluators.add(extractableEvaluator);
+        evaluators.add(discoveryEvaluator);
+        evaluators.add(extractionEvaluator);
+        return evaluators;
     }
+
+    private ApplicableEvaluator createApplicableEvaluator(DetectorEvaluationOptions evaluationOptions) {
+        ApplicableEvaluator applicableEvaluator = new ApplicableEvaluator(evaluationOptions);
+        applicableEvaluator.registerEvaluatorResultCallback((detectorAggregateEvaluationResult) -> {
+            eventSystem.publishEvent(Event.ApplicableCompleted, detectorAggregateEvaluationResult.getApplicableDetectorTypes());
+            eventSystem.publishEvent(Event.SearchCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
+            logger.info("");
+            // Return null is equivalent to the Void return type.
+            return null;
+        });
+        return applicableEvaluator;
+    }
+
+    private ExtractableEvaluator createExtractableEvaluator(DetectorEvaluationOptions evaluationOptions, Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider) {
+        ExtractableEvaluator extractableEvaluator = new ExtractableEvaluator(evaluationOptions, extractionEnvironmentProvider);
+        extractableEvaluator.registerEvaluatorResultCallback((detectorAggregateEvaluationResult) -> {
+            eventSystem.publishEvent(Event.PreparationsCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
+            logger.debug("Counting detectors that will be evaluated.");
+
+            Integer extractionCount = detectorAggregateEvaluationResult.getExtractionCount();
+            eventSystem.publishEvent(Event.ExtractionCount, extractionCount);
+            eventSystem.publishEvent(Event.DiscoveryCount, extractionCount); //right now discovery and extraction are the same. -jp 8/14/19
+
+            logger.debug("Total number of detectors: {}", extractionCount);
+            // Return null is equivalent to the Void return type.
+            return null;
+        });
+        return extractableEvaluator;
+    }
+
+    private DiscoveryEvaluator createDiscoveryEvaluator(DetectorEvaluationOptions evaluationOptions, DetectorNameVersionHandler detectorNameVersionHandler) {
+        DiscoveryFilter discoveryFilter = new DetectDiscoveryFilter(eventSystem, detectorNameVersionHandler);
+        DiscoveryEvaluator discoveryEvaluator = new DiscoveryEvaluator(evaluationOptions, discoveryFilter);
+        discoveryEvaluator.registerEvaluatorResultCallback(detectorAggregateEvaluationResult -> {
+            eventSystem.publishEvent(Event.DiscoveriesCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
+            // Return null is equivalent to the Void return type.
+            return null;
+        });
+        return discoveryEvaluator;
+    }
+
+    private ExtractionEvaluator createExtractionEvaluator(DetectorEvaluationOptions evaluationOptions) {
+        ExtractionEvaluator extractionEvaluator = new ExtractionEvaluator(evaluationOptions);
+        extractionEvaluator.registerEvaluatorResultCallback(detectorAggregateEvaluationResult -> {
+            eventSystem.publishEvent(Event.ExtractionsCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
+            // Return null is equivalent to the Void return type.
+            return null;
+        });
+        return extractionEvaluator;
+    }
+    //
+    //    private DiscoveryFilter createDiscoveryFilter(EventSystem eventSystem, DetectorNameVersionHandler detectorNameVersionHandler) {
+    //        return new DetectDiscoveryFilter(eventSystem, detectorNameVersionHandler);
+    //    }
+
+    //    private Set<DetectorType> determineApplicableDetectors(List<DetectorEvaluation> detectorEvaluations) {
+    //        return detectorEvaluations.stream()
+    //                   .filter(DetectorEvaluation::isApplicable)
+    //                   .map(DetectorEvaluation::getDetectorRule)
+    //                   .map(DetectorRule::getDetectorType)
+    //                   .collect(Collectors.toSet());
+    //    }
 
     private DetectorNameVersionHandler createNameVersionHandler(String projectDetector) {
         Optional<DetectorType> preferredProjectDetector = Optional.empty();
