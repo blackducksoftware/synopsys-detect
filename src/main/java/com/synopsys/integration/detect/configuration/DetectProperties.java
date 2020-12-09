@@ -885,6 +885,12 @@ public class DetectProperties {
             .setHelp("By default, pipenv includes all dependencies found in the graph. Set to true to only include dependencies found underneath the dependency that matches the provided pip project and version name.")
             .setGroups(DetectGroup.PIP, DetectGroup.SOURCE_SCAN);
 
+    public static final DetectProperty<NullablePathProperty> DETECT_PIP_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.pip.path"))
+            .setInfo("Pip Executable", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("The path to the Pip executable.")
+            .setGroups(DetectGroup.PIP, DetectGroup.GLOBAL);
+
     public static final DetectProperty<NullablePathProperty> DETECT_PIPENV_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.pipenv.path"))
             .setInfo("Pipenv Executable", DetectPropertyFromVersion.VERSION_4_1_0)
@@ -1086,7 +1092,6 @@ public class DetectProperties {
             .setHelp("If true will use Python 3 if available on class path.")
             .setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL);
 
-
     public static final DetectProperty<EnumListProperty<DetectorType>> DETECT_REQUIRED_DETECTOR_TYPES =
         new DetectProperty<>(new EnumListProperty<>("detect.required.detector.types", emptyList(), DetectorType.class))
             .setInfo("Required Detect Types", DetectPropertyFromVersion.VERSION_4_3_0)
@@ -1171,7 +1176,8 @@ public class DetectProperties {
     public static final DetectProperty<LongProperty> DETECT_TIMEOUT =
         new DetectProperty<>(new LongProperty("detect.timeout", 300L))
             .setInfo("Detect Timeout", DetectPropertyFromVersion.VERSION_6_8_0)
-            .setHelp("The amount of time in seconds Detect will wait for network connection, for scans to finish, and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
+            .setHelp(
+                "The amount of time in seconds Detect will wait for network connection, for scans to finish, and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
