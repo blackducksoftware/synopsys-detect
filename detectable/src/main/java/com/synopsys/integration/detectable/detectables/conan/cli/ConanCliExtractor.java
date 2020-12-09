@@ -64,7 +64,8 @@ public class ConanCliExtractor {
             return new Extraction.Builder().failure("Conan info command produced no output").build();
         }
         try {
-            ConanDetectableResult result = conanInfoParser.generateCodeLocationFromConanInfoOutput(conanInfoOutput.getStandardOutput(), conanCliExtractorOptions.shouldIncludeDevDependencies());
+            ConanDetectableResult result = conanInfoParser.generateCodeLocationFromConanInfoOutput(conanInfoOutput.getStandardOutput(),
+                conanCliExtractorOptions.shouldIncludeDevDependencies(), conanCliExtractorOptions.preferLongFormExternalIds());
             return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
         } catch (IntegrationException e) {
             return new Extraction.Builder().failure(e.getMessage()).build();

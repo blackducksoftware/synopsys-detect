@@ -31,11 +31,13 @@ public class ConanLockfileExtractorOptions {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final String lockfilePath;
     private final boolean includeDevDependencies;
+    private final boolean preferLongFormExternalIds;
 
-    public ConanLockfileExtractorOptions(String lockfilePath, boolean includeDevDependencies) {
-        logger.debug(String.format("******* ConanLockfileExtractorOptions ctor: lockfilePath: %s", lockfilePath));
+    public ConanLockfileExtractorOptions(String lockfilePath, boolean includeDevDependencies,
+        boolean preferLongFormExternalIds) {
         this.lockfilePath = lockfilePath;
         this.includeDevDependencies = includeDevDependencies;
+        this.preferLongFormExternalIds = preferLongFormExternalIds;
     }
 
     public Optional<String> getLockfilePath() {
@@ -44,5 +46,9 @@ public class ConanLockfileExtractorOptions {
 
     public boolean shouldIncludeDevDependencies() {
         return includeDevDependencies;
+    }
+
+    public boolean preferLongFormExternalIds() {
+        return preferLongFormExternalIds;
     }
 }

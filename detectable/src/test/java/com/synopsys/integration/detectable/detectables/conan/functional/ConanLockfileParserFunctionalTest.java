@@ -34,7 +34,7 @@ public class ConanLockfileParserFunctionalTest {
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
         ConanLockfileParser parser = new ConanLockfileParser(conanCodeLocationGenerator);
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
-        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true);
+        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true, true);
         assertEquals(3, result.getCodeLocation().getDependencyGraph().getRootDependencies().size());
         Set<ExternalId> rootExternalIds = result.getCodeLocation().getDependencyGraph().getRootDependencyExternalIds();
 
@@ -60,7 +60,7 @@ public class ConanLockfileParserFunctionalTest {
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
         ConanLockfileParser parser = new ConanLockfileParser(conanCodeLocationGenerator);
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
-        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true);
+        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true, true);
 
         assertEquals("chat", result.getProjectName());
         assertEquals("0.1", result.getProjectVersion());
@@ -76,8 +76,10 @@ public class ConanLockfileParserFunctionalTest {
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
         ConanLockfileParser parser = new ConanLockfileParser(conanCodeLocationGenerator);
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
-        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true);
+        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true, true);
 
         assertEquals(1, result.getCodeLocation().getDependencyGraph().getRootDependencies().size());
     }
+
+    // TODO add test(s) for preferLongFormExternalIds=false
 }

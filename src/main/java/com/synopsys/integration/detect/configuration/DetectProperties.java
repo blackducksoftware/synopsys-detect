@@ -212,7 +212,13 @@ public class DetectProperties {
             .setInfo("Conan Lockfile", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp("The path to the conan lockfile to apply when running 'conan info' to get the dependency graph. If set, Detect will execute the command 'conan info --lockfile {lockfile} .'")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
-    
+
+    public static final DetectProperty<BooleanProperty> DETECT_CONAN_REQUIRE_PREV_MATCH =
+        new DetectProperty<>(new BooleanProperty("detect.conan.require.package.revision.match", false))
+            .setInfo("Require that each dependency's package revision match the component in the KB", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("Set this value to if you want to require that a dependency's package revision and a KB component's package revision must be the same in order to be considered a match.")
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
+
     public static final DetectProperty<NullablePathProperty> DETECT_BDIO_OUTPUT_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.bdio.output.path"))
             .setInfo("BDIO Output Directory", DetectPropertyFromVersion.VERSION_3_0_0)
