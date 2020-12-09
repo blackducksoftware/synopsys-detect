@@ -28,9 +28,6 @@ import java.util.Optional;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class DetectorEvaluator extends Evaluator {
-    //    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    //
-    //    private final DetectorRuleSetEvaluator detectorRuleSetEvaluator = new DetectorRuleSetEvaluator();
     private DetectorEvaluatorListener detectorEvaluatorListener;
     private final List<Evaluator> evaluators;
 
@@ -47,37 +44,6 @@ public class DetectorEvaluator extends Evaluator {
         }
         return currentEvaluationTree;
     }
-
-    //    //Unfortunately, currently search and applicable are tied together due to Search needing to know about previous detectors that applied.
-    //    //So Search and then Applicable must be evaluated of Detector 1 before the next Search can be evaluated of Detector 2.
-    //    public void searchAndApplicableEvaluation(DetectorEvaluationTree detectorEvaluationTree, Set<DetectorRule> appliedInParent) {
-    //        applicableEvaluator.evaluate(detectorEvaluationTree);
-    //    }
-    //
-    //    public void extractableEvaluation(DetectorEvaluationTree detectorEvaluationTree) {
-    //        extractableEvaluator.evaluate(detectorEvaluationTree);
-    //    }
-    //
-    //    public void setupDiscoveryAndExtractions(DetectorEvaluationTree detectorEvaluationTree, Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider) {
-    //        for (DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
-    //            if (detectorEvaluation.isExtractable()) {
-    //                ExtractionEnvironment extractionEnvironment = extractionEnvironmentProvider.apply(detectorEvaluation);
-    //                detectorEvaluation.setExtractionEnvironment(extractionEnvironment);
-    //            }
-    //        }
-    //
-    //        for (DetectorEvaluationTree childDetectorEvaluationTree : detectorEvaluationTree.getChildren()) {
-    //            setupDiscoveryAndExtractions(childDetectorEvaluationTree, extractionEnvironmentProvider);
-    //        }
-    //    }
-    //
-    //    public void discoveryEvaluation(DetectorEvaluationTree detectorEvaluationTree) {
-    //        discoveryEvaluator.evaluate(detectorEvaluationTree);
-    //    }
-    //
-    //    public void extractionEvaluation(DetectorEvaluationTree detectorEvaluationTree) {
-    //        extractionEvaluator.evaluate(detectorEvaluationTree);
-    //    }
 
     @Override
     public Optional<DetectorEvaluatorListener> getDetectorEvaluatorListener() {
