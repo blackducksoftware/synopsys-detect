@@ -109,7 +109,6 @@ public class ConanLockfileParser {
     private Map<String, ConanNode> generateNodeMap(Map<Integer, ConanNode> numberedNodeMap) {
         Map<String, ConanNode> nodeMap = new HashMap<>(numberedNodeMap.size());
         for (Map.Entry<Integer, ConanNode> entry : numberedNodeMap.entrySet()) {
-            // TODO FILL IN requiresRefs
             for (Integer requiresIndex : entry.getValue().getRequiresIndices()) {
                 String requiresRef = numberedNodeMap.get(requiresIndex).getRef();
                 entry.getValue().addRequiresRef(requiresRef);

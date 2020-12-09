@@ -37,6 +37,20 @@ public class ConanLockfileParserFunctionalTest {
     }
 
     @Test
+    public void testWithDevDependencies() throws IOException, IntegrationException {
+        File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan_buildrequirements.lock");
+        ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
+        ConanLockfileParser parser = new ConanLockfileParser(conanCodeLocationGenerator);
+        String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
+
+        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true, false);
+
+        assertEquals(3, result.getCodeLocation().getDependencyGraph().getRootDependencies().size());
+        DependencyGraph actualDependencyGraph = result.getCodeLocation().getDependencyGraph();
+        GraphCompare.assertEqualsResource("/conan/lockfile/noProjectRef_graph.json", actualDependencyGraph);
+    }
+
+    @Test
     public void testNoProjectRefLongFormExternalIds() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan.lock");
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
