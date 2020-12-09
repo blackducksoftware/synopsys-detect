@@ -159,7 +159,7 @@ public class DetectorTool {
 
     private ApplicableEvaluator createApplicableEvaluator(DetectorEvaluationOptions evaluationOptions) {
         ApplicableEvaluator applicableEvaluator = new ApplicableEvaluator(evaluationOptions);
-        applicableEvaluator.registerEvaluatorResultCallback((detectorAggregateEvaluationResult) -> {
+        applicableEvaluator.registerEvaluatorResultCallback(detectorAggregateEvaluationResult -> {
             eventSystem.publishEvent(Event.ApplicableCompleted, detectorAggregateEvaluationResult.getApplicableDetectorTypes());
             eventSystem.publishEvent(Event.SearchCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
             logger.info("");
@@ -171,7 +171,7 @@ public class DetectorTool {
 
     private ExtractableEvaluator createExtractableEvaluator(DetectorEvaluationOptions evaluationOptions, Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider) {
         ExtractableEvaluator extractableEvaluator = new ExtractableEvaluator(evaluationOptions, extractionEnvironmentProvider);
-        extractableEvaluator.registerEvaluatorResultCallback((detectorAggregateEvaluationResult) -> {
+        extractableEvaluator.registerEvaluatorResultCallback(detectorAggregateEvaluationResult -> {
             eventSystem.publishEvent(Event.PreparationsCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
             logger.debug("Counting detectors that will be evaluated.");
 
