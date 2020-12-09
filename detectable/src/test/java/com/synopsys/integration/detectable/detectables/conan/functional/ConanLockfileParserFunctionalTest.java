@@ -37,12 +37,10 @@ public class ConanLockfileParserFunctionalTest {
         ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true);
         assertEquals(3, result.getCodeLocation().getDependencyGraph().getRootDependencies().size());
         Set<ExternalId> rootExternalIds = result.getCodeLocation().getDependencyGraph().getRootDependencyExternalIds();
-        for (ExternalId rootExternalId : rootExternalIds) {
-            System.out.printf("tbd: %s, %s, %s\n", rootExternalId.getForge(), rootExternalId.getName(), rootExternalId.getVersion());
-        }
 
         DependencyGraph actualDependencyGraph = result.getCodeLocation().getDependencyGraph();
 
+        // TODO remove (code for creating "expected" file
         //        Gson gson = new Gson();
         //        DependencyGraphSummarizer summarizer = new DependencyGraphSummarizer(gson);
         //        GraphSummary actualGraphSummary = summarizer.fromGraph(actualDependencyGraph);
