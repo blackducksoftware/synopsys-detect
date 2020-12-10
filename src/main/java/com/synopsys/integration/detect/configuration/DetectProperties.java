@@ -214,9 +214,10 @@ public class DetectProperties {
 
     public static final DetectProperty<BooleanProperty> DETECT_CONAN_REQUIRE_PREV_MATCH =
         new DetectProperty<>(new BooleanProperty("detect.conan.attempt.package.revision.match", false))
-            .setInfo("If package revisions are available (conan.lock is found, and Conan's revisions feature is enabled), require that each dependency's package revision match the package revision of the component in the KB",
+            .setInfo("Attempt Package Revision Match",
                 DetectPropertyFromVersion.VERSION_6_8_0)
-            .setHelp("Set this value to if you want to require that a dependency's package revision and a KB component's package revision must be the same in order to be considered a match.")
+            .setHelp(
+                "If package revisions are available (a Conan lock file is found or provided, and Conan's revisions feature is enabled), require that each dependency's package revision match the package revision of the component in the KB.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullablePathProperty> DETECT_BDIO_OUTPUT_PATH =
@@ -1118,7 +1119,7 @@ public class DetectProperties {
             .setInfo("Python Executable", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("The path to the Python executable.")
             .setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL);
-    
+
     public static final DetectProperty<EnumListProperty<DetectorType>> DETECT_REQUIRED_DETECTOR_TYPES =
         new DetectProperty<>(new EnumListProperty<>("detect.required.detector.types", emptyList(), DetectorType.class))
             .setInfo("Required Detect Types", DetectPropertyFromVersion.VERSION_4_3_0)
