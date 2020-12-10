@@ -43,8 +43,8 @@ public class ConanInfoLineAnalyzer {
         }
         int leadingSpaceCount = countLeadingSpaces(line);
         if ((leadingSpaceCount % 4) != 0) {
-            logger.warn(String.format("Leading space count for '%s' is %d; expected it to be divisible by 4",
-                line, leadingSpaceCount));
+            logger.warn("Leading space count for '{}' is {}; expected it to be divisible by 4",
+                line, leadingSpaceCount);
         }
         return countLeadingSpaces(line) / 4;
     }

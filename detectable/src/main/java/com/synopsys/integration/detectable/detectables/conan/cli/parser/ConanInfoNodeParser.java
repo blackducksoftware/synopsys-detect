@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.NodeElementParser;
+import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 
 public class ConanInfoNodeParser {
@@ -53,17 +54,21 @@ public class ConanInfoNodeParser {
         int bodyLineCount = 0;
         for (int lineIndex = nodeStartIndex + 1; lineIndex < conanInfoOutputLines.size(); lineIndex++) {
             String nodeBodyLine = conanInfoOutputLines.get(lineIndex);
-            logger.trace(String.format("Parsing line: %d: %s", lineIndex + 1, nodeBodyLine));
+            logger.trace("Parsing line: {}: {}", lineIndex + 1, nodeBodyLine);
             // Check to see if we've overshot the end of the node
             Optional<ConanInfoNodeParseResult> result = getResultIfDone(nodeBodyLine, lineIndex, nodeStartIndex, bodyLineCount, nodeBuilder);
             if (result.isPresent()) {
                 return result.get();
             }
             bodyLineCount++;
+            // parseElement tells this code what line to parse next (= where it left off)
             lineIndex = nodeElementParser.parseElement(nodeBuilder, conanInfoOutputLines, lineIndex);
         }
         logger.trace("Reached end of conan info output");
-        return new ConanInfoNodeParseResult(conanInfoOutputLines.size() - 1, nodeBuilder.build());
+        Optional<ConanNode> node = nodeBuilder.build();
+        ConanInfoNodeParseResult result =
+            new ConanInfoNodeParseResult(conanInfoOutputLines.size() - 1, node.orElse(null));
+        return result;
     }
 
     private Optional<ConanInfoNodeParseResult> getResultIfDone(String nodeBodyLine, int lineIndex, int nodeStartIndex, int bodyLineCount, ConanNodeBuilder nodeBuilder) {
@@ -77,7 +82,8 @@ public class ConanInfoNodeParser {
             return Optional.of(new ConanInfoNodeParseResult(nodeStartIndex));
         } else {
             logger.trace("Reached end of node");
-            return Optional.of(new ConanInfoNodeParseResult(lineIndex - 1, nodeBuilder.build()));
+            Optional<ConanNode> node = nodeBuilder.build();
+            return Optional.of(new ConanInfoNodeParseResult(lineIndex - 1, node.orElse(null)));
         }
     }
 

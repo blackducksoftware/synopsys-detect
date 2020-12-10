@@ -26,14 +26,10 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.function.BiConsumer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 
 public class ListElementParser implements ElementTypeParser {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ConanInfoLineAnalyzer conanInfoLineAnalyzer;
     private final String targetKey;
     private final BiConsumer<ConanNodeBuilder, String> valueConsumer;
@@ -48,10 +44,7 @@ public class ListElementParser implements ElementTypeParser {
     public boolean applies(String elementLine) {
         StringTokenizer tokenizer = conanInfoLineAnalyzer.createTokenizer(elementLine);
         String parsedKey = tokenizer.nextToken();
-        if (targetKey.equalsIgnoreCase(parsedKey)) {
-            return true;
-        }
-        return false;
+        return targetKey.equalsIgnoreCase(parsedKey);
     }
 
     @Override

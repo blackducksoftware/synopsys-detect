@@ -97,7 +97,7 @@ public class ConanNodeBuilder {
                     version = tokenizer.nextToken();
                 }
             }
-            logger.info(String.format("path: %s; name: %s; version: %s", path, name, version));
+            logger.trace(String.format("path: %s; name: %s; version: %s", path, name, version));
         } else {
             StringTokenizer tokenizer = new StringTokenizer(ref, "/@");
             name = tokenizer.nextToken();
@@ -176,9 +176,7 @@ public class ConanNodeBuilder {
             ref = path;
         }
         boolean isRootNode = false;
-        if (forcedRootNode) {
-            isRootNode = true;
-        } else if ((path != null)) {
+        if (forcedRootNode || (path != null)) {
             isRootNode = true;
         }
         if (requiresIndices == null) {
@@ -191,7 +189,7 @@ public class ConanNodeBuilder {
             recipeRevision, packageId, packageRevision,
             requiresRefs, requiresIndices, buildRequiresRefs, buildRequiresIndices,
             isRootNode);
-        logger.info(String.format("node: %s", node));
+        logger.trace("node: {}", node);
         return Optional.of(node);
     }
 }

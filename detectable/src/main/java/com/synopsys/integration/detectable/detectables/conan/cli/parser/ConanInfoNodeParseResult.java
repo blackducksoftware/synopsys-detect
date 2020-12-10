@@ -28,14 +28,14 @@ import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
 
 public class ConanInfoNodeParseResult {
     private final int lastParsedLineIndex;
-    private final Optional<ConanNode> conanNode;
+    private final ConanNode conanNode;
 
     public ConanInfoNodeParseResult(int lastParsedLineIndex) {
         this.lastParsedLineIndex = lastParsedLineIndex;
-        this.conanNode = Optional.empty();
+        this.conanNode = null;
     }
 
-    public ConanInfoNodeParseResult(int lastParsedLineIndex, Optional<ConanNode> conanGraphNode) {
+    public ConanInfoNodeParseResult(int lastParsedLineIndex, ConanNode conanGraphNode) {
         this.lastParsedLineIndex = lastParsedLineIndex;
         this.conanNode = conanGraphNode;
     }
@@ -45,6 +45,6 @@ public class ConanInfoNodeParseResult {
     }
 
     public Optional<ConanNode> getConanNode() {
-        return conanNode;
+        return Optional.ofNullable(conanNode);
     }
 }
