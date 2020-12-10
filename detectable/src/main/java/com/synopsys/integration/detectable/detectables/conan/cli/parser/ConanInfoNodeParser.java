@@ -24,7 +24,9 @@ package com.synopsys.integration.detectable.detectables.conan.cli.parser;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.StringTokenizer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +52,7 @@ public class ConanInfoNodeParser {
     public ConanInfoNodeParseResult parseNode(List<String> conanInfoOutputLines, int nodeStartIndex) {
         String nodeHeaderLine = conanInfoOutputLines.get(nodeStartIndex);
         ConanNodeBuilder nodeBuilder = new ConanNodeBuilder();
-        nodeBuilder.setRefFromConanInfo(nodeHeaderLine.trim());
+        setRefAndDerivedFields(nodeBuilder, nodeHeaderLine.trim());
         int bodyLineCount = 0;
         for (int lineIndex = nodeStartIndex + 1; lineIndex < conanInfoOutputLines.size(); lineIndex++) {
             String nodeBodyLine = conanInfoOutputLines.get(lineIndex);
@@ -85,4 +87,67 @@ public class ConanInfoNodeParser {
         }
     }
 
+    private void setRefAndDerivedFieldsOLD(ConanNodeBuilder nodeBuilder, String ref) {
+        if (StringUtils.isBlank(ref)) {
+            return;
+        }
+        ref = ref.trim();
+        StringTokenizer tokenizer = new StringTokenizer(ref, "@/#");
+        if (!ref.startsWith("conanfile.")) {
+            if (tokenizer.hasMoreTokens()) {
+                nodeBuilder.setName(tokenizer.nextToken());
+            }
+            if (tokenizer.hasMoreTokens()) {
+                nodeBuilder.setVersion(tokenizer.nextToken());
+            }
+            if (ref.contains("@")) {
+                nodeBuilder.setUser(tokenizer.nextToken());
+                nodeBuilder.setChannel(tokenizer.nextToken());
+            }
+            if (ref.contains("#")) {
+                nodeBuilder.setRecipeRevision(tokenizer.nextToken());
+            }
+        }
+        nodeBuilder.setRef(ref);
+    }
+
+    private void setRefAndDerivedFields(ConanNodeBuilder nodeBuilder, String ref) {
+        if (StringUtils.isBlank(ref)) {
+            return;
+        }
+        // if rootNode: conanfile.{txt,py}[ (projectname/version)]
+        // else       : package/version[@user/channel]
+        if (ref.startsWith("conanfile.")) {
+            StringTokenizer tokenizer = new StringTokenizer(ref, " \t()/");
+            nodeBuilder.setPath(tokenizer.nextToken());
+            if (tokenizer.hasMoreTokens()) {
+                nodeBuilder.setName(tokenizer.nextToken());
+                if (tokenizer.hasMoreTokens()) {
+                    nodeBuilder.setVersion(tokenizer.nextToken());
+                }
+            }
+        } else {
+            StringTokenizer tokenizer = new StringTokenizer(ref, "/@");
+            String name = tokenizer.nextToken();
+            nodeBuilder.setName(name);
+            if (name.contains(" ")) {
+                nodeBuilder.setValid(false);
+                return;
+            }
+            if (tokenizer.hasMoreTokens()) {
+                String version = tokenizer.nextToken();
+                nodeBuilder.setVersion(version);
+                if (version.contains(" ")) {
+                    nodeBuilder.setValid(false);
+                    return;
+                } else if (tokenizer.hasMoreTokens()) {
+                    nodeBuilder.setUser(tokenizer.nextToken());
+                    if (tokenizer.hasMoreTokens()) {
+                        nodeBuilder.setChannel(tokenizer.nextToken());
+                    }
+                }
+            }
+        }
+        nodeBuilder.setRef(ref);
+    }
 }

@@ -27,10 +27,11 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testNoProjectRef() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan.lock");
-        ConanLockfileParser parser = new ConanLockfileParser(new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
+        ConanLockfileParser parser = new ConanLockfileParser(new Gson(),
+            new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
-        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true, false);
+        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(conanLockfileContents, true, false);
 
         assertEquals(3, result.getCodeLocation().getDependencyGraph().getRootDependencies().size());
         DependencyGraph actualDependencyGraph = result.getCodeLocation().getDependencyGraph();
@@ -40,10 +41,11 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testWithDevDependencies() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan_buildrequirements.lock");
-        ConanLockfileParser parser = new ConanLockfileParser(new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
+        ConanLockfileParser parser = new ConanLockfileParser(new Gson(),
+            new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
-        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true, false);
+        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(conanLockfileContents, true, false);
 
         assertEquals(3, result.getCodeLocation().getDependencyGraph().getRootDependencies().size());
         DependencyGraph actualDependencyGraph = result.getCodeLocation().getDependencyGraph();
@@ -53,10 +55,11 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testNoProjectRefLongFormExternalIds() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan.lock");
-        ConanLockfileParser parser = new ConanLockfileParser(new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
+        ConanLockfileParser parser = new ConanLockfileParser(new Gson(),
+            new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
-        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true, true);
+        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(conanLockfileContents, true, true);
 
         assertEquals(3, result.getCodeLocation().getDependencyGraph().getRootDependencies().size());
         DependencyGraph actualDependencyGraph = result.getCodeLocation().getDependencyGraph();
@@ -66,10 +69,11 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testProjectRef() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan_projectref.lock");
-        ConanLockfileParser parser = new ConanLockfileParser(new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
+        ConanLockfileParser parser = new ConanLockfileParser(new Gson(),
+            new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
-        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true, true);
+        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(conanLockfileContents, true, true);
 
         assertEquals("chat", result.getProjectName());
         assertEquals("0.1", result.getProjectVersion());
@@ -78,10 +82,11 @@ public class ConanLockfileParserFunctionalTest {
     @Test
     public void testRelativePath() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan_relpath.lock");
-        ConanLockfileParser parser = new ConanLockfileParser(new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
+        ConanLockfileParser parser = new ConanLockfileParser(new Gson(),
+            new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
-        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(new Gson(), conanLockfileContents, true, true);
+        ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(conanLockfileContents, true, true);
 
         assertEquals(1, result.getCodeLocation().getDependencyGraph().getRootDependencies().size());
     }

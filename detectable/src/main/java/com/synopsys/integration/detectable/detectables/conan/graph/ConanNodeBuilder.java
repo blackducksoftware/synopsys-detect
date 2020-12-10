@@ -25,7 +25,6 @@ package com.synopsys.integration.detectable.detectables.conan.graph;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.StringTokenizer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -55,74 +54,44 @@ public class ConanNodeBuilder {
         return this;
     }
 
-    public ConanNodeBuilder setRefFromLockfile(String ref) {
-        if (StringUtils.isBlank(ref)) {
-            return this;
+    public ConanNodeBuilder setRef(String ref) {
+        if (ref != null) {
+            this.ref = ref.trim();
         }
-        ref = ref.trim();
-        StringTokenizer tokenizer = new StringTokenizer(ref, "@/#");
-        if (!ref.startsWith("conanfile.")) {
-            if (tokenizer.hasMoreTokens()) {
-                name = tokenizer.nextToken();
-            }
-            if (tokenizer.hasMoreTokens()) {
-                version = tokenizer.nextToken();
-            }
-            if (ref.contains("@")) {
-                user = tokenizer.nextToken();
-                channel = tokenizer.nextToken();
-            }
-            if (ref.contains("#")) {
-                recipeRevision = tokenizer.nextToken();
-            }
-        }
-        this.ref = ref;
-        return this;
-    }
-
-    public ConanNodeBuilder setRefFromConanInfo(String ref) {
-        if (StringUtils.isBlank(ref)) {
-            return this;
-        }
-        // if rootNode: conanfile.{txt,py}[ (projectname/version)]
-        // else       : package/version[@user/channel]
-        if (ref.startsWith("conanfile.")) {
-            StringTokenizer tokenizer = new StringTokenizer(ref, " \t()/");
-            path = tokenizer.nextToken();
-            if (tokenizer.hasMoreTokens()) {
-                name = tokenizer.nextToken();
-                if (tokenizer.hasMoreTokens()) {
-                    version = tokenizer.nextToken();
-                }
-            }
-            logger.trace(String.format("path: %s; name: %s; version: %s", path, name, version));
-        } else {
-            StringTokenizer tokenizer = new StringTokenizer(ref, "/@");
-            name = tokenizer.nextToken();
-            if (name.contains(" ")) {
-                valid = false;
-                return this;
-            }
-            if (tokenizer.hasMoreTokens()) {
-                version = tokenizer.nextToken();
-                if (version.contains(" ")) {
-                    valid = false;
-                    return this;
-                } else if (tokenizer.hasMoreTokens()) {
-                    user = tokenizer.nextToken();
-                    if (tokenizer.hasMoreTokens()) {
-                        channel = tokenizer.nextToken();
-                    }
-                }
-            }
-        }
-        this.ref = ref;
         return this;
     }
 
     public ConanNodeBuilder setPath(String path) {
         if (path != null) {
             this.path = path.trim();
+        }
+        return this;
+    }
+
+    public ConanNodeBuilder setName(String name) {
+        if (name != null) {
+            this.name = name.trim();
+        }
+        return this;
+    }
+
+    public ConanNodeBuilder setVersion(String version) {
+        if (version != null) {
+            this.version = version.trim();
+        }
+        return this;
+    }
+
+    public ConanNodeBuilder setUser(String user) {
+        if (user != null) {
+            this.user = user.trim();
+        }
+        return this;
+    }
+
+    public ConanNodeBuilder setChannel(String channel) {
+        if (channel != null) {
+            this.channel = channel.trim();
         }
         return this;
     }
@@ -159,6 +128,11 @@ public class ConanNodeBuilder {
 
     public ConanNodeBuilder setBuildRequiresIndices(List<Integer> buildRequiresIndices) {
         this.buildRequiresIndices = buildRequiresIndices;
+        return this;
+    }
+
+    public ConanNodeBuilder setValid(boolean valid) {
+        this.valid = valid;
         return this;
     }
 

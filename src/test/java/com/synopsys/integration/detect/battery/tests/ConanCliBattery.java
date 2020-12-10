@@ -17,7 +17,7 @@ public class ConanCliBattery {
         test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), "conan-info-minimal.xout");
         test.sourceDirectoryNamed("conan-minimal");
         test.sourceFileNamed("conanfile.txt");
-        test.property("detect.conan.require.package.revision.match", "true");
+        test.property("detect.conan.attempt.package.revision.match", "true");
         test.expectBdioResources();
         test.run();
     }
@@ -38,7 +38,7 @@ public class ConanCliBattery {
         test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), "conan-info-withuserchannel.xout");
         test.sourceDirectoryNamed("conan-withuserchannel");
         test.sourceFileNamed("conanfile.txt");
-        test.property("detect.conan.require.package.revision.match", "true");
+        test.property("detect.conan.attempt.package.revision.match", "true");
         test.expectBdioResources();
         test.run();
     }
@@ -49,7 +49,7 @@ public class ConanCliBattery {
         test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), "conan-info-withrevisions.xout");
         test.sourceDirectoryNamed("conan-withrevisions");
         test.sourceFileNamed("conanfile.py");
-        test.property("detect.conan.require.package.revision.match", "true");
+        test.property("detect.conan.attempt.package.revision.match", "true");
         test.expectBdioResources();
         test.run();
     }
@@ -60,7 +60,7 @@ public class ConanCliBattery {
         test.executableFromResourceFiles(DetectProperties.DETECT_CONAN_PATH.getProperty(), "conan-info-pkgrevonly.xout");
         test.sourceDirectoryNamed("conan-pkgrevonly");
         test.sourceFileNamed("conanfile.txt");
-        test.property("detect.conan.require.package.revision.match", "true");
+        test.property("detect.conan.attempt.package.revision.match", "true");
         test.expectBdioResources();
         test.run();
     }

@@ -26,8 +26,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.StringTokenizer;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,26 +46,28 @@ import com.synopsys.integration.exception.IntegrationException;
 
 public class ConanLockfileParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Gson gson;
     private final ConanCodeLocationGenerator conanCodeLocationGenerator;
     private final ExternalIdFactory externalIdFactory;
     private final ConanExternalIdVersionGenerator versionGenerator;
 
-    public ConanLockfileParser(ConanCodeLocationGenerator conanCodeLocationGenerator, ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator) {
+    public ConanLockfileParser(Gson gson, ConanCodeLocationGenerator conanCodeLocationGenerator, ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator) {
+        this.gson = gson;
         this.conanCodeLocationGenerator = conanCodeLocationGenerator;
         this.externalIdFactory = externalIdFactory;
         this.versionGenerator = versionGenerator;
     }
 
-    public ConanDetectableResult generateCodeLocationFromConanLockfileContents(Gson gson, String conanLockfileContents,
+    public ConanDetectableResult generateCodeLocationFromConanLockfileContents(String conanLockfileContents,
         boolean includeBuildDependencies, boolean preferLongFormExternalIds) throws IntegrationException {
         logger.trace("Parsing conan lockfile contents:\n{}", conanLockfileContents);
-        Map<Integer, ConanNode> indexedNodeMap = generateIndexedNodeMap(gson, conanLockfileContents);
+        Map<Integer, ConanNode> indexedNodeMap = generateIndexedNodeMap(conanLockfileContents);
         // The lockfile references nodes by (integer) index; generator needs nodes referenced by names (component references)
         Map<String, ConanNode> namedNodeMap = convertToNamedNodeMap(indexedNodeMap);
         return conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory, versionGenerator, includeBuildDependencies, preferLongFormExternalIds, namedNodeMap);
     }
 
-    private Map<Integer, ConanNode> generateIndexedNodeMap(Gson gson, String conanLockfileContents) {
+    private Map<Integer, ConanNode> generateIndexedNodeMap(String conanLockfileContents) {
         Map<Integer, ConanNode> graphNodes = new HashMap<>();
         ConanLockfileData conanLockfileData = gson.fromJson(conanLockfileContents, ConanLockfileData.class);
         logger.trace("conanLockfileData: {}", conanLockfileData);
@@ -90,7 +94,7 @@ public class ConanLockfileParser {
         if (nodeKey == 0) {
             nodeBuilder.forceRootNode();
         }
-        nodeBuilder.setRefFromLockfile(lockfileNode.getRef().orElse(null));
+        setRefAndDerivedFields(nodeBuilder, lockfileNode.getRef().orElse(null));
         nodeBuilder.setPath(lockfileNode.getPath().orElse(null));
         lockfileNode.getPackageId().ifPresent(nodeBuilder::setPackageId);
         lockfileNode.getPackageRevision().ifPresent(nodeBuilder::setPackageRevision);
@@ -116,5 +120,29 @@ public class ConanLockfileParser {
         indices.stream()
             .map(index -> numberedNodeMap.get(index).getRef())
             .forEach(refAdder::accept);
+    }
+
+    private void setRefAndDerivedFields(ConanNodeBuilder nodeBuilder, String ref) {
+        if (StringUtils.isBlank(ref)) {
+            return;
+        }
+        ref = ref.trim();
+        StringTokenizer tokenizer = new StringTokenizer(ref, "@/#");
+        if (!ref.startsWith("conanfile.")) {
+            if (tokenizer.hasMoreTokens()) {
+                nodeBuilder.setName(tokenizer.nextToken());
+            }
+            if (tokenizer.hasMoreTokens()) {
+                nodeBuilder.setVersion(tokenizer.nextToken());
+            }
+            if (ref.contains("@")) {
+                nodeBuilder.setUser(tokenizer.nextToken());
+                nodeBuilder.setChannel(tokenizer.nextToken());
+            }
+            if (ref.contains("#")) {
+                nodeBuilder.setRecipeRevision(tokenizer.nextToken());
+            }
+        }
+        nodeBuilder.setRef(ref);
     }
 }

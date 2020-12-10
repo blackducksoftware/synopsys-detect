@@ -13,7 +13,7 @@ public class ConanLockfileBattery {
         BatteryTest test = new BatteryTest("conan-lock-shortform", "conan-lock/shortform");
         test.sourceDirectoryNamed("conan-lock");
         test.sourceFileFromResource("conan.lock");
-        test.property("detect.conan.require.package.revision.match", "false");
+        test.property("detect.conan.attempt.package.revision.match", "false");
         test.expectBdioResources();
         test.run();
     }
@@ -23,7 +23,7 @@ public class ConanLockfileBattery {
         BatteryTest test = new BatteryTest("conan-lock-longform", "conan-lock/longform");
         test.sourceDirectoryNamed("conan-lock");
         test.sourceFileFromResource("conan.lock");
-        test.property("detect.conan.require.package.revision.match", "true");
+        test.property("detect.conan.attempt.package.revision.match", "true");
         test.expectBdioResources();
         test.run();
     }

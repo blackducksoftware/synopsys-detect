@@ -590,7 +590,7 @@ public class DetectableFactory {
     private ConanLockfileExtractor conanLockfileExtractor() {
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
         ConanExternalIdVersionGenerator versionGenerator = new ConanExternalIdVersionGenerator();
-        ConanLockfileParser conanLockfileParser = new ConanLockfileParser(conanCodeLocationGenerator, externalIdFactory, versionGenerator);
+        ConanLockfileParser conanLockfileParser = new ConanLockfileParser(gson, conanCodeLocationGenerator, externalIdFactory, versionGenerator);
         return new ConanLockfileExtractor(gson, conanLockfileParser);
     }
 

@@ -23,7 +23,6 @@
 package com.synopsys.integration.detectable.detectables.conan.lockfile;
 
 import java.io.File;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,10 +76,11 @@ public class ConanLockfileDetectable extends Detectable {
     public DetectableResult extractable() throws DetectableException {
         if (conanLockfileExtractorOptions.getLockfilePath().isPresent()) {
             String givenLockfilePath = conanLockfileExtractorOptions.getLockfilePath().get();
-            Optional<File> verifiedLockfile = verifyFile(givenLockfilePath);
-            if (verifiedLockfile.isPresent()) {
-                lockfile = verifiedLockfile.get();
+            File userProvidedLockfile = new File(givenLockfilePath);
+            if (userProvidedLockfile.exists()) {
+                lockfile = userProvidedLockfile;
             } else {
+                logger.debug("File {} does not exist", givenLockfilePath);
                 return new GivenFileNotFoundDetectableResult(givenLockfilePath);
             }
         }
@@ -90,21 +90,5 @@ public class ConanLockfileDetectable extends Detectable {
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
         return conanLockfileExtractor.extract(lockfile, conanLockfileExtractorOptions);
-    }
-
-    private Optional<File> verifyFile(String filePath) {
-        File userProvidedLockfile = new File(filePath);
-        if (userProvidedLockfile.exists()) {
-            if (userProvidedLockfile.canRead()) {
-                logger.trace("File {} is readable", filePath);
-                return Optional.of(userProvidedLockfile);
-            } else {
-                logger.debug("File {} is not readable", filePath);
-                return Optional.empty();
-            }
-        } else {
-            logger.debug("File {} does not exist", filePath);
-            return Optional.empty();
-        }
     }
 }
