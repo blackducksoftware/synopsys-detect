@@ -48,7 +48,8 @@ public class ConanCodeLocationGenerator {
     private final Forge conanForge = new Forge("/", "conan");
 
     @NotNull
-    public ConanDetectableResult generateCodeLocationFromNodeMap(ExternalIdFactory externalIdFactory, boolean includeBuildDependencies, boolean preferLongFormExternalIds, Map<String, ConanNode> nodes) throws IntegrationException {
+    public ConanDetectableResult generateCodeLocationFromNodeMap(ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator,
+        boolean includeBuildDependencies, boolean preferLongFormExternalIds, Map<String, ConanNode> nodes) throws IntegrationException {
         logger.debug(String.format("Generating code location from %d dependencies", nodes.keySet().size()));
         Optional<ConanNode> rootNode = getRoot(nodes.values());
         if (!rootNode.isPresent()) {
@@ -57,7 +58,7 @@ public class ConanCodeLocationGenerator {
         ConanGraphNode rootGraphNode = new ConanGraphNode(rootNode.get());
         populateGraphUnderNode(rootGraphNode, nodes, includeBuildDependencies);
         MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        CodeLocation codeLocation = generateCodeLocationFromConanGraph(externalIdFactory, dependencyGraph, rootGraphNode, preferLongFormExternalIds);
+        CodeLocation codeLocation = generateCodeLocationFromConanGraph(externalIdFactory, versionGenerator, dependencyGraph, rootGraphNode, preferLongFormExternalIds);
         ConanDetectableResult result = new ConanDetectableResult(rootGraphNode.getConanInfoNode().getName(), rootGraphNode.getConanInfoNode().getVersion(), codeLocation);
         return result;
     }
@@ -79,14 +80,17 @@ public class ConanCodeLocationGenerator {
     }
 
     @NotNull
-    private CodeLocation generateCodeLocationFromConanGraph(ExternalIdFactory externalIdFactory, MutableMapDependencyGraph dependencyGraph, ConanGraphNode rootNode,
+    private CodeLocation generateCodeLocationFromConanGraph(ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator,
+        MutableMapDependencyGraph dependencyGraph, ConanGraphNode rootNode,
         boolean preferLongFormExternalIds) {
-        addNodeChildrenUnderNode(externalIdFactory, dependencyGraph, 0, rootNode, null, preferLongFormExternalIds);
+        addNodeChildrenUnderNode(externalIdFactory, versionGenerator,
+            dependencyGraph, 0, rootNode, null, preferLongFormExternalIds);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
         return codeLocation;
     }
 
-    private void addNodeChildrenUnderNode(ExternalIdFactory externalIdFactory, MutableMapDependencyGraph dependencyGraph, int depth, ConanGraphNode currentNode, Dependency currentDep,
+    private void addNodeChildrenUnderNode(ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator,
+        MutableMapDependencyGraph dependencyGraph, int depth, ConanGraphNode currentNode, Dependency currentDep,
         boolean preferLongFormExternalIds) {
         Consumer<Dependency> childAdder;
         if (depth == 0) {
@@ -95,16 +99,18 @@ public class ConanCodeLocationGenerator {
             childAdder = childDep -> dependencyGraph.addChildWithParent(childDep, currentDep);
         }
         for (ConanGraphNode childNode : currentNode.getChildren()) {
-            Dependency childDep = generateDependency(externalIdFactory, childNode, preferLongFormExternalIds);
+            Dependency childDep = generateDependency(externalIdFactory, versionGenerator,
+                childNode, preferLongFormExternalIds);
             childAdder.accept(childDep);
-            addNodeChildrenUnderNode(externalIdFactory, dependencyGraph, depth + 1, childNode, childDep, preferLongFormExternalIds);
+            addNodeChildrenUnderNode(externalIdFactory, versionGenerator, dependencyGraph, depth + 1, childNode, childDep, preferLongFormExternalIds);
         }
     }
 
     @NotNull
-    private Dependency generateDependency(ExternalIdFactory externalIdFactory, ConanGraphNode graphNode, boolean preferLongFormExternalIds) {
+    private Dependency generateDependency(ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator,
+        ConanGraphNode graphNode, boolean preferLongFormExternalIds) {
         String depName = graphNode.getConanInfoNode().getName();
-        String depVersion = generateExternalIdVersionString(graphNode.getConanInfoNode(), preferLongFormExternalIds);
+        String depVersion = versionGenerator.generateExternalIdVersionString(graphNode.getConanInfoNode(), preferLongFormExternalIds);
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(conanForge, depName, depVersion);
         Dependency dep = new Dependency(graphNode.getConanInfoNode().getName(),
             graphNode.getConanInfoNode().getVersion(),
@@ -117,36 +123,4 @@ public class ConanCodeLocationGenerator {
         Optional<ConanNode> rootNode = graphNodes.stream().filter(ConanNode::isRootNode).findFirst();
         return rootNode;
     }
-
-    private String generateExternalIdVersionString(ConanNode node, boolean preferLongFormExternalIds) {
-        String externalId;
-        if (hasValue(node.getRecipeRevision()) && hasValue(node.getPackageRevision()) && preferLongFormExternalIds) {
-            // generate long form
-            // <name>/<version>@<user>/<channel>#<recipe_revision>:<package_id>#<package_revision>
-            externalId = String.format("%s@%s/%s#%s:%s#%s",
-                node.getVersion(),
-                node.getUser() == null ? "_" : node.getUser(),
-                node.getChannel() == null ? "_" : node.getChannel(),
-                node.getRecipeRevision(),
-                node.getPackageId() == null ? "0" : node.getPackageId(),
-                node.getPackageRevision());
-        } else {
-            // generate short form
-            // <name>/<version>@<user>/<channel>#<recipe_revision>
-            externalId = String.format("%s@%s/%s#%s",
-                node.getVersion(),
-                node.getUser() == null ? "_" : node.getUser(),
-                node.getChannel() == null ? "_" : node.getChannel(),
-                node.getRecipeRevision() == null ? "0" : node.getRecipeRevision());
-        }
-        return externalId;
-    }
-
-    private boolean hasValue(String value) {
-        if ((value == null) || ("None".equals(value))) {
-            return false;
-        }
-        return true;
-    }
-
 }

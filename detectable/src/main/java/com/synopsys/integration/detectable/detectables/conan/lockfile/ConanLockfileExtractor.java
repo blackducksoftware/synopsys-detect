@@ -30,24 +30,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.ConanLockfileParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class ConanLockfileExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    // TODO can we use this?
-    //private ExternalIdFactory externalIdFactory;
     private final Gson gson;
-    private final ConanCodeLocationGenerator conanCodeLocationGenerator;
     private final ConanLockfileParser conanLockfileParser;
 
-    public ConanLockfileExtractor(Gson gson, ConanCodeLocationGenerator conanCodeLocationGenerator, ConanLockfileParser conanLockfileParser) {
+    public ConanLockfileExtractor(Gson gson, ConanLockfileParser conanLockfileParser) {
         this.gson = gson;
-        this.conanCodeLocationGenerator = conanCodeLocationGenerator;
         this.conanLockfileParser = conanLockfileParser;
-        // this.externalIdFactory = externalIdFactory;
     }
 
     public Extraction extract(File lockfile, ConanLockfileExtractorOptions conanLockfileExtractorOptions) {

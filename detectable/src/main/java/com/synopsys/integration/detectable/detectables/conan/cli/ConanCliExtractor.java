@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.conan.cli;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -103,9 +104,7 @@ public class ConanCliExtractor {
         }
         if (conanCliExtractorOptions.getAdditionalArguments().isPresent()) {
             String[] additionalArgs = conanCliExtractorOptions.getAdditionalArguments().get().split(" +");
-            for (String additionalArg : additionalArgs) {
-                exeArgs.add(additionalArg);
-            }
+            exeArgs.addAll(Arrays.asList(additionalArgs));
         }
         exeArgs.add(projectDir.getAbsolutePath());
         return exeArgs;

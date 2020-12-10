@@ -26,6 +26,13 @@ import java.util.List;
 
 import com.synopsys.integration.util.Stringable;
 
+// TODO This class needs work:
+// 1. It gets used in different ways, and should be re-worked; perhaps:
+// Use generics. Or a class hierarchy, with one (preferably immutable) subclass for
+// each purpose: one with Integer "requires" lists, one with
+// String "requires" lists.
+// 2. The getters should return Optional.
+// Before re-working this class, ConanExternalIdVersionGenerator needs unit test coverage.
 public class ConanNode extends Stringable {
     // if rootNode: conanfile.{txt,py}[ (projectname/version)]
     // else       : package/version[@user/channel]
@@ -68,7 +75,6 @@ public class ConanNode extends Stringable {
         this.rootNode = rootNode;
     }
 
-    // TODO look for a way to revert this to immutable
     public void addRequiresRef(String requiresRef) {
         requiresRefs.add(requiresRef);
     }

@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
+import com.synopsys.integration.detectable.detectables.conan.ConanExternalIdVersionGenerator;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -41,20 +42,20 @@ public class ConanInfoParser {
     private final ConanInfoNodeParser conanInfoNodeParser;
     private final ConanCodeLocationGenerator conanCodeLocationGenerator;
     private final ExternalIdFactory externalIdFactory;
+    private final ConanExternalIdVersionGenerator versionGenerator;
 
     public ConanInfoParser(ConanInfoNodeParser conanInfoNodeParser, ConanCodeLocationGenerator conanCodeLocationGenerator,
-        ExternalIdFactory externalIdFactory) {
+        ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator) {
         this.conanInfoNodeParser = conanInfoNodeParser;
         this.conanCodeLocationGenerator = conanCodeLocationGenerator;
         this.externalIdFactory = externalIdFactory;
+        this.versionGenerator = versionGenerator;
     }
 
-    // TODO: There ought to be tests for this method
     public ConanDetectableResult generateCodeLocationFromConanInfoOutput(String conanInfoOutput, boolean includeBuildDependencies, boolean preferLongFormExternalIds) throws IntegrationException {
         logger.trace(String.format("Parsing conan info output:\n%s", conanInfoOutput));
         Map<String, ConanNode> nodeMap = generateNodeMap(conanInfoOutput);
-        // The future lockfile detectable will also generate a nodeMap; once a nodeMap is generated, processing (translation to a codelocation) is identical
-        ConanDetectableResult result = conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory,
+        ConanDetectableResult result = conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory, versionGenerator,
             includeBuildDependencies, preferLongFormExternalIds, nodeMap);
         return result;
     }

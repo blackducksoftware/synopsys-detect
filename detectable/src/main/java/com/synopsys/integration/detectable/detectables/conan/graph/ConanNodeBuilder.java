@@ -172,35 +172,9 @@ public class ConanNodeBuilder {
             logger.debug("This wasn't a node");
             return Optional.empty();
         }
-        // if CLI rootNode: conanfile.{txt,py}[ (projectname/version)]
-        // if lck rootNode: ref=null; path=conanfile.{txt,py}
-        // else           : package/version[@user/channel]
-        //        if (StringUtils.isBlank(path) && StringUtils.isNotBlank(ref) && ref.startsWith("conanfile.")) {
-        //            StringTokenizer tokenizer = new StringTokenizer(ref, " \t()/");
-        //            path = tokenizer.nextToken();
-        //            if (tokenizer.hasMoreTokens()) {
-        //                name = tokenizer.nextToken();
-        //                if (tokenizer.hasMoreTokens()) {
-        //                    version = tokenizer.nextToken();
-        //                }
-        //            }
-        //            logger.info(String.format("path: %s; name: %s; version: %s", path, name, version));
-        //        }
         if (StringUtils.isBlank(ref) && StringUtils.isNotBlank(path)) {
             ref = path;
-        } //else {
-        //            StringTokenizer tokenizer = new StringTokenizer(ref, "/@");
-        //            name = tokenizer.nextToken();
-        //            if (tokenizer.hasMoreTokens()) {
-        //                version = tokenizer.nextToken();
-        //                if (tokenizer.hasMoreTokens()) {
-        //                    user = tokenizer.nextToken();
-        //                    if (tokenizer.hasMoreTokens()) {
-        //                        channel = tokenizer.nextToken();
-        //                    }
-        //                }
-        //            }
-        //        }
+        }
         boolean isRootNode = false;
         if (forcedRootNode) {
             isRootNode = true;
