@@ -9,10 +9,21 @@ import com.synopsys.integration.detect.battery.BatteryTest;
 public class ConanLockfileBattery {
 
     @Test
-    void conanLock() {
-        BatteryTest test = new BatteryTest("conan-lock");
+    void conanLockShortFormExternalId() {
+        BatteryTest test = new BatteryTest("conan-lock-shortform", "conan-lock/shortform");
         test.sourceDirectoryNamed("conan-lock");
         test.sourceFileFromResource("conan.lock");
+        test.property("detect.conan.require.package.revision.match", "false");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void conanLockLongFormExternalId() {
+        BatteryTest test = new BatteryTest("conan-lock-longform", "conan-lock/longform");
+        test.sourceDirectoryNamed("conan-lock");
+        test.sourceFileFromResource("conan.lock");
+        test.property("detect.conan.require.package.revision.match", "true");
         test.expectBdioResources();
         test.run();
     }
