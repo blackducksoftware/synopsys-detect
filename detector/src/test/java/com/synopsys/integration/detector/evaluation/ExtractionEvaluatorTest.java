@@ -1,5 +1,7 @@
 package com.synopsys.integration.detector.evaluation;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -29,46 +31,16 @@ public class ExtractionEvaluatorTest {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         DiscoveryFilter discoveryFilter = Mockito.mock(DiscoveryFilter.class);
         Mockito.when(discoveryFilter.shouldDiscover(Mockito.any(DetectorEvaluation.class))).thenReturn(true);
-        ExtractionEnvironment extractionEnvironment = Mockito.mock(ExtractionEnvironment.class);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
         Mockito.when(detectorEvaluationTree.getDirectory()).thenReturn(new File("."));
-
-        DetectorEvaluation detectorEvaluation = Mockito.mock(DetectorEvaluation.class);
-
-        Detectable detectable = Mockito.mock(Detectable.class);
-        DetectableResult detectableExtractableResult = Mockito.mock(DetectableResult.class);
-        Mockito.when(detectableExtractableResult.getPassed()).thenReturn(true);
-        Mockito.when(detectableExtractableResult.toDescription()).thenReturn("test detectable");
-        Mockito.when(detectable.extractable()).thenReturn(detectableExtractableResult);
-        Mockito.when(detectorEvaluation.getDetectable()).thenReturn(detectable);
-        Mockito.when(detectorEvaluation.getExtractionEnvironment()).thenReturn(extractionEnvironment);
-        Mockito.when(detectorEvaluation.isExtractable()).thenReturn(true);
-        List<DetectorEvaluation> detectorEvaluations = Collections.singletonList(detectorEvaluation);
-        Mockito.when(detectorEvaluationTree.getOrderedEvaluations()).thenReturn(detectorEvaluations);
-
-        DetectorRuleSet detectorRuleSet = Mockito.mock(DetectorRuleSet.class);
-        Mockito.when(detectorEvaluationTree.getDetectorRuleSet()).thenReturn(detectorRuleSet);
-
         DetectorEvaluatorListener detectorEvaluatorListener = Mockito.mock(DetectorEvaluatorListener.class);
         evaluator.setDetectorEvaluatorListener(detectorEvaluatorListener);
+        DetectorEvaluation detectorEvaluation = createEvaluationMocks(evaluationOptions, detectorEvaluationTree, false, false);
 
-        DetectorRule detectorRule = Mockito.mock(DetectorRule.class);
-        Mockito.when(detectorRule.getDescriptiveName()).thenReturn("test rule");
-        Mockito.when(detectorEvaluation.getDetectorRule()).thenReturn(detectorRule);
-        Mockito.when(detectorRuleSet.getFallbackFrom(Mockito.any())).thenReturn(Optional.empty());
+        DetectorAggregateEvaluationResult result = evaluator.evaluate(detectorEvaluationTree);
 
-        Mockito.when(detectorEvaluationTree.getDepthFromRoot()).thenReturn(0);
-        Mockito.when(evaluationOptions.isForceNested()).thenReturn(true);
-        Predicate<DetectorRule> rulePredicate = it -> true;
-        Mockito.when(evaluationOptions.getDetectorFilter()).thenReturn(rulePredicate);
-        Mockito.when(detectorEvaluation.isSearchable()).thenReturn(true);
-        Mockito.when(detectorEvaluation.isApplicable()).thenReturn(true);
-        Mockito.when(detectorRule.createDetectable(Mockito.any(DetectableEnvironment.class))).thenReturn(detectable);
-        Mockito.when(detectable.applicable()).thenReturn(new PassedDetectableResult());
-        Mockito.when(detectable.extract(Mockito.eq(extractionEnvironment))).thenReturn(new Extraction.Builder().success().build());
-
-        evaluator.evaluate(detectorEvaluationTree);
+        assertEquals(detectorEvaluationTree, result.getEvaluationTree());
 
         Mockito.verify(detectorEvaluatorListener).extractionStarted(detectorEvaluation);
         Mockito.verify(detectorEvaluation).setExtraction(Mockito.any(Extraction.class));
@@ -80,49 +52,16 @@ public class ExtractionEvaluatorTest {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         DiscoveryFilter discoveryFilter = Mockito.mock(DiscoveryFilter.class);
         Mockito.when(discoveryFilter.shouldDiscover(Mockito.any(DetectorEvaluation.class))).thenReturn(true);
-        ExtractionEnvironment extractionEnvironment = Mockito.mock(ExtractionEnvironment.class);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
         Mockito.when(detectorEvaluationTree.getDirectory()).thenReturn(new File("."));
-        Discovery discovery = Mockito.mock(Discovery.class);
-        Mockito.when(discovery.getExtraction()).thenReturn(new Extraction.Builder().success().build());
-
-        DetectorEvaluation detectorEvaluation = Mockito.mock(DetectorEvaluation.class);
-
-        Detectable detectable = Mockito.mock(Detectable.class);
-        DetectableResult detectableExtractableResult = Mockito.mock(DetectableResult.class);
-        Mockito.when(detectableExtractableResult.getPassed()).thenReturn(true);
-        Mockito.when(detectableExtractableResult.toDescription()).thenReturn("test detectable");
-        Mockito.when(detectable.extractable()).thenReturn(detectableExtractableResult);
-        Mockito.when(detectorEvaluation.getDetectable()).thenReturn(detectable);
-        Mockito.when(detectorEvaluation.getExtractionEnvironment()).thenReturn(extractionEnvironment);
-        Mockito.when(detectorEvaluation.isExtractable()).thenReturn(true);
-        Mockito.when(detectorEvaluation.getDiscovery()).thenReturn(discovery);
-        List<DetectorEvaluation> detectorEvaluations = Collections.singletonList(detectorEvaluation);
-        Mockito.when(detectorEvaluationTree.getOrderedEvaluations()).thenReturn(detectorEvaluations);
-
-        DetectorRuleSet detectorRuleSet = Mockito.mock(DetectorRuleSet.class);
-        Mockito.when(detectorEvaluationTree.getDetectorRuleSet()).thenReturn(detectorRuleSet);
-
         DetectorEvaluatorListener detectorEvaluatorListener = Mockito.mock(DetectorEvaluatorListener.class);
         evaluator.setDetectorEvaluatorListener(detectorEvaluatorListener);
+        DetectorEvaluation detectorEvaluation = createEvaluationMocks(evaluationOptions, detectorEvaluationTree, true, false);
 
-        DetectorRule detectorRule = Mockito.mock(DetectorRule.class);
-        Mockito.when(detectorRule.getDescriptiveName()).thenReturn("test rule");
-        Mockito.when(detectorEvaluation.getDetectorRule()).thenReturn(detectorRule);
-        Mockito.when(detectorRuleSet.getFallbackFrom(Mockito.any())).thenReturn(Optional.empty());
+        DetectorAggregateEvaluationResult result = evaluator.evaluate(detectorEvaluationTree);
 
-        Mockito.when(detectorEvaluationTree.getDepthFromRoot()).thenReturn(0);
-        Mockito.when(evaluationOptions.isForceNested()).thenReturn(true);
-        Predicate<DetectorRule> rulePredicate = it -> true;
-        Mockito.when(evaluationOptions.getDetectorFilter()).thenReturn(rulePredicate);
-        Mockito.when(detectorEvaluation.isSearchable()).thenReturn(true);
-        Mockito.when(detectorEvaluation.isApplicable()).thenReturn(true);
-        Mockito.when(detectorRule.createDetectable(Mockito.any(DetectableEnvironment.class))).thenReturn(detectable);
-        Mockito.when(detectable.applicable()).thenReturn(new PassedDetectableResult());
-        Mockito.when(detectable.extract(Mockito.eq(extractionEnvironment))).thenReturn(new Extraction.Builder().success().build());
-
-        evaluator.evaluate(detectorEvaluationTree);
+        assertEquals(detectorEvaluationTree, result.getEvaluationTree());
 
         Mockito.verify(detectorEvaluatorListener).extractionStarted(detectorEvaluation);
         Mockito.verify(detectorEvaluation).setExtraction(Mockito.any(Extraction.class));
@@ -134,11 +73,32 @@ public class ExtractionEvaluatorTest {
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
         DiscoveryFilter discoveryFilter = Mockito.mock(DiscoveryFilter.class);
         Mockito.when(discoveryFilter.shouldDiscover(Mockito.any(DetectorEvaluation.class))).thenReturn(true);
-        ExtractionEnvironment extractionEnvironment = Mockito.mock(ExtractionEnvironment.class);
         ExtractionEvaluator evaluator = new ExtractionEvaluator(evaluationOptions);
         DetectorEvaluationTree detectorEvaluationTree = Mockito.mock(DetectorEvaluationTree.class);
         Mockito.when(detectorEvaluationTree.getDirectory()).thenReturn(new File("."));
+        DetectorEvaluatorListener detectorEvaluatorListener = Mockito.mock(DetectorEvaluatorListener.class);
+        evaluator.setDetectorEvaluatorListener(detectorEvaluatorListener);
+        DetectorEvaluation detectorEvaluation = createEvaluationMocks(evaluationOptions, detectorEvaluationTree, false, true);
+
+        DetectorAggregateEvaluationResult result = evaluator.evaluate(detectorEvaluationTree);
+
+        assertEquals(detectorEvaluationTree, result.getEvaluationTree());
+
+        Mockito.verify(detectorEvaluatorListener).extractionStarted(detectorEvaluation);
+        Mockito.verify(detectorEvaluation).setExtraction(Mockito.any(Extraction.class));
+        Mockito.verify(detectorEvaluatorListener).extractionEnded(detectorEvaluation);
+    }
+
+    private DetectorEvaluation createEvaluationMocks(DetectorEvaluationOptions evaluationOptions, DetectorEvaluationTree detectorEvaluationTree, boolean extractionExists, boolean throwException)
+        throws DetectableException, ExecutableFailedException {
+        ExtractionEnvironment extractionEnvironment = Mockito.mock(ExtractionEnvironment.class);
         DetectorEvaluation detectorEvaluation = Mockito.mock(DetectorEvaluation.class);
+        Discovery discovery = Mockito.mock(Discovery.class);
+        if (extractionExists) {
+            Mockito.when(discovery.getExtraction()).thenReturn(new Extraction.Builder().success().build());
+        } else {
+            Mockito.when(discovery.getExtraction()).thenReturn(null);
+        }
 
         Detectable detectable = Mockito.mock(Detectable.class);
         DetectableResult detectableExtractableResult = Mockito.mock(DetectableResult.class);
@@ -147,15 +107,15 @@ public class ExtractionEvaluatorTest {
         Mockito.when(detectable.extractable()).thenReturn(detectableExtractableResult);
         Mockito.when(detectorEvaluation.getDetectable()).thenReturn(detectable);
         Mockito.when(detectorEvaluation.getExtractionEnvironment()).thenReturn(extractionEnvironment);
+        Mockito.when(detectorEvaluation.isSearchable()).thenReturn(true);
+        Mockito.when(detectorEvaluation.isApplicable()).thenReturn(true);
         Mockito.when(detectorEvaluation.isExtractable()).thenReturn(true);
+        Mockito.when(detectorEvaluation.getDiscovery()).thenReturn(discovery);
         List<DetectorEvaluation> detectorEvaluations = Collections.singletonList(detectorEvaluation);
         Mockito.when(detectorEvaluationTree.getOrderedEvaluations()).thenReturn(detectorEvaluations);
 
         DetectorRuleSet detectorRuleSet = Mockito.mock(DetectorRuleSet.class);
         Mockito.when(detectorEvaluationTree.getDetectorRuleSet()).thenReturn(detectorRuleSet);
-
-        DetectorEvaluatorListener detectorEvaluatorListener = Mockito.mock(DetectorEvaluatorListener.class);
-        evaluator.setDetectorEvaluatorListener(detectorEvaluatorListener);
 
         DetectorRule detectorRule = Mockito.mock(DetectorRule.class);
         Mockito.when(detectorRule.getDescriptiveName()).thenReturn("test rule");
@@ -166,16 +126,15 @@ public class ExtractionEvaluatorTest {
         Mockito.when(evaluationOptions.isForceNested()).thenReturn(true);
         Predicate<DetectorRule> rulePredicate = it -> true;
         Mockito.when(evaluationOptions.getDetectorFilter()).thenReturn(rulePredicate);
-        Mockito.when(detectorEvaluation.isSearchable()).thenReturn(true);
-        Mockito.when(detectorEvaluation.isApplicable()).thenReturn(true);
+
         Mockito.when(detectorRule.createDetectable(Mockito.any(DetectableEnvironment.class))).thenReturn(detectable);
         Mockito.when(detectable.applicable()).thenReturn(new PassedDetectableResult());
-        Mockito.when(detectable.extract(Mockito.eq(extractionEnvironment))).thenThrow(new RuntimeException("JUnit expected exception"));
+        if (throwException) {
+            Mockito.when(detectable.extract(Mockito.eq(extractionEnvironment))).thenThrow(new RuntimeException("JUnit expected exception"));
+        } else {
+            Mockito.when(detectable.extract(Mockito.eq(extractionEnvironment))).thenReturn(new Extraction.Builder().success().build());
+        }
 
-        evaluator.evaluate(detectorEvaluationTree);
-
-        Mockito.verify(detectorEvaluatorListener).extractionStarted(detectorEvaluation);
-        Mockito.verify(detectorEvaluation).setExtraction(Mockito.any(Extraction.class));
-        Mockito.verify(detectorEvaluatorListener).extractionEnded(detectorEvaluation);
+        return detectorEvaluation;
     }
 }
