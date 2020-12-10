@@ -496,6 +496,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/conda/" title="Conda Support" class="md-nav__link">
+      Conda Support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../../advanced/package-managers/docker-images/" title="Docker image support" class="md-nav__link">
       Docker image support
     </a>
@@ -1015,13 +1027,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#resolve-tilde-in-paths" class="md-nav__link">
-    Resolve Tilde in Paths
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#scan-output-path" class="md-nav__link">
     Scan Output Path
   </a>
@@ -1108,6 +1113,13 @@
         <li class="md-nav__item">
   <a href="#detector-tool-priority-advanced" class="md-nav__link">
     Detector Tool Priority (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolve-tilde-in-paths-deprecated" class="md-nav__link">
+    Resolve Tilde in Paths (Deprecated)
   </a>
   
 </li>
@@ -1569,13 +1581,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#resolve-tilde-in-paths" class="md-nav__link">
-    Resolve Tilde in Paths
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#scan-output-path" class="md-nav__link">
     Scan Output Path
   </a>
@@ -1662,6 +1667,13 @@
         <li class="md-nav__item">
   <a href="#detector-tool-priority-advanced" class="md-nav__link">
     Detector Tool Priority (Advanced)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#resolve-tilde-in-paths-deprecated" class="md-nav__link">
+    Resolve Tilde in Paths (Deprecated)
   </a>
   
 </li>
@@ -2050,49 +2062,6 @@
 <tr>
 <td>Default Value</td>
 <td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<h2 id="resolve-tilde-in-paths">Resolve Tilde in Paths<a class="headerlink" href="#resolve-tilde-in-paths" title="Permanent link">#</a></h2>
-<pre><code>--detect.resolve.tilde.in.paths=true
-</code></pre>
-
-<p>If set to false Detect will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.</p>
-<table>
-<thead>
-<tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>3.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>Boolean</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td>true</td>
 </tr>
 <tr>
 <td>Comma Separated</td>
@@ -2679,6 +2648,50 @@
 <tr>
 <td>Strict</td>
 <td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="resolve-tilde-in-paths-deprecated">Resolve Tilde in Paths (Deprecated)<a class="headerlink" href="#resolve-tilde-in-paths-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.resolve.tilde.in.paths=true
+</code></pre>
+
+<p>If set to false Detect will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.</p>
+<p><strong>DEPRECATED: This property is now deprecated. Going forward, Detect will no longer resolve tildes in the path. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
 </tr>
 </tbody>
 </table>

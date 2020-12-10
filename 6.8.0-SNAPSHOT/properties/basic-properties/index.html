@@ -492,6 +492,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../advanced/package-managers/conda/" title="Conda Support" class="md-nav__link">
+      Conda Support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../advanced/package-managers/docker-images/" title="Docker image support" class="md-nav__link">
       Docker image support
     </a>
@@ -1538,6 +1550,10 @@
 <td>default: false <br /><br /> PIP Include Only Project Tree: By default, pipenv includes all dependencies found in the graph. Set to true to only include dependencies found underneath the dependency that matches the provided pip project and version name. <br /><br /></td>
 </tr>
 <tr>
+<td><a href="../detectors/pip/#pip-executable">detect.pip.path</a></td>
+<td>Pip Executable: The path to the Pip executable. <br /><br /></td>
+</tr>
+<tr>
 <td><a href="../detectors/pip/#pipenv-executable">detect.pipenv.path</a></td>
 <td>Pipenv Executable: The path to the Pipenv executable. <br /><br /></td>
 </tr>
@@ -1589,10 +1605,6 @@
 <tr>
 <td><a href="../detectors/python/#python-executable">detect.python.path</a></td>
 <td>Python Executable: The path to the Python executable. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../detectors/python/#use-python3">detect.python.python3</a></td>
-<td>default: false <br /><br /> Use Python3: If true will use Python 3 if available on class path. <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -1872,10 +1884,6 @@
 <tr>
 <td><a href="../configuration/paths/#swift-executable">detect.swift.path</a></td>
 <td>Swift Executable: Path of the swift executable. <br /><br /></td>
-</tr>
-<tr>
-<td><a href="../configuration/paths/#resolve-tilde-in-paths">detect.resolve.tilde.in.paths</a></td>
-<td>default: true <br /><br /> Resolve Tilde in Paths: If set to false Detect will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/paths/#scan-output-path">detect.scan.output.path</a></td>
