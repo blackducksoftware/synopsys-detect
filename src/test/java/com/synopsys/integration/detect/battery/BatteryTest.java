@@ -111,8 +111,8 @@ public final class BatteryTest {
 
     /**
      * NOTE: The order in which you provide the names of executable output resource files must match the order in which their corresponding commands are invoked at runtime.
-     *      ex) The GoModCliExtractor invokes the command 'go list' before the command 'go version', so go-list.xout must be before go-version.xout in resourceFiles when constructing
-     *          a battery test for the go mod.
+     *      ex) The GoModCliExtractor invokes the command 'go list' before the command 'go version', so go-list.xout must be ordered before go-version.xout in resourceFiles when constructing
+     *          a battery test for the go mod detectable.
      */
     public void executableFromResourceFiles(Property detectProperty, String... resourceFiles) {
         ResourceTypingExecutableCreator creator = new ResourceTypingExecutableCreator(prefixResources(resourceFiles));
