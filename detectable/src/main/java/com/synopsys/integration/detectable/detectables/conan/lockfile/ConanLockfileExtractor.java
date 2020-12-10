@@ -47,7 +47,6 @@ public class ConanLockfileExtractor {
     public Extraction extract(File lockfile, ConanLockfileExtractorOptions conanLockfileExtractorOptions) {
         try {
             String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
-            logger.debug(conanLockfileContents);
             ConanDetectableResult result = conanLockfileParser.generateCodeLocationFromConanLockfileContents(gson,
                 conanLockfileContents,
                 conanLockfileExtractorOptions.shouldIncludeDevDependencies(),

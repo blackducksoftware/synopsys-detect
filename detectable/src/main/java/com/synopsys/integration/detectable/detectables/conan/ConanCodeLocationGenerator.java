@@ -110,6 +110,7 @@ public class ConanCodeLocationGenerator {
         String depName = graphNode.getConanInfoNode().getName();
         String depVersion = versionGenerator.generateExternalIdVersionString(graphNode.getConanInfoNode(), preferLongFormExternalIds);
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(conanForge, depName, depVersion);
+        logger.trace("Generated Dependency for {}/{} with externalID: {}", depName, depVersion, externalId.getExternalIdPieces());
         return new Dependency(graphNode.getConanInfoNode().getName(),
             graphNode.getConanInfoNode().getVersion(),
             externalId);
