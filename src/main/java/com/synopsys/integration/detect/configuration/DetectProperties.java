@@ -30,9 +30,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
@@ -206,7 +206,6 @@ public class DetectProperties {
             .setHelp("A space-separated list of additional arguments to add to the 'conan info' command line when running Detect against a Conan project. Detect will execute the command 'conan info {additional arguments} .'")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
-    // TODO should this be a PathValue?
     public static final DetectProperty<NullableStringProperty> DETECT_CONAN_LOCKFILE_PATH =
         new DetectProperty<>(new NullableStringProperty("detect.conan.lockfile.path"))
             .setInfo("Conan Lockfile", DetectPropertyFromVersion.VERSION_6_8_0)
@@ -214,8 +213,9 @@ public class DetectProperties {
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<BooleanProperty> DETECT_CONAN_REQUIRE_PREV_MATCH =
-        new DetectProperty<>(new BooleanProperty("detect.conan.require.package.revision.match", false))
-            .setInfo("Require that each dependency's package revision match the component in the KB", DetectPropertyFromVersion.VERSION_6_8_0)
+        new DetectProperty<>(new BooleanProperty("detect.conan.attempt.package.revision.match", false))
+            .setInfo("If package revisions are available (conan.lock is found, and Conan's revisions feature is enabled), require that each dependency's package revision match the package revision of the component in the KB",
+                DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp("Set this value to if you want to require that a dependency's package revision and a KB component's package revision must be the same in order to be considered a match.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
