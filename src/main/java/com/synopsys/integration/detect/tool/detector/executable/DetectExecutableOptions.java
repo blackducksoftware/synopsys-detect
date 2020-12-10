@@ -36,6 +36,7 @@ public class DetectExecutableOptions {
     private final Path mavenUserPath;
     private final Path npmUserPath;
     private final Path pearUserPath;
+    private final Path pipUserPath;
     private final Path pipenvUserPath;
     private final Path pythonUserPath;
     private final Path rebarUserPath;
@@ -47,10 +48,9 @@ public class DetectExecutableOptions {
     private final Path swiftUserPath;
     private final Path lernaUserPath;
 
-    public DetectExecutableOptions(boolean isPython3, Path bashUserPath, Path bazelUserPath,
-        Path conanUserPath, Path condaUserPath, Path cpanUserPath, Path cpanmUserPath, Path gradleUserPath, Path mavenUserPath,
-        Path npmUserPath, Path pearUserPath, Path pipenvUserPath, Path pythonUserPath, Path rebarUserPath, Path javaUserPath, Path dockerUserPath, Path dotnetUserPath,
-        Path gitUserPath, Path goUserPath, Path swiftUserPath, Path lernaUserPath) {
+    public DetectExecutableOptions(boolean isPython3, Path bashUserPath, Path bazelUserPath, Path conanUserPath, Path condaUserPath, Path cpanUserPath, Path cpanmUserPath, Path gradleUserPath, Path mavenUserPath,
+        Path npmUserPath, Path pearUserPath, Path pipUserPath, Path pipenvUserPath, Path pythonUserPath, Path rebarUserPath, Path javaUserPath, Path dockerUserPath,
+        Path dotnetUserPath, Path gitUserPath, Path goUserPath, Path swiftUserPath, Path lernaUserPath) {
         this.isPython3 = isPython3;
         this.bashUserPath = bashUserPath;
         this.bazelUserPath = bazelUserPath;
@@ -62,6 +62,7 @@ public class DetectExecutableOptions {
         this.mavenUserPath = mavenUserPath;
         this.npmUserPath = npmUserPath;
         this.pearUserPath = pearUserPath;
+        this.pipUserPath = pipUserPath;
         this.pipenvUserPath = pipenvUserPath;
         this.pythonUserPath = pythonUserPath;
         this.rebarUserPath = rebarUserPath;
@@ -156,5 +157,9 @@ public class DetectExecutableOptions {
 
     public boolean isPython3() {
         return isPython3;
+    }
+
+    public Path getPipUserPath() {
+        return pipUserPath;
     }
 }

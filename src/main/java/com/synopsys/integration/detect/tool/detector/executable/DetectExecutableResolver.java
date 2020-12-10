@@ -173,7 +173,7 @@ public class DetectExecutableResolver
 
     @Override
     public File resolvePip() throws DetectableException {
-        return resolveCachedSystemExecutable(detectExecutableOptions.isPython3() ? "pip3" : "pip", null);
+        return resolveCachedSystemExecutable(detectExecutableOptions.isPython3() ? "pip3" : "pip", detectExecutableOptions.getPipUserPath());
     }
 
     @Override
