@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -52,19 +51,13 @@ import com.synopsys.integration.detect.workflow.status.DetectorStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.base.DetectorType;
-import com.synopsys.integration.detector.evaluation.ApplicableEvaluator;
 import com.synopsys.integration.detector.evaluation.DetectorAggregateEvaluationResult;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluationOptions;
 import com.synopsys.integration.detector.evaluation.DetectorEvaluator;
-import com.synopsys.integration.detector.evaluation.DiscoveryEvaluator;
 import com.synopsys.integration.detector.evaluation.DiscoveryFilter;
-import com.synopsys.integration.detector.evaluation.Evaluator;
-import com.synopsys.integration.detector.evaluation.ExtractableEvaluator;
-import com.synopsys.integration.detector.evaluation.ExtractionEvaluator;
 import com.synopsys.integration.detector.finder.DetectorFinder;
 import com.synopsys.integration.detector.finder.DetectorFinderDirectoryListException;
 import com.synopsys.integration.detector.finder.DetectorFinderOptions;
@@ -112,11 +105,45 @@ public class DetectorTool {
 
         logger.trace("Setting up detector events.");
         DetectorNameVersionHandler detectorNameVersionHandler = createNameVersionHandler(projectDetector);
-        List<Evaluator> evaluators = createEvaluators(evaluationOptions, detectorNameVersionHandler);
-
+        DiscoveryFilter discoveryFilter = new DetectDiscoveryFilter(eventSystem, detectorNameVersionHandler);
         DetectorEvaluatorBroadcaster eventBroadcaster = new DetectorEvaluatorBroadcaster(eventSystem);
-        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions, evaluators);
+
+        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions, extractionEnvironmentProvider::createExtractionEnvironment, discoveryFilter);
         detectorEvaluator.setDetectorEvaluatorListener(eventBroadcaster);
+
+        detectorEvaluator.registerPostApplicableCallback(detectorAggregateEvaluationResult -> {
+            eventSystem.publishEvent(Event.ApplicableCompleted, detectorAggregateEvaluationResult.getApplicableDetectorTypes());
+            eventSystem.publishEvent(Event.SearchCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
+            logger.info("");
+            // Return null is equivalent to the Void return type.
+            return null;
+        });
+
+        detectorEvaluator.registerPostExtractableCallback(detectorAggregateEvaluationResult -> {
+            eventSystem.publishEvent(Event.PreparationsCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
+            logger.debug("Counting detectors that will be evaluated.");
+
+            Integer extractionCount = detectorAggregateEvaluationResult.getExtractionCount();
+            eventSystem.publishEvent(Event.ExtractionCount, extractionCount);
+            eventSystem.publishEvent(Event.DiscoveryCount, extractionCount); //right now discovery and extraction are the same. -jp 8/14/19
+
+            logger.debug("Total number of detectors: {}", extractionCount);
+            // Return null is equivalent to the Void return type.
+            return null;
+        });
+
+        detectorEvaluator.registerPostDiscoveryCallback(detectorAggregateEvaluationResult -> {
+            eventSystem.publishEvent(Event.DiscoveriesCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
+            // Return null is equivalent to the Void return type.
+            return null;
+        });
+
+        detectorEvaluator.registerPostExtractionCallback(detectorAggregateEvaluationResult -> {
+            eventSystem.publishEvent(Event.ExtractionsCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
+            // Return null is equivalent to the Void return type.
+            return null;
+        });
+
         DetectorAggregateEvaluationResult evaluationResult = detectorEvaluator.evaluate(rootEvaluation);
 
         logger.debug("Finished detectors.");
@@ -142,69 +169,6 @@ public class DetectorTool {
         eventSystem.publishEvent(Event.DetectorsComplete, detectorToolResult);
 
         return detectorToolResult;
-    }
-
-    private List<Evaluator> createEvaluators(DetectorEvaluationOptions evaluationOptions, DetectorNameVersionHandler detectorNameVersionHandler) {
-        ApplicableEvaluator applicableEvaluator = createApplicableEvaluator(evaluationOptions);
-        ExtractableEvaluator extractableEvaluator = createExtractableEvaluator(evaluationOptions, extractionEnvironmentProvider::createExtractionEnvironment);
-        DiscoveryEvaluator discoveryEvaluator = createDiscoveryEvaluator(evaluationOptions, detectorNameVersionHandler);
-        ExtractionEvaluator extractionEvaluator = createExtractionEvaluator(evaluationOptions);
-        List<Evaluator> evaluators = new ArrayList<>();
-        evaluators.add(applicableEvaluator);
-        evaluators.add(extractableEvaluator);
-        evaluators.add(discoveryEvaluator);
-        evaluators.add(extractionEvaluator);
-        return evaluators;
-    }
-
-    private ApplicableEvaluator createApplicableEvaluator(DetectorEvaluationOptions evaluationOptions) {
-        ApplicableEvaluator applicableEvaluator = new ApplicableEvaluator(evaluationOptions);
-        applicableEvaluator.registerEvaluatorResultCallback(detectorAggregateEvaluationResult -> {
-            eventSystem.publishEvent(Event.ApplicableCompleted, detectorAggregateEvaluationResult.getApplicableDetectorTypes());
-            eventSystem.publishEvent(Event.SearchCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
-            logger.info("");
-            // Return null is equivalent to the Void return type.
-            return null;
-        });
-        return applicableEvaluator;
-    }
-
-    private ExtractableEvaluator createExtractableEvaluator(DetectorEvaluationOptions evaluationOptions, Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider) {
-        ExtractableEvaluator extractableEvaluator = new ExtractableEvaluator(evaluationOptions, extractionEnvironmentProvider);
-        extractableEvaluator.registerEvaluatorResultCallback(detectorAggregateEvaluationResult -> {
-            eventSystem.publishEvent(Event.PreparationsCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
-            logger.debug("Counting detectors that will be evaluated.");
-
-            Integer extractionCount = detectorAggregateEvaluationResult.getExtractionCount();
-            eventSystem.publishEvent(Event.ExtractionCount, extractionCount);
-            eventSystem.publishEvent(Event.DiscoveryCount, extractionCount); //right now discovery and extraction are the same. -jp 8/14/19
-
-            logger.debug("Total number of detectors: {}", extractionCount);
-            // Return null is equivalent to the Void return type.
-            return null;
-        });
-        return extractableEvaluator;
-    }
-
-    private DiscoveryEvaluator createDiscoveryEvaluator(DetectorEvaluationOptions evaluationOptions, DetectorNameVersionHandler detectorNameVersionHandler) {
-        DiscoveryFilter discoveryFilter = new DetectDiscoveryFilter(eventSystem, detectorNameVersionHandler);
-        DiscoveryEvaluator discoveryEvaluator = new DiscoveryEvaluator(evaluationOptions, discoveryFilter);
-        discoveryEvaluator.registerEvaluatorResultCallback(detectorAggregateEvaluationResult -> {
-            eventSystem.publishEvent(Event.DiscoveriesCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
-            // Return null is equivalent to the Void return type.
-            return null;
-        });
-        return discoveryEvaluator;
-    }
-
-    private ExtractionEvaluator createExtractionEvaluator(DetectorEvaluationOptions evaluationOptions) {
-        ExtractionEvaluator extractionEvaluator = new ExtractionEvaluator(evaluationOptions);
-        extractionEvaluator.registerEvaluatorResultCallback(detectorAggregateEvaluationResult -> {
-            eventSystem.publishEvent(Event.ExtractionsCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
-            // Return null is equivalent to the Void return type.
-            return null;
-        });
-        return extractionEvaluator;
     }
 
     private DetectorNameVersionHandler createNameVersionHandler(String projectDetector) {

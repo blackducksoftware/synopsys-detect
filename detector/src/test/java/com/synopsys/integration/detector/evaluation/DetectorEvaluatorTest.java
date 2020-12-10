@@ -25,13 +25,14 @@ package com.synopsys.integration.detector.evaluation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public class DetectorEvaluatorTest {
@@ -40,16 +41,12 @@ public class DetectorEvaluatorTest {
     public void testEvaluation() {
         DetectorEvaluatorListener listener = Mockito.mock(DetectorEvaluatorListener.class);
         DetectorEvaluationOptions evaluationOptions = Mockito.mock(DetectorEvaluationOptions.class);
+        ExtractionEnvironment extractionEnvironment = Mockito.mock(ExtractionEnvironment.class);
+        Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider = (detectorEvaluation) -> extractionEnvironment;
+        DiscoveryFilter discoveryFilter = Mockito.mock(DiscoveryFilter.class);
         DetectorEvaluationTree rootEvaluation = Mockito.mock(DetectorEvaluationTree.class);
-        List<Evaluator> evaluatorList = new ArrayList<>();
-        Evaluator evaluator = new Evaluator(evaluationOptions) {
-            @Override
-            protected DetectorEvaluationTree performEvaluation(DetectorEvaluationTree rootEvaluation) {
-                return rootEvaluation;
-            }
-        };
-        evaluatorList.add(evaluator);
-        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions, evaluatorList);
+
+        DetectorEvaluator detectorEvaluator = new DetectorEvaluator(evaluationOptions, extractionEnvironmentProvider, discoveryFilter);
         detectorEvaluator.setDetectorEvaluatorListener(listener);
         DetectorAggregateEvaluationResult result = detectorEvaluator.evaluate(rootEvaluation);
 
@@ -57,8 +54,6 @@ public class DetectorEvaluatorTest {
         assertTrue(actualListener.isPresent());
         assertEquals(listener, actualListener.get());
         assertEquals(rootEvaluation, result.getEvaluationTree());
-        assertTrue(evaluator.getDetectorEvaluatorListener().isPresent());
-        assertEquals(listener, evaluator.getDetectorEvaluatorListener().get());
     }
 
 }
