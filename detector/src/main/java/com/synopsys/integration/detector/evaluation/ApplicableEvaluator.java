@@ -52,7 +52,7 @@ public class ApplicableEvaluator extends Evaluator {
     }
 
     public void searchAndApplicableEvaluation(DetectorEvaluationTree detectorEvaluationTree, Set<DetectorRule> appliedInParent) {
-        logger.trace("Determining applicable detectors on the directory: " + detectorEvaluationTree.getDirectory().toString());
+        logger.trace("Determining applicable detectors on the directory: {}", detectorEvaluationTree.getDirectory());
 
         Set<DetectorRule> appliedSoFar = new HashSet<>();
 
@@ -60,7 +60,7 @@ public class ApplicableEvaluator extends Evaluator {
             getDetectorEvaluatorListener().ifPresent(it -> it.applicableStarted(detectorEvaluation));
 
             DetectorRule detectorRule = detectorEvaluation.getDetectorRule();
-            logger.trace("Evaluating detector: " + detectorRule.getDescriptiveName());
+            logger.trace("Evaluating detector: {}", detectorRule.getDescriptiveName());
 
             SearchEnvironment searchEnvironment = new SearchEnvironment(detectorEvaluationTree.getDepthFromRoot(), getEvaluationOptions().getDetectorFilter(), getEvaluationOptions().isForceNested(), appliedInParent, appliedSoFar);
             detectorEvaluation.setSearchEnvironment(searchEnvironment);
@@ -82,21 +82,21 @@ public class ApplicableEvaluator extends Evaluator {
                 detectorEvaluation.setApplicable(applicableResult);
 
                 if (detectorEvaluation.isApplicable()) {
-                    logger.trace("Found applicable detector: " + detectorRule.getDescriptiveName());
+                    logger.trace("Found applicable detector: {}", detectorRule.getDescriptiveName());
                     appliedSoFar.add(detectorRule);
                 } else {
-                    logger.trace("Applicable did not pass: " + detectorEvaluation.getApplicabilityMessage());
+                    logger.trace("Applicable did not pass: {}", detectorEvaluation.getApplicabilityMessage());
                 }
             } else {
-                logger.trace("Searchable did not pass: " + detectorEvaluation.getSearchabilityMessage());
+                logger.trace("Searchable did not pass: {}", detectorEvaluation.getSearchabilityMessage());
             }
 
             getDetectorEvaluatorListener().ifPresent(it -> it.applicableEnded(detectorEvaluation));
         }
 
         if (!appliedSoFar.isEmpty()) {
-            logger.debug("Found (" + appliedSoFar.size() + ") applicable detectors in: " + detectorEvaluationTree.getDirectory()
-                                                                                               .toString()); //TODO: Perfect log level also matters here. To little and we may appear stuck, but we may also be flooding the logs.
+            //TODO: Perfect log level also matters here. To little and we may appear stuck, but we may also be flooding the logs.
+            logger.debug("Found ({}) applicable detectors in: {}", appliedSoFar.size(), detectorEvaluationTree.getDirectory());
         }
 
         Set<DetectorRule> nextAppliedInParent = new HashSet<>();

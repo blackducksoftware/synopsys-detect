@@ -46,11 +46,11 @@ public class ExtractionEvaluator extends Evaluator {
     }
 
     public void extractionEvaluation(DetectorEvaluationTree detectorEvaluationTree) {
-        logger.trace("Extracting detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
+        logger.trace("Extracting detectors in the directory: {}", detectorEvaluationTree.getDirectory());
         for (DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
             if (detectorEvaluation.isExtractable() && detectorEvaluation.getExtractionEnvironment() != null) {
 
-                logger.trace("Detector was searchable, applicable and extractable, will perform extraction: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
+                logger.trace("Detector was searchable, applicable and extractable, will perform extraction: {}", detectorEvaluation.getDetectorRule().getDescriptiveName());
                 Detectable detectable = detectorEvaluation.getDetectable();
 
                 getDetectorEvaluatorListener().ifPresent(it -> it.extractionStarted(detectorEvaluation));
@@ -70,7 +70,7 @@ public class ExtractionEvaluator extends Evaluator {
 
                 getDetectorEvaluatorListener().ifPresent(it -> it.extractionEnded(detectorEvaluation));
 
-                logger.trace("Extraction result: " + detectorEvaluation.wasExtractionSuccessful());
+                logger.trace("Extraction result: {}", detectorEvaluation.wasExtractionSuccessful());
 
             }
         }

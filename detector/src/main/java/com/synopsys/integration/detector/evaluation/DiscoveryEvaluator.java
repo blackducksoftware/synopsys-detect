@@ -49,11 +49,11 @@ public class DiscoveryEvaluator extends Evaluator {
     private void discoveryEvaluation(DetectorEvaluationTree detectorEvaluationTree, DiscoveryFilter discoveryFilter) {
         logger.trace("Project discovery started.");
 
-        logger.trace("Determining discoverable detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
+        logger.trace("Determining discoverable detectors in the directory: {}", detectorEvaluationTree.getDirectory());
         for (DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
             if (detectorEvaluation.isExtractable() && detectorEvaluation.getExtractionEnvironment() != null) {
 
-                logger.trace("Detector was searchable, applicable and extractable, will perform project discovery: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
+                logger.trace("Detector was searchable, applicable and extractable, will perform project discovery: {}", detectorEvaluation.getDetectorRule().getDescriptiveName());
                 Detectable detectable = detectorEvaluation.getDetectable();
 
                 getDetectorEvaluatorListener().ifPresent(it -> it.discoveryStarted(detectorEvaluation));

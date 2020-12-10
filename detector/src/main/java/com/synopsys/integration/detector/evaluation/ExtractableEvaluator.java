@@ -58,13 +58,13 @@ public class ExtractableEvaluator extends Evaluator {
 
     public void extractableEvaluation(DetectorEvaluationTree detectorEvaluationTree) {
         logger.debug("Starting detector preparation.");
-        logger.trace("Determining extractable detectors in the directory: " + detectorEvaluationTree.getDirectory().toString());
+        logger.trace("Determining extractable detectors in the directory: {}", detectorEvaluationTree.getDirectory());
         for (DetectorEvaluation detectorEvaluation : detectorEvaluationTree.getOrderedEvaluations()) {
             if (detectorEvaluation.isSearchable() && detectorEvaluation.isApplicable()) {
 
                 getDetectorEvaluatorListener().ifPresent(it -> it.extractableStarted(detectorEvaluation));
 
-                logger.trace("Detector was searchable and applicable, will check extractable: " + detectorEvaluation.getDetectorRule().getDescriptiveName());
+                logger.trace("Detector was searchable and applicable, will check extractable: {}", detectorEvaluation.getDetectorRule().getDescriptiveName());
 
                 logger.trace("Checking to see if this detector is a fallback detector.");
                 DetectableResult detectableExtractableResult = getDetectableExtractableResult(detectorEvaluationTree, detectorEvaluation);
@@ -74,7 +74,7 @@ public class ExtractableEvaluator extends Evaluator {
                 if (detectorEvaluation.isExtractable()) {
                     logger.trace("Extractable passed. Done evaluating for now.");
                 } else {
-                    logger.trace("Extractable did not pass: " + detectorEvaluation.getExtractabilityMessage());
+                    logger.trace("Extractable did not pass: {}", detectorEvaluation.getExtractabilityMessage());
                 }
 
                 getDetectorEvaluatorListener().ifPresent(it -> it.extractableEnded(detectorEvaluation));
