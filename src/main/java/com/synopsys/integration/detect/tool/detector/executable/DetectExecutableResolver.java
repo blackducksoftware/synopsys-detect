@@ -63,8 +63,8 @@ public class DetectExecutableResolver
 
     private final Map<String, File> cachedExecutables = new HashMap<>();
 
-    public DetectExecutableResolver(final DirectoryExecutableFinder directoryExecutableFinder, final SystemPathExecutableFinder systemPathExecutableFinder,
-        final DetectExecutableOptions detectExecutableOptions) {
+    public DetectExecutableResolver(DirectoryExecutableFinder directoryExecutableFinder, SystemPathExecutableFinder systemPathExecutableFinder,
+        DetectExecutableOptions detectExecutableOptions) {
         this.directoryExecutableFinder = directoryExecutableFinder;
         this.systemPathExecutableFinder = systemPathExecutableFinder;
         this.detectExecutableOptions = detectExecutableOptions;
@@ -90,9 +90,9 @@ public class DetectExecutableResolver
         return null;
     }
 
-    private File resolveOverride(final Path executableOverride) throws DetectableException {
+    private File resolveOverride(Path executableOverride) throws DetectableException {
         if (executableOverride != null) {
-            final File exe = executableOverride.toFile();
+            File exe = executableOverride.toFile();
             if (!exe.exists()) {
                 throw new DetectableException("Executable override must exist: " + executableOverride);
             } else if (!exe.isFile()) {
@@ -117,7 +117,7 @@ public class DetectExecutableResolver
             () -> systemPathExecutableFinder.findExecutable(executableName));
     }
 
-    private File resolveLocalNonCachedExecutable(String localName, String systemName, final DetectableEnvironment environment, Path override) throws DetectableException {
+    private File resolveLocalNonCachedExecutable(String localName, String systemName, DetectableEnvironment environment, Path override) throws DetectableException {
         return resolve(/* not cached */ null,
             () -> resolveOverride(override),
             () -> directoryExecutableFinder.findExecutable(localName, environment.getDirectory()),
@@ -150,17 +150,17 @@ public class DetectExecutableResolver
     }
 
     @Override
-    public File resolveGradle(final DetectableEnvironment environment) throws DetectableException {
+    public File resolveGradle(DetectableEnvironment environment) throws DetectableException {
         return resolveLocalNonCachedExecutable("gradlew", "gradle", environment, detectExecutableOptions.getGradleUserPath());
     }
 
     @Override
-    public File resolveMaven(final DetectableEnvironment environment) throws DetectableException {
+    public File resolveMaven(DetectableEnvironment environment) throws DetectableException {
         return resolveLocalNonCachedExecutable("mvnw", "mvn", environment, detectExecutableOptions.getMavenUserPath());
     }
 
     @Override
-    public File resolveNpm(final DetectableEnvironment environment) throws DetectableException {
+    public File resolveNpm(DetectableEnvironment environment) throws DetectableException {
         return resolveLocalNonCachedExecutable("npm", "npm", environment, detectExecutableOptions.getNpmUserPath());
     }
 
@@ -171,7 +171,7 @@ public class DetectExecutableResolver
 
     @Override
     public File resolvePip() throws DetectableException {
-        return resolveCachedSystemExecutable(detectExecutableOptions.isPython3() ? "pip3" : "pip", null);
+        return resolveCachedSystemExecutable(detectExecutableOptions.isPython3() ? "pip3" : "pip", detectExecutableOptions.getPipUserPath());
     }
 
     @Override

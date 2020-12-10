@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -40,6 +41,73 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser
 
 @UnitTest
 public class YarnLockParserTest {
+    @Test
+    void testThatYarnParsesSemiColon() {
+        final List<String> yarnLockText = Arrays.asList(
+            "any-root-dep@1:",
+            "  version: 1.0.0", //must have a version to create an entry
+            "  dependencies:",
+            "    some-peer: ^10.0.0"
+        );
+
+        final YarnLockParser yarnLockParser = new YarnLockParser();
+        final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
+
+        Assertions.assertEquals(1, yarnLock.getEntries().size());
+        YarnLockEntry first = yarnLock.getEntries().get(0);
+        Assertions.assertEquals("1.0.0", first.getVersion());
+        Assertions.assertEquals(1, first.getDependencies().size());
+        YarnLockDependency dep = first.getDependencies().get(0);
+
+        Assertions.assertEquals("some-peer", dep.getName());
+        Assertions.assertEquals("^10.0.0", dep.getVersion());
+        Assertions.assertFalse(dep.isOptional());
+    }
+
+    @Test
+    void testThatYarnLockPeerNotAdded() {
+        final List<String> yarnLockText = Arrays.asList(
+            "any-root-dep@1:",
+            "  version: 1", //must have a version to create an entry
+            "  peerDependencies:",
+            "    some-peer: ^10.0.0",
+            "  peerDependenciesMeta:",
+            "    some-peer:",
+            "      optional: true"
+        );
+
+        final YarnLockParser yarnLockParser = new YarnLockParser();
+        final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
+
+        Assertions.assertEquals(1, yarnLock.getEntries().size());
+        YarnLockEntry first = yarnLock.getEntries().get(0);
+        Assertions.assertEquals(0, first.getDependencies().size());
+    }
+
+    @Test
+    void testOptionalSetFromMeta() {
+        final List<String> yarnLockText = Arrays.asList(
+            "any-root-dep@1:",
+            "  version: 1", //must have a version to create an entry
+            "  dependencies:",
+            "    should-be-optional: 1.0.0",
+            "    should-not-be-optional: 2.0.0",
+            "  dependenciesMeta:",
+            "    should-be-optional:",
+            "      optional: true"
+        );
+
+        final YarnLockParser yarnLockParser = new YarnLockParser();
+        final YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
+        Assertions.assertTrue(yarnLock.getEntries().size() > 0);
+
+        YarnLockEntry first = yarnLock.getEntries().get(0);
+        YarnLockDependency optDep = first.getDependencies().stream().filter(it -> it.getName().equals("should-be-optional")).findFirst().get();
+        YarnLockDependency reqDep = first.getDependencies().stream().filter(it -> it.getName().equals("should-not-be-optional")).findFirst().get();
+
+        Assertions.assertTrue(optDep.isOptional());
+        Assertions.assertFalse(reqDep.isOptional());
+    }
 
     @Test
     void testThatYarnLockIsParsedCorrectlyToMap() {

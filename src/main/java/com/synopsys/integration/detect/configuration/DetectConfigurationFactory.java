@@ -40,10 +40,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.blackduck.api.generated.enumeration.LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
-import com.synopsys.integration.blackduck.api.manual.throwaway.generated.enumeration.ProjectVersionPhaseType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
+import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
@@ -96,11 +96,10 @@ import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.proxy.ProxyInfoBuilder;
 
 public class DetectConfigurationFactory {
+    private final PropertyConfiguration detectConfiguration;
+    private final PathResolver pathResolver;
 
-    private PropertyConfiguration detectConfiguration;
-    private PathResolver pathResolver;
-
-    public DetectConfigurationFactory(final PropertyConfiguration detectConfiguration, final PathResolver pathResolver) {
+    public DetectConfigurationFactory(PropertyConfiguration detectConfiguration, PathResolver pathResolver) {
         this.detectConfiguration = detectConfiguration;
         this.pathResolver = pathResolver;
     }
@@ -363,7 +362,7 @@ public class DetectConfigurationFactory {
 
     public DetectProjectServiceOptions createDetectProjectServiceOptions() throws DetectUserFriendlyException {
         ProjectVersionPhaseType projectVersionPhase = getValue(DetectProperties.DETECT_PROJECT_VERSION_PHASE);
-        LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType projectVersionDistribution = getValue(DetectProperties.DETECT_PROJECT_VERSION_DISTRIBUTION);
+        ProjectVersionDistributionType projectVersionDistribution = getValue(DetectProperties.DETECT_PROJECT_VERSION_DISTRIBUTION);
         Integer projectTier = getNullableValue(DetectProperties.DETECT_PROJECT_TIER);
         String projectDescription = getNullableValue(DetectProperties.DETECT_PROJECT_DESCRIPTION);
         String projectVersionNotes = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NOTES);
@@ -491,6 +490,7 @@ public class DetectConfigurationFactory {
             getPathOrNull(DetectProperties.DETECT_MAVEN_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_NPM_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_PEAR_PATH.getProperty()),
+            getPathOrNull(DetectProperties.DETECT_PIP_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_PIPENV_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_PYTHON_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_HEX_REBAR3_PATH.getProperty()),
