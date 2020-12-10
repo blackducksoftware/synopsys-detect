@@ -30,9 +30,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
@@ -663,17 +663,19 @@ public class DetectProperties {
             .setHelp("The path to the rebar3 executable.")
             .setGroups(DetectGroup.HEX, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<BooleanProperty> DETECT_IMPACT_ANALYSIS_ENABLED = new DetectProperty<>(new BooleanProperty("detect.impact.analysis.enabled", false))
-                                                                                             .setInfo("Vulnerability Impact Analysis Enabled", DetectPropertyFromVersion.VERSION_6_5_0)
-                                                                                             .setHelp(
-                                                                                                 "If set to true, Detect will attempt to look for *.class files and generate a Vulnerability Impact Analysis Report for upload to Black Duck.")
-                                                                                             .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
+    public static final DetectProperty<BooleanProperty> DETECT_IMPACT_ANALYSIS_ENABLED =
+        new DetectProperty<>(new BooleanProperty("detect.impact.analysis.enabled", false))
+            .setInfo("Vulnerability Impact Analysis Enabled", DetectPropertyFromVersion.VERSION_6_5_0)
+            .setHelp(
+                "If set to true, Detect will attempt to look for *.class files and generate a Vulnerability Impact Analysis Report for upload to Black Duck.")
+            .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<NullablePathProperty> DETECT_IMPACT_ANALYSIS_OUTPUT_PATH = new DetectProperty<>(new NullablePathProperty("detect.impact.analysis.output.path"))
-                                                                                                      .setInfo("Impact Analysis Output Directory", DetectPropertyFromVersion.VERSION_6_5_0)
-                                                                                                      .setHelp("The path to the output directory for Impact Analysis reports.",
-                                                                                                          "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.")
-                                                                                                      .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
+    public static final DetectProperty<NullablePathProperty> DETECT_IMPACT_ANALYSIS_OUTPUT_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.impact.analysis.output.path"))
+            .setInfo("Impact Analysis Output Directory", DetectPropertyFromVersion.VERSION_6_5_0)
+            .setHelp("The path to the output directory for Impact Analysis reports.",
+                "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.")
+            .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
 
     public static final DetectProperty<FilterableEnumListProperty<DetectorType>> DETECT_INCLUDED_DETECTOR_TYPES =
         new DetectProperty<>(new FilterableEnumListProperty<>("detect.included.detector.types", emptyList(), DetectorType.class))
@@ -1086,12 +1088,6 @@ public class DetectProperties {
             .setHelp("The path to the Python executable.")
             .setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<BooleanProperty> DETECT_PYTHON_PYTHON3 =
-        new DetectProperty<>(new BooleanProperty("detect.python.python3", false))
-            .setInfo("Use Python3", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("If true will use Python 3 if available on class path.")
-            .setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL);
-
     public static final DetectProperty<EnumListProperty<DetectorType>> DETECT_REQUIRED_DETECTOR_TYPES =
         new DetectProperty<>(new EnumListProperty<>("detect.required.detector.types", emptyList(), DetectorType.class))
             .setInfo("Required Detect Types", DetectPropertyFromVersion.VERSION_4_3_0)
@@ -1100,12 +1096,6 @@ public class DetectProperties {
                 "If you want one or more detectors to be required (must be found to apply), use this property to specify the set of required detectors. If this property is set, and one (or more) of the given detectors is not found to apply, Detect will fail."
             )
             .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL);
-
-    public static final DetectProperty<BooleanProperty> DETECT_RESOLVE_TILDE_IN_PATHS =
-        new DetectProperty<>(new BooleanProperty("detect.resolve.tilde.in.paths", true))
-            .setInfo("Resolve Tilde in Paths", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("If set to false Detect will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.")
-            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
     public static final DetectProperty<BooleanProperty> DETECT_RISK_REPORT_PDF =
         new DetectProperty<>(new BooleanProperty("detect.risk.report.pdf", false))
@@ -1227,6 +1217,23 @@ public class DetectProperties {
 
     //#region Deprecated Properties
     public static final String POLARIS_CLI_DEPRECATION_MESSAGE = "This property is being removed. Detect will no longer invoke the Polaris CLI.";
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_RESOLVE_TILDE_IN_PATHS =
+        new DetectProperty<>(new BooleanProperty("detect.resolve.tilde.in.paths", true))
+            .setInfo("Resolve Tilde in Paths", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("If set to false Detect will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.")
+            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setDeprecated("This property is now deprecated. Going forward, Detect will no longer resolve tildes in the path.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_PYTHON_PYTHON3 =
+        new DetectProperty<>(new BooleanProperty("detect.python.python3", false))
+            .setInfo("Use Python3", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("If true will use Python 3 if available on class path.")
+            .setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL)
+            .setDeprecated("This property is now deprecated. Due to the January 2020 sunset of Python 2, Detect version 7.0.0 and will assume that the python executable points to python3.",
+                DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<IntegerProperty> BLACKDUCK_TIMEOUT =
