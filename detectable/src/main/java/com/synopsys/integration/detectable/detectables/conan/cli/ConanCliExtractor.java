@@ -76,11 +76,11 @@ public class ConanCliExtractor {
     private boolean wasSuccess(ExecutableOutput conanInfoOutput) {
         String errorOutput = conanInfoOutput.getErrorOutput();
         if (StringUtils.isNotBlank(errorOutput) && errorOutput.contains("ERROR: ")) {
-            logger.error(String.format("The conan info command reported errors: %s", errorOutput));
+            logger.error("The conan info command reported errors: {}", errorOutput);
             return false;
         }
         if (StringUtils.isNotBlank(errorOutput)) {
-            logger.debug(String.format("The conan info command wrote to stderr: %s", errorOutput));
+            logger.debug("The conan info command wrote to stderr: {}", errorOutput);
         }
         return true;
     }
@@ -98,14 +98,14 @@ public class ConanCliExtractor {
     private List<String> generateConanInfoCmdArgs(File projectDir, ConanCliExtractorOptions conanCliExtractorOptions) {
         List<String> exeArgs = new ArrayList<>();
         exeArgs.add("info");
-        if (conanCliExtractorOptions.getLockfilePath().isPresent()) {
+        conanCliExtractorOptions.getLockfilePath().ifPresent(lockfilePath -> {
             exeArgs.add("--lockfile");
-            exeArgs.add(conanCliExtractorOptions.getLockfilePath().get());
-        }
-        if (conanCliExtractorOptions.getAdditionalArguments().isPresent()) {
-            String[] additionalArgs = conanCliExtractorOptions.getAdditionalArguments().get().split(" +");
+            exeArgs.add(lockfilePath);
+        });
+        conanCliExtractorOptions.getAdditionalArguments().ifPresent(argsString -> {
+            String[] additionalArgs = argsString.split(" +");
             exeArgs.addAll(Arrays.asList(additionalArgs));
-        }
+        });
         exeArgs.add(projectDir.getAbsolutePath());
         return exeArgs;
     }

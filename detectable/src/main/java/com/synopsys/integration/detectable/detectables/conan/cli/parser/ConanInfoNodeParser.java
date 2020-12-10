@@ -66,9 +66,7 @@ public class ConanInfoNodeParser {
         }
         logger.trace("Reached end of conan info output");
         Optional<ConanNode> node = nodeBuilder.build();
-        ConanInfoNodeParseResult result =
-            new ConanInfoNodeParseResult(conanInfoOutputLines.size() - 1, node.orElse(null));
-        return result;
+        return new ConanInfoNodeParseResult(conanInfoOutputLines.size() - 1, node.orElse(null));
     }
 
     private Optional<ConanInfoNodeParseResult> getResultIfDone(String nodeBodyLine, int lineIndex, int nodeStartIndex, int bodyLineCount, ConanNodeBuilder nodeBuilder) {

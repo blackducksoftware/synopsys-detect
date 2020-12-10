@@ -61,14 +61,14 @@ public class ConanLockfileDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         if (conanLockfileExtractorOptions.getLockfilePath().isPresent()) {
-            logger.debug(String.format("Conan Lockfile detectable applies because user supplied lockfile path %s", conanLockfileExtractorOptions.getLockfilePath().get()));
+            logger.debug("Conan Lockfile detectable applies because user supplied lockfile path {}", conanLockfileExtractorOptions.getLockfilePath().get());
             return new PassedDetectableResult();
         }
         File discoveredLockfile = fileFinder.findFile(environment.getDirectory(), CONANLOCKFILE);
         if (discoveredLockfile == null) {
             return new FileNotFoundDetectableResult(CONANLOCKFILE);
         }
-        logger.debug(String.format("Conan Lockfile detectable applies because Detect found the default lockfile %s", discoveredLockfile.getAbsolutePath()));
+        logger.debug("Conan Lockfile detectable applies because Detect found the default lockfile {}", discoveredLockfile.getAbsolutePath());
         lockfile = discoveredLockfile;
         return new PassedDetectableResult();
     }
@@ -96,14 +96,14 @@ public class ConanLockfileDetectable extends Detectable {
         File userProvidedLockfile = new File(filePath);
         if (userProvidedLockfile.exists()) {
             if (userProvidedLockfile.canRead()) {
-                logger.trace(String.format("File %s is readable", filePath));
+                logger.trace("File {} is readable", filePath);
                 return Optional.of(userProvidedLockfile);
             } else {
-                logger.debug(String.format("File %s is not readable", filePath));
+                logger.debug("File {} is not readable", filePath);
                 return Optional.empty();
             }
         } else {
-            logger.debug(String.format("File %s does not exist", filePath));
+            logger.debug("File {} does not exist", filePath);
             return Optional.empty();
         }
     }

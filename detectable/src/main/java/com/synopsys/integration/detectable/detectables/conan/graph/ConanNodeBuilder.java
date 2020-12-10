@@ -31,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO when ConanNode is re-worked, this class will need to be completely  re-thought
 public class ConanNodeBuilder {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private String ref;
@@ -58,9 +59,6 @@ public class ConanNodeBuilder {
         if (StringUtils.isBlank(ref)) {
             return this;
         }
-        // TODO some of this is duplicated in build; I think it should be done here only
-        // Move all that kind of stuff to setters (from build())?
-        // build should just build, not set fields
         ref = ref.trim();
         StringTokenizer tokenizer = new StringTokenizer(ref, "@/#");
         if (!ref.startsWith("conanfile.")) {

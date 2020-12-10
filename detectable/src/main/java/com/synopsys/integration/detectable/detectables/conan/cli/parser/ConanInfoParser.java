@@ -53,11 +53,10 @@ public class ConanInfoParser {
     }
 
     public ConanDetectableResult generateCodeLocationFromConanInfoOutput(String conanInfoOutput, boolean includeBuildDependencies, boolean preferLongFormExternalIds) throws IntegrationException {
-        logger.trace(String.format("Parsing conan info output:\n%s", conanInfoOutput));
+        logger.trace("Parsing conan info output:\n{}", conanInfoOutput);
         Map<String, ConanNode> nodeMap = generateNodeMap(conanInfoOutput);
-        ConanDetectableResult result = conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory, versionGenerator,
+        return conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory, versionGenerator,
             includeBuildDependencies, preferLongFormExternalIds, nodeMap);
-        return result;
     }
 
     /*
@@ -75,13 +74,11 @@ public class ConanInfoParser {
         int lineIndex = 0;
         while (lineIndex < conanInfoOutputLines.size()) {
             String line = conanInfoOutputLines.get(lineIndex);
-            logger.trace(String.format("Parsing line: %d: %s", lineIndex + 1, line));
+            logger.trace("Parsing line: {}: {}", lineIndex + 1, line);
             // Parse the entire node
             ConanInfoNodeParseResult nodeParseResult = conanInfoNodeParser.parseNode(conanInfoOutputLines, lineIndex);
-            if (nodeParseResult.getConanNode().isPresent()) {
-                // Some lines that look like the start of nodes aren't actually the start of nodes, and get ignored
-                graphNodes.put(nodeParseResult.getConanNode().get().getRef(), nodeParseResult.getConanNode().get());
-            }
+            // Some lines that look like the start of nodes aren't actually the start of nodes, and don't result in a node
+            nodeParseResult.getConanNode().ifPresent(node -> graphNodes.put(node.getRef(), node));
             lineIndex = nodeParseResult.getLastParsedLineIndex();
             lineIndex++;
         }
