@@ -28,7 +28,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
@@ -38,13 +37,6 @@ import org.slf4j.LoggerFactory;
 
 public class DependencyListFileParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final Pattern newLinePattern;
-    private final Pattern backslashPattern;
-
-    public DependencyListFileParser() {
-        this.newLinePattern = Pattern.compile("\n");
-        this.backslashPattern = Pattern.compile("\\\\");
-    }
 
     public List<String> parseDepsMk(File depsMkFile) {
         try {
@@ -64,9 +56,11 @@ public class DependencyListFileParser {
         }
         String depsListString = depsMkTextParts[1];
         logger.trace(String.format("dependencies: %s", depsListString));
-        depsListString = newLinePattern.matcher(depsListString).replaceAll(" ");
+
+        depsListString = depsListString.replaceAll("\n", " ");
         logger.trace(String.format("dependencies, newlines removed: %s", depsListString));
-        depsListString = backslashPattern.matcher(depsListString).replaceAll(" ");
+
+        depsListString = depsListString.replaceAll("\\\\", " "); //TODO: This does not work on Windows paths.
         logger.trace(String.format("dependencies, backslashes removed: %s", depsListString));
 
         String[] deps = depsListString.split("\\s+");

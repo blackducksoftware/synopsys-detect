@@ -39,6 +39,7 @@ import com.synopsys.integration.detectable.detectable.executable.DetectableExecu
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
+import com.synopsys.integration.executable.ExecutableRunner;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 import com.synopsys.integration.executable.ProcessBuilderRunner;
 import com.synopsys.integration.log.Slf4jIntLogger;
@@ -48,10 +49,12 @@ public class DetectExecutableRunner implements DetectableExecutableRunner {
     private final EventSystem eventSystem;
     private final boolean shouldLogOutput;
     private ProcessBuilderRunner runner;
+    private ProcessBuilderRunner secretRunner;
 
     private DetectExecutableRunner(Logger logger, final Consumer<String> outputConsumer, final Consumer<String> traceConsumer, EventSystem eventSystem, boolean shouldLogOutput) {
         this.logger = logger;
         runner = new ProcessBuilderRunner(new Slf4jIntLogger(logger), outputConsumer, traceConsumer);
+        secretRunner = new ProcessBuilderRunner(new Slf4jIntLogger(logger), (line) -> {}, line -> {});
         this.eventSystem = eventSystem;
         this.shouldLogOutput = shouldLogOutput;
 
@@ -97,11 +100,15 @@ public class DetectExecutableRunner implements DetectableExecutableRunner {
     }
 
     @NotNull
-    @Override
-    public ExecutableOutput execute(final Executable executable) throws ExecutableRunnerException {
-        final ExecutableOutput output = runner.execute(executable);
+    public ExecutableOutput execute(final Executable executable, boolean outputContainsSecret) throws ExecutableRunnerException {
+        ExecutableRunner targetRunner = runner;
+        if (outputContainsSecret) {
+            targetRunner = secretRunner;
+        }
+        ExecutableOutput output = targetRunner.execute(executable);
         eventSystem.publishEvent(Event.Executable, new ExecutedExecutable(output, executable));
-        if (output.getReturnCode() != 0 && shouldLogOutput && !logger.isDebugEnabled() && !logger.isTraceEnabled()) {
+        boolean normallyLogOutput = output.getReturnCode() != 0 && shouldLogOutput && !logger.isDebugEnabled() && !logger.isTraceEnabled();
+        if (normallyLogOutput && !outputContainsSecret) {
             if (StringUtils.isNotBlank(output.getStandardOutput())) {
                 logger.info("Standard Output: ");
                 logger.info(output.getStandardOutput());
@@ -113,6 +120,18 @@ public class DetectExecutableRunner implements DetectableExecutableRunner {
             }
         }
         return output;
+    }
+
+    @NotNull
+    @Override
+    public ExecutableOutput execute(final Executable executable) throws ExecutableRunnerException {
+        return execute(executable, false);
+    }
+
+    @NotNull
+    @Override
+    public ExecutableOutput executeSecretly(final Executable executable) throws ExecutableRunnerException {
+        return execute(executable, true);
     }
 
     @Override

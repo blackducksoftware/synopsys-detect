@@ -30,10 +30,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.synopsys.integration.blackduck.api.generated.enumeration.LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
-import com.synopsys.integration.blackduck.api.manual.throwaway.generated.enumeration.ProjectVersionPhaseType;
+import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.configuration.property.Property;
@@ -1064,8 +1064,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<EnumProperty<LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType>> DETECT_PROJECT_VERSION_DISTRIBUTION =
-        new DetectProperty<>(new EnumProperty<>("detect.project.version.distribution", LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType.EXTERNAL, LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType.class))
+    public static final DetectProperty<EnumProperty<ProjectVersionDistributionType>> DETECT_PROJECT_VERSION_DISTRIBUTION =
+        new DetectProperty<>(new EnumProperty<>("detect.project.version.distribution", ProjectVersionDistributionType.EXTERNAL, ProjectVersionDistributionType.class))
             .setInfo("Version Distribution", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("An override for the Project Version distribution")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)

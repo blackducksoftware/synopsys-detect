@@ -30,6 +30,7 @@ import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BashResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
@@ -206,8 +207,8 @@ public class DetectExecutableResolver
     }
 
     @Override
-    public File resolveGit() throws DetectableException {
-        return resolveCachedSystemExecutable("git", detectExecutableOptions.getGitUserPath());
+    public ExecutableTarget resolveGit() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("git", detectExecutableOptions.getGitUserPath()));
     }
 
     @Override
