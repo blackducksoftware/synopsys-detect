@@ -134,7 +134,8 @@ public class DetectBoot {
         this.detectBootFactory = detectBootFactory;
     }
 
-    public DetectBootResult boot(DetectRun detectRun, String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) throws DetectUserFriendlyException, IOException, IllegalAccessException {
+    public Optional<DetectBootResult> boot(DetectRun detectRun, String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext)
+        throws DetectUserFriendlyException, IOException, IllegalAccessException {
         ObjectMapper objectMapper = detectBootFactory.createObjectMapper();
         DocumentBuilder xml = detectBootFactory.createXmlDocumentBuilder();
         Configuration configuration = detectBootFactory.createConfiguration();
@@ -154,12 +155,12 @@ public class DetectBoot {
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             printAppropriateHelp(DetectProperties.allProperties(), detectArgumentState);
-            return DetectBootResult.exit(new PropertyConfiguration(propertySources));
+            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 
         if (detectArgumentState.isHelpJsonDocument()) {
             printHelpJsonDocument(DetectProperties.allProperties(), detectInfo, gson);
-            return DetectBootResult.exit(new PropertyConfiguration(propertySources));
+            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 
         printDetectInfo(detectInfo);
@@ -182,7 +183,7 @@ public class DetectBoot {
         Boolean printFull = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_CONFIGURATION_OUTPUT.getProperty());
         Optional<DetectBootResult> configurationResult = printConfiguration(printFull, detectConfiguration, eventSystem, detectInfo);
         if (configurationResult.isPresent()) {
-            return configurationResult.get();
+            return configurationResult;
         }
 
         logger.debug("Initializing Detect.");
@@ -212,9 +213,9 @@ public class DetectBoot {
             try {
                 airGapZip = createAirGapZip(inspectorFilter, detectConfiguration, pathResolver, directoryManager, gson, eventSystem, configuration, airGapSuffix);
             } catch (DetectUserFriendlyException e) {
-                return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
+                return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
             }
-            return DetectBootResult.exit(detectConfiguration, airGapZip, directoryManager, diagnosticSystem);
+            return Optional.of(DetectBootResult.exit(detectConfiguration, airGapZip, directoryManager, diagnosticSystem));
         }
 
         RunOptions runOptions = detectConfigurationFactory.createRunOptions();
@@ -232,19 +233,19 @@ public class DetectBoot {
         try {
             productRunData = productBoot.boot(productDecision, productBootOptions, new BlackDuckConnectivityChecker(), new PolarisConnectivityChecker(), productBootFactory, new AnalyticsConfigurationService(gson));
         } catch (DetectUserFriendlyException e) {
-            return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
+            return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
         }
 
         if (productRunData == null) {
             logger.info("No products to run, Detect is complete.");
-            return DetectBootResult.exit(detectConfiguration, directoryManager, diagnosticSystem);
+            return Optional.of(DetectBootResult.exit(detectConfiguration, directoryManager, diagnosticSystem));
         }
 
         ProxyInfo detectableProxyInfo;
         try {
             detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
         } catch (DetectUserFriendlyException e) {
-            return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
+            return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
         }
 
         DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo);
@@ -267,7 +268,7 @@ public class DetectBoot {
         detectContext.registerConfiguration(RunBeanConfiguration.class);
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
-        return DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem);
+        return Optional.of(DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 
     private void printAppropriateHelp(List<Property> properties, DetectArgumentState detectArgumentState) {

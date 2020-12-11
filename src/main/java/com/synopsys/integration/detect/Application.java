@@ -39,7 +39,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
-import com.synopsys.integration.common.util.Bdo;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectInfoUtility;
 import com.synopsys.integration.detect.configuration.DetectProperties;
@@ -142,9 +141,8 @@ public class Application implements ApplicationRunner {
         } else {
             logger.info("Will not create status file, detect did not boot.");
         }
-
-        Bdo<DetectBootResult> detectBootResult = Bdo.of(detectBootResultOptional);
-        shutdownApplication(detectBootResult, exitCodeManager);
+        
+        shutdownApplication(detectBootResultOptional, exitCodeManager);
 
         logger.debug("All Detect actions completed.");
 
@@ -174,7 +172,7 @@ public class Application implements ApplicationRunner {
         try {
             logger.debug("Detect boot begin.");
             DetectBoot detectBoot = new DetectBoot(new DetectBootFactory());
-            bootResult = Optional.ofNullable(detectBoot.boot(detectRun, applicationArguments.getSourceArgs(), environment, eventSystem, detectContext));
+            bootResult = detectBoot.boot(detectRun, applicationArguments.getSourceArgs(), environment, eventSystem, detectContext);
             logger.debug("Detect boot completed.");
         } catch (Exception e) {
             logger.error("Detect boot failed.");
@@ -224,16 +222,16 @@ public class Application implements ApplicationRunner {
         }
     }
 
-    private void shutdownApplication(Bdo<DetectBootResult> detectBootResult, ExitCodeManager exitCodeManager) {
+    private void shutdownApplication(Optional<DetectBootResult> detectBootResult, ExitCodeManager exitCodeManager) {
         try {
             logger.debug("Detect shutdown begin.");
             ShutdownManager shutdownManager = new ShutdownManager();
             shutdownManager.shutdown(
-                detectBootResult.flatMap(DetectBootResult::getProductRunData).toOptional(),
-                detectBootResult.flatMap(DetectBootResult::getAirGapZip).toOptional(),
-                detectBootResult.flatMap(DetectBootResult::getDetectConfiguration).toOptional(),
-                detectBootResult.flatMap(DetectBootResult::getDirectoryManager).toOptional(),
-                detectBootResult.flatMap(DetectBootResult::getDiagnosticSystem).toOptional());
+                detectBootResult.flatMap(DetectBootResult::getProductRunData),
+                detectBootResult.flatMap(DetectBootResult::getAirGapZip),
+                detectBootResult.flatMap(DetectBootResult::getDetectConfiguration),
+                detectBootResult.flatMap(DetectBootResult::getDirectoryManager),
+                detectBootResult.flatMap(DetectBootResult::getDiagnosticSystem));
             logger.debug("Detect shutdown completed.");
         } catch (Exception e) {
             logger.error("Detect shutdown failed.");
