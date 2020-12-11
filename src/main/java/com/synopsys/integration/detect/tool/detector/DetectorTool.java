@@ -115,8 +115,6 @@ public class DetectorTool {
             eventSystem.publishEvent(Event.ApplicableCompleted, detectorAggregateEvaluationResult.getApplicableDetectorTypes());
             eventSystem.publishEvent(Event.SearchCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
             logger.info("");
-            // Return null is equivalent to the Void return type.
-            return null;
         });
 
         detectorEvaluator.registerPostExtractableCallback(detectorAggregateEvaluationResult -> {
@@ -128,20 +126,14 @@ public class DetectorTool {
             eventSystem.publishEvent(Event.DiscoveryCount, extractionCount); //right now discovery and extraction are the same. -jp 8/14/19
 
             logger.debug("Total number of detectors: {}", extractionCount);
-            // Return null is equivalent to the Void return type.
-            return null;
         });
 
         detectorEvaluator.registerPostDiscoveryCallback(detectorAggregateEvaluationResult -> {
             eventSystem.publishEvent(Event.DiscoveriesCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
-            // Return null is equivalent to the Void return type.
-            return null;
         });
 
         detectorEvaluator.registerPostExtractionCallback(detectorAggregateEvaluationResult -> {
             eventSystem.publishEvent(Event.ExtractionsCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
-            // Return null is equivalent to the Void return type.
-            return null;
         });
 
         DetectorAggregateEvaluationResult evaluationResult = detectorEvaluator.evaluate(rootEvaluation);

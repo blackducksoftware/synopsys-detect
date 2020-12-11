@@ -22,16 +22,15 @@
  */
 package com.synopsys.integration.detector.evaluation;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
-public class DetectorEvaluator extends Evaluator {
+public class DetectorEvaluator {
     private DetectorEvaluatorListener detectorEvaluatorListener;
     private ApplicableEvaluator applicableEvaluator;
     private ExtractableEvaluator extractableEvaluator;
@@ -39,56 +38,42 @@ public class DetectorEvaluator extends Evaluator {
     private ExtractionEvaluator extractionEvaluator;
 
     public DetectorEvaluator(DetectorEvaluationOptions evaluationOptions, Function<DetectorEvaluation, ExtractionEnvironment> extractionEnvironmentProvider, DiscoveryFilter discoveryFilter) {
-        super(evaluationOptions);
         applicableEvaluator = new ApplicableEvaluator(evaluationOptions);
         extractableEvaluator = new ExtractableEvaluator(evaluationOptions, extractionEnvironmentProvider);
         discoveryEvaluator = new DiscoveryEvaluator(evaluationOptions, discoveryFilter);
         extractionEvaluator = new ExtractionEvaluator(evaluationOptions);
     }
 
-    @Override
-    protected DetectorEvaluationTree performEvaluation(DetectorEvaluationTree rootEvaluation) {
-        DetectorEvaluationTree currentEvaluationTree = rootEvaluation;
-        List<Evaluator> evaluators = createOrderedEvaluatorList();
-        for (Evaluator evaluator : evaluators) {
-            currentEvaluationTree = evaluator.evaluate(currentEvaluationTree).getEvaluationTree();
-        }
+    public DetectorAggregateEvaluationResult evaluate(DetectorEvaluationTree rootEvaluation) {
+        // each evaluator mutates the rootEvaluation object's state.  So we only need to return the rootEvaluation object at the end.
+        applicableEvaluator.evaluate(rootEvaluation);
+        extractableEvaluator.evaluate(rootEvaluation);
+        discoveryEvaluator.evaluate(rootEvaluation);
+        extractionEvaluator.evaluate(rootEvaluation);
 
-        return currentEvaluationTree;
+        return new DetectorAggregateEvaluationResult(rootEvaluation);
     }
 
-    private List<Evaluator> createOrderedEvaluatorList() {
-        List<Evaluator> evaluators = new ArrayList<>(4);
-        evaluators.add(applicableEvaluator);
-        evaluators.add(extractableEvaluator);
-        evaluators.add(discoveryEvaluator);
-        evaluators.add(extractionEvaluator);
-
-        return evaluators;
-    }
-
-    public void registerPostApplicableCallback(Function<DetectorAggregateEvaluationResult, Void> callBack) {
+    public void registerPostApplicableCallback(Consumer<DetectorAggregateEvaluationResult> callBack) {
         applicableEvaluator.registerEvaluatorResultCallback(callBack);
     }
 
-    public void registerPostExtractableCallback(Function<DetectorAggregateEvaluationResult, Void> callBack) {
+    public void registerPostExtractableCallback(Consumer<DetectorAggregateEvaluationResult> callBack) {
         extractableEvaluator.registerEvaluatorResultCallback(callBack);
     }
 
-    public void registerPostDiscoveryCallback(Function<DetectorAggregateEvaluationResult, Void> callBack) {
+    public void registerPostDiscoveryCallback(Consumer<DetectorAggregateEvaluationResult> callBack) {
         discoveryEvaluator.registerEvaluatorResultCallback(callBack);
     }
 
-    public void registerPostExtractionCallback(Function<DetectorAggregateEvaluationResult, Void> callBack) {
+    public void registerPostExtractionCallback(Consumer<DetectorAggregateEvaluationResult> callBack) {
         extractionEvaluator.registerEvaluatorResultCallback(callBack);
     }
 
-    @Override
     public Optional<DetectorEvaluatorListener> getDetectorEvaluatorListener() {
         return Optional.ofNullable(detectorEvaluatorListener);
     }
-
-    @Override
+    
     public void setDetectorEvaluatorListener(DetectorEvaluatorListener detectorEvaluatorListener) {
         this.detectorEvaluatorListener = detectorEvaluatorListener;
         applicableEvaluator.setDetectorEvaluatorListener(detectorEvaluatorListener);

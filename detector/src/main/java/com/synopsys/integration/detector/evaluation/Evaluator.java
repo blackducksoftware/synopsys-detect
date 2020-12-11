@@ -25,12 +25,12 @@ package com.synopsys.integration.detector.evaluation;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 
 public abstract class Evaluator {
-    private List<Function<DetectorAggregateEvaluationResult, Void>> endCallbacks;
+    private List<Consumer<DetectorAggregateEvaluationResult>> endCallbacks;
     private DetectorEvaluatorListener detectorEvaluatorListener;
     private final DetectorEvaluationOptions evaluationOptions;
 
@@ -46,15 +46,15 @@ public abstract class Evaluator {
         return result;
     }
 
-    public void registerEvaluatorResultCallback(Function<DetectorAggregateEvaluationResult, Void> callback) {
+    public void registerEvaluatorResultCallback(Consumer<DetectorAggregateEvaluationResult> callback) {
         endCallbacks.add(callback);
     }
 
     protected abstract DetectorEvaluationTree performEvaluation(DetectorEvaluationTree rootEvaluation);
 
     private void executeResultCallbacks(DetectorAggregateEvaluationResult evaluationResult) {
-        for (Function<DetectorAggregateEvaluationResult, Void> callback : endCallbacks) {
-            callback.apply(evaluationResult);
+        for (Consumer<DetectorAggregateEvaluationResult> callback : endCallbacks) {
+            callback.accept(evaluationResult);
         }
     }
 
