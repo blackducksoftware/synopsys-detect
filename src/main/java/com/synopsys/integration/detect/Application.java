@@ -27,7 +27,7 @@ import java.nio.charset.Charset;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.time.DurationFormatUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,19 +42,19 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectInfoUtility;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBoot;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootFactory;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootResult;
+import com.synopsys.integration.detect.lifecycle.exit.ExitManager;
+import com.synopsys.integration.detect.lifecycle.exit.ExitOptions;
+import com.synopsys.integration.detect.lifecycle.exit.ExitResult;
 import com.synopsys.integration.detect.lifecycle.run.RunManager;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
-import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
 import com.synopsys.integration.detect.workflow.DetectRun;
-import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.report.ReportListener;
@@ -62,7 +62,6 @@ import com.synopsys.integration.detect.workflow.report.output.FormattedOutputMan
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.detect.workflow.status.DetectStatusManager;
-import com.synopsys.integration.log.Slf4jIntLogger;
 
 public class Application implements ApplicationRunner {
     private final Logger logger = LoggerFactory.getLogger(Application.class);
@@ -101,6 +100,7 @@ public class Application implements ApplicationRunner {
 
         ExitCodeUtility exitCodeUtility = new ExitCodeUtility();
         ExitCodeManager exitCodeManager = new ExitCodeManager(eventSystem, exitCodeUtility);
+        ExitManager exitManager = new ExitManager(eventSystem, exitCodeManager, statusManager);
 
         ReportListener.createDefault(eventSystem);
         FormattedOutputManager formattedOutputManager = new FormattedOutputManager(eventSystem);
@@ -122,14 +122,8 @@ public class Application implements ApplicationRunner {
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
-
-            printOutput = detectBootResult.getDetectConfiguration()
-                              .map(configuration -> !configuration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_RESULTS_OUTPUT.getProperty()))
-                              .orElse(Boolean.TRUE);
-
-            shouldForceSuccess = detectBootResult.getDetectConfiguration()
-                                     .map(configuration -> configuration.getValueOrDefault(DetectProperties.DETECT_FORCE_SUCCESS.getProperty()))
-                                     .orElse(Boolean.FALSE);
+            printOutput = shouldPrintOutput(detectBootResult);
+            shouldForceSuccess = shouldForceSuccess(detectBootResult);
 
             runApplication(detectContext, detectRun, eventSystem, exitCodeManager, detectBootResult);
 
@@ -138,33 +132,28 @@ public class Application implements ApplicationRunner {
             detectBootResult.getDirectoryManager()
                 .ifPresent(directoryManager -> createStatusOutputFile(formattedOutputManager, detectInfo, directoryManager));
 
+            shutdownApplication(detectBootResult, exitCodeManager);
         } else {
             logger.info("Will not create status file, detect did not boot.");
         }
-        
-        shutdownApplication(detectBootResultOptional, exitCodeManager);
 
         logger.debug("All Detect actions completed.");
 
-        //Generally, when requesting a failure status, an exit code is also requested, but if it is not, we default to an unknown error.
-        if (statusManager.hasAnyFailure()) {
-            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_UNKNOWN_ERROR, "A failure status was requested by one or more of Detect's tools."));
-        }
+        exitApplication(exitManager, startTime, printOutput, shouldForceSuccess);
+    }
 
-        //Find the final (as requested) exit code
-        ExitCodeType finalExitCode = exitCodeManager.getWinningExitCode();
+    @NotNull
+    private Boolean shouldForceSuccess(DetectBootResult detectBootResult) {
+        return detectBootResult.getDetectConfiguration()
+                   .map(configuration -> configuration.getValueOrDefault(DetectProperties.DETECT_FORCE_SUCCESS.getProperty()))
+                   .orElse(Boolean.FALSE);
+    }
 
-        //Print detect's status
-        if (printOutput) {
-            statusManager.logDetectResults(new Slf4jIntLogger(logger), finalExitCode);
-        }
-
-        //Print duration of run
-        long endTime = System.currentTimeMillis();
-        String duration = DurationFormatUtils.formatPeriod(startTime, endTime, "HH'h' mm'm' ss's' SSS'ms'");
-        logger.info("Detect duration: {}", duration);
-
-        exitApplication(finalExitCode, shouldForceSuccess);
+    @NotNull
+    private Boolean shouldPrintOutput(DetectBootResult detectBootResult) {
+        return detectBootResult.getDetectConfiguration()
+                   .map(configuration -> !configuration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_RESULTS_OUTPUT.getProperty()))
+                   .orElse(Boolean.TRUE);
     }
 
     private Optional<DetectBootResult> bootApplication(DetectRun detectRun, ApplicationArguments applicationArguments, EventSystem eventSystem, DetectContext detectContext, ExitCodeManager exitCodeManager) {
@@ -222,16 +211,11 @@ public class Application implements ApplicationRunner {
         }
     }
 
-    private void shutdownApplication(Optional<DetectBootResult> detectBootResult, ExitCodeManager exitCodeManager) {
+    private void shutdownApplication(DetectBootResult detectBootResult, ExitCodeManager exitCodeManager) {
         try {
             logger.debug("Detect shutdown begin.");
             ShutdownManager shutdownManager = new ShutdownManager();
-            shutdownManager.shutdown(
-                detectBootResult.flatMap(DetectBootResult::getProductRunData),
-                detectBootResult.flatMap(DetectBootResult::getAirGapZip),
-                detectBootResult.flatMap(DetectBootResult::getDetectConfiguration),
-                detectBootResult.flatMap(DetectBootResult::getDirectoryManager),
-                detectBootResult.flatMap(DetectBootResult::getDiagnosticSystem));
+            shutdownManager.shutdown(detectBootResult);
             logger.debug("Detect shutdown completed.");
         } catch (Exception e) {
             logger.error("Detect shutdown failed.");
@@ -239,19 +223,14 @@ public class Application implements ApplicationRunner {
         }
     }
 
-    private void exitApplication(ExitCodeType finalExitCode, boolean shouldForceSuccess) {
-        //Exit with formal exit code
-        if (finalExitCode != ExitCodeType.SUCCESS && shouldForceSuccess) {
-            logger.warn("Forcing success: Exiting with exit code 0. Ignored exit code was {}.", finalExitCode.getExitCode());
-            System.exit(0);
-        } else if (finalExitCode != ExitCodeType.SUCCESS) {
-            logger.error("Exiting with code {} - {}", finalExitCode.getExitCode(), finalExitCode);
-        }
+    private void exitApplication(ExitManager exitManager, long startTime, boolean printOutput, boolean shouldForceSuccess) {
+        ExitOptions exitOptions = new ExitOptions(startTime, printOutput, shouldForceSuccess, SHOULD_EXIT);
+        ExitResult exitResult = exitManager.exit(exitOptions);
 
-        if (SHOULD_EXIT) {
-            System.exit(finalExitCode.getExitCode());
-        } else {
-            logger.info("Would normally exit({}) but it is overridden.", finalExitCode.getExitCode());
+        if (exitResult.isForceSuccess()) {
+            System.exit(0);
+        } else if (exitResult.shouldPerformExit()) {
+            System.exit(exitResult.getExitCode());
         }
     }
 }
