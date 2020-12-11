@@ -1,0 +1,34 @@
+======== Detect Issues ========
+
+DETECTORS:
+	Junit Test Issue Set 1 primary message: DETECTOR
+	Junit Test Issue Set 1 secondary message: DETECTOR
+	Junit Test Issue Set 2 primary message: DETECTOR
+	Junit Test Issue Set 2 secondary message: DETECTOR
+
+EXCEPTIONS:
+	Junit Test Issue Set 1 primary message: EXCEPTION
+	Junit Test Issue Set 1 secondary message: EXCEPTION
+	Junit Test Issue Set 2 primary message: EXCEPTION
+	Junit Test Issue Set 2 secondary message: EXCEPTION
+
+DEPRECATIONS:
+	Junit Test Issue Set 1 primary message: DEPRECATION
+	Junit Test Issue Set 1 secondary message: DEPRECATION
+	Junit Test Issue Set 2 primary message: DEPRECATION
+	Junit Test Issue Set 2 secondary message: DEPRECATION
+
+======== Detect Result ========
+
+Black Duck Project BOM: https://example.com/api/projects/project_1
+Black Duck Project BOM: https://example.com/api/projects/project_2
+Detect Air Gap Zip: ./air_gap/directory
+report_1: ./report/1/report_file
+
+======== Detect Status ========
+
+description 1: SUCCESS
+description 2: FAILURE
+Overall Status: SUCCESS - Detect exited successfully.
+
+===============================
