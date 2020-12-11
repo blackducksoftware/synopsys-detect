@@ -30,7 +30,7 @@ public class GenericNode<T> extends Stringable {
     // if rootNode: conanfile.{txt,py}[ (projectname/version)]
     // else       : package/version[@user/channel]
     private final String ref;
-    private final String filename; // conanfile.txt, conanfile.py
+    private final String path; // conanfile.txt, conanfile.py
     private final String name;
     private final String version;
     private final String user;
@@ -43,13 +43,13 @@ public class GenericNode<T> extends Stringable {
     private final List<T> buildRequiresRefs;
     private final boolean rootNode;
 
-    public GenericNode(String ref, String filename, String name, String version, String user, String channel,
+    public GenericNode(String ref, String path, String name, String version, String user, String channel,
         String recipeRevision, String packageId, String packageRevision,
         List<T> requiresRefs,
         List<T> buildRequiresRefs,
         boolean rootNode) {
         this.ref = ref;
-        this.filename = filename;
+        this.path = path;
         this.name = name;
         this.version = version;
         this.user = user;
@@ -66,8 +66,8 @@ public class GenericNode<T> extends Stringable {
         return ref;
     }
 
-    public String getFilename() {
-        return filename;
+    public String getPath() {
+        return path;
     }
 
     public String getName() {

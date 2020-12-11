@@ -24,7 +24,7 @@ package com.synopsys.integration.detectable.detectables.conan;
 
 import com.synopsys.integration.detectable.detectables.conan.graph.GenericNode;
 
-// TODO This class needs unit test coverage. Then, it needs to get re-worked
+// TODO This class needs to get re-worked
 // along with ConanNode (which will return Optionals).
 public class ConanExternalIdVersionGenerator {
 

@@ -51,8 +51,7 @@ public class GenericNodeBuilder<T> {
     public GenericNodeBuilder(GenericNode initializingNode) {
         this.forcedRootNode = initializingNode.isRootNode();
         this.ref = initializingNode.getRef();
-        // TODO: pick one: path or filename
-        this.path = initializingNode.getFilename();
+        this.path = initializingNode.getPath();
         this.name = initializingNode.getName();
         this.version = initializingNode.getVersion();
         this.user = initializingNode.getUser();
