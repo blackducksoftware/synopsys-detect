@@ -73,8 +73,7 @@ import com.synopsys.integration.log.LogLevel;
 // java:S1123: Warning about deprecations not having Java doc.
 public class DetectProperties {
     private static final String POLARIS_CLI_DEPRECATION_MESSAGE = "This property is being removed. Detect will no longer invoke the Polaris CLI.";
-    private static final String SIGNATURE_SCANNER_ARGUMENT_FILE_PROPERTY_NAME = "--detect.blackduck.signature.scanner.arguments.file";
-    private static final String SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE = String.format("This property is now deprecated.  All signature scanner arguments are now passed through via a properties file provided via %s.", SIGNATURE_SCANNER_ARGUMENT_FILE_PROPERTY_NAME);
+    private static final String SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE = "This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative pass-through mechanism.  See release notes for more details.";
 
     private DetectProperties() {
     }
