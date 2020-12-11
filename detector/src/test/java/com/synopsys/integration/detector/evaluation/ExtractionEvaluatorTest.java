@@ -25,6 +25,7 @@ import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
+//TODO: These tests should be re-written to use a concrete set of objects rather than mocks.
 public class ExtractionEvaluatorTest {
     @Test
     public void testEvaluationSuccess() throws DetectableException, ExecutableFailedException {

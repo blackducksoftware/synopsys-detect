@@ -24,6 +24,7 @@ import com.synopsys.integration.detector.result.DetectorResult;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
+//TODO: These tests should be re-written to use a concrete set of objects rather than mocks.
 public class ExtractableEvaluatorTest {
 
     @Test

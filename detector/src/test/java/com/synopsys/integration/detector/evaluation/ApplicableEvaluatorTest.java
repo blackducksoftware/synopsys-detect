@@ -17,6 +17,7 @@ import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.detector.rule.DetectorRule;
 
+//TODO: These tests should be re-written to use a concrete set of objects rather than mocks.
 public class ApplicableEvaluatorTest {
     @Test
     public void testEvaluationSuccess() {
