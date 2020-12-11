@@ -20,28 +20,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.conan.graph;
+package com.synopsys.integration.detectable.detectables.conan.graph.n.gen.deleteme;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ConanGraphNode {
-    private final GenericNode<String> conanInfoNode;
-    private final List<ConanGraphNode> children = new ArrayList<>();
+public class IndexedNode extends ParentNode {
+    private final List<Integer> requiresIndices;
+    private final List<Integer> buildRequiresIndices;
 
-    public ConanGraphNode(GenericNode<String> node) {
-        this.conanInfoNode = node;
+    public IndexedNode(String ref, String filename, String name, String version, String user, String channel, String recipeRevision, String packageId, String packageRevision,
+        boolean rootNode, List<Integer> requiresIndices, List<Integer> buildRequiresIndices) {
+        super(ref, filename, name, version, user, channel, recipeRevision, packageId, packageRevision,
+            rootNode);
+        this.requiresIndices = requiresIndices;
+        this.buildRequiresIndices = buildRequiresIndices;
     }
 
-    public void addChild(ConanGraphNode node) {
-        children.add(node);
+    public List<Integer> getRequiresIndices() {
+        return requiresIndices;
     }
 
-    public GenericNode<String> getConanInfoNode() {
-        return conanInfoNode;
-    }
-
-    public List<ConanGraphNode> getChildren() {
-        return children;
+    public List<Integer> getBuildRequiresIndices() {
+        return buildRequiresIndices;
     }
 }

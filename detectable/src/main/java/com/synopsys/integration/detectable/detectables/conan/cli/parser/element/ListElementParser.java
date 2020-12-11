@@ -27,14 +27,14 @@ import java.util.StringTokenizer;
 import java.util.function.BiConsumer;
 
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoLineAnalyzer;
-import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
+import com.synopsys.integration.detectable.detectables.conan.graph.GenericNodeBuilder;
 
 public class ListElementParser implements ElementTypeParser {
     private final ConanInfoLineAnalyzer conanInfoLineAnalyzer;
     private final String targetKey;
-    private final BiConsumer<ConanNodeBuilder, String> valueConsumer;
+    private final BiConsumer<GenericNodeBuilder<String>, String> valueConsumer;
 
-    public ListElementParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer, String targetKey, BiConsumer<ConanNodeBuilder, String> valueConsumer) {
+    public ListElementParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer, String targetKey, BiConsumer<GenericNodeBuilder<String>, String> valueConsumer) {
         this.conanInfoLineAnalyzer = conanInfoLineAnalyzer;
         this.targetKey = targetKey;
         this.valueConsumer = valueConsumer;
@@ -48,7 +48,7 @@ public class ListElementParser implements ElementTypeParser {
     }
 
     @Override
-    public int parseElement(ConanNodeBuilder nodeBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex) {
+    public int parseElement(GenericNodeBuilder<String> nodeBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex) {
         for (int curLineIndex = bodyElementLineIndex + 1; curLineIndex < conanInfoOutputLines.size(); curLineIndex++) {
             String line = conanInfoOutputLines.get(curLineIndex);
             int depth = conanInfoLineAnalyzer.measureIndentDepth(line);

@@ -22,13 +22,13 @@
  */
 package com.synopsys.integration.detectable.detectables.conan;
 
-import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
+import com.synopsys.integration.detectable.detectables.conan.graph.GenericNode;
 
 // TODO This class needs unit test coverage. Then, it needs to get re-worked
 // along with ConanNode (which will return Optionals).
 public class ConanExternalIdVersionGenerator {
 
-    public String generateExternalIdVersionString(ConanNode node, boolean preferLongFormExternalIds) {
+    public String generateExternalIdVersionString(GenericNode<String> node, boolean preferLongFormExternalIds) {
         String externalIdVersion;
         if (hasValue(node.getRecipeRevision()) && hasValue(node.getPackageRevision()) && preferLongFormExternalIds) {
             // generate long form

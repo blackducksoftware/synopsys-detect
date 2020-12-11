@@ -59,12 +59,12 @@ public class ConanLockfileNode extends Stringable {
         return Optional.ofNullable(ref);
     }
 
-    public List<Integer> getRequires() {
-        return requires;
+    public Optional<List<Integer>> getRequires() {
+        return Optional.ofNullable(requires);
     }
 
-    public List<Integer> getBuildRequires() {
-        return buildRequires;
+    public Optional<List<Integer>> getBuildRequires() {
+        return Optional.ofNullable(buildRequires);
     }
 
     public Optional<String> getPackageId() {

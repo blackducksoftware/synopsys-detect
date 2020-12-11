@@ -38,8 +38,8 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
 import com.synopsys.integration.detectable.detectables.conan.ConanExternalIdVersionGenerator;
-import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
-import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
+import com.synopsys.integration.detectable.detectables.conan.graph.GenericNode;
+import com.synopsys.integration.detectable.detectables.conan.graph.GenericNodeBuilder;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.model.ConanLockfileData;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.model.ConanLockfileNode;
 import com.synopsys.integration.exception.IntegrationException;
@@ -61,14 +61,14 @@ public class ConanLockfileParser {
     public ConanDetectableResult generateCodeLocationFromConanLockfileContents(String conanLockfileContents,
         boolean includeBuildDependencies, boolean preferLongFormExternalIds) throws IntegrationException {
         logger.trace("Parsing conan lockfile contents:\n{}", conanLockfileContents);
-        Map<Integer, ConanNode> indexedNodeMap = generateIndexedNodeMap(conanLockfileContents);
+        Map<Integer, GenericNode<Integer>> indexedNodeMap = generateIndexedNodeMap(conanLockfileContents);
         // The lockfile references nodes by (integer) index; generator needs nodes referenced by names (component references)
-        Map<String, ConanNode> namedNodeMap = convertToNamedNodeMap(indexedNodeMap);
+        Map<String, GenericNode<String>> namedNodeMap = convertToNamedNodeMap(indexedNodeMap);
         return conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory, versionGenerator, includeBuildDependencies, preferLongFormExternalIds, namedNodeMap);
     }
 
-    private Map<Integer, ConanNode> generateIndexedNodeMap(String conanLockfileContents) {
-        Map<Integer, ConanNode> graphNodes = new HashMap<>();
+    private Map<Integer, GenericNode<Integer>> generateIndexedNodeMap(String conanLockfileContents) {
+        Map<Integer, GenericNode<Integer>> graphNodes = new HashMap<>();
         ConanLockfileData conanLockfileData = gson.fromJson(conanLockfileContents, ConanLockfileData.class);
         logger.trace("conanLockfileData: {}", conanLockfileData);
         if (!conanLockfileData.getConanLockfileGraph().isRevisionsEnabled()) {
@@ -82,15 +82,15 @@ public class ConanLockfileParser {
                 entry.getValue().getPackageId().orElse("?"),
                 entry.getValue().getPackageRevision().orElse("?"));
             ConanLockfileNode lockfileNode = entry.getValue();
-            Optional<ConanNode> conanNode = generateConanNode(entry.getKey(), lockfileNode);
+            Optional<GenericNode<Integer>> conanNode = generateConanNode(entry.getKey(), lockfileNode);
             conanNode.ifPresent(node -> graphNodes.put(entry.getKey(), node));
         }
         logger.trace("ConanNode map: {}", graphNodes);
         return graphNodes;
     }
 
-    private Optional<ConanNode> generateConanNode(Integer nodeKey, ConanLockfileNode lockfileNode) {
-        ConanNodeBuilder nodeBuilder = new ConanNodeBuilder();
+    private Optional<GenericNode<Integer>> generateConanNode(Integer nodeKey, ConanLockfileNode lockfileNode) {
+        GenericNodeBuilder<Integer> nodeBuilder = new GenericNodeBuilder<>();
         if (nodeKey == 0) {
             nodeBuilder.forceRootNode();
         }
@@ -98,31 +98,36 @@ public class ConanLockfileParser {
         nodeBuilder.setPath(lockfileNode.getPath().orElse(null));
         lockfileNode.getPackageId().ifPresent(nodeBuilder::setPackageId);
         lockfileNode.getPackageRevision().ifPresent(nodeBuilder::setPackageRevision);
-        nodeBuilder.setRequiresIndices(lockfileNode.getRequires());
-        nodeBuilder.setBuildRequiresIndices(lockfileNode.getBuildRequires());
+        lockfileNode.getRequires().ifPresent(requiresList -> requiresList.forEach(nodeBuilder::addRequiresRef));
+        lockfileNode.getBuildRequires().ifPresent(buildRequiresList -> buildRequiresList.forEach(nodeBuilder::addBuildRequiresRef));
         return nodeBuilder.build();
     }
 
-    private Map<String, ConanNode> convertToNamedNodeMap(Map<Integer, ConanNode> numberedNodeMap) {
-        Map<String, ConanNode> nodeMap = new HashMap<>(numberedNodeMap.size());
-        for (Map.Entry<Integer, ConanNode> entry : numberedNodeMap.entrySet()) {
-            ConanNode node = entry.getValue();
-            addRefsForGivenIndices(numberedNodeMap, node.getRequiresIndices(), node::addRequiresRef);
-            addRefsForGivenIndices(numberedNodeMap, node.getBuildRequiresIndices(), node::addBuildRequiresRef);
-            nodeMap.put(node.getRef(), node);
+    private Map<String, GenericNode<String>> convertToNamedNodeMap(Map<Integer, GenericNode<Integer>> numberedNodeMap) throws IntegrationException {
+        Map<String, GenericNode<String>> namedNodeMap = new HashMap<>(numberedNodeMap.size());
+        for (Map.Entry<Integer, GenericNode<Integer>> entry : numberedNodeMap.entrySet()) {
+            GenericNode<Integer> numberedNode = entry.getValue();
+            GenericNodeBuilder<String> namedNodeBuilder = new GenericNodeBuilder<>(numberedNode);
+            addRefsForGivenIndices(numberedNodeMap, numberedNode.getRequiresRefs(), namedNodeBuilder::addRequiresRef);
+            addRefsForGivenIndices(numberedNodeMap, numberedNode.getBuildRequiresRefs(), namedNodeBuilder::addBuildRequiresRef);
+            Optional<GenericNode<String>> namedNode = namedNodeBuilder.build();
+            if (!namedNode.isPresent()) {
+                throw new IntegrationException(String.format("Unable to create a named node from numbered noded %s", numberedNode));
+            }
+            namedNodeMap.put(namedNode.get().getRef(), namedNode.get());
         }
-        return nodeMap;
+        return namedNodeMap;
     }
 
     // Translate each of the given map indices to the corresponding dependency ref,
     // and call the given refAdder to put it where it belongs
-    private void addRefsForGivenIndices(Map<Integer, ConanNode> numberedNodeMap, List<Integer> indices, Consumer<String> refAdder) {
+    private void addRefsForGivenIndices(Map<Integer, GenericNode<Integer>> numberedNodeMap, List<Integer> indices, Consumer<String> refAdder) {
         indices.stream()
             .map(index -> numberedNodeMap.get(index).getRef())
             .forEach(refAdder::accept);
     }
 
-    private void setRefAndDerivedFields(ConanNodeBuilder nodeBuilder, String ref) {
+    private void setRefAndDerivedFields(GenericNodeBuilder<Integer> nodeBuilder, String ref) {
         if (StringUtils.isBlank(ref)) {
             return;
         }

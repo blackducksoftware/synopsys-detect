@@ -34,7 +34,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
 import com.synopsys.integration.detectable.detectables.conan.ConanExternalIdVersionGenerator;
-import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
+import com.synopsys.integration.detectable.detectables.conan.graph.GenericNode;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class ConanInfoParser {
@@ -53,7 +53,7 @@ public class ConanInfoParser {
     }
 
     public ConanDetectableResult generateCodeLocationFromConanInfoOutput(String conanInfoOutput, boolean includeBuildDependencies, boolean preferLongFormExternalIds) throws IntegrationException {
-        Map<String, ConanNode> nodeMap = generateNodeMap(conanInfoOutput);
+        Map<String, GenericNode<String>> nodeMap = generateNodeMap(conanInfoOutput);
         return conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory, versionGenerator,
             includeBuildDependencies, preferLongFormExternalIds, nodeMap);
     }
@@ -67,8 +67,8 @@ public class ConanInfoParser {
      *         list of values
      *     ....
      */
-    private Map<String, ConanNode> generateNodeMap(String conanInfoOutput) {
-        Map<String, ConanNode> graphNodes = new HashMap<>();
+    private Map<String, GenericNode<String>> generateNodeMap(String conanInfoOutput) {
+        Map<String, GenericNode<String>> graphNodes = new HashMap<>();
         List<String> conanInfoOutputLines = Arrays.asList(conanInfoOutput.split("\n"));
         int lineIndex = 0;
         while (lineIndex < conanInfoOutputLines.size()) {

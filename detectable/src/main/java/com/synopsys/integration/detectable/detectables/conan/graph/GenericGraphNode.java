@@ -20,14 +20,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.conan.cli.parser.element;
+package com.synopsys.integration.detectable.detectables.conan.graph;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.synopsys.integration.detectable.detectables.conan.graph.GenericNodeBuilder;
+public class GenericGraphNode<T> {
+    private final GenericNode<T> node;
+    private final List<GenericGraphNode<T>> children = new ArrayList<>();
 
-public interface ElementTypeParser {
-    boolean applies(String elementLine);
+    public GenericGraphNode(GenericNode<T> node) {
+        this.node = node;
+    }
 
-    int parseElement(GenericNodeBuilder<String> nodeBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex);
+    public void addChild(GenericGraphNode<T> node) {
+        children.add(node);
+    }
+
+    public GenericNode<T> getConanInfoNode() {
+        return node;
+    }
+
+    public List<GenericGraphNode<T>> getChildren() {
+        return children;
+    }
 }

@@ -20,14 +20,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.conan.cli.parser.element;
+package com.synopsys.integration.detectable.detectables.conan.graph.n.gen.deleteme;
 
 import java.util.List;
 
-import com.synopsys.integration.detectable.detectables.conan.graph.GenericNodeBuilder;
+public class NamedNode extends ParentNode {
+    private final List<String> requiresRefs;
+    private final List<String> buildRequiresRefs;
 
-public interface ElementTypeParser {
-    boolean applies(String elementLine);
+    public NamedNode(String ref, String filename, String name, String version, String user, String channel, String recipeRevision, String packageId, String packageRevision,
+        boolean rootNode, List<String> requiresRefs, List<String> buildRequiresRefs) {
+        super(ref, filename, name, version, user, channel, recipeRevision, packageId, packageRevision,
+            rootNode);
+        this.requiresRefs = requiresRefs;
+        this.buildRequiresRefs = buildRequiresRefs;
+    }
 
-    int parseElement(GenericNodeBuilder<String> nodeBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex);
+    public List<String> getRequiresRefs() {
+        return requiresRefs;
+    }
+
+    public List<String> getBuildRequiresRefs() {
+        return buildRequiresRefs;
+    }
 }
