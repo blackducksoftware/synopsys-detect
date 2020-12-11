@@ -24,10 +24,10 @@ package com.synopsys.integration.detectable.detectables.conan.cli.parser.element
 
 import java.util.List;
 
-import com.synopsys.integration.detectable.detectables.conan.graph.GenericNodeBuilder;
+import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 
 public interface ElementTypeParser {
     boolean applies(String elementLine);
 
-    int parseElement(GenericNodeBuilder<String> nodeBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex);
+    int parseElement(ConanNodeBuilder<String> nodeBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex);
 }

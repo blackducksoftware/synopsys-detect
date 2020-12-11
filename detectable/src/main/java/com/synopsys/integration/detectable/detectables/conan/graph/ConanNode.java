@@ -26,7 +26,7 @@ import java.util.List;
 
 import com.synopsys.integration.util.Stringable;
 
-public class GenericNode<T> extends Stringable {
+public class ConanNode<T> extends Stringable {
     // if rootNode: conanfile.{txt,py}[ (projectname/version)]
     // else       : package/version[@user/channel]
     private final String ref;
@@ -43,7 +43,7 @@ public class GenericNode<T> extends Stringable {
     private final List<T> buildRequiresRefs;
     private final boolean rootNode;
 
-    public GenericNode(String ref, String path, String name, String version, String user, String channel,
+    public ConanNode(String ref, String path, String name, String version, String user, String channel,
         String recipeRevision, String packageId, String packageRevision,
         List<T> requiresRefs,
         List<T> buildRequiresRefs,

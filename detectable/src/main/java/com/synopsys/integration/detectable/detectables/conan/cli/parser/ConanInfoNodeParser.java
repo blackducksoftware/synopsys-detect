@@ -31,8 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.element.NodeElementParser;
-import com.synopsys.integration.detectable.detectables.conan.graph.GenericNode;
-import com.synopsys.integration.detectable.detectables.conan.graph.GenericNodeBuilder;
+import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
+import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 
 public class ConanInfoNodeParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -51,7 +51,7 @@ public class ConanInfoNodeParser {
      */
     public ConanInfoNodeParseResult parseNode(List<String> conanInfoOutputLines, int nodeStartIndex) {
         String nodeHeaderLine = conanInfoOutputLines.get(nodeStartIndex);
-        GenericNodeBuilder<String> nodeBuilder = new GenericNodeBuilder<>();
+        ConanNodeBuilder<String> nodeBuilder = new ConanNodeBuilder<>();
         setRefAndDerivedFields(nodeBuilder, nodeHeaderLine.trim());
         int bodyLineCount = 0;
         for (int lineIndex = nodeStartIndex + 1; lineIndex < conanInfoOutputLines.size(); lineIndex++) {
@@ -67,11 +67,11 @@ public class ConanInfoNodeParser {
             lineIndex = nodeElementParser.parseElement(nodeBuilder, conanInfoOutputLines, lineIndex);
         }
         logger.trace("Reached end of conan info output");
-        Optional<GenericNode<String>> node = nodeBuilder.build();
+        Optional<ConanNode<String>> node = nodeBuilder.build();
         return new ConanInfoNodeParseResult(conanInfoOutputLines.size() - 1, node.orElse(null));
     }
 
-    private Optional<ConanInfoNodeParseResult> getResultIfDone(String nodeBodyLine, int lineIndex, int nodeStartIndex, int bodyLineCount, GenericNodeBuilder<String> nodeBuilder) {
+    private Optional<ConanInfoNodeParseResult> getResultIfDone(String nodeBodyLine, int lineIndex, int nodeStartIndex, int bodyLineCount, ConanNodeBuilder<String> nodeBuilder) {
         int indentDepth = conanInfoLineAnalyzer.measureIndentDepth(nodeBodyLine);
         if (indentDepth > 0) {
             // We're not done parsing this node
@@ -82,12 +82,12 @@ public class ConanInfoNodeParser {
             return Optional.of(new ConanInfoNodeParseResult(nodeStartIndex));
         } else {
             logger.trace("Reached end of node");
-            Optional<GenericNode<String>> node = nodeBuilder.build();
+            Optional<ConanNode<String>> node = nodeBuilder.build();
             return Optional.of(new ConanInfoNodeParseResult(lineIndex - 1, node.orElse(null)));
         }
     }
 
-    private void setRefAndDerivedFields(GenericNodeBuilder<String> nodeBuilder, String ref) {
+    private void setRefAndDerivedFields(ConanNodeBuilder<String> nodeBuilder, String ref) {
         if (StringUtils.isBlank(ref)) {
             return;
         }

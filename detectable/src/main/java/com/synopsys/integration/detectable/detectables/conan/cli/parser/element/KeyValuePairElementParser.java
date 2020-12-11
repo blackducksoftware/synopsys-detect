@@ -27,14 +27,14 @@ import java.util.StringTokenizer;
 import java.util.function.BiConsumer;
 
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoLineAnalyzer;
-import com.synopsys.integration.detectable.detectables.conan.graph.GenericNodeBuilder;
+import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 
 public class KeyValuePairElementParser implements ElementTypeParser {
     private final ConanInfoLineAnalyzer conanInfoLineAnalyzer;
     private final String targetKey;
-    private final BiConsumer<GenericNodeBuilder<String>, String> valueConsumer;
+    private final BiConsumer<ConanNodeBuilder<String>, String> valueConsumer;
 
-    public KeyValuePairElementParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer, String targetKey, BiConsumer<GenericNodeBuilder<String>, String> valueConsumer) {
+    public KeyValuePairElementParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer, String targetKey, BiConsumer<ConanNodeBuilder<String>, String> valueConsumer) {
         this.conanInfoLineAnalyzer = conanInfoLineAnalyzer;
         this.targetKey = targetKey;
         this.valueConsumer = valueConsumer;
@@ -48,7 +48,7 @@ public class KeyValuePairElementParser implements ElementTypeParser {
     }
 
     @Override
-    public int parseElement(GenericNodeBuilder<String> nodeBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex) {
+    public int parseElement(ConanNodeBuilder<String> nodeBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex) {
         StringTokenizer tokenizer = conanInfoLineAnalyzer.createTokenizer(conanInfoOutputLines.get(bodyElementLineIndex));
         tokenizer.nextToken(); // skip over key
         String value = tokenizer.nextToken().trim();

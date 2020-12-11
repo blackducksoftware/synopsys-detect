@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ConanGraphNode {
-    private final GenericNode<String> conanInfoNode;
+    private final ConanNode<String> conanInfoNode;
     private final List<ConanGraphNode> children = new ArrayList<>();
 
-    public ConanGraphNode(GenericNode<String> node) {
+    public ConanGraphNode(ConanNode<String> node) {
         this.conanInfoNode = node;
     }
 
@@ -37,7 +37,7 @@ public class ConanGraphNode {
         children.add(node);
     }
 
-    public GenericNode<String> getConanInfoNode() {
+    public ConanNode<String> getConanInfoNode() {
         return conanInfoNode;
     }
 
