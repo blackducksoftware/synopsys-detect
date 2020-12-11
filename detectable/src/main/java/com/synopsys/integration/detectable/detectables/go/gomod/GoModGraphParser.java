@@ -25,6 +25,7 @@ package com.synopsys.integration.detectable.detectables.go.gomod;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,36 +51,42 @@ public class GoModGraphParser {
 
         for (String line : goModGraph) {
             //example: github.com/gomods/athens cloud.google.com/go@v0.26.0
-            String[] parts = line.split(" ");
-            if (parts.length != 2) {
-                logger.warn("Unknown graph line format: " + line);
-            } else {
-                String fromModule = parts[0];
-                String toModule = parts[1];
-                Dependency to = parseDependency(toModule);
-                boolean includeToDependency = !moduleExclusionList.contains(to.getName());
-                if (rootModule.equals(fromModule)) {
-                    if (includeToDependency) {
-                        mutableDependencyGraph.addChildToRoot(to);
-                    }
-                } else {
-                    Dependency from = parseDependency(fromModule);
-                    boolean includeFromDependency = !moduleExclusionList.contains(from.getName());
-                    if (includeToDependency && includeFromDependency) {
-                        mutableDependencyGraph.addChildWithParent(to, from);
-                    }
-                }
-            }
+            addDependencyToGraph(mutableDependencyGraph, line, rootModule, moduleExclusionList);
         }
 
         return mutableDependencyGraph;
+    }
+
+    private void addDependencyToGraph(MutableDependencyGraph mutableDependencyGraph, String line, String rootModule, Set<String> moduleExclusionList) {
+        String[] parts = line.split(" ");
+        if (parts.length != 2) {
+            logger.warn("Unknown graph line format: {}", line);
+            return;
+        }
+        String fromModule = parts[0];
+        String toModule = parts[1];
+        Dependency to = parseDependency(toModule);
+
+        Predicate<String> includeModule = moduleName -> !moduleExclusionList.contains(moduleName);
+        boolean includeToDependency = includeModule.test(to.getName());
+        boolean addToRoot = rootModule.equals(fromModule) && includeToDependency;
+        if (addToRoot) {
+            mutableDependencyGraph.addChildToRoot(to);
+        } else {
+            Dependency from = parseDependency(fromModule);
+            boolean includeFromDependency = includeModule.test(from.getName());
+            boolean addChildToParent = includeToDependency && includeFromDependency;
+            if (addChildToParent) {
+                mutableDependencyGraph.addChildWithParent(to, from);
+            }
+        }
     }
 
     private Dependency parseDependency(String dependencyPart) {
         if (dependencyPart.contains("@")) {
             String[] parts = dependencyPart.split("@");
             if (parts.length != 2) {
-                logger.warn("Unknown graph dependency format, using entire line as name: " + dependencyPart);
+                logger.warn("Unknown graph dependency format, using entire line as name: {}", dependencyPart);
                 return new Dependency(dependencyPart, externalIdFactory.createNameVersionExternalId(Forge.GOLANG, dependencyPart, null));
             } else {
                 String name = parts[0];

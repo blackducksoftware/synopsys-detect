@@ -24,13 +24,13 @@ package com.synopsys.integration.detect.workflow.blackduck;
 
 import java.util.List;
 
-import com.synopsys.integration.blackduck.api.generated.enumeration.LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
-import com.synopsys.integration.blackduck.api.manual.throwaway.generated.enumeration.ProjectVersionPhaseType;
+import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 
 public class DetectProjectServiceOptions {
     private final ProjectVersionPhaseType projectVersionPhase;
-    private final LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType projectVersionDistribution;
+    private final ProjectVersionDistributionType projectVersionDistribution;
     private final Integer projectTier;
     private final String projectDescription;
     private final String projectVersionNotes;
@@ -47,7 +47,7 @@ public class DetectProjectServiceOptions {
     private final Boolean cloneLatestProjectVersion;
     private final CustomFieldDocument customFields;
 
-    public DetectProjectServiceOptions(final ProjectVersionPhaseType projectVersionPhase, final LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType projectVersionDistribution, final Integer projectTier,
+    public DetectProjectServiceOptions(final ProjectVersionPhaseType projectVersionPhase, final ProjectVersionDistributionType projectVersionDistribution, final Integer projectTier,
         final String projectDescription, final String projectVersionNotes,
         final List<ProjectCloneCategoriesType> cloneCategories, final Boolean projectLevelAdjustments, final Boolean forceProjectVersionUpdate, final String cloneVersionName, final String projectVersionNickname, final String applicationId,
         final List<String> tags, final List<String> groups, final String parentProjectName, final String parentProjectVersion, final Boolean cloneLatestProjectVersion, final CustomFieldDocument customFields) {
@@ -74,7 +74,7 @@ public class DetectProjectServiceOptions {
         return projectVersionPhase;
     }
 
-    public LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType getProjectVersionDistribution() {
+    public ProjectVersionDistributionType getProjectVersionDistribution() {
         return projectVersionDistribution;
     }
 

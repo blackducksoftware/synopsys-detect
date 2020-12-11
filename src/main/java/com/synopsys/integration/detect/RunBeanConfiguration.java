@@ -91,10 +91,6 @@ public class RunBeanConfiguration {
     @Autowired
     public DetectRun detectRun;
     @Autowired
-    public DetectInfo detectInfo;
-    @Autowired
-    public PropertyConfiguration detectConfiguration;
-    @Autowired
     public DetectConfigurationFactory detectConfigurationFactory;
     @Autowired
     public DirectoryManager directoryManager;
@@ -141,7 +137,7 @@ public class RunBeanConfiguration {
     }
 
     @Bean
-    public CodeLocationNameGenerator codeLocationNameService() {
+    public CodeLocationNameGenerator codeLocationNameService(PropertyConfiguration detectConfiguration) {
         String codeLocationNameOverride = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_CODE_LOCATION_NAME.getProperty()).orElse(null);
         return new CodeLocationNameGenerator(codeLocationNameOverride);
     }
@@ -201,7 +197,7 @@ public class RunBeanConfiguration {
     }
 
     @Bean()
-    public NugetInspectorResolver nugetInspectorResolver() throws DetectUserFriendlyException {
+    public NugetInspectorResolver nugetInspectorResolver(DetectInfo detectInfo) throws DetectUserFriendlyException {
         NugetLocatorOptions installerOptions = detectableOptionFactory.createNugetInstallerOptions();
         NugetInspectorLocator locator;
         Optional<File> nugetAirGapPath = airGapManager().getNugetInspectorAirGapFile();
