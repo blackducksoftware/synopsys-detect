@@ -39,7 +39,7 @@ public class DetectorProfiler {
 
     private final EventSystem eventSystem;
 
-    public DetectorProfiler(final EventSystem eventSystem) {
+    public DetectorProfiler(EventSystem eventSystem) {
         this.eventSystem = eventSystem;
 
         eventSystem.registerListener(Event.ApplicableStarted, this::applicableStarted);
@@ -53,35 +53,35 @@ public class DetectorProfiler {
         eventSystem.registerListener(Event.DetectorsComplete, event -> detectorsComplete());
     }
 
-    private void applicableStarted(final DetectorEvaluation evaluation) {
+    private void applicableStarted(DetectorEvaluation evaluation) {
         applicableTimekeeper.started(evaluation);
     }
 
-    private void applicableEnded(final DetectorEvaluation evaluation) {
+    private void applicableEnded(DetectorEvaluation evaluation) {
         applicableTimekeeper.ended(evaluation);
     }
 
-    private void extractableStarted(final DetectorEvaluation evaluation) {
+    private void extractableStarted(DetectorEvaluation evaluation) {
         extractableTimekeeper.started(evaluation);
     }
 
-    private void extractableEnded(final DetectorEvaluation evaluation) {
+    private void extractableEnded(DetectorEvaluation evaluation) {
         extractableTimekeeper.ended(evaluation);
     }
 
-    private void discoveryStarted(final DetectorEvaluation evaluation) {
+    private void discoveryStarted(DetectorEvaluation evaluation) {
         discoveryTimekeeper.started(evaluation);
     }
 
-    private void discoveryEnded(final DetectorEvaluation evaluation) {
+    private void discoveryEnded(DetectorEvaluation evaluation) {
         discoveryTimekeeper.ended(evaluation);
     }
 
-    private void extractionStarted(final DetectorEvaluation evaluation) {
+    private void extractionStarted(DetectorEvaluation evaluation) {
         extractionTimekeeper.started(evaluation);
     }
 
-    private void extractionEnded(final DetectorEvaluation evaluation) {
+    private void extractionEnded(DetectorEvaluation evaluation) {
         extractionTimekeeper.ended(evaluation);
     }
 
@@ -102,25 +102,25 @@ public class DetectorProfiler {
     }
 
     public void detectorsComplete() {
-        final DetectorTimings timings = new DetectorTimings(getAggregateDetectorGroupTimes(), getApplicableTimings(), getExtractableTimings(), getDiscoveryTimings(), getExtractionTimings());
+        DetectorTimings timings = new DetectorTimings(getAggregateDetectorGroupTimes(), getApplicableTimings(), getExtractableTimings(), getDiscoveryTimings(), getExtractionTimings());
         eventSystem.publishEvent(Event.DetectorsProfiled, timings);
     }
 
-    private void addAggregateByDetectorGroupType(final Map<DetectorType, Long> aggregate, final List<Timing<DetectorEvaluation>> timings) {
-        for (final Timing<DetectorEvaluation> timing : timings) {
-            final DetectorType type = timing.getKey().getDetectorRule().getDetectorType();
+    private void addAggregateByDetectorGroupType(Map<DetectorType, Long> aggregate, List<Timing<DetectorEvaluation>> timings) {
+        for (Timing<DetectorEvaluation> timing : timings) {
+            DetectorType type = timing.getKey().getDetectorType();
             if (!aggregate.containsKey(type)) {
                 aggregate.put(type, 0L);
             }
-            final long time = timing.getMs();
-            final Long currentTime = aggregate.get(type);
-            final Long sum = time + currentTime;
+            long time = timing.getMs();
+            Long currentTime = aggregate.get(type);
+            Long sum = time + currentTime;
             aggregate.put(type, sum);
         }
     }
 
     public Map<DetectorType, Long> getAggregateDetectorGroupTimes() {
-        final Map<DetectorType, Long> aggregate = new HashMap<>();
+        Map<DetectorType, Long> aggregate = new HashMap<>();
         addAggregateByDetectorGroupType(aggregate, getExtractableTimings());
         addAggregateByDetectorGroupType(aggregate, getDiscoveryTimings());
         addAggregateByDetectorGroupType(aggregate, getExtractionTimings());

@@ -38,7 +38,7 @@ public class ExtractionEnvironmentProvider {
     }
 
     public ExtractionEnvironment createExtractionEnvironment(DetectorEvaluation detectorEvaluation) {
-        ExtractionId extractionId = new ExtractionId(detectorEvaluation.getDetectorRule().getDetectorType(), count);
+        ExtractionId extractionId = new ExtractionId(detectorEvaluation.getDetectorType(), count);
         count = count + 1;
 
         File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);
