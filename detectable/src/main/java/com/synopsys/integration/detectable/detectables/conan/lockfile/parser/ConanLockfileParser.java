@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectables.conan.lockfile.parser;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,8 +109,8 @@ public class ConanLockfileParser {
         for (Map.Entry<Integer, ConanNode<Integer>> entry : numberedNodeMap.entrySet()) {
             ConanNode<Integer> numberedNode = entry.getValue();
             ConanNodeBuilder<String> namedNodeBuilder = new ConanNodeBuilder<>(numberedNode);
-            addRefsForGivenIndices(numberedNodeMap, numberedNode.getRequiresRefs(), namedNodeBuilder::addRequiresRef);
-            addRefsForGivenIndices(numberedNodeMap, numberedNode.getBuildRequiresRefs(), namedNodeBuilder::addBuildRequiresRef);
+            addRefsForGivenIndices(numberedNodeMap, numberedNode.getRequiresRefs().orElse(new ArrayList<>(0)), namedNodeBuilder::addRequiresRef);
+            addRefsForGivenIndices(numberedNodeMap, numberedNode.getBuildRequiresRefs().orElse(new ArrayList<>(0)), namedNodeBuilder::addBuildRequiresRef);
             Optional<ConanNode<String>> namedNode = namedNodeBuilder.build();
             if (!namedNode.isPresent()) {
                 throw new IntegrationException(String.format("Unable to create a named node from numbered noded %s", numberedNode));
@@ -124,7 +125,7 @@ public class ConanLockfileParser {
     private void addRefsForGivenIndices(Map<Integer, ConanNode<Integer>> numberedNodeMap, List<Integer> indices, Consumer<String> refAdder) {
         indices.stream()
             .map(index -> numberedNodeMap.get(index).getRef())
-            .forEach(refAdder::accept);
+            .forEach(refAdder);
     }
 
     private void setRefAndDerivedFields(ConanNodeBuilder<Integer> nodeBuilder, String ref) {

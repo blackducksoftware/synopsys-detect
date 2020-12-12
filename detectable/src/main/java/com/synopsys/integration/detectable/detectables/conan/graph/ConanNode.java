@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.conan.graph;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.synopsys.integration.util.Stringable;
 
@@ -66,44 +67,44 @@ public class ConanNode<T> extends Stringable {
         return ref;
     }
 
-    public String getPath() {
-        return path;
+    public Optional<String> getPath() {
+        return Optional.ofNullable(path);
     }
 
-    public String getName() {
-        return name;
+    public Optional<String> getName() {
+        return Optional.ofNullable(name);
     }
 
-    public String getVersion() {
-        return version;
+    public Optional<String> getVersion() {
+        return Optional.ofNullable(version);
     }
 
-    public String getUser() {
-        return user;
+    public Optional<String> getUser() {
+        return Optional.ofNullable(user);
     }
 
-    public String getChannel() {
-        return channel;
+    public Optional<String> getChannel() {
+        return Optional.ofNullable(channel);
     }
 
-    public String getRecipeRevision() {
-        return recipeRevision;
+    public Optional<String> getRecipeRevision() {
+        return Optional.ofNullable(recipeRevision);
     }
 
-    public String getPackageId() {
-        return packageId;
+    public Optional<String> getPackageId() {
+        return Optional.ofNullable(packageId);
     }
 
-    public String getPackageRevision() {
-        return packageRevision;
+    public Optional<String> getPackageRevision() {
+        return Optional.ofNullable(packageRevision);
     }
 
-    public List<T> getRequiresRefs() {
-        return requiresRefs;
+    public Optional<List<T>> getRequiresRefs() {
+        return Optional.ofNullable(requiresRefs);
     }
 
-    public List<T> getBuildRequiresRefs() {
-        return buildRequiresRefs;
+    public Optional<List<T>> getBuildRequiresRefs() {
+        return Optional.ofNullable(buildRequiresRefs);
     }
 
     public boolean isRootNode() {

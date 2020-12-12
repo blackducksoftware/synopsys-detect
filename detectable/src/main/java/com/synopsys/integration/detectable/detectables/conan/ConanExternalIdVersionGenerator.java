@@ -22,38 +22,41 @@
  */
 package com.synopsys.integration.detectable.detectables.conan;
 
+import java.util.Optional;
+
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
+import com.synopsys.integration.exception.IntegrationException;
 
 // TODO This class needs to get re-worked
 // along with ConanNode (which will return Optionals).
 public class ConanExternalIdVersionGenerator {
 
-    public String generateExternalIdVersionString(ConanNode<String> node, boolean preferLongFormExternalIds) {
+    public String generateExternalIdVersionString(ConanNode<String> node, boolean preferLongFormExternalIds) throws IntegrationException {
         String externalIdVersion;
         if (hasValue(node.getRecipeRevision()) && hasValue(node.getPackageRevision()) && preferLongFormExternalIds) {
             // generate long form
             // <name>/<version>@<user>/<channel>#<recipe_revision>:<package_id>#<package_revision>
             externalIdVersion = String.format("%s@%s/%s#%s:%s#%s",
-                node.getVersion(),
-                node.getUser() == null ? "_" : node.getUser(),
-                node.getChannel() == null ? "_" : node.getChannel(),
-                node.getRecipeRevision(),
-                node.getPackageId() == null ? "0" : node.getPackageId(),
-                node.getPackageRevision());
+                node.getVersion().orElseThrow(() -> new IntegrationException(String.format("Missing dependency version: %s", node))),
+                node.getUser().orElse("_"),
+                node.getChannel().orElse("_"),
+                node.getRecipeRevision().get(),
+                node.getPackageId().orElse("0"),
+                node.getPackageRevision().get());
         } else {
             // generate short form
             // <name>/<version>@<user>/<channel>#<recipe_revision>
             externalIdVersion = String.format("%s@%s/%s#%s",
-                node.getVersion(),
-                node.getUser() == null ? "_" : node.getUser(),
-                node.getChannel() == null ? "_" : node.getChannel(),
-                node.getRecipeRevision() == null ? "0" : node.getRecipeRevision());
+                node.getVersion().orElseThrow(() -> new IntegrationException(String.format("Missing dependency version: %s", node))),
+                node.getUser().orElse("_"),
+                node.getChannel().orElse("_"),
+                node.getRecipeRevision().orElse("0"));
         }
         return externalIdVersion;
     }
 
-    private boolean hasValue(String value) {
-        if ((value == null) || ("None".equals(value))) {
+    private boolean hasValue(Optional<String> value) {
+        if ((!value.isPresent()) || ("None".equals(value.get()))) {
             return false;
         }
         return true;

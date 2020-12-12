@@ -10,11 +10,12 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.detectable.detectables.conan.ConanExternalIdVersionGenerator;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
+import com.synopsys.integration.exception.IntegrationException;
 
 public class ConanExternalIdVersionGeneratorTest {
 
     @Test
-    public void testMinimal() {
+    public void testMinimal() throws IntegrationException {
         ConanExternalIdVersionGenerator generator = new ConanExternalIdVersionGenerator();
         ConanNodeBuilder<String> nodeBuilder = new ConanNodeBuilder<>();
         nodeBuilder.setRef("bzip/1.2.3");
@@ -28,7 +29,7 @@ public class ConanExternalIdVersionGeneratorTest {
     }
 
     @Test
-    public void testShortForm() {
+    public void testShortForm() throws IntegrationException {
         ConanExternalIdVersionGenerator generator = new ConanExternalIdVersionGenerator();
         ConanNodeBuilder<String> nodeBuilder = new ConanNodeBuilder<>();
         nodeBuilder.setRef("bzip/1.2.3@testuser/testchannel");
@@ -45,7 +46,7 @@ public class ConanExternalIdVersionGeneratorTest {
     }
 
     @Test
-    public void testShortFormWhenLongFormPossible() {
+    public void testShortFormWhenLongFormPossible() throws IntegrationException {
         ConanExternalIdVersionGenerator generator = new ConanExternalIdVersionGenerator();
         ConanNodeBuilder<String> nodeBuilder = new ConanNodeBuilder<>();
         nodeBuilder.setRef("bzip/1.2.3@testuser/testchannel");
@@ -64,7 +65,7 @@ public class ConanExternalIdVersionGeneratorTest {
     }
 
     @Test
-    public void testLongForm() {
+    public void testLongForm() throws IntegrationException {
         ConanExternalIdVersionGenerator generator = new ConanExternalIdVersionGenerator();
         ConanNodeBuilder<String> nodeBuilder = new ConanNodeBuilder<>();
         nodeBuilder.setRef("bzip/1.2.3@testuser/testchannel");
@@ -83,7 +84,7 @@ public class ConanExternalIdVersionGeneratorTest {
     }
 
     @Test
-    public void testShortFormWhenLongFormRequested() {
+    public void testShortFormWhenLongFormRequested() throws IntegrationException {
         ConanExternalIdVersionGenerator generator = new ConanExternalIdVersionGenerator();
         ConanNodeBuilder<String> nodeBuilder = new ConanNodeBuilder<>();
         nodeBuilder.setRef("bzip/1.2.3@testuser/testchannel");

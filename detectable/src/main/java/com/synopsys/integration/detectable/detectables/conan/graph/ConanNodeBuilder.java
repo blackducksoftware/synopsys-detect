@@ -48,17 +48,17 @@ public class ConanNodeBuilder<T> {
 
     public ConanNodeBuilder() {}
 
-    public ConanNodeBuilder(ConanNode initializingNode) {
+    public ConanNodeBuilder(ConanNode<Integer> initializingNode) {
         this.forcedRootNode = initializingNode.isRootNode();
         this.ref = initializingNode.getRef();
-        this.path = initializingNode.getPath();
-        this.name = initializingNode.getName();
-        this.version = initializingNode.getVersion();
-        this.user = initializingNode.getUser();
-        this.channel = initializingNode.getChannel();
-        this.recipeRevision = initializingNode.getRecipeRevision();
-        this.packageId = initializingNode.getPackageId();
-        this.packageRevision = initializingNode.getPackageRevision();
+        this.path = initializingNode.getPath().orElse(null);
+        this.name = initializingNode.getName().orElse(null);
+        this.version = initializingNode.getVersion().orElse(null);
+        this.user = initializingNode.getUser().orElse(null);
+        this.channel = initializingNode.getChannel().orElse(null);
+        this.recipeRevision = initializingNode.getRecipeRevision().orElse(null);
+        this.packageId = initializingNode.getPackageId().orElse(null);
+        this.packageRevision = initializingNode.getPackageRevision().orElse(null);
     }
 
     public ConanNodeBuilder<T> forceRootNode() {
