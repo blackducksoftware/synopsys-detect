@@ -67,8 +67,8 @@ public class ConanCodeLocationGenerator {
     private void populateGraphUnderNode(ConanGraphNode curGraphNode, Map<String, ConanNode<String>> graphNodes, boolean includeBuildDependencies) throws IntegrationException {
         Set<String> dependencyRefs = new HashSet<>(
             curGraphNode.getConanNode().getRequiresRefs().orElse(new ArrayList<>(0)));
-        if (includeBuildDependencies && curGraphNode.getConanNode().getBuildRequiresRefs().isPresent()) {
-            dependencyRefs.addAll(curGraphNode.getConanNode().getBuildRequiresRefs().get());
+        if (includeBuildDependencies) {
+            curGraphNode.getConanNode().getBuildRequiresRefs().ifPresent(dependencyRefs::addAll);
         }
         for (String childRef : dependencyRefs) {
             ConanNode<String> childNode = graphNodes.get(childRef);

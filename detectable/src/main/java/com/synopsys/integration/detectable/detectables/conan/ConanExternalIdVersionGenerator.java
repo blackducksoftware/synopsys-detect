@@ -22,8 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.conan;
 
-import java.util.Optional;
-
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
 import com.synopsys.integration.exception.IntegrationException;
 
@@ -31,7 +29,9 @@ public class ConanExternalIdVersionGenerator {
 
     public String generateExternalIdVersionString(ConanNode<String> node, boolean preferLongFormExternalIds) throws IntegrationException {
         String externalIdVersion;
-        if (hasValue(node.getRecipeRevision()) && hasValue(node.getPackageRevision()) && preferLongFormExternalIds) {
+        if (hasValue(node.getRecipeRevision().orElse(null)) &&
+                hasValue(node.getPackageRevision().orElse(null)) &&
+                preferLongFormExternalIds) {
             // generate long form
             // <name>/<version>@<user>/<channel>#<recipe_revision>:<package_id>#<package_revision>
             externalIdVersion = String.format("%s@%s/%s#%s:%s#%s",
@@ -53,10 +53,7 @@ public class ConanExternalIdVersionGenerator {
         return externalIdVersion;
     }
 
-    private boolean hasValue(Optional<String> value) {
-        if ((!value.isPresent()) || ("None".equals(value.get()))) {
-            return false;
-        }
-        return true;
+    private boolean hasValue(String value) {
+        return value != null && !"None".equals(value);
     }
 }

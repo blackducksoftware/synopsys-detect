@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.NotNull;
-
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 
@@ -35,18 +33,17 @@ public class NodeElementParser {
     private final List<ElementTypeParser> elementParsers = new ArrayList<>();
 
     public NodeElementParser(ConanInfoLineAnalyzer conanInfoLineAnalyzer) {
-        createElementTypeParser(() -> new ListElementParser(conanInfoLineAnalyzer, "Requires", (ConanNodeBuilder<String> nodeBuilder, String listItem) -> nodeBuilder.addRequiresRef(listItem)));
-        createElementTypeParser(() -> new ListElementParser(conanInfoLineAnalyzer, "Build Requires", (ConanNodeBuilder<String> nodeBuilder, String listItem) -> nodeBuilder.addBuildRequiresRef(listItem)));
-        createElementTypeParser(() -> new KeyValuePairElementParser(conanInfoLineAnalyzer, "ID", (ConanNodeBuilder<String> nodeBuilder, String parsedValue) -> nodeBuilder.setPackageId(parsedValue)));
-        createElementTypeParser(() -> new KeyValuePairElementParser(conanInfoLineAnalyzer, "Revision", (ConanNodeBuilder<String> nodeBuilder, String parsedValue) -> nodeBuilder.setRecipeRevision(parsedValue)));
-        createElementTypeParser(() -> new KeyValuePairElementParser(conanInfoLineAnalyzer, "Package revision", (ConanNodeBuilder<String> nodeBuilder, String parsedValue) -> nodeBuilder.setPackageRevision(parsedValue)));
+        createElementTypeParser(() -> new ListElementParser(conanInfoLineAnalyzer, "Requires", ConanNodeBuilder::addRequiresRef));
+        createElementTypeParser(() -> new ListElementParser(conanInfoLineAnalyzer, "Build Requires", ConanNodeBuilder::addBuildRequiresRef));
+        createElementTypeParser(() -> new KeyValuePairElementParser(conanInfoLineAnalyzer, "ID", ConanNodeBuilder::setPackageId));
+        createElementTypeParser(() -> new KeyValuePairElementParser(conanInfoLineAnalyzer, "Revision", ConanNodeBuilder::setRecipeRevision));
+        createElementTypeParser(() -> new KeyValuePairElementParser(conanInfoLineAnalyzer, "Package revision", ConanNodeBuilder::setPackageRevision));
     }
 
     private void createElementTypeParser(Supplier<ElementTypeParser> elementSupplier) {
         elementParsers.add(elementSupplier.get());
     }
 
-    @NotNull
     public int parseElement(ConanNodeBuilder<String> nodeBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex) {
         String line = conanInfoOutputLines.get(bodyElementLineIndex);
         return elementParsers.stream()

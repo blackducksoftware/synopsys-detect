@@ -26,21 +26,15 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.ConanLockfileParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
 public class ConanLockfileExtractor {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final Gson gson;
     private final ConanLockfileParser conanLockfileParser;
 
-    public ConanLockfileExtractor(Gson gson, ConanLockfileParser conanLockfileParser) {
-        this.gson = gson;
+    public ConanLockfileExtractor(ConanLockfileParser conanLockfileParser) {
         this.conanLockfileParser = conanLockfileParser;
     }
 

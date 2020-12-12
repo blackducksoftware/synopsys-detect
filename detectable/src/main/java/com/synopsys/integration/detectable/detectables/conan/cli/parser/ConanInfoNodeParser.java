@@ -91,39 +91,50 @@ public class ConanInfoNodeParser {
         if (StringUtils.isBlank(ref)) {
             return;
         }
-        // if rootNode: conanfile.{txt,py}[ (projectname/version)]
-        // else       : package/version[@user/channel]
+
         if (ref.startsWith("conanfile.")) {
-            StringTokenizer tokenizer = new StringTokenizer(ref, " \t()/");
-            nodeBuilder.setPath(tokenizer.nextToken());
-            if (tokenizer.hasMoreTokens()) {
-                nodeBuilder.setName(tokenizer.nextToken());
-                if (tokenizer.hasMoreTokens()) {
-                    nodeBuilder.setVersion(tokenizer.nextToken());
-                }
-            }
+            setFieldsForRootNode(nodeBuilder, ref);
         } else {
-            StringTokenizer tokenizer = new StringTokenizer(ref, "/@");
-            String name = tokenizer.nextToken();
-            nodeBuilder.setName(name);
-            if (name.contains(" ")) {
-                nodeBuilder.setValid(false);
+            if (setFieldsForNonRootNode(nodeBuilder, ref))
                 return;
-            }
-            if (tokenizer.hasMoreTokens()) {
-                String version = tokenizer.nextToken();
-                nodeBuilder.setVersion(version);
-                if (version.contains(" ")) {
-                    nodeBuilder.setValid(false);
-                    return;
-                } else if (tokenizer.hasMoreTokens()) {
-                    nodeBuilder.setUser(tokenizer.nextToken());
-                    if (tokenizer.hasMoreTokens()) {
-                        nodeBuilder.setChannel(tokenizer.nextToken());
-                    }
+        }
+        nodeBuilder.setRef(ref);
+    }
+
+    // conanfile.{txt,py}[ (projectname/version)]
+    private boolean setFieldsForNonRootNode(ConanNodeBuilder<String> nodeBuilder, String ref) {
+        StringTokenizer tokenizer = new StringTokenizer(ref, "/@");
+        String name = tokenizer.nextToken();
+        nodeBuilder.setName(name);
+        if (name.contains(" ")) {
+            nodeBuilder.setValid(false);
+            return true;
+        }
+        if (tokenizer.hasMoreTokens()) {
+            String version = tokenizer.nextToken();
+            nodeBuilder.setVersion(version);
+            if (version.contains(" ")) {
+                nodeBuilder.setValid(false);
+                return true;
+            } else if (tokenizer.hasMoreTokens()) {
+                nodeBuilder.setUser(tokenizer.nextToken());
+                if (tokenizer.hasMoreTokens()) {
+                    nodeBuilder.setChannel(tokenizer.nextToken());
                 }
             }
         }
-        nodeBuilder.setRef(ref);
+        return false;
+    }
+
+    // package/version[@user/channel]
+    private void setFieldsForRootNode(ConanNodeBuilder<String> nodeBuilder, String ref) {
+        StringTokenizer tokenizer = new StringTokenizer(ref, " \t()/");
+        nodeBuilder.setPath(tokenizer.nextToken());
+        if (tokenizer.hasMoreTokens()) {
+            nodeBuilder.setName(tokenizer.nextToken());
+            if (tokenizer.hasMoreTokens()) {
+                nodeBuilder.setVersion(tokenizer.nextToken());
+            }
+        }
     }
 }
