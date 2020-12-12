@@ -32,11 +32,11 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public class ConanCliExtractor {
@@ -68,7 +68,7 @@ public class ConanCliExtractor {
             ConanDetectableResult result = conanInfoParser.generateCodeLocationFromConanInfoOutput(conanInfoOutput.getStandardOutput(),
                 conanCliExtractorOptions.shouldIncludeDevDependencies(), conanCliExtractorOptions.preferLongFormExternalIds());
             return new Extraction.Builder().success(result.getCodeLocation()).projectName(result.getProjectName()).projectVersion(result.getProjectVersion()).build();
-        } catch (IntegrationException e) {
+        } catch (DetectableException e) {
             return new Extraction.Builder().failure(e.getMessage()).build();
         }
     }

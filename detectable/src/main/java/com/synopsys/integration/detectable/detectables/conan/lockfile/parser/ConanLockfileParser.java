@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
 import com.synopsys.integration.detectable.detectables.conan.ConanExternalIdVersionGenerator;
@@ -43,7 +44,6 @@ import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNodeBuilder;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.model.ConanLockfileData;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.model.ConanLockfileNode;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class ConanLockfileParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -60,7 +60,7 @@ public class ConanLockfileParser {
     }
 
     public ConanDetectableResult generateCodeLocationFromConanLockfileContents(String conanLockfileContents,
-        boolean includeBuildDependencies, boolean preferLongFormExternalIds) throws IntegrationException {
+        boolean includeBuildDependencies, boolean preferLongFormExternalIds) throws DetectableException {
         logger.trace("Parsing conan lockfile contents:\n{}", conanLockfileContents);
         Map<Integer, ConanNode<Integer>> indexedNodeMap = generateIndexedNodeMap(conanLockfileContents);
         // The lockfile references nodes by (integer) index; generator needs nodes referenced by names (component references)
@@ -104,7 +104,7 @@ public class ConanLockfileParser {
         return nodeBuilder.build();
     }
 
-    private Map<String, ConanNode<String>> convertToNamedNodeMap(Map<Integer, ConanNode<Integer>> numberedNodeMap) throws IntegrationException {
+    private Map<String, ConanNode<String>> convertToNamedNodeMap(Map<Integer, ConanNode<Integer>> numberedNodeMap) throws DetectableException {
         Map<String, ConanNode<String>> namedNodeMap = new HashMap<>(numberedNodeMap.size());
         for (Map.Entry<Integer, ConanNode<Integer>> entry : numberedNodeMap.entrySet()) {
             ConanNode<Integer> numberedNode = entry.getValue();
@@ -113,7 +113,7 @@ public class ConanLockfileParser {
             addRefsForGivenIndices(numberedNodeMap, numberedNode.getBuildRequiresRefs().orElse(new ArrayList<>(0)), namedNodeBuilder::addBuildRequiresRef);
             Optional<ConanNode<String>> namedNode = namedNodeBuilder.build();
             if (!namedNode.isPresent()) {
-                throw new IntegrationException(String.format("Unable to create a named node from numbered noded %s", numberedNode));
+                throw new DetectableException(String.format("Unable to create a named node from numbered noded %s", numberedNode));
             }
             namedNodeMap.put(namedNode.get().getRef(), namedNode.get());
         }

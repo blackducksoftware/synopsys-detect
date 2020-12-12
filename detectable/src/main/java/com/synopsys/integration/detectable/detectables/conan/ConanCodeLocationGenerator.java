@@ -40,9 +40,9 @@ import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanGraphNode;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
-import com.synopsys.integration.exception.IntegrationException;
 
 public class ConanCodeLocationGenerator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -50,11 +50,11 @@ public class ConanCodeLocationGenerator {
 
     @NotNull
     public ConanDetectableResult generateCodeLocationFromNodeMap(ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator,
-        boolean includeBuildDependencies, boolean preferLongFormExternalIds, Map<String, ConanNode<String>> nodes) throws IntegrationException {
+        boolean includeBuildDependencies, boolean preferLongFormExternalIds, Map<String, ConanNode<String>> nodes) throws DetectableException {
         logger.debug("Generating code location from {} dependencies", nodes.keySet().size());
         Optional<ConanNode<String>> rootNode = getRoot(nodes.values());
         if (!rootNode.isPresent()) {
-            throw new IntegrationException("No root node found");
+            throw new DetectableException("No root node found");
         }
         ConanGraphNode rootGraphNode = new ConanGraphNode(rootNode.get());
         populateGraphUnderNode(rootGraphNode, nodes, includeBuildDependencies);
@@ -64,7 +64,7 @@ public class ConanCodeLocationGenerator {
             rootGraphNode.getConanNode().getVersion().orElse(null), codeLocation);
     }
 
-    private void populateGraphUnderNode(ConanGraphNode curGraphNode, Map<String, ConanNode<String>> graphNodes, boolean includeBuildDependencies) throws IntegrationException {
+    private void populateGraphUnderNode(ConanGraphNode curGraphNode, Map<String, ConanNode<String>> graphNodes, boolean includeBuildDependencies) throws DetectableException {
         Set<String> dependencyRefs = new HashSet<>(
             curGraphNode.getConanNode().getRequiresRefs().orElse(new ArrayList<>(0)));
         if (includeBuildDependencies) {
@@ -73,7 +73,7 @@ public class ConanCodeLocationGenerator {
         for (String childRef : dependencyRefs) {
             ConanNode<String> childNode = graphNodes.get(childRef);
             if (childNode == null) {
-                throw new IntegrationException(String.format("%s requires non-existent node %s", curGraphNode.getConanNode().getRef(), childRef));
+                throw new DetectableException(String.format("%s requires non-existent node %s", curGraphNode.getConanNode().getRef(), childRef));
             }
             ConanGraphNode childGraphNode = new ConanGraphNode(childNode);
             populateGraphUnderNode(childGraphNode, graphNodes, includeBuildDependencies);
@@ -84,7 +84,7 @@ public class ConanCodeLocationGenerator {
     @NotNull
     private CodeLocation generateCodeLocationFromConanGraph(ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator,
         MutableMapDependencyGraph dependencyGraph, ConanGraphNode rootNode,
-        boolean preferLongFormExternalIds) throws IntegrationException {
+        boolean preferLongFormExternalIds) throws DetectableException {
         addNodeChildrenUnderNode(externalIdFactory, versionGenerator,
             dependencyGraph, 0, rootNode, null, preferLongFormExternalIds);
         return new CodeLocation(dependencyGraph);
@@ -92,7 +92,7 @@ public class ConanCodeLocationGenerator {
 
     private void addNodeChildrenUnderNode(ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator,
         MutableMapDependencyGraph dependencyGraph, int depth, ConanGraphNode currentNode, Dependency currentDep,
-        boolean preferLongFormExternalIds) throws IntegrationException {
+        boolean preferLongFormExternalIds) throws DetectableException {
         Consumer<Dependency> childAdder;
         if (depth == 0) {
             childAdder = dependencyGraph::addChildToRoot;
@@ -109,9 +109,9 @@ public class ConanCodeLocationGenerator {
 
     @NotNull
     private Dependency generateDependency(ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator,
-        ConanGraphNode graphNode, boolean preferLongFormExternalIds) throws IntegrationException {
+        ConanGraphNode graphNode, boolean preferLongFormExternalIds) throws DetectableException {
         String depName = graphNode.getConanNode().getName().orElseThrow(
-            () -> new IntegrationException(String.format("Missing dependency name: %s", graphNode.getConanNode()))
+            () -> new DetectableException(String.format("Missing dependency name: %s", graphNode.getConanNode()))
         );
         String fullVersion = versionGenerator.generateExternalIdVersionString(graphNode.getConanNode(), preferLongFormExternalIds);
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(conanForge, depName, fullVersion);
@@ -119,7 +119,7 @@ public class ConanCodeLocationGenerator {
         return new Dependency(
             depName,
             graphNode.getConanNode().getVersion().orElseThrow(
-                () -> new IntegrationException(String.format("Missing dependency version: %s", graphNode.getConanNode()))
+                () -> new DetectableException(String.format("Missing dependency version: %s", graphNode.getConanNode()))
             ),
             externalId);
     }
