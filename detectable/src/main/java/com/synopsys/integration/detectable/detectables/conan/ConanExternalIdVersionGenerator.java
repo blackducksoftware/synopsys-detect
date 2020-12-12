@@ -27,8 +27,6 @@ import java.util.Optional;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
 import com.synopsys.integration.exception.IntegrationException;
 
-// TODO This class needs to get re-worked
-// along with ConanNode (which will return Optionals).
 public class ConanExternalIdVersionGenerator {
 
     public String generateExternalIdVersionString(ConanNode<String> node, boolean preferLongFormExternalIds) throws IntegrationException {
