@@ -37,9 +37,9 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocation;
 import com.synopsys.integration.detect.workflow.codelocation.FileNameUtils;
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.docker.DockerExtractor;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class CodeLocationConverter {
@@ -54,7 +54,7 @@ public class CodeLocationConverter {
         Map<CodeLocation, DetectCodeLocation> detectCodeLocations = new HashMap<>();
         if (evaluation.wasExtractionSuccessful()) {
             Extraction extraction = evaluation.getExtraction();
-            String name = evaluation.getDetectorRule().getDetectorType().toString();
+            String name = evaluation.getDetectorType().toString();
             return toDetectCodeLocation(detectSourcePath, extraction, evaluation.getDetectableEnvironment().getDirectory(), name);
         }
         return detectCodeLocations;

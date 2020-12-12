@@ -290,4 +290,8 @@ public class DetectorEvaluation {
     public void setFallbackFrom(DetectorEvaluation fallbackFrom) {
         this.fallbackFrom = fallbackFrom;
     }
+
+    public DetectorType getDetectorType() {
+        return getDetectorRule().getDetectorType();
+    }
 }
