@@ -45,7 +45,11 @@ public class ConanLockfileExtractor {
                 conanLockfileContents,
                 conanLockfileExtractorOptions.shouldIncludeDevDependencies(),
                 conanLockfileExtractorOptions.preferLongFormExternalIds());
-            return new Extraction.Builder().success(result.getCodeLocation()).build();
+            return new Extraction.Builder()
+                       .success(result.getCodeLocation())
+                       .projectName(result.getProjectName())
+                       .projectVersion(result.getProjectVersion())
+                       .build();
         } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
