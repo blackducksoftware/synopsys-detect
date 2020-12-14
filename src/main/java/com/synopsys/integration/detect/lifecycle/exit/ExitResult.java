@@ -27,13 +27,11 @@ import com.synopsys.integration.util.Stringable;
 
 public class ExitResult extends Stringable {
     private final ExitCodeType exitCodeType;
-    private final String duration;
     private final boolean forceSuccess;
     private final boolean performExit;
 
-    public ExitResult(ExitCodeType exitCodeType, String duration, boolean forceSuccess, boolean performExit) {
+    public ExitResult(ExitCodeType exitCodeType, boolean forceSuccess, boolean performExit) {
         this.exitCodeType = exitCodeType;
-        this.duration = duration;
         this.forceSuccess = forceSuccess;
         this.performExit = performExit;
     }
@@ -42,15 +40,7 @@ public class ExitResult extends Stringable {
         return exitCodeType;
     }
 
-    public int getExitCode() {
-        return exitCodeType.getExitCode();
-    }
-
-    public String getDuration() {
-        return duration;
-    }
-
-    public boolean isForceSuccess() {
+    public boolean shouldForceSuccess() {
         return forceSuccess;
     }
 

@@ -27,7 +27,6 @@ import java.nio.charset.Charset;
 import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,6 @@ import com.google.gson.GsonBuilder;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectInfoUtility;
-import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBoot;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootFactory;
@@ -122,8 +120,8 @@ public class Application implements ApplicationRunner {
 
         if (detectBootResultOptional.isPresent()) {
             DetectBootResult detectBootResult = detectBootResultOptional.get();
-            printOutput = shouldPrintOutput(detectBootResult);
-            shouldForceSuccess = shouldForceSuccess(detectBootResult);
+            printOutput = detectBootResult.shouldPrintOutput();
+            shouldForceSuccess = detectBootResult.shouldForceSuccess();
 
             runApplication(detectContext, detectRun, eventSystem, exitCodeManager, detectBootResult);
 
@@ -140,20 +138,6 @@ public class Application implements ApplicationRunner {
         logger.debug("All Detect actions completed.");
 
         exitApplication(exitManager, startTime, printOutput, shouldForceSuccess);
-    }
-
-    @NotNull
-    private Boolean shouldForceSuccess(DetectBootResult detectBootResult) {
-        return detectBootResult.getDetectConfiguration()
-                   .map(configuration -> configuration.getValueOrDefault(DetectProperties.DETECT_FORCE_SUCCESS.getProperty()))
-                   .orElse(Boolean.FALSE);
-    }
-
-    @NotNull
-    private Boolean shouldPrintOutput(DetectBootResult detectBootResult) {
-        return detectBootResult.getDetectConfiguration()
-                   .map(configuration -> !configuration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_RESULTS_OUTPUT.getProperty()))
-                   .orElse(Boolean.TRUE);
     }
 
     private Optional<DetectBootResult> bootApplication(DetectRun detectRun, ApplicationArguments applicationArguments, EventSystem eventSystem, DetectContext detectContext, ExitCodeManager exitCodeManager) {
@@ -227,10 +211,10 @@ public class Application implements ApplicationRunner {
         ExitOptions exitOptions = new ExitOptions(startTime, printOutput, shouldForceSuccess, SHOULD_EXIT);
         ExitResult exitResult = exitManager.exit(exitOptions);
 
-        if (exitResult.isForceSuccess()) {
+        if (exitResult.shouldForceSuccess()) {
             System.exit(0);
         } else if (exitResult.shouldPerformExit()) {
-            System.exit(exitResult.getExitCode());
+            System.exit(exitResult.getExitCodeType().getExitCode());
         }
     }
 }

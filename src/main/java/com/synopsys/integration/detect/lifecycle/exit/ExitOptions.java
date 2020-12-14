@@ -41,15 +41,15 @@ public class ExitOptions extends Stringable {
         return startTime;
     }
 
-    public boolean isLogResults() {
+    public boolean shouldLogResults() {
         return logResults;
     }
 
-    public boolean isForceSuccessExit() {
+    public boolean shouldForceSuccessExit() {
         return forceSuccessExit;
     }
 
-    public boolean isShouldExit() {
+    public boolean shouldExit() {
         return shouldExit;
     }
 }

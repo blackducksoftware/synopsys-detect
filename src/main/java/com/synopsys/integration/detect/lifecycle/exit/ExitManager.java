@@ -48,9 +48,9 @@ public class ExitManager {
 
     public ExitResult exit(ExitOptions exitOptions) {
         long startTime = exitOptions.getStartTime();
-        boolean logResults = exitOptions.isLogResults();
-        boolean forceSuccessExit = exitOptions.isForceSuccessExit();
-        boolean shouldExit = exitOptions.isShouldExit();
+        boolean logResults = exitOptions.shouldLogResults();
+        boolean forceSuccessExit = exitOptions.shouldForceSuccessExit();
+        boolean shouldExit = exitOptions.shouldExit();
 
         //Generally, when requesting a failure status, an exit code is also requested, but if it is not, we default to an unknown error.
         if (statusManager.hasAnyFailure()) {
@@ -81,6 +81,6 @@ public class ExitManager {
             logger.info("Would normally exit({}) but it is overridden.", finalExitCode.getExitCode());
         }
 
-        return new ExitResult(finalExitCode, duration, forceSuccessExit, shouldExit);
+        return new ExitResult(finalExitCode, forceSuccessExit, shouldExit);
     }
 }

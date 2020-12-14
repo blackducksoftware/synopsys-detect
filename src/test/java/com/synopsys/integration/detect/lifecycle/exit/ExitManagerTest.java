@@ -1,7 +1,7 @@
 package com.synopsys.integration.detect.lifecycle.exit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -27,12 +27,10 @@ public class ExitManagerTest {
         ExitResult exitResult = exitManager.exit(exitOptions);
 
         assertEquals(startTime, exitOptions.getStartTime());
-        assertTrue(exitOptions.isLogResults());
-        assertEquals(exitOptions.isForceSuccessExit(), exitResult.isForceSuccess());
-        assertEquals(exitOptions.isShouldExit(), exitResult.shouldPerformExit());
-        assertNotNull(exitResult.getDuration());
+        assertTrue(exitOptions.shouldLogResults());
+        assertFalse(exitResult.shouldForceSuccess());
+        assertTrue(exitResult.shouldPerformExit());
         assertEquals(ExitCodeType.SUCCESS, exitResult.getExitCodeType());
-        assertEquals(ExitCodeType.SUCCESS.getExitCode(), exitResult.getExitCode());
     }
 
     @Test
@@ -49,12 +47,10 @@ public class ExitManagerTest {
         ExitResult exitResult = exitManager.exit(exitOptions);
 
         assertEquals(startTime, exitOptions.getStartTime());
-        assertTrue(exitOptions.isLogResults());
-        assertEquals(exitOptions.isForceSuccessExit(), exitResult.isForceSuccess());
-        assertEquals(exitOptions.isShouldExit(), exitResult.shouldPerformExit());
-        assertNotNull(exitResult.getDuration());
+        assertTrue(exitOptions.shouldLogResults());
+        assertTrue(exitResult.shouldForceSuccess());
+        assertTrue(exitResult.shouldPerformExit());
         assertEquals(ExitCodeType.FAILURE_CONFIGURATION, exitResult.getExitCodeType());
-        assertEquals(ExitCodeType.FAILURE_CONFIGURATION.getExitCode(), exitResult.getExitCode());
     }
 
     @Test
@@ -71,12 +67,10 @@ public class ExitManagerTest {
         ExitResult exitResult = exitManager.exit(exitOptions);
 
         assertEquals(startTime, exitOptions.getStartTime());
-        assertTrue(exitOptions.isLogResults());
-        assertEquals(exitOptions.isForceSuccessExit(), exitResult.isForceSuccess());
-        assertEquals(exitOptions.isShouldExit(), exitResult.shouldPerformExit());
-        assertNotNull(exitResult.getDuration());
+        assertTrue(exitOptions.shouldLogResults());
+        assertFalse(exitResult.shouldForceSuccess());
+        assertFalse(exitResult.shouldPerformExit());
         assertEquals(ExitCodeType.FAILURE_CONFIGURATION, exitResult.getExitCodeType());
-        assertEquals(ExitCodeType.FAILURE_CONFIGURATION.getExitCode(), exitResult.getExitCode());
 
     }
 
