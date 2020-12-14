@@ -14,6 +14,8 @@ ${solution_name} will run a Conan Detector if either of the following is true:
 
 In order for ${solution_name} to generate dependency details that will reliably match components
 in the ${blackduck_kb}, the Conan revisions feature must be enabled on the Conan project.
+The Conan command *conan config get general.revisions_enabled* must produce a value of "True"
+*and* this value must not be overridden by the environment variable CONAN_REVISIONS_ENABLED.
 
 ## Conan detector usage
 
