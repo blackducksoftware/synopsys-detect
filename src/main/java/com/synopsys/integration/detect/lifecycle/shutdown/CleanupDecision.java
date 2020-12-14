@@ -21,6 +21,10 @@ public class CleanupDecision {
         this.airGapZip = airGapZip;
     }
 
+    public static CleanupDecision skip() {
+        return new CleanupDecision(false, false, false, false, null);
+    }
+
     public boolean shouldCleanup() {
         return shouldCleanup;
     }
