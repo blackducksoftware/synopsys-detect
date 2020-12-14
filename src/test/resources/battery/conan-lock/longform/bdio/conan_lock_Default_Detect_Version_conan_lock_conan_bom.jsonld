@@ -1,0 +1,278 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "conan-lock/Default Detect Version/conan-lock conan/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-6.8.0-SNAPSHOT",
+        "Tool: IntegrationBdio-22.0.0"
+      ],
+      "spdx:created": "2020-12-08T23:41:22.523Z"
+    },
+    "@id": "uuid:941a1902-029c-48c4-a59f-9c72e0c797e8",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "conan-lock",
+    "revision": "Default Detect Version",
+    "@id": "http:detect/conan-lock",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "detect",
+      "externalId": "conan-lock",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "detect",
+          "separator": "/"
+        },
+        "pieces": [
+          "conan-lock",
+          null
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:conan/hello/0.1%40user%2Ftesting%238d3b65dd66ce3a1f847f83bc57dc6748%3A9bfdcfa2bb925892ecf42e2a018a3f3529826676%2356a11ca2013dafc50bb0f8c230cdf158",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/boost/1.72.0%40_%2F_%23606bee7b2d011cb7c00469cf040b685e%3A84aa75c7e2b2b3d1cb01af39298d01342cf8d782%2371dd305ebb25d54edb78f8c1e3b16e65",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/poco/1.9.4%40_%2F_%231b40afc220b2536de1c6443c2ede140a%3A3431757589df498ca0a4642ca897f0f866834fed%23fce04a6b291e36f7ed9499e8d3aa65cf",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "hello",
+    "revision": "0.1",
+    "@id": "http:conan/hello/0.1%40user%2Ftesting%238d3b65dd66ce3a1f847f83bc57dc6748%3A9bfdcfa2bb925892ecf42e2a018a3f3529826676%2356a11ca2013dafc50bb0f8c230cdf158",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "hello/0.1@user/testing#8d3b65dd66ce3a1f847f83bc57dc6748:9bfdcfa2bb925892ecf42e2a018a3f3529826676#56a11ca2013dafc50bb0f8c230cdf158",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "hello",
+          "0.1@user/testing#8d3b65dd66ce3a1f847f83bc57dc6748:9bfdcfa2bb925892ecf42e2a018a3f3529826676#56a11ca2013dafc50bb0f8c230cdf158"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "boost",
+    "revision": "1.72.0",
+    "@id": "http:conan/boost/1.72.0%40_%2F_%23606bee7b2d011cb7c00469cf040b685e%3A84aa75c7e2b2b3d1cb01af39298d01342cf8d782%2371dd305ebb25d54edb78f8c1e3b16e65",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "boost/1.72.0@_/_#606bee7b2d011cb7c00469cf040b685e:84aa75c7e2b2b3d1cb01af39298d01342cf8d782#71dd305ebb25d54edb78f8c1e3b16e65",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "boost",
+          "1.72.0@_/_#606bee7b2d011cb7c00469cf040b685e:84aa75c7e2b2b3d1cb01af39298d01342cf8d782#71dd305ebb25d54edb78f8c1e3b16e65"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:conan/bzip2/1.0.8%40_%2F_%23f85c479b79b300b1b5e17510aca55c35%3Ab27e2b40bcb70be2e7d6f0e0c6e43e35c530f8d3%23e068417f61a0e6d58c71edd5a956ce99",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/zlib/1.2.11%40_%2F_%231a67b713610ae745694aa4df1725451d%3Ad50a0d523d98c15bb147b18fa7d203887c38be8b%23da65bb160c07195dba18afb91259050d",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "bzip2",
+    "revision": "1.0.8",
+    "@id": "http:conan/bzip2/1.0.8%40_%2F_%23f85c479b79b300b1b5e17510aca55c35%3Ab27e2b40bcb70be2e7d6f0e0c6e43e35c530f8d3%23e068417f61a0e6d58c71edd5a956ce99",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "bzip2/1.0.8@_/_#f85c479b79b300b1b5e17510aca55c35:b27e2b40bcb70be2e7d6f0e0c6e43e35c530f8d3#e068417f61a0e6d58c71edd5a956ce99",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "bzip2",
+          "1.0.8@_/_#f85c479b79b300b1b5e17510aca55c35:b27e2b40bcb70be2e7d6f0e0c6e43e35c530f8d3#e068417f61a0e6d58c71edd5a956ce99"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "zlib",
+    "revision": "1.2.11",
+    "@id": "http:conan/zlib/1.2.11%40_%2F_%231a67b713610ae745694aa4df1725451d%3Ad50a0d523d98c15bb147b18fa7d203887c38be8b%23da65bb160c07195dba18afb91259050d",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "zlib/1.2.11@_/_#1a67b713610ae745694aa4df1725451d:d50a0d523d98c15bb147b18fa7d203887c38be8b#da65bb160c07195dba18afb91259050d",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "zlib",
+          "1.2.11@_/_#1a67b713610ae745694aa4df1725451d:d50a0d523d98c15bb147b18fa7d203887c38be8b#da65bb160c07195dba18afb91259050d"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "poco",
+    "revision": "1.9.4",
+    "@id": "http:conan/poco/1.9.4%40_%2F_%231b40afc220b2536de1c6443c2ede140a%3A3431757589df498ca0a4642ca897f0f866834fed%23fce04a6b291e36f7ed9499e8d3aa65cf",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "poco/1.9.4@_/_#1b40afc220b2536de1c6443c2ede140a:3431757589df498ca0a4642ca897f0f866834fed#fce04a6b291e36f7ed9499e8d3aa65cf",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "poco",
+          "1.9.4@_/_#1b40afc220b2536de1c6443c2ede140a:3431757589df498ca0a4642ca897f0f866834fed#fce04a6b291e36f7ed9499e8d3aa65cf"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:conan/openssl/1.1.1h%40_%2F_%23a54ec92b792d10b6595c581a15ad2cd7%3Ad50a0d523d98c15bb147b18fa7d203887c38be8b%2324abb5a3b8eb74ab824d8acda0b8cee1",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/sqlite3/3.33.0%40_%2F_%23cba9be64f6dfa3dc60ec66fed937f573%3Aa1a40b157cb1a601d47593de2b083a3fa80d6934%230a8d68e7834560b49deb55fd40314212",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/expat/2.2.10%40_%2F_%234c8fdad7f019abf97feb37d8c1075712%3Ad50a0d523d98c15bb147b18fa7d203887c38be8b%233b1755bc398917dadc4ccf6e7ce38fca",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/zlib/1.2.11%40_%2F_%231a67b713610ae745694aa4df1725451d%3Ad50a0d523d98c15bb147b18fa7d203887c38be8b%23da65bb160c07195dba18afb91259050d",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/pcre/8.41%40_%2F_%23565ecd412dd6d96407b26a97967408b9%3Ad633e96e88faaa3b917b0bb56bcb56dbd28a16ab%239b7e5d7ab95c2e371bc0a473257dd135",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "openssl",
+    "revision": "1.1.1h",
+    "@id": "http:conan/openssl/1.1.1h%40_%2F_%23a54ec92b792d10b6595c581a15ad2cd7%3Ad50a0d523d98c15bb147b18fa7d203887c38be8b%2324abb5a3b8eb74ab824d8acda0b8cee1",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "openssl/1.1.1h@_/_#a54ec92b792d10b6595c581a15ad2cd7:d50a0d523d98c15bb147b18fa7d203887c38be8b#24abb5a3b8eb74ab824d8acda0b8cee1",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "openssl",
+          "1.1.1h@_/_#a54ec92b792d10b6595c581a15ad2cd7:d50a0d523d98c15bb147b18fa7d203887c38be8b#24abb5a3b8eb74ab824d8acda0b8cee1"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "sqlite3",
+    "revision": "3.33.0",
+    "@id": "http:conan/sqlite3/3.33.0%40_%2F_%23cba9be64f6dfa3dc60ec66fed937f573%3Aa1a40b157cb1a601d47593de2b083a3fa80d6934%230a8d68e7834560b49deb55fd40314212",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "sqlite3/3.33.0@_/_#cba9be64f6dfa3dc60ec66fed937f573:a1a40b157cb1a601d47593de2b083a3fa80d6934#0a8d68e7834560b49deb55fd40314212",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "sqlite3",
+          "3.33.0@_/_#cba9be64f6dfa3dc60ec66fed937f573:a1a40b157cb1a601d47593de2b083a3fa80d6934#0a8d68e7834560b49deb55fd40314212"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "expat",
+    "revision": "2.2.10",
+    "@id": "http:conan/expat/2.2.10%40_%2F_%234c8fdad7f019abf97feb37d8c1075712%3Ad50a0d523d98c15bb147b18fa7d203887c38be8b%233b1755bc398917dadc4ccf6e7ce38fca",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "expat/2.2.10@_/_#4c8fdad7f019abf97feb37d8c1075712:d50a0d523d98c15bb147b18fa7d203887c38be8b#3b1755bc398917dadc4ccf6e7ce38fca",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "expat",
+          "2.2.10@_/_#4c8fdad7f019abf97feb37d8c1075712:d50a0d523d98c15bb147b18fa7d203887c38be8b#3b1755bc398917dadc4ccf6e7ce38fca"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pcre",
+    "revision": "8.41",
+    "@id": "http:conan/pcre/8.41%40_%2F_%23565ecd412dd6d96407b26a97967408b9%3Ad633e96e88faaa3b917b0bb56bcb56dbd28a16ab%239b7e5d7ab95c2e371bc0a473257dd135",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "pcre/8.41@_/_#565ecd412dd6d96407b26a97967408b9:d633e96e88faaa3b917b0bb56bcb56dbd28a16ab#9b7e5d7ab95c2e371bc0a473257dd135",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "pcre",
+          "8.41@_/_#565ecd412dd6d96407b26a97967408b9:d633e96e88faaa3b917b0bb56bcb56dbd28a16ab#9b7e5d7ab95c2e371bc0a473257dd135"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:conan/bzip2/1.0.8%40_%2F_%23f85c479b79b300b1b5e17510aca55c35%3Ab27e2b40bcb70be2e7d6f0e0c6e43e35c530f8d3%23e068417f61a0e6d58c71edd5a956ce99",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/zlib/1.2.11%40_%2F_%231a67b713610ae745694aa4df1725451d%3Ad50a0d523d98c15bb147b18fa7d203887c38be8b%23da65bb160c07195dba18afb91259050d",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  }
+]

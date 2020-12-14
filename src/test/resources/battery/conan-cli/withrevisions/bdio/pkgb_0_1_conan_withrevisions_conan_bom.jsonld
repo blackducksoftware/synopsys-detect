@@ -1,0 +1,63 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "pkgb/0.1/conan-withrevisions conan/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-6.8.0-SNAPSHOT",
+        "Tool: IntegrationBdio-22.0.0"
+      ],
+      "spdx:created": "2020-11-17T00:03:44.502Z"
+    },
+    "@id": "uuid:e6936478-ebb9-48d2-a5b5-1927a842dbdc",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "pkgb",
+    "revision": "0.1",
+    "@id": "http:detect/conan-withrevisions",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "detect",
+      "externalId": "conan-withrevisions",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "detect",
+          "separator": "/"
+        },
+        "pieces": [
+          "conan-withrevisions",
+          null
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:conan/pkga/0.1%40user%2Ftesting%234b881197000184e31e700eb95e7b5bf4%3A4024617540c4f240a6a5e8911b0de9ef38a11a72%23d078f000bbc2d26fea807d4d0b89189a",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "pkga",
+    "revision": "0.1",
+    "@id": "http:conan/pkga/0.1%40user%2Ftesting%234b881197000184e31e700eb95e7b5bf4%3A4024617540c4f240a6a5e8911b0de9ef38a11a72%23d078f000bbc2d26fea807d4d0b89189a",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "pkga/0.1@user/testing#4b881197000184e31e700eb95e7b5bf4:4024617540c4f240a6a5e8911b0de9ef38a11a72#d078f000bbc2d26fea807d4d0b89189a",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "pkga",
+          "0.1@user/testing#4b881197000184e31e700eb95e7b5bf4:4024617540c4f240a6a5e8911b0de9ef38a11a72#d078f000bbc2d26fea807d4d0b89189a"
+        ]
+      }
+    },
+    "relationship": []
+  }
+]

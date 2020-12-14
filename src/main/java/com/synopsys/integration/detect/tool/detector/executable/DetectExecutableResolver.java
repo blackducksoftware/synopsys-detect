@@ -52,9 +52,11 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.Pipenv
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
+import com.synopsys.integration.detectable.detectables.conan.cli.ConanResolver;
 
 public class DetectExecutableResolver
-    implements JavaResolver, GradleResolver, BashResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver, DockerResolver,
+    implements JavaResolver, GradleResolver, BashResolver, ConanResolver, CondaResolver, CpanmResolver, CpanResolver, PearResolver, Rebar3Resolver, PythonResolver, PipResolver, PipenvResolver, MavenResolver, NpmResolver, BazelResolver,
+                   DockerResolver,
                    DotNetResolver, GitResolver, SwiftResolver, GoResolver, LernaResolver {
 
     private final DirectoryExecutableFinder directoryExecutableFinder;
@@ -222,6 +224,11 @@ public class DetectExecutableResolver
     @Override
     public File resolveLerna() throws DetectableException {
         return resolveCachedSystemExecutable("lerna", detectExecutableOptions.getLernaUserPath());
+    }
+
+    @Override
+    public File resolveConan(DetectableEnvironment environment) throws DetectableException {
+        return resolveCachedSystemExecutable("conan", detectExecutableOptions.getConanUserPath());
     }
 }
 

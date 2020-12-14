@@ -34,6 +34,7 @@ import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundD
 import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.GivenFileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.GoPkgLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.MaxDepthExceededDetectableResult;
@@ -58,7 +59,7 @@ public class DetectorResultStatusCodeLookup {
 
     public static DetectorResultStatusCodeLookup standardLookup = new DetectorResultStatusCodeLookup();
 
-    private Map<Class, DetectorStatusCode> resultClassesToStatusCodes;
+    private final Map<Class, DetectorStatusCode> resultClassesToStatusCodes;
 
     private DetectorResultStatusCodeLookup() {
         this.resultClassesToStatusCodes = populateMap();
@@ -77,6 +78,7 @@ public class DetectorResultStatusCodeLookup {
         map.put(FallbackNotNeededDetectorResult.class, DetectorStatusCode.FALLBACK_NOT_NEEDED);
         map.put(FilesNotFoundDetectableResult.class, DetectorStatusCode.FILES_NOT_FOUND);
         map.put(FileNotFoundDetectableResult.class, DetectorStatusCode.FILE_NOT_FOUND);
+        map.put(GivenFileNotFoundDetectableResult.class, DetectorStatusCode.FILE_NOT_FOUND);
         map.put(ForcedNestedPassedDetectorResult.class, DetectorStatusCode.FORCED_NESTED_PASSED);
         map.put(GoPkgLockfileNotFoundDetectableResult.class, DetectorStatusCode.GO_PKG_LOCKFILE_NOT_FOUND);
         map.put(InspectorNotFoundDetectableResult.class, DetectorStatusCode.INSPECTOR_NOT_FOUND);

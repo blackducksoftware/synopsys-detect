@@ -1,0 +1,37 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "hello/1.0/conan-withprojectnameversion conan/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-6.8.0-SNAPSHOT",
+        "Tool: IntegrationBdio-22.0.0"
+      ],
+      "spdx:created": "2020-11-16T01:19:23.301Z"
+    },
+    "@id": "uuid:c83658e7-6598-45ed-8483-a6f052606e26",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "hello",
+    "revision": "1.0",
+    "@id": "http:detect/conan-withprojectnameversion",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "detect",
+      "externalId": "conan-withprojectnameversion",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "detect",
+          "separator": "/"
+        },
+        "pieces": [
+          "conan-withprojectnameversion",
+          null
+        ]
+      }
+    },
+    "relationship": []
+  }
+]
