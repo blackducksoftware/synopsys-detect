@@ -153,7 +153,7 @@ def get_package_by_name(package_name):
     try:
         # TODO: By using pkg_resources.Requirement.parse to get the correct key, we may not need to attempt the other
         #     methods. Robust tests are needed to confirm.
-        return working_set.by_key[Requirement.parse(package_name).key]
+        return package_dict[Requirement.parse(package_name).key]
     except:
         pass
 
