@@ -1,5 +1,7 @@
 package com.synopsys.integration.detect.tool.signaturescanner;
 
+import static org.mockito.ArgumentMatchers.any;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -46,39 +48,17 @@ public class BlackDuckSignatureScannerToolTest {
 
     @Test
     public void testRunScanToolOffline() throws URISyntaxException, DetectUserFriendlyException, IOException, IntegrationException {
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = Mockito.mock(BlackDuckSignatureScannerOptions.class);
-        Mockito.when(blackDuckSignatureScannerOptions.getParallelProcessors()).thenReturn(1);
-        Mockito.when(blackDuckSignatureScannerOptions.getOfflineLocalScannerInstallPath()).thenReturn(Optional.empty());
-        Mockito.when(blackDuckSignatureScannerOptions.getOnlineLocalScannerInstallPath()).thenReturn(Optional.empty());
-        Mockito.when(blackDuckSignatureScannerOptions.getUserProvidedScannerInstallUrl()).thenReturn(Optional.empty());
+        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = new BlackDuckSignatureScannerOptions(null, null, null, null, null, null, null, 1, null, null, false, null, null, null, null, null, null, null);
 
         // TODO - see if we can avoid mocking this, other objects
         DetectContext detectContext = Mockito.mock(DetectContext.class);
 
-        DetectConfigurationFactory detectConfigurationFactory = Mockito.mock(DetectConfigurationFactory.class);
-        Mockito.when(detectConfigurationFactory.createBlackDuckSignatureScannerOptions()).thenReturn(blackDuckSignatureScannerOptions);
-        Mockito.when(detectContext.getBean(DetectConfigurationFactory.class)).thenReturn(detectConfigurationFactory);
-
         DirectoryManager directoryManager = Mockito.mock(DirectoryManager.class);
         File signatureScannerInstallationDirectory = new File(BlackDuckSignatureScannerToolTest.class.getClassLoader().getResource("tool/signaturescanner/tools").toURI());
         Mockito.when(directoryManager.getPermanentDirectory()).thenReturn(signatureScannerInstallationDirectory);
-        Mockito.when(detectContext.getBean(DirectoryManager.class)).thenReturn(directoryManager);
-
-        ConnectionFactory connectionFactory = Mockito.mock(ConnectionFactory.class);
-        Mockito.when(detectContext.getBean(ConnectionFactory.class)).thenReturn(connectionFactory);
-
-        CodeLocationNameGenerator codeLocationNameGenerator = Mockito.mock(CodeLocationNameGenerator.class);
-        CodeLocationNameManager codeLocationNameManager = Mockito.mock(CodeLocationNameManager.class);
-        Mockito.when(detectContext.getBean(CodeLocationNameManager.class, codeLocationNameGenerator)).thenReturn(codeLocationNameManager);
-
-        // copied from BlackDuckSignatuereScannerTool, trying to create replica ScanBatchRunner
-        ExecutorService executorService = Executors.newFixedThreadPool(blackDuckSignatureScannerOptions.getParallelProcessors());
-        IntEnvironmentVariables intEnvironmentVariables = IntEnvironmentVariables.includeSystemEnv();
-        ScanBatchRunnerFactory scanBatchRunnerFactory = new ScanBatchRunnerFactory(intEnvironmentVariables, executorService);
-        ScanBatchRunner scanBatchRunner = scanBatchRunnerFactory.withoutInstall(signatureScannerInstallationDirectory);
 
         BlackDuckSignatureScanner blackDuckSignatureScanner = Mockito.mock(BlackDuckSignatureScanner.class);
-        Mockito.when(detectContext.getBean(BlackDuckSignatureScanner.class, blackDuckSignatureScannerOptions, scanBatchRunner, null, null)).thenReturn(blackDuckSignatureScanner);
+        Mockito.when(detectContext.getBean(any(Class.class), any(BlackDuckSignatureScannerOptions.class), any(ScanBatchRunner.class), any(), any())).thenReturn(blackDuckSignatureScanner);
 
         NameVersion projectNameVersion = new NameVersion("name", "version");
         BlackDuckOnlineProperties blackDuckOnlineProperties = new BlackDuckOnlineProperties(null, false, false, false);
@@ -86,9 +66,20 @@ public class BlackDuckSignatureScannerToolTest {
         ScanBatchOutput scanBatchOutput = new ScanBatchOutput(Collections.singletonList(ScanCommandOutput.SUCCESS(projectNameVersion, null, null, scanCommand, null)));
         Mockito.when(blackDuckSignatureScanner.performScanActions(projectNameVersion, signatureScannerInstallationDirectory, null)).thenReturn(scanBatchOutput);
 
-        BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
+        CodeLocationNameManager codeLocationNameManager = Mockito.mock(CodeLocationNameManager.class);
+        BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext, directoryManager, codeLocationNameManager, null);
         SignatureScannerToolResult expected = SignatureScannerToolResult.createOfflineResult(scanBatchOutput);
         SignatureScannerToolResult actual = blackDuckSignatureScannerTool.runScanTool(BlackDuckRunData.offline(), projectNameVersion, Optional.empty());
-        Assertions.assertEquals(expected, actual);
+        Assertions.assertTrue(areEqualResults(expected, actual));
+    }
+
+    private boolean areEqualResults(SignatureScannerToolResult result1, SignatureScannerToolResult result2) {
+        boolean equalCreationData = (!result1.getCreationData().isPresent() && !result2.getCreationData().isPresent()) ||
+                                        result1.getCreationData().isPresent() && result2.getCreationData().isPresent()
+                                        && result1.getCreationData().get().equals(result2.getCreationData().get());
+        boolean equalOutputs = result1.getScanBatchOutput().equals(result2.getScanBatchOutput());
+        boolean equalResults = result1.getResult().equals(result2.getResult());
+
+        return equalCreationData && equalOutputs && equalResults;
     }
 }

@@ -50,6 +50,7 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
@@ -362,7 +363,8 @@ public class RunManager {
         if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
             logger.info("Will include the signature scanner tool.");
             BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
-            BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
+            ConnectionFactory connectionFactory = detectContext.getBean(ConnectionFactory.class);
+            BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext, directoryManager, codeLocationNameManager, connectionFactory);
             SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar());
             if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
                 codeLocationAccumulator.addWaitableCodeLocation(signatureScannerToolResult.getCreationData().get());
