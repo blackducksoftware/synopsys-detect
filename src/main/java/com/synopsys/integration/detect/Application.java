@@ -49,8 +49,11 @@ import com.synopsys.integration.detect.lifecycle.exit.ExitOptions;
 import com.synopsys.integration.detect.lifecycle.exit.ExitResult;
 import com.synopsys.integration.detect.lifecycle.run.RunManager;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
+import com.synopsys.integration.detect.lifecycle.shutdown.CleanupUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeUtility;
+import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecider;
+import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownDecision;
 import com.synopsys.integration.detect.lifecycle.shutdown.ShutdownManager;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -198,8 +201,9 @@ public class Application implements ApplicationRunner {
     private void shutdownApplication(DetectBootResult detectBootResult, ExitCodeManager exitCodeManager) {
         try {
             logger.debug("Detect shutdown begin.");
-            ShutdownManager shutdownManager = new ShutdownManager();
-            shutdownManager.shutdown(detectBootResult);
+            ShutdownDecision shutdownDecision = new ShutdownDecider().decideShutdown(detectBootResult);
+            ShutdownManager shutdownManager = new ShutdownManager(new CleanupUtility());
+            shutdownManager.shutdown(detectBootResult, shutdownDecision);
             logger.debug("Detect shutdown completed.");
         } catch (Exception e) {
             logger.error("Detect shutdown failed.");
