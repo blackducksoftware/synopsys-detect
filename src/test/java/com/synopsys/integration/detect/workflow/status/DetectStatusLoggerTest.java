@@ -33,7 +33,7 @@ public class DetectStatusLoggerTest {
         List<DetectIssue> detectIssues = createIssues();
         statusLogger.logDetectStatus(loggerActual, statusSummaries, detectResults, detectIssues, ExitCodeType.SUCCESS);
         String actualOutput = loggerActual.getOutputString(LogLevel.INFO);
-        assertEquals(expectedOutput.trim(), actualOutput.trim());
+        assertEquals(expectedOutput.trim().replaceAll("\r?\n", "\n"), actualOutput.trim().replaceAll("\r?\n", "\n"));
     }
 
     /* These methods create the objects that will contain the same data as the example output file.
