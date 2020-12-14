@@ -72,7 +72,7 @@ public class ConanLockfileParser {
         if (!conanLockfileData.getConanLockfileGraph().isRevisionsEnabled()) {
             logger.warn("The Conan revisions feature is not enabled, which will significantly reduce Black Duck's ability to identify dependencies");
         } else {
-            logger.trace("The Conan revisions feature is enabled");
+            logger.debug("The Conan revisions feature is enabled");
         }
         for (Map.Entry<Integer, ConanLockfileNode> entry : conanLockfileData.getConanLockfileGraph().getNodeMap().entrySet()) {
             logger.trace("{}: {}:{}#{}", entry.getKey(),
