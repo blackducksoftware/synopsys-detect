@@ -74,6 +74,7 @@ import com.synopsys.integration.log.LogLevel;
 public class DetectProperties {
     private static final String POLARIS_CLI_DEPRECATION_MESSAGE = "This property is being removed. Detect will no longer invoke the Polaris CLI.";
     private static final String SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE = "This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details.";
+    private static final String EXCLUSION_PROPERTY_DEPRECATION_MESSAGE = "This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties.";
 
     private DetectProperties() {
     }
@@ -358,49 +359,6 @@ public class DetectProperties {
                 "If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.",
                 "If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc. "
                     + "If false, Detect will only find bom tools in subdirectories of a project if they are of a different type such as an Npm project in a subdirectory of a Gradle project."
-            )
-            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION =
-        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion", emptyList()))
-            .setInfo("Detector Directory Exclusions", DetectPropertyFromVersion.VERSION_3_2_0)
-            .setHelp("A comma-separated list of directory names to exclude from detector search.",
-                "While searching the source directory to determine which detectors to run, subdirectories whose name appear in this list will not be searched."
-            )
-            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS =
-        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.patterns", emptyList()))
-            .setInfo("Detector Directory Patterns Exclusions", DetectPropertyFromVersion.VERSION_3_2_0)
-            .setHelp("A comma-separated list of directory name patterns to exclude from detector search.",
-                "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). For example, suppose you're running in bash on Linux, you've set --detect.detector.search.depth=1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it:--detect.detector.search.exclusion.patterns=blackduck-common,--detect.detector.search.exclusion.patterns='blackduck-common',--detect.detector.search.exclusion.patterns='blackduck-*'")
-            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS =
-        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.paths", emptyList()))
-            .setInfo("Detector Directory Path Exclusions", DetectPropertyFromVersion.VERSION_5_5_0)
-            .setHelp(
-                "A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)",
-                "This property performs the same basic function as detect.detector.search.exclusion, but lets you be more specific."
-            )
-            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_FILES =
-        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.files", emptyList()))
-            .setInfo("Detector File Exclusions", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("A comma-separated list of file names to exclude from detector search.")
-            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<BooleanProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS =
-        new DetectProperty<>(new BooleanProperty("detect.detector.search.exclusion.defaults", true))
-            .setInfo("Detector Exclude Default Directories", DetectPropertyFromVersion.VERSION_3_2_0)
-            .setHelp("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.",
-                "If true, these directories will be excluded from the detector search: bin, build, .git, .gradle, node_modules, out, packages, target."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
@@ -1148,6 +1106,59 @@ public class DetectProperties {
     //#endregion Active Properties
 
     //#region Deprecated Properties
+    @Deprecated
+    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION =
+        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion", emptyList()))
+            .setInfo("Detector Directory Exclusions", DetectPropertyFromVersion.VERSION_3_2_0)
+            .setHelp("A comma-separated list of directory names to exclude from detector search.",
+                "While searching the source directory to determine which detectors to run, subdirectories whose name appear in this list will not be searched."
+            )
+            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(EXCLUSION_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS =
+        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.patterns", emptyList()))
+            .setInfo("Detector Directory Patterns Exclusions", DetectPropertyFromVersion.VERSION_3_2_0)
+            .setHelp("A comma-separated list of directory name patterns to exclude from detector search.",
+                "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). For example, suppose you're running in bash on Linux, you've set --detect.detector.search.depth=1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it:--detect.detector.search.exclusion.patterns=blackduck-common,--detect.detector.search.exclusion.patterns='blackduck-common',--detect.detector.search.exclusion.patterns='blackduck-*'")
+            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(EXCLUSION_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS =
+        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.paths", emptyList()))
+            .setInfo("Detector Directory Path Exclusions", DetectPropertyFromVersion.VERSION_5_5_0)
+            .setHelp(
+                "A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)",
+                "This property performs the same basic function as detect.detector.search.exclusion, but lets you be more specific."
+            )
+            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(EXCLUSION_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_FILES =
+        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.files", emptyList()))
+            .setInfo("Detector File Exclusions", DetectPropertyFromVersion.VERSION_6_0_0)
+            .setHelp("A comma-separated list of file names to exclude from detector search.")
+            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(EXCLUSION_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS =
+        new DetectProperty<>(new BooleanProperty("detect.detector.search.exclusion.defaults", true))
+            .setInfo("Detector Exclude Default Directories", DetectPropertyFromVersion.VERSION_3_2_0)
+            .setHelp("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.",
+                "If true, these directories will be excluded from the detector search: bin, build, .git, .gradle, node_modules, out, packages, target."
+            )
+            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(EXCLUSION_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_RESOLVE_TILDE_IN_PATHS =
         new DetectProperty<>(new BooleanProperty("detect.resolve.tilde.in.paths", true))
