@@ -87,7 +87,6 @@ import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectab
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockExtractor;
 import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockParser;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
-import com.synopsys.integration.detectable.detectables.conan.ConanExternalIdVersionGenerator;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractor;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractorOptions;
@@ -589,8 +588,7 @@ public class DetectableFactory {
 
     private ConanLockfileExtractor conanLockfileExtractor() {
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
-        ConanExternalIdVersionGenerator versionGenerator = new ConanExternalIdVersionGenerator();
-        ConanLockfileParser conanLockfileParser = new ConanLockfileParser(gson, conanCodeLocationGenerator, externalIdFactory, versionGenerator);
+        ConanLockfileParser conanLockfileParser = new ConanLockfileParser(gson, conanCodeLocationGenerator, externalIdFactory);
         return new ConanLockfileExtractor(conanLockfileParser);
     }
 
@@ -599,8 +597,7 @@ public class DetectableFactory {
         ConanCodeLocationGenerator conanCodeLocationGenerator = new ConanCodeLocationGenerator();
         NodeElementParser nodeElementParser = new NodeElementParser(conanInfoLineAnalyzer);
         ConanInfoNodeParser conanInfoNodeParser = new ConanInfoNodeParser(conanInfoLineAnalyzer, nodeElementParser);
-        ConanExternalIdVersionGenerator versionGenerator = new ConanExternalIdVersionGenerator();
-        ConanInfoParser conanInfoParser = new ConanInfoParser(conanInfoNodeParser, conanCodeLocationGenerator, externalIdFactory, versionGenerator);
+        ConanInfoParser conanInfoParser = new ConanInfoParser(conanInfoNodeParser, conanCodeLocationGenerator, externalIdFactory);
         return new ConanCliExtractor(executableRunner, conanInfoParser);
     }
 

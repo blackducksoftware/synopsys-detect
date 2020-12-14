@@ -13,7 +13,6 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
-import com.synopsys.integration.detectable.detectables.conan.ConanExternalIdVersionGenerator;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoNodeParser;
 import com.synopsys.integration.detectable.detectables.conan.cli.parser.ConanInfoParser;
@@ -31,7 +30,7 @@ public class ConanCliParserFunctionalTest {
         ConanInfoLineAnalyzer conanInfoLineAnalyzer = new ConanInfoLineAnalyzer();
         NodeElementParser nodeElementParser = new NodeElementParser(conanInfoLineAnalyzer);
         ConanInfoNodeParser conanInfoNodeParser = new ConanInfoNodeParser(conanInfoLineAnalyzer, nodeElementParser);
-        ConanInfoParser parser = new ConanInfoParser(conanInfoNodeParser, conanCodeLocationGenerator, new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
+        ConanInfoParser parser = new ConanInfoParser(conanInfoNodeParser, conanCodeLocationGenerator, new ExternalIdFactory());
         String conanInfoOutput = FileUtils.readFileToString(conanInfoOutputFile, StandardCharsets.UTF_8);
 
         ConanDetectableResult result = parser.generateCodeLocationFromConanInfoOutput(conanInfoOutput, true, false);

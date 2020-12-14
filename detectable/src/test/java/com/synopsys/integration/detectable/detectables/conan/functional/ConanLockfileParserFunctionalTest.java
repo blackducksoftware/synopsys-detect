@@ -15,7 +15,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
-import com.synopsys.integration.detectable.detectables.conan.ConanExternalIdVersionGenerator;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.parser.ConanLockfileParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.GraphCompare;
@@ -28,7 +27,7 @@ public class ConanLockfileParserFunctionalTest {
     public void testNoProjectRef() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan.lock");
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(),
-            new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
+            new ConanCodeLocationGenerator(), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
         ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(conanLockfileContents, true, false);
@@ -42,7 +41,7 @@ public class ConanLockfileParserFunctionalTest {
     public void testWithDevDependencies() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan_buildrequirements.lock");
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(),
-            new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
+            new ConanCodeLocationGenerator(), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
         ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(conanLockfileContents, true, false);
@@ -56,7 +55,7 @@ public class ConanLockfileParserFunctionalTest {
     public void testNoProjectRefLongFormExternalIds() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan.lock");
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(),
-            new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
+            new ConanCodeLocationGenerator(), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
         ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(conanLockfileContents, true, true);
@@ -70,7 +69,7 @@ public class ConanLockfileParserFunctionalTest {
     public void testProjectRef() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan_projectref.lock");
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(),
-            new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
+            new ConanCodeLocationGenerator(), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
         ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(conanLockfileContents, true, true);
@@ -83,7 +82,7 @@ public class ConanLockfileParserFunctionalTest {
     public void testRelativePath() throws IOException, IntegrationException {
         File lockfile = FunctionalTestFiles.asFile("/conan/lockfile/conan_relpath.lock");
         ConanLockfileParser parser = new ConanLockfileParser(new Gson(),
-            new ConanCodeLocationGenerator(), new ExternalIdFactory(), new ConanExternalIdVersionGenerator());
+            new ConanCodeLocationGenerator(), new ExternalIdFactory());
         String conanLockfileContents = FileUtils.readFileToString(lockfile, StandardCharsets.UTF_8);
 
         ConanDetectableResult result = parser.generateCodeLocationFromConanLockfileContents(conanLockfileContents, true, true);

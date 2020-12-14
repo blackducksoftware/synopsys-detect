@@ -16,21 +16,19 @@ public class ConanExternalIdVersionGeneratorTest {
 
     @Test
     public void testMinimal() throws IntegrationException {
-        ConanExternalIdVersionGenerator generator = new ConanExternalIdVersionGenerator();
         ConanNodeBuilder<String> nodeBuilder = new ConanNodeBuilder<>();
         nodeBuilder.setRef("bzip/1.2.3");
         nodeBuilder.setVersion("1.2.3");
         Optional<ConanNode<String>> node = nodeBuilder.build();
         assertTrue(node.isPresent());
 
-        String version = generator.generateExternalIdVersionString(node.get(), false);
+        String version = ConanExternalIdVersionGenerator.generateExternalIdVersionString(node.get(), false);
 
         assertEquals("1.2.3@_/_#0", version);
     }
 
     @Test
     public void testShortForm() throws IntegrationException {
-        ConanExternalIdVersionGenerator generator = new ConanExternalIdVersionGenerator();
         ConanNodeBuilder<String> nodeBuilder = new ConanNodeBuilder<>();
         nodeBuilder.setRef("bzip/1.2.3@testuser/testchannel");
         nodeBuilder.setVersion("1.2.3");
@@ -40,14 +38,13 @@ public class ConanExternalIdVersionGeneratorTest {
         Optional<ConanNode<String>> node = nodeBuilder.build();
         assertTrue(node.isPresent());
 
-        String version = generator.generateExternalIdVersionString(node.get(), false);
+        String version = ConanExternalIdVersionGenerator.generateExternalIdVersionString(node.get(), false);
 
         assertEquals("1.2.3@testuser/testchannel#testrrev", version);
     }
 
     @Test
     public void testShortFormWhenLongFormPossible() throws IntegrationException {
-        ConanExternalIdVersionGenerator generator = new ConanExternalIdVersionGenerator();
         ConanNodeBuilder<String> nodeBuilder = new ConanNodeBuilder<>();
         nodeBuilder.setRef("bzip/1.2.3@testuser/testchannel");
         nodeBuilder.setVersion("1.2.3");
@@ -59,14 +56,13 @@ public class ConanExternalIdVersionGeneratorTest {
         Optional<ConanNode<String>> node = nodeBuilder.build();
         assertTrue(node.isPresent());
 
-        String version = generator.generateExternalIdVersionString(node.get(), false);
+        String version = ConanExternalIdVersionGenerator.generateExternalIdVersionString(node.get(), false);
 
         assertEquals("1.2.3@testuser/testchannel#testrrev", version);
     }
 
     @Test
     public void testLongForm() throws IntegrationException {
-        ConanExternalIdVersionGenerator generator = new ConanExternalIdVersionGenerator();
         ConanNodeBuilder<String> nodeBuilder = new ConanNodeBuilder<>();
         nodeBuilder.setRef("bzip/1.2.3@testuser/testchannel");
         nodeBuilder.setVersion("1.2.3");
@@ -78,14 +74,13 @@ public class ConanExternalIdVersionGeneratorTest {
         Optional<ConanNode<String>> node = nodeBuilder.build();
         assertTrue(node.isPresent());
 
-        String version = generator.generateExternalIdVersionString(node.get(), true);
+        String version = ConanExternalIdVersionGenerator.generateExternalIdVersionString(node.get(), true);
 
         assertEquals("1.2.3@testuser/testchannel#testrrev:testpkgid#testprev", version);
     }
 
     @Test
     public void testShortFormWhenLongFormRequested() throws IntegrationException {
-        ConanExternalIdVersionGenerator generator = new ConanExternalIdVersionGenerator();
         ConanNodeBuilder<String> nodeBuilder = new ConanNodeBuilder<>();
         nodeBuilder.setRef("bzip/1.2.3@testuser/testchannel");
         nodeBuilder.setVersion("1.2.3");
@@ -97,7 +92,7 @@ public class ConanExternalIdVersionGeneratorTest {
         Optional<ConanNode<String>> node = nodeBuilder.build();
         assertTrue(node.isPresent());
 
-        String version = generator.generateExternalIdVersionString(node.get(), true);
+        String version = ConanExternalIdVersionGenerator.generateExternalIdVersionString(node.get(), true);
 
         assertEquals("1.2.3@testuser/testchannel#testrrev", version);
     }

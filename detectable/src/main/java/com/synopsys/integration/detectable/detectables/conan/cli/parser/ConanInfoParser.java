@@ -34,7 +34,6 @@ import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
-import com.synopsys.integration.detectable.detectables.conan.ConanExternalIdVersionGenerator;
 import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
 
 public class ConanInfoParser {
@@ -42,19 +41,17 @@ public class ConanInfoParser {
     private final ConanInfoNodeParser conanInfoNodeParser;
     private final ConanCodeLocationGenerator conanCodeLocationGenerator;
     private final ExternalIdFactory externalIdFactory;
-    private final ConanExternalIdVersionGenerator versionGenerator;
 
     public ConanInfoParser(ConanInfoNodeParser conanInfoNodeParser, ConanCodeLocationGenerator conanCodeLocationGenerator,
-        ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator) {
+        ExternalIdFactory externalIdFactory) {
         this.conanInfoNodeParser = conanInfoNodeParser;
         this.conanCodeLocationGenerator = conanCodeLocationGenerator;
         this.externalIdFactory = externalIdFactory;
-        this.versionGenerator = versionGenerator;
     }
 
     public ConanDetectableResult generateCodeLocationFromConanInfoOutput(String conanInfoOutput, boolean includeBuildDependencies, boolean preferLongFormExternalIds) throws DetectableException {
         Map<String, ConanNode<String>> nodeMap = generateNodeMap(conanInfoOutput);
-        return conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory, versionGenerator,
+        return conanCodeLocationGenerator.generateCodeLocationFromNodeMap(externalIdFactory,
             includeBuildDependencies, preferLongFormExternalIds, nodeMap);
     }
 

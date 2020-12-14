@@ -49,7 +49,7 @@ public class ConanCodeLocationGenerator {
     private final Forge conanForge = new Forge("/", "conan");
 
     @NotNull
-    public ConanDetectableResult generateCodeLocationFromNodeMap(ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator,
+    public ConanDetectableResult generateCodeLocationFromNodeMap(ExternalIdFactory externalIdFactory,
         boolean includeBuildDependencies, boolean preferLongFormExternalIds, Map<String, ConanNode<String>> nodes) throws DetectableException {
         logger.debug("Generating code location from {} dependencies", nodes.keySet().size());
         Optional<ConanNode<String>> rootNode = getRoot(nodes.values());
@@ -59,7 +59,7 @@ public class ConanCodeLocationGenerator {
         ConanGraphNode rootGraphNode = new ConanGraphNode(rootNode.get());
         populateGraphUnderNode(rootGraphNode, nodes, includeBuildDependencies);
         MutableMapDependencyGraph dependencyGraph = new MutableMapDependencyGraph();
-        CodeLocation codeLocation = generateCodeLocationFromConanGraph(externalIdFactory, versionGenerator, dependencyGraph, rootGraphNode, preferLongFormExternalIds);
+        CodeLocation codeLocation = generateCodeLocationFromConanGraph(externalIdFactory, dependencyGraph, rootGraphNode, preferLongFormExternalIds);
         return new ConanDetectableResult(rootGraphNode.getConanNode().getName().orElse(null),
             rootGraphNode.getConanNode().getVersion().orElse(null), codeLocation);
     }
@@ -82,15 +82,15 @@ public class ConanCodeLocationGenerator {
     }
 
     @NotNull
-    private CodeLocation generateCodeLocationFromConanGraph(ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator,
+    private CodeLocation generateCodeLocationFromConanGraph(ExternalIdFactory externalIdFactory,
         MutableMapDependencyGraph dependencyGraph, ConanGraphNode rootNode,
         boolean preferLongFormExternalIds) throws DetectableException {
-        addNodeChildrenUnderNode(externalIdFactory, versionGenerator,
+        addNodeChildrenUnderNode(externalIdFactory,
             dependencyGraph, 0, rootNode, null, preferLongFormExternalIds);
         return new CodeLocation(dependencyGraph);
     }
 
-    private void addNodeChildrenUnderNode(ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator,
+    private void addNodeChildrenUnderNode(ExternalIdFactory externalIdFactory,
         MutableMapDependencyGraph dependencyGraph, int depth, ConanGraphNode currentNode, Dependency currentDep,
         boolean preferLongFormExternalIds) throws DetectableException {
         Consumer<Dependency> childAdder;
@@ -100,20 +100,20 @@ public class ConanCodeLocationGenerator {
             childAdder = childDep -> dependencyGraph.addChildWithParent(childDep, currentDep);
         }
         for (ConanGraphNode childNode : currentNode.getChildren()) {
-            Dependency childDep = generateDependency(externalIdFactory, versionGenerator,
+            Dependency childDep = generateDependency(externalIdFactory,
                 childNode, preferLongFormExternalIds);
             childAdder.accept(childDep);
-            addNodeChildrenUnderNode(externalIdFactory, versionGenerator, dependencyGraph, depth + 1, childNode, childDep, preferLongFormExternalIds);
+            addNodeChildrenUnderNode(externalIdFactory, dependencyGraph, depth + 1, childNode, childDep, preferLongFormExternalIds);
         }
     }
 
     @NotNull
-    private Dependency generateDependency(ExternalIdFactory externalIdFactory, ConanExternalIdVersionGenerator versionGenerator,
+    private Dependency generateDependency(ExternalIdFactory externalIdFactory,
         ConanGraphNode graphNode, boolean preferLongFormExternalIds) throws DetectableException {
         String depName = graphNode.getConanNode().getName().orElseThrow(
             () -> new DetectableException(String.format("Missing dependency name: %s", graphNode.getConanNode()))
         );
-        String fullVersion = versionGenerator.generateExternalIdVersionString(graphNode.getConanNode(), preferLongFormExternalIds);
+        String fullVersion = ConanExternalIdVersionGenerator.generateExternalIdVersionString(graphNode.getConanNode(), preferLongFormExternalIds);
         ExternalId externalId = externalIdFactory.createNameVersionExternalId(conanForge, depName, fullVersion);
         logger.trace("Generated Dependency for {}/{} with externalID: {}", depName, fullVersion, externalId.getExternalIdPieces());
         return new Dependency(

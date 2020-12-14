@@ -27,7 +27,7 @@ import com.synopsys.integration.detectable.detectables.conan.graph.ConanNode;
 
 public class ConanExternalIdVersionGenerator {
 
-    public String generateExternalIdVersionString(ConanNode<String> node, boolean preferLongFormExternalIds) throws DetectableException {
+    public static String generateExternalIdVersionString(ConanNode<String> node, boolean preferLongFormExternalIds) throws DetectableException {
         String externalIdVersion;
         if (hasValue(node.getRecipeRevision().orElse(null)) &&
                 hasValue(node.getPackageRevision().orElse(null)) &&
@@ -53,7 +53,7 @@ public class ConanExternalIdVersionGenerator {
         return externalIdVersion;
     }
 
-    private boolean hasValue(String value) {
+    private static boolean hasValue(String value) {
         return value != null && !"None".equals(value);
     }
 }
