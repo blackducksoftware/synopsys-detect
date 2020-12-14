@@ -1,0 +1,454 @@
+folly/2019.10.21.00: Not found in local cache, looking in remotes...
+folly/2019.10.21.00: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+folly/2019.10.21.00: Downloaded recipe revision 7c25691176fe8c9d5033e7efb7ee8c0a
+boost/1.74.0: Not found in local cache, looking in remotes...
+boost/1.74.0: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+boost/1.74.0: Downloaded recipe revision 587f8b8e956a18e45486af06c1c973e3
+double-conversion/3.1.5: Not found in local cache, looking in remotes...
+double-conversion/3.1.5: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+double-conversion/3.1.5: Downloaded recipe revision bf7fceaa33f97d13a341039f49a5ec8f
+gflags/2.2.2: Not found in local cache, looking in remotes...
+gflags/2.2.2: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+gflags/2.2.2: Downloaded recipe revision 906109e9e83ad47452e561036a69f2fb
+glog/0.4.0: Not found in local cache, looking in remotes...
+glog/0.4.0: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+glog/0.4.0: Downloaded recipe revision 84333f1bce37d868e0d3c6f8d025fc12
+libevent/2.1.12: Not found in local cache, looking in remotes...
+libevent/2.1.12: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+libevent/2.1.12: Downloaded recipe revision 0fbe3dd7e3f0a94ee1ca67fbff84a58c
+lz4/1.9.2: Not found in local cache, looking in remotes...
+lz4/1.9.2: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+lz4/1.9.2: Downloaded recipe revision e37109bd24c7201ce5f6d72fb0ef6907
+snappy/1.1.8: Not found in local cache, looking in remotes...
+snappy/1.1.8: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+snappy/1.1.8: Downloaded recipe revision 68975c9288f2ac767c4fcb23a1207207
+zstd/1.4.5: Not found in local cache, looking in remotes...
+zstd/1.4.5: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+zstd/1.4.5: Downloaded recipe revision 0a80cadb946e9b8251ee0a2ca7b1ea56
+libdwarf/20191104: Not found in local cache, looking in remotes...
+libdwarf/20191104: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+libdwarf/20191104: Downloaded recipe revision e5d8bfec695dc5eadac0d38b0948c8ab
+libelf/0.8.13: Not found in local cache, looking in remotes...
+libelf/0.8.13: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+libelf/0.8.13: Downloaded recipe revision 14fc23b3e3eee2f8056a84e953dfe460
+libsodium/1.0.18: Not found in local cache, looking in remotes...
+libsodium/1.0.18: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+libsodium/1.0.18: Downloaded recipe revision d6d55105c5b35ec973e102e5e911bb92
+xz_utils/5.2.4: Not found in local cache, looking in remotes...
+xz_utils/5.2.4: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+xz_utils/5.2.4: Downloaded recipe revision f92e7c137e8c94fe2cb15c2c5d80f3d2
+libiberty/9.1.0: Not found in local cache, looking in remotes...
+libiberty/9.1.0: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+libiberty/9.1.0: Downloaded recipe revision 836ed6667956ed3e9eee83f4e889cbf0
+libunwind/1.3.1: Not found in local cache, looking in remotes...
+libunwind/1.3.1: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+libunwind/1.3.1: Downloaded recipe revision 697f25fa09c0e0b0201796900404273c
+conanfile.txt
+    ID: 041b8dba6c15c410a286d5ab1c7b32f864d1b5f4
+    BuildID: None
+    Requires:
+        folly/2019.10.21.00
+boost/1.74.0
+    ID: 88915df1a8783c4ab98b5ac519e38adecd25ab29
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://www.boost.org
+    License: BSL-1.0
+    Description: Boost provides free peer-reviewed portable C++ source libraries
+    Topics: conan, boost, libraries, cpp
+    Provides: boost
+    Recipe: Downloaded
+    Revision: 587f8b8e956a18e45486af06c1c973e3
+    Package revision: None
+    Binary: Missing
+    Binary remote: conan-center
+    Creation date: 2020-10-15 18:56:28
+    Required by:
+        folly/2019.10.21.00
+    Requires:
+        zlib/1.2.11
+        bzip2/1.0.8
+bzip2/1.0.8
+    ID: da606cf731e334010b0bf6e85a2a6f891b9f36b0
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: http://www.bzip.org
+    License: bzip2-1.0.8
+    Description: bzip2 is a free and open-source file compression program that uses the Burrows Wheeler algorithm.
+    Topics: conan, bzip2, data-compressor, file-compression
+    Provides: bzip2
+    Recipe: Cache
+    Revision: 0
+    Package revision: 0
+    Binary: Cache
+    Binary remote: conan-center
+    Creation date: 2020-09-04 04:44:14
+    Required by:
+        folly/2019.10.21.00
+        boost/1.74.0
+double-conversion/3.1.5
+    ID: b911f48570f9bb2902d9e83b2b9ebf9d376c8c56
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://github.com/google/double-conversion
+    License: BSD-3-Clause
+    Description: Efficient binary-decimal and decimal-binary conversion routines for IEEE doubles.
+    Topics: conan, double-conversion, google, decimal-binary, conversion
+    Provides: double-conversion
+    Recipe: Downloaded
+    Revision: bf7fceaa33f97d13a341039f49a5ec8f
+    Package revision: 226bfd024a208d6220823eb339e6acc8
+    Binary: Download
+    Binary remote: conan-center
+    Creation date: 2020-10-02 05:59:10
+    Required by:
+        folly/2019.10.21.00
+folly/2019.10.21.00
+    ID: 61cc649730a96b7f4b052436392f1ab61f52bc1f
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://github.com/facebook/folly
+    License: Apache-2.0
+    Description: An open-source C++ components library developed and used at Facebook
+    Topics: conan, folly, facebook, components, core, efficiency
+    Provides: folly
+    Recipe: Downloaded
+    Revision: 7c25691176fe8c9d5033e7efb7ee8c0a
+    Package revision: None
+    Binary: Missing
+    Binary remote: conan-center
+    Creation date: 2020-10-30 15:01:16
+    Required by:
+        conanfile.txt
+    Requires:
+        boost/1.74.0
+        bzip2/1.0.8
+        double-conversion/3.1.5
+        gflags/2.2.2
+        glog/0.4.0
+        libevent/2.1.12
+        lz4/1.9.2
+        openssl/1.1.1h
+        snappy/1.1.8
+        zlib/1.2.11
+        zstd/1.4.5
+        libdwarf/20191104
+        libsodium/1.0.18
+        xz_utils/5.2.4
+        libiberty/9.1.0
+        libunwind/1.3.1
+gflags/2.2.2
+    ID: 21e1281916d3adf618b3bd57f3098f62f2674fd4
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://github.com/gflags/gflags
+    License: BSD-3-Clause
+    Description: The gflags package contains a C++ library that implements commandline flags processing
+    Topics: conan, gflags, cli, flags, commandline
+    Provides: gflags
+    Recipe: Downloaded
+    Revision: 906109e9e83ad47452e561036a69f2fb
+    Package revision: e93dfef60acc52e89de14c6300c62ae4
+    Binary: Download
+    Binary remote: conan-center
+    Creation date: 2019-11-14 08:47:10
+    Required by:
+        glog/0.4.0
+        folly/2019.10.21.00
+glog/0.4.0
+    ID: 2a4e2321a3e2e1d488fe0865f9dd93f5e39c5858
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://github.com/google/glog/
+    License: BSD-3-Clause
+    Description: Google logging library
+    Topics: conan, glog, logging
+    Provides: glog
+    Recipe: Downloaded
+    Revision: 84333f1bce37d868e0d3c6f8d025fc12
+    Package revision: None
+    Binary: Missing
+    Binary remote: conan-center
+    Creation date: 2020-08-14 10:44:56
+    Required by:
+        folly/2019.10.21.00
+    Requires:
+        gflags/2.2.2
+libdwarf/20191104
+    ID: 80d5739d16c15c57f7f492a591f6fff765dbfa2e
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://www.prevanders.net/dwarf.html
+    License: LGPL-2.1
+    Description: A library and a set of command-line tools for reading and writing DWARF2
+    Topics: conan, libdwarf, dwarf2, debugging, dwarf
+    Provides: libdwarf
+    Recipe: Downloaded
+    Revision: e5d8bfec695dc5eadac0d38b0948c8ab
+    Package revision: None
+    Binary: Missing
+    Binary remote: conan-center
+    Creation date: 2019-12-12 08:08:35
+    Required by:
+        folly/2019.10.21.00
+    Requires:
+        libelf/0.8.13
+        zlib/1.2.11
+libelf/0.8.13
+    ID: 6af9cc7cb931c5ad942174fd7838eb655717c709
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://directory.fsf.org/wiki/Libelf
+    License: LGPL-2.0
+    Description: ELF object file access library
+    Topics: conan, elf, fsf, libelf, object-file
+    Provides: libelf
+    Recipe: Downloaded
+    Revision: 14fc23b3e3eee2f8056a84e953dfe460
+    Package revision: 59f939511d11fc29502a571e538031a7
+    Binary: Download
+    Binary remote: conan-center
+    Creation date: 2020-09-06 13:08:57
+    Required by:
+        libdwarf/20191104
+libevent/2.1.12
+    ID: 31aeec60291a4188280a9c0e85928fe8d6d4baf8
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://github.com/libevent/libevent
+    License: BSD-3-Clause
+    Description: libevent - an event notification library
+    Topics: conan, libevent, event
+    Provides: libevent
+    Recipe: Downloaded
+    Revision: 0fbe3dd7e3f0a94ee1ca67fbff84a58c
+    Package revision: None
+    Binary: Missing
+    Binary remote: conan-center
+    Creation date: 2020-09-13 09:23:23
+    Required by:
+        folly/2019.10.21.00
+    Requires:
+        openssl/1.1.1h
+libiberty/9.1.0
+    ID: 6af9cc7cb931c5ad942174fd7838eb655717c709
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://gcc.gnu.org/onlinedocs/libiberty
+    License: LGPL-2.1
+    Description: A collection of subroutines used by various GNU programs
+    Topics: conan, libiberty, gnu, gnu-collection
+    Provides: libiberty
+    Recipe: Downloaded
+    Revision: 836ed6667956ed3e9eee83f4e889cbf0
+    Package revision: f8803a8e3774797162268df6d1847526
+    Binary: Download
+    Binary remote: conan-center
+    Creation date: 2020-03-10 10:59:49
+    Required by:
+        folly/2019.10.21.00
+libsodium/1.0.18
+    ID: 090017fccd7b493020671020e5964801d6ba8054
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://download.libsodium.org/doc/
+    License: ISC
+    Description: A modern and easy-to-use crypto library.
+    Topics: sodium, libsodium, encryption, signature, hashing
+    Provides: libsodium
+    Recipe: Downloaded
+    Revision: d6d55105c5b35ec973e102e5e911bb92
+    Package revision: 8e58a93098d8e49c6f0ca64af335ce88
+    Binary: Download
+    Binary remote: conan-center
+    Creation date: 2020-04-21 11:02:53
+    Required by:
+        folly/2019.10.21.00
+libunwind/1.3.1
+    ID: 3bd42fd19a278c09d074d65a2c373bcc3205f329
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://github.com/libunwind/libunwind
+    License: MIT
+    Description: Manipulate the preserved state of each call-frame and resume the execution at any point.
+    Topics: conan, libunwind, unwind, debuggers, exception-handling, introspection, setjmp
+    Provides: libunwind
+    Recipe: Downloaded
+    Revision: 697f25fa09c0e0b0201796900404273c
+    Package revision: None
+    Binary: Missing
+    Binary remote: conan-center
+    Creation date: 2020-08-27 17:04:53
+    Required by:
+        folly/2019.10.21.00
+    Requires:
+        xz_utils/5.2.4
+lz4/1.9.2
+    ID: 6af9cc7cb931c5ad942174fd7838eb655717c709
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://github.com/lz4/lz4
+    Licenses: BSD-2-Clause, BSD-3-Clause
+    Description: Extremely Fast Compression algorithm
+    Topics: conan, lz4, compression
+    Provides: lz4
+    Recipe: Downloaded
+    Revision: e37109bd24c7201ce5f6d72fb0ef6907
+    Package revision: e96966259339c6611fdc7362e4d28e60
+    Binary: Download
+    Binary remote: conan-center
+    Creation date: 2020-07-28 09:57:55
+    Required by:
+        folly/2019.10.21.00
+openssl/1.1.1h
+    ID: 6af9cc7cb931c5ad942174fd7838eb655717c709
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://github.com/openssl/openssl
+    License: OpenSSL
+    Description: A toolkit for the Transport Layer Security (TLS) and Secure Sockets Layer (SSL) protocols
+    Topics: conan, openssl, ssl, tls, encryption, security
+    Provides: openssl
+    Recipe: Cache
+    Revision: 0
+    Package revision: 0
+    Binary: Cache
+    Binary remote: conan-center
+    Creation date: 2020-10-26 18:03:23
+    Required by:
+        libevent/2.1.12
+        folly/2019.10.21.00
+snappy/1.1.8
+    ID: b911f48570f9bb2902d9e83b2b9ebf9d376c8c56
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://github.com/google/snappy
+    License: BSD-3-Clause
+    Description: A fast compressor/decompressor
+    Topics: conan, snappy, google, compressor, decompressor
+    Provides: snappy
+    Recipe: Downloaded
+    Revision: 68975c9288f2ac767c4fcb23a1207207
+    Package revision: 00138b81891b33bb2610a16cebdde8ec
+    Binary: Download
+    Binary remote: conan-center
+    Creation date: 2020-07-09 08:21:15
+    Required by:
+        folly/2019.10.21.00
+xz_utils/5.2.4
+    ID: 6af9cc7cb931c5ad942174fd7838eb655717c709
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://tukaani.org/xz
+    License: Public Domain, GNU LGPLv2.1, GNU GPLv2, or GNU GPLv3
+    Description: XZ Utils is free general-purpose data compression software with a high compression ratio. XZ Utils were written for POSIX-like systems, but also work on some not-so-POSIX systems. XZ Utils are the successor to LZMA Utils.
+    Topics: conan, lzma, xz, compression
+    Provides: xz_utils
+    Recipe: Downloaded
+    Revision: f92e7c137e8c94fe2cb15c2c5d80f3d2
+    Package revision: 816a64ff5217aa98751b928aa8294176
+    Binary: Download
+    Binary remote: conan-center
+    Creation date: 2020-10-16 15:40:40
+    Required by:
+        libunwind/1.3.1
+        folly/2019.10.21.00
+zlib/1.2.11
+    ID: 6af9cc7cb931c5ad942174fd7838eb655717c709
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://zlib.net
+    License: Zlib
+    Description: A Massively Spiffy Yet Delicately Unobtrusive Compression Library (Also Free, Not to Mention Unencumbered by Patents)
+    Topics: conan, zlib, compression
+    Provides: zlib
+    Recipe: Cache
+    Revision: 0
+    Package revision: 0
+    Binary: Cache
+    Binary remote: conan-center
+    Creation date: 2020-09-04 09:48:36
+    Required by:
+        folly/2019.10.21.00
+        libdwarf/20191104
+        boost/1.74.0
+zstd/1.4.5
+    ID: 6af9cc7cb931c5ad942174fd7838eb655717c709
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://github.com/facebook/zstd
+    License: BSD-3-Clause
+    Description: Zstandard - Fast real-time compression algorithm
+    Topics: conan, zstd, compression, algorithm, decoder
+    Provides: zstd
+    Recipe: Downloaded
+    Revision: 0a80cadb946e9b8251ee0a2ca7b1ea56
+    Package revision: bd3702479322aa923cfbd3cb4baaeb8a
+    Binary: Download
+    Binary remote: conan-center
+    Creation date: 2020-09-25 10:45:47
+    Required by:
+        folly/2019.10.21.00

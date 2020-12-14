@@ -33,6 +33,8 @@ import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectable
 import com.synopsys.integration.detectable.detectables.cargo.CargoDetectable;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
+import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
+import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectable;
@@ -178,6 +180,14 @@ public class DetectDetectableFactory {
 
     public MavenParseDetectable createMavenParseDetectable(DetectableEnvironment environment) {
         return detectableFactory.createMavenParseDetectable(environment, detectableOptionFactory.createMavenParseOptions());
+    }
+
+    public ConanCliDetectable createConanCliDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createConanCliDetectable(environment, detectExecutableResolver, detectableOptionFactory.createConanCliOptions());
+    }
+
+    public ConanLockfileDetectable createConanLockfileDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createConanLockfileDetectable(environment, detectableOptionFactory.createConanLockfileOptions());
     }
 
     public NpmCliDetectable createNpmCliDetectable(DetectableEnvironment environment) {

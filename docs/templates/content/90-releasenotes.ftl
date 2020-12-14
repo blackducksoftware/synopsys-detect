@@ -1,6 +1,9 @@
 # Release notes
 
 ## Version 6.8.0
+### New features
+* Added support for Conan projects that have the Conan revisions feature enabled.
+
 ### Resolved issues
 * (IDETECT-2216) Resolved an issue that prevented non-ASCII filenames from being correctly transmitted to Black Duck during a binary scan file upload.
 * (IDETECT-2281) Resolved an issue that included golang dependencies that were not linked in the compiled go application. [241](https://github.com/blackducksoftware/synopsys-detect/issues/241)
