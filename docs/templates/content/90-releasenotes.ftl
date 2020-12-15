@@ -7,6 +7,9 @@
 * Deprecated all Detect signature scanner properties.  Future releases will feature an alternative mechanism for providing signature scanner arguments to Detect.
 * Deprecated properties blackduck.timeout and detect.report.timeout, and consolidated them to create a new property detect.timeout.
 * Added help section in Package Managers describing Conda support.
+* (IDETECT-2254) Added support for additional Yarn lock formats.
+* (IDETECT-2294) Resolved an issue where Git credentials could be logged when reading the remote url.
+* (IDETECT-2227) Resolved an issue where Nuget Inspectors would parse source files for assembly version.
 
 ### Resolved issues
 * (IDETECT-2216) Resolved an issue that prevented non-ASCII filenames from being correctly transmitted to Black Duck during a binary scan file upload.

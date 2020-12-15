@@ -215,10 +215,11 @@ public class DetectorTool {
                     statusType = StatusType.SUCCESS;
                 } else {
                     statusType = StatusType.FAILURE;
-                }
-                boolean extractionUnknownFailure = !detectorEvaluation.wasExtractionFailure() && !detectorEvaluation.wasExtractionException();
-                if (extractionUnknownFailure) {
-                    logger.warn("An issue occurred in the detector system, an unknown evaluation status was created. Please contact support.");
+
+                    boolean extractionUnknownFailure = !detectorEvaluation.wasExtractionFailure() && !detectorEvaluation.wasExtractionException();
+                    if (extractionUnknownFailure) {
+                        logger.warn("An issue occurred in the detector system, an unknown evaluation status was created. Please contact support.");
+                    }
                 }
             } else if (detectorEvaluation.isFallbackExtractable() || detectorEvaluation.isPreviousExtractable()) {
                 statusType = StatusType.SUCCESS;
