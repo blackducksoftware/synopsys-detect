@@ -30,10 +30,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.synopsys.integration.blackduck.api.generated.enumeration.LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
-import com.synopsys.integration.blackduck.api.manual.throwaway.generated.enumeration.ProjectVersionPhaseType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
+import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.configuration.property.Property;
@@ -72,6 +72,9 @@ import com.synopsys.integration.log.LogLevel;
 // java:S1192: Sonar wants constants defined for fromVersion when setting property info.
 // java:S1123: Warning about deprecations not having Java doc.
 public class DetectProperties {
+    private static final String POLARIS_CLI_DEPRECATION_MESSAGE = "This property is being removed. Detect will no longer invoke the Polaris CLI.";
+    private static final String SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE = "This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details.";
+    private static final String EXCLUSION_PROPERTY_DEPRECATION_MESSAGE = "This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties.";
 
     private DetectProperties() {
     }
@@ -87,12 +90,6 @@ public class DetectProperties {
             .setInfo("Offline Mode", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp("This can disable any Black Duck communication - if true, Detect will not upload BDIO files, it will not check policies, and it will not download and install the signature scanner.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.OFFLINE, DetectGroup.DEFAULT);
-
-    public static final DetectProperty<NullableStringProperty> BLACKDUCK_PASSWORD =
-        new DetectProperty<>(new NullableStringProperty("blackduck.password"))
-            .setInfo("Black Duck Password", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("Black Duck password.")
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT);
 
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_PROXY_HOST =
         new DetectProperty<>(new NullableStringProperty("blackduck.proxy.host"))
@@ -144,13 +141,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.PROXY, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<IntegerProperty> BLACKDUCK_TIMEOUT =
-        new DetectProperty<>(new IntegerProperty("blackduck.timeout", 120))
-            .setInfo("Black Duck Timeout", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("The time to wait for network connections to complete (in seconds).")
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
-            .setCategory(DetectCategory.Advanced);
-
     public static final DetectProperty<BooleanProperty> BLACKDUCK_TRUST_CERT =
         new DetectProperty<>(new BooleanProperty("blackduck.trust.cert", false))
             .setInfo("Trust All SSL Certificates", DetectPropertyFromVersion.VERSION_4_2_0)
@@ -162,12 +152,6 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("blackduck.url"))
             .setInfo("Black Duck URL", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp("URL of the Black Duck server.")
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT);
-
-    public static final DetectProperty<NullableStringProperty> BLACKDUCK_USERNAME =
-        new DetectProperty<>(new NullableStringProperty("blackduck.username"))
-            .setInfo("Black Duck Username", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("Black Duck username.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT);
 
     public static final DetectProperty<IntegerProperty> DETECT_PARALLEL_PROCESSORS =
@@ -206,6 +190,38 @@ public class DetectProperties {
             .setInfo("Bazel workspace external dependency rule", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp("The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN);
+
+    public static final DetectProperty<NullablePathProperty> DETECT_CONAN_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.conan.path"))
+            .setInfo("Conan Executable", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("The path to the conan executable.")
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
+
+    public static final DetectProperty<BooleanProperty> DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES =
+        new DetectProperty<>(new BooleanProperty("detect.conan.include.build.dependencies", true))
+            .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
+
+    public static final DetectProperty<NullableStringProperty> DETECT_CONAN_ARGUMENTS =
+        new DetectProperty<>(new NullableStringProperty("detect.conan.arguments"))
+            .setInfo("Additional Conan Arguments", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("A space-separated list of additional arguments to add to the 'conan info' command line when running Detect against a Conan project. Detect will execute the command 'conan info {additional arguments} .'")
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
+
+    public static final DetectProperty<NullableStringProperty> DETECT_CONAN_LOCKFILE_PATH =
+        new DetectProperty<>(new NullableStringProperty("detect.conan.lockfile.path"))
+            .setInfo("Conan Lockfile", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("The path to the conan lockfile to apply when running 'conan info' to get the dependency graph. If set, Detect will execute the command 'conan info --lockfile {lockfile} .'")
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
+
+    public static final DetectProperty<BooleanProperty> DETECT_CONAN_REQUIRE_PREV_MATCH =
+        new DetectProperty<>(new BooleanProperty("detect.conan.attempt.package.revision.match", false))
+            .setInfo("Attempt Package Revision Match",
+                DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp(
+                "If package revisions are available (a Conan lock file is found or provided, and Conan's revisions feature is enabled), require that each dependency's package revision match the package revision of the component in the KB.")
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullablePathProperty> DETECT_BDIO_OUTPUT_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.bdio.output.path"))
@@ -256,108 +272,6 @@ public class DetectProperties {
             .setInfo("BitBake Search Depth", DetectPropertyFromVersion.VERSION_6_1_0)
             .setHelp("The depth at which Detect will search for files generated by Bitbake.")
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN);
-
-    public static final DetectProperty<NullableStringProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS =
-        new DetectProperty<>(new NullableStringProperty("detect.blackduck.signature.scanner.arguments"))
-            .setInfo("Signature Scanner Arguments", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("Additional arguments to use when running the Black Duck signature scanner.",
-                "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in your home directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from \\${HOME}/excludes.txt'")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL);
-
-    public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_COPYRIGHT_SEARCH =
-        new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.copyright.search", false))
-            .setInfo("Signature Scanner Copyright Search", DetectPropertyFromVersion.VERSION_6_4_0)
-            .setHelp("When set to true, user will be able to scan and discover copyright names in Black Duck.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER);
-
-    public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN =
-        new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.dry.run", false))
-            .setInfo("Signature Scanner Dry Run", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL);
-
-    public static final DetectProperty<StringListProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS =
-        new DetectProperty<>(
-            new StringListProperty("detect.blackduck.signature.scanner.exclusion.name.patterns", singletonList("node_modules")))
-            .setInfo("Directory Name Exclusion Patterns", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.",
-                "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details. Detect will recursively search within the scan targets for files/directories that match these patterns and will create the corresponding exclusion patterns (paths relative to the scan target directory) for the signature scanner (Black Duck scan CLI). Please note that the signature scanner will only exclude directories; matched filenames will be passed to the signature scanner but will have no effect. These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns and passed as --exclude values. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.name.patterns=blackduck-common, --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-common', --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-*'. Use this property when you want Detect to convert the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns to pass patterns directly to the signature scanner as-is.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
-
-    public static final DetectProperty<IntegerProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH =
-        new DetectProperty<>(new IntegerProperty("detect.blackduck.signature.scanner.exclusion.pattern.search.depth", 4))
-            .setInfo("Exclusion Patterns Search Depth", DetectPropertyFromVersion.VERSION_5_0_0)
-            .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
-
-    public static final DetectProperty<StringListProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS =
-        new DetectProperty<>(new StringListProperty("detect.blackduck.signature.scanner.exclusion.patterns", emptyList()))
-            .setInfo("Exclusion Patterns", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("A comma-separated list of values (each value is a directory name pattern surrounded by '/' characters) to be used with the Signature Scanner --exclude flag.",
-                "Each pattern provided is passed to the signature scanner (Black Duck scan CLI) as a value for an --exclude option. The signature scanner requires that these exclusion patterns start and end with a forward slash (/), and may not contain double asterisks (**). These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude from signature scanning. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns=/blackduck-common/, --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-*/'. Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN);
-
-    public static final DetectProperty<ExtendedEnumProperty<ExtendedIndividualFileMatchingMode, IndividualFileMatching>> DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING =
-        new DetectProperty<>(new ExtendedEnumProperty<>("detect.blackduck.signature.scanner.individual.file.matching", ExtendedEnumValue.ofExtendedValue(ExtendedIndividualFileMatchingMode.NONE), ExtendedIndividualFileMatchingMode.class,
-            IndividualFileMatching.class))
-            .setInfo("Individual File Matching", DetectPropertyFromVersion.VERSION_6_2_0)
-            .setHelp("Users may set this property to indicate what types of files they want to match")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER);
-
-    public static final DetectProperty<NullableStringProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL =
-        new DetectProperty<>(new NullableStringProperty("detect.blackduck.signature.scanner.host.url"))
-            .setInfo("Signature Scanner Host URL", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Black Duck's urls for different operating systems.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH =
-        new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.license.search", false))
-            .setInfo("Signature Scanner License Search", DetectPropertyFromVersion.VERSION_6_2_0)
-            .setHelp("When set to true, user will be able to scan and discover license names in Black Duck")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER);
-
-    public static final DetectProperty<NullablePathProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH =
-        new DetectProperty<>(new NullablePathProperty("detect.blackduck.signature.scanner.local.path"))
-            .setInfo("Signature Scanner Local Path", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp(
-                "To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL);
-
-    public static final DetectProperty<IntegerProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY =
-        new DetectProperty<>(new IntegerProperty("detect.blackduck.signature.scanner.memory", 4096))
-            .setInfo("Signature Scanner Memory", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp("The memory for the scanner to use.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<NullablePathProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH =
-        new DetectProperty<>(new NullablePathProperty("detect.blackduck.signature.scanner.offline.local.path"))
-            .setInfo("Signature Scanner Local Path (Offline)", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp(
-                "To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<PathListProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS =
-        new DetectProperty<>(new PathListProperty("detect.blackduck.signature.scanner.paths", emptyList()))
-            .setInfo("Signature Scanner Target Paths", DetectPropertyFromVersion.VERSION_4_2_0)
-            .setHelp(
-                "If this property is not set, the signature scanner target path is the source path (see property detect.source.path). If this property is set, the paths provided in this property's value will be signature scanned instead (the signature scanner will be executed once for each provided path).")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL);
-
-    public static final DetectProperty<ExtendedEnumProperty<ExtendedSnippetMode, SnippetMatching>> DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING =
-        new DetectProperty<>(new ExtendedEnumProperty<>("detect.blackduck.signature.scanner.snippet.matching", ExtendedEnumValue.ofExtendedValue(ExtendedSnippetMode.NONE), ExtendedSnippetMode.class, SnippetMatching.class))
-            .setInfo("Snippet Matching", DetectPropertyFromVersion.VERSION_5_5_0)
-            .setHelp(
-                "Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
-
-    public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE =
-        new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.upload.source.mode", false))
-            .setInfo("Upload source mode", DetectPropertyFromVersion.VERSION_5_4_0)
-            .setHelp("If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck.")
-            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullableStringProperty> DETECT_BOM_AGGREGATE_NAME =
         new DetectProperty<>(new NullableStringProperty("detect.bom.aggregate.name"))
@@ -431,27 +345,6 @@ public class DetectProperties {
             .setHelp("The path to the cpanm executable.")
             .setGroups(DetectGroup.CPAN, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<EnumProperty<DefaultVersionNameScheme>> DETECT_DEFAULT_PROJECT_VERSION_SCHEME =
-        new DetectProperty<>(new EnumProperty<>("detect.default.project.version.scheme", DefaultVersionNameScheme.TEXT, DefaultVersionNameScheme.class))
-            .setInfo("Default Project Version Name Scheme", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The scheme to use when the package managers can not determine a version. See detailed help for more information.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<StringProperty> DETECT_DEFAULT_PROJECT_VERSION_TEXT =
-        new DetectProperty<>(new StringProperty("detect.default.project.version.text", "Default Detect Version"))
-            .setInfo("Default Project Version Name Text", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The text to use as the default project version.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<StringProperty> DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT =
-        new DetectProperty<>(new StringProperty("detect.default.project.version.timeformat", "yyyy-MM-dd'T'HH:mm:ss.SSS"))
-            .setInfo("Default Project Version Name Timestamp Format", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The timestamp format to use as the default project version.")
-            .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
     public static final DetectProperty<IntegerProperty> DETECT_DETECTOR_SEARCH_DEPTH =
         new DetectProperty<>(new IntegerProperty("detect.detector.search.depth", 0))
             .setInfo("Detector Search Depth", DetectPropertyFromVersion.VERSION_3_2_0)
@@ -466,49 +359,6 @@ public class DetectProperties {
                 "If true, the bom tool search will continue to look for nested bom tools of the same type to the maximum search depth, see the detailed help for more information.",
                 "If true, Detect will find Maven projects that are in subdirectories of a Maven project and Gradle projects that are in subdirectories of Gradle projects, etc. "
                     + "If false, Detect will only find bom tools in subdirectories of a project if they are of a different type such as an Npm project in a subdirectory of a Gradle project."
-            )
-            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION =
-        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion", emptyList()))
-            .setInfo("Detector Directory Exclusions", DetectPropertyFromVersion.VERSION_3_2_0)
-            .setHelp("A comma-separated list of directory names to exclude from detector search.",
-                "While searching the source directory to determine which detectors to run, subdirectories whose name appear in this list will not be searched."
-            )
-            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS =
-        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.patterns", emptyList()))
-            .setInfo("Detector Directory Patterns Exclusions", DetectPropertyFromVersion.VERSION_3_2_0)
-            .setHelp("A comma-separated list of directory name patterns to exclude from detector search.",
-                "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). For example, suppose you're running in bash on Linux, you've set --detect.detector.search.depth=1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it:--detect.detector.search.exclusion.patterns=blackduck-common,--detect.detector.search.exclusion.patterns='blackduck-common',--detect.detector.search.exclusion.patterns='blackduck-*'")
-            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS =
-        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.paths", emptyList()))
-            .setInfo("Detector Directory Path Exclusions", DetectPropertyFromVersion.VERSION_5_5_0)
-            .setHelp(
-                "A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)",
-                "This property performs the same basic function as detect.detector.search.exclusion, but lets you be more specific."
-            )
-            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_FILES =
-        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.files", emptyList()))
-            .setInfo("Detector File Exclusions", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("A comma-separated list of file names to exclude from detector search.")
-            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
-            .setCategory(DetectCategory.Advanced);
-
-    public static final DetectProperty<BooleanProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS =
-        new DetectProperty<>(new BooleanProperty("detect.detector.search.exclusion.defaults", true))
-            .setInfo("Detector Exclude Default Directories", DetectPropertyFromVersion.VERSION_3_2_0)
-            .setHelp("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.",
-                "If true, these directories will be excluded from the detector search: bin, build, .git, .gradle, node_modules, out, packages, target."
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
@@ -559,13 +409,6 @@ public class DetectProperties {
             .setInfo("Docker Image ID", DetectPropertyFromVersion.VERSION_6_1_0)
             .setHelp("The Docker image ID to inspect.")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH);
-
-    public static final DetectProperty<NullablePathProperty> DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH =
-        new DetectProperty<>(new NullablePathProperty("detect.docker.inspector.air.gap.path"))
-            .setInfo("Docker Inspector AirGap Path", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The path to the directory containing the Docker Inspector jar and images.")
-            .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<NullablePathProperty> DETECT_DOCKER_INSPECTOR_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.docker.inspector.path"))
@@ -688,16 +531,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<NullablePathProperty> DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH =
-        new DetectProperty<>(new NullablePathProperty("detect.gradle.inspector.air.gap.path"))
-            .setInfo("Gradle Inspector AirGap Path", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp(
-                "The path to the directory containing the air gap dependencies for the gradle inspector.",
-                "Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory."
-            )
-            .setGroups(DetectGroup.GRADLE, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
     public static final DetectProperty<NullableStringProperty> DETECT_GRADLE_INSPECTOR_VERSION =
         new DetectProperty<>(new NullableStringProperty("detect.gradle.inspector.version"))
             .setInfo("Gradle Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -720,17 +553,19 @@ public class DetectProperties {
             .setHelp("The path to the rebar3 executable.")
             .setGroups(DetectGroup.HEX, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<BooleanProperty> DETECT_IMPACT_ANALYSIS_ENABLED = new DetectProperty<>(new BooleanProperty("detect.impact.analysis.enabled", false))
-                                                                                             .setInfo("Vulnerability Impact Analysis Enabled", DetectPropertyFromVersion.VERSION_6_5_0)
-                                                                                             .setHelp(
-                                                                                                 "If set to true, Detect will attempt to look for *.class files and generate a Vulnerability Impact Analysis Report for upload to Black Duck.")
-                                                                                             .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
+    public static final DetectProperty<BooleanProperty> DETECT_IMPACT_ANALYSIS_ENABLED =
+        new DetectProperty<>(new BooleanProperty("detect.impact.analysis.enabled", false))
+            .setInfo("Vulnerability Impact Analysis Enabled", DetectPropertyFromVersion.VERSION_6_5_0)
+            .setHelp(
+                "If set to true, Detect will attempt to look for *.class files and generate a Vulnerability Impact Analysis Report for upload to Black Duck.")
+            .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<NullablePathProperty> DETECT_IMPACT_ANALYSIS_OUTPUT_PATH = new DetectProperty<>(new NullablePathProperty("detect.impact.analysis.output.path"))
-                                                                                                      .setInfo("Impact Analysis Output Directory", DetectPropertyFromVersion.VERSION_6_5_0)
-                                                                                                      .setHelp("The path to the output directory for Impact Analysis reports.",
-                                                                                                          "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.")
-                                                                                                      .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
+    public static final DetectProperty<NullablePathProperty> DETECT_IMPACT_ANALYSIS_OUTPUT_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.impact.analysis.output.path"))
+            .setInfo("Impact Analysis Output Directory", DetectPropertyFromVersion.VERSION_6_5_0)
+            .setHelp("The path to the output directory for Impact Analysis reports.",
+                "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.")
+            .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL);
 
     public static final DetectProperty<FilterableEnumListProperty<DetectorType>> DETECT_INCLUDED_DETECTOR_TYPES =
         new DetectProperty<>(new FilterableEnumListProperty<>("detect.included.detector.types", emptyList(), DetectorType.class))
@@ -867,13 +702,6 @@ public class DetectProperties {
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<NullablePathProperty> DETECT_NUGET_INSPECTOR_AIR_GAP_PATH =
-        new DetectProperty<>(new NullablePathProperty("detect.nuget.inspector.air.gap.path"))
-            .setInfo("Nuget Inspector AirGap Path", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("The path to the directory containing the nuget inspector nupkg.")
-            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
-
     public static final DetectProperty<NullableStringProperty> DETECT_NUGET_INSPECTOR_VERSION =
         new DetectProperty<>(new NullableStringProperty("detect.nuget.inspector.version"))
             .setInfo("Nuget Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -940,7 +768,7 @@ public class DetectProperties {
     public static final DetectProperty<PathListProperty> DETECT_PIP_REQUIREMENTS_PATH =
         new DetectProperty<>(new PathListProperty("detect.pip.requirements.path", emptyList()))
             .setInfo("PIP Requirements Path", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("A comma-separated list of paths to requirements.txt files.")
+            .setHelp("A comma-separated list of paths to requirements files, to be used to analyze requirements files with a filename other than requirements.txt or to specify which requirements files should be analyzed.")
             .setGroups(DetectGroup.PIP, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<BooleanProperty> DETECT_PIP_ONLY_PROJECT_TREE =
@@ -948,6 +776,12 @@ public class DetectProperties {
             .setInfo("PIP Include Only Project Tree", DetectPropertyFromVersion.VERSION_6_1_0)
             .setHelp("By default, pipenv includes all dependencies found in the graph. Set to true to only include dependencies found underneath the dependency that matches the provided pip project and version name.")
             .setGroups(DetectGroup.PIP, DetectGroup.SOURCE_SCAN);
+
+    public static final DetectProperty<NullablePathProperty> DETECT_PIP_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.pip.path"))
+            .setInfo("Pip Executable", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("The path to the Pip executable.")
+            .setGroups(DetectGroup.PIP, DetectGroup.GLOBAL);
 
     public static final DetectProperty<NullablePathProperty> DETECT_PIPENV_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.pipenv.path"))
@@ -1097,8 +931,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<EnumProperty<LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType>> DETECT_PROJECT_VERSION_DISTRIBUTION =
-        new DetectProperty<>(new EnumProperty<>("detect.project.version.distribution", LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType.EXTERNAL, LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType.class))
+    public static final DetectProperty<EnumProperty<ProjectVersionDistributionType>> DETECT_PROJECT_VERSION_DISTRIBUTION =
+        new DetectProperty<>(new EnumProperty<>("detect.project.version.distribution", ProjectVersionDistributionType.EXTERNAL, ProjectVersionDistributionType.class))
             .setInfo("Version Distribution", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("An override for the Project Version distribution")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
@@ -1144,19 +978,6 @@ public class DetectProperties {
             .setHelp("The path to the Python executable.")
             .setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<BooleanProperty> DETECT_PYTHON_PYTHON3 =
-        new DetectProperty<>(new BooleanProperty("detect.python.python3", false))
-            .setInfo("Use Python3", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("If true will use Python 3 if available on class path.")
-            .setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL);
-
-    public static final DetectProperty<LongProperty> DETECT_REPORT_TIMEOUT =
-        new DetectProperty<>(new LongProperty("detect.report.timeout", 300L))
-            .setInfo("Report Generation Timeout", DetectPropertyFromVersion.VERSION_5_2_0)
-            .setHelp(
-                "The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.GLOBAL);
-
     public static final DetectProperty<EnumListProperty<DetectorType>> DETECT_REQUIRED_DETECTOR_TYPES =
         new DetectProperty<>(new EnumListProperty<>("detect.required.detector.types", emptyList(), DetectorType.class))
             .setInfo("Required Detect Types", DetectPropertyFromVersion.VERSION_4_3_0)
@@ -1165,12 +986,6 @@ public class DetectProperties {
                 "If you want one or more detectors to be required (must be found to apply), use this property to specify the set of required detectors. If this property is set, and one (or more) of the given detectors is not found to apply, Detect will fail."
             )
             .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL);
-
-    public static final DetectProperty<BooleanProperty> DETECT_RESOLVE_TILDE_IN_PATHS =
-        new DetectProperty<>(new BooleanProperty("detect.resolve.tilde.in.paths", true))
-            .setInfo("Resolve Tilde in Paths", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("If set to false Detect will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.")
-            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
     public static final DetectProperty<BooleanProperty> DETECT_RISK_REPORT_PDF =
         new DetectProperty<>(new BooleanProperty("detect.risk.report.pdf", false))
@@ -1238,6 +1053,14 @@ public class DetectProperties {
             .setHelp("Test the connection to Black Duck with the current configuration.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.GLOBAL);
 
+    public static final DetectProperty<LongProperty> DETECT_TIMEOUT =
+        new DetectProperty<>(new LongProperty("detect.timeout", 300L))
+            .setInfo("Detect Timeout", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp(
+                "The amount of time in seconds Detect will wait for network connection, for scans to finish, and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced);
+
     public static final DetectProperty<FilterableEnumListProperty<DetectTool>> DETECT_TOOLS =
         new DetectProperty<>(new FilterableEnumListProperty<>("detect.tools", emptyList(), DetectTool.class))
             .setInfo("Detect Tools Included", DetectPropertyFromVersion.VERSION_5_0_0)
@@ -1283,7 +1106,83 @@ public class DetectProperties {
     //#endregion Active Properties
 
     //#region Deprecated Properties
-    public static final String POLARIS_CLI_DEPRECATION_MESSAGE = "This property is being removed. Detect will no longer invoke the Polaris CLI.";
+    @Deprecated
+    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION =
+        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion", emptyList()))
+            .setInfo("Detector Directory Exclusions", DetectPropertyFromVersion.VERSION_3_2_0)
+            .setHelp("A comma-separated list of directory names to exclude from detector search.",
+                "While searching the source directory to determine which detectors to run, subdirectories whose name appear in this list will not be searched."
+            )
+            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(EXCLUSION_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS =
+        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.patterns", emptyList()))
+            .setInfo("Detector Directory Patterns Exclusions", DetectPropertyFromVersion.VERSION_3_2_0)
+            .setHelp("A comma-separated list of directory name patterns to exclude from detector search.",
+                "While searching the source directory to determine which detectors to run, subdirectories whose name match a pattern in this list will not be searched. These patterns are file system glob patterns ('?' is a wildcard for a single character, '*' is a wildcard for zero or more characters). For example, suppose you're running in bash on Linux, you've set --detect.detector.search.depth=1, and have a subdirectory named blackduck-common (a gradle project) that you want to exclude from the detector search. Any of the following would exclude it:--detect.detector.search.exclusion.patterns=blackduck-common,--detect.detector.search.exclusion.patterns='blackduck-common',--detect.detector.search.exclusion.patterns='blackduck-*'")
+            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(EXCLUSION_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS =
+        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.paths", emptyList()))
+            .setInfo("Detector Directory Path Exclusions", DetectPropertyFromVersion.VERSION_5_5_0)
+            .setHelp(
+                "A comma-separated list of directory paths to exclude from detector search. (E.g. 'foo/bar/biz' will only exclude the 'biz' directory if the parent directory structure is 'foo/bar/'.)",
+                "This property performs the same basic function as detect.detector.search.exclusion, but lets you be more specific."
+            )
+            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(EXCLUSION_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<StringListProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_FILES =
+        new DetectProperty<>(new StringListProperty("detect.detector.search.exclusion.files", emptyList()))
+            .setInfo("Detector File Exclusions", DetectPropertyFromVersion.VERSION_6_0_0)
+            .setHelp("A comma-separated list of file names to exclude from detector search.")
+            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(EXCLUSION_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS =
+        new DetectProperty<>(new BooleanProperty("detect.detector.search.exclusion.defaults", true))
+            .setInfo("Detector Exclude Default Directories", DetectPropertyFromVersion.VERSION_3_2_0)
+            .setHelp("If true, the bom tool search will exclude the default directory names. See the detailed help for more information.",
+                "If true, these directories will be excluded from the detector search: bin, build, .git, .gradle, node_modules, out, packages, target."
+            )
+            .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(EXCLUSION_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_RESOLVE_TILDE_IN_PATHS =
+        new DetectProperty<>(new BooleanProperty("detect.resolve.tilde.in.paths", true))
+            .setInfo("Resolve Tilde in Paths", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("If set to false Detect will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.")
+            .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
+            .setDeprecated("This property is now deprecated. Going forward, Detect will no longer resolve tildes in the path.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_PYTHON_PYTHON3 =
+        new DetectProperty<>(new BooleanProperty("detect.python.python3", false))
+            .setInfo("Use Python3", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("If true will use Python 3 if available on class path.")
+            .setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL)
+            .setDeprecated("This property is now deprecated. Due to the January 2020 sunset of Python 2, Detect version 7.0.0 and will assume that the python executable points to python3.",
+                DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<IntegerProperty> BLACKDUCK_TIMEOUT =
+        new DetectProperty<>(new IntegerProperty("blackduck.timeout", 120))
+            .setInfo("Black Duck Timeout", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("The time to wait for network connections to complete (in seconds).")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
+            .setDeprecated("This property is now deprecated.  Please use --detect.timeout in the future.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<StringProperty> DETECT_BITBAKE_REFERENCE_IMPL =
@@ -1325,7 +1224,7 @@ public class DetectProperties {
             .setInfo("Blackduck Hub Username", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Hub username.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER)
-            .setDeprecated("This property is changing. Please use --blackduck.username in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
+            .setDeprecated("This property is being removed. Please use --blackduck.api.token in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
     @Deprecated
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_HUB_PASSWORD =
@@ -1333,7 +1232,7 @@ public class DetectProperties {
             .setInfo("Blackduck Hub Password", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Hub password.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER)
-            .setDeprecated("This property is changing. Please use --blackduck.password in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
+            .setDeprecated("This property is being removed. Please use --blackduck.api.token in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
     @Deprecated
     public static final DetectProperty<NullableStringProperty> BLACKDUCK_HUB_API_TOKEN =
@@ -1637,6 +1536,15 @@ public class DetectProperties {
             .setDeprecated("This property is changing. Please use --detect.blackduck.signature.scanner.local.path in the future.", DetectMajorVersion.SIX, DetectMajorVersion.SEVEN);
 
     @Deprecated
+    public static final DetectProperty<ExtendedEnumProperty<ExtendedSnippetMode, SnippetMatching>> DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MATCHING =
+        new DetectProperty<>(new ExtendedEnumProperty<>("detect.blackduck.signature.scanner.snippet.matching", ExtendedEnumValue.ofExtendedValue(ExtendedSnippetMode.NONE), ExtendedSnippetMode.class, SnippetMatching.class))
+            .setInfo("Snippet Matching", DetectPropertyFromVersion.VERSION_5_5_0)
+            .setHelp(
+                "Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --snippet-matching, --snippet-matching-only, --full-snippet-scan.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
     public static final DetectProperty<NullableStringProperty> DETECT_HUB_SIGNATURE_SCANNER_HOST_URL =
         new DetectProperty<>(new NullableStringProperty("detect.hub.signature.scanner.host.url"))
             .setInfo("Detect Hub Signature Scanner Host Url", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1698,6 +1606,129 @@ public class DetectProperties {
             .setDeprecated("This property is changing. Please use --detect.maven.included.scope in the future.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_COPYRIGHT_SEARCH =
+        new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.copyright.search", false))
+            .setInfo("Signature Scanner Copyright Search", DetectPropertyFromVersion.VERSION_6_4_0)
+            .setHelp("When set to true, user will be able to scan and discover copyright names in Black Duck. Corresponding Signature Scanner CLI Argument: --copyright-search.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_DRY_RUN =
+        new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.dry.run", false))
+            .setInfo("Signature Scanner Dry Run", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk via the Signature Scanner CLI argument: --dryRunWriteDir.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<StringListProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_NAME_PATTERNS =
+        new DetectProperty<>(
+            new StringListProperty("detect.blackduck.signature.scanner.exclusion.name.patterns", singletonList("node_modules")))
+            .setInfo("Directory Name Exclusion Patterns", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.",
+                "This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details. Detect will recursively search within the scan targets for files/directories that match these patterns and will create the corresponding exclusion patterns (paths relative to the scan target directory) for the signature scanner (Black Duck scan CLI). Please note that the signature scanner will only exclude directories; matched filenames will be passed to the signature scanner but will have no effect. These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns and passed as --exclude values. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.name.patterns=blackduck-common, --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-common', --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-*'. Use this property when you want Detect to convert the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns to pass patterns directly to the signature scanner as-is.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<IntegerProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERN_SEARCH_DEPTH =
+        new DetectProperty<>(new IntegerProperty("detect.blackduck.signature.scanner.exclusion.pattern.search.depth", 4))
+            .setInfo("Exclusion Patterns Search Depth", DetectPropertyFromVersion.VERSION_5_0_0)
+            .setHelp("Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<StringListProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_EXCLUSION_PATTERNS =
+        new DetectProperty<>(new StringListProperty("detect.blackduck.signature.scanner.exclusion.patterns", emptyList()))
+            .setInfo("Exclusion Patterns", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("A comma-separated list of values (each value is a directory name pattern surrounded by '/' characters) to be used with the Signature Scanner --exclude flag.",
+                "Each pattern provided is passed to the signature scanner (Black Duck scan CLI) as a value for an --exclude option. The signature scanner requires that these exclusion patterns start and end with a forward slash (/), and may not contain double asterisks (**). These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude from signature scanning. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns=/blackduck-common/, --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-*/'. Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<ExtendedEnumProperty<ExtendedIndividualFileMatchingMode, IndividualFileMatching>> DETECT_BLACKDUCK_SIGNATURE_SCANNER_INDIVIDUAL_FILE_MATCHING =
+        new DetectProperty<>(new ExtendedEnumProperty<>("detect.blackduck.signature.scanner.individual.file.matching", ExtendedEnumValue.ofExtendedValue(ExtendedIndividualFileMatchingMode.NONE), ExtendedIndividualFileMatchingMode.class,
+            IndividualFileMatching.class))
+            .setInfo("Individual File Matching", DetectPropertyFromVersion.VERSION_6_2_0)
+            .setHelp("Users may set this property to indicate what types of files they want to match. Corresponding Signature Scanner CLI Argument: --individualFileMatching.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<NullableStringProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_HOST_URL =
+        new DetectProperty<>(new NullableStringProperty("detect.blackduck.signature.scanner.host.url"))
+            .setInfo("Signature Scanner Host URL", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Black Duck's urls for different operating systems.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH =
+        new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.license.search", false))
+            .setInfo("Signature Scanner License Search", DetectPropertyFromVersion.VERSION_6_2_0)
+            .setHelp("When set to true, user will be able to scan and discover license names in Black Duck. Corresponding Signature Scanner CLI Argument: --license-search.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<NullablePathProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_LOCAL_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.blackduck.signature.scanner.local.path"))
+            .setInfo("Signature Scanner Local Path", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp(
+                "To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<IntegerProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_MEMORY =
+        new DetectProperty<>(new IntegerProperty("detect.blackduck.signature.scanner.memory", 4096))
+            .setInfo("Signature Scanner Memory", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("The memory for the scanner to use.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<NullablePathProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_OFFLINE_LOCAL_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.blackduck.signature.scanner.offline.local.path"))
+            .setInfo("Signature Scanner Local Path (Offline)", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp(
+                "To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<PathListProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_PATHS =
+        new DetectProperty<>(new PathListProperty("detect.blackduck.signature.scanner.paths", emptyList()))
+            .setInfo("Signature Scanner Target Paths", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp(
+                "If this property is not set, the signature scanner target path is the source path (see property detect.source.path). If this property is set, the paths provided in this property's value will be signature scanned instead (the signature scanner will be executed once for each provided path).")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_UPLOAD_SOURCE_MODE =
+        new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.upload.source.mode", false))
+            .setInfo("Upload source mode", DetectPropertyFromVersion.VERSION_5_4_0)
+            .setHelp("If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. Corresponding Signature Scanner CLI Argument: --upload-source.")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<NullableStringProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS =
+        new DetectProperty<>(new NullableStringProperty("detect.blackduck.signature.scanner.arguments"))
+            .setInfo("Signature Scanner Arguments", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("Additional arguments to use when running the Black Duck signature scanner.",
+                "For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in your home directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from \\${HOME}/excludes.txt'")
+            .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
+            .setDeprecated(SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_SNIPPET_MODE =
         new DetectProperty<>(new BooleanProperty("detect.blackduck.signature.scanner.snippet.mode", false))
             .setInfo("Snippet Scanning", DetectPropertyFromVersion.VERSION_4_2_0)
@@ -1708,6 +1739,15 @@ public class DetectProperties {
                 DetectMajorVersion.SIX,
                 DetectMajorVersion.SEVEN
             );
+
+    @Deprecated
+    public static final DetectProperty<LongProperty> DETECT_REPORT_TIMEOUT =
+        new DetectProperty<>(new LongProperty("detect.report.timeout", 300L))
+            .setInfo("Report Generation Timeout", DetectPropertyFromVersion.VERSION_5_2_0)
+            .setHelp(
+                "The amount of time in seconds Detect will wait for scans to finish and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.GLOBAL)
+            .setDeprecated("This property is now deprecated.  Please use --detect.timeout in the future.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<NullableStringProperty> POLARIS_URL =
@@ -1740,6 +1780,85 @@ public class DetectProperties {
             .setHelp("A replacement command to pass to polaris separated by space. Include the analyze or setup command itself. If specified, polaris.arguments will be ignored and this will take precedence.")
             .setGroups(DetectGroup.POLARIS, DetectGroup.DEFAULT, DetectGroup.SOURCE_SCAN)
             .setDeprecated(POLARIS_CLI_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    // Detect 6.8.0 Property simplification
+    public static final String USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE = "This property is being removed as part of an effort to simplify Detect.";
+
+    @Deprecated
+    public static final DetectProperty<EnumProperty<DefaultVersionNameScheme>> DETECT_DEFAULT_PROJECT_VERSION_SCHEME =
+        new DetectProperty<>(new EnumProperty<>("detect.default.project.version.scheme", DefaultVersionNameScheme.TEXT, DefaultVersionNameScheme.class))
+            .setInfo("Default Project Version Name Scheme", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The scheme to use when the package managers can not determine a version. See detailed help for more information.")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<StringProperty> DETECT_DEFAULT_PROJECT_VERSION_TEXT =
+        new DetectProperty<>(new StringProperty("detect.default.project.version.text", "Default Detect Version"))
+            .setInfo("Default Project Version Name Text", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The text to use as the default project version.")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<StringProperty> DETECT_DEFAULT_PROJECT_VERSION_TIMEFORMAT =
+        new DetectProperty<>(new StringProperty("detect.default.project.version.timeformat", "yyyy-MM-dd'T'HH:mm:ss.SSS"))
+            .setInfo("Default Project Version Name Timestamp Format", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The timestamp format to use as the default project version.")
+            .setGroups(DetectGroup.PROJECT, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<NullablePathProperty> DETECT_DOCKER_INSPECTOR_AIR_GAP_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.docker.inspector.air.gap.path"))
+            .setInfo("Docker Inspector AirGap Path", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The path to the directory containing the Docker Inspector jar and images.")
+            .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<NullablePathProperty> DETECT_GRADLE_INSPECTOR_AIR_GAP_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.gradle.inspector.air.gap.path"))
+            .setInfo("Gradle Inspector AirGap Path", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp(
+                "The path to the directory containing the air gap dependencies for the gradle inspector.",
+                "Use this property when running Detect on a Gradle project in 'air gap' mode (offline). Download and unzip the Detect air gap zip file, and point this property to the packaged-inspectors/gradle directory."
+            )
+            .setGroups(DetectGroup.GRADLE, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<NullablePathProperty> DETECT_NUGET_INSPECTOR_AIR_GAP_PATH =
+        new DetectProperty<>(new NullablePathProperty("detect.nuget.inspector.air.gap.path"))
+            .setInfo("Nuget Inspector AirGap Path", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setHelp("The path to the directory containing the nuget inspector nupkg.")
+            .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
+            .setCategory(DetectCategory.Advanced)
+            .setDeprecated(USABILITY_IMPROVEMENT_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    // username/password ==> api token
+    public static final String USERNAME_PASSWORD_DEPRECATION_MESSAGE = "This property is being removed. Please use blackduck.api.token in the future.";
+
+    @Deprecated
+    public static final DetectProperty<NullableStringProperty> BLACKDUCK_USERNAME =
+        new DetectProperty<>(new NullableStringProperty("blackduck.username"))
+            .setInfo("Black Duck Username", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("Black Duck username.")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
+            .setDeprecated(USERNAME_PASSWORD_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<NullableStringProperty> BLACKDUCK_PASSWORD =
+        new DetectProperty<>(new NullableStringProperty("blackduck.password"))
+            .setInfo("Black Duck Password", DetectPropertyFromVersion.VERSION_4_2_0)
+            .setHelp("Black Duck password.")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT)
+            .setDeprecated(USERNAME_PASSWORD_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     // Accessor to get all properties
     public static List<Property> allProperties() throws IllegalAccessException {

@@ -60,6 +60,7 @@ public enum DetectGroup implements Group {
     BAZEL("bazel", DETECTORS),
     BITBAKE("bitbake", DETECTORS),
     CARGO("cargo", DETECTORS),
+    CONAN("conan", DETECTORS),
     CONDA("conda", DETECTORS),
     CPAN("cpan", DETECTORS),
     DOCKER("docker", DETECTORS),

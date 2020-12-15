@@ -63,7 +63,6 @@ import com.synopsys.integration.detect.configuration.connection.ConnectionDetail
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.configuration.enumeration.OperatingSystemType;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonDetector;
@@ -71,8 +70,9 @@ import com.synopsys.integration.detect.configuration.help.json.HelpJsonWriter;
 import com.synopsys.integration.detect.configuration.help.print.DetectInfoPrinter;
 import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
-import com.synopsys.integration.detect.interactive.InteractiveOption;
-import com.synopsys.integration.detect.interactive.mode.DefaultInteractiveMode;
+import com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree;
+import com.synopsys.integration.detect.interactive.InteractivePropertySourceBuilder;
+import com.synopsys.integration.detect.interactive.InteractiveWriter;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
@@ -121,6 +121,7 @@ import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.detector.rule.DetectorRule;
 import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
+import com.synopsys.integration.util.OperatingSystemType;
 
 import freemarker.template.Configuration;
 
@@ -133,7 +134,8 @@ public class DetectBoot {
         this.detectBootFactory = detectBootFactory;
     }
 
-    public DetectBootResult boot(DetectRun detectRun, String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) throws DetectUserFriendlyException, IOException, IllegalAccessException {
+    public Optional<DetectBootResult> boot(DetectRun detectRun, String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext)
+        throws DetectUserFriendlyException, IOException, IllegalAccessException {
         ObjectMapper objectMapper = detectBootFactory.createObjectMapper();
         DocumentBuilder xml = detectBootFactory.createXmlDocumentBuilder();
         Configuration configuration = detectBootFactory.createConfiguration();
@@ -153,21 +155,25 @@ public class DetectBoot {
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             printAppropriateHelp(DetectProperties.allProperties(), detectArgumentState);
-            return DetectBootResult.exit(new PropertyConfiguration(propertySources));
+            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 
         if (detectArgumentState.isHelpJsonDocument()) {
             printHelpJsonDocument(DetectProperties.allProperties(), detectInfo, gson);
-            return DetectBootResult.exit(new PropertyConfiguration(propertySources));
+            return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 
         printDetectInfo(detectInfo);
 
         if (detectArgumentState.isInteractive()) {
-            List<InteractiveOption> interactiveOptions = startInteractiveMode(propertySources);
-            Map<String, String> interactivePropertyMap = interactiveOptions.stream()
-                                                             .collect(Collectors.toMap(option -> option.getDetectProperty().getKey(), InteractiveOption::getInteractiveValue));
-            PropertySource interactivePropertySource = new MapPropertySource("interactive", interactivePropertyMap);
+            InteractiveWriter writer = InteractiveWriter.defaultWriter(System.console(), System.in, System.out);
+            InteractivePropertySourceBuilder propertySourceBuilder = new InteractivePropertySourceBuilder(writer);
+            InteractiveManager interactiveManager = new InteractiveManager(propertySourceBuilder, writer);
+
+            // TODO: Ideally we should be able to share the BlackDuckConnectivityChecker from elsewhere in the boot --rotte NOV 2020
+            InteractiveModeDecisionTree interactiveModeDecisionTree = new InteractiveModeDecisionTree(new BlackDuckConnectivityChecker(), propertySources);
+            MapPropertySource interactivePropertySource = interactiveManager.getInteractivePropertySource(interactiveModeDecisionTree);
+
             propertySources.add(0, interactivePropertySource);
         }
         PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
@@ -177,7 +183,7 @@ public class DetectBoot {
         Boolean printFull = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_CONFIGURATION_OUTPUT.getProperty());
         Optional<DetectBootResult> configurationResult = printConfiguration(printFull, detectConfiguration, eventSystem, detectInfo);
         if (configurationResult.isPresent()) {
-            return configurationResult.get();
+            return configurationResult;
         }
 
         logger.debug("Initializing Detect.");
@@ -207,9 +213,9 @@ public class DetectBoot {
             try {
                 airGapZip = createAirGapZip(inspectorFilter, detectConfiguration, pathResolver, directoryManager, gson, eventSystem, configuration, airGapSuffix);
             } catch (DetectUserFriendlyException e) {
-                return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
+                return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
             }
-            return DetectBootResult.exit(detectConfiguration, airGapZip, directoryManager, diagnosticSystem);
+            return Optional.of(DetectBootResult.exit(detectConfiguration, airGapZip, directoryManager, diagnosticSystem));
         }
 
         RunOptions runOptions = detectConfigurationFactory.createRunOptions();
@@ -227,19 +233,19 @@ public class DetectBoot {
         try {
             productRunData = productBoot.boot(productDecision, productBootOptions, new BlackDuckConnectivityChecker(), new PolarisConnectivityChecker(), productBootFactory, new AnalyticsConfigurationService(gson));
         } catch (DetectUserFriendlyException e) {
-            return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
+            return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
         }
 
         if (productRunData == null) {
             logger.info("No products to run, Detect is complete.");
-            return DetectBootResult.exit(detectConfiguration, directoryManager, diagnosticSystem);
+            return Optional.of(DetectBootResult.exit(detectConfiguration, directoryManager, diagnosticSystem));
         }
 
         ProxyInfo detectableProxyInfo;
         try {
             detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
         } catch (DetectUserFriendlyException e) {
-            return DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem);
+            return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
         }
 
         DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo);
@@ -262,7 +268,7 @@ public class DetectBoot {
         detectContext.registerConfiguration(RunBeanConfiguration.class);
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
-        return DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem);
+        return Optional.of(DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 
     private void printAppropriateHelp(List<Property> properties, DetectArgumentState detectArgumentState) {
@@ -379,12 +385,6 @@ public class DetectBoot {
         }
 
         return Optional.empty();
-    }
-
-    private List<InteractiveOption> startInteractiveMode(List<PropertySource> propertySources) {
-        InteractiveManager interactiveManager = new InteractiveManager();
-        DefaultInteractiveMode defaultInteractiveMode = new DefaultInteractiveMode(propertySources);
-        return interactiveManager.configureInInteractiveMode(defaultInteractiveMode);
     }
 
     private DetectArgumentState parseDetectArgumentState(String[] sourceArgs) {

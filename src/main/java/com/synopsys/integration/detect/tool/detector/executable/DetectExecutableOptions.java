@@ -28,6 +28,7 @@ public class DetectExecutableOptions {
     private final boolean isPython3;
     private final Path bashUserPath;
     private final Path bazelUserPath;
+    private final Path conanUserPath;
     private final Path condaUserPath;
     private final Path cpanUserPath;
     private final Path cpanmUserPath;
@@ -35,6 +36,7 @@ public class DetectExecutableOptions {
     private final Path mavenUserPath;
     private final Path npmUserPath;
     private final Path pearUserPath;
+    private final Path pipUserPath;
     private final Path pipenvUserPath;
     private final Path pythonUserPath;
     private final Path rebarUserPath;
@@ -46,12 +48,13 @@ public class DetectExecutableOptions {
     private final Path swiftUserPath;
     private final Path lernaUserPath;
 
-    public DetectExecutableOptions(final boolean isPython3, final Path bashUserPath, final Path bazelUserPath, final Path condaUserPath, final Path cpanUserPath, final Path cpanmUserPath, final Path gradleUserPath, final Path mavenUserPath,
-        final Path npmUserPath, final Path pearUserPath, final Path pipenvUserPath, final Path pythonUserPath, final Path rebarUserPath, final Path javaUserPath, final Path dockerUserPath, final Path dotnetUserPath,
-        final Path gitUserPath, final Path goUserPath, final Path swiftUserPath, final Path lernaUserPath) {
+    public DetectExecutableOptions(boolean isPython3, Path bashUserPath, Path bazelUserPath, Path conanUserPath, Path condaUserPath, Path cpanUserPath, Path cpanmUserPath, Path gradleUserPath, Path mavenUserPath,
+        Path npmUserPath, Path pearUserPath, Path pipUserPath, Path pipenvUserPath, Path pythonUserPath, Path rebarUserPath, Path javaUserPath, Path dockerUserPath,
+        Path dotnetUserPath, Path gitUserPath, Path goUserPath, Path swiftUserPath, Path lernaUserPath) {
         this.isPython3 = isPython3;
         this.bashUserPath = bashUserPath;
         this.bazelUserPath = bazelUserPath;
+        this.conanUserPath = conanUserPath;
         this.condaUserPath = condaUserPath;
         this.cpanUserPath = cpanUserPath;
         this.cpanmUserPath = cpanmUserPath;
@@ -59,6 +62,7 @@ public class DetectExecutableOptions {
         this.mavenUserPath = mavenUserPath;
         this.npmUserPath = npmUserPath;
         this.pearUserPath = pearUserPath;
+        this.pipUserPath = pipUserPath;
         this.pipenvUserPath = pipenvUserPath;
         this.pythonUserPath = pythonUserPath;
         this.rebarUserPath = rebarUserPath;
@@ -77,6 +81,10 @@ public class DetectExecutableOptions {
 
     public Path getBazelUserPath() {
         return bazelUserPath;
+    }
+
+    public Path getConanUserPath() {
+        return conanUserPath;
     }
 
     public Path getCondaUserPath() {
@@ -149,5 +157,9 @@ public class DetectExecutableOptions {
 
     public boolean isPython3() {
         return isPython3;
+    }
+
+    public Path getPipUserPath() {
+        return pipUserPath;
     }
 }

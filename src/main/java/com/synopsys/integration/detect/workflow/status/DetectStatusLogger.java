@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.workflow.status;
 
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -30,7 +31,56 @@ import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.log.IntLogger;
 
 public class DetectStatusLogger {
-    public void logDetectStatus(final IntLogger logger, final List<Status> statusSummaries, final List<DetectResult> detectResults, final List<DetectIssue> detectIssues, final ExitCodeType exitCodeType) {
+
+    public void logDetectStatus(IntLogger logger, List<Status> statusSummaries, List<DetectResult> detectResults, List<DetectIssue> detectIssues, ExitCodeType exitCodeType) {
+        logger.info("");
+        logger.info("");
+
+        logDetectIssues(logger, detectIssues);
+        logDetectResults(logger, detectResults);
+        logDetectStatus(logger, statusSummaries);
+
+        logger.info(String.format("Overall Status: %s - %s", exitCodeType.toString(), exitCodeType.getDescription()));
+        logger.info("");
+        logger.info("===============================");
+        logger.info("");
+    }
+
+    private void logDetectIssues(IntLogger logger, List<DetectIssue> detectIssues) {
+        if (!detectIssues.isEmpty()) {
+            logger.info("======== Detect Issues ========");
+            logger.info("");
+
+            Predicate<DetectIssue> detectorsFilter = issue -> issue.getType() == DetectIssueType.DETECTOR;
+            Predicate<DetectIssue> exceptionsFilter = issue -> issue.getType() == DetectIssueType.EXCEPTION;
+            Predicate<DetectIssue> deprecationsFilter = issue -> issue.getType() == DetectIssueType.DEPRECATION;
+            logIssuesInGroup(logger, "DETECTORS:", detectorsFilter, detectIssues);
+            logIssuesInGroup(logger, "EXCEPTIONS:", exceptionsFilter, detectIssues);
+            logIssuesInGroup(logger, "DEPRECATIONS:", deprecationsFilter, detectIssues);
+        }
+    }
+
+    private void logIssuesInGroup(IntLogger logger, String groupHeading, Predicate<DetectIssue> issueFilter, List<DetectIssue> detectIssues) {
+        List<DetectIssue> detectors = detectIssues.stream().filter(issueFilter).collect(Collectors.toList());
+        if (!detectors.isEmpty()) {
+            logger.info(groupHeading);
+            detectors.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
+            logger.info("");
+        }
+    }
+
+    private void logDetectResults(IntLogger logger, List<DetectResult> detectResults) {
+        if (!detectResults.isEmpty()) {
+            logger.info("======== Detect Result ========");
+            logger.info("");
+            for (DetectResult detectResult : detectResults) {
+                logger.info(detectResult.getResultMessage());
+            }
+            logger.info("");
+        }
+    }
+
+    private void logDetectStatus(IntLogger logger, List<Status> statusSummaries) {
         // sort by type, and within type, sort by description
         statusSummaries.sort((left, right) -> {
             if (left.getClass() == right.getClass()) {
@@ -39,46 +89,11 @@ public class DetectStatusLogger {
                 return left.getClass().getName().compareTo(right.getClass().getName());
             }
         });
-        logger.info("");
-        logger.info("");
-
-        if (!detectIssues.isEmpty()) {
-            logger.info("======== Detect Issues ========");
-            logger.info("");
-            final List<DetectIssue> detectors = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.DETECTOR).collect(Collectors.toList());
-            if (detectors.size() > 0) {
-                logger.info("DETECTORS:");
-                detectors.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
-                logger.info("");
-            }
-            final List<DetectIssue> exceptions = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.EXCEPTION).collect(Collectors.toList());
-            if (exceptions.size() > 0) {
-                logger.info("EXCEPTIONS:");
-                exceptions.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
-                logger.info("");
-            }
-            final List<DetectIssue> deprecations = detectIssues.stream().filter(issue -> issue.getType() == DetectIssueType.DEPRECATION).collect(Collectors.toList());
-            if (deprecations.size() > 0) {
-                logger.info("DEPRECATIONS:");
-                deprecations.stream().flatMap(issue -> issue.getMessages().stream()).forEach(line -> logger.info("\t" + line));
-                logger.info("");
-            }
-        }
-
-        if (!detectResults.isEmpty()) {
-            logger.info("======== Detect Result ========");
-            logger.info("");
-            for (final DetectResult detectResult : detectResults) {
-                logger.info(detectResult.getResultMessage());
-            }
-            logger.info("");
-        }
-
         logger.info("======== Detect Status ========");
         logger.info("");
         Class<? extends Status> previousSummaryClass = null;
 
-        for (final Status status : statusSummaries) {
+        for (Status status : statusSummaries) {
             if (previousSummaryClass != null && !previousSummaryClass.equals(status.getClass())) {
                 logger.info("");
             }
@@ -86,11 +101,5 @@ public class DetectStatusLogger {
 
             previousSummaryClass = status.getClass();
         }
-
-        logger.info(String.format("Overall Status: %s - %s", exitCodeType.toString(), exitCodeType.getDescription()));
-        logger.info("");
-        logger.info("===============================");
-        logger.info("");
-
     }
 }

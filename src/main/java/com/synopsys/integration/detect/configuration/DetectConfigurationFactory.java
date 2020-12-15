@@ -40,10 +40,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.blackduck.api.generated.enumeration.LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
-import com.synopsys.integration.blackduck.api.manual.throwaway.generated.enumeration.ProjectVersionPhaseType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
+import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfigBuilder;
@@ -96,23 +96,29 @@ import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.proxy.ProxyInfoBuilder;
 
 public class DetectConfigurationFactory {
+    private final PropertyConfiguration detectConfiguration;
+    private final PathResolver pathResolver;
 
-    private PropertyConfiguration detectConfiguration;
-    private PathResolver pathResolver;
-
-    public DetectConfigurationFactory(final PropertyConfiguration detectConfiguration, final PathResolver pathResolver) {
+    public DetectConfigurationFactory(PropertyConfiguration detectConfiguration, PathResolver pathResolver) {
         this.detectConfiguration = detectConfiguration;
         this.pathResolver = pathResolver;
     }
 
     //#region Prefer These Over Any Property
     public Long findTimeoutInSeconds() {
-        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_API_TIMEOUT.getProperty())) {
-            Long timeout = getValue(DetectProperties.DETECT_API_TIMEOUT);
-            return timeout / 1000;
-        } else {
-            return getValue(DetectProperties.DETECT_REPORT_TIMEOUT);
+        long timeout = getValue(DetectProperties.DETECT_TIMEOUT);
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_TIMEOUT.getProperty())) {
+            return timeout;
         }
+
+        // If no timeout was passed, check deprecated properties.
+        if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_API_TIMEOUT.getProperty())) {
+            // DETECT_API_TIMEOUT is read in milliseconds.
+            timeout = getValue(DetectProperties.DETECT_API_TIMEOUT) / 1000;
+        } else if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_REPORT_TIMEOUT.getProperty())) {
+            timeout = getValue(DetectProperties.DETECT_REPORT_TIMEOUT);
+        }
+        return timeout;
     }
 
     public int findParallelProcessors() {
@@ -356,7 +362,7 @@ public class DetectConfigurationFactory {
 
     public DetectProjectServiceOptions createDetectProjectServiceOptions() throws DetectUserFriendlyException {
         ProjectVersionPhaseType projectVersionPhase = getValue(DetectProperties.DETECT_PROJECT_VERSION_PHASE);
-        LicenseFamilyLicenseFamilyRiskRulesReleaseDistributionType projectVersionDistribution = getValue(DetectProperties.DETECT_PROJECT_VERSION_DISTRIBUTION);
+        ProjectVersionDistributionType projectVersionDistribution = getValue(DetectProperties.DETECT_PROJECT_VERSION_DISTRIBUTION);
         Integer projectTier = getNullableValue(DetectProperties.DETECT_PROJECT_TIER);
         String projectDescription = getNullableValue(DetectProperties.DETECT_PROJECT_DESCRIPTION);
         String projectVersionNotes = getNullableValue(DetectProperties.DETECT_PROJECT_VERSION_NOTES);
@@ -477,6 +483,7 @@ public class DetectConfigurationFactory {
             getValue(DetectProperties.DETECT_PYTHON_PYTHON3),
             getPathOrNull(DetectProperties.DETECT_BASH_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_BAZEL_PATH.getProperty()),
+            getPathOrNull(DetectProperties.DETECT_CONAN_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CONDA_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CPAN_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CPANM_PATH.getProperty()),
@@ -484,6 +491,7 @@ public class DetectConfigurationFactory {
             getPathOrNull(DetectProperties.DETECT_MAVEN_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_NPM_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_PEAR_PATH.getProperty()),
+            getPathOrNull(DetectProperties.DETECT_PIP_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_PIPENV_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_PYTHON_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_HEX_REBAR3_PATH.getProperty()),

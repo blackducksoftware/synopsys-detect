@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,10 +20,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.configuration.enumeration;
+package com.synopsys.integration.detectable;
 
-public enum OperatingSystemType {
-    LINUX,
-    MAC,
-    WINDOWS;
+import java.io.File;
+
+public class ExecutableTarget {
+    private File fileTarget;
+    private String stringTarget;
+
+    private ExecutableTarget(final File fileTarget, final String stringTarget) {
+        this.fileTarget = fileTarget;
+        this.stringTarget = stringTarget;
+    }
+
+    public static ExecutableTarget forFile(File targetFile) { //For example "C:\bin\git.exe"
+        return new ExecutableTarget(targetFile, null);
+    }
+
+    public static ExecutableTarget forCommand(String command) { //For example "git".
+        return new ExecutableTarget(null, command);
+    }
+
+    public String toCommand() {
+        if (stringTarget != null)
+            return stringTarget;
+
+        return fileTarget.getAbsolutePath();
+    }
 }

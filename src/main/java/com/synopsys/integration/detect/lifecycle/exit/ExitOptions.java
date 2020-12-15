@@ -1,5 +1,5 @@
 /**
- * detectable
+ * synopsys-detect
  *
  * Copyright (c) 2020 Synopsys, Inc.
  *
@@ -20,30 +20,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.pip.model;
+package com.synopsys.integration.detect.lifecycle.exit;
 
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.util.Stringable;
 
-public class PipenvResult {
-    private final String projectName;
-    private final String projectVersion;
-    private final CodeLocation codeLocation;
+public class ExitOptions extends Stringable {
+    private final long startTime;
+    private final boolean logResults;
+    private final boolean forceSuccessExit;
+    private final boolean shouldExit;
 
-    public PipenvResult(final String projectName, final String projectVersion, final CodeLocation codeLocation) {
-        this.projectName = projectName;
-        this.projectVersion = projectVersion;
-        this.codeLocation = codeLocation;
+    public ExitOptions(long startTime, boolean logResults, boolean forceSuccessExit, boolean shouldExit) {
+        this.startTime = startTime;
+        this.logResults = logResults;
+        this.forceSuccessExit = forceSuccessExit;
+        this.shouldExit = shouldExit;
     }
 
-    public String getProjectName() {
-        return projectName;
+    public long getStartTime() {
+        return startTime;
     }
 
-    public String getProjectVersion() {
-        return projectVersion;
+    public boolean shouldLogResults() {
+        return logResults;
     }
 
-    public CodeLocation getCodeLocation() {
-        return codeLocation;
+    public boolean shouldForceSuccessExit() {
+        return forceSuccessExit;
+    }
+
+    public boolean shouldExit() {
+        return shouldExit;
     }
 }
