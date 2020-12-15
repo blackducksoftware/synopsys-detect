@@ -1,0 +1,3199 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.4.2">
+    
+    
+      
+        <title>signature scanner - Synopsys Detect</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/application.30686662.css">
+      
+      
+    
+    
+      <script src="../../../assets/javascripts/modernizr.74668098.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#signature-scanner" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../../.." title="Synopsys Detect" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              Synopsys Detect
+            </span>
+            <span class="md-header-nav__topic">
+              
+                signature scanner
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../../.." title="Synopsys Detect" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    Synopsys Detect
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../.." title="Help Topics" class="md-nav__link">
+      <b>Help Topics</b>
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../00-introduction/" title="Introduction" class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../10-requirements/" title="Requirements" class="md-nav__link">
+      Requirements
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../20-quickstart/" title="Quickstart guide" class="md-nav__link">
+      Quickstart guide
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../30-running/" title="Downloading and running" class="md-nav__link">
+      Downloading and running
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../40-configuring/" title="Configuring" class="md-nav__link">
+      Configuring
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../70-quickreference/" title="Quick reference" class="md-nav__link">
+      Quick reference
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../../90-releasenotes/" title="Release notes" class="md-nav__link">
+      Release notes
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Advanced
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Advanced
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/BD-user-role-requirements/" title="Black Duck user role requirements" class="md-nav__link">
+      Black Duck user role requirements
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/air-gap/" title="Air gap mode" class="md-nav__link">
+      Air gap mode
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/concurrent/" title="Concurrent execution" class="md-nav__link">
+      Concurrent execution
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/downloads/" title="Downloads" class="md-nav__link">
+      Downloads
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/includeexcludewildcards/" title="Property wildcard support" class="md-nav__link">
+      Property wildcard support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
+      Project and version naming
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/proxies/" title="Running behind a proxy" class="md-nav__link">
+      Running behind a proxy
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/scan-naming/" title="Code location (scan) naming" class="md-nav__link">
+      Code location (scan) naming
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/script-configuration/" title="Shell script configuration" class="md-nav__link">
+      Shell script configuration
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/script-escaping-special-characters/" title="Quoting and escaping shell script arguments" class="md-nav__link">
+      Quoting and escaping shell script arguments
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/status-file/" title="Status File" class="md-nav__link">
+      Status File
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/usage-metrics/" title="Usage metrics collection" class="md-nav__link">
+      Usage metrics collection
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/verifying/" title="Synopsys Detect code verification" class="md-nav__link">
+      Synopsys Detect code verification
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-14" type="checkbox" id="nav-9-14">
+    
+    <label class="md-nav__link" for="nav-9-14">
+      Package managers
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-9-14">
+        Package managers
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/bazel/" title="Bazel support" class="md-nav__link">
+      Bazel support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/cargo/" title="Cargo support" class="md-nav__link">
+      Cargo support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/clang/" title="C/C++ (Clang) support" class="md-nav__link">
+      C/C++ (Clang) support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/conan/" title="Conan support" class="md-nav__link">
+      Conan support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/conda/" title="Conda Support" class="md-nav__link">
+      Conda Support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/docker-images/" title="Docker image support" class="md-nav__link">
+      Docker image support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/golang/" title="GoLang support" class="md-nav__link">
+      GoLang support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/gradle/" title="Gradle support" class="md-nav__link">
+      Gradle support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/hex/" title="Erlang/Hex/Rebar support" class="md-nav__link">
+      Erlang/Hex/Rebar support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/lerna/" title="Lerna support" class="md-nav__link">
+      Lerna support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/maven/" title="Maven support" class="md-nav__link">
+      Maven support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/npm/" title="npm support" class="md-nav__link">
+      npm support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/nuget/" title="NuGet support" class="md-nav__link">
+      NuGet support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/python/" title="Python support" class="md-nav__link">
+      Python support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/yarn/" title="Yarn support" class="md-nav__link">
+      Yarn support
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/package-managers/yocto-bitbake/" title="Yocto (BitBake)" class="md-nav__link">
+      Yocto (BitBake)
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-15" type="checkbox" id="nav-9-15">
+    
+    <label class="md-nav__link" for="nav-9-15">
+      Troubleshooting
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-9-15">
+        Troubleshooting
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/troubleshooting/exit-codes/" title="Exit codes" class="md-nav__link">
+      Exit codes
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/troubleshooting/general-troubleshooting/" title="Troubleshooting tips" class="md-nav__link">
+      Troubleshooting tips
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../advanced/troubleshooting/solutions/" title="Solutions to common problems" class="md-nav__link">
+      Solutions to common problems
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-10" type="checkbox" id="nav-10">
+    
+    <label class="md-nav__link" for="nav-10">
+      Components
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-10">
+        Components
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../components/detectors/" title="Detectors" class="md-nav__link">
+      Detectors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../components/inspectors/" title="Inspectors" class="md-nav__link">
+      Inspectors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../components/tools/" title="Tools" class="md-nav__link">
+      Tools
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-11" type="checkbox" id="nav-11" checked>
+    
+    <label class="md-nav__link" for="nav-11">
+      Properties
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-11">
+        Properties
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../all-properties/" title="All properties" class="md-nav__link">
+      All properties
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../basic-properties/" title="Basic properties" class="md-nav__link">
+      Basic properties
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../deprecated-properties/" title="Deprecated properties" class="md-nav__link">
+      Deprecated properties
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-11-4" type="checkbox" id="nav-11-4" checked>
+    
+    <label class="md-nav__link" for="nav-11-4">
+      Configuration
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-11-4">
+        Configuration
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../binary scanner/" title="binary scanner" class="md-nav__link">
+      binary scanner
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../blackduck server/" title="blackduck server" class="md-nav__link">
+      blackduck server
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../cleanup/" title="cleanup" class="md-nav__link">
+      cleanup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../debug/" title="debug" class="md-nav__link">
+      debug
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../detector/" title="detector" class="md-nav__link">
+      detector
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../general/" title="general" class="md-nav__link">
+      general
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../impact analysis/" title="impact analysis" class="md-nav__link">
+      impact analysis
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../logging/" title="logging" class="md-nav__link">
+      logging
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../paths/" title="paths" class="md-nav__link">
+      paths
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../polaris/" title="polaris" class="md-nav__link">
+      polaris
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../project info/" title="project info" class="md-nav__link">
+      project info
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../project/" title="project" class="md-nav__link">
+      project
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../proxy/" title="proxy" class="md-nav__link">
+      proxy
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../report/" title="report" class="md-nav__link">
+      report
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        signature scanner
+      </label>
+    
+    <a href="./" title="signature scanner" class="md-nav__link md-nav__link--active">
+      signature scanner
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-dry-run-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Dry Run (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-snippet-mode-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Snippet Mode (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-exclusion-patterns-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Exclusion Patterns (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-paths-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Paths (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-exclusion-name-patterns-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Exclusion Name Patterns (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-memory-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Memory (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-disabled-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Disabled (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-blackduck-signature-scanner-disabled-deprecated" class="md-nav__link">
+    Detect Blackduck Signature Scanner Disabled (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-offline-local-path-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Offline Local Path (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-local-path-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Local Path (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snippet-matching-deprecated" class="md-nav__link">
+    Snippet Matching (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-host-url-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Host Url (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-parallel-processors-deprecated" class="md-nav__link">
+    Signature Scanner Parallel Processors (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-parallel-processors-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Parallel Processors (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-arguments-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Arguments (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-copyright-search-deprecated" class="md-nav__link">
+    Signature Scanner Copyright Search (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-dry-run-deprecated" class="md-nav__link">
+    Signature Scanner Dry Run (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#directory-name-exclusion-patterns-deprecated" class="md-nav__link">
+    Directory Name Exclusion Patterns (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exclusion-patterns-search-depth-deprecated" class="md-nav__link">
+    Exclusion Patterns Search Depth (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exclusion-patterns-deprecated" class="md-nav__link">
+    Exclusion Patterns (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#individual-file-matching-deprecated" class="md-nav__link">
+    Individual File Matching (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-host-url-deprecated" class="md-nav__link">
+    Signature Scanner Host URL (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-license-search-deprecated" class="md-nav__link">
+    Signature Scanner License Search (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-local-path-deprecated" class="md-nav__link">
+    Signature Scanner Local Path (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-memory-deprecated" class="md-nav__link">
+    Signature Scanner Memory (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-local-path-40offline41-deprecated" class="md-nav__link">
+    Signature Scanner Local Path (Offline) (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-target-paths-deprecated" class="md-nav__link">
+    Signature Scanner Target Paths (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upload-source-mode-deprecated" class="md-nav__link">
+    Upload source mode (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-arguments-deprecated" class="md-nav__link">
+    Signature Scanner Arguments (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snippet-scanning-deprecated" class="md-nav__link">
+    Snippet Scanning (Deprecated)
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-11-5" type="checkbox" id="nav-11-5">
+    
+    <label class="md-nav__link" for="nav-11-5">
+      Detectors
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
+      <label class="md-nav__title" for="nav-11-5">
+        Detectors
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/bazel/" title="bazel" class="md-nav__link">
+      bazel
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/bitbake/" title="bitbake" class="md-nav__link">
+      bitbake
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/conan/" title="conan" class="md-nav__link">
+      conan
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/conda/" title="conda" class="md-nav__link">
+      conda
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/cpan/" title="cpan" class="md-nav__link">
+      cpan
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/docker/" title="docker" class="md-nav__link">
+      docker
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/go/" title="go" class="md-nav__link">
+      go
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/gradle/" title="gradle" class="md-nav__link">
+      gradle
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/hex/" title="hex" class="md-nav__link">
+      hex
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/lerna/" title="lerna" class="md-nav__link">
+      lerna
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/maven/" title="maven" class="md-nav__link">
+      maven
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/npm/" title="npm" class="md-nav__link">
+      npm
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/nuget/" title="nuget" class="md-nav__link">
+      nuget
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/packagist/" title="packagist" class="md-nav__link">
+      packagist
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/pear/" title="pear" class="md-nav__link">
+      pear
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/pip/" title="pip" class="md-nav__link">
+      pip
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/python/" title="python" class="md-nav__link">
+      python
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/ruby/" title="ruby" class="md-nav__link">
+      ruby
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/sbt/" title="sbt" class="md-nav__link">
+      sbt
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../detectors/yarn/" title="yarn" class="md-nav__link">
+      yarn
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-dry-run-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Dry Run (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-snippet-mode-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Snippet Mode (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-exclusion-patterns-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Exclusion Patterns (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-paths-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Paths (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-exclusion-name-patterns-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Exclusion Name Patterns (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-memory-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Memory (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-disabled-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Disabled (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-blackduck-signature-scanner-disabled-deprecated" class="md-nav__link">
+    Detect Blackduck Signature Scanner Disabled (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-offline-local-path-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Offline Local Path (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-local-path-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Local Path (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snippet-matching-deprecated" class="md-nav__link">
+    Snippet Matching (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-host-url-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Host Url (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-parallel-processors-deprecated" class="md-nav__link">
+    Signature Scanner Parallel Processors (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-parallel-processors-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Parallel Processors (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detect-hub-signature-scanner-arguments-deprecated" class="md-nav__link">
+    Detect Hub Signature Scanner Arguments (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-copyright-search-deprecated" class="md-nav__link">
+    Signature Scanner Copyright Search (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-dry-run-deprecated" class="md-nav__link">
+    Signature Scanner Dry Run (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#directory-name-exclusion-patterns-deprecated" class="md-nav__link">
+    Directory Name Exclusion Patterns (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exclusion-patterns-search-depth-deprecated" class="md-nav__link">
+    Exclusion Patterns Search Depth (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exclusion-patterns-deprecated" class="md-nav__link">
+    Exclusion Patterns (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#individual-file-matching-deprecated" class="md-nav__link">
+    Individual File Matching (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-host-url-deprecated" class="md-nav__link">
+    Signature Scanner Host URL (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-license-search-deprecated" class="md-nav__link">
+    Signature Scanner License Search (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-local-path-deprecated" class="md-nav__link">
+    Signature Scanner Local Path (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-memory-deprecated" class="md-nav__link">
+    Signature Scanner Memory (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-local-path-40offline41-deprecated" class="md-nav__link">
+    Signature Scanner Local Path (Offline) (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-target-paths-deprecated" class="md-nav__link">
+    Signature Scanner Target Paths (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#upload-source-mode-deprecated" class="md-nav__link">
+    Upload source mode (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#signature-scanner-arguments-deprecated" class="md-nav__link">
+    Signature Scanner Arguments (Deprecated)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#snippet-scanning-deprecated" class="md-nav__link">
+    Snippet Scanning (Deprecated)
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="signature-scanner">signature scanner<a class="headerlink" href="#signature-scanner" title="Permanent link">#</a></h1>
+<h2 id="detect-hub-signature-scanner-dry-run-deprecated">Detect Hub Signature Scanner Dry Run (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-dry-run-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.hub.signature.scanner.dry.run=false
+</code></pre>
+
+<p>If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.dry.run in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-hub-signature-scanner-snippet-mode-deprecated">Detect Hub Signature Scanner Snippet Mode (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-snippet-mode-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.hub.signature.scanner.snippet.mode=false
+</code></pre>
+
+<p>If set to true, the signature scanner will, if supported by your Hub version, run in snippet scanning mode.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.snippet.mode in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-hub-signature-scanner-exclusion-patterns-deprecated">Detect Hub Signature Scanner Exclusion Patterns (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-exclusion-patterns-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.hub.signature.scanner.exclusion.patterns
+</code></pre>
+
+<p>A comma-separated list of values to be used with the Signature Scanner --exclude flag.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.patterns in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-hub-signature-scanner-paths-deprecated">Detect Hub Signature Scanner Paths (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-paths-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.hub.signature.scanner.paths
+</code></pre>
+
+<p>These paths and only these paths will be scanned.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.paths in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Path List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-hub-signature-scanner-exclusion-name-patterns-deprecated">Detect Hub Signature Scanner Exclusion Name Patterns (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-exclusion-name-patterns-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.hub.signature.scanner.exclusion.name.patterns=node_modules
+</code></pre>
+
+<p>A comma-separated list of directory name patterns Detect will search for and add to the Signature Scanner --exclude flag values.</p>
+<p>Detect will recursively search within the scan targets for files/directories that match these file name patterns and will create the corresponding exclusion patterns for the signature scanner. These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.exclusion.name.patterns in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>node_modules</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-hub-signature-scanner-memory-deprecated">Detect Hub Signature Scanner Memory (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-memory-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.hub.signature.scanner.memory=4096
+</code></pre>
+
+<p>The memory for the scanner to use.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.memory in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>4096</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-hub-signature-scanner-disabled-deprecated">Detect Hub Signature Scanner Disabled (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-disabled-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.hub.signature.scanner.disabled=false
+</code></pre>
+
+<p>Set to true to disable the Hub Signature Scanner.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.tools in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-blackduck-signature-scanner-disabled-deprecated">Detect Blackduck Signature Scanner Disabled (Deprecated)<a class="headerlink" href="#detect-blackduck-signature-scanner-disabled-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.disabled=false
+</code></pre>
+
+<p>Set to true to disable the Black Duck Signature Scanner.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.tools in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-hub-signature-scanner-offline-local-path-deprecated">Detect Hub Signature Scanner Offline Local Path (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-offline-local-path-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.hub.signature.scanner.offline.local.path
+</code></pre>
+
+<p>To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.offline.local.path in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional Path</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-hub-signature-scanner-local-path-deprecated">Detect Hub Signature Scanner Local Path (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-local-path-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.hub.signature.scanner.local.path
+</code></pre>
+
+<p>To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.local.path in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional Path</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="snippet-matching-deprecated">Snippet Matching (Deprecated)<a class="headerlink" href="#snippet-matching-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.snippet.matching=NONE,SNIPPET_MATCHING,SNIPPET_MATCHING_ONLY,FULL_SNIPPET_MATCHING,FULL_SNIPPET_MATCHING_ONLY 
+</code></pre>
+
+<p>Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --snippet-matching, --snippet-matching-only, --full-snippet-scan.</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>5.5.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>SnippetMatching</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>NONE</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>NONE, SNIPPET_MATCHING, SNIPPET_MATCHING_ONLY, FULL_SNIPPET_MATCHING, FULL_SNIPPET_MATCHING_ONLY</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-hub-signature-scanner-host-url-deprecated">Detect Hub Signature Scanner Host Url (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-host-url-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.hub.signature.scanner.host.url
+</code></pre>
+
+<p>If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.host.url in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signature-scanner-parallel-processors-deprecated">Signature Scanner Parallel Processors (Deprecated)<a class="headerlink" href="#signature-scanner-parallel-processors-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.parallel.processors=1
+</code></pre>
+
+<p>The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.parallel.processors in the future. The --detect.parallel.processors property will take precedence over this property. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-hub-signature-scanner-parallel-processors-deprecated">Detect Hub Signature Scanner Parallel Processors (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-parallel-processors-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.hub.signature.scanner.parallel.processors=1
+</code></pre>
+
+<p>The number of scans to run in parallel, defaults to 1, but if you specify -1, the number of processors on the machine will be used.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.parallel.processors in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>3.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="detect-hub-signature-scanner-arguments-deprecated">Detect Hub Signature Scanner Arguments (Deprecated)<a class="headerlink" href="#detect-hub-signature-scanner-arguments-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.hub.signature.scanner.arguments
+</code></pre>
+
+<p>Additional arguments to use when running the Hub signature scanner.</p>
+<p><strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.arguments in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signature-scanner-copyright-search-deprecated">Signature Scanner Copyright Search (Deprecated)<a class="headerlink" href="#signature-scanner-copyright-search-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.copyright.search=false
+</code></pre>
+
+<p>When set to true, user will be able to scan and discover copyright names in Black Duck. Corresponding Signature Scanner CLI Argument: --copyright-search.</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.4.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signature-scanner-dry-run-deprecated">Signature Scanner Dry Run (Deprecated)<a class="headerlink" href="#signature-scanner-dry-run-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.dry.run=false
+</code></pre>
+
+<p>If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk via the Signature Scanner CLI argument: --dryRunWriteDir.</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="directory-name-exclusion-patterns-deprecated">Directory Name Exclusion Patterns (Deprecated)<a class="headerlink" href="#directory-name-exclusion-patterns-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.exclusion.name.patterns=node_modules
+</code></pre>
+
+<p>A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values.</p>
+<p>This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> &gt; <i>Property wildcard support</i> page for more details. Detect will recursively search within the scan targets for files/directories that match these patterns and will create the corresponding exclusion patterns (paths relative to the scan target directory) for the signature scanner (Black Duck scan CLI). Please note that the signature scanner will only exclude directories; matched filenames will be passed to the signature scanner but will have no effect. These patterns will be added to the patterns provided by detect.blackduck.signature.scanner.exclusion.patterns and passed as --exclude values. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.name.patterns=blackduck-common, --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-common', --detect.blackduck.signature.scanner.exclusion.name.patterns='blackduck-*'. Use this property when you want Detect to convert the given patterns to actual paths. Use detect.blackduck.signature.scanner.exclusion.patterns to pass patterns directly to the signature scanner as-is.</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>node_modules</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="exclusion-patterns-search-depth-deprecated">Exclusion Patterns Search Depth (Deprecated)<a class="headerlink" href="#exclusion-patterns-search-depth-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.exclusion.pattern.search.depth=4
+</code></pre>
+
+<p>Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns.</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>5.0.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="exclusion-patterns-deprecated">Exclusion Patterns (Deprecated)<a class="headerlink" href="#exclusion-patterns-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.exclusion.patterns
+</code></pre>
+
+<p>A comma-separated list of values (each value is a directory name pattern surrounded by '/' characters) to be used with the Signature Scanner --exclude flag.</p>
+<p>Each pattern provided is passed to the signature scanner (Black Duck scan CLI) as a value for an --exclude option. The signature scanner requires that these exclusion patterns start and end with a forward slash (/), and may not contain double asterisks (**). These patterns will be added to the paths created from detect.blackduck.signature.scanner.exclusion.name.patterns and passed as --exclude values. Use this property to pass patterns directly to the signature scanner as-is. For example: suppose you are running in bash on Linux, and have a subdirectory named blackduck-common that you want to exclude from signature scanning. Any of the following would exclude it: --detect.blackduck.signature.scanner.exclusion.patterns=/blackduck-common/, --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-common/', --detect.blackduck.signature.scanner.exclusion.patterns='/blackduck-*/'. Use detect.blackduck.signature.scanner.exclusion.name.patterns when you want Detect to convert the given patterns to actual paths.</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>String List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="individual-file-matching-deprecated">Individual File Matching (Deprecated)<a class="headerlink" href="#individual-file-matching-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.individual.file.matching=NONE,SOURCE,BINARY,ALL 
+</code></pre>
+
+<p>Users may set this property to indicate what types of files they want to match. Corresponding Signature Scanner CLI Argument: --individualFileMatching.</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>IndividualFileMatching</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>NONE</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>NONE, SOURCE, BINARY, ALL</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signature-scanner-host-url-deprecated">Signature Scanner Host URL (Deprecated)<a class="headerlink" href="#signature-scanner-host-url-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.host.url
+</code></pre>
+
+<p>If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Black Duck's urls for different operating systems.</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signature-scanner-license-search-deprecated">Signature Scanner License Search (Deprecated)<a class="headerlink" href="#signature-scanner-license-search-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.license.search=false
+</code></pre>
+
+<p>When set to true, user will be able to scan and discover license names in Black Duck. Corresponding Signature Scanner CLI Argument: --license-search.</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>6.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signature-scanner-local-path-deprecated">Signature Scanner Local Path (Deprecated)<a class="headerlink" href="#signature-scanner-local-path-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.local.path
+</code></pre>
+
+<p>To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional Path</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signature-scanner-memory-deprecated">Signature Scanner Memory (Deprecated)<a class="headerlink" href="#signature-scanner-memory-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.memory=4096
+</code></pre>
+
+<p>The memory for the scanner to use.</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>4096</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signature-scanner-local-path-40offline41-deprecated">Signature Scanner Local Path (Offline) (Deprecated)<a class="headerlink" href="#signature-scanner-local-path-40offline41-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.offline.local.path
+</code></pre>
+
+<p>To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli.</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional Path</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signature-scanner-target-paths-deprecated">Signature Scanner Target Paths (Deprecated)<a class="headerlink" href="#signature-scanner-target-paths-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.paths
+</code></pre>
+
+<p>If this property is not set, the signature scanner target path is the source path (see property detect.source.path). If this property is set, the paths provided in this property's value will be signature scanned instead (the signature scanner will be executed once for each provided path).</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Path List</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="upload-source-mode-deprecated">Upload source mode (Deprecated)<a class="headerlink" href="#upload-source-mode-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.upload.source.mode=false
+</code></pre>
+
+<p>If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. Corresponding Signature Scanner CLI Argument: --upload-source.</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>5.4.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="signature-scanner-arguments-deprecated">Signature Scanner Arguments (Deprecated)<a class="headerlink" href="#signature-scanner-arguments-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.arguments
+</code></pre>
+
+<p>Additional arguments to use when running the Black Duck signature scanner.</p>
+<p>For example: Suppose you are running in bash on Linux and want to use the signature scanner's ability to read a list of directories to exclude from a file (using the signature scanner --exclude-from option). You tell the signature scanner read excluded directories from a file named excludes.txt in your home directory with: --detect.blackduck.signature.scanner.arguments='--exclude-from \${HOME}/excludes.txt'</p>
+<p><strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Optional String</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td></td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<h2 id="snippet-scanning-deprecated">Snippet Scanning (Deprecated)<a class="headerlink" href="#snippet-scanning-deprecated" title="Permanent link">#</a></h2>
+<pre><code>--detect.blackduck.signature.scanner.snippet.mode=false
+</code></pre>
+
+<p>If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode.</p>
+<p><strong>DEPRECATED: This property is now deprecated. Please use --detect.blackduck.signature.scanner.snippet.matching in the future. NOTE the new property is one of a particular set of values. You will need to consult the documentation for the Signature Scanner in Black Duck for details. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Details</th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Added</td>
+<td>4.2.0</td>
+</tr>
+<tr>
+<td>Type</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>Default Value</td>
+<td>false</td>
+</tr>
+<tr>
+<td>Comma Separated</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Case Sensitive</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Acceptable Values</td>
+<td>Any</td>
+</tr>
+<tr>
+<td>Strict</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../report/" title="report" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                report
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../../detectors/bazel/" title="bazel" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                bazel
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../../assets/javascripts/application.c648116f.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:"../../.."}})</script>
+      
+    
+  </body>
+</html>
