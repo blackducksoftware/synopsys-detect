@@ -25,14 +25,12 @@ package com.synopsys.integration.detectable.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Assertions;
-
+import com.synopsys.integration.detect.commontest.FileUtil;
 import com.synopsys.integration.util.ResourceUtil;
 
 public class FunctionalTestFiles {
@@ -65,10 +63,7 @@ public class FunctionalTestFiles {
     }
 
     public static File asFile(final String relativeResourcePath) {
-        final URL resource = FunctionalTestFiles.class.getResource(resourcePrefix + relativeResourcePath);
-        final File file = new File(resource.getFile());
-        Assertions.assertTrue(file.exists());
-
-        return file;
+        return FileUtil.asFile(FunctionalTestFiles.class, relativeResourcePath, resourcePrefix);
     }
+
 }

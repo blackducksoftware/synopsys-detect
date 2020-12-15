@@ -29,7 +29,6 @@ import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +37,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Assertions;
 import org.zeroturnaround.zip.commons.FileUtils;
 
+import com.synopsys.integration.detect.commontest.FileUtil;
 import com.synopsys.integration.util.ResourceUtil;
 
 import freemarker.template.Configuration;
@@ -137,11 +137,6 @@ public class BatteryFiles {
     }
 
     public static File asFile(final String relativeResourcePath, final String prefix) {
-        final URL resource = BatteryFiles.class.getResource(prefix + relativeResourcePath);
-        Assertions.assertNotNull(resource, "Could not find resource path: " + prefix + relativeResourcePath);
-        final File file = new File(resource.getFile());
-        Assertions.assertTrue(file.exists());
-
-        return file;
+        return FileUtil.asFile(BatteryTest.class, relativeResourcePath, prefix);
     }
 }
