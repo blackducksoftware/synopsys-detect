@@ -3,6 +3,9 @@
 ## Version 6.8.0
 ### New features
 * Added support for Conan projects that have the Conan revisions feature enabled.
+* (IDETECT-2254) Added support for additional Yarn lock formats.
+* (IDETECT-2294) Resolved an issue where Git credentials could be logged when reading the remote url.
+* (IDETECT-2227) Resolved an issue where Nuget Inspectors would parse source files for assembly version.
 * Added date of latest scan for a project version to the risk report pdf.
 * Deprecated all Detect signature scanner properties.  Future releases will feature an alternative mechanism for providing signature scanner arguments to Detect.
 * Deprecated properties blackduck.timeout and detect.report.timeout, and consolidated them to create a new property detect.timeout.
