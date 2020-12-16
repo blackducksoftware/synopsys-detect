@@ -1,5 +1,9 @@
 # Release notes
 
+## Version 6.9.0
+### Changed features
+* Added the timezone to the date format in the default log message format
+
 ## Version 6.8.0
 ### New features
 * Added support for Conan projects that have the Conan revisions feature enabled.
