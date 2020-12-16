@@ -73,7 +73,7 @@ import com.synopsys.integration.log.LogLevel;
 // java:S1123: Warning about deprecations not having Java doc.
 public class DetectProperties {
     private static final String POLARIS_CLI_DEPRECATION_MESSAGE = "This property is being removed. Detect will no longer invoke the Polaris CLI.";
-    private static final String SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE = "This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.  See release notes for more details.";
+    private static final String SIGNATURE_SCANNER_PROPERTY_DEPRECATION_MESSAGE = "This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism.";
     private static final String EXCLUSION_PROPERTY_DEPRECATION_MESSAGE = "This property is now deprecated. In future versions of Detect, it will be consolidated with other exclusion properties.";
 
     private DetectProperties() {
