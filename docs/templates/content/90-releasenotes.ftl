@@ -4,11 +4,11 @@
 ### New features
 * Added support for Conan projects that have the Conan revisions feature enabled.
 * Added detect.pip.path for advanced users who wish to specify which pip executable to run.
+* Added support for additional Yarn lock formats.
 * Improved the Pip Inspector to attempt to discover files named "requirements.txt" if no requirements files are specified through detect.pip.requirements.path.
 
 ### Changed features
 * Added detect.timeout to consolidate the functionality of blackduck.timeout and detect.report.timeout.
-* Added support for additional Yarn lock formats.
 * Added date of latest scan for a project version to the risk report pdf.
 * Deprecated properties blackduck.timeout and detect.report.timeout. They have been consolidated into the new property detect.timeout.
 * Deprecated all Detect exclusion properties. Future releases will feature a new property to extend and consolidate these properties.
