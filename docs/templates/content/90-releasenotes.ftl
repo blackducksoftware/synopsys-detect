@@ -3,19 +3,21 @@
 ## Version 6.8.0
 ### New features
 * Added support for Conan projects that have the Conan revisions feature enabled.
-* Added date of latest scan for a project version to the risk report pdf.
-* Added help section in Package Managers describing Conda support.
-* Added support for additional Yarn lock formats.
 * Added detect.pip.path for advanced users who wish to specify which pip executable to run.
 * Improved the Pip Inspector to attempt to discover files named "requirements.txt" if no requirements files are specified through detect.pip.requirements.path.
-* Added detect.timeout to consolidate the functionality of blackduck.timeout and detect.report.timeout.
 
 ### Changed features
+* Added detect.timeout to consolidate the functionality of blackduck.timeout and detect.report.timeout.
+* Added support for additional Yarn lock formats.
+* Added date of latest scan for a project version to the risk report pdf.
 * Deprecated properties blackduck.timeout and detect.report.timeout. They have been consolidated into the new property detect.timeout.
 * Deprecated all Detect exclusion properties. Future releases will feature a new property to extend and consolidate these properties.
 * Deprecated all Detect signature scanner properties.  Future releases will feature an alternative mechanism for providing signature scanner arguments to Detect.
-* Deprecated property detect.resolve.tilde.in.paths. Resolving tildes is a shell feature which Detect will no longer support.
+* Deprecated property detect.resolve.tilde.in.paths. Resolving tildes is a shell feature which Detect will no longer support in a future version.
 * Deprecated property detect.python.python3. Due to the January 2020 sunset of Python 2, this property (which toggles between searching for a 'python' and 'python3' executable) is no longer necessary. See: [PEP-394](https://www.python.org/dev/peps/pep-0394/#recommendation)
+* Deprecated properties detect.docker.inspector.air.gap.path, detect.gradle.inspector.air.gap.path, and detect.docker.inspector.air.gap.path as part of an effort to simplify Detect.
+* Deprecated properties detect.default.project.version.scheme, detect.default.project.version.text, detect.default.project.version.timeformat as part of the effort to simplify Detect.
+* Deprecated properties blackduck.username and blackduck.password. Authentication should be performed using an API token.
 
 ### Resolved issues
 * (IDETECT-2216) Resolved an issue that prevented non-ASCII filenames from being correctly transmitted to Black Duck during a binary scan file upload.
@@ -23,6 +25,7 @@
 * (IDETECT-2281) Resolved an issue that included golang dependencies that were not linked in the compiled go application. [241](https://github.com/blackducksoftware/synopsys-detect/issues/241)
 * (IDETECT-2294) Resolved an issue where Git credentials could be logged when reading the remote url.
 * (IDETECT-2296) Resolved an issue wherein the Pip Inspector would cease parsing a requirements file if it encountered a dependency which it could not resolve.
+* (IDETECT-2276) Resolved an issue that caused the CLANG detector to omit components for which multiple architectures are installed.
 
 ## Version 6.7.0
 ### Resolved issues
