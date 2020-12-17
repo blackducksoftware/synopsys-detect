@@ -4,7 +4,6 @@
 ### New features
 * Added support for Conan projects that have the Conan revisions feature enabled.
 * Added detect.pip.path for advanced users who wish to specify which pip executable to run.
-* Added support for additional Yarn lock formats.
 * Improved the Pip Inspector to attempt to discover files named "requirements.txt" if no requirements files are specified through detect.pip.requirements.path.
 
 ### Changed features
@@ -20,6 +19,7 @@
 * Deprecated properties blackduck.username and blackduck.password. Authentication should be performed using an API token.
 
 ### Resolved issues
+* (IDETECT-2254) Resolved an issue that could cause an ArrayIndexOutOfBoundsException error on Yarn 2.0 projects.
 * (IDETECT-2216) Resolved an issue that prevented non-ASCII filenames from being correctly transmitted to Black Duck during a binary scan file upload.
 * (IDETECT-2227) Resolved an issue where Nuget Inspectors would parse source files for assembly version.
 * (IDETECT-2281) Resolved an issue that included golang dependencies that were not linked in the compiled go application. [241](https://github.com/blackducksoftware/synopsys-detect/issues/241)
