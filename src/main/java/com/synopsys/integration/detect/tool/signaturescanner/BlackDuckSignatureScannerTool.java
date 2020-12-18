@@ -37,7 +37,6 @@ import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationServi
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.http.client.BlackDuckHttpClient;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -49,13 +48,9 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameMan
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.SilentIntLogger;
-import com.synopsys.integration.log.Slf4jIntLogger;
-import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.NameVersion;
-
-import net.minidev.json.writer.FakeMapper;
 
 public class BlackDuckSignatureScannerTool {
     private final Logger logger = LoggerFactory.getLogger(BlackDuckSignatureScannerTool.class);
