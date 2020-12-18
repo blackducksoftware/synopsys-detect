@@ -37,6 +37,7 @@ import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationServi
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.http.client.BlackDuckHttpClient;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -47,8 +48,7 @@ import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGen
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
-import com.synopsys.integration.log.SilentIntLogger;
-import com.synopsys.integration.rest.client.IntHttpClient;
+import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.NameVersion;
 
@@ -92,11 +92,11 @@ public class BlackDuckSignatureScannerTool {
             logger.debug("Signature scanner will use the Black Duck server to download/update the scanner - this is the most likely situation.");
             scanBatchRunner = scanBatchRunnerFactory.withInstall(blackDuckServerConfig.get());
         } else {
-            if (signatureScannerOptions.getUserProvidedScannerInstallUrl().isPresent()) {
+            if (signatureScannerOptions.getUserProvidedScannerInstallUrl().isPresent() && blackDuckServerConfig.isPresent()) {
                 logger.debug("Signature scanner will use the provided url to download/update the scanner.");
                 String providedUrl = signatureScannerOptions.getUserProvidedScannerInstallUrl().get();
-                IntHttpClient restConnection = connectionFactory.createConnection(providedUrl, new SilentIntLogger()); //TODO: Should this be silent?
-                scanBatchRunner = scanBatchRunnerFactory.withUserProvidedUrl(providedUrl, restConnection);
+                BlackDuckHttpClient blackDuckHttpClient = blackDuckServerConfig.get().createBlackDuckHttpClient(new Slf4jIntLogger(logger));
+                scanBatchRunner = scanBatchRunnerFactory.withUserProvidedUrl(providedUrl, blackDuckHttpClient);
             } else {
                 logger.debug("Signature scanner either given an existing path for the scanner or is offline - either way, we won't attempt to manage the install.");
                 if (localScannerInstallPath.isPresent()) {
