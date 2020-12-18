@@ -1452,6 +1452,7 @@
 </code></pre>
 
 <p>The logging level of Detect.</p>
+<p>Detect logging is performed using Spring Boot's default logging setup (Logback). Detect sets the default log message format to "%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}". You can change your log message format by setting the Spring Boot <i>logging.pattern.console</i> property to a different pattern. Refer to the Spring Boot logging documentation for more details.</p>
 <table>
 <thead>
 <tr>
