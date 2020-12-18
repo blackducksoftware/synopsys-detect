@@ -48,6 +48,8 @@ public class DetectProperty<T extends Property> {
     private Category category = null;
     @Nullable
     private PropertyDeprecationInfo propertyDeprecationInfo = null;
+    @Nullable
+    private String example = null;
 
     public DetectProperty(T property) {
         this.property = property;
@@ -84,6 +86,11 @@ public class DetectProperty<T extends Property> {
         return this;
     }
 
+    public DetectProperty<T> setExample(String example) {
+        this.example = example;
+        return this;
+    }
+
     public T getProperty() {
         return property;
     }
@@ -116,5 +123,10 @@ public class DetectProperty<T extends Property> {
     @Nullable
     public PropertyDeprecationInfo getPropertyDeprecationInfo() {
         return propertyDeprecationInfo;
+    }
+
+    @Nullable
+    public String getExample() {
+        return example;
     }
 }

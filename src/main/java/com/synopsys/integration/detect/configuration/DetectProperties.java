@@ -207,7 +207,8 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.conan.arguments"))
             .setInfo("Additional Conan Arguments", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp("A space-separated list of additional arguments to add to the 'conan info' command line when running Detect against a Conan project. Detect will execute the command 'conan info {additional arguments} .'")
-            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
+            .setExample("-pr=clang_3.5");
 
     public static final DetectProperty<NullableStringProperty> DETECT_CONAN_LOCKFILE_PATH =
         new DetectProperty<>(new NullableStringProperty("detect.conan.lockfile.path"))
@@ -1888,6 +1889,9 @@ public class DetectProperties {
         property.setCategory(detectProperty.getCategory());
         if (detectProperty.getPropertyDeprecationInfo() != null) {
             property.setDeprecated(detectProperty.getPropertyDeprecationInfo().getDescription(), detectProperty.getPropertyDeprecationInfo().getFailInVersion(), detectProperty.getPropertyDeprecationInfo().getRemoveInVersion());
+        }
+        if (detectProperty.getExample() != null) {
+            property.setExample(detectProperty.getExample());
         }
         return property;
     }
