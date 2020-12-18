@@ -1088,7 +1088,8 @@ public class DetectProperties {
     public static final DetectProperty<EnumProperty<LogLevel>> LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION =
         new DetectProperty<>(new EnumProperty<>("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class))
             .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_3_0)
-            .setHelp("The logging level of Detect.")
+            .setHelp("The logging level of Detect.",
+                "Detect logging is performed using Spring Boot's default logging setup (Logback). Detect sets the default log message format to \"%d{yyyy-MM-dd HH:mm:ss z} ${LOG_LEVEL_PATTERN:%-6p}[%thread] %clr(---){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:%wEx}\". You can change your log message format by setting the Spring Boot <i>logging.pattern.console</i> property to a different pattern. Refer to the Spring Boot logging documentation for more details.")
             .setGroups(DetectGroup.LOGGING, DetectGroup.GLOBAL);
 
     public static final DetectProperty<EnumProperty<LogLevel>> LOGGING_LEVEL_DETECT =
