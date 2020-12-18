@@ -53,6 +53,7 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
     public static final String DETECTABLE_CODE_LOCATION_SUFFIX = "/detectable/com.synopsys.integration/detectable/%s gradle/bom";
     public static final String SYNOPSYS_DETECT_CODE_LOCATION_SUFFIX = "/com.synopsys.integration/synopsys-detect/%s gradle/bom";
     public static final String COMMON_CODE_LOCATION_SUFFIX = "/common/com.synopsys.integration/common/%s gradle/bom";
+    public static final String COMMON_TEST_CODE_LOCATION_SUFFIX = "/common-test/com.synopsys.integration/common-test/%s gradle/bom";
     public static final String CONFIGURATION_CODE_LOCATION_SUFFIX = "/configuration/com.synopsys.integration/configuration/%s gradle/bom";
     public static final String DETECTOR_CODE_LOCATION_SUFFIX = "/detector/com.synopsys.integration/detector/%s gradle/bom";
     public static final String POLARIS_CODE_LOCATION_SUFFIX = "/polaris/com.synopsys.integration/polaris/%s gradle/bom";
@@ -92,6 +93,7 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
         codeLocationNameSuffixesToCheck.add(String.format(DETECTABLE_CODE_LOCATION_SUFFIX, version));
         codeLocationNameSuffixesToCheck.add(String.format(SYNOPSYS_DETECT_CODE_LOCATION_SUFFIX, version));
         codeLocationNameSuffixesToCheck.add(String.format(COMMON_CODE_LOCATION_SUFFIX, version));
+        codeLocationNameSuffixesToCheck.add(String.format(COMMON_TEST_CODE_LOCATION_SUFFIX, version));
         codeLocationNameSuffixesToCheck.add(String.format(CONFIGURATION_CODE_LOCATION_SUFFIX, version));
         codeLocationNameSuffixesToCheck.add(String.format(DETECTOR_CODE_LOCATION_SUFFIX, version));
         codeLocationNameSuffixesToCheck.add(String.format(POLARIS_CODE_LOCATION_SUFFIX, version));
