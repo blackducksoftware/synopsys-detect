@@ -1,34 +1,5 @@
 # Solutions to common problems
 
-## WARNING: An illegal reflective access operation has occurred
-
-### Symptom
-A block of warnings may appear in ${solution_name}'s logs similar to the following:
-```
-WARNING: An illegal reflective access operation has occurred
-WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass (file:/Users/myuser/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.4.12/760afc568cbd94c09d78f801ce51aed1326710af/groovy-all-2.4.12.jar) to method java.lang.Object.finalize()
-WARNING: Please consider reporting this to the maintainers of org.codehaus.groovy.reflection.CachedClass
-WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
-WARNING: All illegal access operations will be denied in a future release
-```
-
-### Possible cause
-Running ${solution_name} with Java 11 can cause these warnings. <br/>
-This is a known issue with Apache since Groovy 2.4.11. See [GROOVY-8339](https://issues.apache.org/jira/browse/GROOVY-8339). <br/>
-${solution_name}'s use of Groovy 2 is the result of using Spring Boot 2.2.4.RELEASE which currently depends on Groovy 2. <br/>
-
-### Solution
-Currently we have observed no adverse effects on ${solution_name} as a result of these warnings. <br/>
-The issue has been fixed in Groovy 3 as per [GROOVY-8339](https://issues.apache.org/jira/browse/GROOVY-8339). <br/>
-Clients running ${solution_name} with Java 11 will have these warnings until the [Spring Boot project](https://github.com/spring-projects/spring-boot) upgrades its Groovy dependencies to Groovy 3 and ${solution_name} upgrades Spring Boot.
-
-### Source Code
-The relevant source code within ${solution_name}. <br/>
-[synopsys-detect/build.gradle#L15](https://github.com/blackducksoftware/synopsys-detect/blob/6f7f8026e188999f4a9cac4dfdbcf63dcda1d90b/build.gradle#L15))
-
-The relevant source code within [Spring Boot](https://github.com/spring-projects/spring-boot). <br/>
-[spring-boot-dependencies/pom.xml#L69](https://github.com/spring-projects/spring-boot/blob/58a45c53ac599588104dd82f9ddc81d73fd3f829/spring-boot-project/spring-boot-dependencies/pom.xml#L69)
-
 ## DETECT_SOURCE was not set or computed correctly
 
 ### Symptom
@@ -151,92 +122,92 @@ Running ${solution_name} on a NuGet project on Windows, a message similar to the
 ````
 Not Extractable: NUGET - Solution INFO [main] -- Exception occurred: java.nio.file.InvalidPathException: Illegal char
 <:> at index 2: C:\...
-````
+    ````
 
-### Possible cause
+    ### Possible cause
 
-The value of $PATH contains a whitespace character after a semicolon and the path mentioned in the log message.
+    The value of $PATH contains a whitespace character after a semicolon and the path mentioned in the log message.
 
-### Solution
+    ### Solution
 
-Remove spaces immediately following semicolons in the value of $PATH.
+    Remove spaces immediately following semicolons in the value of $PATH.
 
-## No project name/version provided or derived
+    ## No project name/version provided or derived
 
-### Symptom
+    ### Symptom
 
-Upload to ${blackduck_product_name} fails with a message similar to the following in the log:
+    Upload to ${blackduck_product_name} fails with a message similar to the following in the log:
 
-````
-ERROR [main] -- createProject.arg0.name can't be blank [HTTP Error]: There was a problem trying to POST https://.../api/projects, response was 412 Precondition Failed.
-````
+    ````
+    ERROR [main] -- createProject.arg0.name can't be blank [HTTP Error]: There was a problem trying to POST https://.../api/projects, response was 412 Precondition Failed.
+    ````
 
-### Possible cause
+    ### Possible cause
 
-No project name and version were provided via properties and no ${solution_name} tool capable of deriving a project name and version was included in the run. For example,
-you will get this (or a similar) error if you run with --detect.tools.BINARY_SCANNER and do not set --detect.project.name or --detect.project.version.name.
+    No project name and version were provided via properties and no ${solution_name} tool capable of deriving a project name and version was included in the run. For example,
+    you will get this (or a similar) error if you run with --detect.tools.BINARY_SCANNER and do not set --detect.project.name or --detect.project.version.name.
 
-### Solution
+    ### Solution
 
-Set --detect.project.name and --detect.project.version.name.
+    Set --detect.project.name and --detect.project.version.name.
 
-## ${blackduck_signature_scanner_name} fails on Alpine Linux
+    ## ${blackduck_signature_scanner_name} fails on Alpine Linux
 
-### Symptom
+    ### Symptom
 
-The ${blackduck_signature_scanner_name} fails on Alpine Linux with an error similar to:
+    The ${blackduck_signature_scanner_name} fails on Alpine Linux with an error similar to:
 
-````
-There was a problem scanning target '/opt/projects/myproject': Cannot run program "/home/me/blackduck/tools/Black_Duck_Scan_Installation/scan.cli-2020.6.0/jre/bin/java": error=2, No such
-file or directory
-````
+    ````
+    There was a problem scanning target '/opt/projects/myproject': Cannot run program "/home/me/blackduck/tools/Black_Duck_Scan_Installation/scan.cli-2020.6.0/jre/bin/java": error=2, No such
+    file or directory
+    ````
 
-### Possible cause
+    ### Possible cause
 
-The Java bundled with the ${blackduck_signature_scanner_name} does not work on Alpine Linux (it relies on libraries not usually present on an Alpine system).
+    The Java bundled with the ${blackduck_signature_scanner_name} does not work on Alpine Linux (it relies on libraries not usually present on an Alpine system).
 
-### Solution
+    ### Solution
 
-Install an appropriate version of Java and tell ${solution_name} to invoke the ${blackduck_signature_scanner_name} using that
-version of Java by setting environment variable BDS_JAVA_HOME to the JAVA_HOME value for that Java installation.
+    Install an appropriate version of Java and tell ${solution_name} to invoke the ${blackduck_signature_scanner_name} using that
+    version of Java by setting environment variable BDS_JAVA_HOME to the JAVA_HOME value for that Java installation.
 
-For example:
+    For example:
 
-````
-export BDS_JAVA_HOME=$JAVA_HOME
-````
+    ````
+    export BDS_JAVA_HOME=$JAVA_HOME
+    ````
 
-Or:
+    Or:
 
-````
-export BDS_JAVA_HOME=/usr/lib/jvm/java-11-openjdk/jre
-````
+    ````
+    export BDS_JAVA_HOME=/usr/lib/jvm/java-11-openjdk/jre
+    ````
 
-## On Windows: Error trying cleanup
+    ## On Windows: Error trying cleanup
 
-### Symptom
+    ### Symptom
 
-When running on Windows, inspecting a Docker image (e.g. using --detect.docker.image or --detect.docker.tar),
-during shutdown, ${solution_name} logs messages similar to the following:
-````
-2020-08-14 14:31:04 DEBUG [main] --- Error trying cleanup:
+    When running on Windows, inspecting a Docker image (e.g. using --detect.docker.image or --detect.docker.tar),
+    during shutdown, ${solution_name} logs messages similar to the following:
+    ````
+    2020-08-14 14:31:04 DEBUG [main] --- Error trying cleanup:
 
-java.io.IOException: Unable to delete file: C:\Users\Administrator\blackduck\runs\2020-08-14-21-28-40-106\extractions
-...
-Caused by: java.nio.file.FileSystemException: C:\Users\Administrator\blackduck\runs\2020-08-14-21-28-40-106\extractions\DOCKER-0\application.properties: The process cannot access the file because it is being used by another process.
-````
+    java.io.IOException: Unable to delete file: C:\Users\Administrator\blackduck\runs\2020-08-14-21-28-40-106\extractions
+    ...
+    Caused by: java.nio.file.FileSystemException: C:\Users\Administrator\blackduck\runs\2020-08-14-21-28-40-106\extractions\DOCKER-0\application.properties: The process cannot access the file because it is being used by another process.
+    ````
 
-### Possible cause
+    ### Possible cause
 
-This happens when Docker fails to release its lock on the volume mounted directory when it shuts down the image inspector service container
-due to [Docker for Windows issue 394](https://github.com/docker/for-win/issues/394).
-The result is that ${solution_name} cannot fully clean up its output directory,
-and leaves behind empty subdirectories.
-The problem may be intermittent.
+    This happens when Docker fails to release its lock on the volume mounted directory when it shuts down the image inspector service container
+    due to [Docker for Windows issue 394](https://github.com/docker/for-win/issues/394).
+    The result is that ${solution_name} cannot fully clean up its output directory,
+    and leaves behind empty subdirectories.
+    The problem may be intermittent.
 
-### Solution
+    ### Solution
 
-There is no harm in leaving the directories behind in the short term,
-but we recommend periodically removing them if the problem occurs frequently.
-Restarting Docker will force Docker to release the locks, and enable you to remove the directories.
+    There is no harm in leaving the directories behind in the short term,
+    but we recommend periodically removing them if the problem occurs frequently.
+    Restarting Docker will force Docker to release the locks, and enable you to remove the directories.
 

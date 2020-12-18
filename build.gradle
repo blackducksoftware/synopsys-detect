@@ -2,6 +2,8 @@ import com.synopsys.integration.detect.artifactory.UpdateArtifactoryPropertiesTa
 import com.synopsys.integration.detect.battery.UpdateBatteryTask
 import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
+ext['groovy.version'] = '3.0.0'
+
 buildscript {
     ext {
         springBootVersion = '2.2.4.RELEASE'

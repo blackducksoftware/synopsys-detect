@@ -2,7 +2,10 @@
 
 ## Version 6.9.0
 ### Changed features
-* Added the timezone to the date format in the default log message format
+* Added the timezone to the date format in the default log message format.
+
+### Resolved issues
+* (IDETECT-1986) Resolved an issue where warnings regarding reflective access appear at the start of Detect.
 
 ## Version 6.8.0
 ### New features
