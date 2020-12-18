@@ -2,6 +2,7 @@ import com.synopsys.integration.detect.artifactory.UpdateArtifactoryPropertiesTa
 import com.synopsys.integration.detect.battery.UpdateBatteryTask
 import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
+//TODO Remove this when the Spock dependency, Spock 2.0, is officially released. Upgrade to a Spring Boot version that depends on Groovy 3.0.0 and Spock 2.0 by default.
 ext['groovy.version'] = '3.0.0'
 
 buildscript {
