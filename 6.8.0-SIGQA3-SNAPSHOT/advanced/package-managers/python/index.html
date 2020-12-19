@@ -1428,16 +1428,16 @@
 <p><a name="pipdetector"></a></p>
 <h2 id="the-pip-detector">The Pip detector<a class="headerlink" href="#the-pip-detector" title="Permanent link">#</a></h2>
 <p>The Pip detector discovers dependencies of Python projects.</p>
-<p>The Pip detector attempts to run on your project if either a setup.py file is found, or a requirements.txt file is provided using the <a href="../../../properties/detectors/pip/#pip-requirements-path">--detect.pip.requirements.path</a> property.</p>
-<p>The Pip detector also requires Python and pip executables:</p>
+<p>The Pip detector attempts to run on your project if any of the following are true: a setup.py file is found, a requirements.txt is found, or a requirements file is provided using the <a href="../../../properties/detectors/pip/#pip-requirements-path">--detect.pip.requirements.path</a> property.</p>
+<p>The Pip detector requires Python and pip executables:</p>
 <ul>
-<li>Synopsys Detect looks for python (or python3 if the python3 property is set to true) on $PATH. You can override this by setting the python path property.</li>
-<li>Synopsys Detect looks for pip (or pip3 if the python3 property is set to true) on $PATH.</li>
+<li>Synopsys Detect looks for python (or python3 if the python3 property is set to true) on $PATH. You can override this by setting <a href="../../../properties/detectors/pip/#python-executable">--detect.python.python.path</a></li>
+<li>Synopsys Detect looks for pip (or pip3 if the python3 property is set to true) on $PATH. You can override this by setting <a href="../../../properties/detectors/pip/#pip-executable">--detect.pip.path</a></li>
 </ul>
 <p>The Pip detector runs the <a href="https://github.com/blackducksoftware/synopsys-detect/blob/master/src/main/resources/pip-inspector.py">pip-inspector.py script</a>, which uses Python/pip libraries to query the pip cache for the project, which may or may not be a virtual environment, for dependency information:</p>
 <ol>
 <li>pip-inspector.py queries for the project dependencies by project name which can be discovered using setup.py, or provided using the detect.pip.project.name property, using the <a href="https://setuptools.readthedocs.io/en/latest/pkg_resources.html">pkg_resources library</a>. If your project is installed into the pip cache, this discovers dependencies specified in setup.py.</li>
-<li>If a requirements.txt file is provided, pip-inspector.py uses the Python API called parse_requirements to query the requirements.txt file for possible additional dependencies, and uses the pkg_resources library to query for the details of each. The parse_requirements API is unstable, leading to the decision to deprecate this detector.</li>
+<li>If one or more requirements files are found or provided, pip-inspector.py uses the Python API called parse_requirements to query each requirements file for possible additional dependencies, and uses the pkg_resources library to query for the details of each.</li>
 </ol>
 <p>Ramifications of this approach:</p>
 <ul>
