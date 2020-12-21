@@ -208,7 +208,7 @@ public class DetectProperties {
             .setInfo("Additional Conan Arguments", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp("A space-separated list of additional arguments to add to the 'conan info' command line when running Detect against a Conan project. Detect will execute the command 'conan info {additional arguments} .'")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
-            .setExample("-pr=clang_3.5");
+            .setExample("\"--profile clang --profile cmake_316\"");
 
     public static final DetectProperty<NullableStringProperty> DETECT_CONAN_LOCKFILE_PATH =
         new DetectProperty<>(new NullableStringProperty("detect.conan.lockfile.path"))
