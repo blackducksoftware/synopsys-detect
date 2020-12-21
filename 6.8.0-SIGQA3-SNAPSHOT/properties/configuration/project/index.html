@@ -1798,7 +1798,7 @@
                 
                 <h1 id="project">project<a class="headerlink" href="#project" title="Permanent link">#</a></h1>
 <h2 id="fail-on-policy-violation-severities">Fail on Policy Violation Severities<a class="headerlink" href="#fail-on-policy-violation-severities" title="Permanent link">#</a></h2>
-<pre><code>--detect.policy.check.fail.on.severities=ALL,NONE,UNSPECIFIED,TRIVIAL,MINOR,MAJOR,CRITICAL,BLOCKER 
+<pre><code>--detect.policy.check.fail.on.severities=ALL,NONE,BLOCKER,CRITICAL,MAJOR,MINOR,TRIVIAL,UNSPECIFIED 
 </code></pre>
 
 <p>A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE.</p>
@@ -1832,7 +1832,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>ALL, NONE, UNSPECIFIED, TRIVIAL, MINOR, MAJOR, CRITICAL, BLOCKER</td>
+<td>ALL, NONE, BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL, UNSPECIFIED</td>
 </tr>
 <tr>
 <td>Strict</td>
@@ -2530,7 +2530,7 @@
 </tbody>
 </table>
 <h2 id="clone-project-categories-advanced">Clone Project Categories (Advanced)<a class="headerlink" href="#clone-project-categories-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.project.clone.categories=COMPONENT_DATA,VULN_DATA,LICENSE_TERM_FULFILLMENT,CUSTOM_FIELD_DATA 
+<pre><code>--detect.project.clone.categories=COMPONENT_DATA,CUSTOM_FIELD_DATA,LICENSE_TERM_FULFILLMENT,VULN_DATA 
 </code></pre>
 
 <p>An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set.</p>
@@ -2564,7 +2564,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>COMPONENT_DATA, VULN_DATA, LICENSE_TERM_FULFILLMENT, CUSTOM_FIELD_DATA</td>
+<td>COMPONENT_DATA, CUSTOM_FIELD_DATA, LICENSE_TERM_FULFILLMENT, VULN_DATA</td>
 </tr>
 <tr>
 <td>Strict</td>
@@ -2791,7 +2791,8 @@
 <pre><code>--detect.project.level.adjustments=true
 </code></pre>
 
-<p>An override for the Project level matches.</p>
+<p>Sets the component adjustments setting on the Black Duck project.</p>
+<p>Corresponds to the 'Always maintain component adjustments to all versions of this project' checkbox under 'Component Adjustments' on the Black Duck Project settings page.</p>
 <table>
 <thead>
 <tr>
@@ -2917,7 +2918,7 @@
 </tbody>
 </table>
 <h2 id="version-distribution-advanced">Version Distribution (Advanced)<a class="headerlink" href="#version-distribution-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.project.version.distribution=EXTERNAL,SAAS,INTERNAL,OPENSOURCE 
+<pre><code>--detect.project.version.distribution=EXTERNAL,INTERNAL,OPENSOURCE,SAAS 
 </code></pre>
 
 <p>An override for the Project Version distribution</p>
@@ -2951,7 +2952,7 @@
 </tr>
 <tr>
 <td>Acceptable Values</td>
-<td>EXTERNAL, SAAS, INTERNAL, OPENSOURCE</td>
+<td>EXTERNAL, INTERNAL, OPENSOURCE, SAAS</td>
 </tr>
 <tr>
 <td>Strict</td>

@@ -1436,7 +1436,7 @@
 <tbody>
 <tr>
 <td><a href="../configuration/project/#fail-on-policy-violation-severities">detect.policy.check.fail.on.severities</a></td>
-<td>default: NONE <br /><br />  Acceptable Values: ALL, NONE, UNSPECIFIED, TRIVIAL, MINOR, MAJOR, CRITICAL, BLOCKER <br /><br />Fail on Policy Violation Severities: A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE. <br /><br /></td>
+<td>default: NONE <br /><br />  Acceptable Values: ALL, NONE, BLOCKER, CRITICAL, MAJOR, MINOR, TRIVIAL, UNSPECIFIED <br /><br />Fail on Policy Violation Severities: A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/project/#project-description">detect.project.description</a></td>
@@ -1504,7 +1504,7 @@
 </tr>
 <tr>
 <td><a href="../configuration/project/#clone-project-categories-advanced">detect.project.clone.categories</a> <br /> (Advanced)</td>
-<td>default: COMPONENT_DATA,VULN_DATA <br /><br />  Acceptable Values: COMPONENT_DATA, VULN_DATA, LICENSE_TERM_FULFILLMENT, CUSTOM_FIELD_DATA <br /><br />Clone Project Categories: An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set. <br /><br /></td>
+<td>default: COMPONENT_DATA,VULN_DATA <br /><br />  Acceptable Values: COMPONENT_DATA, CUSTOM_FIELD_DATA, LICENSE_TERM_FULFILLMENT, VULN_DATA <br /><br />Clone Project Categories: An override for the Project Clone Categories that are used when cloning a version. If the project already exists, make sure to use --detect.project.version.update to make sure these are set. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/project/#scan-name-prefix-advanced">detect.project.codelocation.prefix</a> <br /> (Advanced)</td>
@@ -1528,7 +1528,7 @@
 </tr>
 <tr>
 <td><a href="../configuration/project/#allow-project-level-adjustments-advanced">detect.project.level.adjustments</a> <br /> (Advanced)</td>
-<td>default: true <br /><br /> Allow Project Level Adjustments: An override for the Project level matches. <br /><br /></td>
+<td>default: true <br /><br /> Allow Project Level Adjustments: Sets the component adjustments setting on the Black Duck project. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/project/#parent-project-name-advanced">detect.parent.project.name</a> <br /> (Advanced)</td>
@@ -1540,7 +1540,7 @@
 </tr>
 <tr>
 <td><a href="../configuration/project/#version-distribution-advanced">detect.project.version.distribution</a> <br /> (Advanced)</td>
-<td>default: EXTERNAL <br /><br />  Acceptable Values: EXTERNAL, SAAS, INTERNAL, OPENSOURCE <br /><br />Version Distribution: An override for the Project Version distribution <br /><br /></td>
+<td>default: EXTERNAL <br /><br />  Acceptable Values: EXTERNAL, INTERNAL, OPENSOURCE, SAAS <br /><br />Version Distribution: An override for the Project Version distribution <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../configuration/project/#default-project-version-name-scheme-deprecated">detect.default.project.version.scheme</a> <br /> (Deprecated)</td>
