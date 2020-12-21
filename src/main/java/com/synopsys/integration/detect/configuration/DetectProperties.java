@@ -889,7 +889,8 @@ public class DetectProperties {
     public static final DetectProperty<BooleanProperty> DETECT_PROJECT_LEVEL_ADJUSTMENTS =
         new DetectProperty<>(new BooleanProperty("detect.project.level.adjustments", true))
             .setInfo("Allow Project Level Adjustments", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("An override for the Project level matches.")
+            .setHelp("Sets the component adjustments setting on the Black Duck project.",
+                "Corresponds to the 'Always maintain component adjustments to all versions of this project' checkbox under 'Component Adjustments' on the Black Duck Project settings page.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
