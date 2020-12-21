@@ -108,7 +108,7 @@ public class BlackDuckPostActions {
 
     private void checkPolicy(BlackDuckPostOptions blackDuckPostOptions, ProjectVersionView projectVersionView) throws IntegrationException {
         logger.info("Detect will check policy for violations.");
-        PolicyChecker policyChecker = new PolicyChecker(eventSystem, blackDuckServicesFactory.getBlackDuckService(), blackDuckServicesFactory.createProjectBomService());
+        PolicyChecker policyChecker = new PolicyChecker(eventSystem, blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.createProjectBomService());
         policyChecker.checkPolicy(blackDuckPostOptions.getSeveritiesToFailPolicyCheck(), projectVersionView);
     }
 

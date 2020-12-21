@@ -84,7 +84,7 @@ public class BlackDuckImpactAnalysisTool {
     public static BlackDuckImpactAnalysisTool ONLINE(DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager, ImpactAnalysisOptions impactAnalysisOptions, BlackDuckServicesFactory blackDuckServicesFactory,
         EventSystem eventSystem) {
         ImpactAnalysisUploadService impactAnalysisService = ImpactAnalysisUploadService.create(blackDuckServicesFactory);
-        BlackDuckApiClient blackDuckService = blackDuckServicesFactory.getBlackDuckService();
+        BlackDuckApiClient blackDuckService = blackDuckServicesFactory.getBlackDuckApiClient();
         CodeLocationService codeLocationService = blackDuckServicesFactory.createCodeLocationService();
         return new BlackDuckImpactAnalysisTool(directoryManager, codeLocationNameManager, impactAnalysisOptions, eventSystem, impactAnalysisService, blackDuckService, codeLocationService, true);
     }

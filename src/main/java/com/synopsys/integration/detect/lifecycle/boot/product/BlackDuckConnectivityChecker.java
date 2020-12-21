@@ -63,21 +63,21 @@ public class BlackDuckConnectivityChecker {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckServerConfig.createBlackDuckServicesFactory(new Slf4jIntLogger(logger));
 
         try {
-            BlackDuckApiClient blackDuckService = blackDuckServicesFactory.getBlackDuckService();
-            CurrentVersionView currentVersion = blackDuckService.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
+            BlackDuckApiClient blackDuckApiClient = blackDuckServicesFactory.getBlackDuckApiClient();
+            CurrentVersionView currentVersion = blackDuckApiClient.getResponse(ApiDiscovery.CURRENT_VERSION_LINK_RESPONSE);
 
             logger.info(String.format("Successfully connected to Black Duck (version %s)!", currentVersion.getVersion()));
 
             if (logger.isDebugEnabled()) {
                 // These (particularly fetching roles) can be very slow operations
-                UserView userView = blackDuckService.getResponse(ApiDiscovery.CURRENT_USER_LINK_RESPONSE);
+                UserView userView = blackDuckApiClient.getResponse(ApiDiscovery.CURRENT_USER_LINK_RESPONSE);
                 logger.debug("Connected as: " + userView.getUserName());
 
                 UserGroupService userGroupService = blackDuckServicesFactory.createUserGroupService();
                 List<RoleAssignmentView> roles = userGroupService.getRolesForUser(userView);
                 logger.debug("Roles: " + roles.stream().map(RoleAssignmentView::getName).distinct().collect(Collectors.joining(", ")));
 
-                List<UserGroupView> groups = blackDuckService.getAllResponses(userView.getFirstLink("usergroups"), UserGroupView.class);
+                List<UserGroupView> groups = blackDuckApiClient.getAllResponses(userView.getFirstLink("usergroups"), UserGroupView.class);
                 logger.debug("Group: " + groups.stream().map(UserGroupView::getName).distinct().collect(Collectors.joining(", ")));
             }
         } catch (IntegrationException e) {

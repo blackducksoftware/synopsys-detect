@@ -96,7 +96,8 @@ public class BlackDuckSignatureScannerTool {
                 logger.debug("Signature scanner will use the provided url to download/update the scanner.");
                 String providedUrl = signatureScannerOptions.getUserProvidedScannerInstallUrl().get();
                 IntHttpClient restConnection = connectionFactory.createConnection(providedUrl, new SilentIntLogger()); //TODO: Should this be silent?
-                scanBatchRunner = scanBatchRunnerFactory.withUserProvidedUrl(providedUrl, restConnection);
+                BlackDuckHttpClientWrapper fakeBlackDuckHttpClient = new BlackDuckHttpClientWrapper(restConnection);
+                scanBatchRunner = scanBatchRunnerFactory.withUserProvidedUrl(providedUrl, fakeBlackDuckHttpClient);
             } else {
                 logger.debug("Signature scanner either given an existing path for the scanner or is offline - either way, we won't attempt to manage the install.");
                 if (localScannerInstallPath.isPresent()) {
