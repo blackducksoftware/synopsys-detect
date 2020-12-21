@@ -40,10 +40,10 @@ import com.synopsys.integration.rest.response.Response;
 /**
  * @deprecated Only for use while we must continue to support detect.blackduck.signature.scanner.host.url
  */
-public class FakeBlackDuckHttpClient implements BlackDuckHttpClient {
-    private IntHttpClient httpClient;
+public class BlackDuckHttpClientWrapper implements BlackDuckHttpClient {
+    private final IntHttpClient httpClient;
 
-    public FakeBlackDuckHttpClient(IntHttpClient httpClient) {
+    public BlackDuckHttpClientWrapper(IntHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
