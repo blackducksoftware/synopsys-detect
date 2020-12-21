@@ -11,17 +11,17 @@ ${solution_name} has three detectors for Python:
 
 The Pip detector discovers dependencies of Python projects.
 
-The Pip detector attempts to run on your project if either a setup.py file is found, or a requirements.txt file is provided using the [--detect.pip.requirements.path](../../../properties/detectors/pip/#pip-requirements-path) property.
+The Pip detector attempts to run on your project if any of the following are true: a setup.py file is found, a requirements.txt is found, or a requirements file is provided using the [--detect.pip.requirements.path](../../../properties/detectors/pip/#pip-requirements-path) property.
 
-The Pip detector also requires Python and pip executables:
+The Pip detector requires Python and pip executables:
 
-* ${solution_name} looks for python (or python3 if the python3 property is set to true) on $PATH. You can override this by setting the python path property.
-* ${solution_name} looks for pip (or pip3 if the python3 property is set to true) on $PATH.
+* ${solution_name} looks for python (or python3 if the python3 property is set to true) on $PATH. You can override this by setting [--detect.python.python.path](../../../properties/detectors/pip/#python-executable)
+* ${solution_name} looks for pip (or pip3 if the python3 property is set to true) on $PATH. You can override this by setting [--detect.pip.path](../../../properties/detectors/pip/#pip-executable)
 
 The Pip detector runs the [pip-inspector.py script](https://github.com/blackducksoftware/synopsys-detect/blob/master/src/main/resources/pip-inspector.py), which uses Python/pip libraries to query the pip cache for the project, which may or may not be a virtual environment, for dependency information:
 
 1. pip-inspector.py queries for the project dependencies by project name which can be discovered using setup.py, or provided using the detect.pip.project.name property, using the [pkg_resources library](https://setuptools.readthedocs.io/en/latest/pkg_resources.html). If your project is installed into the pip cache, this discovers dependencies specified in setup.py.
-1. If a requirements.txt file is provided, pip-inspector.py uses the Python API called parse_requirements to query the requirements.txt file for possible additional dependencies, and uses the pkg_resources library to query for the details of each. The parse_requirements API is unstable, leading to the decision to deprecate this detector.
+1. If one or more requirements files are found or provided, pip-inspector.py uses the Python API called parse_requirements to query each requirements file for possible additional dependencies, and uses the pkg_resources library to query for the details of each.
 
 Ramifications of this approach:
 
