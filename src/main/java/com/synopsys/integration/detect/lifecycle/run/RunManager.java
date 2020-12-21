@@ -93,6 +93,7 @@ import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOp
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResultCalculator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
+import com.synopsys.integration.detect.workflow.blackduck.developer.BlackDuckDeveloperMode;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -315,7 +316,7 @@ public class RunManager {
 
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().orElse(null);
 
-        if (blackDuckRunData.isOnline() && blackDuckServicesFactory != null) {
+        if (!runOptions.shouldPerformDeveloperModeScan() && blackDuckRunData.isOnline() && blackDuckServicesFactory != null) {
             logger.debug("Getting or creating project.");
             DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
             ProjectMappingService detectProjectMappingService = blackDuckServicesFactory.createProjectMappingService();
@@ -343,10 +344,10 @@ public class RunManager {
         BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations(), runOptions.shouldUseBdio2());
         eventSystem.publishEvent(Event.DetectCodeLocationNamesCalculated, bdioResult.getCodeLocationNamesResult());
 
-        //TODO developer mode scan goes here.
         if (runOptions.shouldPerformDeveloperModeScan()) {
             logger.debug("Executing developer mode scan");
-
+            BlackDuckDeveloperMode developerMode = new BlackDuckDeveloperMode(blackDuckServicesFactory, detectConfigurationFactory);
+            developerMode.run(bdioResult);
             // TODO: Perform developer mode scan post actions similar to black duck.
         } else {
             CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
