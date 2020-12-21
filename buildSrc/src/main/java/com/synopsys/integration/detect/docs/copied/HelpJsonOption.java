@@ -47,7 +47,7 @@ public class HelpJsonOption {
     private Boolean hasAcceptableValues = false;
     private Boolean isCommaSeparatedList = false;
     private List<String> acceptableValues = new ArrayList<>();
-    private String example = "xxx";
+    private String example = "";
 
     //This is added for use in the markdown, it does not actually exist on the object.
     private String location = "";
