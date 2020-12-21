@@ -343,109 +343,116 @@ public class RunManager {
         BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations(), runOptions.shouldUseBdio2());
         eventSystem.publishEvent(Event.DetectCodeLocationNamesCalculated, bdioResult.getCodeLocationNamesResult());
 
-        CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
-        if (!bdioResult.getUploadTargets().isEmpty()) {
-            logger.info(String.format("Created %d BDIO files.", bdioResult.getUploadTargets().size()));
-            if (null != blackDuckServicesFactory) {
-                logger.debug("Uploading BDIO files.");
-                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService();
-                CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult, blackDuckServicesFactory);
-                codeLocationAccumulator.addWaitableCodeLocation(uploadBatchOutputCodeLocationCreationData);
-            }
+        //TODO developer mode scan goes here.
+        if (runOptions.shouldPerformDeveloperModeScan()) {
+            logger.debug("Executing developer mode scan");
+
+            // TODO: Perform developer mode scan post actions similar to black duck.
         } else {
-            logger.debug("Did not create any BDIO files.");
-        }
-
-        logger.debug("Completed Detect Code Location processing.");
-
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
-            logger.info("Will include the signature scanner tool.");
-            BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
-            BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
-            SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar());
-            if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
-                codeLocationAccumulator.addWaitableCodeLocation(signatureScannerToolResult.getCreationData().get());
-            } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
-                eventSystem.publishEvent(Event.StatusSummary, new Status("SIGNATURE_SCAN", StatusType.FAILURE));
-                eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(signatureScannerToolResult.getResult().toString())));
+            CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
+            if (!bdioResult.getUploadTargets().isEmpty()) {
+                logger.info(String.format("Created %d BDIO files.", bdioResult.getUploadTargets().size()));
+                if (null != blackDuckServicesFactory) {
+                    logger.debug("Uploading BDIO files.");
+                    DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService();
+                    CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult, blackDuckServicesFactory);
+                    codeLocationAccumulator.addWaitableCodeLocation(uploadBatchOutputCodeLocationCreationData);
+                }
+            } else {
+                logger.debug("Did not create any BDIO files.");
             }
-            logger.info("Signature scanner actions finished.");
-        } else {
-            logger.info("Signature scan tool will not be run.");
-        }
 
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
-            logger.info("Will include the binary scanner tool.");
-            if (null != blackDuckServicesFactory) {
-                BinaryScanOptions binaryScanOptions = detectConfigurationFactory.createBinaryScanOptions();
-                BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, new WildcardFileFinder(), binaryScanOptions, blackDuckServicesFactory);
-                if (blackDuckBinaryScanner.shouldRun()) {
-                    BinaryScanToolResult result = blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
-                    if (result.isSuccessful()) {
-                        codeLocationAccumulator.addWaitableCodeLocation(result.getCodeLocationCreationData());
+            logger.debug("Completed Detect Code Location processing.");
+
+            logger.info(ReportConstants.RUN_SEPARATOR);
+            if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
+                logger.info("Will include the signature scanner tool.");
+                BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
+                BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
+                SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar());
+                if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
+                    codeLocationAccumulator.addWaitableCodeLocation(signatureScannerToolResult.getCreationData().get());
+                } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
+                    eventSystem.publishEvent(Event.StatusSummary, new Status("SIGNATURE_SCAN", StatusType.FAILURE));
+                    eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(signatureScannerToolResult.getResult().toString())));
+                }
+                logger.info("Signature scanner actions finished.");
+            } else {
+                logger.info("Signature scan tool will not be run.");
+            }
+
+            logger.info(ReportConstants.RUN_SEPARATOR);
+            if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
+                logger.info("Will include the binary scanner tool.");
+                if (null != blackDuckServicesFactory) {
+                    BinaryScanOptions binaryScanOptions = detectConfigurationFactory.createBinaryScanOptions();
+                    BlackDuckBinaryScannerTool blackDuckBinaryScanner = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, new WildcardFileFinder(), binaryScanOptions, blackDuckServicesFactory);
+                    if (blackDuckBinaryScanner.shouldRun()) {
+                        BinaryScanToolResult result = blackDuckBinaryScanner.performBinaryScanActions(projectNameVersion);
+                        if (result.isSuccessful()) {
+                            codeLocationAccumulator.addWaitableCodeLocation(result.getCodeLocationCreationData());
+                        }
                     }
                 }
-            }
-            logger.info("Binary scanner actions finished.");
-        } else {
-            logger.info("Binary scan tool will not be run.");
-        }
-
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        BlackDuckImpactAnalysisTool blackDuckImpactAnalysisTool;
-        if (null != blackDuckServicesFactory) {
-            blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool.ONLINE(directoryManager, codeLocationNameManager, impactAnalysisOptions, blackDuckServicesFactory, eventSystem);
-        } else {
-            blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool.OFFLINE(directoryManager, codeLocationNameManager, impactAnalysisOptions, eventSystem);
-        }
-        if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS) && blackDuckImpactAnalysisTool.shouldRun()) {
-            logger.info("Will include the Vulnerability Impact Analysis tool.");
-            ImpactAnalysisToolResult impactAnalysisToolResult = blackDuckImpactAnalysisTool.performImpactAnalysisActions(projectNameVersion, projectVersionWrapper);
-
-            /* TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020 */
-            codeLocationAccumulator.addNonWaitableCodeLocation(impactAnalysisToolResult.getCodeLocationNames());
-
-            if (impactAnalysisToolResult.isSuccessful()) {
-                logger.info("Vulnerability Impact Analysis successful.");
+                logger.info("Binary scanner actions finished.");
             } else {
-                logger.warn("Something went wrong with the Vulnerability Impact Analysis tool.");
+                logger.info("Binary scan tool will not be run.");
             }
 
-            logger.info("Vulnerability Impact Analysis tool actions finished.");
-        } else if (blackDuckImpactAnalysisTool.shouldRun()) {
-            logger.info("Vulnerability Impact Analysis tool is enabled but will not run due to tool configuration.");
-        } else {
-            logger.info("Vulnerability Impact Analysis tool will not be run.");
-        }
+            logger.info(ReportConstants.RUN_SEPARATOR);
+            BlackDuckImpactAnalysisTool blackDuckImpactAnalysisTool;
+            if (null != blackDuckServicesFactory) {
+                blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool.ONLINE(directoryManager, codeLocationNameManager, impactAnalysisOptions, blackDuckServicesFactory, eventSystem);
+            } else {
+                blackDuckImpactAnalysisTool = BlackDuckImpactAnalysisTool.OFFLINE(directoryManager, codeLocationNameManager, impactAnalysisOptions, eventSystem);
+            }
+            if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS) && blackDuckImpactAnalysisTool.shouldRun()) {
+                logger.info("Will include the Vulnerability Impact Analysis tool.");
+                ImpactAnalysisToolResult impactAnalysisToolResult = blackDuckImpactAnalysisTool.performImpactAnalysisActions(projectNameVersion, projectVersionWrapper);
 
-        logger.info(ReportConstants.RUN_SEPARATOR);
-        //We have finished code locations.
-        CodeLocationResultCalculator waitCalculator = new CodeLocationResultCalculator();
-        CodeLocationResults codeLocationResults = waitCalculator.calculateCodeLocationResults(codeLocationAccumulator);
-        eventSystem.publishEvent(Event.CodeLocationsCompleted, codeLocationResults.getAllCodeLocationNames());
+                /* TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020 */
+                codeLocationAccumulator.addNonWaitableCodeLocation(impactAnalysisToolResult.getCodeLocationNames());
 
-        if (null != blackDuckServicesFactory) {
-            logger.info("Will perform Black Duck post actions.");
-            BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
-            BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory, eventSystem);
-            blackDuckPostActions.perform(blackDuckPostOptions, codeLocationResults.getCodeLocationWaitData(), projectVersionWrapper, projectNameVersion, detectConfigurationFactory.findTimeoutInSeconds());
-
-            if ((!bdioResult.getUploadTargets().isEmpty() || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
-                Optional<String> componentsLink = Optional.ofNullable(projectVersionWrapper)
-                                                      .map(ProjectVersionWrapper::getProjectVersionView)
-                                                      .flatMap(projectVersionView -> projectVersionView.getFirstLinkSafely(ProjectVersionView.COMPONENTS_LINK))
-                                                      .map(HttpUrl::string);
-
-                if (componentsLink.isPresent()) {
-                    DetectResult detectResult = new BlackDuckBomDetectResult(componentsLink.get());
-                    eventSystem.publishEvent(Event.ResultProduced, detectResult);
+                if (impactAnalysisToolResult.isSuccessful()) {
+                    logger.info("Vulnerability Impact Analysis successful.");
+                } else {
+                    logger.warn("Something went wrong with the Vulnerability Impact Analysis tool.");
                 }
+
+                logger.info("Vulnerability Impact Analysis tool actions finished.");
+            } else if (blackDuckImpactAnalysisTool.shouldRun()) {
+                logger.info("Vulnerability Impact Analysis tool is enabled but will not run due to tool configuration.");
+            } else {
+                logger.info("Vulnerability Impact Analysis tool will not be run.");
             }
-            logger.info("Black Duck actions have finished.");
-        } else {
-            logger.debug("Will not perform Black Duck post actions: Detect is not online.");
+
+            logger.info(ReportConstants.RUN_SEPARATOR);
+            //We have finished code locations.
+            CodeLocationResultCalculator waitCalculator = new CodeLocationResultCalculator();
+            CodeLocationResults codeLocationResults = waitCalculator.calculateCodeLocationResults(codeLocationAccumulator);
+            eventSystem.publishEvent(Event.CodeLocationsCompleted, codeLocationResults.getAllCodeLocationNames());
+
+            if (null != blackDuckServicesFactory) {
+                logger.info("Will perform Black Duck post actions.");
+                BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
+                BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory, eventSystem);
+                blackDuckPostActions.perform(blackDuckPostOptions, codeLocationResults.getCodeLocationWaitData(), projectVersionWrapper, projectNameVersion, detectConfigurationFactory.findTimeoutInSeconds());
+
+                if ((!bdioResult.getUploadTargets().isEmpty() || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
+                    Optional<String> componentsLink = Optional.ofNullable(projectVersionWrapper)
+                                                          .map(ProjectVersionWrapper::getProjectVersionView)
+                                                          .flatMap(projectVersionView -> projectVersionView.getFirstLinkSafely(ProjectVersionView.COMPONENTS_LINK))
+                                                          .map(HttpUrl::string);
+
+                    if (componentsLink.isPresent()) {
+                        DetectResult detectResult = new BlackDuckBomDetectResult(componentsLink.get());
+                        eventSystem.publishEvent(Event.ResultProduced, detectResult);
+                    }
+                }
+                logger.info("Black Duck actions have finished.");
+            } else {
+                logger.debug("Will not perform Black Duck post actions: Detect is not online.");
+            }
         }
     }
 

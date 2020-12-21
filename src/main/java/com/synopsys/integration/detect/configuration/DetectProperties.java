@@ -1105,6 +1105,13 @@ public class DetectProperties {
             .setHelp("If set to true, Detect will wait for Synopsys products until results are available or the detect.report.timeout is exceeded.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL);
 
+    public static final DetectProperty<BooleanProperty> DETECT_MODE_DEVELOPER =
+        new DetectProperty<>(new BooleanProperty("detect.mode.developer", false))
+            .setInfo("Detect Developer Mode Scan", DetectPropertyFromVersion.VERSION_6_9_0)
+            .setHelp("If set to true, performs developer scan and accepts policy violations and warnings in JSON.")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
+            .setCategory(DetectCategory.Advanced);
+
     //#endregion Active Properties
 
     //#region Deprecated Properties
