@@ -317,7 +317,8 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> DETECT_CODE_LOCATION_NAME =
         new DetectProperty<>(new NullableStringProperty("detect.code.location.name"))
             .setInfo("Scan Name", DetectPropertyFromVersion.VERSION_4_0_0)
-            .setHelp("An override for the name Detect will use for the scan file it creates. If supplied and multiple scans are found, Detect will append an index to each scan name.")
+            .setHelp(
+                "An override for the name Detect will use for the scan file it creates. If supplied and multiple scans are found, Detect will append an index to each scan name. When this property is set, detect.project.codelocation.prefix and detect.project.codelocation.suffix are ignored.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
@@ -888,7 +889,8 @@ public class DetectProperties {
     public static final DetectProperty<BooleanProperty> DETECT_PROJECT_LEVEL_ADJUSTMENTS =
         new DetectProperty<>(new BooleanProperty("detect.project.level.adjustments", true))
             .setInfo("Allow Project Level Adjustments", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("An override for the Project level matches.")
+            .setHelp("Sets the component adjustments setting on the Black Duck project.",
+                "Corresponds to the 'Always maintain component adjustments to all versions of this project' checkbox under 'Component Adjustments' on the Black Duck Project settings page.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
