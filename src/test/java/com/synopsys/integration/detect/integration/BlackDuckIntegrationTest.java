@@ -74,7 +74,7 @@ public abstract class BlackDuckIntegrationTest {
         Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_USERNAME_KEY)));
         Assumptions.assumeTrue(StringUtils.isNotBlank(System.getenv().get(TEST_BLACKDUCK_PASSWORD_KEY)));
 
-        final BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
+        BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = BlackDuckServerConfig.newBuilder();
         blackDuckServerConfigBuilder.setProperties(System.getenv().entrySet());
         blackDuckServerConfigBuilder.setUrl(System.getenv().get(TEST_BLACKDUCK_URL_KEY));
         blackDuckServerConfigBuilder.setUsername(System.getenv().get(TEST_BLACKDUCK_USERNAME_KEY));
@@ -83,7 +83,7 @@ public abstract class BlackDuckIntegrationTest {
         blackDuckServerConfigBuilder.setTimeoutInSeconds(5 * 60);
 
         blackDuckServicesFactory = blackDuckServerConfigBuilder.build().createBlackDuckServicesFactory(logger);
-        blackDuckService = blackDuckServicesFactory.getBlackDuckService();
+        blackDuckService = blackDuckServicesFactory.getBlackDuckApiClient();
         projectService = blackDuckServicesFactory.createProjectService();
         projectBomService = blackDuckServicesFactory.createProjectBomService();
         codeLocationService = blackDuckServicesFactory.createCodeLocationService();
@@ -98,28 +98,28 @@ public abstract class BlackDuckIntegrationTest {
         Application.setShouldExit(previousShouldExit);
     }
 
-    public ProjectVersionWrapper assertProjectVersionReady(final String projectName, final String projectVersionName) throws IntegrationException {
+    public ProjectVersionWrapper assertProjectVersionReady(String projectName, String projectVersionName) throws IntegrationException {
         Optional<ProjectVersionWrapper> optionalProjectVersionWrapper = projectService.getProjectVersion(projectName, projectVersionName);
         if (optionalProjectVersionWrapper.isPresent()) {
             blackDuckService.delete(optionalProjectVersionWrapper.get().getProjectView());
         }
 
-        final ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectName, projectVersionName);
+        ProjectSyncModel projectSyncModel = ProjectSyncModel.createWithDefaults(projectName, projectVersionName);
         projectService.syncProjectAndVersion(projectSyncModel);
         optionalProjectVersionWrapper = projectService.getProjectVersion(projectName, projectVersionName);
         assertTrue(optionalProjectVersionWrapper.isPresent());
 
-        final List<CodeLocationView> codeLocations = blackDuckService.getAllResponses(optionalProjectVersionWrapper.get().getProjectVersionView(), ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
+        List<CodeLocationView> codeLocations = blackDuckService.getAllResponses(optionalProjectVersionWrapper.get().getProjectVersionView(), ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
         assertEquals(0, codeLocations.size());
 
-        final List<ProjectVersionComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(optionalProjectVersionWrapper.get().getProjectVersionView());
+        List<ProjectVersionComponentView> bomComponents = projectBomService.getComponentsForProjectVersion(optionalProjectVersionWrapper.get().getProjectVersionView());
         assertEquals(0, bomComponents.size());
 
         return optionalProjectVersionWrapper.get();
     }
 
-    public static List<String> getInitialArgs(final String projectName, final String projectVersionName) {
-        final List<String> initialArgs = new ArrayList<>();
+    public static List<String> getInitialArgs(String projectName, String projectVersionName) {
+        List<String> initialArgs = new ArrayList<>();
         initialArgs.add("--detect.tools.excluded=POLARIS");
         initialArgs.add("--detect.project.name=" + projectName);
         initialArgs.add("--detect.project.version.name=" + projectVersionName);

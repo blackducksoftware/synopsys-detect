@@ -284,8 +284,9 @@ public class DetectConfigurationFactory {
         AggregateMode aggregateMode = getValue(DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE);
         List<DetectTool> preferredTools = getValue(DetectProperties.DETECT_PROJECT_TOOL);
         Boolean useBdio2 = getValue(DetectProperties.DETECT_BDIO2_ENABLED);
+        Boolean developerModeScan = getValue(DetectProperties.DETECT_MODE_DEVELOPER);
 
-        return new RunOptions(unmapCodeLocations, aggregateName, aggregateMode, preferredTools, detectToolFilter, useBdio2);
+        return new RunOptions(unmapCodeLocations, aggregateName, aggregateMode, preferredTools, detectToolFilter, useBdio2, developerModeScan);
     }
 
     public DirectoryOptions createDirectoryOptions() throws IOException {
