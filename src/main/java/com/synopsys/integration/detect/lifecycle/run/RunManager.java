@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
 import com.synopsys.integration.blackduck.bdio2.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
@@ -94,6 +95,7 @@ import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocat
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResultCalculator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
 import com.synopsys.integration.detect.workflow.blackduck.developer.BlackDuckDeveloperMode;
+import com.synopsys.integration.detect.workflow.blackduck.developer.BlackDuckDeveloperPostActions;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -345,10 +347,11 @@ public class RunManager {
         eventSystem.publishEvent(Event.DetectCodeLocationNamesCalculated, bdioResult.getCodeLocationNamesResult());
 
         if (runOptions.shouldPerformDeveloperModeScan()) {
-            logger.debug("Executing developer mode scan");
-            BlackDuckDeveloperMode developerMode = new BlackDuckDeveloperMode(blackDuckServicesFactory, detectConfigurationFactory);
-            developerMode.run(bdioResult);
-            // TODO: Perform developer mode scan post actions similar to black duck.
+            logger.info(ReportConstants.RUN_SEPARATOR);
+            BlackDuckDeveloperMode developerMode = new BlackDuckDeveloperMode(blackDuckRunData, blackDuckServicesFactory, detectConfigurationFactory);
+            List<DeveloperScanComponentResultView> results = developerMode.run(bdioResult);
+            BlackDuckDeveloperPostActions postActions = new BlackDuckDeveloperPostActions(eventSystem);
+            postActions.perform(results);
         } else {
             CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
             if (!bdioResult.getUploadTargets().isEmpty()) {

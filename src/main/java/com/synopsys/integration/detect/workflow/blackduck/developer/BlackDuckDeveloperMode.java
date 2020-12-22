@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck.developer;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,20 +37,29 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class BlackDuckDeveloperMode {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private BlackDuckRunData blackDuckRunData;
     private BlackDuckServicesFactory blackDuckServicesFactory;
     private DetectConfigurationFactory detectConfigurationFactory;
 
-    public BlackDuckDeveloperMode(BlackDuckServicesFactory blackDuckServicesFactory, DetectConfigurationFactory detectConfigurationFactory) {
+    public BlackDuckDeveloperMode(BlackDuckRunData blackDuckRunData, BlackDuckServicesFactory blackDuckServicesFactory, DetectConfigurationFactory detectConfigurationFactory) {
+        this.blackDuckRunData = blackDuckRunData;
         this.blackDuckServicesFactory = blackDuckServicesFactory;
         this.detectConfigurationFactory = detectConfigurationFactory;
     }
 
-    public void run(BdioResult bdioResult) throws DetectUserFriendlyException {
+    public List<DeveloperScanComponentResultView> run(BdioResult bdioResult) throws DetectUserFriendlyException {
+        logger.info("Begin Developer Mode Scan");
+        if (!blackDuckRunData.isOnline()) {
+            logger.warn("Black Duck isn't online skipping developer mode scan.");
+            return Collections.emptyList();
+        }
+
         DeveloperScanService developerScanService = blackDuckServicesFactory.createDeveloperScanService();
         List<DeveloperScanComponentResultView> results = new LinkedList<>();
         try {
@@ -66,5 +76,6 @@ public class BlackDuckDeveloperMode {
         } catch (Exception e) {
             throw new DetectUserFriendlyException(String.format("There was a problem: %s", e.getMessage()), e, ExitCodeType.FAILURE_GENERAL_ERROR);
         }
+        return results;
     }
 }
