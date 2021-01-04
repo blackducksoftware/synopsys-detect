@@ -1165,7 +1165,7 @@ public class DetectProperties {
             .setInfo("Resolve Tilde in Paths", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("If set to false Detect will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
-            .setDeprecated("This property is now deprecated. Going forward, Detect will no longer resolve tildes in the path.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is now deprecated. Future versions of Detect will no longer resolve tildes in the path.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_PYTHON_PYTHON3 =
@@ -1173,7 +1173,7 @@ public class DetectProperties {
             .setInfo("Use Python3", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("If true will use Python 3 if available on class path.")
             .setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL)
-            .setDeprecated("This property is now deprecated. Due to the January 2020 sunset of Python 2, Detect version 7.0.0 and will assume that the python executable points to python3.",
+            .setDeprecated("This property is now deprecated. Due to the January 2020 sunset of Python 2, future versions of Detect will assume that the executable named python points to a Python 3 executable.",
                 DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
