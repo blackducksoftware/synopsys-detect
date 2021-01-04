@@ -669,7 +669,7 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> DETECT_NPM_ARGUMENTS =
         new DetectProperty<>(new NullableStringProperty("detect.npm.arguments"))
             .setInfo("Additional NPM Command Arguments", DetectPropertyFromVersion.VERSION_4_3_0)
-            .setHelp("A space-separated list of additional arguments to add to the npm command line when running Detect against an NPM project.")
+            .setHelp("A space-separated list of additional arguments to add at then end of the npm ls command line when running Detect against an NPM project.")
             .setExample("--depth=0")
             .setGroups(DetectGroup.NPM, DetectGroup.SOURCE_SCAN);
 
