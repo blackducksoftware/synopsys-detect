@@ -56,6 +56,8 @@ public abstract class Property {
     private Category category = null;
     @Nullable
     private PropertyDeprecationInfo propertyDeprecationInfo = null;
+    @Nullable
+    private String example = null;
 
     public Property setInfo(String name, String fromVersion) {
         this.name = name;
@@ -85,6 +87,11 @@ public abstract class Property {
 
     public Property setDeprecated(String description, ProductMajorVersion failInVersion, ProductMajorVersion removeInVersion) {
         this.propertyDeprecationInfo = new PropertyDeprecationInfo(description, failInVersion, removeInVersion);
+        return this;
+    }
+
+    public Property setExample(String example) {
+        this.example = example;
         return this;
     }
 
@@ -146,6 +153,10 @@ public abstract class Property {
         }
 
         return key;
+    }
+
+    public String getExample() {
+        return example;
     }
 }
 

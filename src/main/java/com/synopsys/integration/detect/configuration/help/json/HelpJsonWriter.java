@@ -117,6 +117,7 @@ public class HelpJsonWriter {
         helpJsonOption.setAcceptableValues(property.listExampleValues().stream().map(Objects::toString).collect(Collectors.toList()));
         helpJsonOption.setHasAcceptableValues(property.listExampleValues().size() > 0);
         helpJsonOption.setCommaSeparatedList(property.isCommaSeparated());
+        helpJsonOption.setExample(property.getExample());
         return helpJsonOption;
     }
 }
