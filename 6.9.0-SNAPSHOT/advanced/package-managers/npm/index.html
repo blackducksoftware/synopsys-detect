@@ -347,6 +347,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../pathproperties/" title="Path properties" class="md-nav__link">
+      Path properties
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -446,13 +458,13 @@
 
   <li class="md-nav__item md-nav__item--active md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-14" type="checkbox" id="nav-9-14" checked>
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-15" type="checkbox" id="nav-9-15" checked>
     
-    <label class="md-nav__link" for="nav-9-14">
+    <label class="md-nav__link" for="nav-9-15">
       Package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-14">
+      <label class="md-nav__title" for="nav-9-15">
         Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -637,8 +649,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#npm-detector" class="md-nav__link">
-    npm  detector
+  <a href="#npm-cli-detector" class="md-nav__link">
+    npm CLI detector
   </a>
   
 </li>
@@ -721,13 +733,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-15" type="checkbox" id="nav-9-15">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-16" type="checkbox" id="nav-9-16">
     
-    <label class="md-nav__link" for="nav-9-15">
+    <label class="md-nav__link" for="nav-9-16">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-15">
+      <label class="md-nav__title" for="nav-9-16">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -957,6 +969,18 @@
   <li class="md-nav__item">
     <a href="../../../properties/configuration/debug/" title="debug" class="md-nav__link">
       debug
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../../properties/configuration/default/" title="default" class="md-nav__link">
+      default
     </a>
   </li>
 
@@ -1402,8 +1426,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#npm-detector" class="md-nav__link">
-    npm  detector
+  <a href="#npm-cli-detector" class="md-nav__link">
+    npm CLI detector
   </a>
   
 </li>
@@ -1447,11 +1471,11 @@
 <h2 id="npm-shrinkwrap">npm shrinkwrap<a class="headerlink" href="#npm-shrinkwrap" title="Permanent link">#</a></h2>
 <p>The npm shrinkwrap detector uses the <a href="https://docs.npmjs.com/files/shrinkwrap.json">npm-shrinkwrap.json</a> file.</p>
 <p>It is the same as a package-lock.json but is a publishable lockfile. Synopsys Detect always chooses shrinkwrap over package lock.</p>
-<h2 id="npm-detector">npm  detector<a class="headerlink" href="#npm-detector" title="Permanent link">#</a></h2>
+<h2 id="npm-cli-detector">npm CLI detector<a class="headerlink" href="#npm-cli-detector" title="Permanent link">#</a></h2>
 <p>The npm CLI detector requires a package.json and an npm executable.</p>
-<p>It executes <em>npm -ls json</em>, and verifies that it succeeded by ensuring that no messages were written to
+<p>It executes <em>npm ls -json</em>, and verifies that it succeeded by ensuring that no messages were written to
 stderr, and that the exit code was 0. If both conditions are met, it parses the output for dependencies.</p>
-<p>If <em>npm -ls json</em> does write messages to stderr (for example, lint messages) that you would like
+<p>If <em>npm ls -json</em> does write messages to stderr (for example, lint messages) that you would like
 Synopsys Detect to ignore, you can silence errors by adding the --silent npm argument to the npm
 command using Synopsys Detect property --detect.npm.arguments.</p>
 <p>This detector is only invoked if the other npm detectors are not invoked, and generating lockfiles for the other detectors should be preferred.</p>

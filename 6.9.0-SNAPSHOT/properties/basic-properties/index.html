@@ -341,6 +341,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../advanced/pathproperties/" title="Path properties" class="md-nav__link">
+      Path properties
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -438,13 +450,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-14" type="checkbox" id="nav-9-14">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-15" type="checkbox" id="nav-9-15">
     
-    <label class="md-nav__link" for="nav-9-14">
+    <label class="md-nav__link" for="nav-9-15">
       Package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-14">
+      <label class="md-nav__title" for="nav-9-15">
         Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -654,13 +666,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-15" type="checkbox" id="nav-9-15">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-16" type="checkbox" id="nav-9-16">
     
-    <label class="md-nav__link" for="nav-9-15">
+    <label class="md-nav__link" for="nav-9-16">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-15">
+      <label class="md-nav__title" for="nav-9-16">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -899,6 +911,18 @@
   <li class="md-nav__item">
     <a href="../configuration/debug/" title="debug" class="md-nav__link">
       debug
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../configuration/default/" title="default" class="md-nav__link">
+      default
     </a>
   </li>
 
@@ -1498,19 +1522,19 @@
 <tbody>
 <tr>
 <td><a href="../detectors/docker/#docker-image-name">detect.docker.image</a></td>
-<td>Docker Image Name: The Docker image name to inspect. For Detect to run Docker Inspector, either this property, detect.docker.tar, or detect.docker.image.id must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images. <br /><br /></td>
+<td>Docker Image Name: The Docker image name to inspect. For Detect to run Docker Inspector, either this property, detect.docker.tar, or detect.docker.image.id must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties). <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../detectors/docker/#docker-image-id">detect.docker.image.id</a></td>
-<td>Docker Image ID: The Docker image ID to inspect. <br /><br /></td>
+<td>Docker Image ID: The ID (shown in the 'IMAGE ID' column of 'docker images' output) of the target Docker image. The target image must already be local (must appear in the output of 'docker images'). detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties). <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../detectors/docker/#docker-executable">detect.docker.path</a></td>
-<td>Docker Executable: Path to the docker executable. <br /><br /></td>
+<td>Docker Executable: Path to the docker executable (used to load image inspector Docker images in order to run the Docker Inspector in air gap mode). <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../detectors/docker/#docker-image-archive-file">detect.docker.tar</a></td>
-<td>Docker Image Archive File: A saved Docker image - must be a .tar file. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images. <br /><br /></td>
+<td>Docker Image Archive File: A Docker image saved to a .tar file using the 'docker save' command. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties). <br /><br /></td>
 </tr>
 </tbody>
 </table>
@@ -1754,7 +1778,7 @@
 <tbody>
 <tr>
 <td><a href="../detectors/npm/#additional-npm-command-arguments">detect.npm.arguments</a></td>
-<td>Additional NPM Command Arguments: A space-separated list of additional arguments to add to the npm command line when running Detect against an NPM project. <br /><br /></td>
+<td>Additional NPM Command Arguments: A space-separated list of additional arguments that Detect will add at then end of the npm ls command line when Detect executes the NPM CLI Detector on an NPM project. <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../detectors/npm/#include-npm-development-dependencies">detect.npm.include.dev.dependencies</a></td>

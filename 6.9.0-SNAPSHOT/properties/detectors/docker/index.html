@@ -345,6 +345,18 @@
 
 
   <li class="md-nav__item">
+    <a href="../../../advanced/pathproperties/" title="Path properties" class="md-nav__link">
+      Path properties
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
     <a href="../../../advanced/project-and-version-naming/" title="Project and version naming" class="md-nav__link">
       Project and version naming
     </a>
@@ -442,13 +454,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-14" type="checkbox" id="nav-9-14">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-15" type="checkbox" id="nav-9-15">
     
-    <label class="md-nav__link" for="nav-9-14">
+    <label class="md-nav__link" for="nav-9-15">
       Package managers
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-14">
+      <label class="md-nav__title" for="nav-9-15">
         Package managers
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -658,13 +670,13 @@
 
   <li class="md-nav__item md-nav__item--nested">
     
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-15" type="checkbox" id="nav-9-15">
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9-16" type="checkbox" id="nav-9-16">
     
-    <label class="md-nav__link" for="nav-9-15">
+    <label class="md-nav__link" for="nav-9-16">
       Troubleshooting
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
-      <label class="md-nav__title" for="nav-9-15">
+      <label class="md-nav__title" for="nav-9-16">
         Troubleshooting
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -896,6 +908,18 @@
   <li class="md-nav__item">
     <a href="../../configuration/debug/" title="debug" class="md-nav__link">
       debug
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../configuration/default/" title="default" class="md-nav__link">
+      default
     </a>
   </li>
 
@@ -1174,13 +1198,6 @@
         <li class="md-nav__item">
   <a href="#docker-image-archive-file" class="md-nav__link">
     Docker Image Archive File
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#phone-home-passthrough-advanced" class="md-nav__link">
-    Phone Home Passthrough (Advanced)
   </a>
   
 </li>
@@ -1465,13 +1482,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#phone-home-passthrough-advanced" class="md-nav__link">
-    Phone Home Passthrough (Advanced)
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#docker-passthrough-advanced" class="md-nav__link">
     Docker Passthrough (Advanced)
   </a>
@@ -1535,7 +1545,7 @@
 <pre><code>--detect.docker.image
 </code></pre>
 
-<p>The Docker image name to inspect. For Detect to run Docker Inspector, either this property, detect.docker.tar, or detect.docker.image.id must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
+<p>The Docker image name to inspect. For Detect to run Docker Inspector, either this property, detect.docker.tar, or detect.docker.image.id must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).</p>
 <table>
 <thead>
 <tr>
@@ -1572,13 +1582,17 @@
 <td>Strict</td>
 <td>No</td>
 </tr>
+<tr>
+<td>Example</td>
+<td>centos:centos8</td>
+</tr>
 </tbody>
 </table>
 <h2 id="docker-image-id">Docker Image ID<a class="headerlink" href="#docker-image-id" title="Permanent link">#</a></h2>
 <pre><code>--detect.docker.image.id
 </code></pre>
 
-<p>The Docker image ID to inspect.</p>
+<p>The ID (shown in the 'IMAGE ID' column of 'docker images' output) of the target Docker image. The target image must already be local (must appear in the output of 'docker images'). detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).</p>
 <table>
 <thead>
 <tr>
@@ -1615,13 +1629,17 @@
 <td>Strict</td>
 <td>No</td>
 </tr>
+<tr>
+<td>Example</td>
+<td>fe1cc5b91830</td>
+</tr>
 </tbody>
 </table>
 <h2 id="docker-executable">Docker Executable<a class="headerlink" href="#docker-executable" title="Permanent link">#</a></h2>
 <pre><code>--detect.docker.path
 </code></pre>
 
-<p>Path to the docker executable.</p>
+<p>Path to the docker executable (used to load image inspector Docker images in order to run the Docker Inspector in air gap mode).</p>
 <table>
 <thead>
 <tr>
@@ -1658,13 +1676,17 @@
 <td>Strict</td>
 <td>No</td>
 </tr>
+<tr>
+<td>Example</td>
+<td>/usr/local/bin/docker</td>
+</tr>
 </tbody>
 </table>
 <h2 id="docker-image-archive-file">Docker Image Archive File<a class="headerlink" href="#docker-image-archive-file" title="Permanent link">#</a></h2>
 <pre><code>--detect.docker.tar
 </code></pre>
 
-<p>A saved Docker image - must be a .tar file. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.</p>
+<p>A Docker image saved to a .tar file using the 'docker save' command. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).</p>
 <table>
 <thead>
 <tr>
@@ -1701,48 +1723,9 @@
 <td>Strict</td>
 <td>No</td>
 </tr>
-</tbody>
-</table>
-<h2 id="phone-home-passthrough-advanced">Phone Home Passthrough (Advanced)<a class="headerlink" href="#phone-home-passthrough-advanced" title="Permanent link">#</a></h2>
-<pre><code>--detect.phone.home.passthrough
-</code></pre>
-
-<p>Additional values may be sent home for usage information. The keys will be sent without the prefix.</p>
-<table>
-<thead>
 <tr>
-<th>Details</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Added</td>
-<td>6.0.0</td>
-</tr>
-<tr>
-<td>Type</td>
-<td>None</td>
-</tr>
-<tr>
-<td>Default Value</td>
-<td></td>
-</tr>
-<tr>
-<td>Comma Separated</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Case Sensitive</td>
-<td>No</td>
-</tr>
-<tr>
-<td>Acceptable Values</td>
-<td>Any</td>
-</tr>
-<tr>
-<td>Strict</td>
-<td>No</td>
+<td>Example</td>
+<td>./ubuntu21_04.tar</td>
 </tr>
 </tbody>
 </table>
@@ -1750,7 +1733,7 @@
 <pre><code>--detect.docker.passthrough
 </code></pre>
 
-<p>Additional properties may be passed to the docker inspector by adding the prefix detect.docker.passthrough. The keys will be given to docker inspector without the prefix.</p>
+<p>Additional properties may be passed to the docker inspector by adding the prefix detect.docker.passthrough to each Docker Inspector property name and assigning a value. The 'detect.docker.passthrough' prefix will be removed from the property name to generate the property name passed to Docker Inspector (with the given value).</p>
 <table>
 <thead>
 <tr>
@@ -1786,6 +1769,10 @@
 <tr>
 <td>Strict</td>
 <td>No</td>
+</tr>
+<tr>
+<td>Example</td>
+<td>(This example is unusual in that it shows a complete propertyname=value) detect.docker.passthrough.imageinspector.service.log.length=1000</td>
 </tr>
 </tbody>
 </table>
@@ -1830,6 +1817,10 @@
 <td>Strict</td>
 <td>No</td>
 </tr>
+<tr>
+<td>Example</td>
+<td></td>
+</tr>
 </tbody>
 </table>
 <h2 id="docker-inspector-version-advanced">Docker Inspector Version (Advanced)<a class="headerlink" href="#docker-inspector-version-advanced" title="Permanent link">#</a></h2>
@@ -1872,6 +1863,10 @@
 <tr>
 <td>Strict</td>
 <td>No</td>
+</tr>
+<tr>
+<td>Example</td>
+<td>9.1.1</td>
 </tr>
 </tbody>
 </table>
@@ -1916,6 +1911,10 @@
 <td>Strict</td>
 <td>No</td>
 </tr>
+<tr>
+<td>Example</td>
+<td></td>
+</tr>
 </tbody>
 </table>
 <h2 id="platform-top-layer-id-advanced">Platform Top Layer ID (Advanced)<a class="headerlink" href="#platform-top-layer-id-advanced" title="Permanent link">#</a></h2>
@@ -1959,6 +1958,10 @@
 <tr>
 <td>Strict</td>
 <td>No</td>
+</tr>
+<tr>
+<td>Example</td>
+<td>sha256:f6253634dc78da2f2e3bee9c8063593f880dc35d701307f30f65553e0f50c18c</td>
 </tr>
 </tbody>
 </table>
