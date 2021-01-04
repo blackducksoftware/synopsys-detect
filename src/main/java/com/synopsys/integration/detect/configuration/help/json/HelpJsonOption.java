@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -50,6 +50,7 @@ class HelpJsonOption {
     private Boolean hasAcceptableValues = false;
     private Boolean isCommaSeparatedList = false;
     private List<String> acceptableValues = new ArrayList<>();
+    private String example = "";
 
     public String getPropertyName() {
         return propertyName;
@@ -209,5 +210,13 @@ class HelpJsonOption {
 
     public void setAcceptableValues(List<String> acceptableValues) {
         this.acceptableValues = acceptableValues;
+    }
+
+    public String getExample() {
+        return example;
+    }
+
+    public void setExample(String example) {
+        this.example = example;
     }
 }

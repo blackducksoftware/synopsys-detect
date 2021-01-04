@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -207,7 +207,8 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.conan.arguments"))
             .setInfo("Additional Conan Arguments", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp("A space-separated list of additional arguments to add to the 'conan info' command line when running Detect against a Conan project. Detect will execute the command 'conan info {additional arguments} .'")
-            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
+            .setExample("\"--profile clang --profile cmake_316\"");
 
     public static final DetectProperty<NullableStringProperty> DETECT_CONAN_LOCKFILE_PATH =
         new DetectProperty<>(new NullableStringProperty("detect.conan.lockfile.path"))
@@ -388,28 +389,33 @@ public class DetectProperties {
         new DetectProperty<>(new PassthroughProperty("detect.phone.home.passthrough"))
             .setInfo("Phone Home Passthrough", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp("Additional values may be sent home for usage information. The keys will be sent without the prefix.")
-            .setGroups(DetectGroup.DOCKER, DetectGroup.DEFAULT)
+            .setGroups(DetectGroup.DEFAULT)
             .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<PassthroughProperty> DOCKER_PASSTHROUGH =
         new DetectProperty<>(new PassthroughProperty("detect.docker.passthrough"))
             .setInfo("Docker Passthrough", DetectPropertyFromVersion.VERSION_6_0_0)
-            .setHelp("Additional properties may be passed to the docker inspector by adding the prefix detect.docker.passthrough. The keys will be given to docker inspector without the prefix.")
+            .setHelp(
+                "Additional properties may be passed to the docker inspector by adding the prefix detect.docker.passthrough to each Docker Inspector property name and assigning a value. The 'detect.docker.passthrough' prefix will be removed from the property name to generate the property name passed to Docker Inspector (with the given value).")
             .setGroups(DetectGroup.DOCKER, DetectGroup.DEFAULT)
-            .setCategory(DetectCategory.Advanced);
+            .setCategory(DetectCategory.Advanced)
+            .setExample("(This example is unusual in that it shows a complete propertyname=value) detect.docker.passthrough.imageinspector.service.log.length=1000");
 
     public static final DetectProperty<NullableStringProperty> DETECT_DOCKER_IMAGE =
         new DetectProperty<>(new NullableStringProperty("detect.docker.image"))
             .setInfo("Docker Image Name", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "The Docker image name to inspect. For Detect to run Docker Inspector, either this property, detect.docker.tar, or detect.docker.image.id must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.")
-            .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH);
+                "The Docker image name to inspect. For Detect to run Docker Inspector, either this property, detect.docker.tar, or detect.docker.image.id must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
+            .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
+            .setExample("ubuntu:latest");
 
     public static final DetectProperty<NullableStringProperty> DETECT_DOCKER_IMAGE_ID =
         new DetectProperty<>(new NullableStringProperty("detect.docker.image.id"))
             .setInfo("Docker Image ID", DetectPropertyFromVersion.VERSION_6_1_0)
-            .setHelp("The Docker image ID to inspect.")
-            .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH);
+            .setHelp(
+                "The ID (shown in the 'IMAGE ID' column of 'docker images' output) of the target Docker image. The target image must already be local (must appear in the output of 'docker images'). detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
+            .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
+            .setExample("fe1cc5b91830");
 
     public static final DetectProperty<NullablePathProperty> DETECT_DOCKER_INSPECTOR_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.docker.inspector.path"))
@@ -424,7 +430,8 @@ public class DetectProperties {
             .setInfo("Docker Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Version of the Docker Inspector to use. By default Detect will attempt to automatically determine the version to use.")
             .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
+            .setCategory(DetectCategory.Advanced)
+            .setExample("9.1.1");
 
     public static final DetectProperty<NullablePathProperty> DETECT_DOCKER_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.docker.path"))
@@ -447,13 +454,14 @@ public class DetectProperties {
                 "If you are interested in components from the application layers of your image, but not interested in components from the underlying platform layers, you can exclude components from platform layers from the results by using this property to specify the boundary between platform layers and application layers. "
             )
             .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
-            .setCategory(DetectCategory.Advanced);
+            .setCategory(DetectCategory.Advanced)
+            .setExample("sha256:f6253634dc78da2f2e3bee9c8063593f880dc35d701307f30f65553e0f50c18c");
 
     public static final DetectProperty<NullableStringProperty> DETECT_DOCKER_TAR =
         new DetectProperty<>(new NullableStringProperty("detect.docker.tar"))
             .setInfo("Docker Image Archive File", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "A saved Docker image - must be a .tar file. For Detect to run Docker Inspector, either this property or detect.docker.tar must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images.")
+                "A Docker image saved to a .tar file using the 'docker save' command. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH);
 
     public static final DetectProperty<NullablePathProperty> DETECT_DOTNET_PATH =
@@ -1896,6 +1904,9 @@ public class DetectProperties {
         property.setCategory(detectProperty.getCategory());
         if (detectProperty.getPropertyDeprecationInfo() != null) {
             property.setDeprecated(detectProperty.getPropertyDeprecationInfo().getDescription(), detectProperty.getPropertyDeprecationInfo().getFailInVersion(), detectProperty.getPropertyDeprecationInfo().getRemoveInVersion());
+        }
+        if (detectProperty.getExample() != null) {
+            property.setExample(detectProperty.getExample());
         }
         return property;
     }
