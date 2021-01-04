@@ -8,7 +8,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.mock.env.MockEnvironment;
 
 import com.google.gson.Gson;
@@ -27,25 +30,33 @@ public class DetectBootTest {
     public static final int EXPECTED_MAJOR_VERSION = 6;
     public static final OperatingSystemType CURRENT_OS = OperatingSystemType.determineFromSystem();
 
-    @Test
-    public void test() {
-        DetectBootFactory detectBootFactory = new DetectBootFactory();
-        DetectBoot detectBoot = new DetectBoot(detectBootFactory);
+    public DetectBoot detectBoot;
+    public DetectRun detectRun;
+    public DetectContext detectContext;
+    public EventSystem eventSystem;
 
-        DetectRun detectRun = new DetectRun(EXPECTED_RUN_ID);
-        EventSystem eventSystem = new EventSystem();
+    @BeforeEach
+    public void setUp() {
+        DetectBootFactory detectBootFactory = new DetectBootFactory();
+        detectBoot = new DetectBoot(detectBootFactory);
+        detectRun = new DetectRun(EXPECTED_RUN_ID);
+        eventSystem = new EventSystem();
         DetectInfo detectInfo = new DetectInfo(EXPECTED_VERSION_TEXT, EXPECTED_MAJOR_VERSION, CURRENT_OS);
         Gson gson = new Gson();
 
-        DetectContext detectContext = new DetectContext(detectRun);
+        detectContext = new DetectContext(detectRun);
         detectContext.registerBean(detectInfo);
         detectContext.registerBean(gson);
+    }
 
+    @Test
+    public void testOffline() {
         MockEnvironment configurableEnvironment = new MockEnvironment();
         configurableEnvironment.setProperty(DetectProperties.BLACKDUCK_OFFLINE_MODE.getProperty().getKey(), "true");
+        String[] sourceArgs = new String[]{};
 
         try {
-            Optional<DetectBootResult> wrappedDetectBootResult = detectBoot.boot(detectRun, new String[]{}, configurableEnvironment, eventSystem, detectContext);
+            Optional<DetectBootResult> wrappedDetectBootResult = detectBoot.boot(detectRun, sourceArgs, configurableEnvironment, eventSystem, detectContext);
             assertTrue(wrappedDetectBootResult.isPresent());
             DetectBootResult detectBootResult = wrappedDetectBootResult.get();
             assertEquals(DetectBootResult.BootType.RUN, detectBootResult.getBootType());
@@ -56,6 +67,23 @@ public class DetectBootTest {
             assertTrue(productRunData.shouldUseBlackDuckProduct());
             assertFalse(productRunData.shouldUsePolarisProduct());
             assertFalse(productRunData.getBlackDuckRunData().isOnline());
+        } catch (DetectUserFriendlyException | IOException | IllegalAccessException e) {
+            fail("Unexpected exception was thrown by the test code: ", e);
+        }
+    }
+
+    @ValueSource(strings = { "-h", "-hjson", "--help", "--helpjson"} )
+    @ParameterizedTest
+    public void testHelp(String sourceArg) {
+        MockEnvironment configurableEnvironment = new MockEnvironment();
+        configurableEnvironment.setProperty(DetectProperties.BLACKDUCK_OFFLINE_MODE.getProperty().getKey(), "true");
+        String[] sourceArgs = new String[]{sourceArg};
+
+        try {
+            Optional<DetectBootResult> wrappedDetectBootResult = detectBoot.boot(detectRun, sourceArgs, configurableEnvironment, eventSystem, detectContext);
+            assertTrue(wrappedDetectBootResult.isPresent());
+            DetectBootResult detectBootResult = wrappedDetectBootResult.get();
+            assertEquals(DetectBootResult.BootType.EXIT, detectBootResult.getBootType());
         } catch (DetectUserFriendlyException | IOException | IllegalAccessException e) {
             fail("Unexpected exception was thrown by the test code: ", e);
         }

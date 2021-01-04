@@ -25,7 +25,6 @@ package com.synopsys.integration.detect.lifecycle.boot;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -59,16 +58,9 @@ import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
-import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
-import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
-import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
-import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
-import com.synopsys.integration.detect.configuration.help.json.HelpJsonDetector;
-import com.synopsys.integration.detect.configuration.help.json.HelpJsonWriter;
 import com.synopsys.integration.detect.configuration.help.print.DetectInfoPrinter;
-import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree;
 import com.synopsys.integration.detect.interactive.InteractivePropertySourceBuilder;
@@ -84,25 +76,9 @@ import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
-import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
-import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
-import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
-import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
-import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecutableFinder;
-import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
-import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
-import com.synopsys.integration.detect.util.filter.DetectFilter;
 import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
-import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.DetectRun;
-import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
-import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
-import com.synopsys.integration.detect.workflow.airgap.DockerAirGapCreator;
-import com.synopsys.integration.detect.workflow.airgap.GradleAirGapCreator;
-import com.synopsys.integration.detect.workflow.airgap.NugetAirGapCreator;
 import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsConfigurationService;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticsDecider;
@@ -114,12 +90,6 @@ import com.synopsys.integration.detect.workflow.profiling.DetectorProfiler;
 import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
-import com.synopsys.integration.detectable.Detectable;
-import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
-import com.synopsys.integration.detectable.detectable.file.FileFinder;
-import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
-import com.synopsys.integration.detector.rule.DetectorRule;
-import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.util.OperatingSystemType;
 
@@ -151,15 +121,16 @@ public class DetectBoot {
             propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, true));
         }
 
-        DetectArgumentState detectArgumentState = parseDetectArgumentState(sourceArgs);
+        DetectFlagManager detectFlagManager = new DetectFlagManager(sourceArgs);
+        DetectArgumentState detectArgumentState = detectFlagManager.getDetectArgumentState();
 
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
-            printAppropriateHelp(DetectProperties.allProperties(), detectArgumentState);
+            detectFlagManager.printAppropriateHelp(DetectProperties.allProperties(), detectArgumentState);
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 
         if (detectArgumentState.isHelpJsonDocument()) {
-            printHelpJsonDocument(DetectProperties.allProperties(), detectInfo, gson);
+            detectFlagManager.printHelpJsonDocument(DetectProperties.allProperties(), detectInfo, gson);
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 
@@ -211,7 +182,7 @@ public class DetectBoot {
             String airGapSuffix = inspectorFilter.getIncludedSet().stream().sorted().collect(Collectors.joining("-"));
             File airGapZip;
             try {
-                airGapZip = createAirGapZip(inspectorFilter, detectConfiguration, pathResolver, directoryManager, gson, eventSystem, configuration, airGapSuffix);
+                airGapZip = detectFlagManager.createAirGapZip(inspectorFilter, detectConfiguration, pathResolver, directoryManager, gson, eventSystem, configuration, airGapSuffix);
             } catch (DetectUserFriendlyException e) {
                 return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
             }
@@ -269,53 +240,6 @@ public class DetectBoot {
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
         return Optional.of(DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem));
-    }
-
-    private void printAppropriateHelp(List<Property> properties, DetectArgumentState detectArgumentState) {
-        HelpPrinter helpPrinter = new HelpPrinter();
-        helpPrinter.printAppropriateHelpMessage(System.out, properties, Arrays.asList(DetectGroup.values()), DetectGroup.BLACKDUCK_SERVER, detectArgumentState);
-    }
-
-    private void printHelpJsonDocument(List<Property> properties, DetectInfo detectInfo, Gson gson) {
-        DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
-        // TODO: Is there a better way to build a fake set of rules?
-        DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null);
-        DetectorRuleSet build = ruleFactory.createRules(mockFactory, false);
-        DetectorRuleSet buildless = ruleFactory.createRules(mockFactory, true);
-        List<HelpJsonDetector> buildDetectors = build.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, build)).collect(Collectors.toList());
-        List<HelpJsonDetector> buildlessDetectors = buildless.getOrderedDetectorRules().stream().map(detectorRule -> convertDetectorRule(detectorRule, buildless)).collect(Collectors.toList());
-
-        HelpJsonWriter helpJsonWriter = new HelpJsonWriter(gson);
-        helpJsonWriter.writeGsonDocument(String.format("synopsys-detect-%s-help.json", detectInfo.getDetectVersion()), properties, buildDetectors, buildlessDetectors);
-    }
-
-    private HelpJsonDetector convertDetectorRule(DetectorRule rule, DetectorRuleSet ruleSet) {
-        HelpJsonDetector helpData = new HelpJsonDetector();
-        helpData.setDetectorName(rule.getName());
-        helpData.setDetectorDescriptiveName(rule.getDescriptiveName());
-        helpData.setDetectorType(rule.getDetectorType().toString());
-        helpData.setMaxDepth(rule.getMaxDepth());
-        helpData.setNestable(rule.isNestable());
-        helpData.setNestInvisible(rule.isNestInvisible());
-        helpData.setYieldsTo(ruleSet.getYieldsTo(rule).stream().map(DetectorRule::getDescriptiveName).collect(Collectors.toList()));
-        helpData.setFallbackTo(ruleSet.getFallbackFrom(rule).map(DetectorRule::getDescriptiveName).orElse(""));
-
-        //Attempt to create the detectable.
-        //Not currently possible. Need a full DetectableConfiguration to be able to make Detectables.
-        Class<Detectable> detectableClass = rule.getDetectableClass();
-        Optional<DetectableInfo> infoSearch = Arrays.stream(detectableClass.getAnnotations())
-                                                  .filter(annotation -> annotation instanceof DetectableInfo)
-                                                  .map(annotation -> (DetectableInfo) annotation)
-                                                  .findFirst();
-
-        if (infoSearch.isPresent()) {
-            DetectableInfo info = infoSearch.get();
-            helpData.setDetectableLanguage(info.language());
-            helpData.setDetectableRequirementsMarkdown(info.requirementsMarkdown());
-            helpData.setDetectableForge(info.forge());
-        }
-
-        return helpData;
     }
 
     private void printDetectInfo(DetectInfo detectInfo) {
@@ -387,12 +311,6 @@ public class DetectBoot {
         return Optional.empty();
     }
 
-    private DetectArgumentState parseDetectArgumentState(String[] sourceArgs) {
-        DetectArgumentStateParser detectArgumentStateParser = new DetectArgumentStateParser();
-        DetectArgumentState detectArgumentState = detectArgumentStateParser.parseArgs(sourceArgs);
-        return detectArgumentState;
-    }
-
     private Optional<DiagnosticSystem> createDiagnostics(PropertyConfiguration propertyConfiguration, DetectRun detectRun, DetectInfo detectInfo, DiagnosticsDecider diagnosticsDecider, EventSystem eventSystem,
         DirectoryManager directoryManager) {
         DiagnosticSystem diagnosticSystem = null;
@@ -400,30 +318,4 @@ public class DetectBoot {
         return Optional.ofNullable(diagnosticSystem);
     }
 
-    private File createAirGapZip(DetectFilter inspectorFilter, PropertyConfiguration detectConfiguration, PathResolver pathResolver, DirectoryManager directoryManager, Gson gson,
-        EventSystem eventSystem,
-        Configuration configuration,
-        String airGapSuffix)
-        throws DetectUserFriendlyException {
-        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver);
-        ConnectionDetails connectionDetails = detectConfigurationFactory.createConnectionDetails();
-        ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
-        ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
-
-        FileFinder fileFinder = new WildcardFileFinder();
-        DirectoryExecutableFinder directoryExecutableFinder = DirectoryExecutableFinder.forCurrentOperatingSystem(fileFinder);
-        SystemPathExecutableFinder systemPathExecutableFinder = new SystemPathExecutableFinder(directoryExecutableFinder);
-        DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(directoryExecutableFinder, systemPathExecutableFinder, detectConfigurationFactory.createExecutablePaths());
-
-        GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
-        DetectExecutableRunner runner = DetectExecutableRunner.newDebug(eventSystem);
-        GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, gradleInspectorInstaller, runner, configuration);
-
-        NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactResolver));
-        DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));
-
-        AirGapCreator airGapCreator = new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
-        String gradleInspectorVersion = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION.getProperty()).orElse(null);
-        return airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix, gradleInspectorVersion);
-    }
 }
