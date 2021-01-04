@@ -409,8 +409,7 @@ public class DetectProperties {
             .setHelp(
                 "The Docker image name to inspect. For Detect to run Docker Inspector, either this property, detect.docker.tar, or detect.docker.image.id must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
             .setExample("centos:centos8")
-            .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
-            .setExample("ubuntu:latest");
+            .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH);
 
     public static final DetectProperty<NullableStringProperty> DETECT_DOCKER_IMAGE_ID =
         new DetectProperty<>(new NullableStringProperty("detect.docker.image.id"))
