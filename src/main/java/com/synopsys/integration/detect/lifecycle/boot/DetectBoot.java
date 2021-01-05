@@ -59,12 +59,8 @@ import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
+import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
 import com.synopsys.integration.detect.configuration.help.print.DetectInfoPrinter;
-import com.synopsys.integration.detect.interactive.InteractiveManager;
-import com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree;
-import com.synopsys.integration.detect.interactive.InteractivePropertySourceBuilder;
-import com.synopsys.integration.detect.interactive.InteractiveWriter;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
@@ -76,13 +72,11 @@ import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
-import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsConfigurationService;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticsDecider;
-import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticsDecision;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -113,6 +107,9 @@ public class DetectBoot {
         DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
         Gson gson = detectContext.getBean(Gson.class);
 
+        DetectArgumentStateParser detectArgumentStateParser = new DetectArgumentStateParser();
+        DetectArgumentManager detectArgumentManager = new DetectArgumentManager(detectArgumentStateParser.parseArgs(sourceArgs));
+
         List<PropertySource> propertySources;
         try {
             propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, false));
@@ -121,32 +118,25 @@ public class DetectBoot {
             propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, true));
         }
 
-        DetectFlagManager detectFlagManager = new DetectFlagManager(sourceArgs);
-        DetectArgumentState detectArgumentState = detectFlagManager.getDetectArgumentState();
-
-        if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
-            detectFlagManager.printAppropriateHelp(DetectProperties.allProperties(), detectArgumentState);
+        if (detectArgumentManager.shouldPrintHelp()) {
+            detectArgumentManager.printAppropriateHelp(DetectProperties.allProperties());
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 
-        if (detectArgumentState.isHelpJsonDocument()) {
-            detectFlagManager.printHelpJsonDocument(DetectProperties.allProperties(), detectInfo, gson);
+        if (detectArgumentManager.shouldCreateHelpJsonFile()) {
+            detectArgumentManager.createHelpJsonFile(DetectProperties.allProperties(), detectInfo, gson);
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 
-        printDetectInfo(detectInfo);
+        // FIXME: This prints three lines of code.
+        DetectInfoPrinter detectInfoPrinter = new DetectInfoPrinter();
+        detectInfoPrinter.printInfo(System.out, detectInfo);
 
-        if (detectArgumentState.isInteractive()) {
-            InteractiveWriter writer = InteractiveWriter.defaultWriter(System.console(), System.in, System.out);
-            InteractivePropertySourceBuilder propertySourceBuilder = new InteractivePropertySourceBuilder(writer);
-            InteractiveManager interactiveManager = new InteractiveManager(propertySourceBuilder, writer);
-
-            // TODO: Ideally we should be able to share the BlackDuckConnectivityChecker from elsewhere in the boot --rotte NOV 2020
-            InteractiveModeDecisionTree interactiveModeDecisionTree = new InteractiveModeDecisionTree(new BlackDuckConnectivityChecker(), propertySources);
-            MapPropertySource interactivePropertySource = interactiveManager.getInteractivePropertySource(interactiveModeDecisionTree);
-
+        if (detectArgumentManager.shouldExecuteInteractiveMode()) {
+            MapPropertySource interactivePropertySource = detectArgumentManager.executeInteractiveMode(propertySources);
             propertySources.add(0, interactivePropertySource);
         }
+
         PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
 
         logger.debug("Configuration processed completely.");
@@ -169,20 +159,17 @@ public class DetectBoot {
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver);
         DirectoryManager directoryManager = new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
 
-        DiagnosticsDecision diagnosticsDecision = new DiagnosticsDecider(detectArgumentState, detectConfiguration).decide();
         DiagnosticSystem diagnosticSystem = null;
-        if (diagnosticsDecision.isConfiguredForDiagnostic) {
-            diagnosticSystem = new DiagnosticSystem(diagnosticsDecision.isDiagnosticExtended, detectConfiguration, detectRun, detectInfo, directoryManager, eventSystem);
+        if (detectArgumentManager.shouldCreateDiagnosticSystem(detectConfiguration)) {
+            diagnosticSystem = detectArgumentManager.createDiagnosticSystem(detectConfiguration, detectRun, detectInfo, directoryManager, eventSystem);
         }
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
-        if (detectArgumentState.isGenerateAirGapZip()) {
-            DetectOverrideableFilter inspectorFilter = new DetectOverrideableFilter("", detectArgumentState.getParsedValue());
-            String airGapSuffix = inspectorFilter.getIncludedSet().stream().sorted().collect(Collectors.joining("-"));
+        if (detectArgumentManager.shouldGenerateAirGapZip()) {
             File airGapZip;
             try {
-                airGapZip = detectFlagManager.createAirGapZip(inspectorFilter, detectConfiguration, pathResolver, directoryManager, gson, eventSystem, configuration, airGapSuffix);
+                airGapZip = detectArgumentManager.createAirGapZip(detectConfiguration, pathResolver, directoryManager, gson, eventSystem, configuration);
             } catch (DetectUserFriendlyException e) {
                 return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
             }
@@ -242,13 +229,7 @@ public class DetectBoot {
         return Optional.of(DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 
-    private void printDetectInfo(DetectInfo detectInfo) {
-        DetectInfoPrinter detectInfoPrinter = new DetectInfoPrinter();
-        detectInfoPrinter.printInfo(System.out, detectInfo);
-    }
-
-    private Optional<DetectBootResult> printConfiguration(boolean fullConfiguration, PropertyConfiguration detectConfiguration, EventSystem eventSystem,
-        DetectInfo detectInfo) throws IllegalAccessException {
+    private Optional<DetectBootResult> printConfiguration(boolean fullConfiguration, PropertyConfiguration detectConfiguration, EventSystem eventSystem, DetectInfo detectInfo) throws IllegalAccessException {
 
         Map<String, String> additionalNotes = new HashMap<>();
 

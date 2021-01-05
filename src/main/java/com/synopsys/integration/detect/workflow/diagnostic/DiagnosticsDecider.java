@@ -28,14 +28,12 @@ import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 
 public class DiagnosticsDecider {
     private final DetectArgumentState detectArgumentState;
-    private final PropertyConfiguration propertyConfiguration;
 
-    public DiagnosticsDecider(DetectArgumentState detectArgumentState, PropertyConfiguration propertyConfiguration) {
+    public DiagnosticsDecider(DetectArgumentState detectArgumentState) {
         this.detectArgumentState = detectArgumentState;
-        this.propertyConfiguration = propertyConfiguration;
     }
 
-    public DiagnosticsDecision decide() {
+    public DiagnosticsDecision decide(PropertyConfiguration propertyConfiguration) {
         boolean diagnostic = detectArgumentState.isDiagnostic() || propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC.getProperty());
         boolean diagnosticExtended = detectArgumentState.isDiagnosticExtended() || propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty());
         boolean configuredForDiagnostic = diagnostic || diagnosticExtended;

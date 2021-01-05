@@ -10,6 +10,8 @@ import com.google.gson.Gson;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
+import com.synopsys.integration.configuration.source.MapPropertySource;
+import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
@@ -18,10 +20,14 @@ import com.synopsys.integration.detect.configuration.connection.ConnectionDetail
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
-import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonDetector;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonWriter;
 import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
+import com.synopsys.integration.detect.interactive.InteractiveManager;
+import com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree;
+import com.synopsys.integration.detect.interactive.InteractivePropertySourceBuilder;
+import com.synopsys.integration.detect.interactive.InteractiveWriter;
+import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.DetectorRuleFactory;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
@@ -31,13 +37,16 @@ import com.synopsys.integration.detect.tool.detector.executable.SystemPathExecut
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.GradleInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetInspectorInstaller;
-import com.synopsys.integration.detect.util.filter.DetectFilter;
+import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.workflow.ArtifactResolver;
+import com.synopsys.integration.detect.workflow.DetectRun;
 import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
 import com.synopsys.integration.detect.workflow.airgap.DockerAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.GradleAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.NugetAirGapCreator;
+import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
+import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticsDecider;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.Detectable;
@@ -49,19 +58,29 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 
 import freemarker.template.Configuration;
 
-public class DetectFlagManager {
-    private DetectArgumentState detectArgumentState;
+public class DetectArgumentManager {
+    private final DetectArgumentState detectArgumentState;
+    private final DiagnosticsDecider diagnosticsDecider;
 
-    public DetectFlagManager(String[] sourceArgs) {
-        detectArgumentState = parseDetectArgumentState(sourceArgs);
+    public DetectArgumentManager(DetectArgumentState detectArgumentState) {
+        this.detectArgumentState = detectArgumentState;
+        this.diagnosticsDecider = new DiagnosticsDecider(detectArgumentState);
     }
 
-    public void printAppropriateHelp(List<Property> properties, DetectArgumentState detectArgumentState) {
+    public boolean shouldPrintHelp() {
+        return detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp();
+    }
+
+    public void printAppropriateHelp(List<Property> properties) {
         HelpPrinter helpPrinter = new HelpPrinter();
         helpPrinter.printAppropriateHelpMessage(System.out, properties, Arrays.asList(DetectGroup.values()), DetectGroup.BLACKDUCK_SERVER, detectArgumentState);
     }
 
-    public void printHelpJsonDocument(List<Property> properties, DetectInfo detectInfo, Gson gson) {
+    public boolean shouldCreateHelpJsonFile() {
+        return detectArgumentState.isHelpJsonDocument();
+    }
+
+    public void createHelpJsonFile(List<Property> properties, DetectInfo detectInfo, Gson gson) {
         DetectorRuleFactory ruleFactory = new DetectorRuleFactory();
         // TODO: Is there a better way to build a fake set of rules?
         DetectDetectableFactory mockFactory = new DetectDetectableFactory(null, null, null, null, null, null, null);
@@ -74,7 +93,7 @@ public class DetectFlagManager {
         helpJsonWriter.writeGsonDocument(String.format("synopsys-detect-%s-help.json", detectInfo.getDetectVersion()), properties, buildDetectors, buildlessDetectors);
     }
 
-    public HelpJsonDetector convertDetectorRule(DetectorRule rule, DetectorRuleSet ruleSet) {
+    private HelpJsonDetector convertDetectorRule(DetectorRule rule, DetectorRuleSet ruleSet) {
         HelpJsonDetector helpData = new HelpJsonDetector();
         helpData.setDetectorName(rule.getName());
         helpData.setDetectorDescriptiveName(rule.getDescriptiveName());
@@ -103,17 +122,13 @@ public class DetectFlagManager {
         return helpData;
     }
 
-    public DetectArgumentState parseDetectArgumentState(String[] sourceArgs) {
-        DetectArgumentStateParser detectArgumentStateParser = new DetectArgumentStateParser();
-        DetectArgumentState detectArgumentState = detectArgumentStateParser.parseArgs(sourceArgs);
-        return detectArgumentState;
+    public boolean shouldGenerateAirGapZip() {
+        return detectArgumentState.isGenerateAirGapZip();
     }
 
-    public File createAirGapZip(DetectFilter inspectorFilter, PropertyConfiguration detectConfiguration, PathResolver pathResolver, DirectoryManager directoryManager, Gson gson,
-        EventSystem eventSystem,
-        Configuration configuration,
-        String airGapSuffix)
-        throws DetectUserFriendlyException {
+    public File createAirGapZip(PropertyConfiguration detectConfiguration, PathResolver pathResolver, DirectoryManager directoryManager, Gson gson, EventSystem eventSystem, Configuration configuration) throws DetectUserFriendlyException {
+        DetectOverrideableFilter inspectorFilter = new DetectOverrideableFilter("", detectArgumentState.getParsedValue());
+
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver);
         ConnectionDetails connectionDetails = detectConfigurationFactory.createConnectionDetails();
         ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
@@ -133,10 +148,29 @@ public class DetectFlagManager {
 
         AirGapCreator airGapCreator = new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
         String gradleInspectorVersion = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION.getProperty()).orElse(null);
+        String airGapSuffix = inspectorFilter.getIncludedSet().stream().sorted().collect(Collectors.joining("-"));
         return airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix, gradleInspectorVersion);
     }
 
-    public DetectArgumentState getDetectArgumentState() {
-        return detectArgumentState;
+    public boolean shouldExecuteInteractiveMode() {
+        return detectArgumentState.isInteractive();
+    }
+
+    public MapPropertySource executeInteractiveMode(List<PropertySource> propertySources) {
+        InteractiveWriter writer = InteractiveWriter.defaultWriter(System.console(), System.in, System.out);
+        InteractivePropertySourceBuilder propertySourceBuilder = new InteractivePropertySourceBuilder(writer);
+        InteractiveManager interactiveManager = new InteractiveManager(propertySourceBuilder, writer);
+
+        // TODO: Ideally we should be able to share the BlackDuckConnectivityChecker from elsewhere in the boot --rotte NOV 2020
+        InteractiveModeDecisionTree interactiveModeDecisionTree = new InteractiveModeDecisionTree(new BlackDuckConnectivityChecker(), propertySources);
+        return interactiveManager.getInteractivePropertySource(interactiveModeDecisionTree);
+    }
+
+    public boolean shouldCreateDiagnosticSystem(PropertyConfiguration detectConfiguration) {
+        return diagnosticsDecider.decide(detectConfiguration).isConfiguredForDiagnostic;
+    }
+
+    public DiagnosticSystem createDiagnosticSystem(PropertyConfiguration detectConfiguration, DetectRun detectRun, DetectInfo detectInfo, DirectoryManager directoryManager, EventSystem eventSystem) {
+        return new DiagnosticSystem(diagnosticsDecider.decide(detectConfiguration).isDiagnosticExtended, detectConfiguration, detectRun, detectInfo, directoryManager, eventSystem);
     }
 }
