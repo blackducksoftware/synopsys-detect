@@ -84,6 +84,7 @@ public class PolarisCliResponseVersion implements Comparable<PolarisCliResponseV
         return major + "." + minor;
     }
 
+    @Override
     public int compareTo(final PolarisCliResponseVersion o) {
         if (major != o.major) {
             return Integer.compare(major, o.major);
