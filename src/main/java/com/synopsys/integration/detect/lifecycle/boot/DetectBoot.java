@@ -25,6 +25,7 @@ package com.synopsys.integration.detect.lifecycle.boot;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,6 @@ import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -47,20 +47,25 @@ import com.synopsys.integration.configuration.help.PropertyConfigurationHelpCont
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.PropertyDeprecationInfo;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
-import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
-import com.synopsys.integration.configuration.property.types.path.TildeInPathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
-import com.synopsys.integration.configuration.source.SpringConfigurationPropertySource;
 import com.synopsys.integration.detect.RunBeanConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
+import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
+import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
 import com.synopsys.integration.detect.configuration.help.print.DetectInfoPrinter;
+import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
+import com.synopsys.integration.detect.interactive.InteractiveManager;
+import com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree;
+import com.synopsys.integration.detect.interactive.InteractivePropertySourceBuilder;
+import com.synopsys.integration.detect.interactive.InteractiveWriter;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecision;
@@ -72,8 +77,10 @@ import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
+import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.DetectRun;
+import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
 import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsConfigurationService;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticsDecider;
@@ -85,7 +92,6 @@ import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWrite
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
-import com.synopsys.integration.util.OperatingSystemType;
 
 import freemarker.template.Configuration;
 
@@ -98,8 +104,7 @@ public class DetectBoot {
         this.detectBootFactory = detectBootFactory;
     }
 
-    public Optional<DetectBootResult> boot(DetectRun detectRun, String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext)
-        throws DetectUserFriendlyException, IOException, IllegalAccessException {
+    public Optional<DetectBootResult> boot(DetectRun detectRun, String[] sourceArgs, ConfigurableEnvironment environment, EventSystem eventSystem, DetectContext detectContext) throws DetectUserFriendlyException, IOException, IllegalAccessException {
         ObjectMapper objectMapper = detectBootFactory.createObjectMapper();
         DocumentBuilder xml = detectBootFactory.createXmlDocumentBuilder();
         Configuration configuration = detectBootFactory.createConfiguration();
@@ -108,23 +113,19 @@ public class DetectBoot {
         Gson gson = detectContext.getBean(Gson.class);
 
         DetectArgumentStateParser detectArgumentStateParser = new DetectArgumentStateParser();
-        DetectArgumentManager detectArgumentManager = new DetectArgumentManager(detectArgumentStateParser.parseArgs(sourceArgs));
 
-        List<PropertySource> propertySources;
-        try {
-            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, false));
-        } catch (RuntimeException e) {
-            logger.error("An unknown property source was found, detect will still continue.", e);
-            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, true));
-        }
+        DetectArgumentState detectArgumentState = detectArgumentStateParser.parseArgs(sourceArgs);
+        List<PropertySource> propertySources = detectBootFactory.initializePropertySources(environment);
 
-        if (detectArgumentManager.shouldPrintHelp()) {
-            detectArgumentManager.printAppropriateHelp(DetectProperties.allProperties());
+        if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
+            HelpPrinter helpPrinter = new HelpPrinter();
+            helpPrinter.printAppropriateHelpMessage(System.out, DetectProperties.allProperties(), Arrays.asList(DetectGroup.values()), DetectGroup.BLACKDUCK_SERVER, detectArgumentState);
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 
-        if (detectArgumentManager.shouldCreateHelpJsonFile()) {
-            detectArgumentManager.createHelpJsonFile(DetectProperties.allProperties(), detectInfo, gson);
+        if (detectArgumentState.isHelpJsonDocument()) {
+            HelpJsonManager helpJsonManager = new HelpJsonManager(gson);
+            helpJsonManager.createHelpJsonDocument(String.format("synopsys-detect-%s-help.json", detectInfo.getDetectVersion()));
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 
@@ -132,8 +133,15 @@ public class DetectBoot {
         DetectInfoPrinter detectInfoPrinter = new DetectInfoPrinter();
         detectInfoPrinter.printInfo(System.out, detectInfo);
 
-        if (detectArgumentManager.shouldExecuteInteractiveMode()) {
-            MapPropertySource interactivePropertySource = detectArgumentManager.executeInteractiveMode(propertySources);
+        if (detectArgumentState.isInteractive()) {
+            InteractiveWriter writer = InteractiveWriter.defaultWriter(System.console(), System.in, System.out);
+            InteractivePropertySourceBuilder propertySourceBuilder = new InteractivePropertySourceBuilder(writer);
+            InteractiveManager interactiveManager = new InteractiveManager(propertySourceBuilder, writer);
+
+            // TODO: Ideally we should be able to share the BlackDuckConnectivityChecker from elsewhere in the boot --rotte NOV 2020
+            InteractiveModeDecisionTree interactiveModeDecisionTree = new InteractiveModeDecisionTree(new BlackDuckConnectivityChecker(), propertySources);
+
+            MapPropertySource interactivePropertySource = interactiveManager.getInteractivePropertySource(interactiveModeDecisionTree);
             propertySources.add(0, interactivePropertySource);
         }
 
@@ -149,32 +157,34 @@ public class DetectBoot {
 
         logger.debug("Initializing Detect.");
 
-        PathResolver pathResolver;
-        if (detectInfo.getCurrentOs() != OperatingSystemType.WINDOWS && detectConfiguration.getValueOrDefault(DetectProperties.DETECT_RESOLVE_TILDE_IN_PATHS.getProperty())) {
-            logger.info("Tilde's will be automatically resolved to USER HOME.");
-            pathResolver = new TildeInPathResolver(SystemUtils.USER_HOME);
-        } else {
-            pathResolver = new SimplePathResolver();
-        }
+        // Building code pieces
+        PathResolver pathResolver = detectBootFactory.createPathResolver(detectInfo.getCurrentOs(), detectConfiguration.getValueOrDefault(DetectProperties.DETECT_RESOLVE_TILDE_IN_PATHS.getProperty()));
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver);
         DirectoryManager directoryManager = new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
 
-        DiagnosticSystem diagnosticSystem = null;
-        if (detectArgumentManager.shouldCreateDiagnosticSystem(detectConfiguration)) {
-            diagnosticSystem = detectArgumentManager.createDiagnosticSystem(detectConfiguration, detectRun, detectInfo, directoryManager, eventSystem);
-        }
+        DiagnosticSystem diagnosticSystem = detectBootFactory.createDiagnosticSystem(new DiagnosticsDecider(detectArgumentState), detectConfiguration,detectRun,detectInfo,directoryManager,eventSystem)
+                                                .orElse(null);
+        // end building code pieces
 
+        // functional steps
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
-        if (detectArgumentManager.shouldGenerateAirGapZip()) {
+        if (detectArgumentState.isGenerateAirGapZip()) {
             File airGapZip;
             try {
-                airGapZip = detectArgumentManager.createAirGapZip(detectConfiguration, pathResolver, directoryManager, gson, eventSystem, configuration);
+                DetectOverrideableFilter inspectorFilter = new DetectOverrideableFilter("", detectArgumentState.getParsedValue());
+                AirGapCreator airGapCreator = detectBootFactory.createAirGapCreator(detectConfiguration, pathResolver, gson, eventSystem, configuration);
+                String gradleInspectorVersion = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION.getProperty())
+                                                    .orElse(null);
+                String airGapSuffix = inspectorFilter.getIncludedSet().stream().sorted().collect(Collectors.joining("-"));
+
+                airGapZip = airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix, gradleInspectorVersion);
             } catch (DetectUserFriendlyException e) {
                 return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
             }
             return Optional.of(DetectBootResult.exit(detectConfiguration, airGapZip, directoryManager, diagnosticSystem));
         }
+        // end functional steps
 
         RunOptions runOptions = detectConfigurationFactory.createRunOptions();
         DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
@@ -184,11 +194,12 @@ public class DetectBoot {
 
         logger.debug("Decided what products will be run. Starting product boot.");
 
-        ProductBootFactory productBootFactory = new ProductBootFactory(detectInfo, eventSystem, detectConfigurationFactory);
-        ProductBoot productBoot = new ProductBoot();
+
         ProductRunData productRunData;
-        ProductBootOptions productBootOptions = detectConfigurationFactory.createProductBootOptions();
         try {
+            ProductBootFactory productBootFactory = new ProductBootFactory(detectInfo, eventSystem, detectConfigurationFactory);
+            ProductBootOptions productBootOptions = detectConfigurationFactory.createProductBootOptions();
+            ProductBoot productBoot = new ProductBoot();
             productRunData = productBoot.boot(productDecision, productBootOptions, new BlackDuckConnectivityChecker(), new PolarisConnectivityChecker(), productBootFactory, new AnalyticsConfigurationService(gson));
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
@@ -206,6 +217,7 @@ public class DetectBoot {
             return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
         }
 
+        // Building code pieces
         DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo);
         DetectorProfiler profiler = new DetectorProfiler(eventSystem);
 
@@ -230,7 +242,6 @@ public class DetectBoot {
     }
 
     private Optional<DetectBootResult> printConfiguration(boolean fullConfiguration, PropertyConfiguration detectConfiguration, EventSystem eventSystem, DetectInfo detectInfo) throws IllegalAccessException {
-
         Map<String, String> additionalNotes = new HashMap<>();
 
         List<Property> deprecatedProperties = DetectProperties.allProperties()
@@ -290,13 +301,6 @@ public class DetectBoot {
         }
 
         return Optional.empty();
-    }
-
-    private Optional<DiagnosticSystem> createDiagnostics(PropertyConfiguration propertyConfiguration, DetectRun detectRun, DetectInfo detectInfo, DiagnosticsDecider diagnosticsDecider, EventSystem eventSystem,
-        DirectoryManager directoryManager) {
-        DiagnosticSystem diagnosticSystem = null;
-
-        return Optional.ofNullable(diagnosticSystem);
     }
 
 }
