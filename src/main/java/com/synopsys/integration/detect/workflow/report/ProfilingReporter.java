@@ -32,6 +32,9 @@ import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 
 public class ProfilingReporter {
+
+    private static final int PADDING_LENGTH = 30;
+
     public void writeReport(final ReportWriter writer, final DetectorTimings detectorTimings) {
         writer.writeSeparator();
         writer.writeLine("Applicable Times");
@@ -62,22 +65,33 @@ public class ProfilingReporter {
         }
 
         for (final Map.Entry<String, Long> aggregatedEntry : aggregated.entrySet()) {
-            writer.writeLine("\t" + padToLength(aggregatedEntry.getKey(), 30) + "\t" + aggregatedEntry.getValue());
+            writer.writeLine("\t" + padToLength(aggregatedEntry.getKey(), PADDING_LENGTH) + "\t" + aggregatedEntry.getValue());
         }
     }
 
     private void writeReport(final ReportWriter writer, final List<Timing<DetectorEvaluation>> timings) {
         for (final Timing<DetectorEvaluation> detectorTime : timings) {
-            writer.writeLine("\t" + padToLength(detectorTime.getKey().getDetectorRule().getDescriptiveName(), 30) + "\t" + detectorTime.getMs());
+            writer.writeLine("\t" + padToLength(detectorTime.getKey().getDetectorRule().getDescriptiveName(),
+                    PADDING_LENGTH) + "\t" + detectorTime.getMs());
         }
 
     }
 
     private String padToLength(final String text, final int length) {
-        String outText = text;
-        while (outText.length() < length) {
-            outText += " ";
+        final int inputTextLength = text.length();
+
+        if (inputTextLength >= length) {
+            return text;
         }
-        return outText;
+
+        StringBuilder outTextStringBuilder = new StringBuilder(text);
+        final int suffixLength = length - inputTextLength;
+        final char[] suffix = new char[suffixLength];
+        for (int i = 0; i < suffixLength; i++) {
+            suffix[i] = ' ';
+        }
+        outTextStringBuilder.append(suffix);
+
+        return outTextStringBuilder.toString();
     }
 }
