@@ -51,6 +51,6 @@ public class DetectCustomFieldParser {
     }
 
     public void filterEmptyQuotes(final CustomFieldElement element) {
-        element.setValue(element.getValue().stream().filter(value -> !(value.equals("\"\"") || value.equals("''"))).collect(Collectors.toList()));
+        element.setValue(element.getValue().stream().filter(value -> !("\"\"".equals(value) || "''".equals(value))).collect(Collectors.toList()));
     }
 }

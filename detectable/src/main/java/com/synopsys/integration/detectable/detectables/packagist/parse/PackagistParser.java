@@ -159,7 +159,7 @@ public class PackagistParser {
     private List<NameVersion> parseDependenciesFromRequire(final JsonObject requireObject) {
         final List<NameVersion> dependencies = new ArrayList<>();
         requireObject.entrySet().forEach(it -> {
-            if (!it.getKey().equalsIgnoreCase("php")) {
+            if (!"php".equalsIgnoreCase(it.getKey())) {
                 final NameVersion nameVersion = new NameVersion(it.getKey(), it.getValue().toString());
                 dependencies.add(nameVersion);
             }
