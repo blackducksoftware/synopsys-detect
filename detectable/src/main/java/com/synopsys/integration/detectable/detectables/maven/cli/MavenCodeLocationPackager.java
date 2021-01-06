@@ -354,7 +354,7 @@ public class MavenCodeLocationPackager {
     }
 
     public boolean doesLineContainSegmentsInOrder(String line, String... segments) {
-        Boolean lineContainsSegments = true;
+        boolean lineContainsSegments = true;
 
         int index = indexOfEndOfSegments(line, segments);
         if (index == -1) {
