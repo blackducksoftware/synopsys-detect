@@ -47,10 +47,11 @@ public class GoModCommandExecutor {
         return execute(directory, goExe, FAILURE_MSG_QUERYING_GO_FOR_THE_LIST_OF_MODULES, "list", "-m");
     }
 
+    private static final Pattern GENERATE_GO_LIST_U_JSON_OUTPUT_PATTERN = Pattern.compile("\\d+\\.[\\d.]+");
+
     List<String> generateGoListUJsonOutput(File directory, File goExe) throws ExecutableRunnerException, DetectableException {
         List<String> goVersionOutput = execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_VERSION, "version");
-        Pattern pattern = Pattern.compile("\\d+\\.[\\d.]+");
-        Matcher matcher = pattern.matcher(goVersionOutput.get(0));
+        Matcher matcher = GENERATE_GO_LIST_U_JSON_OUTPUT_PATTERN.matcher(goVersionOutput.get(0));
         if (matcher.find()) {
             String version = matcher.group();
             String[] parts = version.split("\\.");
