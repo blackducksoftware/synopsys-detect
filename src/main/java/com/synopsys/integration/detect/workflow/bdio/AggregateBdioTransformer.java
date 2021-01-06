@@ -93,8 +93,7 @@ public class AggregateBdioTransformer {
             bomToolType = codeLocation.getCreatorName().orElse("unknown").toLowerCase();
         }
 
-        final List<String> externalIdPieces = new ArrayList<>();
-        externalIdPieces.addAll(Arrays.asList(original.getExternalIdPieces()));
+        final List<String> externalIdPieces = new ArrayList<>(Arrays.asList(original.getExternalIdPieces()));
         if (StringUtils.isNotBlank(relativePath)) {
             externalIdPieces.add(relativePath);
         }
