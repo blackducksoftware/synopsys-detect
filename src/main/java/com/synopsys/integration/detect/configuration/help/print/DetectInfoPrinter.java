@@ -28,8 +28,8 @@ import com.synopsys.integration.detect.configuration.DetectInfo;
 
 public class DetectInfoPrinter {
     public void printInfo(final PrintStream printStream, final DetectInfo detectInfo) {
-        printStream.println("");
+        printStream.println();
         printStream.println("Detect Version: " + detectInfo.getDetectVersion());
-        printStream.println("");
+        printStream.println();
     }
 }

@@ -30,7 +30,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 
 public class YarnLockExtractor {
     private final YarnPackager yarnPackager;
