@@ -22,8 +22,8 @@
  */
 package com.synopsys.integration.polaris.common.service;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -65,7 +65,9 @@ public class AuthService {
     }
 
     public <R extends PolarisResource, S extends PolarisResources<R>> List<R> getFiltered(final PolarisRequestSpec polarisRequestSpec, final PolarisParamBuilder paramBuilder, final Class<S> resourcesType) throws IntegrationException {
-        final List<PolarisParamBuilder> paramBuilders = paramBuilder == null ? Arrays.asList() : Arrays.asList(paramBuilder);
+        final List<PolarisParamBuilder> paramBuilders = paramBuilder == null ?
+                Collections.emptyList() :
+                Collections.singletonList(paramBuilder);
         return getFiltered(polarisRequestSpec, paramBuilders, resourcesType);
     }
 
@@ -87,16 +89,16 @@ public class AuthService {
     }
 
     public PolarisPagedRequestCreator generatePagedRequestCreatorWithInclude(final PolarisRequestSpec polarisRequestSpec, final String... included) throws IntegrationException {
-        return generatePagedRequestCreatorWithInclude(polarisRequestSpec, Arrays.asList(), included);
+        return generatePagedRequestCreatorWithInclude(polarisRequestSpec, Collections.emptyList(), included);
     }
 
     public PolarisPagedRequestCreator generatePagedRequestCreatorWithInclude(final PolarisRequestSpec polarisRequestSpec, final PolarisParamBuilder paramBuilder, final String... included) throws IntegrationException {
-        return generatePagedRequestCreatorWithInclude(polarisRequestSpec, Arrays.asList(paramBuilder), included);
+        return generatePagedRequestCreatorWithInclude(polarisRequestSpec, Collections.singletonList(paramBuilder), included);
     }
 
     public PolarisPagedRequestCreator generatePagedRequestCreatorWithInclude(final PolarisRequestSpec polarisRequestSpec, final Collection<PolarisParamBuilder> paramBuilders, final String... included) throws IntegrationException {
         final Set<PolarisParamBuilder> allParamBuilders = new HashSet<>(paramBuilders);
-        final Map<String, Set<String>> queryParameters = new HashMap<>();
+        final Map<String, Set<String>> queryParameters = new HashMap<>(allParamBuilders.size());
         for (final String include : included) {
             final PolarisParamBuilder includeFilter = PolarisParamBuilder.createIncludeFilter(polarisRequestSpec.getType(), include);
             allParamBuilders.add(includeFilter);
