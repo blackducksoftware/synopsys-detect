@@ -139,7 +139,7 @@ public class CliCommonResponseAdapterTest {
         try {
             return IOUtils.toString(this.getClass().getResourceAsStream(resourceName), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            fail(String.format("Could not get the resource: %s", resourceName, e));
+            fail(String.format("Could not get the resource: %s", resourceName), e);
         }
 
         return null;
