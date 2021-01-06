@@ -42,7 +42,7 @@ public class GraphSerializer {
 
         final StringBuilder rootText = new StringBuilder();
         for (final Dependency dependency : graph.getRootDependencies()) {
-            rootText.append("\t" + dependencyToString(dependency) + "\n");
+            rootText.append("\t").append(dependencyToString(dependency)).append("\n");
         }
 
         final StringBuilder relationshipText = new StringBuilder();
@@ -62,18 +62,18 @@ public class GraphSerializer {
             for (final Dependency childDependency : graph.getChildrenForParent(dependency)) {
                 cnt++;
                 unprocessed.add(childDependency);
-                childText.append("\t\t" + dependencyToString(childDependency) + "\n");
+                childText.append("\t\t").append(dependencyToString(childDependency)).append("\n");
             }
             if (cnt > 0) {
-                relationshipText.append("\t" + dependencyToString(dependency) + "\n");
+                relationshipText.append("\t").append(dependencyToString(dependency)).append("\n");
                 relationshipText.append(childText.toString());
             }
         }
 
         final StringBuilder graphText = new StringBuilder();
         graphText.append("Detect Graph v0.0.0" + "\n");
-        graphText.append("\tRoot Dependencies (" + graph.getRootDependencies().size() + ")" + "\n");
-        graphText.append("\tTotal Dependencies (" + graph.getRootDependencies().size() + ")" + "\n");
+        graphText.append("\tRoot Dependencies (").append(graph.getRootDependencies().size()).append(")").append("\n");
+        graphText.append("\tTotal Dependencies (").append(graph.getRootDependencies().size()).append(")").append("\n");
         graphText.append("Root Dependencies" + "\n");
         graphText.append(rootText.toString());
         graphText.append("Relationships" + "\n");

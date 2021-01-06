@@ -28,9 +28,9 @@ public class FileReportWriter implements ReportWriter {
             writer = new BufferedWriter(fileWriter);
             writeSeparator();
             writer.newLine();
-            writer.append("Report: " + name);
+            writer.append("Report: ").append(name);
             writer.newLine();
-            writer.append("Run id: " + runId);
+            writer.append("Run id: ").append(runId);
             writer.newLine();
             writer.append(description);
             writer.newLine();

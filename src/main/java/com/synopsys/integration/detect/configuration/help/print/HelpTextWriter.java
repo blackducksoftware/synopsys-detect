@@ -67,7 +67,7 @@ public class HelpTextWriter {
         }
 
         if (!allColumnsEmpty(columnRemainingRows)) {
-            createColumns.append(System.lineSeparator() + formatColumns(columnRemainingRows, columnWidths));
+            createColumns.append(System.lineSeparator()).append(formatColumns(columnRemainingRows, columnWidths));
         }
         return createColumns.toString();
     }
