@@ -56,7 +56,6 @@ public class CliScanV2Parser extends CliScanParser<CliScanV2> {
         final List<CommonToolInfo> tools = new ArrayList<>();
         Optional.ofNullable(cliScanV2.tools)
                 .orElse(Collections.emptyList())
-                .stream()
                 .forEach(tool -> fromToolInfoV2(tool, tools::add));
 
         cliCommonResponseModel.setTools(tools);

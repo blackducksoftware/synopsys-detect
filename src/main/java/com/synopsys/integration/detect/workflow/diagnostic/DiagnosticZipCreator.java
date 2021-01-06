@@ -76,7 +76,7 @@ public class DiagnosticZipCreator {
                 }
             }
 
-            return pieces.stream().collect(Collectors.joining("/"));
+            return String.join("/", pieces);
         } catch (final Exception e) {
             logger.info("Failed to clean zip entry.");
             return path.toString();
