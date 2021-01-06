@@ -33,7 +33,7 @@ import com.synopsys.integration.detectable.detectables.git.parsing.model.GitConf
 public class GitConfigNodeTransformer {
     public GitConfig createGitConfig(final List<GitConfigNode> gitConfigNodes) {
         final List<GitConfigRemote> gitConfigRemotes = gitConfigNodes.stream()
-                                                           .filter(node -> node.getType().equals("remote"))
+                                                           .filter(node -> "remote".equals(node.getType()))
                                                            .map(node -> {
                                                                String remoteNodeName = node.getName().orElseThrow(() -> new IllegalArgumentException("Expected remote node to have a name."));
                                                                String remoteNodeUrl = node.getProperty("url").orElseThrow(() -> new IllegalArgumentException("Expected remote node to have a url field."));
@@ -43,7 +43,7 @@ public class GitConfigNodeTransformer {
                                                            .collect(Collectors.toList());
 
         final List<GitConfigBranch> gitConfigBranches = gitConfigNodes.stream()
-                                                            .filter(node -> node.getType().equals("branch"))
+                                                            .filter(node -> "branch".equals(node.getType()))
                                                             .map(node -> {
                                                                 String remoteNodeName = node.getName().orElseThrow(() -> new IllegalArgumentException("Expected branch node to have a name."));
                                                                 String remoteNodeRemote = node.getProperty("remote").orElseThrow(() -> new IllegalArgumentException("Expected branch node to have a remote field."));
