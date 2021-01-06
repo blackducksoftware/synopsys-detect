@@ -47,6 +47,7 @@ public class CliScanV2Parser extends CliScanParser<CliScanV2> {
         };
     }
 
+    @Override
     public CliCommonResponseModel fromCliScan(JsonObject versionlessModel) {
         CliScanV2 cliScanV2 = fromJson(versionlessModel);
 
