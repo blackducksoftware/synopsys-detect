@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class PolarisServerConfigBuilderTest {
@@ -25,7 +26,7 @@ public class PolarisServerConfigBuilderTest {
         polarisServerConfigBuilder.setAccessToken("fake but valid (not blank) access token");
 
         PolarisServerConfig polarisServerConfig = polarisServerConfigBuilder.build();
-        assertNotNull(polarisServerConfig);
+        Assertions.assertNotNull(polarisServerConfig);
     }
 
     @Test
@@ -38,7 +39,7 @@ public class PolarisServerConfigBuilderTest {
         fakeEnvironment.put("polaris.timeout.in.seconds", "120");
         polarisServerConfigBuilder.setProperties(fakeEnvironment.entrySet());
 
-        assertTrue(polarisServerConfigBuilder.isValid());
+        Assertions.assertTrue(polarisServerConfigBuilder.isValid());
         assertEquals("fake but valid (not blank) access token", polarisServerConfigBuilder.getAccessToken());
         assertEquals("http://www.google.com/fake_but_valid_not_blank_url", polarisServerConfigBuilder.getUrl());
         assertEquals(120, polarisServerConfigBuilder.getTimeoutInSeconds());
@@ -69,7 +70,7 @@ public class PolarisServerConfigBuilderTest {
 
         fakeEnvironment.put("POLARIS_SERVER_URL", "http://www.google.com/fake_but_valid_not_blank_url");
         polarisServerConfigBuilder.setProperties(fakeEnvironment.entrySet());
-        assertTrue(polarisServerConfigBuilder.isValid());
+        Assertions.assertTrue(polarisServerConfigBuilder.isValid());
 
         polarisServerConfigBuilder = PolarisServerConfig.newBuilder();
         polarisServerConfigBuilder.setAccessToken("fake but valid (not blank) access token");
@@ -78,7 +79,7 @@ public class PolarisServerConfigBuilderTest {
         fakeEnvironment = new HashMap<>();
         fakeEnvironment.put("polaris.server.url", "http://www.google.com/fake_but_valid_not_blank_url");
         polarisServerConfigBuilder.setProperties(fakeEnvironment.entrySet());
-        assertTrue(polarisServerConfigBuilder.isValid());
+        Assertions.assertTrue(polarisServerConfigBuilder.isValid());
     }
 
     @Test
@@ -96,7 +97,7 @@ public class PolarisServerConfigBuilderTest {
         assertFalse(polarisServerConfigBuilder.isValid());
 
         polarisServerConfigBuilder.setProperties(properties.entrySet());
-        assertTrue(polarisServerConfigBuilder.isValid());
+        Assertions.assertTrue(polarisServerConfigBuilder.isValid());
     }
 
     @Test
@@ -112,7 +113,7 @@ public class PolarisServerConfigBuilderTest {
         assertFalse(polarisServerConfigBuilder.isValid());
 
         polarisServerConfigBuilder.setProperties(properties.entrySet());
-        assertTrue(polarisServerConfigBuilder.isValid());
+        Assertions.assertTrue(polarisServerConfigBuilder.isValid());
     }
 
     @Test
@@ -126,7 +127,7 @@ public class PolarisServerConfigBuilderTest {
         assertFalse(polarisServerConfigBuilder.isValid());
 
         polarisServerConfigBuilder.setProperties(properties.entrySet());
-        assertTrue(polarisServerConfigBuilder.isValid());
+        Assertions.assertTrue(polarisServerConfigBuilder.isValid());
 
         PolarisServerConfig polarisServerConfig = polarisServerConfigBuilder.build();
         assertEquals("fake but valid not blank access token", polarisServerConfig.getAccessToken());
@@ -141,7 +142,7 @@ public class PolarisServerConfigBuilderTest {
         assertFalse(polarisServerConfigBuilder.isValid());
 
         polarisServerConfigBuilder.setProperties(properties.entrySet());
-        assertTrue(polarisServerConfigBuilder.isValid());
+        Assertions.assertTrue(polarisServerConfigBuilder.isValid());
     }
 
     @Test

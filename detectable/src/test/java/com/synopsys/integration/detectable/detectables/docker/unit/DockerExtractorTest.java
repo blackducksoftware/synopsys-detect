@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -82,17 +83,17 @@ public class DockerExtractorTest {
         final Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, null, executableRunner);
 
         assertEquals("ubuntu:latest", extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA).get());
-        assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).get().getName().endsWith("_containerfilesystem.tar.gz"));
+        Assertions.assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).get().getName().endsWith("_containerfilesystem.tar.gz"));
 
         final ArgumentCaptor<Executable> executableArgumentCaptor = ArgumentCaptor.forClass(Executable.class);
         Mockito.verify(executableRunner).execute(executableArgumentCaptor.capture());
         final Executable executableToVerify = executableArgumentCaptor.getValue();
         final List<String> command = executableToVerify.getCommandWithArguments();
-        assertTrue(command.get(0).endsWith("/fake/test/java"));
+        Assertions.assertTrue(command.get(0).endsWith("/fake/test/java"));
         assertEquals("-jar", command.get(1));
-        assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
-        assertTrue(command.get(3).startsWith("--spring.config.location="));
-        assertTrue(command.get(3).endsWith("/application.properties"));
+        Assertions.assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
+        Assertions.assertTrue(command.get(3).startsWith("--spring.config.location="));
+        Assertions.assertTrue(command.get(3).endsWith("/application.properties"));
         assertEquals("--docker.image=ubuntu:latest", command.get(4));
     }
 
@@ -109,17 +110,17 @@ public class DockerExtractorTest {
 
         assertEquals("ubuntu:latest", extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA).get());
         // When Detect gets both .tar.gz files back, should prefer the squashed image
-        assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).get().getName().endsWith("_squashedimage.tar.gz"));
+        Assertions.assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).get().getName().endsWith("_squashedimage.tar.gz"));
 
         final ArgumentCaptor<Executable> executableArgumentCaptor = ArgumentCaptor.forClass(Executable.class);
         Mockito.verify(executableRunner).execute(executableArgumentCaptor.capture());
         final Executable executableToVerify = executableArgumentCaptor.getValue();
         final List<String> command = executableToVerify.getCommandWithArguments();
-        assertTrue(command.get(0).endsWith("/fake/test/java"));
+        Assertions.assertTrue(command.get(0).endsWith("/fake/test/java"));
         assertEquals("-jar", command.get(1));
-        assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
-        assertTrue(command.get(3).startsWith("--spring.config.location="));
-        assertTrue(command.get(3).endsWith("/application.properties"));
+        Assertions.assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
+        Assertions.assertTrue(command.get(3).startsWith("--spring.config.location="));
+        Assertions.assertTrue(command.get(3).endsWith("/application.properties"));
         assertEquals("--docker.image=ubuntu:latest", command.get(4));
     }
 
@@ -134,20 +135,20 @@ public class DockerExtractorTest {
 
         final Extraction extraction = extract(image, imageId, tar, fakeContainerFileSystemFile, null, executableRunner);
 
-        assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA).get().endsWith("testDockerTarfile.tar"));
-        assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).get().getName().endsWith("_containerfilesystem.tar.gz"));
+        Assertions.assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA).get().endsWith("testDockerTarfile.tar"));
+        Assertions.assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).get().getName().endsWith("_containerfilesystem.tar.gz"));
 
         final ArgumentCaptor<Executable> executableArgumentCaptor = ArgumentCaptor.forClass(Executable.class);
         Mockito.verify(executableRunner).execute(executableArgumentCaptor.capture());
         final Executable executableToVerify = executableArgumentCaptor.getValue();
         final List<String> command = executableToVerify.getCommandWithArguments();
-        assertTrue(command.get(0).endsWith("/fake/test/java"));
+        Assertions.assertTrue(command.get(0).endsWith("/fake/test/java"));
         assertEquals("-jar", command.get(1));
-        assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
-        assertTrue(command.get(3).startsWith("--spring.config.location="));
-        assertTrue(command.get(3).endsWith("/application.properties"));
-        assertTrue(command.get(4).startsWith("--docker.tar="));
-        assertTrue(command.get(4).endsWith("testDockerTarfile.tar"));
+        Assertions.assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
+        Assertions.assertTrue(command.get(3).startsWith("--spring.config.location="));
+        Assertions.assertTrue(command.get(3).endsWith("/application.properties"));
+        Assertions.assertTrue(command.get(4).startsWith("--docker.tar="));
+        Assertions.assertTrue(command.get(4).endsWith("testDockerTarfile.tar"));
     }
 
     @Test
@@ -162,20 +163,20 @@ public class DockerExtractorTest {
         final Extraction extraction = extract(image, imageId, tar, null, null, executableRunner);
 
         // No returned .tar.gz: scan given docker tar instead
-        assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA).get().endsWith("testDockerTarfile.tar"));
-        assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).get().getName().endsWith("testDockerTarfile.tar"));
+        Assertions.assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_IMAGE_NAME_META_DATA).get().endsWith("testDockerTarfile.tar"));
+        Assertions.assertTrue(extraction.getMetaData(DockerExtractor.DOCKER_TAR_META_DATA).get().getName().endsWith("testDockerTarfile.tar"));
 
         final ArgumentCaptor<Executable> executableArgumentCaptor = ArgumentCaptor.forClass(Executable.class);
         Mockito.verify(executableRunner).execute(executableArgumentCaptor.capture());
         final Executable executableToVerify = executableArgumentCaptor.getValue();
         final List<String> command = executableToVerify.getCommandWithArguments();
-        assertTrue(command.get(0).endsWith("/fake/test/java"));
+        Assertions.assertTrue(command.get(0).endsWith("/fake/test/java"));
         assertEquals("-jar", command.get(1));
-        assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
-        assertTrue(command.get(3).startsWith("--spring.config.location="));
-        assertTrue(command.get(3).endsWith("/application.properties"));
-        assertTrue(command.get(4).startsWith("--docker.tar="));
-        assertTrue(command.get(4).endsWith("testDockerTarfile.tar"));
+        Assertions.assertTrue(command.get(2).endsWith("/fake/test/dockerinspector.jar"));
+        Assertions.assertTrue(command.get(3).startsWith("--spring.config.location="));
+        Assertions.assertTrue(command.get(3).endsWith("/application.properties"));
+        Assertions.assertTrue(command.get(4).startsWith("--docker.tar="));
+        Assertions.assertTrue(command.get(4).endsWith("testDockerTarfile.tar"));
     }
 
     @Test

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
@@ -45,11 +46,11 @@ public class ContextsServiceIT {
         try {
             final Optional<Context> currentContext = contextsService.getCurrentContext();
             if (currentContext.isPresent()) {
-                assertTrue(currentContext.map(Context::getAttributes)
+                Assertions.assertTrue(currentContext.map(Context::getAttributes)
                                .map(ContextAttributes::getCurrent)
                                .orElse(Boolean.FALSE));
             } else {
-                assertTrue(contextsService.getAllContexts()
+                Assertions.assertTrue(contextsService.getAllContexts()
                                .stream()
                                .map(Context::getAttributes)
                                .map(ContextAttributes::getCurrent)

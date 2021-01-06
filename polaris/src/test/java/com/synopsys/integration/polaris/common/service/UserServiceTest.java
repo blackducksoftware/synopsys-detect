@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.StringUtils;
 
@@ -43,7 +44,8 @@ public class UserServiceTest {
                                           .findAny()
                                           .orElseThrow(() -> new AssertionError("Missing list element"));
             final Optional<String> optionalEmail = userService.getEmailForUser(user);
-            optionalEmail.ifPresent(email -> assertTrue("Expected email not to be blank", StringUtils.isNotBlank(email)));
+            optionalEmail.ifPresent(email -> Assertions.assertTrue(StringUtils.isNotBlank(email),
+                    "Expected email not to be blank"));
         }
     }
 

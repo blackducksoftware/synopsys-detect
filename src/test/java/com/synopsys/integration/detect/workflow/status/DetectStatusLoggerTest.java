@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -33,7 +34,7 @@ public class DetectStatusLoggerTest {
         List<DetectIssue> detectIssues = createIssues();
         statusLogger.logDetectStatus(loggerActual, statusSummaries, detectResults, detectIssues, ExitCodeType.SUCCESS);
         String actualOutput = loggerActual.getOutputString(LogLevel.INFO);
-        assertEquals(expectedOutput.trim().replaceAll("\r?\n", "\n"), actualOutput.trim().replaceAll("\r?\n", "\n"));
+        Assertions.assertEquals(expectedOutput.trim().replaceAll("\r?\n", "\n"), actualOutput.trim().replaceAll("\r?\n", "\n"));
     }
 
     /* These methods create the objects that will contain the same data as the example output file.
