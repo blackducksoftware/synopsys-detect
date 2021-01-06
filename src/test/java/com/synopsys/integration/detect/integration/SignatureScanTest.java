@@ -30,6 +30,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,7 +53,7 @@ public class SignatureScanTest extends BlackDuckIntegrationTest {
         detectArgs.add("--detect.output.path=" + tempOutputDirectory.toString());
         detectArgs.add("--detect.blackduck.signature.scanner.snippet.matching=SNIPPET_MATCHING");
         detectArgs.add("--detect.blackduck.signature.scanner.dry.run=true");
-        Application.main(detectArgs.toArray(new String[0]));
+        Application.main(detectArgs.toArray(ArrayUtils.EMPTY_STRING_ARRAY));
 
         assertDirectoryStructureForOfflineScan(tempOutputDirectory);
     }
