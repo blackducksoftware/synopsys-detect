@@ -305,11 +305,9 @@ public class MavenCodeLocationPackager {
         int index = indexOfEndOfSegments(line, "[", "INFO", "]");
         String trimmedLine = editableLine.substring(index);
 
-        if (StringUtils.isBlank(trimmedLine) || trimmedLine.contains("Downloaded") || trimmedLine.contains("Downloading")) {
-            // Does not have content or this a line about download information
-            return false;
-        }
-        return true;
+        // Does not have content or this a line about download information
+        return !StringUtils.isBlank(trimmedLine) && !trimmedLine.contains("Downloaded") && !trimmedLine.contains(
+                "Downloading");
     }
 
     public String trimLogLevel(String line) {
@@ -330,11 +328,7 @@ public class MavenCodeLocationPackager {
     }
 
     public boolean isDependencyTreeUpdates(String line) {
-        if (line.contains("checking for updates")) {
-            return true;
-        } else {
-            return false;
-        }
+        return line.contains("checking for updates");
     }
 
     public boolean isGav(String componentText) {
