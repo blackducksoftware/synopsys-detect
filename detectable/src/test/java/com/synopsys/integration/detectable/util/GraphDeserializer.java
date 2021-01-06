@@ -89,7 +89,7 @@ public class GraphDeserializer {
         String name = unescape(pieces[0]);
         String version = unescape(pieces[1]);
         Forge forge = knownForges.get(unescape(pieces[2]));
-        ExternalId externalId = externalIdFromString(forge, Arrays.asList(pieces).stream().skip(3).collect(Collectors.toList()));
+        ExternalId externalId = externalIdFromString(forge, Arrays.stream(pieces).skip(3).collect(Collectors.toList()));
         return new Dependency(name, version, externalId);
     }
 
