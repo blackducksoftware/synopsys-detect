@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -66,7 +67,7 @@ public class DeprecatedPropertyReferenceTest {
     @Test
     public void testCodeReferencesToDeprecatedProperties() throws IOException {
         File rootDir = new File("src");
-        Collection<File> sourceFiles = FileUtils.listFiles(rootDir, fileTypesToCheck.toArray(new String[0]), true);
+        Collection<File> sourceFiles = FileUtils.listFiles(rootDir, fileTypesToCheck.toArray(ArrayUtils.EMPTY_STRING_ARRAY), true);
         List<File> notAllowedFiles = Bds.of(sourceFiles)
                                          .filter(file -> !excludedFileNames.contains(FilenameUtils.getBaseName(file.getName())))
                                          .toList();

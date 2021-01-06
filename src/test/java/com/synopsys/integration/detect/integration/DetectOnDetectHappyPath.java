@@ -34,6 +34,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
@@ -105,7 +106,7 @@ public class DetectOnDetectHappyPath extends BlackDuckIntegrationTest {
 
         List<String> detectArgs = getInitialArgs(projectName, projectVersionName);
         detectArgs.add("--detect.wait.for.results=true");
-        Application.main(detectArgs.toArray(new String[0]));
+        Application.main(detectArgs.toArray(ArrayUtils.EMPTY_STRING_ARRAY));
 
         codeLocationsToDelete = blackDuckService.getAllResponses(projectVersionWrapper.getProjectVersionView(), ProjectVersionView.CODELOCATIONS_LINK_RESPONSE);
         Set<String> createdCodeLocationNames = codeLocationsToDelete.stream().map(CodeLocationView::getName).collect(Collectors.toSet());

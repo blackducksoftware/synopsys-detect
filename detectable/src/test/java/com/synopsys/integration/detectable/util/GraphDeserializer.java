@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +99,7 @@ public class GraphDeserializer {
     }
 
     private static ExternalId externalIdFromString(Forge forge, List<String> text) {
-        String[] pieces = text.stream().map(it -> unescape(it)).collect(Collectors.toList()).toArray(new String[0]);
+        String[] pieces = text.stream().map(it -> unescape(it)).collect(Collectors.toList()).toArray(ArrayUtils.EMPTY_STRING_ARRAY);
         return externalIdFactory.createModuleNamesExternalId(forge, pieces);
     }
 }
