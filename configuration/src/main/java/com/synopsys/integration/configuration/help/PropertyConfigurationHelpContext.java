@@ -116,9 +116,7 @@ public class PropertyConfigurationHelpContext {
                 int errorCount = propertyErrors.size();
                 String header = String.format("%s (%s)", pluralize("ERROR", "ERRORS", errorCount), errorCount);
                 logger.accept(header);
-                propertyErrors.forEach(errorMessage -> {
-                    logger.accept(property.getKey() + ": " + errorMessage);
-                });
+                propertyErrors.forEach(errorMessage -> logger.accept(property.getKey() + ": " + errorMessage));
             });
     }
 

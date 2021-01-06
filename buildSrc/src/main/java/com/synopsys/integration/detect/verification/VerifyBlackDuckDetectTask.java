@@ -62,9 +62,7 @@ public class VerifyBlackDuckDetectTask extends DefaultTask {
         if (bomComponents.isEmpty()) {
             throw new GradleException("No bom components were found for ${project.name} - ${version}");
         }
-        bomComponents.forEach(it -> {
-            System.out.println(it.getComponentName() + " - " + it.getComponentVersionName());
-        });
+        bomComponents.forEach(it -> System.out.println(it.getComponentName() + " - " + it.getComponentVersionName()));
     }
 
 }

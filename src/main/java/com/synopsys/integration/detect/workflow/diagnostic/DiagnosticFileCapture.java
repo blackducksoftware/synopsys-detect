@@ -65,9 +65,7 @@ public class DiagnosticFileCapture {
             return;
 
         final AtomicReference<String> executableMap = new AtomicReference<>("");
-        fileNames.forEach((key, value) -> {
-            executableMap.set(executableMap.get() + key + ": " + value + System.lineSeparator());
-        });
+        fileNames.forEach((key, value) -> executableMap.set(executableMap.get() + key + ": " + value + System.lineSeparator()));
 
         final File mapFile = new File(fileDirectory, "FILE-MAP.txt");
         try {

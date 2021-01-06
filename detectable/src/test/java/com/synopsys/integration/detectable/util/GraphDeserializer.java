@@ -98,7 +98,7 @@ public class GraphDeserializer {
     }
 
     private static ExternalId externalIdFromString(Forge forge, List<String> text) {
-        String[] pieces = text.stream().map(it -> unescape(it)).collect(Collectors.toList()).toArray(new String[0]);
+        String[] pieces = text.stream().map(GraphDeserializer::unescape).collect(Collectors.toList()).toArray(new String[0]);
         return externalIdFactory.createModuleNamesExternalId(forge, pieces);
     }
 }

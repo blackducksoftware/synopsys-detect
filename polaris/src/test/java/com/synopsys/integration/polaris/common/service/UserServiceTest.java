@@ -72,7 +72,7 @@ public class UserServiceTest {
                 groupResource = groupService.getAllGroups()
                                     .stream()
                                     .findAny()
-                                    .orElseThrow(() -> new IntegrationException());
+                                    .orElseThrow(IntegrationException::new);
             }
         } catch (final IntegrationException e) {
             assumeTrue(e != null, "Something went wrong while retrieving groups, but this test is not for the group service");

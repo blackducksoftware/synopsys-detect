@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.bitbake.unit;
 
 import java.util.HashMap;
 
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -96,8 +97,8 @@ public class GraphParserTransformerTest {
     }
 
     private void addEdge(final String edgeId, final String nodeName1, final String nodeName2, final HashMap<String, GraphNode> nodeMap, final HashMap<String, GraphEdge> edgeMap) {
-        final GraphNode node1 = nodeMap.entrySet().stream().map(it -> it.getValue()).filter(it -> it.getId().equals(nodeName1)).findFirst().get();
-        final GraphNode node2 = nodeMap.entrySet().stream().map(it -> it.getValue()).filter(it -> it.getId().equals(nodeName2)).findFirst().get();
+        final GraphNode node1 = nodeMap.entrySet().stream().map(Map.Entry::getValue).filter(it -> it.getId().equals(nodeName1)).findFirst().get();
+        final GraphNode node2 = nodeMap.entrySet().stream().map(Map.Entry::getValue).filter(it -> it.getId().equals(nodeName2)).findFirst().get();
         final GraphEdge edge = new GraphEdge(edgeId, node1, node2);
         edgeMap.put(edgeId, edge);
     }
