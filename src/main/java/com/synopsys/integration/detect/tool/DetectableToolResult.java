@@ -50,8 +50,8 @@ public class DetectableToolResult {
     @Nullable
     private final DetectableResult failedExtractableResult;
 
-    public DetectableToolResult(final DetectableToolResultType resultType, final DetectToolProjectInfo detectToolProjectInfo, final List<DetectCodeLocation> detectCodeLocations, final File dockerTar,
-        final DetectableResult failedExtractableResult) {
+    public DetectableToolResult(final DetectableToolResultType resultType, final @Nullable DetectToolProjectInfo detectToolProjectInfo, final List<DetectCodeLocation> detectCodeLocations, final @Nullable File dockerTar,
+                                final @Nullable DetectableResult failedExtractableResult) {
         this.resultType = resultType;
         this.detectToolProjectInfo = detectToolProjectInfo;
         this.detectCodeLocations = detectCodeLocations;

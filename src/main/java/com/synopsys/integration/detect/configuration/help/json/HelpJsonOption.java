@@ -76,11 +76,12 @@ class HelpJsonOption {
         this.propertyType = propertyType;
     }
 
+    @Nullable
     public String getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue(String defaultValue) {
+    public void setDefaultValue(@Nullable String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
@@ -108,11 +109,11 @@ class HelpJsonOption {
         this.group = group;
     }
 
-    public String getSuperGroup() {
+    public @Nullable String getSuperGroup() {
         return superGroup;
     }
 
-    public void setSuperGroup(String superGroup) {
+    public void setSuperGroup(@Nullable String superGroup) {
         this.superGroup = superGroup;
     }
 

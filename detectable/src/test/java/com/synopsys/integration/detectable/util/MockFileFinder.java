@@ -32,6 +32,7 @@ import java.util.Map;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import org.jetbrains.annotations.NotNull;
 
 public class MockFileFinder implements FileFinder {
 
@@ -72,7 +73,7 @@ public class MockFileFinder implements FileFinder {
     }
 
     @Override
-    public List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, boolean findInsideMatchingDirectories) {
+    public @NotNull List<File> findFiles(final File directoryToSearch, final List<String> filenamePatterns, final int depth, boolean findInsideMatchingDirectories) {
         List<File> found = new ArrayList<>();
         for (int i = 0; i <= depth; i++) {
             if (files.containsKey(i)) {

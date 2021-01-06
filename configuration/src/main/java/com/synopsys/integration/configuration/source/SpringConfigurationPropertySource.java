@@ -106,12 +106,14 @@ public class SpringConfigurationPropertySource implements PropertySource {
     }
 
     @Override
+    @NotNull
     public Boolean hasKey(final String key) {
         Optional<ConfigurationPropertyName> configurationPropertyName = toConfigurationName(key);
         return configurationPropertyName.filter(propertyName -> propertySource.getConfigurationProperty(propertyName) != null).isPresent();
     }
 
     @Override
+    @NotNull
     public Set<String> getKeys() {
         return Bds.of(propertySource).map(ConfigurationPropertyName::toString).toSet();
     }
@@ -135,6 +137,7 @@ public class SpringConfigurationPropertySource implements PropertySource {
     }
 
     @Override
+    @NotNull
     public String getName() {
         return name;
     }

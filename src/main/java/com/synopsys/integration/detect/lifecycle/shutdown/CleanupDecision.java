@@ -63,6 +63,7 @@ public class CleanupDecision {
         return shouldPreserveAirGap;
     }
 
+    @Nullable
     public File getAirGapZip() {
         return airGapZip;
     }

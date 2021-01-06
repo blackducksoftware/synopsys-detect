@@ -43,14 +43,17 @@ public class ShutdownDecision {
         this.cleanupDecision = cleanupDecision;
     }
 
+    @Nullable
     public PhoneHomeManager getPhoneHomeManager() {
         return phoneHomeManager;
     }
 
+    @Nullable
     public DiagnosticSystem getDiagnosticSystem() {
         return diagnosticSystem;
     }
 
+    @NotNull
     public CleanupDecision getCleanupDecision() {
         return cleanupDecision;
     }

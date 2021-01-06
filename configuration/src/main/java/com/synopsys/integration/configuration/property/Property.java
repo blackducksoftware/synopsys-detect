@@ -38,7 +38,7 @@ import com.synopsys.integration.configuration.util.ProductMajorVersion;
  * It has no type information and a value cannot be retrieved for it (without a subclass).
  **/
 public abstract class Property {
-    public Property(String key) {
+    public Property(@NotNull String key) {
         this.key = key;
     }
 
@@ -119,30 +119,37 @@ public abstract class Property {
         return false;
     }
 
+    @NotNull
     public String getKey() {
         return key;
     }
 
+    @NotNull
     public String getName() {
         return name;
     }
 
+    @Nullable
     public String getFromVersion() {
         return fromVersion;
     }
 
+    @Nullable
     public PropertyHelpInfo getPropertyHelpInfo() {
         return propertyHelpInfo;
     }
 
+    @Nullable
     public PropertyGroupInfo getPropertyGroupInfo() {
         return propertyGroupInfo;
     }
 
+    @Nullable
     public Category getCategory() {
         return category;
     }
 
+    @Nullable
     public PropertyDeprecationInfo getPropertyDeprecationInfo() {
         return propertyDeprecationInfo;
     }
@@ -155,6 +162,7 @@ public abstract class Property {
         return key;
     }
 
+    @Nullable
     public String getExample() {
         return example;
     }

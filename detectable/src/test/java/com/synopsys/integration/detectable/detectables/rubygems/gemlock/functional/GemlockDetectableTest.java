@@ -50,6 +50,7 @@ public class GemlockDetectableTest extends DetectableFunctionalTest {
     }
 
     @Override
+    @NotNull
     public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createGemlockDetectable(detectableEnvironment);
     }

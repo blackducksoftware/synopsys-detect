@@ -103,6 +103,7 @@ public enum DetectGroup implements Group {
     }
 
     @Override
+    @NotNull
     public String getName() {
         return name;
     }
