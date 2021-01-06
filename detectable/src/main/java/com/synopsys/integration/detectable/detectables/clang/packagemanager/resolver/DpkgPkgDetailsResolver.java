@@ -102,7 +102,7 @@ public class DpkgPkgDetailsResolver {
             if (packageInfoOutputLineParts.length > PKG_INFO_LINE_VALUE_POSITION) {
                 String value = packageInfoOutputLineParts[PKG_INFO_LINE_VALUE_POSITION];
                 if ((value != null) && !value.contains("installed")) {
-                    logger.debug(String.format("Package is not installed; Status is: %s", packageName, value));
+                    logger.debug(String.format("Package is not installed; Package %s; Status is: %s", packageName, value));
                     return true;
                 }
             } else {

@@ -109,7 +109,7 @@ public class AccessTokenPolarisHttpClient extends AuthenticatingIntHttpClient {
             return baseUrl.appendRelativeUrl(relativeUrl);
         } catch (IntegrationException e) {
             //TODO if supporting this library is important, we should do better
-            throw new RuntimeException(String.format("Can't combine the base url () with relative url ().", baseUrl.string(), relativeUrl));
+            throw new RuntimeException(String.format("Can't combine the base url %s with relative url %s.", baseUrl.string(), relativeUrl));
         }
     }
 
