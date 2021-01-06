@@ -117,6 +117,7 @@ public class DetectorRuleSetBuilder {
             //When the Key detector fails we fallback to the Value detector. Therefore for a given rule, every time it is a Value that corresponding Key detector must have already been added.
             if (rule.equals(fallback.getValue()) && !orderedRules.contains(fallback.getKey())) {
                 fallbackSatisfied = false;
+                break;
             }
         }
         return fallbackSatisfied;
@@ -129,6 +130,7 @@ public class DetectorRuleSetBuilder {
             for (final DetectorRule yield : yieldsToRules.get(rule)) {
                 if (!orderedRules.contains(yield)) {
                     yieldedSatisfied = false;
+                    break;
                 }
             }
             return yieldedSatisfied;

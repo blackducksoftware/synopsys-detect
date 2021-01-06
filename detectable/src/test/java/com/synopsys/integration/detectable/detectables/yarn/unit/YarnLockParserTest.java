@@ -219,6 +219,7 @@ public class YarnLockParserTest {
                         for (final YarnLockDependency entryDependency : entry.getDependencies()) {
                             if (entryDependency.getName().equals(dependency.getName()) && entryDependency.getVersion().equals(dependency.getVersion()) && entryDependency.isOptional() == dependency.isOptional()) {
                                 dFound = true;
+                                break;
                             }
                         }
                         assertTrue(dFound, "Could not find yarn dependency for entry " + idName + " with name " + dependency.getName() + " and version " + dependency.getVersion() + " and optional " + dependency.isOptional() + ".");
