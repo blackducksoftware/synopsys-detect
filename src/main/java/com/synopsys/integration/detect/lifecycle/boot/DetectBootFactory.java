@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.lifecycle.boot;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +50,11 @@ import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
+import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
+import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
+import com.synopsys.integration.detect.lifecycle.boot.product.PolarisConnectivityChecker;
+import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
+import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
@@ -63,11 +69,13 @@ import com.synopsys.integration.detect.workflow.airgap.AirGapPathFinder;
 import com.synopsys.integration.detect.workflow.airgap.DockerAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.GradleAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.NugetAirGapCreator;
+import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsConfigurationService;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticsDecider;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticsDecision;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.profiling.DetectorProfiler;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.util.OperatingSystemType;
@@ -77,6 +85,20 @@ import freemarker.template.Configuration;
 //Responsible for creating a few classes boot needs
 public class DetectBootFactory {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final DetectRun detectRun;
+    private final DetectInfo detectInfo;
+    private final Gson gson;
+    private final EventSystem eventSystem;
+    private final BlackDuckConnectivityChecker blackDuckConnectivityChecker;
+
+    public DetectBootFactory(DetectRun detectRun, DetectInfo detectInfo, Gson gson, EventSystem eventSystem) {
+        this.detectRun = detectRun;
+        this.detectInfo = detectInfo;
+        this.gson = gson;
+        this.eventSystem = eventSystem;
+
+        this.blackDuckConnectivityChecker = new BlackDuckConnectivityChecker();
+    }
 
     public ObjectMapper createObjectMapper() {
         return BlackDuckServicesFactory.createDefaultObjectMapper();
@@ -100,10 +122,10 @@ public class DetectBootFactory {
         }
     }
 
-    public PathResolver createPathResolver(OperatingSystemType currentOs, boolean resolveTildes) {
+    public PathResolver createPathResolver(Boolean resolveTildes) {
         PathResolver pathResolver;
 
-        if (currentOs != OperatingSystemType.WINDOWS && resolveTildes) {
+        if (detectInfo.getCurrentOs() != OperatingSystemType.WINDOWS && Boolean.TRUE.equals(resolveTildes)) {
             logger.info("Tilde's will be automatically resolved to USER HOME.");
             pathResolver = new TildeInPathResolver(SystemUtils.USER_HOME);
         } else {
@@ -124,7 +146,7 @@ public class DetectBootFactory {
         return propertySources;
     }
 
-    public Optional<DiagnosticSystem> createDiagnosticSystem(DiagnosticsDecider diagnosticsDecider, PropertyConfiguration detectConfiguration, DetectRun detectRun, DetectInfo detectInfo, DirectoryManager directoryManager, EventSystem eventSystem) {
+    public Optional<DiagnosticSystem> createDiagnosticSystem(DiagnosticsDecider diagnosticsDecider, PropertyConfiguration detectConfiguration, DirectoryManager directoryManager) {
         DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide(detectConfiguration);
         if (diagnosticsDecision.isConfiguredForDiagnostic) {
             return Optional.of(new DiagnosticSystem(diagnosticsDecider.decide(detectConfiguration).isDiagnosticExtended, detectConfiguration, detectRun, detectInfo, directoryManager, eventSystem));
@@ -132,8 +154,7 @@ public class DetectBootFactory {
         return Optional.empty();
     }
 
-    public AirGapCreator createAirGapCreator(PropertyConfiguration detectConfiguration, PathResolver pathResolver, Gson gson, EventSystem eventSystem, Configuration configuration) throws DetectUserFriendlyException {
-        DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver);
+    public AirGapCreator createAirGapCreator(DetectConfigurationFactory detectConfigurationFactory, Configuration configuration) throws DetectUserFriendlyException {
         ConnectionDetails connectionDetails = detectConfigurationFactory.createConnectionDetails();
         ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
@@ -153,5 +174,40 @@ public class DetectBootFactory {
         return new AirGapCreator(new AirGapPathFinder(), eventSystem, gradleAirGapCreator, nugetAirGapCreator, dockerAirGapCreator);
     }
 
+    public HelpJsonManager createHelpJsonManager() {
+        return new HelpJsonManager(gson);
+    }
+
+    public DirectoryManager createDirectoryManager(DetectConfigurationFactory detectConfigurationFactory) throws IOException {
+        return new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
+    }
+
+    public DetectConfigurationPrinter createDetectConfigurationPrinter() {
+        return new DetectConfigurationPrinter(eventSystem, detectInfo);
+    }
+
+    public DetectorProfiler createDetectorProfiler() {
+        return new DetectorProfiler(eventSystem);
+    }
+
+    public ProductBootFactory createProductBootFactory(DetectConfigurationFactory detectConfigurationFactory) {
+        return new ProductBootFactory(detectInfo, eventSystem, detectConfigurationFactory);
+    }
+
+    public EventSystem getEventSystem() {
+        return eventSystem;
+    }
+
+    public DetectRun getDetectRun() {
+        return detectRun;
+    }
+
+    public ProductBoot createProductBoot() {
+        return new ProductBoot(blackDuckConnectivityChecker, new PolarisConnectivityChecker(), createAnalyticsConfigurationService());
+    }
+
+    public AnalyticsConfigurationService createAnalyticsConfigurationService() {
+        return new AnalyticsConfigurationService(gson);
+    }
 
 }

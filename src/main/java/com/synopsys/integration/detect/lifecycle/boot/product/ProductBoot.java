@@ -48,8 +48,17 @@ import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
 
 public class ProductBoot {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final BlackDuckConnectivityChecker blackDuckConnectivityChecker;
+    private final PolarisConnectivityChecker polarisConnectivityChecker;
+    private final AnalyticsConfigurationService analyticsConfigurationService;
 
-    public ProductRunData boot(ProductDecision productDecision, ProductBootOptions productBootOptions, BlackDuckConnectivityChecker blackDuckConnectivityChecker, PolarisConnectivityChecker polarisConnectivityChecker, ProductBootFactory productBootFactory, AnalyticsConfigurationService analyticsConfigurationService) throws DetectUserFriendlyException {
+    public ProductBoot(BlackDuckConnectivityChecker blackDuckConnectivityChecker, PolarisConnectivityChecker polarisConnectivityChecker, AnalyticsConfigurationService analyticsConfigurationService) {
+        this.blackDuckConnectivityChecker = blackDuckConnectivityChecker;
+        this.polarisConnectivityChecker = polarisConnectivityChecker;
+        this.analyticsConfigurationService = analyticsConfigurationService;
+    }
+
+    public ProductRunData boot(ProductDecision productDecision, ProductBootOptions productBootOptions, ProductBootFactory productBootFactory) throws DetectUserFriendlyException {
         if (!productDecision.willRunAny()) {
             throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
         }
