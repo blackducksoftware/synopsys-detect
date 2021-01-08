@@ -34,7 +34,7 @@ import com.synopsys.integration.detector.base.DetectorType;
 public class RequiredDetectorChecker {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public class RequiredDetectorResult {
+    public static class RequiredDetectorResult {
         public RequiredDetectorResult(final Set<DetectorType> missingDetectors) {
             this.missingDetectors = missingDetectors;
         }
