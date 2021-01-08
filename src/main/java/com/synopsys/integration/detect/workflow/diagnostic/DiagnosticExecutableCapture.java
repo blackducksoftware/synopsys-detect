@@ -63,8 +63,9 @@ public class DiagnosticExecutableCapture {
     }
 
     public void finish() {
-        if (indexToCommand.size() <= 0)
+        if (indexToCommand.size() <= 0) {
             return;
+        }
 
         final AtomicReference<String> executableMap = new AtomicReference<>("");
         indexToCommand.forEach((key, value) -> executableMap.set(executableMap.get() + key + ": " + value + System.lineSeparator()));

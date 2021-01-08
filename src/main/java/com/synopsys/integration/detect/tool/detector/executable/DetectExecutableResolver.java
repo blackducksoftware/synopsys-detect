@@ -76,8 +76,9 @@ public class DetectExecutableResolver
         File resolved = null;
         for (ExecutableResolverFunction resolver : resolvers) {
             resolved = resolver.resolve();
-            if (resolved != null)
+            if (resolved != null) {
                 break;
+            }
         }
         if (cacheKey != null) {
             cachedExecutables.put(cacheKey, resolved);

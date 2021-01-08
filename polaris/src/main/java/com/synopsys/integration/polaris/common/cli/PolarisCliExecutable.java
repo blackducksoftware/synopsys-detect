@@ -33,7 +33,7 @@ public class PolarisCliExecutable extends Executable {
     public static final String POLARIS_USER_INPUT_TIMEOUT_MINUTES_KEY = "POLARIS_USER_INPUT_TIMEOUT_MINUTES";
 
     public static final PolarisCliExecutable createSetup(File polarisCli, File projectDirectory, Map<String, String> environmentVariables) {
-        return new PolarisCliExecutable(polarisCli, projectDirectory, environmentVariables, Arrays.asList("setup"));
+        return new PolarisCliExecutable(polarisCli, projectDirectory, environmentVariables, Collections.singletonList("setup"));
     }
 
     public static final PolarisCliExecutable createAnalyze(File polarisCli, File projectDirectory, Map<String, String> environmentVariables) {
