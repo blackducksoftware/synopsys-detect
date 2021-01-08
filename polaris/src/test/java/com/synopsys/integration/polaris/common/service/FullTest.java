@@ -42,7 +42,7 @@ public class FullTest {
         IssueService issueService = polarisServicesFactory.createIssueService();
 
         List<ProjectV0Resource> allProjects = projectService.getAllProjects();
-        allProjects.stream().forEach(System.out::println);
+        allProjects.forEach(System.out::println);
 
         Optional<ProjectV0Resource> project = projectService.getProjectByName("integration-common");
         System.out.println(project.get().getId());
@@ -51,7 +51,7 @@ public class FullTest {
         System.out.println(branch.get().getId());
 
         List<IssueV0Resource> queryIssues = issueService.getIssuesForProjectAndBranch(project.get().getId(), branch.get().getId());
-        queryIssues.stream().forEach(System.out::println);
+        queryIssues.forEach(System.out::println);
         List<String> issueKeys = queryIssues.stream().map(queryIssue -> queryIssue.getAttributes().getIssueKey()).collect(Collectors.toList());
 
         for (String issueKey : issueKeys) {

@@ -97,7 +97,7 @@ public class PolarisServerConfigBuilder extends IntegrationBuilder<PolarisServer
         HttpUrl polarisURL = null;
         try {
             polarisURL = new HttpUrl(getUrl());
-        } catch (IntegrationException e) {
+        } catch (IntegrationException ignored) {
         }
 
         return new PolarisServerConfig(polarisURL, getTimeoutInSeconds(), getAccessToken(), getProxyInfo(), isTrustCert(), gson, authenticationSupport);

@@ -54,9 +54,7 @@ public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
         String[] packageLines = queryPackageOutput.split("\n");
         for (String packageLine : packageLines) {
             Optional<PackageDetails> dependencyDetails = generatePackageFromQueryOutputLine(packageLine);
-            if (dependencyDetails.isPresent()) {
-                packageDetailsList.add(dependencyDetails.get());
-            }
+            dependencyDetails.ifPresent(packageDetailsList::add);
         }
         return packageDetailsList;
     }

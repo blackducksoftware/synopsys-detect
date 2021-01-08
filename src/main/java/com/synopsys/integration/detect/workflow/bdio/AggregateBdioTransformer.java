@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,13 +94,12 @@ public class AggregateBdioTransformer {
             bomToolType = codeLocation.getCreatorName().orElse("unknown").toLowerCase();
         }
 
-        final List<String> externalIdPieces = new ArrayList<>();
-        externalIdPieces.addAll(Arrays.asList(original.getExternalIdPieces()));
+        final List<String> externalIdPieces = new ArrayList<>(Arrays.asList(original.getExternalIdPieces()));
         if (StringUtils.isNotBlank(relativePath)) {
             externalIdPieces.add(relativePath);
         }
         externalIdPieces.add(bomToolType);
-        final String[] pieces = externalIdPieces.toArray(new String[externalIdPieces.size()]);
+        final String[] pieces = externalIdPieces.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
         return new Dependency(name, version, new ExternalIdFactory().createModuleNamesExternalId(original.getForge(), pieces));
     }
 }

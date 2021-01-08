@@ -96,7 +96,7 @@ public class DiagnosticLogSystem {
     private void restrictConsoleToDebug() {
         for (final Iterator<Appender<ILoggingEvent>> it = DiagnosticLogUtil.getRootLogger().iteratorForAppenders(); it.hasNext(); ) {
             final Appender appender = it.next();
-            if (appender.getName() != null && appender.getName().equals("CONSOLE")) {
+            if (appender.getName() != null && "CONSOLE".equals(appender.getName())) {
                 final ThresholdFilter levelFilter = new ThresholdFilter();
                 levelFilter.setLevel(Level.DEBUG.levelStr);
                 levelFilter.start();

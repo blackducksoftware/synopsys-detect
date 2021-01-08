@@ -65,7 +65,7 @@ public class DetectFileUtils {
             return "";
         }
         final String normalizedPath = FilenameUtils.normalizeNoEndSeparator(path, true);
-        return normalizedPath.substring(normalizedPath.lastIndexOf('/') + 1, normalizedPath.length());
+        return normalizedPath.substring(normalizedPath.lastIndexOf('/') + 1);
     }
 
     public static File writeToFile(final File file, final String contents) throws IOException {
