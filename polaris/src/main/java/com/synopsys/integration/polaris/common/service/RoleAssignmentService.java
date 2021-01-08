@@ -22,8 +22,8 @@
  */
 package com.synopsys.integration.polaris.common.service;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -65,7 +65,7 @@ public class RoleAssignmentService {
     }
 
     public List<RoleAssignmentResource> getFiltered(final PolarisParamBuilder polarisParamBuilder) throws IntegrationException {
-        return getFiltered(Arrays.asList(polarisParamBuilder));
+        return getFiltered(Collections.singletonList(polarisParamBuilder));
     }
 
     public List<RoleAssignmentResource> getFiltered(final Collection<PolarisParamBuilder> polarisParamBuilders) throws IntegrationException {

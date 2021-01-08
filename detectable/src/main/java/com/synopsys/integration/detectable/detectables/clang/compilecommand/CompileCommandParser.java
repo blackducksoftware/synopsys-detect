@@ -152,7 +152,7 @@ public class CompileCommandParser {
         ESCAPED_DOUBLE
     }
 
-    private class ParserState extends Stringable {
+    private static class ParserState extends Stringable {
         private boolean lastCharWasEscapeChar = false;
         private QuoteType quoteType = QuoteType.NONE;
 

@@ -264,7 +264,7 @@ public class MavenCodeLocationPackager {
         String artifact = gavParts[1];
 
         String scope = gavParts[gavParts.length - 1];
-        boolean recognizedScope = KNOWN_SCOPES.stream().anyMatch(knownScope -> scope.startsWith(knownScope));
+        boolean recognizedScope = KNOWN_SCOPES.stream().anyMatch(scope::startsWith);
 
         if (!recognizedScope) {
             logger.warn("This line can not be parsed correctly due to an unknown dependency format - it is unlikely a match will be found for this dependency: " + componentText);

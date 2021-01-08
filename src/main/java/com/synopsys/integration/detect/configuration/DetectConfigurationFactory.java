@@ -224,7 +224,7 @@ public class DetectConfigurationFactory {
         List<String> proxyIgnoredHosts = PropertyConfigUtils
                                              .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.BLACKDUCK_PROXY_IGNORED_HOSTS.getProperty(), DetectProperties.BLACKDUCK_HUB_PROXY_IGNORED_HOSTS.getProperty());
         List<Pattern> proxyPatterns = proxyIgnoredHosts.stream()
-                                          .map(it -> Pattern.compile(it))
+                                          .map(Pattern::compile)
                                           .collect(Collectors.toList());
         ProxyInfo proxyInformation = createBlackDuckProxyInfo();
         return new ConnectionDetails(proxyInformation, proxyPatterns, findTimeoutInSeconds(), alwaysTrust);

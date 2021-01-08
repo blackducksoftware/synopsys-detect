@@ -98,9 +98,7 @@ public class FormattedOutputManager {
                                             .toList();
 
         formattedOutput.unrecognizedPaths = new HashMap<>();
-        unrecognizedPaths.keySet().forEach(key -> {
-            formattedOutput.unrecognizedPaths.put(key, unrecognizedPaths.get(key).stream().map(File::toString).collect(Collectors.toList()));
-        });
+        unrecognizedPaths.keySet().forEach(key -> formattedOutput.unrecognizedPaths.put(key, unrecognizedPaths.get(key).stream().map(File::toString).collect(Collectors.toList())));
 
         return formattedOutput;
     }

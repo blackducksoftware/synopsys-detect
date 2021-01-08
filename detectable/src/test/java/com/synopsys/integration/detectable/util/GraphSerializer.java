@@ -94,7 +94,7 @@ public class GraphSerializer {
 
     private static String externalIdToString(final ExternalId externalId) {
         final String forge = externalId.getForge().getName().toString();
-        final String pieces = Arrays.stream(externalId.getExternalIdPieces()).map(it -> escape(it)).collect(Collectors.joining(","));
+        final String pieces = Arrays.stream(externalId.getExternalIdPieces()).map(GraphSerializer::escape).collect(Collectors.joining(","));
         return forge + "," + pieces;
     }
 }
