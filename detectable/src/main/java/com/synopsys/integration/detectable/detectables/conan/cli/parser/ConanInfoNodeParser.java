@@ -95,8 +95,9 @@ public class ConanInfoNodeParser {
         if (ref.startsWith("conanfile.")) {
             setFieldsForRootNode(nodeBuilder, ref);
         } else {
-            if (setFieldsForNonRootNode(nodeBuilder, ref))
+            if (setFieldsForNonRootNode(nodeBuilder, ref)) {
                 return;
+            }
         }
         nodeBuilder.setRef(ref);
     }
