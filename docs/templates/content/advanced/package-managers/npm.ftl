@@ -21,14 +21,14 @@ The npm shrinkwrap detector uses the [npm-shrinkwrap.json](https://docs.npmjs.co
 
 It is the same as a package-lock.json but is a publishable lockfile. ${solution_name} always chooses shrinkwrap over package lock.
 
-## npm  detector
+## npm CLI detector
 
 The npm CLI detector requires a package.json and an npm executable.
 
-It executes *npm -ls json*, and verifies that it succeeded by ensuring that no messages were written to
+It executes *npm ls -json*, and verifies that it succeeded by ensuring that no messages were written to
 stderr, and that the exit code was 0. If both conditions are met, it parses the output for dependencies.
 
-If *npm -ls json* does write messages to stderr (for example, lint messages) that you would like
+If *npm ls -json* does write messages to stderr (for example, lint messages) that you would like
 ${solution_name} to ignore, you can silence errors by adding the --silent npm argument to the npm
 command using ${solution_name} property --detect.npm.arguments.
 

@@ -78,10 +78,8 @@ public class Extraction {
             if (value != null && clazz.isAssignableFrom(value.getClass())) {
                 return Optional.of(clazz.cast(value));
             }
-            return Optional.empty();
-        } else {
-            return Optional.empty();
         }
+        return Optional.empty();
     }
 
     public boolean isSuccess() {

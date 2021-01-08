@@ -59,9 +59,7 @@ public class IntermediateStepExecuteBazelOnEach implements IntermediateStep {
         for (String inputItem : adjustedInput) {
             List<String> finalizedArgs = bazelVariableSubstitutor.substitute(bazelCommandArgs, inputItem);
             Optional<String> cmdOutput = bazelCommandExecutor.executeToString(finalizedArgs);
-            if (cmdOutput.isPresent()) {
-                results.add(cmdOutput.get());
-            }
+            cmdOutput.ifPresent(results::add);
         }
         return results;
     }

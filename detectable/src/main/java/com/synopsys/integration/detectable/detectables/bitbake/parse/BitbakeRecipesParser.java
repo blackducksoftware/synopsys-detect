@@ -36,7 +36,7 @@ public class BitbakeRecipesParser {
     private final IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
 
     /**
-     * @param output is the executable output.
+     * @param showRecipeLines is the executable output.
      * @return Recipe names mapped to a recipe's the layer names.
      */
     public List<BitbakeRecipe> parseShowRecipes(final List<String> showRecipeLines) {

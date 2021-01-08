@@ -152,6 +152,7 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("blackduck.url"))
             .setInfo("Black Duck URL", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp("URL of the Black Duck server.")
+            .setExample("https://blackduck.mydomain.com")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.DEFAULT);
 
     public static final DetectProperty<IntegerProperty> DETECT_PARALLEL_PROCESSORS =
@@ -165,6 +166,7 @@ public class DetectProperties {
         new DetectProperty<>(new NullablePathProperty("detect.bash.path"))
             .setInfo("Bash Executable", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("Path to the Bash executable.", "If set, Detect will use the given Bash executable instead of searching for one.")
+            .setExample("/usr/bin/bash")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
     public static final DetectProperty<NullablePathProperty> DETECT_BAZEL_PATH =
@@ -406,14 +408,15 @@ public class DetectProperties {
             .setInfo("Docker Image Name", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "The Docker image name to inspect. For Detect to run Docker Inspector, either this property, detect.docker.tar, or detect.docker.image.id must be set. Docker Inspector finds packages installed by the Linux package manager in Linux-based images. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
-            .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
-            .setExample("ubuntu:latest");
+            .setExample("centos:centos8")
+            .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH);
 
     public static final DetectProperty<NullableStringProperty> DETECT_DOCKER_IMAGE_ID =
         new DetectProperty<>(new NullableStringProperty("detect.docker.image.id"))
             .setInfo("Docker Image ID", DetectPropertyFromVersion.VERSION_6_1_0)
             .setHelp(
                 "The ID (shown in the 'IMAGE ID' column of 'docker images' output) of the target Docker image. The target image must already be local (must appear in the output of 'docker images'). detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
+            .setExample("0d120b6ccaa8")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
             .setExample("fe1cc5b91830");
 
@@ -436,7 +439,8 @@ public class DetectProperties {
     public static final DetectProperty<NullablePathProperty> DETECT_DOCKER_PATH =
         new DetectProperty<>(new NullablePathProperty("detect.docker.path"))
             .setInfo("Docker Executable", DetectPropertyFromVersion.VERSION_3_0_0)
-            .setHelp("Path to the docker executable.")
+            .setHelp("Path to the docker executable (used to load image inspector Docker images in order to run the Docker Inspector in air gap mode).")
+            .setExample("/usr/local/bin/docker")
             .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL);
 
     public static final DetectProperty<BooleanProperty> DETECT_DOCKER_PATH_REQUIRED =
@@ -462,6 +466,7 @@ public class DetectProperties {
             .setInfo("Docker Image Archive File", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "A Docker image saved to a .tar file using the 'docker save' command. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
+            .setExample("./ubuntu21_04.tar")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH);
 
     public static final DetectProperty<NullablePathProperty> DETECT_DOTNET_PATH =
@@ -478,6 +483,7 @@ public class DetectProperties {
                 "If Detect runs one or more detector on your project that you would like to exclude, you can use this property to prevent Detect from running them."
             )
             .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL)
+            .setExample("NPM,LERNA")
             .setCategory(DetectCategory.Advanced);
 
     public static final DetectProperty<BooleanProperty> DETECT_FORCE_SUCCESS =
@@ -583,6 +589,7 @@ public class DetectProperties {
                 "By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.",
                 "If you want to limit Detect to a subset of its detectors, use this property to specify that subset."
             )
+            .setExample("NPM")
             .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
@@ -669,7 +676,8 @@ public class DetectProperties {
     public static final DetectProperty<NullableStringProperty> DETECT_NPM_ARGUMENTS =
         new DetectProperty<>(new NullableStringProperty("detect.npm.arguments"))
             .setInfo("Additional NPM Command Arguments", DetectPropertyFromVersion.VERSION_4_3_0)
-            .setHelp("A space-separated list of additional arguments to add to the npm command line when running Detect against an NPM project.")
+            .setHelp("A space-separated list of additional arguments that Detect will add at then end of the npm ls command line when Detect executes the NPM CLI Detector on an NPM project.")
+            .setExample("--depth=0")
             .setGroups(DetectGroup.NPM, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<BooleanProperty> DETECT_NPM_INCLUDE_DEV_DEPENDENCIES =
@@ -874,6 +882,7 @@ public class DetectProperties {
         new DetectProperty<>(new StringListProperty("detect.project.user.groups", emptyList()))
             .setInfo("Project User Groups", DetectPropertyFromVersion.VERSION_5_4_0)
             .setHelp("A comma-separated list of names of user groups to add to the project.")
+            .setExample("ProjectManagers,TechLeads")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
@@ -881,6 +890,7 @@ public class DetectProperties {
         new DetectProperty<>(new StringListProperty("detect.project.tags", emptyList()))
             .setInfo("Project Tags", DetectPropertyFromVersion.VERSION_5_6_0)
             .setHelp("A comma-separated list of tags to add to the project. This property is not supported when using Synopsys Detect in offline mode.")
+            .setExample("Critical")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
@@ -995,6 +1005,7 @@ public class DetectProperties {
                 "The set of required detectors.",
                 "If you want one or more detectors to be required (must be found to apply), use this property to specify the set of required detectors. If this property is set, and one (or more) of the given detectors is not found to apply, Detect will fail."
             )
+            .setExample("NPM")
             .setGroups(DetectGroup.DETECTOR, DetectGroup.GLOBAL);
 
     public static final DetectProperty<BooleanProperty> DETECT_RISK_REPORT_PDF =
@@ -1068,6 +1079,7 @@ public class DetectProperties {
             .setInfo("Detect Timeout", DetectPropertyFromVersion.VERSION_6_8_0)
             .setHelp(
                 "The amount of time in seconds Detect will wait for network connection, for scans to finish, and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time.")
+            .setExample("600")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
@@ -1183,7 +1195,7 @@ public class DetectProperties {
             .setInfo("Resolve Tilde in Paths", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("If set to false Detect will not automatically resolve the '~/' prefix in a mac or linux path to the user's home directory.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
-            .setDeprecated("This property is now deprecated. Going forward, Detect will no longer resolve tildes in the path.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
+            .setDeprecated("This property is now deprecated. Future versions of Detect will no longer resolve tildes in the path.", DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated
     public static final DetectProperty<BooleanProperty> DETECT_PYTHON_PYTHON3 =
@@ -1191,7 +1203,7 @@ public class DetectProperties {
             .setInfo("Use Python3", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp("If true will use Python 3 if available on class path.")
             .setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL)
-            .setDeprecated("This property is now deprecated. Due to the January 2020 sunset of Python 2, Detect version 7.0.0 and will assume that the python executable points to python3.",
+            .setDeprecated("This property is now deprecated. Due to the January 2020 sunset of Python 2, future versions of Detect will assume that the executable named python points to a Python 3 executable.",
                 DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     @Deprecated

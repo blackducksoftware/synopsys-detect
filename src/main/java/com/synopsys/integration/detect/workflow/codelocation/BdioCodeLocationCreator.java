@@ -121,7 +121,7 @@ public class BdioCodeLocationCreator {
             bdioCodeLocations = new ArrayList<>();
             for (int i = 0; i < codeLocations.size(); i++) {
                 final DetectCodeLocation codeLocation = codeLocations.get(i);
-                final String newCodeLocationName = String.format("%s %s", codeLocationName, Integer.toString(i));
+                final String newCodeLocationName = String.format("%s %d", codeLocationName, i);
                 final BdioCodeLocation bdioCodeLocation = new BdioCodeLocation(codeLocation, newCodeLocationName, createBdioName(newCodeLocationName, integrationEscapeUtil));
                 bdioCodeLocations.add(bdioCodeLocation);
 

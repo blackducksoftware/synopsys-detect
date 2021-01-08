@@ -2,7 +2,9 @@
 
 Concurrent execution of ${solution_name} by the same user can result in collisions as the ${solution_name} script,
 the ${solution_name} .jar, the ${solution_name} inspectors, and the ${blackduck_signature_scanner_name}
-are each downloaded to the same default location during execution.
+are each downloaded to the same default location during execution. There are also potential race conditions that
+can occur when multiple concurrent runs of ${solution_name} create or update the same ${blackduck_product_name}
+project/version or codelocation.
 
 Concurrent execution of ${solution_name} runs that include Docker image inspection involves additional
 challenges. For that scenario, we recommend engaging ${professional_services} for a solution tailored to your environment.
@@ -13,8 +15,9 @@ avoid the collisions mentioned above is to:
 
 1. Run ${solution_name} using the air gap capability. This avoids downloading the ${solution_name} script, .jar, or inspectors during execution.
 1. Manually download and install the ${blackduck_signature_scanner_name}, and point ${solution_name} to it. This avoids downloading the ${blackduck_signature_scanner_name} during execution.
+1. Ensure that concurrent runs do not attempt to create or update the same ${blackduck_product_name} project/version, or the same codelocation.
 
-To do this:
+To accomplish the first two:
 
 1. Log into ${blackduck_product_name}, and under Tools > Legacy Downloads, download and unzip the ${blackduck_signature_scanner_name}.
 1. Download the ${solution_name} gradle-nuget air gap zip from [${division_name} ${binary_repo_type} server](${binary_repo_ui_url_base}/${binary_repo_repo}/${binary_repo_pkg_path}/${project_name}) and unzip it.

@@ -321,8 +321,7 @@ public class DetectConfigurationFactory {
         List<String> excludedDirectoryPatterns = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS);
         List<String> excludedDirectoryPaths = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS);
 
-        List<String> excludedDirectories = new ArrayList<>();
-        excludedDirectories.addAll(userProvidedExcludedDirectories);
+        List<String> excludedDirectories = new ArrayList<>(userProvidedExcludedDirectories);
         if (detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS.getProperty())) {
             List<String> defaultExcluded = Arrays.stream(DefaultDetectorExcludedDirectories.values())
                                                .map(DefaultDetectorExcludedDirectories::getDirectoryName)

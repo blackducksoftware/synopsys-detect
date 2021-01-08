@@ -66,7 +66,7 @@ public class GoLockParser {
     private String createDependencyName(final String projectName, final String parsedPackageName) {
         String dependencyName = projectName;
 
-        if (!parsedPackageName.equals(".")) {
+        if (!".".equals(parsedPackageName)) {
             dependencyName = dependencyName + "/" + parsedPackageName;
         }
         if (dependencyName.startsWith("golang.org/x/")) {

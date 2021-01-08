@@ -164,7 +164,7 @@ public class HelpPrinter {
             description = property.getPropertyDeprecationInfo().getDeprecationText() + description;
         }
         if (property.listExampleValues().size() > 0) {
-            description += " (" + property.listExampleValues().stream().collect(Collectors.joining("|")) + ")";
+            description += " (" + String.join("|", property.listExampleValues()) + ")";
         }
         String propertyKey = property.getKey();
         String defaultValue = "";

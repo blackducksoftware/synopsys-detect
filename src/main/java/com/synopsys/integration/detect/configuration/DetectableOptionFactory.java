@@ -155,7 +155,7 @@ public class DetectableOptionFactory {
         List<String> includedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_INCLUDED_CONFIGURATIONS);
         String configuredGradleInspectorRepositoryUrl = getNullableValue(DetectProperties.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
         String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
-        if (configuredGradleInspectorRepositoryUrl != null && StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
+        if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
             logger.warn("Using a custom gradle repository will not be supported in the future.");
             customRepository = configuredGradleInspectorRepositoryUrl;
         }
