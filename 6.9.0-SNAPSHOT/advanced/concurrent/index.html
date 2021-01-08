@@ -1370,7 +1370,9 @@
                 <h1 id="concurrent-execution">Concurrent execution<a class="headerlink" href="#concurrent-execution" title="Permanent link">#</a></h1>
 <p>Concurrent execution of Synopsys Detect by the same user can result in collisions as the Synopsys Detect script,
 the Synopsys Detect .jar, the Synopsys Detect inspectors, and the Black Duck Signature Scanner
-are each downloaded to the same default location during execution.</p>
+are each downloaded to the same default location during execution. There are also potential race conditions that
+can occur when multiple concurrent runs of Synopsys Detect create or update the same Black Duck
+project/version or codelocation.</p>
 <p>Concurrent execution of Synopsys Detect runs that include Docker image inspection involves additional
 challenges. For that scenario, we recommend engaging Synopsys Software Integrity Group Client Services for a solution tailored to your environment.
 The rest of this page addresses scenarios that do not involved inspecting Docker images.</p>
@@ -1379,8 +1381,9 @@ avoid the collisions mentioned above is to:</p>
 <ol>
 <li>Run Synopsys Detect using the air gap capability. This avoids downloading the Synopsys Detect script, .jar, or inspectors during execution.</li>
 <li>Manually download and install the Black Duck Signature Scanner, and point Synopsys Detect to it. This avoids downloading the Black Duck Signature Scanner during execution.</li>
+<li>Ensure that concurrent runs do not attempt to create or update the same Black Duck project/version, or the same codelocation.</li>
 </ol>
-<p>To do this:</p>
+<p>To accomplish the first two:</p>
 <ol>
 <li>Log into Black Duck, and under Tools &gt; Legacy Downloads, download and unzip the Black Duck Signature Scanner.</li>
 <li>Download the Synopsys Detect gradle-nuget air gap zip from <a href="https://sig-repo.synopsys.com/webapp/#/artifacts/browse/tree/General/bds-integrations-release/com/synopsys/integration/synopsys-detect">Synopsys SIG Artifactory server</a> and unzip it.</li>
