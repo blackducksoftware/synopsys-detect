@@ -67,9 +67,7 @@ public class DiagnosticExecutableCapture {
             return;
 
         final AtomicReference<String> executableMap = new AtomicReference<>("");
-        indexToCommand.forEach((key, value) -> {
-            executableMap.set(executableMap.get() + key + ": " + value + System.lineSeparator());
-        });
+        indexToCommand.forEach((key, value) -> executableMap.set(executableMap.get() + key + ": " + value + System.lineSeparator()));
 
         final File mapFile = new File(executableDirectory, "EXE-MAP.txt");
         try {
