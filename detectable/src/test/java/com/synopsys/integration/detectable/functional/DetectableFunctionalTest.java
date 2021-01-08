@@ -55,7 +55,6 @@ import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public abstract class DetectableFunctionalTest {
-
     @NotNull
     private final String name;
 
@@ -91,8 +90,7 @@ public abstract class DetectableFunctionalTest {
 
     @Test
     public void run() throws IOException, DetectableException, ExecutableFailedException {
-
-        System.out.printf("Function Test (%s) is using temp directory: %s%n", name, tempDirectory.toAbsolutePath().toString());
+        System.out.println(String.format("Function Test (%s) is using temp directory: %s", name, tempDirectory.toAbsolutePath().toString()));
 
         setup();
 
