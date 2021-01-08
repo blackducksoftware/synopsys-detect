@@ -38,7 +38,7 @@ public class DetectBootTest {
     @BeforeEach
     public void setUp() {
         DetectBootFactory detectBootFactory = new DetectBootFactory();
-        detectBoot = new DetectBoot(detectBootFactory);
+        detectBoot = new DetectBoot(detectBootFactory, , , );
         detectRun = new DetectRun(EXPECTED_RUN_ID);
         eventSystem = new EventSystem();
         DetectInfo detectInfo = new DetectInfo(EXPECTED_VERSION_TEXT, EXPECTED_MAJOR_VERSION, CURRENT_OS);

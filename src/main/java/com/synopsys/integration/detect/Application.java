@@ -147,8 +147,11 @@ public class Application implements ApplicationRunner {
         Optional<DetectBootResult> bootResult = Optional.empty();
         try {
             logger.debug("Detect boot begin.");
-            DetectBoot detectBoot = new DetectBoot(new DetectBootFactory(detectRun, detectContext.getBean(DetectInfo.class), detectContext.getBean(Gson.class)));
-            bootResult = detectBoot.boot(applicationArguments.getSourceArgs(), environment, eventSystem, detectContext);
+
+            DetectBootFactory detectBootFactory = new DetectBootFactory(detectRun, detectContext.getBean(DetectInfo.class), detectContext.getBean(Gson.class), eventSystem);
+            DetectBoot detectBoot = detectBootFactory.createDetectBoot(environment, applicationArguments.getSourceArgs(), detectContext);
+            bootResult = detectBoot.boot();
+
             logger.debug("Detect boot completed.");
         } catch (Exception e) {
             logger.error("Detect boot failed.");

@@ -51,14 +51,18 @@ public class ProductBoot {
     private final BlackDuckConnectivityChecker blackDuckConnectivityChecker;
     private final PolarisConnectivityChecker polarisConnectivityChecker;
     private final AnalyticsConfigurationService analyticsConfigurationService;
+    private final ProductBootFactory productBootFactory;
+    private final ProductBootOptions productBootOptions;
 
-    public ProductBoot(BlackDuckConnectivityChecker blackDuckConnectivityChecker, PolarisConnectivityChecker polarisConnectivityChecker, AnalyticsConfigurationService analyticsConfigurationService) {
+    public ProductBoot(BlackDuckConnectivityChecker blackDuckConnectivityChecker, PolarisConnectivityChecker polarisConnectivityChecker, AnalyticsConfigurationService analyticsConfigurationService, ProductBootFactory productBootFactory, ProductBootOptions productBootOptions) {
         this.blackDuckConnectivityChecker = blackDuckConnectivityChecker;
         this.polarisConnectivityChecker = polarisConnectivityChecker;
         this.analyticsConfigurationService = analyticsConfigurationService;
+        this.productBootFactory = productBootFactory;
+        this.productBootOptions = productBootOptions;
     }
 
-    public ProductRunData boot(ProductDecision productDecision, ProductBootOptions productBootOptions, ProductBootFactory productBootFactory) throws DetectUserFriendlyException {
+    public ProductRunData boot(ProductDecision productDecision) throws DetectUserFriendlyException {
         if (!productDecision.willRunAny()) {
             throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
         }

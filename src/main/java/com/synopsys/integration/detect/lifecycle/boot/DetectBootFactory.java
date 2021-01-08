@@ -50,11 +50,19 @@ import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
+import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
+import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
+import com.synopsys.integration.detect.interactive.InteractiveManager;
+import com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree;
+import com.synopsys.integration.detect.interactive.InteractivePropertySourceBuilder;
+import com.synopsys.integration.detect.interactive.InteractiveWriter;
+import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
 import com.synopsys.integration.detect.lifecycle.boot.product.PolarisConnectivityChecker;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory;
+import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
@@ -100,11 +108,28 @@ public class DetectBootFactory {
         this.blackDuckConnectivityChecker = new BlackDuckConnectivityChecker();
     }
 
+    public DetectBoot createDetectBoot(ConfigurableEnvironment environment, String[] sourceArgs, DetectContext detectContext) {
+        List<PropertySource> propertySources;
+
+        try {
+            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, false));
+        } catch (RuntimeException e) {
+            logger.error("An unknown property source was found, detect will still continue.", e);
+            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, true));
+        }
+
+        DetectArgumentStateParser detectArgumentStateParser = new DetectArgumentStateParser();
+        DetectArgumentState detectArgumentState = detectArgumentStateParser.parseArgs(sourceArgs);
+
+        return new DetectBoot(this, detectArgumentState, propertySources, detectContext);
+    }
+
+
     public ObjectMapper createObjectMapper() {
         return BlackDuckServicesFactory.createDefaultObjectMapper();
     }
 
-    public Configuration createConfiguration() {
+    public Configuration createFreemarkerConfiguration() {
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_26);
         configuration.setClassForTemplateLoading(Application.class, "/");
         configuration.setDefaultEncoding("UTF-8");
@@ -135,6 +160,7 @@ public class DetectBootFactory {
         return pathResolver;
     }
 
+    @Deprecated
     public List<PropertySource> initializePropertySources(ConfigurableEnvironment environment) {
         List<PropertySource> propertySources;
         try {
@@ -202,12 +228,20 @@ public class DetectBootFactory {
         return detectRun;
     }
 
-    public ProductBoot createProductBoot() {
-        return new ProductBoot(blackDuckConnectivityChecker, new PolarisConnectivityChecker(), createAnalyticsConfigurationService());
+    public ProductBoot createProductBoot(DetectConfigurationFactory detectConfigurationFactory) {
+        ProductBootOptions productBootOptions = detectConfigurationFactory.createProductBootOptions();
+        return new ProductBoot(blackDuckConnectivityChecker, new PolarisConnectivityChecker(), createAnalyticsConfigurationService(), createProductBootFactory(detectConfigurationFactory), productBootOptions);
     }
 
     public AnalyticsConfigurationService createAnalyticsConfigurationService() {
         return new AnalyticsConfigurationService(gson);
+    }
+
+    public InteractiveManager createInteractiveManager(List<PropertySource> propertySources) {
+        InteractiveWriter writer = InteractiveWriter.defaultWriter(System.console(), System.in, System.out);
+        InteractivePropertySourceBuilder propertySourceBuilder = new InteractivePropertySourceBuilder(writer);
+        InteractiveModeDecisionTree interactiveModeDecisionTree = new InteractiveModeDecisionTree(blackDuckConnectivityChecker, propertySources);
+        return new InteractiveManager(propertySourceBuilder, writer, interactiveModeDecisionTree);
     }
 
 }
