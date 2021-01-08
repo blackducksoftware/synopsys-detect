@@ -47,6 +47,7 @@ public class HelpJsonOption {
     private Boolean hasAcceptableValues = false;
     private Boolean isCommaSeparatedList = false;
     private List<String> acceptableValues = new ArrayList<>();
+    private String example = "";
 
     //This is added for use in the markdown, it does not actually exist on the object.
     private String location = "";
@@ -55,7 +56,7 @@ public class HelpJsonOption {
         return propertyName;
     }
 
-    public void setPropertyName(final String propertyName) {
+    public void setPropertyName(String propertyName) {
         this.propertyName = propertyName;
     }
 
@@ -63,7 +64,7 @@ public class HelpJsonOption {
         return propertyKey;
     }
 
-    public void setPropertyKey(final String propertyKey) {
+    public void setPropertyKey(String propertyKey) {
         this.propertyKey = propertyKey;
     }
 
@@ -71,7 +72,7 @@ public class HelpJsonOption {
         return propertyType;
     }
 
-    public void setPropertyType(final String propertyType) {
+    public void setPropertyType(String propertyType) {
         this.propertyType = propertyType;
     }
 
@@ -79,7 +80,7 @@ public class HelpJsonOption {
         return defaultValue;
     }
 
-    public void setDefaultValue(final String defaultValue) {
+    public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
     }
 
@@ -87,7 +88,7 @@ public class HelpJsonOption {
         return addedInVersion;
     }
 
-    public void setAddedInVersion(final String addedInVersion) {
+    public void setAddedInVersion(String addedInVersion) {
         this.addedInVersion = addedInVersion;
     }
 
@@ -95,7 +96,7 @@ public class HelpJsonOption {
         return category;
     }
 
-    public void setCategory(final String category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
@@ -103,7 +104,7 @@ public class HelpJsonOption {
         return group;
     }
 
-    public void setGroup(final String group) {
+    public void setGroup(String group) {
         this.group = group;
     }
 
@@ -111,7 +112,7 @@ public class HelpJsonOption {
         return superGroup;
     }
 
-    public void setSuperGroup(final String superGroup) {
+    public void setSuperGroup(String superGroup) {
         this.superGroup = superGroup;
     }
 
@@ -119,7 +120,7 @@ public class HelpJsonOption {
         return additionalGroups;
     }
 
-    public void setAdditionalGroups(final List<String> additionalGroups) {
+    public void setAdditionalGroups(List<String> additionalGroups) {
         this.additionalGroups = additionalGroups;
     }
 
@@ -127,7 +128,7 @@ public class HelpJsonOption {
         return description;
     }
 
-    public void setDescription(final String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -135,7 +136,7 @@ public class HelpJsonOption {
         return detailedDescription;
     }
 
-    public void setDetailedDescription(final String detailedDescription) {
+    public void setDetailedDescription(String detailedDescription) {
         this.detailedDescription = detailedDescription;
     }
 
@@ -143,7 +144,7 @@ public class HelpJsonOption {
         return deprecated;
     }
 
-    public void setDeprecated(final Boolean deprecated) {
+    public void setDeprecated(Boolean deprecated) {
         this.deprecated = deprecated;
     }
 
@@ -151,7 +152,7 @@ public class HelpJsonOption {
         return deprecatedDescription;
     }
 
-    public void setDeprecatedDescription(final String deprecatedDescription) {
+    public void setDeprecatedDescription(String deprecatedDescription) {
         this.deprecatedDescription = deprecatedDescription;
     }
 
@@ -159,7 +160,7 @@ public class HelpJsonOption {
         return deprecatedFailInVersion;
     }
 
-    public void setDeprecatedFailInVersion(final String deprecatedFailInVersion) {
+    public void setDeprecatedFailInVersion(String deprecatedFailInVersion) {
         this.deprecatedFailInVersion = deprecatedFailInVersion;
     }
 
@@ -167,7 +168,7 @@ public class HelpJsonOption {
         return deprecatedRemoveInVersion;
     }
 
-    public void setDeprecatedRemoveInVersion(final String deprecatedRemoveInVersion) {
+    public void setDeprecatedRemoveInVersion(String deprecatedRemoveInVersion) {
         this.deprecatedRemoveInVersion = deprecatedRemoveInVersion;
     }
 
@@ -175,7 +176,7 @@ public class HelpJsonOption {
         return strictValues;
     }
 
-    public void setStrictValues(final Boolean strictValues) {
+    public void setStrictValues(Boolean strictValues) {
         this.strictValues = strictValues;
     }
 
@@ -183,7 +184,7 @@ public class HelpJsonOption {
         return caseSensitiveValues;
     }
 
-    public void setCaseSensitiveValues(final Boolean caseSensitiveValues) {
+    public void setCaseSensitiveValues(Boolean caseSensitiveValues) {
         this.caseSensitiveValues = caseSensitiveValues;
     }
 
@@ -191,7 +192,7 @@ public class HelpJsonOption {
         return hasAcceptableValues;
     }
 
-    public void setHasAcceptableValues(final Boolean hasAcceptableValues) {
+    public void setHasAcceptableValues(Boolean hasAcceptableValues) {
         this.hasAcceptableValues = hasAcceptableValues;
     }
 
@@ -199,7 +200,7 @@ public class HelpJsonOption {
         return isCommaSeparatedList;
     }
 
-    public void setCommaSeparatedList(final Boolean commaSeparatedList) {
+    public void setCommaSeparatedList(Boolean commaSeparatedList) {
         isCommaSeparatedList = commaSeparatedList;
     }
 
@@ -207,7 +208,7 @@ public class HelpJsonOption {
         return acceptableValues;
     }
 
-    public void setAcceptableValues(final List<String> acceptableValues) {
+    public void setAcceptableValues(List<String> acceptableValues) {
         this.acceptableValues = acceptableValues;
     }
 
@@ -215,7 +216,15 @@ public class HelpJsonOption {
         return location;
     }
 
-    public void setLocation(final String location) {
+    public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getExample() {
+        return example;
+    }
+
+    public void setExample(String example) {
+        this.example = example;
     }
 }

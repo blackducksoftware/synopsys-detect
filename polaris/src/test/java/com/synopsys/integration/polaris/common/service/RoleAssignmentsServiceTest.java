@@ -80,7 +80,7 @@ public class RoleAssignmentsServiceTest {
             RoleAssignmentService.INCLUDE_USERS, RoleAssignmentService.INCLUDE_ROLES, RoleAssignmentService.INCLUDE_GROUPS);
         final List<RoleAssignmentResource> data = roleAssignmentsForProject.getData();
         if (!data.isEmpty()) {
-            assertTrue(!roleAssignmentsForProject.getIncluded().isEmpty(), "Expected resources to be included");
+            assertFalse(roleAssignmentsForProject.getIncluded().isEmpty(), "Expected resources to be included");
 
             final RoleAssignmentResource roleAssignment = data
                                                               .stream()

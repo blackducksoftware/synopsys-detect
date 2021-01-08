@@ -1,7 +1,7 @@
 /**
  * polaris
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -97,7 +97,7 @@ public class PolarisServerConfigBuilder extends IntegrationBuilder<PolarisServer
         HttpUrl polarisURL = null;
         try {
             polarisURL = new HttpUrl(getUrl());
-        } catch (IntegrationException e) {
+        } catch (IntegrationException ignored) {
         }
 
         return new PolarisServerConfig(polarisURL, getTimeoutInSeconds(), getAccessToken(), getProxyInfo(), isTrustCert(), gson, authenticationSupport);

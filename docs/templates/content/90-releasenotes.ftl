@@ -23,7 +23,6 @@
 * Deprecated properties blackduck.username and blackduck.password. Authentication should be performed using an API token.
 
 ### Resolved issues
-* (IDETECT-2254) Resolved an issue that could cause an ArrayIndexOutOfBoundsException error on Yarn 2.0 projects.
 * (IDETECT-2216) Resolved an issue that prevented non-ASCII filenames from being correctly transmitted to Black Duck during a binary scan file upload.
 * (IDETECT-2227) Resolved an issue where Nuget Inspectors would parse source files for assembly version.
 * (IDETECT-2281) Resolved an issue that included golang dependencies that were not linked in the compiled go application. [241](https://github.com/blackducksoftware/synopsys-detect/issues/241)

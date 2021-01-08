@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -76,7 +76,7 @@ public class DiagnosticZipCreator {
                 }
             }
 
-            return pieces.stream().collect(Collectors.joining("/"));
+            return String.join("/", pieces);
         } catch (final Exception e) {
             logger.info("Failed to clean zip entry.");
             return path.toString();

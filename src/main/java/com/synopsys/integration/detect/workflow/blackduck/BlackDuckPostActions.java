@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -108,7 +108,7 @@ public class BlackDuckPostActions {
 
     private void checkPolicy(BlackDuckPostOptions blackDuckPostOptions, ProjectVersionView projectVersionView) throws IntegrationException {
         logger.info("Detect will check policy for violations.");
-        PolicyChecker policyChecker = new PolicyChecker(eventSystem, blackDuckServicesFactory.getBlackDuckService(), blackDuckServicesFactory.createProjectBomService());
+        PolicyChecker policyChecker = new PolicyChecker(eventSystem, blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.createProjectBomService());
         policyChecker.checkPolicy(blackDuckPostOptions.getSeveritiesToFailPolicyCheck(), projectVersionView);
     }
 

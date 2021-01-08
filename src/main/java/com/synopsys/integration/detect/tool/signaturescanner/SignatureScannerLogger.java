@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -36,11 +36,8 @@ public class SignatureScannerLogger extends IntLogger {
     }
 
     private boolean shouldInfo(final String line) {
-        if (line.contains("INFO: ")) { //redirect sig scan INFO level to DEBUG.
-            return false;
-        } else {
-            return true;
-        }
+        //redirect sig scan INFO level to DEBUG.
+        return !line.contains("INFO: ");
     }
 
     @Override

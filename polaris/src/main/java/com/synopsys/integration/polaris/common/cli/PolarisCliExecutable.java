@@ -1,7 +1,7 @@
 /**
  * polaris
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -41,8 +41,7 @@ public class PolarisCliExecutable extends Executable {
     }
 
     private static Map<String, String> completeEnvironmentVariables(Map<String, String> environmentVariables) {
-        Map<String, String> completed = new HashMap<>();
-        completed.putAll(environmentVariables);
+        Map<String, String> completed = new HashMap<>(environmentVariables);
 
         if (!completed.containsKey(COVERITY_UNSUPPORTED_KEY)) {
             completed.put(COVERITY_UNSUPPORTED_KEY, "1");

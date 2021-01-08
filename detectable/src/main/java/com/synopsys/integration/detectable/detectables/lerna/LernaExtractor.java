@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -25,7 +25,6 @@ package com.synopsys.integration.detectable.detectables.lerna;
 import java.io.File;
 import java.util.List;
 
-import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaPackage;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaResult;
