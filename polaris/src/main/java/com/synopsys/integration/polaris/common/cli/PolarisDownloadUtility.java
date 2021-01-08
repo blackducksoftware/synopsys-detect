@@ -231,7 +231,7 @@ public class PolarisDownloadUtility {
             File binDirectory = getBinDirectory();
             makeBinFilesExecutable(binDirectory);
 
-            logger.info(String.format("Polaris CLI downloaded successfully."));
+            logger.info("Polaris CLI downloaded successfully.");
 
             return binDirectory;
         }

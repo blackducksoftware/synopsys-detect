@@ -92,7 +92,7 @@ public abstract class DetectableFunctionalTest {
     @Test
     public void run() throws IOException, DetectableException, ExecutableFailedException {
 
-        System.out.println(String.format("Function Test (%s) is using temp directory: %s", name, tempDirectory.toAbsolutePath().toString()));
+        System.out.printf("Function Test (%s) is using temp directory: %s%n", name, tempDirectory.toAbsolutePath().toString());
 
         setup();
 
