@@ -53,6 +53,7 @@ import com.synopsys.integration.detect.configuration.connection.ConnectionFactor
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
+import com.synopsys.integration.detect.configuration.validation.DetectConfigurationValidator;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree;
 import com.synopsys.integration.detect.interactive.InteractivePropertySourceBuilder;
@@ -208,8 +209,8 @@ public class DetectBootFactory {
         return new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
     }
 
-    public DetectConfigurationPrinter createDetectConfigurationPrinter() {
-        return new DetectConfigurationPrinter(eventSystem, detectInfo);
+    public DetectConfigurationValidator createDetectConfigurationValidator() {
+        return new DetectConfigurationValidator(eventSystem, detectInfo);
     }
 
     public DetectorProfiler createDetectorProfiler() {

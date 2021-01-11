@@ -48,6 +48,8 @@ import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
 import com.synopsys.integration.detect.configuration.help.print.DetectInfoPrinter;
 import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
+import com.synopsys.integration.detect.configuration.validation.DetectConfigurationState;
+import com.synopsys.integration.detect.configuration.validation.DetectConfigurationValidator;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
@@ -113,10 +115,12 @@ public class DetectBoot {
 
         logger.debug("Configuration processed completely.");
 
-        DetectConfigurationPrinter detectConfigurationPrinter = detectBootFactory.createDetectConfigurationPrinter();
-        Optional<DetectBootResult> configurationResult = detectConfigurationPrinter.printConfiguration(detectConfiguration);
-        if (configurationResult.isPresent()) {
-            return configurationResult;
+        DetectConfigurationValidator detectConfigurationValidator = detectBootFactory.createDetectConfigurationValidator();
+        DetectConfigurationState detectConfigurationState = detectConfigurationValidator.processDetectConfiguration(detectConfiguration);
+        detectConfigurationValidator.printConfiguration(detectConfigurationState.getDetectConfigurationReporter(), detectConfiguration, detectConfigurationState.getAdditionalNotes());
+        Optional<DetectBootResult> configurationFailure = detectConfigurationValidator.validateConfiguration(detectConfigurationState.getDetectConfigurationReporter(), detectConfiguration, detectConfigurationState.getDeprecationMessages(), detectConfigurationState.hasNotUsedFailureProperties());
+        if (configurationFailure.isPresent()) {
+            return configurationFailure;
         }
 
         logger.debug("Initializing Detect.");
