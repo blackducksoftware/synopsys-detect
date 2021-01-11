@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -83,7 +84,7 @@ public class CompleteRiskReportTest extends BlackDuckIntegrationTest {
 
         detectArgs.add("--detect.tools=DETECTOR");
         detectArgs.forEach(System.out::println);
-        Application.main(detectArgs.toArray(new String[0]));
+        Application.main(detectArgs.toArray(ArrayUtils.EMPTY_STRING_ARRAY));
 
         pdfFiles = getPdfFiles(reportDirectory);
         assertEquals(1, pdfFiles.size());

@@ -128,13 +128,9 @@ public class DetectorTool {
             logger.debug("Total number of detectors: {}", extractionCount);
         });
 
-        detectorEvaluator.registerPostDiscoveryCallback(detectorAggregateEvaluationResult -> {
-            eventSystem.publishEvent(Event.DiscoveriesCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
-        });
+        detectorEvaluator.registerPostDiscoveryCallback(detectorAggregateEvaluationResult -> eventSystem.publishEvent(Event.DiscoveriesCompleted, detectorAggregateEvaluationResult.getEvaluationTree()));
 
-        detectorEvaluator.registerPostExtractionCallback(detectorAggregateEvaluationResult -> {
-            eventSystem.publishEvent(Event.ExtractionsCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
-        });
+        detectorEvaluator.registerPostExtractionCallback(detectorAggregateEvaluationResult -> eventSystem.publishEvent(Event.ExtractionsCompleted, detectorAggregateEvaluationResult.getEvaluationTree()));
 
         DetectorAggregateEvaluationResult evaluationResult = detectorEvaluator.evaluate(rootEvaluation);
 

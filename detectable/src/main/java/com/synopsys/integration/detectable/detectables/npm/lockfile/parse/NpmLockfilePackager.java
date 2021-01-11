@@ -122,8 +122,9 @@ public class NpmLockfilePackager {
     }
 
     private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, MutableDependencyGraph dependencyGraph, boolean includeDevDependencies, final List<NameVersion> externalDependencies) {
-        if (!shouldIncludeDependency(npmDependency, includeDevDependencies))
+        if (!shouldIncludeDependency(npmDependency, includeDevDependencies)) {
             return;
+        }
 
         npmDependency.getRequires().forEach(required -> {
             logger.trace(String.format("Required package: %s of version: %s", required.getName(), required.getFuzzyVersion()));

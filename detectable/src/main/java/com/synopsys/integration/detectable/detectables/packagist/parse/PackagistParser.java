@@ -116,8 +116,8 @@ public class PackagistParser {
     }
 
     private List<PackagistPackage> convertJsonToModel(final JsonObject lockfile, final boolean checkDev) {
-        final List<PackagistPackage> packages = new ArrayList<>();
-        packages.addAll(convertJsonToModel(lockfile.get("packages").getAsJsonArray(), checkDev));
+        final List<PackagistPackage> packages =
+                new ArrayList<>(convertJsonToModel(lockfile.get("packages").getAsJsonArray(), checkDev));
         if (checkDev) {
             packages.addAll(convertJsonToModel(lockfile.get("packages-dev").getAsJsonArray(), checkDev));
         }
@@ -159,7 +159,7 @@ public class PackagistParser {
     private List<NameVersion> parseDependenciesFromRequire(final JsonObject requireObject) {
         final List<NameVersion> dependencies = new ArrayList<>();
         requireObject.entrySet().forEach(it -> {
-            if (!it.getKey().equalsIgnoreCase("php")) {
+            if (!"php".equalsIgnoreCase(it.getKey())) {
                 final NameVersion nameVersion = new NameVersion(it.getKey(), it.getValue().toString());
                 dependencies.add(nameVersion);
             }

@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.workflow.report;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.Set;
 
 import org.junit.jupiter.api.Assertions;
@@ -44,7 +45,7 @@ public class DetectorStatusCodeTest {
                            return null;
                        }
                    })
-                   .filter(it -> it != null)
+                   .filter(Objects::nonNull)
                    .toSet();
     }
 

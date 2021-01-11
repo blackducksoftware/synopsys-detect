@@ -24,6 +24,7 @@ package com.synopsys.integration.configuration.property.types.path;
 
 import java.nio.file.Path;
 
+import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 public class PathValue {
@@ -44,14 +45,16 @@ public class PathValue {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
 
         final PathValue pathValue = (PathValue) o;
 
-        return value != null ? value.equals(pathValue.value) : pathValue.value == null;
+        return Objects.equals(value, pathValue.value);
     }
 
     @Override

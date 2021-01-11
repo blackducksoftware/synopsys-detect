@@ -137,8 +137,9 @@ public class DiagnosticReportHandler {
     }
 
     public void completedCodeLocations(final Map<DetectCodeLocation, String> codeLocationNameMap) {
-        if (detectorToolResult == null || !detectorToolResult.getRootDetectorEvaluationTree().isPresent())
+        if (detectorToolResult == null || !detectorToolResult.getRootDetectorEvaluationTree().isPresent()) {
             return;
+        }
 
         try {
             final ReportWriter clWriter = getReportWriter(ReportTypes.CODE_LOCATIONS);

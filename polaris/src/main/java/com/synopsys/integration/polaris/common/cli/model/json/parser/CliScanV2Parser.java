@@ -47,6 +47,7 @@ public class CliScanV2Parser extends CliScanParser<CliScanV2> {
         };
     }
 
+    @Override
     public CliCommonResponseModel fromCliScan(JsonObject versionlessModel) {
         CliScanV2 cliScanV2 = fromJson(versionlessModel);
 
@@ -55,7 +56,6 @@ public class CliScanV2Parser extends CliScanParser<CliScanV2> {
         final List<CommonToolInfo> tools = new ArrayList<>();
         Optional.ofNullable(cliScanV2.tools)
                 .orElse(Collections.emptyList())
-                .stream()
                 .forEach(tool -> fromToolInfoV2(tool, tools::add));
 
         cliCommonResponseModel.setTools(tools);

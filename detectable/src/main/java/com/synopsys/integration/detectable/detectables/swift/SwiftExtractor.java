@@ -63,7 +63,7 @@ public class SwiftExtractor {
         if (executableOutput.getReturnCode() == 0) {
             return swiftCliParser.parseOutput(executableOutput.getStandardOutputAsList());
         } else {
-            throw new IntegrationException(String.format("Swift returned a non-zero exit code (%s). Failed to parse output.", String.valueOf(executableOutput.getReturnCode())));
+            throw new IntegrationException(String.format("Swift returned a non-zero exit code (%d). Failed to parse output.", executableOutput.getReturnCode()));
         }
     }
 

@@ -117,7 +117,7 @@ public class YarnLockParser {
                    .stream()
                    .filter(line -> countIndent(line) == 0)
                    .findFirst()
-                   .map(line -> cleanedYarnLockFileAsList.indexOf(line))
+                   .map(cleanedYarnLockFileAsList::indexOf)
                    .orElse(-1);
     }
 

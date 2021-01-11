@@ -1,6 +1,6 @@
 package com.synopsys.integration.detect.workflow.status;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,6 @@ import com.synopsys.integration.log.BufferedIntLogger;
 import com.synopsys.integration.log.LogLevel;
 
 public class DetectStatusLoggerTest {
-
     @Test
     public void testContent() throws IOException {
         File expectedOutputFile = new File("src/test/resources/workflow/status/expectedStatusLoggerOutput.txt");
