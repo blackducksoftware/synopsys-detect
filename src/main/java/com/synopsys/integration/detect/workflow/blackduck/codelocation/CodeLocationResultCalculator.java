@@ -64,14 +64,16 @@ public class CodeLocationResultCalculator {
     }
 
     private Date earliestDate(Date d1, Date d2) {
-        if (d1.before(d2))
+        if (d1.before(d2)) {
             return d1;
+        }
         return d2;
     }
 
     private Date latestDate(Date d1, Date d2) {
-        if (d1.after(d2))
+        if (d1.after(d2)) {
             return d1;
+        }
         return d2;
     }
 }

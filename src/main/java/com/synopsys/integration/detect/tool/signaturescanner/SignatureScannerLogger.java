@@ -36,11 +36,8 @@ public class SignatureScannerLogger extends IntLogger {
     }
 
     private boolean shouldInfo(final String line) {
-        if (line.contains("INFO: ")) { //redirect sig scan INFO level to DEBUG.
-            return false;
-        } else {
-            return true;
-        }
+        //redirect sig scan INFO level to DEBUG.
+        return !line.contains("INFO: ");
     }
 
     @Override

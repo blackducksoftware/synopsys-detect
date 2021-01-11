@@ -39,9 +39,9 @@ public class FilterableEnumValueParser<T extends Enum<T>> extends ValueParser<Fi
     @Override
     public FilterableEnumValue<T> parse(@NotNull final String value) throws ValueParseException {
         String trimmedValue = value.toLowerCase().trim();
-        if (trimmedValue.equals("none")) {
+        if ("none".equals(trimmedValue)) {
             return FilterableEnumValue.noneValue();
-        } else if (trimmedValue.equals("all")) {
+        } else if ("all".equals(trimmedValue)) {
             return FilterableEnumValue.allValue();
         } else {
             return FilterableEnumValue.value(enumValueParser.parse(value));

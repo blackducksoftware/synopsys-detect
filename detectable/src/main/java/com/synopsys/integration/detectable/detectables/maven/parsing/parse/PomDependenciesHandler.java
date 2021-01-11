@@ -24,6 +24,7 @@ package com.synopsys.integration.detectable.detectables.maven.parsing.parse;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,7 +38,7 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class PomDependenciesHandler extends DefaultHandler {
-    private static final Set<String> ONLY_DEPENDENCIES = new HashSet<>(Arrays.asList("dependency"));
+    private static final Set<String> ONLY_DEPENDENCIES = new HashSet<>(Collections.singletonList("dependency"));
     private static final Set<String> WITH_PLUGINS = new HashSet<>(Arrays.asList("dependency", "plugin"));
 
     private final ExternalIdFactory externalIdFactory;

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +90,7 @@ public class GraphDeserializer {
         String name = unescape(pieces[0]);
         String version = unescape(pieces[1]);
         Forge forge = knownForges.get(unescape(pieces[2]));
-        ExternalId externalId = externalIdFromString(forge, Arrays.asList(pieces).stream().skip(3).collect(Collectors.toList()));
+        ExternalId externalId = externalIdFromString(forge, Arrays.stream(pieces).skip(3).collect(Collectors.toList()));
         return new Dependency(name, version, externalId);
     }
 
@@ -98,7 +99,7 @@ public class GraphDeserializer {
     }
 
     private static ExternalId externalIdFromString(Forge forge, List<String> text) {
-        String[] pieces = text.stream().map(it -> unescape(it)).collect(Collectors.toList()).toArray(new String[0]);
+        String[] pieces = text.stream().map(it -> unescape(it)).collect(Collectors.toList()).toArray(ArrayUtils.EMPTY_STRING_ARRAY);
         return externalIdFactory.createModuleNamesExternalId(forge, pieces);
     }
 }

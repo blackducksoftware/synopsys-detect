@@ -44,7 +44,7 @@ public class DetectorStatusCodes {
         return sortedCodes;
     }
 
-    private class HelpJsonDetectorStatusCodeComparator implements Comparator<HelpJsonDetectorStatusCode> {
+    private static class HelpJsonDetectorStatusCodeComparator implements Comparator<HelpJsonDetectorStatusCode> {
 
         @Override
         public int compare(final HelpJsonDetectorStatusCode o1, final HelpJsonDetectorStatusCode o2) {
