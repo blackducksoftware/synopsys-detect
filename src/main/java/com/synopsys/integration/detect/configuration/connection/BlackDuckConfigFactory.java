@@ -36,6 +36,7 @@ import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 public class BlackDuckConfigFactory {
     private final BlackDuckConnectionDetails blackDuckConnectionDetails;
+    private static final String BLACKDUCK_SERVER_CONFIG_BUILDER_TIMEOUT_KEY = "blackduck.timeout";
 
     public BlackDuckConfigFactory(final BlackDuckConnectionDetails blackDuckConnectionDetails) {
         this.blackDuckConnectionDetails = blackDuckConnectionDetails;
@@ -55,6 +56,7 @@ public class BlackDuckConfigFactory {
                                                                               .setLogger(logger);
 
         blackDuckServerConfigBuilder.setProperties(blackDuckConnectionDetails.getBlackduckProperties().entrySet());
+        blackDuckServerConfigBuilder.setProperty(BLACKDUCK_SERVER_CONFIG_BUILDER_TIMEOUT_KEY, blackDuckConnectionDetails.getConnectionDetails().getTimeout().toString());
 
         final Optional<Boolean> shouldIgnore = blackDuckConnectionDetails.getBlackDuckUrl().map(blackduckUrl -> ProxyUtil.shouldIgnoreUrl(blackduckUrl, connectionDetails.getIgnoredProxyHostPatterns(), logger));
         if (shouldIgnore.isPresent() && Boolean.TRUE.equals(shouldIgnore.get())) {
