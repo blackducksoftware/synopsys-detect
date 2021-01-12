@@ -1,3 +1,25 @@
+/**
+ * synopsys-detect
+ *
+ * Copyright (c) 2021 Synopsys, Inc.
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package com.synopsys.integration.detect.configuration.validation;
 
 import java.util.Collections;
@@ -68,13 +90,8 @@ public class DetectConfigurationValidator {
         return new DetectConfigurationState(detectConfiguration, additionalNotes, deprecationMessages, hasUsedFailureProperties);
     }
 
-    public void printConfiguration(PropertyConfigurationHelpContext detectConfigurationReporter, PropertyConfiguration detectConfiguration, Map<String, String> additionalNotes) throws IllegalAccessException {
-        Boolean suppressConfigurationOutput = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_CONFIGURATION_OUTPUT.getProperty());
-
-        //First print the entire configuration.
-        if (Boolean.FALSE.equals(suppressConfigurationOutput)) {
-            detectConfigurationReporter.printCurrentValues(infoLogReportWriter::writeLine, DetectProperties.allProperties(), additionalNotes);
-        }
+    public void printConfiguration(PropertyConfigurationHelpContext detectConfigurationReporter, Map<String, String> additionalNotes) throws IllegalAccessException {
+        detectConfigurationReporter.printCurrentValues(infoLogReportWriter::writeLine, DetectProperties.allProperties(), additionalNotes);
     }
 
 

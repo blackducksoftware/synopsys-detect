@@ -39,14 +39,12 @@ import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.RunBeanConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
-import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
-import com.synopsys.integration.detect.configuration.help.print.DetectInfoPrinter;
 import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
 import com.synopsys.integration.detect.configuration.validation.DetectConfigurationState;
 import com.synopsys.integration.detect.configuration.validation.DetectConfigurationValidator;
@@ -84,11 +82,7 @@ public class DetectBoot {
         this.detectContext = detectContext;
     }
 
-    public Optional<DetectBootResult> boot() throws DetectUserFriendlyException, IOException, IllegalAccessException {
-        Configuration freemarkerConfiguration = detectBootFactory.createFreemarkerConfiguration();
-
-        DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
-
+    public Optional<DetectBootResult> boot(String detectVersion) throws DetectUserFriendlyException, IOException, IllegalAccessException {
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             HelpPrinter helpPrinter = new HelpPrinter();
             helpPrinter.printAppropriateHelpMessage(DEFAULT_PRINT_STREAM, DetectProperties.allProperties(), Arrays.asList(DetectGroup.values()), DetectGroup.BLACKDUCK_SERVER, detectArgumentState);
@@ -97,13 +91,13 @@ public class DetectBoot {
 
         if (detectArgumentState.isHelpJsonDocument()) {
             HelpJsonManager helpJsonManager = detectBootFactory.createHelpJsonManager();
-            helpJsonManager.createHelpJsonDocument(String.format("synopsys-detect-%s-help.json", detectInfo.getDetectVersion()));
+            helpJsonManager.createHelpJsonDocument(String.format("synopsys-detect-%s-help.json", detectVersion));
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 
-        // FIXME: This prints three lines of code.
-        DetectInfoPrinter detectInfoPrinter = new DetectInfoPrinter();
-        detectInfoPrinter.printInfo(DEFAULT_PRINT_STREAM, detectInfo);
+        DEFAULT_PRINT_STREAM.println();
+        DEFAULT_PRINT_STREAM.println("Detect Version: " + detectVersion);
+        DEFAULT_PRINT_STREAM.println();
 
         if (detectArgumentState.isInteractive()) {
             InteractiveManager interactiveManager = detectBootFactory.createInteractiveManager(propertySources);
@@ -112,19 +106,24 @@ public class DetectBoot {
         }
 
         PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
+        DetectConfigurationValidator detectConfigurationValidator = detectBootFactory.createDetectConfigurationValidator();
+        DetectConfigurationState detectConfigurationState = detectConfigurationValidator.processDetectConfiguration(detectConfiguration);
 
         logger.debug("Configuration processed completely.");
 
-        DetectConfigurationValidator detectConfigurationValidator = detectBootFactory.createDetectConfigurationValidator();
-        DetectConfigurationState detectConfigurationState = detectConfigurationValidator.processDetectConfiguration(detectConfiguration);
-        detectConfigurationValidator.printConfiguration(detectConfigurationState.getDetectConfigurationReporter(), detectConfiguration, detectConfigurationState.getAdditionalNotes());
-        Optional<DetectBootResult> configurationFailure = detectConfigurationValidator.validateConfiguration(detectConfigurationState.getDetectConfigurationReporter(), detectConfiguration, detectConfigurationState.getDeprecationMessages(), detectConfigurationState.hasNotUsedFailureProperties());
-        if (configurationFailure.isPresent()) {
-            return configurationFailure;
+        Boolean suppressConfigurationOutput = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_CONFIGURATION_OUTPUT.getProperty());
+        if (Boolean.FALSE.equals(suppressConfigurationOutput)) {
+            detectConfigurationValidator.printConfiguration(detectConfigurationState.getDetectConfigurationReporter(), detectConfigurationState.getAdditionalNotes());
+        }
+
+        Optional<DetectBootResult> exitBootWithConfigurationFailure = detectConfigurationValidator.validateConfiguration(detectConfigurationState.getDetectConfigurationReporter(), detectConfiguration, detectConfigurationState.getDeprecationMessages(), detectConfigurationState.hasNotUsedFailureProperties());
+        if (exitBootWithConfigurationFailure.isPresent()) {
+            return exitBootWithConfigurationFailure;
         }
 
         logger.debug("Initializing Detect.");
 
+        Configuration freemarkerConfiguration = detectBootFactory.createFreemarkerConfiguration();
         PathResolver pathResolver = detectBootFactory.createPathResolver(detectConfiguration.getValueOrDefault(DetectProperties.DETECT_RESOLVE_TILDE_IN_PATHS.getProperty()));
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver);
         DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
@@ -134,7 +133,6 @@ public class DetectBoot {
         logger.debug("Main boot completed. Deciding what Detect should do.");
 
         if (detectArgumentState.isGenerateAirGapZip()) {
-            File airGapZip;
             try {
                 DetectOverrideableFilter inspectorFilter = DetectOverrideableFilter.createArgumentValueFilter(detectArgumentState);
                 AirGapCreator airGapCreator = detectBootFactory.createAirGapCreator(detectConfigurationFactory, freemarkerConfiguration);
@@ -146,25 +144,25 @@ public class DetectBoot {
                                           .sorted()
                                           .collect(Collectors.joining("-"));
 
-                airGapZip = airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix, gradleInspectorVersion);
+                File airGapZip = airGapCreator.createAirGapZip(inspectorFilter, directoryManager.getRunHomeDirectory(), airGapSuffix, gradleInspectorVersion);
+
+                return Optional.of(DetectBootResult.exit(detectConfiguration, airGapZip, directoryManager, diagnosticSystem));
             } catch (DetectUserFriendlyException e) {
                 return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
             }
-            return Optional.of(DetectBootResult.exit(detectConfiguration, airGapZip, directoryManager, diagnosticSystem));
         }
-
-        RunOptions runOptions = detectConfigurationFactory.createRunOptions();
-        DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
 
         logger.info("");
 
-        ProductDecision productDecision = new ProductDecider().decide(detectConfigurationFactory, directoryManager.getUserHome(), detectToolFilter);
-
-        logger.debug("Decided what products will be run. Starting product boot.");
-
-
         ProductRunData productRunData;
         try {
+            RunOptions runOptions = detectConfigurationFactory.createRunOptions();
+            DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
+            ProductDecider productDecider = new ProductDecider();
+            ProductDecision productDecision = productDecider.decide(detectConfigurationFactory, directoryManager.getUserHome(), detectToolFilter);
+
+            logger.debug("Decided what products will be run. Starting product boot.");
+
             ProductBoot productBoot = detectBootFactory.createProductBoot(detectConfigurationFactory);
             productRunData = productBoot.boot(productDecision);
         } catch (DetectUserFriendlyException e) {
@@ -176,14 +174,14 @@ public class DetectBoot {
             return Optional.of(DetectBootResult.exit(detectConfiguration, directoryManager, diagnosticSystem));
         }
 
-        ProxyInfo detectableProxyInfo;
+        DetectableOptionFactory detectableOptionFactory;
         try {
-            detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
+            ProxyInfo detectableProxyInfo = detectConfigurationFactory.createBlackDuckProxyInfo();
+            detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo);
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
         }
 
-        DetectableOptionFactory detectableOptionFactory = new DetectableOptionFactory(detectConfiguration, diagnosticSystem, pathResolver, detectableProxyInfo);
 
         //Finished, populate the detect context
         detectContext.registerBean(detectBootFactory.getDetectRun());

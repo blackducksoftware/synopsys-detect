@@ -161,18 +161,6 @@ public class DetectBootFactory {
         return pathResolver;
     }
 
-    @Deprecated
-    public List<PropertySource> initializePropertySources(ConfigurableEnvironment environment) {
-        List<PropertySource> propertySources;
-        try {
-            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, false));
-        } catch (RuntimeException e) {
-            logger.error("An unknown property source was found, detect will still continue.", e);
-            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, true));
-        }
-        return propertySources;
-    }
-
     public Optional<DiagnosticSystem> createDiagnosticSystem(DiagnosticsDecider diagnosticsDecider, PropertyConfiguration detectConfiguration, DirectoryManager directoryManager) {
         DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide(detectConfiguration);
         if (diagnosticsDecision.isConfiguredForDiagnostic) {

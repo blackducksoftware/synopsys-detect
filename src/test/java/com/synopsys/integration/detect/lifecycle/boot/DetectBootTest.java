@@ -30,23 +30,21 @@ public class DetectBootTest {
     public static final int EXPECTED_MAJOR_VERSION = 6;
     public static final OperatingSystemType CURRENT_OS = OperatingSystemType.determineFromSystem();
 
-    public DetectBoot detectBoot;
-    public DetectRun detectRun;
     public DetectContext detectContext;
-    public EventSystem eventSystem;
+    public DetectBootFactory detectBootFactory;
 
     @BeforeEach
     public void setUp() {
-        DetectBootFactory detectBootFactory = new DetectBootFactory();
-        detectBoot = new DetectBoot(detectBootFactory, , , );
-        detectRun = new DetectRun(EXPECTED_RUN_ID);
-        eventSystem = new EventSystem();
+        DetectRun detectRun = new DetectRun(EXPECTED_RUN_ID);
         DetectInfo detectInfo = new DetectInfo(EXPECTED_VERSION_TEXT, EXPECTED_MAJOR_VERSION, CURRENT_OS);
         Gson gson = new Gson();
+        EventSystem eventSystem = new EventSystem();
+        detectBootFactory = new DetectBootFactory(detectRun, detectInfo, gson, eventSystem);
 
         detectContext = new DetectContext(detectRun);
         detectContext.registerBean(detectInfo);
         detectContext.registerBean(gson);
+
     }
 
     @Test
@@ -56,7 +54,8 @@ public class DetectBootTest {
         String[] sourceArgs = new String[]{};
 
         try {
-            Optional<DetectBootResult> wrappedDetectBootResult = detectBoot.boot(detectRun, sourceArgs, configurableEnvironment, eventSystem, detectContext);
+            DetectBoot detectBoot = detectBootFactory.createDetectBoot(configurableEnvironment, sourceArgs, detectContext);
+            Optional<DetectBootResult> wrappedDetectBootResult = detectBoot.boot(EXPECTED_VERSION_TEXT);
             assertTrue(wrappedDetectBootResult.isPresent());
             DetectBootResult detectBootResult = wrappedDetectBootResult.get();
             assertEquals(DetectBootResult.BootType.RUN, detectBootResult.getBootType());
@@ -72,7 +71,7 @@ public class DetectBootTest {
         }
     }
 
-    @ValueSource(strings = { "-h", "-hjson", "--help", "--helpjson"} )
+    @ValueSource(strings = { "-h", "--help"} )
     @ParameterizedTest
     public void testHelp(String sourceArg) {
         MockEnvironment configurableEnvironment = new MockEnvironment();
@@ -80,7 +79,8 @@ public class DetectBootTest {
         String[] sourceArgs = new String[]{sourceArg};
 
         try {
-            Optional<DetectBootResult> wrappedDetectBootResult = detectBoot.boot(detectRun, sourceArgs, configurableEnvironment, eventSystem, detectContext);
+            DetectBoot detectBoot = detectBootFactory.createDetectBoot(configurableEnvironment, sourceArgs, detectContext);
+            Optional<DetectBootResult> wrappedDetectBootResult = detectBoot.boot(EXPECTED_VERSION_TEXT);
             assertTrue(wrappedDetectBootResult.isPresent());
             DetectBootResult detectBootResult = wrappedDetectBootResult.get();
             assertEquals(DetectBootResult.BootType.EXIT, detectBootResult.getBootType());

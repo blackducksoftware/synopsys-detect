@@ -37,8 +37,8 @@ class DiagnosticsDeciderTest {
         PropertyConfiguration propertyConfiguration = Mockito.mock(PropertyConfiguration.class);
         Mockito.when(propertyConfiguration.getValueOrDefault(Mockito.any())).thenReturn(false);
 
-        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState, propertyConfiguration);
-        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide();
+        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState);
+        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide(propertyConfiguration);
 
         Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
         Assertions.assertTrue(diagnosticsDecision.isDiagnostic);
@@ -51,8 +51,8 @@ class DiagnosticsDeciderTest {
         PropertyConfiguration propertyConfiguration = Mockito.mock(PropertyConfiguration.class);
         Mockito.when(propertyConfiguration.getValueOrDefault(Mockito.any())).thenReturn(false);
 
-        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState, propertyConfiguration);
-        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide();
+        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState);
+        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide(propertyConfiguration);
 
         Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
         Assertions.assertFalse(diagnosticsDecision.isDiagnostic);
@@ -66,8 +66,8 @@ class DiagnosticsDeciderTest {
         Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC.getProperty())).thenReturn(true);
         Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty())).thenReturn(false);
 
-        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState, propertyConfiguration);
-        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide();
+        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState);
+        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide(propertyConfiguration);
 
         Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
         Assertions.assertTrue(diagnosticsDecision.isDiagnostic);
@@ -81,8 +81,8 @@ class DiagnosticsDeciderTest {
         Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC.getProperty())).thenReturn(false);
         Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty())).thenReturn(true);
 
-        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState, propertyConfiguration);
-        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide();
+        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState);
+        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide(propertyConfiguration);
 
         Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
         Assertions.assertFalse(diagnosticsDecision.isDiagnostic);
@@ -95,8 +95,8 @@ class DiagnosticsDeciderTest {
         PropertyConfiguration propertyConfiguration = Mockito.mock(PropertyConfiguration.class);
         Mockito.when(propertyConfiguration.getValueOrDefault(Mockito.any())).thenReturn(false);
 
-        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState, propertyConfiguration);
-        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide();
+        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState);
+        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide(propertyConfiguration);
 
         Assertions.assertFalse(diagnosticsDecision.isConfiguredForDiagnostic);
         Assertions.assertFalse(diagnosticsDecision.isDiagnostic);
