@@ -42,8 +42,9 @@ public class ExecutableTarget {
     }
 
     public String toCommand() {
-        if (stringTarget != null)
+        if (stringTarget != null) {
             return stringTarget;
+        }
 
         return fileTarget.getAbsolutePath();
     }

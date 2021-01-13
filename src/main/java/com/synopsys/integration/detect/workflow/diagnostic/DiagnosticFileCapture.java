@@ -61,13 +61,12 @@ public class DiagnosticFileCapture {
     }
 
     public void finish() {
-        if (fileNames.size() <= 0)
+        if (fileNames.size() <= 0) {
             return;
+        }
 
         final AtomicReference<String> executableMap = new AtomicReference<>("");
-        fileNames.forEach((key, value) -> {
-            executableMap.set(executableMap.get() + key + ": " + value + System.lineSeparator());
-        });
+        fileNames.forEach((key, value) -> executableMap.set(executableMap.get() + key + ": " + value + System.lineSeparator()));
 
         final File mapFile = new File(fileDirectory, "FILE-MAP.txt");
         try {

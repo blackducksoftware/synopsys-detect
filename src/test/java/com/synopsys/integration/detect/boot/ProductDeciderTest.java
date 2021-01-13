@@ -137,7 +137,7 @@ class ProductDeciderTest {
         return detectConfigurationFactory;
     }
 
-    class MockPolarisServerConfigBuilder extends PolarisServerConfigBuilder {
+    static class MockPolarisServerConfigBuilder extends PolarisServerConfigBuilder {
         private final boolean isValid;
 
         MockPolarisServerConfigBuilder(final boolean isValid) {

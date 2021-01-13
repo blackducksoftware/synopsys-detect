@@ -68,8 +68,9 @@ public class DetectZipUtil {
             while (entries.hasMoreElements()) {
                 final ZipEntry entry = entries.nextElement();
                 final Path entryPath = destPath.resolve(entry.getName());
-                if (!entryPath.normalize().startsWith(dest.toPath()))
+                if (!entryPath.normalize().startsWith(dest.toPath())) {
                     throw new IOException("Zip entry contained path traversal");
+                }
                 if (entry.isDirectory()) {
                     Files.createDirectories(entryPath);
                 } else {

@@ -55,9 +55,7 @@ public class DockerProperties {
         // DI 8.1.0 and newer will provide both; Detect will prefer squashedimage
         dockerProperties.setProperty("output.include.containerfilesystem", "true");
         dockerProperties.setProperty("output.include.squashedimage", "true");
-        dockerDetectableOptions.getDockerPlatformTopLayerId().ifPresent(id -> {
-            dockerProperties.setProperty("docker.platform.top.layer.id", id);
-        });
+        dockerDetectableOptions.getDockerPlatformTopLayerId().ifPresent(id -> dockerProperties.setProperty("docker.platform.top.layer.id", id));
 
         Map<String, String> additionalDockerProperties = dockerDetectableOptions.getAdditionalDockerProperties();
         dockerProperties.putAll(additionalDockerProperties);

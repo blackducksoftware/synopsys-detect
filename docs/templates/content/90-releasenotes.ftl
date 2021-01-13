@@ -70,8 +70,6 @@
 * Enabling diagnostic mode is now controlled through two new properties.
 * [--detect.diagnostic](../properties/configuration/debug/#diagnostic-mode)
 * [--detect.diagnostic.extended](../properties/configuration/debug/#diagnostic-mode-extended)
-* The `-d` and `--diagnostic` options are now deprecated.
-* The `-de` and `--diagnosticExtended` options are now deprecated.
 * The *detect.bazel.dependency.type* property now accepts a comma-separated list of dependency types, or the value *NONE*, or the value *ALL*.
 
 ### Resolved issues
