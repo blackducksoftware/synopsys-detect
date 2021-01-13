@@ -100,19 +100,19 @@ export DETECT_LATEST_RELEASE_VERSION=5.5.0
 bash <(curl -s -L https://detect.synopsys.com/detect.sh)
 ````
 
-#### Windows (PowerShell)
+#### Windows (Command Prompt)
 
 To run a specific version of ${solution_name}:
 
 ````
-$Env:DETECT_LATEST_RELEASE_VERSION = {${solution_name} version}
+set DETECT_LATEST_RELEASE_VERSION={${solution_name} version}
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 ````
 
 For example, to run ${solution_name} version 5.5.0:
 
 ````
-$Env:DETECT_LATEST_RELEASE_VERSION = 5.5.0
+set DETECT_LATEST_RELEASE_VERSION=5.5.0
 powershell "[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect"
 ````
 
