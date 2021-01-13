@@ -323,8 +323,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#windows-powershell" class="md-nav__link">
-    Windows (PowerShell)
+  <a href="#windows-command-prompt" class="md-nav__link">
+    Windows (Command Prompt)
   </a>
   
 </li>
@@ -1628,8 +1628,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#windows-powershell" class="md-nav__link">
-    Windows (PowerShell)
+  <a href="#windows-command-prompt" class="md-nav__link">
+    Windows (Command Prompt)
   </a>
   
 </li>
@@ -1807,14 +1807,14 @@ bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
 bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh)
 </code></pre>
 
-<h4 id="windows-powershell">Windows (PowerShell)<a class="headerlink" href="#windows-powershell" title="Permanent link">#</a></h4>
+<h4 id="windows-command-prompt">Windows (Command Prompt)<a class="headerlink" href="#windows-command-prompt" title="Permanent link">#</a></h4>
 <p>To run a specific version of Synopsys Detect:</p>
-<pre><code>$Env:DETECT_LATEST_RELEASE_VERSION = {Synopsys Detect version}
+<pre><code>set DETECT_LATEST_RELEASE_VERSION={Synopsys Detect version}
 powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot;
 </code></pre>
 
 <p>For example, to run Synopsys Detect version 5.5.0:</p>
-<pre><code>$Env:DETECT_LATEST_RELEASE_VERSION = 5.5.0
+<pre><code>set DETECT_LATEST_RELEASE_VERSION=5.5.0
 powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot;
 </code></pre>
 
