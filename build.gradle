@@ -108,7 +108,6 @@ dependencies {
 
     testImplementation project(':configuration').sourceSets.test.output
     testImplementation project(':common-test')
-    testImplementation('org.springframework:spring-test')
 }
 
 springBoot { mainClassName = 'com.synopsys.integration.detect.Application' }

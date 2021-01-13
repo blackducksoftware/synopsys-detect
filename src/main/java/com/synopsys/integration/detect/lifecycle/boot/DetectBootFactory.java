@@ -47,7 +47,6 @@ import com.synopsys.integration.configuration.source.SpringConfigurationProperty
 import com.synopsys.integration.detect.Application;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
@@ -64,6 +63,7 @@ import com.synopsys.integration.detect.lifecycle.boot.product.PolarisConnectivit
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBoot;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootFactory;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
+import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableOptions;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.executable.DirectoryExecutableFinder;
@@ -109,20 +109,20 @@ public class DetectBootFactory {
         this.blackDuckConnectivityChecker = new BlackDuckConnectivityChecker();
     }
 
-    public DetectBoot createDetectBoot(ConfigurableEnvironment environment, String[] sourceArgs, DetectContext detectContext) {
-        List<PropertySource> propertySources;
-
-        try {
-            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, false));
-        } catch (RuntimeException e) {
-            logger.error("An unknown property source was found, detect will still continue.", e);
-            propertySources = new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, true));
-        }
-
+    public DetectBoot createDetectBoot(List<PropertySource> propertySources, String[] sourceArgs, DetectContext detectContext) {
         DetectArgumentStateParser detectArgumentStateParser = new DetectArgumentStateParser();
         DetectArgumentState detectArgumentState = detectArgumentStateParser.parseArgs(sourceArgs);
 
         return new DetectBoot(this, detectArgumentState, propertySources, detectContext);
+    }
+
+    public List<PropertySource> createPropertySourcesFromEnvironment(ConfigurableEnvironment environment) {
+        try {
+            return new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, false));
+        } catch (RuntimeException e) {
+            logger.error("An unknown property source was found, detect will still continue.", e);
+            return new ArrayList<>(SpringConfigurationPropertySource.fromConfigurableEnvironment(environment, true));
+        }
     }
 
 
@@ -169,19 +169,18 @@ public class DetectBootFactory {
         return Optional.empty();
     }
 
-    public AirGapCreator createAirGapCreator(DetectConfigurationFactory detectConfigurationFactory, Configuration configuration) throws DetectUserFriendlyException {
-        ConnectionDetails connectionDetails = detectConfigurationFactory.createConnectionDetails();
+    public AirGapCreator createAirGapCreator(ConnectionDetails connectionDetails, DetectExecutableOptions detectExecutableOptions, Configuration freemarkerConfiguration) {
         ConnectionFactory connectionFactory = new ConnectionFactory(connectionDetails);
         ArtifactResolver artifactResolver = new ArtifactResolver(connectionFactory, gson);
 
         FileFinder fileFinder = new WildcardFileFinder();
         DirectoryExecutableFinder directoryExecutableFinder = DirectoryExecutableFinder.forCurrentOperatingSystem(fileFinder);
         SystemPathExecutableFinder systemPathExecutableFinder = new SystemPathExecutableFinder(directoryExecutableFinder);
-        DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(directoryExecutableFinder, systemPathExecutableFinder, detectConfigurationFactory.createExecutablePaths());
+        DetectExecutableResolver detectExecutableResolver = new DetectExecutableResolver(directoryExecutableFinder, systemPathExecutableFinder, detectExecutableOptions);
 
         GradleInspectorInstaller gradleInspectorInstaller = new GradleInspectorInstaller(artifactResolver);
         DetectExecutableRunner runner = DetectExecutableRunner.newDebug(eventSystem);
-        GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, gradleInspectorInstaller, runner, configuration);
+        GradleAirGapCreator gradleAirGapCreator = new GradleAirGapCreator(detectExecutableResolver, gradleInspectorInstaller, runner, freemarkerConfiguration);
 
         NugetAirGapCreator nugetAirGapCreator = new NugetAirGapCreator(new NugetInspectorInstaller(artifactResolver));
         DockerAirGapCreator dockerAirGapCreator = new DockerAirGapCreator(new DockerInspectorInstaller(artifactResolver));

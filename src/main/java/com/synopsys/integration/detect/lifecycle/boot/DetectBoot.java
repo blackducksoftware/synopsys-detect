@@ -82,7 +82,7 @@ public class DetectBoot {
         this.detectContext = detectContext;
     }
 
-    public Optional<DetectBootResult> boot(String detectVersion) throws DetectUserFriendlyException, IOException, IllegalAccessException {
+    public Optional<DetectBootResult> boot(String detectVersion) throws IOException, IllegalAccessException {
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             HelpPrinter helpPrinter = new HelpPrinter();
             helpPrinter.printAppropriateHelpMessage(DEFAULT_PRINT_STREAM, DetectProperties.allProperties(), Arrays.asList(DetectGroup.values()), DetectGroup.BLACKDUCK_SERVER, detectArgumentState);
@@ -135,7 +135,7 @@ public class DetectBoot {
         if (detectArgumentState.isGenerateAirGapZip()) {
             try {
                 DetectOverrideableFilter inspectorFilter = DetectOverrideableFilter.createArgumentValueFilter(detectArgumentState);
-                AirGapCreator airGapCreator = detectBootFactory.createAirGapCreator(detectConfigurationFactory, freemarkerConfiguration);
+                AirGapCreator airGapCreator = detectBootFactory.createAirGapCreator(detectConfigurationFactory.createConnectionDetails(), detectConfigurationFactory.createDetectExecutableOptions(), freemarkerConfiguration);
                 String gradleInspectorVersion = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_GRADLE_INSPECTOR_VERSION.getProperty())
                                                     .orElse(null);
 
@@ -181,7 +181,6 @@ public class DetectBoot {
         } catch (DetectUserFriendlyException e) {
             return Optional.of(DetectBootResult.exception(e, detectConfiguration, directoryManager, diagnosticSystem));
         }
-
 
         //Finished, populate the detect context
         detectContext.registerBean(detectBootFactory.getDetectRun());
