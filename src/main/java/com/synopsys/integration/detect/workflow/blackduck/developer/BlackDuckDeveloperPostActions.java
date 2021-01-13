@@ -25,14 +25,11 @@ package com.synopsys.integration.detect.workflow.blackduck.developer;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
-import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationLicenseView;
-import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationVulnerabilityView;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -51,13 +48,7 @@ public class BlackDuckDeveloperPostActions {
         for (DeveloperScanComponentResultView resultView : results) {
             String componentName = resultView.getComponentName();
             String componentVersion = resultView.getVersionName();
-            Set<String> policyNames = new LinkedHashSet<>();
-            policyNames.addAll(resultView.getVulnerabilities().stream()
-                                   .map(PolicyViolationVulnerabilityView::getPolicyName)
-                                   .collect(Collectors.toSet()));
-            policyNames.addAll(resultView.getLicenses().stream()
-                                   .map(PolicyViolationLicenseView::getPolicyName)
-                                   .collect(Collectors.toSet()));
+            Set<String> policyNames = resultView.getViolatingPolicyNames();
 
             if (!policyNames.isEmpty()) {
                 violatedPolicyComponentNames.add(componentName);

@@ -61,6 +61,7 @@ import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionN
 import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.DetectMajorVersion;
+import com.synopsys.integration.detect.configuration.enumeration.DetectScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
@@ -1126,10 +1127,10 @@ public class DetectProperties {
             .setHelp("If set to true, Detect will wait for Synopsys products until results are available or the detect.report.timeout is exceeded.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<BooleanProperty> DETECT_MODE_DEVELOPER =
-        new DetectProperty<>(new BooleanProperty("detect.mode.developer", false))
-            .setInfo("Detect Developer Mode Scan", DetectPropertyFromVersion.VERSION_6_9_0)
-            .setHelp("If set to true, performs developer scan and accepts policy violations and warnings in JSON.")
+    public static final DetectProperty<EnumProperty<DetectScanMode>> DETECT_SCAN_MODE =
+        new DetectProperty<>(new EnumProperty<>("detect.scan.mode", DetectScanMode.SCAN_DATA, DetectScanMode.class))
+            .setInfo("Detect Scan Mode", DetectPropertyFromVersion.VERSION_6_9_0)
+            .setHelp("Set the scanning mode of Detect", "Set the scanning mode of Detect to control how Black Duck will process BDIO output from detect.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
             .setCategory(DetectCategory.Advanced);
 

@@ -61,6 +61,7 @@ import com.synopsys.integration.detect.configuration.connection.BlackDuckConnect
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorExcludedDirectories;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
+import com.synopsys.integration.detect.configuration.enumeration.DetectScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
@@ -283,10 +284,15 @@ public class DetectConfigurationFactory {
         String aggregateName = getNullableValue(DetectProperties.DETECT_BOM_AGGREGATE_NAME);
         AggregateMode aggregateMode = getValue(DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE);
         List<DetectTool> preferredTools = getValue(DetectProperties.DETECT_PROJECT_TOOL);
-        Boolean developerModeScan = getValue(DetectProperties.DETECT_MODE_DEVELOPER);
-        Boolean useBdio2 = getValue(DetectProperties.DETECT_BDIO2_ENABLED) || developerModeScan;
+        DetectScanMode scanMode = getValue(DetectProperties.DETECT_SCAN_MODE);
+        Boolean useBdio2 = shouldUseBdio2();
 
-        return new RunOptions(unmapCodeLocations, aggregateName, aggregateMode, preferredTools, detectToolFilter, useBdio2, developerModeScan);
+        return new RunOptions(unmapCodeLocations, aggregateName, aggregateMode, preferredTools, detectToolFilter, useBdio2, scanMode);
+    }
+
+    private boolean shouldUseBdio2() {
+        DetectScanMode scanMode = getValue(DetectProperties.DETECT_SCAN_MODE);
+        return getValue(DetectProperties.DETECT_BDIO2_ENABLED) || DetectScanMode.DEVELOPER_MODE == scanMode;
     }
 
     public DirectoryOptions createDirectoryOptions() throws IOException {
