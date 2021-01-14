@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -85,7 +85,7 @@ public class CodeLocationNameGenerator {
 
         String dockerTarFileName = DetectFileUtils.tryGetCanonicalName(dockerTar);
         List<String> fileCodeLocationNamePieces = Arrays.asList(dockerTarFileName, projectName, projectVersionName);
-        List<String> fileCodeLocationEndPieces = Arrays.asList(codeLocationTypeString);
+        List<String> fileCodeLocationEndPieces = Collections.singletonList(codeLocationTypeString);
 
         return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
     }
@@ -95,7 +95,7 @@ public class CodeLocationNameGenerator {
         String codeLocationTypeString = CodeLocationNameType.SCAN.toString().toLowerCase();
 
         List<String> fileCodeLocationNamePieces = Arrays.asList(pathPiece, projectName, projectVersionName);
-        List<String> fileCodeLocationEndPieces = Arrays.asList(codeLocationTypeString);
+        List<String> fileCodeLocationEndPieces = Collections.singletonList(codeLocationTypeString);
 
         return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
     }
@@ -105,7 +105,7 @@ public class CodeLocationNameGenerator {
 
         String canonicalFileName = DetectFileUtils.tryGetCanonicalName(targetFile);
         List<String> fileCodeLocationNamePieces = Arrays.asList(canonicalFileName, projectName, projectVersionName);
-        List<String> fileCodeLocationEndPieces = Arrays.asList(codeLocationTypeString);
+        List<String> fileCodeLocationEndPieces = Collections.singletonList(codeLocationTypeString);
 
         return createCodeLocationName(prefix, fileCodeLocationNamePieces, suffix, fileCodeLocationEndPieces);
     }

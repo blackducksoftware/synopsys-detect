@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -325,7 +325,7 @@ public class RunManager {
 
             if (null != projectVersionWrapper && runOptions.shouldUnmapCodeLocations()) {
                 logger.debug("Unmapping code locations.");
-                DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.getBlackDuckService(), blackDuckServicesFactory.createCodeLocationService());
+                DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.createCodeLocationService());
                 detectCodeLocationUnmapService.unmapCodeLocations(projectVersionWrapper.getProjectVersionView());
             } else {
                 logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");

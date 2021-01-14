@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -128,13 +128,9 @@ public class DetectorTool {
             logger.debug("Total number of detectors: {}", extractionCount);
         });
 
-        detectorEvaluator.registerPostDiscoveryCallback(detectorAggregateEvaluationResult -> {
-            eventSystem.publishEvent(Event.DiscoveriesCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
-        });
+        detectorEvaluator.registerPostDiscoveryCallback(detectorAggregateEvaluationResult -> eventSystem.publishEvent(Event.DiscoveriesCompleted, detectorAggregateEvaluationResult.getEvaluationTree()));
 
-        detectorEvaluator.registerPostExtractionCallback(detectorAggregateEvaluationResult -> {
-            eventSystem.publishEvent(Event.ExtractionsCompleted, detectorAggregateEvaluationResult.getEvaluationTree());
-        });
+        detectorEvaluator.registerPostExtractionCallback(detectorAggregateEvaluationResult -> eventSystem.publishEvent(Event.ExtractionsCompleted, detectorAggregateEvaluationResult.getEvaluationTree()));
 
         DetectorAggregateEvaluationResult evaluationResult = detectorEvaluator.evaluate(rootEvaluation);
 

@@ -1,7 +1,7 @@
 /**
  * configuration
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -70,15 +70,18 @@ public class ExtendedEnumValue<E extends Enum<E>, B extends Enum<B>> {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
 
         final ExtendedEnumValue<?, ?> that = (ExtendedEnumValue<?, ?>) o;
 
-        if (getExtendedValue().isPresent() ? !getExtendedValue().equals(that.getExtendedValue()) : that.getExtendedValue().isPresent())
+        if (getExtendedValue().isPresent() ? !getExtendedValue().equals(that.getExtendedValue()) : that.getExtendedValue().isPresent()) {
             return false;
+        }
         return getBaseValue().isPresent() ? getBaseValue().equals(that.getBaseValue()) : !that.getBaseValue().isPresent();
     }
 

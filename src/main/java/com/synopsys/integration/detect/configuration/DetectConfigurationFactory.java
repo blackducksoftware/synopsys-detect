@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -224,7 +224,7 @@ public class DetectConfigurationFactory {
         List<String> proxyIgnoredHosts = PropertyConfigUtils
                                              .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.BLACKDUCK_PROXY_IGNORED_HOSTS.getProperty(), DetectProperties.BLACKDUCK_HUB_PROXY_IGNORED_HOSTS.getProperty());
         List<Pattern> proxyPatterns = proxyIgnoredHosts.stream()
-                                          .map(it -> Pattern.compile(it))
+                                          .map(Pattern::compile)
                                           .collect(Collectors.toList());
         ProxyInfo proxyInformation = createBlackDuckProxyInfo();
         return new ConnectionDetails(proxyInformation, proxyPatterns, findTimeoutInSeconds(), alwaysTrust);
@@ -320,8 +320,7 @@ public class DetectConfigurationFactory {
         List<String> excludedDirectoryPatterns = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS);
         List<String> excludedDirectoryPaths = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS);
 
-        List<String> excludedDirectories = new ArrayList<>();
-        excludedDirectories.addAll(userProvidedExcludedDirectories);
+        List<String> excludedDirectories = new ArrayList<>(userProvidedExcludedDirectories);
         if (detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS.getProperty())) {
             List<String> defaultExcluded = Arrays.stream(DefaultDetectorExcludedDirectories.values())
                                                .map(DefaultDetectorExcludedDirectories::getDirectoryName)

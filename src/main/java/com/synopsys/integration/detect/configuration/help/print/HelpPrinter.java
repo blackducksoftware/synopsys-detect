@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -164,7 +164,7 @@ public class HelpPrinter {
             description = property.getPropertyDeprecationInfo().getDeprecationText() + description;
         }
         if (property.listExampleValues().size() > 0) {
-            description += " (" + property.listExampleValues().stream().collect(Collectors.joining("|")) + ")";
+            description += " (" + String.join("|", property.listExampleValues()) + ")";
         }
         String propertyKey = property.getKey();
         String defaultValue = "";

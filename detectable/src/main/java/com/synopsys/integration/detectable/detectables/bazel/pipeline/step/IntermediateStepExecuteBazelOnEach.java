@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -59,9 +59,7 @@ public class IntermediateStepExecuteBazelOnEach implements IntermediateStep {
         for (String inputItem : adjustedInput) {
             List<String> finalizedArgs = bazelVariableSubstitutor.substitute(bazelCommandArgs, inputItem);
             Optional<String> cmdOutput = bazelCommandExecutor.executeToString(finalizedArgs);
-            if (cmdOutput.isPresent()) {
-                results.add(cmdOutput.get());
-            }
+            cmdOutput.ifPresent(results::add);
         }
         return results;
     }

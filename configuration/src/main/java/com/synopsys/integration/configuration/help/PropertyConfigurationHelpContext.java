@@ -1,7 +1,7 @@
 /**
  * configuration
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -116,9 +116,7 @@ public class PropertyConfigurationHelpContext {
                 int errorCount = propertyErrors.size();
                 String header = String.format("%s (%s)", pluralize("ERROR", "ERRORS", errorCount), errorCount);
                 logger.accept(header);
-                propertyErrors.forEach(errorMessage -> {
-                    logger.accept(property.getKey() + ": " + errorMessage);
-                });
+                propertyErrors.forEach(errorMessage -> logger.accept(property.getKey() + ": " + errorMessage));
             });
     }
 

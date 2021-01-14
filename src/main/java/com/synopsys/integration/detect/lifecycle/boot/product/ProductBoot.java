@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -59,7 +59,8 @@ public class ProductBoot {
     ) throws DetectUserFriendlyException {
 
         if (!productDecision.willRunAny()) {
-            throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
+            throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.  See online help at: https://detect.synopsys.com/doc/", ExitCodeType.FAILURE_CONFIGURATION);
+
         }
 
         logger.debug("Detect product boot start.");
@@ -97,7 +98,7 @@ public class ProductBoot {
         if (blackDuckConnectivityResult.isSuccessfullyConnected()) {
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckConnectivityResult.getBlackDuckServicesFactory();
 
-            if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getBlackDuckService())) {
+            if (shouldUsePhoneHome(analyticsConfigurationService, blackDuckServicesFactory.getBlackDuckApiClient())) {
                 PhoneHomeManager phoneHomeManager = productBootFactory.createPhoneHomeManager(blackDuckServicesFactory);
                 return BlackDuckRunData.online(blackDuckServicesFactory, phoneHomeManager, blackDuckConnectivityResult.getBlackDuckServerConfig());
             } else {

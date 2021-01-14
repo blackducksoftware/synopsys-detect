@@ -1,7 +1,7 @@
 /**
  * polaris
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -23,9 +23,6 @@
 package com.synopsys.integration.polaris.common.api.auth.model;
 
 import com.synopsys.integration.polaris.common.api.PolarisComponent;
-
-import java.util.Objects;
-import java.util.Arrays;
 
 // this file should not be edited - if changes are necessary, the generator should be updated, then this file should be re-created
 

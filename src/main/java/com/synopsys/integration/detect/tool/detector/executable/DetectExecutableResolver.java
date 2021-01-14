@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -76,8 +76,9 @@ public class DetectExecutableResolver
         File resolved = null;
         for (ExecutableResolverFunction resolver : resolvers) {
             resolved = resolver.resolve();
-            if (resolved != null)
+            if (resolved != null) {
                 break;
+            }
         }
         if (cacheKey != null) {
             cachedExecutables.put(cacheKey, resolved);

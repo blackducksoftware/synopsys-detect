@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -95,8 +95,9 @@ public class ConanInfoNodeParser {
         if (ref.startsWith("conanfile.")) {
             setFieldsForRootNode(nodeBuilder, ref);
         } else {
-            if (setFieldsForNonRootNode(nodeBuilder, ref))
+            if (setFieldsForNonRootNode(nodeBuilder, ref)) {
                 return;
+            }
         }
         nodeBuilder.setRef(ref);
     }

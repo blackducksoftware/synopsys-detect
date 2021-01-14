@@ -1,7 +1,7 @@
 /**
  * buildSrc
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -23,7 +23,6 @@
 package com.synopsys.integration.detect.docs.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -45,7 +44,7 @@ public class DetectorStatusCodes {
         return sortedCodes;
     }
 
-    private class HelpJsonDetectorStatusCodeComparator implements Comparator<HelpJsonDetectorStatusCode> {
+    private static class HelpJsonDetectorStatusCodeComparator implements Comparator<HelpJsonDetectorStatusCode> {
 
         @Override
         public int compare(final HelpJsonDetectorStatusCode o1, final HelpJsonDetectorStatusCode o2) {

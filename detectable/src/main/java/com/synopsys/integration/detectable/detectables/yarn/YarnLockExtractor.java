@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -30,7 +30,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 
 import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 
 public class YarnLockExtractor {
     private final YarnPackager yarnPackager;

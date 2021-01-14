@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -68,8 +68,9 @@ public class DetectZipUtil {
             while (entries.hasMoreElements()) {
                 final ZipEntry entry = entries.nextElement();
                 final Path entryPath = destPath.resolve(entry.getName());
-                if (!entryPath.normalize().startsWith(dest.toPath()))
+                if (!entryPath.normalize().startsWith(dest.toPath())) {
                     throw new IOException("Zip entry contained path traversal");
+                }
                 if (entry.isDirectory()) {
                     Files.createDirectories(entryPath);
                 } else {

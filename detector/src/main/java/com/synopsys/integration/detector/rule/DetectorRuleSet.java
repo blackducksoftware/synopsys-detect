@@ -1,7 +1,7 @@
 /**
  * detector
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -45,14 +45,16 @@ public class DetectorRuleSet {
     }
 
     public Set<DetectorRule> getYieldsTo(DetectorRule rule) {
-        if (yieldsToRules.containsKey(rule))
+        if (yieldsToRules.containsKey(rule)) {
             return yieldsToRules.get(rule);
+        }
         return new HashSet<>();
     }
 
     public Optional<DetectorRule> getFallbackTo(DetectorRule rule) {
-        if (fallbackRules.containsKey(rule))
+        if (fallbackRules.containsKey(rule)) {
             return Optional.of(fallbackRules.get(rule));
+        }
         return Optional.empty();
     }
 

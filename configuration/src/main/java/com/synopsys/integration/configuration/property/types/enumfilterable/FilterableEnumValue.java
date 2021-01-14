@@ -1,7 +1,7 @@
 /**
  * configuration
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -73,10 +73,12 @@ public class FilterableEnumValue<E extends Enum<E>> {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
         final FilterableEnumValue<?> that = (FilterableEnumValue<?>) o;
         return all == that.all &&
                    none == that.none &&

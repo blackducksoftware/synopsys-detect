@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -28,8 +28,8 @@ import com.synopsys.integration.detect.configuration.DetectInfo;
 
 public class DetectInfoPrinter {
     public void printInfo(final PrintStream printStream, final DetectInfo detectInfo) {
-        printStream.println("");
+        printStream.println();
         printStream.println("Detect Version: " + detectInfo.getDetectVersion());
-        printStream.println("");
+        printStream.println();
     }
 }

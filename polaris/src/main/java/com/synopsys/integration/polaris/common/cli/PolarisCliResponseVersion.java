@@ -1,7 +1,7 @@
 /**
  * polaris
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -84,6 +84,7 @@ public class PolarisCliResponseVersion implements Comparable<PolarisCliResponseV
         return major + "." + minor;
     }
 
+    @Override
     public int compareTo(final PolarisCliResponseVersion o) {
         if (major != o.major) {
             return Integer.compare(major, o.major);

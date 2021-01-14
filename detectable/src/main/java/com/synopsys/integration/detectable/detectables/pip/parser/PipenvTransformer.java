@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -81,8 +81,8 @@ public class PipenvTransformer {
 
     private String findFrozenName(String name, PipFreeze pipFreeze) {
         return pipFreeze.getEntries().stream()
-                   .filter(it -> it.getName().equalsIgnoreCase(name))
                    .map(PipFreezeEntry::getName)
+                   .filter(itName -> itName.equalsIgnoreCase(name))
                    .findFirst()
                    .orElse(name);
     }

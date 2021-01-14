@@ -87,8 +87,6 @@ class PearPackageDependenciesParserTest {
             "No       Package"
         );
 
-        Assertions.assertThrows(IntegrationException.class, () -> {
-            pearPackageDependenciesParser.parse(missingInfoLines);
-        });
+        Assertions.assertThrows(IntegrationException.class, () -> pearPackageDependenciesParser.parse(missingInfoLines));
     }
 }

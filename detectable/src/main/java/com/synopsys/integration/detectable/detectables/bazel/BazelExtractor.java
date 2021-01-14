@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -24,7 +24,7 @@ package com.synopsys.integration.detectable.detectables.bazel;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -83,7 +83,7 @@ public class BazelExtractor {
     private Extraction buildResults(List<Dependency> aggregatedDependencies, String projectName) {
         MutableDependencyGraph dependencyGraph = createDependencyGraph(aggregatedDependencies);
         CodeLocation codeLocation = new CodeLocation(dependencyGraph);
-        List<CodeLocation> codeLocations = Arrays.asList(codeLocation);
+        List<CodeLocation> codeLocations = Collections.singletonList(codeLocation);
         Extraction.Builder builder = new Extraction.Builder()
                                          .success(codeLocations)
                                          .projectName(projectName);

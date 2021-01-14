@@ -1,7 +1,7 @@
 /**
  * buildSrc
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -62,9 +62,7 @@ public class VerifyBlackDuckDetectTask extends DefaultTask {
         if (bomComponents.isEmpty()) {
             throw new GradleException("No bom components were found for ${project.name} - ${version}");
         }
-        bomComponents.forEach(it -> {
-            System.out.println(it.getComponentName() + " - " + it.getComponentVersionName());
-        });
+        bomComponents.forEach(it -> System.out.println(it.getComponentName() + " - " + it.getComponentVersionName()));
     }
 
 }

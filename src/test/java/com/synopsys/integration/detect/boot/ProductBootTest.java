@@ -50,27 +50,21 @@ import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig
 public class ProductBootTest {
     @Test
     public void bothProductsSkippedThrows() {
-        Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
-            testBoot(BlackDuckDecision.skip(), PolarisDecision.skip(), new ProductBootOptions(false, false));
-        });
+        Assertions.assertThrows(DetectUserFriendlyException.class, () -> testBoot(BlackDuckDecision.skip(), PolarisDecision.skip(), new ProductBootOptions(false, false)));
     }
 
     @Test
     public void blackDuckConnectionFailureThrows() {
         BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.failure("Failed to connect");
 
-        Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
-            testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), new ProductBootOptions(false, false), connectivityResult, null);
-        });
+        Assertions.assertThrows(DetectUserFriendlyException.class, () -> testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), new ProductBootOptions(false, false), connectivityResult, null));
     }
 
     @Test
     public void polarisConnectionFailureThrows() {
         PolarisConnectivityResult connectivityResult = PolarisConnectivityResult.failure("Failed to connect");
 
-        Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
-            testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), new ProductBootOptions(false, false), null, connectivityResult);
-        });
+        Assertions.assertThrows(DetectUserFriendlyException.class, () -> testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), new ProductBootOptions(false, false), null, connectivityResult));
     }
 
     @Test
@@ -87,18 +81,14 @@ public class ProductBootTest {
     public void blackDuckConnectionFailureWithTestThrows() {
         BlackDuckConnectivityResult connectivityResult = BlackDuckConnectivityResult.failure("Failed to connect");
 
-        Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
-            testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), new ProductBootOptions(false, true), connectivityResult, null);
-        });
+        Assertions.assertThrows(DetectUserFriendlyException.class, () -> testBoot(BlackDuckDecision.runOnline(), PolarisDecision.skip(), new ProductBootOptions(false, true), connectivityResult, null));
     }
 
     @Test
     public void polarisConnectionFailureWithTestThrows() {
         PolarisConnectivityResult connectivityResult = PolarisConnectivityResult.failure("Failed to connect");
 
-        Assertions.assertThrows(DetectUserFriendlyException.class, () -> {
-            testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), new ProductBootOptions(false, true), null, connectivityResult);
-        });
+        Assertions.assertThrows(DetectUserFriendlyException.class, () -> testBoot(BlackDuckDecision.skip(), PolarisDecision.runOnline(null), new ProductBootOptions(false, true), null, connectivityResult));
     }
 
     @Test
