@@ -28,82 +28,63 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 
 class DiagnosticSystemManagerTest {
     @Test
     void commandLineDecision() {
-        DetectArgumentState detectArgumentState = createDetectArgumentState(true, false);
         PropertyConfiguration propertyConfiguration = Mockito.mock(PropertyConfiguration.class);
         Mockito.when(propertyConfiguration.getValueOrDefault(Mockito.any())).thenReturn(false);
 
-        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(detectArgumentState);
-        DiagnosticsDecision diagnosticsDecision = diagnosticSystemManager.decide(propertyConfiguration);
+        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(true, false, propertyConfiguration);
 
-        Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
-        Assertions.assertTrue(diagnosticsDecision.isDiagnostic);
-        Assertions.assertFalse(diagnosticsDecision.isDiagnosticExtended);
+        Assertions.assertTrue(diagnosticSystemManager.shouldCreateDiagnosticSystem());
+        Assertions.assertFalse(diagnosticSystemManager.isExtended());
     }
 
     @Test
     void commandLineDecisionExtended() {
-        DetectArgumentState detectArgumentState = createDetectArgumentState(false, true);
         PropertyConfiguration propertyConfiguration = Mockito.mock(PropertyConfiguration.class);
         Mockito.when(propertyConfiguration.getValueOrDefault(Mockito.any())).thenReturn(false);
 
-        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(detectArgumentState);
-        DiagnosticsDecision diagnosticsDecision = diagnosticSystemManager.decide(propertyConfiguration);
+        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(false, true, propertyConfiguration);
 
-        Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
-        Assertions.assertFalse(diagnosticsDecision.isDiagnostic);
-        Assertions.assertTrue(diagnosticsDecision.isDiagnosticExtended);
+        Assertions.assertTrue(diagnosticSystemManager.shouldCreateDiagnosticSystem());
+        Assertions.assertTrue(diagnosticSystemManager.isExtended());
     }
 
     @Test
     void propertyDecision() {
-        DetectArgumentState detectArgumentState = createDetectArgumentState(false, false);
         PropertyConfiguration propertyConfiguration = Mockito.mock(PropertyConfiguration.class);
         Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC.getProperty())).thenReturn(true);
         Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty())).thenReturn(false);
 
-        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(detectArgumentState);
-        DiagnosticsDecision diagnosticsDecision = diagnosticSystemManager.decide(propertyConfiguration);
+        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(false, false, propertyConfiguration);
 
-        Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
-        Assertions.assertTrue(diagnosticsDecision.isDiagnostic);
-        Assertions.assertFalse(diagnosticsDecision.isDiagnosticExtended);
+        Assertions.assertTrue(diagnosticSystemManager.shouldCreateDiagnosticSystem());
+        Assertions.assertFalse(diagnosticSystemManager.isExtended());
     }
 
     @Test
     void propertyDecisionExtended() {
-        DetectArgumentState detectArgumentState = createDetectArgumentState(false, false);
         PropertyConfiguration propertyConfiguration = Mockito.mock(PropertyConfiguration.class);
         Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC.getProperty())).thenReturn(false);
         Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty())).thenReturn(true);
 
-        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(detectArgumentState);
-        DiagnosticsDecision diagnosticsDecision = diagnosticSystemManager.decide(propertyConfiguration);
+        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(false, false, propertyConfiguration);
 
-        Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
-        Assertions.assertFalse(diagnosticsDecision.isDiagnostic);
-        Assertions.assertTrue(diagnosticsDecision.isDiagnosticExtended);
+        Assertions.assertTrue(diagnosticSystemManager.shouldCreateDiagnosticSystem());
+        Assertions.assertTrue(diagnosticSystemManager.isExtended());
     }
 
     @Test
     void noDiagnostic() {
-        DetectArgumentState detectArgumentState = createDetectArgumentState(false, false);
         PropertyConfiguration propertyConfiguration = Mockito.mock(PropertyConfiguration.class);
         Mockito.when(propertyConfiguration.getValueOrDefault(Mockito.any())).thenReturn(false);
 
-        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(detectArgumentState);
-        DiagnosticsDecision diagnosticsDecision = diagnosticSystemManager.decide(propertyConfiguration);
+        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(false, false, propertyConfiguration);
 
-        Assertions.assertFalse(diagnosticsDecision.isConfiguredForDiagnostic);
-        Assertions.assertFalse(diagnosticsDecision.isDiagnostic);
-        Assertions.assertFalse(diagnosticsDecision.isDiagnosticExtended);
+        Assertions.assertFalse(diagnosticSystemManager.shouldCreateDiagnosticSystem());
+        Assertions.assertFalse(diagnosticSystemManager.isExtended());
     }
 
-    private DetectArgumentState createDetectArgumentState(boolean isDiagnostic, boolean isDiagnosticExtended) {
-        return new DetectArgumentState(false, false, false, false, false, null, isDiagnostic, isDiagnosticExtended, false);
-    }
 }
