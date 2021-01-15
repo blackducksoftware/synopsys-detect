@@ -46,8 +46,8 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
 import com.synopsys.integration.detect.configuration.help.print.HelpPrinter;
-import com.synopsys.integration.detect.configuration.validation.DetectConfigurationState;
-import com.synopsys.integration.detect.configuration.validation.DetectConfigurationValidator;
+import com.synopsys.integration.detect.configuration.validation.DeprecationResult;
+import com.synopsys.integration.detect.configuration.validation.DetectConfigurationBootManager;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
@@ -106,19 +106,26 @@ public class DetectBoot {
         }
 
         PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
-        DetectConfigurationValidator detectConfigurationValidator = detectBootFactory.createDetectConfigurationValidator();
-        DetectConfigurationState detectConfigurationState = detectConfigurationValidator.processDetectConfiguration(detectConfiguration);
 
         logger.debug("Configuration processed completely.");
 
+        DetectConfigurationBootManager detectConfigurationBootManager = detectBootFactory.createDetectConfigurationBootManager(detectConfiguration);
+        DeprecationResult deprecationResult = detectConfigurationBootManager.checkForDeprecations(detectConfiguration);
+
         Boolean suppressConfigurationOutput = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_CONFIGURATION_OUTPUT.getProperty());
         if (Boolean.FALSE.equals(suppressConfigurationOutput)) {
-            detectConfigurationValidator.printConfiguration(detectConfigurationState.getDetectConfigurationReporter(), detectConfigurationState.getAdditionalNotes());
+            detectConfigurationBootManager.printConfiguration(deprecationResult.getAdditionalNotes());
         }
 
-        Optional<DetectBootResult> exitBootWithConfigurationFailure = detectConfigurationValidator.validateConfiguration(detectConfigurationState.getDetectConfigurationReporter(), detectConfiguration, detectConfigurationState.getDeprecationMessages(), detectConfigurationState.hasNotUsedFailureProperties());
-        if (exitBootWithConfigurationFailure.isPresent()) {
-            return exitBootWithConfigurationFailure;
+        Optional<DetectUserFriendlyException> possiblePropertyParseError = detectConfigurationBootManager.validateForPropertyParseErrors();
+        if (possiblePropertyParseError.isPresent()) {
+            return Optional.of(DetectBootResult.exception(possiblePropertyParseError.get(), detectConfiguration));
+        }
+
+        if (deprecationResult.shouldFailFromDeprecations()) {
+            detectConfigurationBootManager.printFailingPropertiesMessages(deprecationResult.getDeprecationMessages());
+
+            return Optional.of(DetectBootResult.exit(detectConfiguration));
         }
 
         logger.debug("Initializing Detect.");

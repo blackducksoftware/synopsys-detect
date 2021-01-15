@@ -41,30 +41,28 @@ import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
-import com.synopsys.integration.detect.lifecycle.boot.DetectBootResult;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
-import com.synopsys.integration.detect.workflow.report.writer.InfoLogReportWriter;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.DetectIssueType;
 
-public class DetectConfigurationValidator {
+public class DetectConfigurationBootManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final EventSystem eventSystem;
     private final DetectInfo detectInfo;
-    private final InfoLogReportWriter infoLogReportWriter;
+    private final PropertyConfigurationHelpContext detectConfigurationReporter;
 
-    public DetectConfigurationValidator(EventSystem eventSystem, DetectInfo detectInfo) {
+    public DetectConfigurationBootManager(EventSystem eventSystem, DetectInfo detectInfo, PropertyConfigurationHelpContext detectConfigurationReporter) {
         this.eventSystem = eventSystem;
         this.detectInfo = detectInfo;
-        this.infoLogReportWriter = new InfoLogReportWriter();
+        this.detectConfigurationReporter = detectConfigurationReporter;
     }
 
-    public DetectConfigurationState processDetectConfiguration(PropertyConfiguration detectConfiguration) throws IllegalAccessException {
+    public DeprecationResult checkForDeprecations(PropertyConfiguration detectConfiguration) throws IllegalAccessException {
         Map<String, String> additionalNotes = new HashMap<>();
         Map<String, List<String>> deprecationMessages = new HashMap<>();
-        boolean hasUsedFailureProperties = false;
+        boolean shouldFailFromDeprecations = false;
 
         List<Property> usedDeprecatedProperties = DetectProperties.allProperties()
                                                       .stream()
@@ -82,42 +80,39 @@ public class DetectConfigurationValidator {
             deprecationMessages.put(propertyKey, Collections.singletonList(deprecationMessage));
             DetectIssue.publish(eventSystem, DetectIssueType.DEPRECATION, propertyKey, "\t" + deprecationMessage);
 
-            if (!hasUsedFailureProperties && detectInfo.getDetectMajorVersion() >= deprecationInfo.getFailInVersion().getIntValue()) {
-                hasUsedFailureProperties = true;
+            if (!shouldFailFromDeprecations && detectInfo.getDetectMajorVersion() >= deprecationInfo.getFailInVersion().getIntValue()) {
+                shouldFailFromDeprecations = true;
             }
         }
 
-        return new DetectConfigurationState(detectConfiguration, additionalNotes, deprecationMessages, hasUsedFailureProperties);
+        return new DeprecationResult(additionalNotes, deprecationMessages, shouldFailFromDeprecations);
     }
 
-    public void printConfiguration(PropertyConfigurationHelpContext detectConfigurationReporter, Map<String, String> additionalNotes) throws IllegalAccessException {
-        detectConfigurationReporter.printCurrentValues(infoLogReportWriter::writeLine, DetectProperties.allProperties(), additionalNotes);
+    public void printConfiguration(Map<String, String> additionalNotes) throws IllegalAccessException {
+        detectConfigurationReporter.printCurrentValues(logger::info, DetectProperties.allProperties(), additionalNotes);
     }
 
-
-    public Optional<DetectBootResult> validateConfiguration(PropertyConfigurationHelpContext detectConfigurationReporter, PropertyConfiguration detectConfiguration, Map<String, List<String>> deprecationMessages, boolean noFailurePropertiesUsed) throws IllegalAccessException {
-        //Check for options that are just plain bad, ie giving an detector type we don't know about.
+    //Check for options that are just plain bad, ie giving an detector type we don't know about.
+    public Optional<DetectUserFriendlyException> validateForPropertyParseErrors() throws IllegalAccessException {
         Map<String, List<String>> errorMap = detectConfigurationReporter.findPropertyParseErrors(DetectProperties.allProperties());
-        if (errorMap.size() > 0) {
+        if (!errorMap.isEmpty()) {
             Map.Entry<String, List<String>> entry = errorMap.entrySet().iterator().next();
-            return Optional.of(DetectBootResult.exception(new DetectUserFriendlyException(entry.getKey() + ": " + entry.getValue().get(0), ExitCodeType.FAILURE_GENERAL_ERROR), detectConfiguration));
+            return Optional.of(new DetectUserFriendlyException(entry.getKey() + ": " + entry.getValue().get(0), ExitCodeType.FAILURE_GENERAL_ERROR));
         }
-
-        if (noFailurePropertiesUsed) {
-            detectConfigurationReporter.printPropertyErrors(infoLogReportWriter::writeLine, DetectProperties.allProperties(), deprecationMessages);
-
-            logger.warn(StringUtils.repeat("=", 60));
-            logger.warn("Configuration is using deprecated properties that must be updated for this major version.");
-            logger.warn("You MUST fix these deprecation issues for detect to proceed.");
-            logger.warn(String.format("To ignore these messages and force detect to exit with success supply --%s=true", DetectProperties.DETECT_FORCE_SUCCESS.getProperty().getKey()));
-            logger.warn("This will not force detect to run, but it will pretend to have succeeded.");
-            logger.warn(StringUtils.repeat("=", 60));
-
-            eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION));
-            return Optional.of(DetectBootResult.exit(detectConfiguration));
-        }
-
         return Optional.empty();
+    }
+
+    public void printFailingPropertiesMessages(Map<String, List<String>> deprecationMessages) throws IllegalAccessException {
+        detectConfigurationReporter.printPropertyErrors(logger::info, DetectProperties.allProperties(), deprecationMessages);
+
+        logger.warn(StringUtils.repeat("=", 60));
+        logger.warn("Configuration is using deprecated properties that must be updated for this major version.");
+        logger.warn("You MUST fix these deprecation issues for detect to proceed.");
+        logger.warn(String.format("To ignore these messages and force detect to exit with success supply --%s=true", DetectProperties.DETECT_FORCE_SUCCESS.getProperty().getKey()));
+        logger.warn("This will not force detect to run, but it will pretend to have succeeded.");
+        logger.warn(StringUtils.repeat("=", 60));
+
+        eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_CONFIGURATION));
     }
 
 }

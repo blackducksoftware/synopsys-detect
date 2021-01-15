@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.property.types.path.SimplePathResolver;
 import com.synopsys.integration.configuration.property.types.path.TildeInPathResolver;
@@ -52,7 +53,7 @@ import com.synopsys.integration.detect.configuration.connection.ConnectionFactor
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentStateParser;
 import com.synopsys.integration.detect.configuration.help.json.HelpJsonManager;
-import com.synopsys.integration.detect.configuration.validation.DetectConfigurationValidator;
+import com.synopsys.integration.detect.configuration.validation.DetectConfigurationBootManager;
 import com.synopsys.integration.detect.interactive.InteractiveManager;
 import com.synopsys.integration.detect.interactive.InteractiveModeDecisionTree;
 import com.synopsys.integration.detect.interactive.InteractivePropertySourceBuilder;
@@ -196,8 +197,9 @@ public class DetectBootFactory {
         return new DirectoryManager(detectConfigurationFactory.createDirectoryOptions(), detectRun);
     }
 
-    public DetectConfigurationValidator createDetectConfigurationValidator() {
-        return new DetectConfigurationValidator(eventSystem, detectInfo);
+    public DetectConfigurationBootManager createDetectConfigurationBootManager(PropertyConfiguration detectConfiguration) {
+        PropertyConfigurationHelpContext detectConfigurationReporter = new PropertyConfigurationHelpContext(detectConfiguration);
+        return new DetectConfigurationBootManager(eventSystem, detectInfo, detectConfigurationReporter);
     }
 
     public DetectorProfiler createDetectorProfiler() {
