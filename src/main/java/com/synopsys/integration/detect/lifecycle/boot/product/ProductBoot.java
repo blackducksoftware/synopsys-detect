@@ -64,7 +64,8 @@ public class ProductBoot {
 
     public ProductRunData boot(ProductDecision productDecision) throws DetectUserFriendlyException {
         if (!productDecision.willRunAny()) {
-            throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.", ExitCodeType.FAILURE_CONFIGURATION);
+            throw new DetectUserFriendlyException("Your environment was not sufficiently configured to run Black Duck or Polaris. Please configure your environment for at least one product.  See online help at: https://detect.synopsys.com/doc/", ExitCodeType.FAILURE_CONFIGURATION);
+
         }
 
         logger.debug("Detect product boot start.");
