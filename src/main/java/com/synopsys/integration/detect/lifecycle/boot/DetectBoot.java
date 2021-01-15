@@ -59,7 +59,7 @@ import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
-import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticsDecider;
+import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystemManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
@@ -134,8 +134,12 @@ public class DetectBoot {
         PathResolver pathResolver = detectBootFactory.createPathResolver(detectConfiguration.getValueOrDefault(DetectProperties.DETECT_RESOLVE_TILDE_IN_PATHS.getProperty()));
         DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(detectConfiguration, pathResolver);
         DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
-        DiagnosticSystem diagnosticSystem = detectBootFactory.createDiagnosticSystem(new DiagnosticsDecider(detectArgumentState), detectConfiguration, directoryManager)
-                                                .orElse(null);
+
+        DiagnosticSystem diagnosticSystem = null;
+        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(detectArgumentState.isDiagnostic(), detectArgumentState.isDiagnosticExtended(), detectConfiguration);
+        if (diagnosticSystemManager.shouldCreateDiagnosticSystem()) {
+            diagnosticSystem = detectBootFactory.createDiagnosticSystem(diagnosticSystemManager.isExtended(), detectConfiguration, directoryManager);
+        }
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
 

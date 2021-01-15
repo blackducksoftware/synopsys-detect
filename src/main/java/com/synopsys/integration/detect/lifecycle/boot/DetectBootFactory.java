@@ -25,7 +25,6 @@ package com.synopsys.integration.detect.lifecycle.boot;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -81,8 +80,6 @@ import com.synopsys.integration.detect.workflow.airgap.GradleAirGapCreator;
 import com.synopsys.integration.detect.workflow.airgap.NugetAirGapCreator;
 import com.synopsys.integration.detect.workflow.blackduck.analytics.AnalyticsConfigurationService;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
-import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticsDecider;
-import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticsDecision;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detect.workflow.profiling.DetectorProfiler;
@@ -162,12 +159,8 @@ public class DetectBootFactory {
         return pathResolver;
     }
 
-    public Optional<DiagnosticSystem> createDiagnosticSystem(DiagnosticsDecider diagnosticsDecider, PropertyConfiguration detectConfiguration, DirectoryManager directoryManager) {
-        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide(detectConfiguration);
-        if (diagnosticsDecision.isConfiguredForDiagnostic) {
-            return Optional.of(new DiagnosticSystem(diagnosticsDecider.decide(detectConfiguration).isDiagnosticExtended, detectConfiguration, detectRun, detectInfo, directoryManager, eventSystem));
-        }
-        return Optional.empty();
+    public DiagnosticSystem createDiagnosticSystem(boolean isDiagnosticExtended, PropertyConfiguration detectConfiguration, DirectoryManager directoryManager) {
+        return new DiagnosticSystem(isDiagnosticExtended, detectConfiguration, detectRun, detectInfo, directoryManager, eventSystem);
     }
 
     public AirGapCreator createAirGapCreator(ConnectionDetails connectionDetails, DetectExecutableOptions detectExecutableOptions, Configuration freemarkerConfiguration) {

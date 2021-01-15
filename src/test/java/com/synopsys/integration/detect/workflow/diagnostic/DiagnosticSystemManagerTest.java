@@ -30,15 +30,15 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 
-class DiagnosticsDeciderTest {
+class DiagnosticSystemManagerTest {
     @Test
     void commandLineDecision() {
         DetectArgumentState detectArgumentState = createDetectArgumentState(true, false);
         PropertyConfiguration propertyConfiguration = Mockito.mock(PropertyConfiguration.class);
         Mockito.when(propertyConfiguration.getValueOrDefault(Mockito.any())).thenReturn(false);
 
-        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState);
-        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide(propertyConfiguration);
+        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(detectArgumentState);
+        DiagnosticsDecision diagnosticsDecision = diagnosticSystemManager.decide(propertyConfiguration);
 
         Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
         Assertions.assertTrue(diagnosticsDecision.isDiagnostic);
@@ -51,8 +51,8 @@ class DiagnosticsDeciderTest {
         PropertyConfiguration propertyConfiguration = Mockito.mock(PropertyConfiguration.class);
         Mockito.when(propertyConfiguration.getValueOrDefault(Mockito.any())).thenReturn(false);
 
-        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState);
-        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide(propertyConfiguration);
+        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(detectArgumentState);
+        DiagnosticsDecision diagnosticsDecision = diagnosticSystemManager.decide(propertyConfiguration);
 
         Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
         Assertions.assertFalse(diagnosticsDecision.isDiagnostic);
@@ -66,8 +66,8 @@ class DiagnosticsDeciderTest {
         Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC.getProperty())).thenReturn(true);
         Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty())).thenReturn(false);
 
-        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState);
-        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide(propertyConfiguration);
+        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(detectArgumentState);
+        DiagnosticsDecision diagnosticsDecision = diagnosticSystemManager.decide(propertyConfiguration);
 
         Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
         Assertions.assertTrue(diagnosticsDecision.isDiagnostic);
@@ -81,8 +81,8 @@ class DiagnosticsDeciderTest {
         Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC.getProperty())).thenReturn(false);
         Mockito.when(propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty())).thenReturn(true);
 
-        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState);
-        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide(propertyConfiguration);
+        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(detectArgumentState);
+        DiagnosticsDecision diagnosticsDecision = diagnosticSystemManager.decide(propertyConfiguration);
 
         Assertions.assertTrue(diagnosticsDecision.isConfiguredForDiagnostic);
         Assertions.assertFalse(diagnosticsDecision.isDiagnostic);
@@ -95,8 +95,8 @@ class DiagnosticsDeciderTest {
         PropertyConfiguration propertyConfiguration = Mockito.mock(PropertyConfiguration.class);
         Mockito.when(propertyConfiguration.getValueOrDefault(Mockito.any())).thenReturn(false);
 
-        DiagnosticsDecider diagnosticsDecider = new DiagnosticsDecider(detectArgumentState);
-        DiagnosticsDecision diagnosticsDecision = diagnosticsDecider.decide(propertyConfiguration);
+        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(detectArgumentState);
+        DiagnosticsDecision diagnosticsDecision = diagnosticSystemManager.decide(propertyConfiguration);
 
         Assertions.assertFalse(diagnosticsDecision.isConfiguredForDiagnostic);
         Assertions.assertFalse(diagnosticsDecision.isDiagnostic);
