@@ -43,7 +43,6 @@ import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanB
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanOutput;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanUploadService;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -68,16 +67,16 @@ public class BlackDuckBinaryScannerTool {
     private final DirectoryManager directoryManager;
     private final FileFinder fileFinder;
     private final BinaryScanOptions binaryScanOptions;
-    private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final EventSystem eventSystem;
+    private final BinaryScanUploadService uploadService;
 
     public BlackDuckBinaryScannerTool(EventSystem eventSystem, CodeLocationNameManager codeLocationNameManager, DirectoryManager directoryManager, FileFinder fileFinder, BinaryScanOptions binaryScanOptions,
-        BlackDuckServicesFactory blackDuckServicesFactory) {
+        BinaryScanUploadService uploadService){
         this.codeLocationNameManager = codeLocationNameManager;
         this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;
         this.binaryScanOptions = binaryScanOptions;
-        this.blackDuckServicesFactory = blackDuckServicesFactory;
+        this.uploadService = uploadService;
         this.eventSystem = eventSystem;
     }
 
@@ -118,7 +117,6 @@ public class BlackDuckBinaryScannerTool {
         if (binaryUpload != null && binaryUpload.isFile() && binaryUpload.canRead()) {
             String name = projectNameVersion.getName();
             String version = projectNameVersion.getVersion();
-            BinaryScanUploadService uploadService = blackDuckServicesFactory.createBinaryScanUploadService();
             CodeLocationCreationData<BinaryScanBatchOutput> codeLocationCreationData = uploadBinaryScanFile(uploadService, binaryUpload, name, version);
             return BinaryScanToolResult.SUCCESS(codeLocationCreationData);
         } else {

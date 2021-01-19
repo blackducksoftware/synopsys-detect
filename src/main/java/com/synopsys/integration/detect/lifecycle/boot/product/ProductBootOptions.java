@@ -25,10 +25,12 @@ package com.synopsys.integration.detect.lifecycle.boot.product;
 public class ProductBootOptions {
     private final boolean ignoreConnectionFailures;
     private final boolean testConnections;
+    private final long timeoutInMillis;
 
-    public ProductBootOptions(final boolean ignoreConnectionFailures, final boolean testConnections) {
+    public ProductBootOptions(boolean ignoreConnectionFailures, boolean testConnections, long timeoutInMillis) {
         this.ignoreConnectionFailures = ignoreConnectionFailures;
         this.testConnections = testConnections;
+        this.timeoutInMillis = timeoutInMillis;
     }
 
     public boolean isIgnoreConnectionFailures() {
@@ -37,5 +39,9 @@ public class ProductBootOptions {
 
     public boolean isTestConnections() {
         return testConnections;
+    }
+
+    public long getTimeoutInMillis() {
+        return timeoutInMillis;
     }
 }

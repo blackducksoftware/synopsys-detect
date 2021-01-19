@@ -57,28 +57,33 @@ import com.synopsys.integration.util.NameVersion;
 public class DetectProjectService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final BlackDuckServicesFactory blackDuckServicesFactory;
+    private final BlackDuckApiClient blackDuckApiClient;
+    private final ProjectService projectService;
+    private final ProjectBomService projectBomService;
+    private final ProjectUsersService projectUsersService;
+    private final TagService tagService;
     private final DetectProjectServiceOptions detectProjectServiceOptions;
     private final ProjectMappingService projectMappingService;
     private final DetectCustomFieldService detectCustomFieldService;
 
-    public DetectProjectService(BlackDuckServicesFactory blackDuckServicesFactory, DetectProjectServiceOptions detectProjectServiceOptions, ProjectMappingService projectMappingService,
+    public DetectProjectService(BlackDuckApiClient blackDuckApiClient, ProjectService projectService, ProjectBomService projectBomService, ProjectUsersService projectUsersService, TagService tagService, DetectProjectServiceOptions detectProjectServiceOptions, ProjectMappingService projectMappingService,
         DetectCustomFieldService detectCustomFieldService) {
-        this.blackDuckServicesFactory = blackDuckServicesFactory;
+        this.blackDuckApiClient = blackDuckApiClient;
+        this.projectService = projectService;
+        this.projectBomService = projectBomService;
+        this.projectUsersService = projectUsersService;
+        this.tagService = tagService;
         this.detectProjectServiceOptions = detectProjectServiceOptions;
         this.projectMappingService = projectMappingService;
         this.detectCustomFieldService = detectCustomFieldService;
     }
 
     public ProjectVersionWrapper createOrUpdateBlackDuckProject(NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException {
-        ProjectService projectService = blackDuckServicesFactory.createProjectService();
-        BlackDuckApiClient blackDuckService = blackDuckServicesFactory.getBlackDuckApiClient();
         ProjectSyncModel projectSyncModel = createProjectSyncModel(projectNameVersion);
         boolean forceUpdate = detectProjectServiceOptions.isForceProjectVersionUpdate();
         ProjectVersionWrapper projectVersionWrapper = projectService.syncProjectAndVersion(projectSyncModel, forceUpdate);
 
-        ProjectBomService projectBomService = blackDuckServicesFactory.createProjectBomService();
-        mapToParentProjectVersion(blackDuckService, projectService, projectBomService, detectProjectServiceOptions.getParentProjectName(), detectProjectServiceOptions.getParentProjectVersion(), projectVersionWrapper);
+        mapToParentProjectVersion(detectProjectServiceOptions.getParentProjectName(), detectProjectServiceOptions.getParentProjectVersion(), projectVersionWrapper);
 
         setApplicationId(projectVersionWrapper.getProjectView(), detectProjectServiceOptions.getApplicationId());
         CustomFieldDocument customFieldDocument = detectProjectServiceOptions.getCustomFields();
@@ -91,21 +96,18 @@ public class DetectProjectService {
                 logger.debug(String.format("Version field '%s' will be set to '%s'.", element.getLabel(), String.join(",", element.getValue())));
             }
 
-            detectCustomFieldService.updateCustomFields(projectVersionWrapper, customFieldDocument, blackDuckServicesFactory.getBlackDuckApiClient());
+            detectCustomFieldService.updateCustomFields(projectVersionWrapper, customFieldDocument, blackDuckApiClient);
             logger.info("Successfully updated (" + (customFieldDocument.getVersion().size() + customFieldDocument.getProject().size()) + ") custom fields.");
         } else {
             logger.debug("No custom fields to set.");
         }
 
-        ProjectUsersService projectUsersService = blackDuckServicesFactory.createProjectUsersService();
-        TagService tagService = blackDuckServicesFactory.createTagService();
         addUserGroupsToProject(projectUsersService, projectVersionWrapper, detectProjectServiceOptions.getGroups());
         addTagsToProject(tagService, projectVersionWrapper, detectProjectServiceOptions.getTags());
         return projectVersionWrapper;
     }
 
-    private void mapToParentProjectVersion(BlackDuckApiClient blackDuckService, ProjectService projectService, ProjectBomService projectBomService, String parentProjectName, String parentVersionName,
-        ProjectVersionWrapper projectVersionWrapper)
+    private void mapToParentProjectVersion(String parentProjectName, String parentVersionName, ProjectVersionWrapper projectVersionWrapper)
         throws DetectUserFriendlyException {
         if (StringUtils.isNotBlank(parentProjectName) || StringUtils.isNotBlank(parentVersionName)) {
             logger.debug("Will attempt to add this project to a parent.");
@@ -120,7 +122,7 @@ public class DetectProjectService {
                     ProjectVersionView parentProjectVersionView = parentWrapper.get().getProjectVersionView();
                     BlackDuckRequestBuilder requestBuilder = BlackDuckServicesFactory.createDefaultRequestFactory().createCommonGetRequestBuilder();
                     requestBuilder.addBlackDuckFilter(BlackDuckRequestFilter.createFilterWithSingleValue("bomComponentSource", "custom_project"));
-                    List<ProjectVersionComponentView> components = blackDuckService.getAllResponses(parentProjectVersionView, ProjectVersionView.COMPONENTS_LINK_RESPONSE, requestBuilder);
+                    List<ProjectVersionComponentView> components = blackDuckApiClient.getAllResponses(parentProjectVersionView, ProjectVersionView.COMPONENTS_LINK_RESPONSE, requestBuilder);
                     Optional<ProjectVersionComponentView> existingProjectComponent = components.stream()
                                                                                          .filter(component -> component.getComponentName().equals(projectName))
                                                                                          .filter(component -> component.getComponentVersionName().equals(projectVersionName))
@@ -219,9 +221,9 @@ public class DetectProjectService {
     public Optional<HttpUrl> findCloneUrl(String projectName) throws DetectUserFriendlyException {
         if (detectProjectServiceOptions.getCloneLatestProjectVersion()) {
             logger.debug("Cloning the most recent project version.");
-            return findLatestProjectVersionCloneUrl(blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.createProjectService(), projectName);
+            return findLatestProjectVersionCloneUrl(blackDuckApiClient, projectService, projectName);
         } else if (StringUtils.isNotBlank(detectProjectServiceOptions.getCloneVersionName())) {
-            return findNamedCloneUrl(projectName, detectProjectServiceOptions.getCloneVersionName(), blackDuckServicesFactory.createProjectService());
+            return findNamedCloneUrl(projectName, detectProjectServiceOptions.getCloneVersionName(), projectService);
         } else {
             logger.debug("No clone project or version name supplied. Will not clone.");
             return Optional.empty();
