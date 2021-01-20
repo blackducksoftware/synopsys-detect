@@ -134,11 +134,11 @@ public class BlackDuckDeveloperPostActions {
             boolean hasError = StringUtils.isNotBlank(vulnerabilityPolicyViolation.getErrorMessage());
             boolean hasWarning = StringUtils.isNotBlank(vulnerabilityPolicyViolation.getWarningMessage());
             if (hasError) {
-                logger.info("{}", vulnerabilityPolicyViolation.getErrorMessage());
+                logger.info(vulnerabilityPolicyViolation.getErrorMessage());
             }
 
             if (hasWarning) {
-                logger.info("{}", vulnerabilityPolicyViolation.getWarningMessage());
+                logger.info(vulnerabilityPolicyViolation.getWarningMessage());
             }
 
             if (!hasError && !hasWarning) {
@@ -152,11 +152,11 @@ public class BlackDuckDeveloperPostActions {
             boolean hasError = StringUtils.isNotBlank(licensePolicyViolation.getErrorMessage());
             boolean hasWarning = StringUtils.isNotBlank(licensePolicyViolation.getWarningMessage());
             if (hasError) {
-                logger.info("{}", licensePolicyViolation.getErrorMessage());
+                logger.info(licensePolicyViolation.getErrorMessage());
             }
 
             if (hasWarning) {
-                logger.info("{}", licensePolicyViolation.getWarningMessage());
+                logger.info(licensePolicyViolation.getWarningMessage());
             }
 
             if (!hasError && !hasWarning) {
