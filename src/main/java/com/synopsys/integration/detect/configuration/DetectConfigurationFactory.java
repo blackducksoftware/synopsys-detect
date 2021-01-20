@@ -477,7 +477,7 @@ public class DetectConfigurationFactory {
         return new ImpactAnalysisOptions(enabled, codeLocationPrefix, codeLocationSuffix, outputDirectory);
     }
 
-    public DetectExecutableOptions createExecutablePaths() {
+    public DetectExecutableOptions createDetectExecutableOptions() {
         return new DetectExecutableOptions(
             getValue(DetectProperties.DETECT_PYTHON_PYTHON3),
             getPathOrNull(DetectProperties.DETECT_BASH_PATH.getProperty()),
