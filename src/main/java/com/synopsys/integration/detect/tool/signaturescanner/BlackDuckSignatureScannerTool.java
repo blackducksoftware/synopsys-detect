@@ -42,8 +42,6 @@ import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.connection.ConnectionFactory;
 import com.synopsys.integration.detect.lifecycle.DetectContext;
-import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.synopsys.integration.detect.lifecycle.run.data.OnlineBlackDuckRunData;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -64,19 +62,12 @@ public class BlackDuckSignatureScannerTool {
     }
 
     // TODO: Don't accept an Optional as a parameter.
-    public SignatureScannerToolResult runScanTool(BlackDuckRunData blackDuckRunData, NameVersion projectNameVersion, Optional<File> dockerTar) throws DetectUserFriendlyException {
+    public SignatureScannerToolResult runScanTool(CodeLocationCreationService codeLocationCreationService, BlackDuckServerConfig blackDuckServerConfig, NameVersion projectNameVersion, Optional<File> dockerTar) throws DetectUserFriendlyException {
         DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         ConnectionFactory connectionFactory = detectContext.getBean(ConnectionFactory.class);
         DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
         CodeLocationNameGenerator codeLocationNameService = detectContext.getBean(CodeLocationNameGenerator.class);
         CodeLocationNameManager codeLocationNameManager = detectContext.getBean(CodeLocationNameManager.class, codeLocationNameService);
-
-        BlackDuckServerConfig blackDuckServerConfig = null;
-        OnlineBlackDuckRunData onlineBlackDuckRunData = null;
-        if (blackDuckRunData.isOnline()) {
-            onlineBlackDuckRunData = (OnlineBlackDuckRunData) blackDuckRunData;
-            blackDuckServerConfig = onlineBlackDuckRunData.getBlackDuckServerConfig();
-        }
 
         Optional<Path> localScannerInstallPath = signatureScannerOptions.getOfflineLocalScannerInstallPath();
         if (!localScannerInstallPath.isPresent()) {
@@ -118,10 +109,9 @@ public class BlackDuckSignatureScannerTool {
         try {
             // When offline, server config is null, otherwise scanner is created the same way online/offline.
             BlackDuckSignatureScanner blackDuckSignatureScanner = detectContext.getBean(BlackDuckSignatureScanner.class, signatureScannerOptions, scanBatchRunner, blackDuckServerConfig, codeLocationNameManager);
-            if (onlineBlackDuckRunData != null && blackDuckServerConfig != null) {
+            if (codeLocationCreationService != null && blackDuckServerConfig != null) {
                 logger.debug("Signature scan is online.");
                 // Since we are online, we need to calculate the notification task range to wait for code locations.
-                CodeLocationCreationService codeLocationCreationService = onlineBlackDuckRunData.getCodeLocationCreationService();
                 NotificationTaskRange notificationTaskRange = codeLocationCreationService.calculateCodeLocationRange();
                 ScanBatchOutput scanBatchOutput = blackDuckSignatureScanner.performScanActions(projectNameVersion, installDirectory, dockerTar.orElse(null));
                 CodeLocationCreationData<ScanBatchOutput> codeLocationCreationData = new CodeLocationCreationData<>(notificationTaskRange, scanBatchOutput);

@@ -41,12 +41,12 @@ public abstract class BlackDuckRunData {
         return new OfflineBlackDuckRunData();
     }
 
-    public static OnlineBlackDuckRunData online(BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig, long timeoutInMillis) {
-        return OnlineBlackDuckRunData.fromFactory(phoneHomeManager, blackDuckServerConfig, blackDuckServicesFactory, timeoutInMillis);
+    public static OnlineBlackDuckRunData online(BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
+        return new OnlineBlackDuckRunData(phoneHomeManager, blackDuckServerConfig, blackDuckServicesFactory);
     }
 
-    public static OnlineBlackDuckRunData onlineNoPhoneHome(BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig, long timeoutInMillis) {
-        return OnlineBlackDuckRunData.fromFactory(null, blackDuckServerConfig, blackDuckServicesFactory, timeoutInMillis);
+    public static OnlineBlackDuckRunData onlineNoPhoneHome(BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig) {
+        return new OnlineBlackDuckRunData(null, blackDuckServerConfig, blackDuckServicesFactory);
     }
 
 }

@@ -216,8 +216,7 @@ public class DetectConfigurationFactory {
     public ProductBootOptions createProductBootOptions() {
         Boolean ignoreFailures = getValue(DetectProperties.DETECT_IGNORE_CONNECTION_FAILURES);
         Boolean testConnections = getValue(DetectProperties.DETECT_TEST_CONNECTION);
-        Long timeoutInSeconds = findTimeoutInSeconds();
-        return new ProductBootOptions(ignoreFailures, testConnections, timeoutInSeconds * 1000);
+        return new ProductBootOptions(ignoreFailures, testConnections);
     }
 
     public ConnectionDetails createConnectionDetails() throws DetectUserFriendlyException {
