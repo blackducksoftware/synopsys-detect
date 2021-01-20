@@ -171,7 +171,7 @@ public class DetectBoot {
             InteractiveManager interactiveManager = new InteractiveManager(propertySourceBuilder, writer);
 
             // TODO: Ideally we should be able to share the BlackDuckConnectivityChecker from elsewhere in the boot --rotte NOV 2020
-            InteractiveModeDecisionTree interactiveModeDecisionTree = new InteractiveModeDecisionTree(new BlackDuckConnectivityChecker(), propertySources);
+            InteractiveModeDecisionTree interactiveModeDecisionTree = new InteractiveModeDecisionTree(detectInfo, new BlackDuckConnectivityChecker(), propertySources);
             MapPropertySource interactivePropertySource = interactiveManager.getInteractivePropertySource(interactiveModeDecisionTree);
 
             propertySources.add(0, interactivePropertySource);

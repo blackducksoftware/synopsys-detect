@@ -22,14 +22,19 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck.developer;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
+import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationLicenseView;
+import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationVulnerabilityView;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -48,22 +53,84 @@ public class BlackDuckDeveloperPostActions {
         for (DeveloperScanComponentResultView resultView : results) {
             String componentName = resultView.getComponentName();
             String componentVersion = resultView.getVersionName();
-            Set<String> policyNames = resultView.getViolatingPolicyNames();
+            Set<String> policyNames = new LinkedHashSet<>(resultView.getViolatingPolicyNames());
+            Set<PolicyViolationVulnerabilityView> vulnerabilityViolations = resultView.getPolicyViolationVulnerabilities();
+            Set<PolicyViolationLicenseView> licenseViolations = resultView.getPolicyViolationLicenses();
+            Set<String> vulnerabilityPolicyNames = vulnerabilityViolations.stream()
+                                                       .map(PolicyViolationVulnerabilityView::getViolatingPolicyNames)
+                                                       .flatMap(Collection::stream)
+                                                       .collect(Collectors.toSet());
 
+            Set<String> licensePolicyNames = licenseViolations.stream()
+                                                 .map(PolicyViolationLicenseView::getViolatingPolicyNames)
+                                                 .flatMap(Collection::stream)
+                                                 .collect(Collectors.toSet());
+            policyNames.removeAll(vulnerabilityPolicyNames);
+            policyNames.removeAll(licensePolicyNames);
             if (!policyNames.isEmpty()) {
                 violatedPolicyComponentNames.add(componentName);
-                for (String policyName : policyNames) {
-                    logger.info("Policy rule \"{}\" was violated by component \"{}\" ({}).",
-                        policyName,
-                        componentName,
-                        componentVersion
-                    );
-                }
+                printViolatedPolicyNames(componentName, componentVersion, policyNames);
+            }
+
+            if (!vulnerabilityPolicyNames.isEmpty()) {
+                printVulnerabilityErrorsAndWarnings(componentName, componentVersion, vulnerabilityViolations);
+                violatedPolicyComponentNames.add(componentName);
+            }
+
+            if (!licensePolicyNames.isEmpty()) {
+                printLicenseErrorsAndWarnings(componentName, componentVersion, licenseViolations);
+                violatedPolicyComponentNames.add(componentName);
             }
         }
 
         if (!violatedPolicyComponentNames.isEmpty()) {
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_POLICY_VIOLATION, createViolationMessage(violatedPolicyComponentNames)));
+        }
+    }
+
+    private void printViolatedPolicyNames(String componentName, String componentVersion, Set<String> policyNames) {
+        for (String policyName : policyNames) {
+            logger.info("Policy rule \"{}\" was violated by component \"{}\" ({}).",
+                policyName,
+                componentName,
+                componentVersion
+            );
+        }
+    }
+
+    private void printVulnerabilityErrorsAndWarnings(String componentName, String componentVersion, Set<PolicyViolationVulnerabilityView> vulnerabilites) {
+        for (PolicyViolationVulnerabilityView vulnerabilityPolicyViolation : vulnerabilites) {
+            boolean hasError = StringUtils.isNotBlank(vulnerabilityPolicyViolation.getErrorMessage());
+            boolean hasWarning = StringUtils.isNotBlank(vulnerabilityPolicyViolation.getWarningMessage());
+            if (hasError) {
+                logger.info("{}", vulnerabilityPolicyViolation.getErrorMessage());
+            }
+
+            if (hasWarning) {
+                logger.info("{}", vulnerabilityPolicyViolation.getWarningMessage());
+            }
+
+            if (!hasError && !hasWarning) {
+                printViolatedPolicyNames(componentName, componentVersion, vulnerabilityPolicyViolation.getViolatingPolicyNames());
+            }
+        }
+    }
+
+    private void printLicenseErrorsAndWarnings(String componentName, String componentVersion, Set<PolicyViolationLicenseView> licenses) {
+        for (PolicyViolationLicenseView licensePolicyViolation : licenses) {
+            boolean hasError = StringUtils.isNotBlank(licensePolicyViolation.getErrorMessage());
+            boolean hasWarning = StringUtils.isNotBlank(licensePolicyViolation.getWarningMessage());
+            if (hasError) {
+                logger.info("{}", licensePolicyViolation.getErrorMessage());
+            }
+
+            if (hasWarning) {
+                logger.info("{}", licensePolicyViolation.getWarningMessage());
+            }
+
+            if (!hasError && !hasWarning) {
+                printViolatedPolicyNames(componentName, componentVersion, licensePolicyViolation.getViolatingPolicyNames());
+            }
         }
     }
 
