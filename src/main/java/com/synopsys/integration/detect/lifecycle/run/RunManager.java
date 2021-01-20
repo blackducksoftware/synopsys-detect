@@ -35,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.bdio.SimpleBdioFactory;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
@@ -148,7 +149,7 @@ public class RunManager {
         DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
         NugetInspectorResolver nugetInspectorResolver = detectContext.getBean(NugetInspectorResolver.class);
         DetectDetectableFactory detectDetectableFactory = detectContext.getBean(DetectDetectableFactory.class, nugetInspectorResolver);
-
+        Gson gson = detectContext.getBean(Gson.class);
         RunResult runResult = new RunResult();
         RunOptions runOptions = detectConfigurationFactory.createRunOptions();
         DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
@@ -168,7 +169,7 @@ public class RunManager {
             AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName().orElse(null), runOptions.getAggregateMode(), universalToolsResult);
             ImpactAnalysisOptions impactAnalysisOptions = detectConfigurationFactory.createImpactAnalysisOptions();
             runBlackDuckProduct(productRunData, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
-                universalToolsResult.getNameVersion(), aggregateOptions, impactAnalysisOptions);
+                universalToolsResult.getNameVersion(), aggregateOptions, impactAnalysisOptions, gson);
         } else {
             logger.info("Black Duck tools will not be run.");
         }
@@ -306,7 +307,7 @@ public class RunManager {
 
     private void runBlackDuckProduct(ProductRunData productRunData, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem,
         CodeLocationNameManager codeLocationNameManager, BdioCodeLocationCreator bdioCodeLocationCreator, DetectInfo detectInfo, RunResult runResult, RunOptions runOptions,
-        DetectToolFilter detectToolFilter, NameVersion projectNameVersion, AggregateOptions aggregateOptions, ImpactAnalysisOptions impactAnalysisOptions) throws IntegrationException, DetectUserFriendlyException {
+        DetectToolFilter detectToolFilter, NameVersion projectNameVersion, AggregateOptions aggregateOptions, ImpactAnalysisOptions impactAnalysisOptions, Gson gson) throws IntegrationException, DetectUserFriendlyException {
 
         logger.debug("Black Duck tools will run.");
 
@@ -350,8 +351,8 @@ public class RunManager {
             logger.info(ReportConstants.RUN_SEPARATOR);
             BlackDuckDeveloperMode developerMode = new BlackDuckDeveloperMode(blackDuckRunData, blackDuckServicesFactory, detectConfigurationFactory);
             List<DeveloperScanComponentResultView> results = developerMode.run(bdioResult);
-            BlackDuckDeveloperPostActions postActions = new BlackDuckDeveloperPostActions(eventSystem);
-            postActions.perform(results);
+            BlackDuckDeveloperPostActions postActions = new BlackDuckDeveloperPostActions(gson, eventSystem, directoryManager);
+            postActions.perform(projectNameVersion, results);
         } else {
             CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
             if (!bdioResult.getUploadTargets().isEmpty()) {

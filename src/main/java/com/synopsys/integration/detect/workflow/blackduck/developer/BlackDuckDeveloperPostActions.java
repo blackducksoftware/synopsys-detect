@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck.developer;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -32,24 +34,35 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
 import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationLicenseView;
 import com.synopsys.integration.blackduck.api.manual.view.PolicyViolationVulnerabilityView;
+import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.file.DetectFileUtils;
+import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.util.IntegrationEscapeUtil;
+import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckDeveloperPostActions {
     private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Gson gson;
     private final EventSystem eventSystem;
+    private final DirectoryManager directoryManager;
 
-    public BlackDuckDeveloperPostActions(EventSystem eventSystem) {
+    public BlackDuckDeveloperPostActions(Gson gson, EventSystem eventSystem, DirectoryManager directoryManager) {
+        this.gson = gson;
         this.eventSystem = eventSystem;
+        this.directoryManager = directoryManager;
     }
 
-    public void perform(List<DeveloperScanComponentResultView> results) {
+    public void perform(NameVersion projectNameVersion, List<DeveloperScanComponentResultView> results) throws DetectUserFriendlyException {
         Set<String> violatedPolicyComponentNames = new LinkedHashSet<>();
+        generateJSONScanOutput(projectNameVersion, results);
         for (DeveloperScanComponentResultView resultView : results) {
             String componentName = resultView.getComponentName();
             String componentVersion = resultView.getVersionName();
@@ -85,6 +98,24 @@ public class BlackDuckDeveloperPostActions {
 
         if (!violatedPolicyComponentNames.isEmpty()) {
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_POLICY_VIOLATION, createViolationMessage(violatedPolicyComponentNames)));
+        }
+    }
+
+    private void generateJSONScanOutput(NameVersion projectNameVersion, List<DeveloperScanComponentResultView> results) throws DetectUserFriendlyException {
+        IntegrationEscapeUtil escapeUtil = new IntegrationEscapeUtil();
+        String escapedProjectName = escapeUtil.replaceWithUnderscore(projectNameVersion.getName());
+        String escapedProjectVersionName = escapeUtil.replaceWithUnderscore(projectNameVersion.getVersion());
+        File jsonScanFile = new File(directoryManager.getScanOutputDirectory(), escapedProjectName + "_" + escapedProjectVersionName + "_BlackDuck_DeveloperMode_Result.json");
+        if (jsonScanFile.exists()) {
+            jsonScanFile.delete();
+        }
+        String jsonString = gson.toJson(results);
+        logger.debug("Developer Mode JSON result output: ");
+        logger.debug("{}", jsonString);
+        try {
+            DetectFileUtils.writeToFile(jsonScanFile, jsonString);
+        } catch (IOException ex) {
+            throw new DetectUserFriendlyException("Cannot create developer scan mode output file", ex, ExitCodeType.FAILURE_UNKNOWN_ERROR);
         }
     }
 
