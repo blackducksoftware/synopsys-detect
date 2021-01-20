@@ -22,31 +22,49 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.data;
 
+import java.util.Optional;
+
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 
-public abstract class BlackDuckRunData {
-    private final boolean isOnline;
+public class BlackDuckRunData {
+    private final PhoneHomeManager phoneHomeManager;
+    private final BlackDuckServerConfig blackDuckServerConfig;
+    private final BlackDuckServicesFactory blackDuckServicesFactory;
 
-    protected BlackDuckRunData(boolean isOnline) {
-        this.isOnline = isOnline;
+    protected BlackDuckRunData(PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig, BlackDuckServicesFactory blackDuckServicesFactory) {
+        this.phoneHomeManager = phoneHomeManager;
+        this.blackDuckServerConfig = blackDuckServerConfig;
+        this.blackDuckServicesFactory = blackDuckServicesFactory;
     }
 
     public boolean isOnline() {
-        return isOnline;
+        return blackDuckServerConfig != null && blackDuckServicesFactory != null;
     }
 
-    public static OfflineBlackDuckRunData offline() {
-        return new OfflineBlackDuckRunData();
+    public Optional<PhoneHomeManager> getPhoneHomeManager() {
+        return Optional.ofNullable(phoneHomeManager);
     }
 
-    public static OnlineBlackDuckRunData online(BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
-        return new OnlineBlackDuckRunData(phoneHomeManager, blackDuckServerConfig, blackDuckServicesFactory);
+    public BlackDuckServerConfig getBlackDuckServerConfig() {
+        return blackDuckServerConfig;
     }
 
-    public static OnlineBlackDuckRunData onlineNoPhoneHome(BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig) {
-        return new OnlineBlackDuckRunData(null, blackDuckServerConfig, blackDuckServicesFactory);
+    public BlackDuckServicesFactory getBlackDuckServicesFactory() {
+        return blackDuckServicesFactory;
+    }
+
+    public static BlackDuckRunData offline() {
+        return new BlackDuckRunData(null, null, null);
+    }
+
+    public static BlackDuckRunData online(BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
+        return new BlackDuckRunData(phoneHomeManager, blackDuckServerConfig, blackDuckServicesFactory);
+    }
+
+    public static BlackDuckRunData onlineNoPhoneHome(BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig) {
+        return new BlackDuckRunData(null, blackDuckServerConfig, blackDuckServicesFactory);
     }
 
 }

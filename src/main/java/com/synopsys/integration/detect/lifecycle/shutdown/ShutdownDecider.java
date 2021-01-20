@@ -23,7 +23,6 @@
 package com.synopsys.integration.detect.lifecycle.shutdown;
 
 import java.io.File;
-import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -31,23 +30,20 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.lifecycle.boot.DetectBootResult;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.synopsys.integration.detect.lifecycle.run.data.OnlineBlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 
 public class ShutdownDecider {
     public ShutdownDecision decideShutdown(DetectBootResult detectBootResult) {
-        Optional<ProductRunData> productRunData = detectBootResult.getProductRunData();
-        DiagnosticSystem diagnosticSystem = detectBootResult.getDiagnosticSystem().orElse(null);
+        DiagnosticSystem diagnosticSystem = detectBootResult.getDiagnosticSystem()
+                                                .orElse(null);
 
-        PhoneHomeManager phoneHomeManager = null;
-        if (productRunData.isPresent() && productRunData.get().shouldUseBlackDuckProduct()) {
-            BlackDuckRunData blackDuckRunData = productRunData.get().getBlackDuckRunData();
-            if(blackDuckRunData.isOnline()) {
-                phoneHomeManager = ((OnlineBlackDuckRunData) blackDuckRunData).getPhoneHomeManager().orElse(null);
-            }
-        }
+        PhoneHomeManager phoneHomeManager = detectBootResult.getProductRunData()
+                                                .filter(ProductRunData::shouldUseBlackDuckProduct)
+                                                .map(ProductRunData::getBlackDuckRunData)
+                                                .flatMap(BlackDuckRunData::getPhoneHomeManager)
+                                                .orElse(null);
 
         CleanupDecision cleanupDecision = decideCleanup(detectBootResult.getDetectConfiguration().orElse(null), detectBootResult.getProductRunData().orElse(null), detectBootResult.getAirGapZip().orElse(null));
         return new ShutdownDecision(phoneHomeManager, diagnosticSystem, cleanupDecision);
