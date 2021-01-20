@@ -24,21 +24,28 @@ package com.synopsys.integration.detect.workflow.diagnostic;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 
-public class DiagnosticSystemManager {
-    private final boolean diagnosticExtended;
-    private final boolean diagnostic;
+public class DiagnosticDecision {
+    private final boolean isExtended;
+    private final boolean isDiagnostic;
 
-    public DiagnosticSystemManager(boolean isDiagnosticArgument, boolean isExtendedArgument, PropertyConfiguration propertyConfiguration) {
-        this.diagnostic = isDiagnosticArgument || propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC.getProperty());
-        this.diagnosticExtended = isExtendedArgument || propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty());
+    public static DiagnosticDecision decide(DetectArgumentState detectArgumentState, PropertyConfiguration propertyConfiguration) {
+        boolean isDiagnostic = detectArgumentState.isDiagnostic() || propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC.getProperty());
+        boolean isExtended = detectArgumentState.isDiagnosticExtended() || propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty());
+        return new DiagnosticDecision(isDiagnostic, isExtended);
+    }
+
+    private DiagnosticDecision(boolean isDiagnostic, boolean isExtended) {
+        this.isDiagnostic = isDiagnostic;
+        this.isExtended = isExtended;
     }
 
     public boolean shouldCreateDiagnosticSystem() {
-        return diagnostic || diagnosticExtended;
+        return isDiagnostic || isExtended;
     }
 
     public boolean isExtended() {
-        return diagnosticExtended;
+        return isExtended;
     }
 }

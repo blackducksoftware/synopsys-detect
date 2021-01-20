@@ -58,8 +58,8 @@ import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.util.filter.DetectOverrideableFilter;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
+import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticDecision;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
-import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystemManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
@@ -136,9 +136,9 @@ public class DetectBoot {
         DirectoryManager directoryManager = detectBootFactory.createDirectoryManager(detectConfigurationFactory);
 
         DiagnosticSystem diagnosticSystem = null;
-        DiagnosticSystemManager diagnosticSystemManager = new DiagnosticSystemManager(detectArgumentState.isDiagnostic(), detectArgumentState.isDiagnosticExtended(), detectConfiguration);
-        if (diagnosticSystemManager.shouldCreateDiagnosticSystem()) {
-            diagnosticSystem = detectBootFactory.createDiagnosticSystem(diagnosticSystemManager.isExtended(), detectConfiguration, directoryManager);
+        DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, detectConfiguration);
+        if (diagnosticDecision.shouldCreateDiagnosticSystem()) {
+            diagnosticSystem = detectBootFactory.createDiagnosticSystem(diagnosticDecision.isExtended(), detectConfiguration, directoryManager);
         }
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
