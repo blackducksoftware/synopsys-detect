@@ -26,20 +26,26 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.help.DetectArgumentState;
 
-public class DiagnosticsDecider {
-    private final DetectArgumentState detectArgumentState;
-    private final PropertyConfiguration propertyConfiguration;
+public class DiagnosticDecision {
+    private final boolean isExtended;
+    private final boolean isDiagnostic;
 
-    public DiagnosticsDecider(DetectArgumentState detectArgumentState, PropertyConfiguration propertyConfiguration) {
-        this.detectArgumentState = detectArgumentState;
-        this.propertyConfiguration = propertyConfiguration;
+    public static DiagnosticDecision decide(DetectArgumentState detectArgumentState, PropertyConfiguration propertyConfiguration) {
+        boolean isDiagnostic = detectArgumentState.isDiagnostic() || propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC.getProperty());
+        boolean isExtended = detectArgumentState.isDiagnosticExtended() || propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty());
+        return new DiagnosticDecision(isDiagnostic, isExtended);
     }
 
-    public DiagnosticsDecision decide() {
-        boolean diagnostic = detectArgumentState.isDiagnostic() || propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC.getProperty());
-        boolean diagnosticExtended = detectArgumentState.isDiagnosticExtended() || propertyConfiguration.getValueOrDefault(DetectProperties.DETECT_DIAGNOSTIC_EXTENDED.getProperty());
-        boolean configuredForDiagnostic = diagnostic || diagnosticExtended;
+    private DiagnosticDecision(boolean isDiagnostic, boolean isExtended) {
+        this.isDiagnostic = isDiagnostic;
+        this.isExtended = isExtended;
+    }
 
-        return new DiagnosticsDecision(diagnostic, diagnosticExtended, configuredForDiagnostic);
+    public boolean shouldCreateDiagnosticSystem() {
+        return isDiagnostic || isExtended;
+    }
+
+    public boolean isExtended() {
+        return isExtended;
     }
 }

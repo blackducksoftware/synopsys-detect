@@ -36,9 +36,9 @@ public class AirGapParsedValueTests {
 
     @Test
     public void allIncluded() {
-        final String[] args = new String[] { "-z", "ALL" };
-        final DetectArgumentState state = parser.parseArgs(args);
-        final DetectOverrideableFilter filter = new DetectOverrideableFilter("", state.getParsedValue());
+        String[] args = new String[] { "-z", "ALL" };
+        DetectArgumentState state = parser.parseArgs(args);
+        DetectOverrideableFilter filter = DetectOverrideableFilter.createArgumentValueFilter(state);
 
         Assertions.assertTrue(filter.shouldInclude(AirGapInspectors.DOCKER.name()));
         Assertions.assertTrue(filter.shouldInclude(AirGapInspectors.GRADLE.name()));
@@ -47,9 +47,9 @@ public class AirGapParsedValueTests {
 
     @Test
     public void dockerNotIncluded() {
-        final String[] args = new String[] { "-z", "GRADLE,NUGET" };
-        final DetectArgumentState state = parser.parseArgs(args);
-        final DetectOverrideableFilter filter = new DetectOverrideableFilter("", state.getParsedValue());
+        String[] args = new String[] { "-z", "GRADLE,NUGET" };
+        DetectArgumentState state = parser.parseArgs(args);
+        DetectOverrideableFilter filter = DetectOverrideableFilter.createArgumentValueFilter(state);
 
         Assertions.assertFalse(filter.shouldInclude(AirGapInspectors.DOCKER.name()));
 
@@ -59,9 +59,9 @@ public class AirGapParsedValueTests {
 
     @Test
     public void onlyNugetIncluded() {
-        final String[] args = new String[] { "-z", "NUGET" };
-        final DetectArgumentState state = parser.parseArgs(args);
-        final DetectOverrideableFilter filter = new DetectOverrideableFilter("", state.getParsedValue());
+        String[] args = new String[] { "-z", "NUGET" };
+        DetectArgumentState state = parser.parseArgs(args);
+        DetectOverrideableFilter filter = DetectOverrideableFilter.createArgumentValueFilter(state);
 
         Assertions.assertFalse(filter.shouldInclude(AirGapInspectors.DOCKER.name()));
         Assertions.assertFalse(filter.shouldInclude(AirGapInspectors.GRADLE.name()));

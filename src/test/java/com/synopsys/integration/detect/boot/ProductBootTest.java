@@ -142,8 +142,6 @@ public class ProductBootTest {
 
         ProductDecision productDecision = new ProductDecision(blackDuckDecision, polarisDecision);
 
-        ProductBoot productBoot = new ProductBoot();
-
         BlackDuckConnectivityChecker blackDuckConnectivityChecker = Mockito.mock(BlackDuckConnectivityChecker.class);
         Mockito.when(blackDuckConnectivityChecker.determineConnectivity(Mockito.any())).thenReturn(blackDuckconnectivityResult);
 
@@ -153,6 +151,8 @@ public class ProductBootTest {
         AnalyticsConfigurationService analyticsConfigurationService = Mockito.mock(AnalyticsConfigurationService.class);
         Mockito.when(analyticsConfigurationService.fetchAnalyticsSetting(Mockito.any())).thenReturn(new AnalyticsSetting("analytics", true));
 
-        return productBoot.boot(productDecision, productBootOptions, blackDuckConnectivityChecker, polarisConnectivityChecker, productBootFactory, analyticsConfigurationService);
+        ProductBoot productBoot = new ProductBoot(blackDuckConnectivityChecker, polarisConnectivityChecker, analyticsConfigurationService, productBootFactory, productBootOptions);
+
+        return productBoot.boot(productDecision);
     }
 }
