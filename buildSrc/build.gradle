@@ -12,5 +12,5 @@ dependencies {
     implementation "commons-io:commons-io:2.6"
     implementation "org.apache.commons:commons-lang3:3.0"
     implementation "com.synopsys.integration:common-gradle-plugin:1.7.0"
-    implementation "com.synopsys.integration:blackduck-common:51.0.1-SNAPSHOT"
+    implementation "com.synopsys.integration:blackduck-common:51.1.0"
 }
