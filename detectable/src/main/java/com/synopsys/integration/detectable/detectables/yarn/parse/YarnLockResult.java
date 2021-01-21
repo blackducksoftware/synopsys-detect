@@ -22,15 +22,19 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
+import java.util.List;
+
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 
 public class YarnLockResult {
-    private final PackageJson packageJson;
+    private final PackageJson rootPackageJson;
+    private final List<PackageJson> workspacePackageJsons;
     private final String yarnLockFilePath;
     private final YarnLock yarnLock;
 
-    public YarnLockResult(PackageJson packageJson, String yarnLockFilePath, YarnLock yarnLock) {
-        this.packageJson = packageJson;
+    public YarnLockResult(PackageJson rootPackageJson, List<PackageJson> workspacePackageJsons, String yarnLockFilePath, YarnLock yarnLock) {
+        this.rootPackageJson = rootPackageJson;
+        this.workspacePackageJsons = workspacePackageJsons;
         this.yarnLockFilePath = yarnLockFilePath;
         this.yarnLock = yarnLock;
     }
@@ -43,7 +47,11 @@ public class YarnLockResult {
         return yarnLock;
     }
 
-    public PackageJson getPackageJson() {
-        return packageJson;
+    public PackageJson getRootPackageJson() {
+        return rootPackageJson;
+    }
+
+    public List<PackageJson> getWorkspacePackageJsons() {
+        return workspacePackageJsons;
     }
 }

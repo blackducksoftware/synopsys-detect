@@ -39,7 +39,8 @@ public class YarnTransformerTest {
         List<YarnLockDependency> validYarnLockDependencies = Collections.singletonList(new YarnLockDependency("yarn", "^1.22.4", false));
         List<YarnLockEntry> yarnLockEntries = Collections.singletonList(new YarnLockEntry(validYarnLockEntryIds, "1.0", validYarnLockDependencies));
         YarnLock yarnLock = new YarnLock(yarnLockEntries);
-        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, "yarn.lock", yarnLock);
+        // TODO should test workspaces packageJson handling too
+        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, new ArrayList<>(0), "yarn.lock", yarnLock);
 
         // This should not throw an exception.
         DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, false, new ArrayList<>());

@@ -23,6 +23,8 @@
 package com.synopsys.integration.detectable.detectables.npm.packagejson.model;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.annotations.SerializedName;
@@ -39,4 +41,7 @@ public class PackageJson {
 
     @SerializedName("devDependencies")
     public Map<String, String> devDependencies = new HashMap<>();
+
+    @SerializedName("workspaces")
+    public List<String> workspaceSubdirsPreV1_5_0 = new LinkedList<>();
 }

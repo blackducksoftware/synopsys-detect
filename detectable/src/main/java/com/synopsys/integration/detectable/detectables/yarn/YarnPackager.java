@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -48,16 +49,23 @@ public class YarnPackager {
         this.yarnLockOptions = yarnLockOptions;
     }
 
-    public YarnResult generateYarnResult(String packageJsonText, List<String> yarnLockLines, String yarnLockFilePath, List<NameVersion> externalDependencies) {
-        PackageJson packageJson = gson.fromJson(packageJsonText, PackageJson.class);
+    public YarnResult generateYarnResult(String rootPackageJsonText,
+        List<String> yarnLockLines, String yarnLockFilePath, List<NameVersion> externalDependencies) {
+        PackageJson rootPackageJson = gson.fromJson(rootPackageJsonText, PackageJson.class);
+        return generateYarnResult(rootPackageJson, new ArrayList<>(0),
+            yarnLockLines, yarnLockFilePath, externalDependencies);
+    }
+
+    public YarnResult generateYarnResult(PackageJson rootPackageJson, List<PackageJson> workspacePackageJsons,
+        List<String> yarnLockLines, String yarnLockFilePath, List<NameVersion> externalDependencies) {
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);
-        YarnLockResult yarnLockResult = new YarnLockResult(packageJson, yarnLockFilePath, yarnLock);
+        YarnLockResult yarnLockResult = new YarnLockResult(rootPackageJson, workspacePackageJsons, yarnLockFilePath, yarnLock);
 
         try {
             DependencyGraph dependencyGraph = yarnTransformer.transform(yarnLockResult, yarnLockOptions.useProductionOnly(), externalDependencies);
             CodeLocation codeLocation = new CodeLocation(dependencyGraph);
 
-            return YarnResult.success(packageJson.name, packageJson.version, codeLocation);
+            return YarnResult.success(rootPackageJson.name, rootPackageJson.version, codeLocation);
         } catch (MissingExternalIdException exception) {
             return YarnResult.failure(exception);
         }

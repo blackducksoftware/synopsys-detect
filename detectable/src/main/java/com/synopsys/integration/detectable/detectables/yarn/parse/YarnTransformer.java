@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.collections4.list.TreeList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,7 @@ public class YarnTransformer {
     public DependencyGraph transform(YarnLockResult yarnLockResult, boolean productionOnly, List<NameVersion> externalDependencies) throws MissingExternalIdException {
         LazyExternalIdDependencyGraphBuilder graphBuilder = new LazyExternalIdDependencyGraphBuilder();
 
-        addRootNodesToGraph(graphBuilder, yarnLockResult.getPackageJson(), productionOnly);
+        addRootNodesToGraph(graphBuilder, yarnLockResult.getRootPackageJson(), yarnLockResult.getWorkspacePackageJsons(), productionOnly);
 
         for (YarnLockEntry entry : yarnLockResult.getYarnLock().getEntries()) {
             for (YarnLockEntryId entryId : entry.getIds()) {
@@ -80,14 +81,24 @@ public class YarnTransformer {
         });
     }
 
-    private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder, PackageJson packageJson, boolean productionOnly) {
-        for (Map.Entry<String, String> packageDependency : packageJson.dependencies.entrySet()) {
-            graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
-        }
-
-        if (!productionOnly) {
-            for (Map.Entry<String, String> packageDependency : packageJson.devDependencies.entrySet()) {
-                graphBuilder.addChildToRoot(new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue()));
+    private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder,
+        PackageJson rootPackageJson, List<PackageJson> workspacePackageJsons, boolean productionOnly) {
+        List<PackageJson> allPackageJsons = new TreeList<>();
+        allPackageJsons.add(rootPackageJson);
+        allPackageJsons.addAll(workspacePackageJsons);
+        for (PackageJson curPackageJson : allPackageJsons) {
+            System.out.printf("* Processing PackageJson: %s:%s\n", curPackageJson.name, curPackageJson.version);
+            for (Map.Entry<String, String> packageDependency : curPackageJson.dependencies.entrySet()) {
+                StringDependencyId stringDependencyId = new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue());
+                System.out.printf("stringDependencyId: %s\n", stringDependencyId);
+                graphBuilder.addChildToRoot(stringDependencyId);
+            }
+            if (!productionOnly) {
+                for (Map.Entry<String, String> packageDependency : curPackageJson.devDependencies.entrySet()) {
+                    StringDependencyId stringDependencyId = new StringDependencyId(packageDependency.getKey() + "@" + packageDependency.getValue());
+                    System.out.printf("stringDependencyId: %s\n", stringDependencyId);
+                    graphBuilder.addChildToRoot(stringDependencyId);
+                }
             }
         }
     }
