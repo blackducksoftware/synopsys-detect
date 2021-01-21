@@ -18,7 +18,7 @@ buildscript {
 }
 
 group = 'com.synopsys.integration'
-version = '6.9.0-DEVELOPER-MODE-BETA'
+version = '6.9.0-DEVELOPER-MODE-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
