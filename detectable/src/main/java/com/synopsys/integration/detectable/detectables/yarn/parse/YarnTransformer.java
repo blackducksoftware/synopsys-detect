@@ -22,11 +22,11 @@
  */
 package com.synopsys.integration.detectable.detectables.yarn.parse;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.collections4.list.TreeList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +83,7 @@ public class YarnTransformer {
 
     private void addRootNodesToGraph(LazyExternalIdDependencyGraphBuilder graphBuilder,
         PackageJson rootPackageJson, List<PackageJson> workspacePackageJsons, boolean productionOnly) {
-        List<PackageJson> allPackageJsons = new TreeList<>();
+        List<PackageJson> allPackageJsons = new LinkedList<>();
         allPackageJsons.add(rootPackageJson);
         allPackageJsons.addAll(workspacePackageJsons);
         for (PackageJson curPackageJson : allPackageJsons) {

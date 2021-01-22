@@ -33,9 +33,9 @@ import java.nio.file.PathMatcher;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.io.FileUtils;
 
 import com.google.gson.Gson;
@@ -53,7 +53,7 @@ public class YarnLockExtractor {
         try {
             String rootPackageJsonText = FileUtils.readFileToString(rootPackageJsonFile, StandardCharsets.UTF_8);
             ////////////////////////////////
-            List<PackageJson> workspacePackageJsons = new TreeList<>();
+            List<PackageJson> workspacePackageJsons = new LinkedList<>();
             // TODO gson work used to only happen in yarnPackager
             // Doesn't seem to belong here; maybe a new class for all the gson work?
             // It's the same code here and in yarnPackager
