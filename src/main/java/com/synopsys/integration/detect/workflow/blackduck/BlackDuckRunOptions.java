@@ -20,38 +20,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.configuration;
+package com.synopsys.integration.detect.workflow.blackduck;
 
-public enum DetectPropertyFromVersion {
-    VERSION_3_0_0("3.0.0"),
-    VERSION_3_1_0("3.1.0"),
-    VERSION_3_2_0("3.2.0"),
-    VERSION_4_0_0("4.0.0"),
-    VERSION_4_1_0("4.1.0"),
-    VERSION_4_2_0("4.2.0"),
-    VERSION_4_3_0("4.3.0"),
-    VERSION_4_4_0("4.4.0"),
-    VERSION_5_0_0("5.0.0"),
-    VERSION_5_2_0("5.2.0"),
-    VERSION_5_3_0("5.3.0"),
-    VERSION_5_4_0("5.4.0"),
-    VERSION_5_5_0("5.5.0"),
-    VERSION_5_6_0("5.6.0"),
-    VERSION_6_0_0("6.0.0"),
-    VERSION_6_1_0("6.1.0"),
-    VERSION_6_2_0("6.2.0"),
-    VERSION_6_4_0("6.4.0"),
-    VERSION_6_5_0("6.5.0"),
-    VERSION_6_8_0("6.8.0"),
-    VERSION_6_9_0("6.9.0");
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 
-    private final String version;
+public class BlackDuckRunOptions {
+    private final BlackduckScanMode scanMode;
 
-    DetectPropertyFromVersion(String version) {
-        this.version = version;
+    public BlackDuckRunOptions(BlackduckScanMode scanMode) {
+        this.scanMode = scanMode;
     }
 
-    public String getVersion() {
-        return version;
+    public BlackduckScanMode getScanMode() {
+        return scanMode;
+    }
+
+    public boolean shouldPerformRapidModeScan() {
+        return BlackduckScanMode.RAPID_MODE == scanMode;
     }
 }

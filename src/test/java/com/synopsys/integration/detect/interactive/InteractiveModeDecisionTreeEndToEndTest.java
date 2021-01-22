@@ -41,10 +41,12 @@ import org.mockito.Mockito;
 
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.source.MapPropertySource;
+import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectProperty;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
+import com.synopsys.integration.util.OperatingSystemType;
 
 public class InteractiveModeDecisionTreeEndToEndTest {
     public static final String YES = "y";
@@ -269,7 +271,8 @@ public class InteractiveModeDecisionTreeEndToEndTest {
     }
 
     public void testTraverse(Map<String, String> callToResponse, Map<DetectProperty<?>, String> expectedProperties) {
-        InteractiveModeDecisionTree decisionTree = new InteractiveModeDecisionTree(new BlackDuckConnectivityChecker(), new ArrayList<>());
+        DetectInfo detectInfo = new DetectInfo("synopsys_detect", 1, OperatingSystemType.LINUX);
+        InteractiveModeDecisionTree decisionTree = new InteractiveModeDecisionTree(detectInfo, new BlackDuckConnectivityChecker(), new ArrayList<>());
 
         InteractiveWriter mockWriter = mockWriter(callToResponse);
         InteractivePropertySourceBuilder propertySourceBuilder = new InteractivePropertySourceBuilder(mockWriter);
