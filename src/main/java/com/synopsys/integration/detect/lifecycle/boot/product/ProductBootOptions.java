@@ -26,7 +26,7 @@ public class ProductBootOptions {
     private final boolean ignoreConnectionFailures;
     private final boolean testConnections;
 
-    public ProductBootOptions(final boolean ignoreConnectionFailures, final boolean testConnections) {
+    public ProductBootOptions(boolean ignoreConnectionFailures, boolean testConnections) {
         this.ignoreConnectionFailures = ignoreConnectionFailures;
         this.testConnections = testConnections;
     }
@@ -38,4 +38,5 @@ public class ProductBootOptions {
     public boolean isTestConnections() {
         return testConnections;
     }
+
 }
