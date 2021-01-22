@@ -156,7 +156,7 @@ public class RunManager {
 
         logger.info(ReportConstants.RUN_SEPARATOR);
 
-        if (productRunData.shouldUsePolarisProduct()) {
+        if (productRunData.shouldUsePolarisProduct() && !runOptions.shouldPerformDeveloperModeScan()) {
             runPolarisProduct(productRunData, detectConfiguration, directoryManager, eventSystem, detectToolFilter);
         } else {
             logger.info("Polaris tools will not be run.");
@@ -210,7 +210,7 @@ public class RunManager {
         boolean anythingFailed = false;
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
+        if (!runOptions.shouldPerformDeveloperModeScan() && detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the Docker tool.");
             DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createDockerDetectable,
                 extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
@@ -226,7 +226,7 @@ public class RunManager {
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
+        if (!runOptions.shouldPerformDeveloperModeScan() && detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the Bazel tool.");
             DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createBazelDetectable,
                 extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL,

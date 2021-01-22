@@ -1130,7 +1130,8 @@ public class DetectProperties {
     public static final DetectProperty<EnumProperty<DetectScanMode>> DETECT_SCAN_MODE =
         new DetectProperty<>(new EnumProperty<>("detect.scan.mode", DetectScanMode.SCAN_DATA, DetectScanMode.class))
             .setInfo("Detect Scan Mode", DetectPropertyFromVersion.VERSION_6_9_0)
-            .setHelp("Set the scanning mode of Detect", "Set the scanning mode of Detect to control how Black Duck will process BDIO output from detect.")
+            .setHelp("Set the scanning mode of Detect",
+                "Set the scanning mode of Detect to control how Black Duck will process BDIO output from detect.  This property supports a BlackDuck feature and it is meant to be used with a later BlackDuck version.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
             .setCategory(DetectCategory.Advanced);
 
