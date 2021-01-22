@@ -240,15 +240,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-run-synopsys-detect-in-offline-mode" class="md-nav__link">
-    Step 2: Run Synopsys Detect in offline mode.
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-3-run-synopsys-detect-connected-to-black-duck" class="md-nav__link">
-    Step 3: Run Synopsys Detect connected to Black Duck.
+  <a href="#step-2-run-synopsys-detect-connected-to-black-duck" class="md-nav__link">
+    Step 2: Run Synopsys Detect connected to Black Duck.
   </a>
   
 </li>
@@ -1415,15 +1408,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#step-2-run-synopsys-detect-in-offline-mode" class="md-nav__link">
-    Step 2: Run Synopsys Detect in offline mode.
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#step-3-run-synopsys-detect-connected-to-black-duck" class="md-nav__link">
-    Step 3: Run Synopsys Detect connected to Black Duck.
+  <a href="#step-2-run-synopsys-detect-connected-to-black-duck" class="md-nav__link">
+    Step 2: Run Synopsys Detect connected to Black Duck.
   </a>
   
 </li>
@@ -1467,37 +1453,12 @@ project's dependencies without using Synopsys Detect. You might do the following
 <li>Look in the project directory (junit4) for hints about how dependencies are managed. In this case, the <em>mvnw</em> and <em>pom.xml</em> files are hints that dependencies are managed using Maven.</li>
 <li>Since it's a Maven project, you would likely run <code>./mvnw dependency:tree</code> to reveal the project's dependencies; both direct and transitive.</li>
 </ol>
-<p>This is exactly what Synopsys Detect does on this project. In addition, Synopsys Detect runs the
-Black Duck Signature Scanner on the directory, which discovers additional dependencies
-added to the project by any means other than the package manager.</p>
-<h2 id="step-2-run-synopsys-detect-in-offline-mode">Step 2: Run Synopsys Detect in offline mode.<a class="headerlink" href="#step-2-run-synopsys-detect-in-offline-mode" title="Permanent link">#</a></h2>
-<p>Running Synopsys Detect in offline mode eliminates the need to provide
-connection details to Black Duck or Polaris,
-while giving you an opportunity to see what Synopsys Detect does on a project.</p>
-<p>At the top level of the project directory (junit4), run Synopsys Detect in offline mode.</p>
-<p>On Linux or Mac:</p>
-<pre><code>bash &lt;(curl -s -L https://detect.synopsys.com/detect.sh) --blackduck.offline.mode=true
-</code></pre>
-
-<p>On Windows:</p>
-<pre><code>powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot; --blackduck.offline.mode=true
-</code></pre>
-
-<p>The operations performed by Synopsys Detect depends on what it finds in your source directory.
-By default, Synopsys Detect considers the current working directory to be your source directory.</p>
-<p>In the junit4 case, Synopsys Detect will:</p>
-<ol>
-<li>Run the Maven detector, creating one BDIO (Black Duck Input Output) (.jsonld) file that contains the dependencies discovered using Maven.</li>
-<li>Run the Black Duck Signature Scanner, creating a .json file that contains the dependencies discovered by the Black Duck Signature Scanner.</li>
-</ol>
-<p>In offline mode, neither of these are uploaded to Black Duck.</p>
-<p>To locate these files, look in the log for the message "Run directory: ...". These files are located inside
-the specified run directory.</p>
-<h2 id="step-3-run-synopsys-detect-connected-to-black-duck">Step 3: Run Synopsys Detect connected to Black Duck.<a class="headerlink" href="#step-3-run-synopsys-detect-connected-to-black-duck" title="Permanent link">#</a></h2>
-<p>If you have access to a Black Duck server, you can re-run Synopsys Detect,
-this time connecting and uploading results to Black Duck.</p>
-<p>To connect Synopsys Detect to Black Duck, replace the <code>--blackduck.offline.mode=true</code> command line argument
-with the following three arguments that provide login details for your Black Duck server:</p>
+<p>This is basically what Synopsys Detect does on this project. In addition, Synopsys Detect runs the
+Black Duck Signature Scanner on the directory, which may discover additional dependencies
+added to the project by means other than the package manager.</p>
+<h2 id="step-2-run-synopsys-detect-connected-to-black-duck">Step 2: Run Synopsys Detect connected to Black Duck.<a class="headerlink" href="#step-2-run-synopsys-detect-connected-to-black-duck" title="Permanent link">#</a></h2>
+<p>To run Synopsys Detect, you will need to provide login credentials for your Black Duck
+server. One way to do that is to add the following arguments to the command line:</p>
 <ul>
 <li><code>--blackduck.url={your Black Duck server URL}</code></li>
 <li><code>--blackduck.username={your Black Duck username}</code></li>
@@ -1512,12 +1473,15 @@ with the following three arguments that provide login details for your Black Duc
 <pre><code>powershell &quot;[Net.ServicePointManager]::SecurityProtocol = 'tls12'; irm https://detect.synopsys.com/detect.ps1?$(Get-Random) | iex; detect&quot; --blackduck.url={your Black Duck server URL} --blackduck.username={your Black Duck username} --blackduck.password={your Black Duck password}
 </code></pre>
 
-<p>In this way, Synopsys Detect performs the same steps it did in the offline run, plus
-the following:</p>
-<ul>
-<li>Uploads the discovered dependencies to Black Duck.</li>
-<li>Provides in the log a "Black Duck Project BOM URL that you can use to view the results in Black Duck.</li>
-</ul>
+<p>The operations performed by Synopsys Detect depends on what it finds in your source directory.
+By default, Synopsys Detect considers the current working directory to be your source directory.</p>
+<p>In the junit4 case, Synopsys Detect will:</p>
+<ol>
+<li>Run the Maven detector, which uses Maven to discover dependencies.</li>
+<li>Run the Black Duck Signature Scanner which scans the files in the source directory to discover dependencies.</li>
+<li>Upload the discovered dependencies to Black Duck.</li>
+<li>Provide in the log a "Black Duck Project BOM URL that you can use to view the results in Black Duck.</li>
+</ol>
 <p>Point your browser to the Black Duck Project BOM URL to see the Bill Of Materials for junit4.</p>
 <h2 id="next-steps">Next steps<a class="headerlink" href="#next-steps" title="Permanent link">#</a></h2>
 <p>Because Synopsys Detect can be used on a variety of project types in a variety of ways,
