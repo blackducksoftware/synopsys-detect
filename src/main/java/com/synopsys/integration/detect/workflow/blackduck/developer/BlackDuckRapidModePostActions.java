@@ -48,13 +48,13 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.util.IntegrationEscapeUtil;
 import com.synopsys.integration.util.NameVersion;
 
-public class BlackDuckDeveloperPostActions {
+public class BlackDuckRapidModePostActions {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Gson gson;
     private final EventSystem eventSystem;
     private final DirectoryManager directoryManager;
 
-    public BlackDuckDeveloperPostActions(Gson gson, EventSystem eventSystem, DirectoryManager directoryManager) {
+    public BlackDuckRapidModePostActions(Gson gson, EventSystem eventSystem, DirectoryManager directoryManager) {
         this.gson = gson;
         this.eventSystem = eventSystem;
         this.directoryManager = directoryManager;

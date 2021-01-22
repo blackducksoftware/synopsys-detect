@@ -40,13 +40,13 @@ import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
-public class BlackDuckDeveloperMode {
+public class BlackDuckRapidMode {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private BlackDuckRunData blackDuckRunData;
     private DeveloperScanService developerScanService;
     private DetectConfigurationFactory detectConfigurationFactory;
 
-    public BlackDuckDeveloperMode(BlackDuckRunData blackDuckRunData, DeveloperScanService developerScanService, DetectConfigurationFactory detectConfigurationFactory) {
+    public BlackDuckRapidMode(BlackDuckRunData blackDuckRunData, DeveloperScanService developerScanService, DetectConfigurationFactory detectConfigurationFactory) {
         this.blackDuckRunData = blackDuckRunData;
         this.developerScanService = developerScanService;
         this.detectConfigurationFactory = detectConfigurationFactory;

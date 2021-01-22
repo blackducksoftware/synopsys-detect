@@ -88,6 +88,7 @@ import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostActions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
+import com.synopsys.integration.detect.workflow.blackduck.BlackDuckRunOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectBdioUploadService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCodeLocationUnmapService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
@@ -96,8 +97,8 @@ import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOp
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResultCalculator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
-import com.synopsys.integration.detect.workflow.blackduck.developer.BlackDuckDeveloperMode;
-import com.synopsys.integration.detect.workflow.blackduck.developer.BlackDuckDeveloperPostActions;
+import com.synopsys.integration.detect.workflow.blackduck.developer.BlackDuckRapidMode;
+import com.synopsys.integration.detect.workflow.blackduck.developer.BlackDuckRapidModePostActions;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -154,23 +155,24 @@ public class RunManager {
         RunResult runResult = new RunResult();
         RunOptions runOptions = detectConfigurationFactory.createRunOptions();
         DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
+        BlackDuckRunOptions blackDuckRunOptions = detectConfigurationFactory.createBlackDuckRunOptions();
 
         logger.info(ReportConstants.RUN_SEPARATOR);
 
-        if (productRunData.shouldUsePolarisProduct() && !runOptions.shouldPerformDeveloperModeScan()) {
+        if (productRunData.shouldUsePolarisProduct()) {
             runPolarisProduct(productRunData, detectConfiguration, directoryManager, eventSystem, detectToolFilter);
         } else {
             logger.info("Polaris tools will not be run.");
         }
 
         UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, detectDetectableFactory, runResult, runOptions, detectToolFilter,
-            codeLocationNameManager);
+            codeLocationNameManager, blackDuckRunOptions);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
             AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName().orElse(null), runOptions.getAggregateMode(), universalToolsResult);
             ImpactAnalysisOptions impactAnalysisOptions = detectConfigurationFactory.createImpactAnalysisOptions();
             runBlackDuckProduct(productRunData, detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
-                universalToolsResult.getNameVersion(), aggregateOptions, impactAnalysisOptions, gson);
+                universalToolsResult.getNameVersion(), aggregateOptions, impactAnalysisOptions, gson, blackDuckRunOptions);
         } else {
             logger.info("Black Duck tools will not be run.");
         }
@@ -202,7 +204,8 @@ public class RunManager {
         RunResult runResult,
         RunOptions runOptions,
         DetectToolFilter detectToolFilter,
-        CodeLocationNameManager codeLocationNameManager
+        CodeLocationNameManager codeLocationNameManager,
+        BlackDuckRunOptions blackDuckRunOptions
     ) throws DetectUserFriendlyException {
 
         ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
@@ -211,7 +214,7 @@ public class RunManager {
         boolean anythingFailed = false;
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (!runOptions.shouldPerformDeveloperModeScan() && detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
+        if (!blackDuckRunOptions.shouldPerformRapidModeScan() && detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the Docker tool.");
             DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createDockerDetectable,
                 extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
@@ -227,7 +230,7 @@ public class RunManager {
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (!runOptions.shouldPerformDeveloperModeScan() && detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
+        if (!blackDuckRunOptions.shouldPerformRapidModeScan() && detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the Bazel tool.");
             DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createBazelDetectable,
                 extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL,
@@ -308,7 +311,8 @@ public class RunManager {
 
     private void runBlackDuckProduct(ProductRunData productRunData, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem,
         CodeLocationNameManager codeLocationNameManager, BdioCodeLocationCreator bdioCodeLocationCreator, DetectInfo detectInfo, RunResult runResult, RunOptions runOptions,
-        DetectToolFilter detectToolFilter, NameVersion projectNameVersion, AggregateOptions aggregateOptions, ImpactAnalysisOptions impactAnalysisOptions, Gson gson) throws IntegrationException, DetectUserFriendlyException {
+        DetectToolFilter detectToolFilter, NameVersion projectNameVersion, AggregateOptions aggregateOptions, ImpactAnalysisOptions impactAnalysisOptions, Gson gson, BlackDuckRunOptions blackDuckRunOptions)
+        throws IntegrationException, DetectUserFriendlyException {
 
         logger.debug("Black Duck tools will run.");
 
@@ -320,7 +324,7 @@ public class RunManager {
 
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory().orElse(null);
 
-        if (!runOptions.shouldPerformDeveloperModeScan() && blackDuckRunData.isOnline() && blackDuckServicesFactory != null) {
+        if (!blackDuckRunOptions.shouldPerformRapidModeScan() && blackDuckRunData.isOnline() && blackDuckServicesFactory != null) {
             logger.debug("Getting or creating project.");
             DetectProjectServiceOptions options = detectConfigurationFactory.createDetectProjectServiceOptions();
             ProjectMappingService detectProjectMappingService = blackDuckServicesFactory.createProjectMappingService();
@@ -348,12 +352,12 @@ public class RunManager {
         BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations(), runOptions.shouldUseBdio2());
         eventSystem.publishEvent(Event.DetectCodeLocationNamesCalculated, bdioResult.getCodeLocationNamesResult());
 
-        if (runOptions.shouldPerformDeveloperModeScan()) {
+        if (blackDuckRunOptions.shouldPerformRapidModeScan()) {
             logger.info(ReportConstants.RUN_SEPARATOR);
             DeveloperScanService developerScanService = blackDuckServicesFactory.createDeveloperScanService();
-            BlackDuckDeveloperMode developerMode = new BlackDuckDeveloperMode(blackDuckRunData, developerScanService, detectConfigurationFactory);
+            BlackDuckRapidMode developerMode = new BlackDuckRapidMode(blackDuckRunData, developerScanService, detectConfigurationFactory);
             List<DeveloperScanComponentResultView> results = developerMode.run(bdioResult);
-            BlackDuckDeveloperPostActions postActions = new BlackDuckDeveloperPostActions(gson, eventSystem, directoryManager);
+            BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(gson, eventSystem, directoryManager);
             postActions.perform(projectNameVersion, results);
         } else {
             CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();

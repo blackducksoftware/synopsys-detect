@@ -57,11 +57,11 @@ import com.synopsys.integration.configuration.property.types.string.NullableStri
 import com.synopsys.integration.configuration.property.types.string.StringListProperty;
 import com.synopsys.integration.configuration.property.types.string.StringProperty;
 import com.synopsys.integration.configuration.util.Group;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
 import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.DetectMajorVersion;
-import com.synopsys.integration.detect.configuration.enumeration.DetectScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
@@ -1127,11 +1127,11 @@ public class DetectProperties {
             .setHelp("If set to true, Detect will wait for Synopsys products until results are available or the detect.report.timeout is exceeded.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<EnumProperty<DetectScanMode>> DETECT_SCAN_MODE =
-        new DetectProperty<>(new EnumProperty<>("detect.scan.mode", DetectScanMode.SCAN_DATA, DetectScanMode.class))
+    public static final DetectProperty<EnumProperty<BlackduckScanMode>> DETECT_BLACKDUCK_SCAN_MODE =
+        new DetectProperty<>(new EnumProperty<>("detect.blackduck.scan.mode", BlackduckScanMode.FULL_MODE, BlackduckScanMode.class))
             .setInfo("Detect Scan Mode", DetectPropertyFromVersion.VERSION_6_9_0)
             .setHelp("Set the scanning mode of Detect",
-                "Set the scanning mode of Detect to control how Black Duck will process BDIO output from detect.  The DEVELOPER_MODE value supports a BlackDuck feature that is meant to be used with a later BlackDuck version.")
+                "Set the scanning mode of Detect to control how Black Duck will process BDIO output from detect.  The RAPID_MODE value supports a BlackDuck feature that is meant to be used with a later BlackDuck version.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
             .setCategory(DetectCategory.Advanced);
 

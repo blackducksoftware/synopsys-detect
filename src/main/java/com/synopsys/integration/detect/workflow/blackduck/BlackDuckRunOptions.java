@@ -20,9 +20,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.configuration.enumeration;
+package com.synopsys.integration.detect.workflow.blackduck;
 
-public enum DetectScanMode {
-    DEVELOPER_MODE,
-    SCAN_DATA
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
+
+public class BlackDuckRunOptions {
+    private final BlackduckScanMode scanMode;
+
+    public BlackDuckRunOptions(BlackduckScanMode scanMode) {
+        this.scanMode = scanMode;
+    }
+
+    public BlackduckScanMode getScanMode() {
+        return scanMode;
+    }
+
+    public boolean shouldPerformRapidModeScan() {
+        return BlackduckScanMode.RAPID_MODE == scanMode;
+    }
 }

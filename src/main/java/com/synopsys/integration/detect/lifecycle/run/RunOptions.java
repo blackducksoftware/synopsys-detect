@@ -27,7 +27,6 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.detect.configuration.enumeration.DetectScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
@@ -39,17 +38,14 @@ public class RunOptions {
     private final List<DetectTool> preferredTools;
     private final DetectToolFilter detectToolFilter;
     private final boolean useBdio2;
-    private final DetectScanMode scanMode;
 
-    public RunOptions(boolean unmapCodeLocations, @Nullable String aggregateName, AggregateMode aggregateMode, List<DetectTool> preferredTools, DetectToolFilter detectToolFilter, boolean useBdio2,
-        DetectScanMode scanMode) {
+    public RunOptions(boolean unmapCodeLocations, @Nullable String aggregateName, AggregateMode aggregateMode, List<DetectTool> preferredTools, DetectToolFilter detectToolFilter, boolean useBdio2) {
         this.unmapCodeLocations = unmapCodeLocations;
         this.aggregateName = aggregateName;
         this.aggregateMode = aggregateMode;
         this.preferredTools = preferredTools;
         this.detectToolFilter = detectToolFilter;
         this.useBdio2 = useBdio2;
-        this.scanMode = scanMode;
     }
 
     public boolean shouldUnmapCodeLocations() {
@@ -72,15 +68,7 @@ public class RunOptions {
         return detectToolFilter;
     }
 
-    public DetectScanMode getScanMode() {
-        return scanMode;
-    }
-
     public boolean shouldUseBdio2() {
         return useBdio2;
-    }
-
-    public boolean shouldPerformDeveloperModeScan() {
-        return DetectScanMode.DEVELOPER_MODE == scanMode;
     }
 }
