@@ -14,6 +14,8 @@ about each dependency include its (transient) dependencies, enabling ${solution_
 to build the complete graph of direct ind transient dependencies. The Yarn detector
 produces a single codelocation with this graph.
 
+${solution_name} supports projects that use Yarn version 1 or version 2, that do not use Yarn workspaces.
+
 ## Yarn Workspace Support
 
 ${solution_name} does not currently support projects that use Yarn workspaces as defined [here](https://classic.yarnpkg.com/en/docs/workspaces/).
