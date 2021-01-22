@@ -33,7 +33,6 @@ import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponent
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.blackduck.developermode.DeveloperScanService;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -44,12 +43,12 @@ import com.synopsys.integration.rest.exception.IntegrationRestException;
 public class BlackDuckDeveloperMode {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private BlackDuckRunData blackDuckRunData;
-    private BlackDuckServicesFactory blackDuckServicesFactory;
+    private DeveloperScanService developerScanService;
     private DetectConfigurationFactory detectConfigurationFactory;
 
-    public BlackDuckDeveloperMode(BlackDuckRunData blackDuckRunData, BlackDuckServicesFactory blackDuckServicesFactory, DetectConfigurationFactory detectConfigurationFactory) {
+    public BlackDuckDeveloperMode(BlackDuckRunData blackDuckRunData, DeveloperScanService developerScanService, DetectConfigurationFactory detectConfigurationFactory) {
         this.blackDuckRunData = blackDuckRunData;
-        this.blackDuckServicesFactory = blackDuckServicesFactory;
+        this.developerScanService = developerScanService;
         this.detectConfigurationFactory = detectConfigurationFactory;
     }
 
@@ -60,7 +59,6 @@ public class BlackDuckDeveloperMode {
             return Collections.emptyList();
         }
 
-        DeveloperScanService developerScanService = blackDuckServicesFactory.createDeveloperScanService();
         List<DeveloperScanComponentResultView> results = new LinkedList<>();
         try {
             for (UploadTarget uploadTarget : bdioResult.getUploadTargets()) {

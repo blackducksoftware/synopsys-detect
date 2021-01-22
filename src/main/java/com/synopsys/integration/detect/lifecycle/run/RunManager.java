@@ -44,6 +44,7 @@ import com.synopsys.integration.blackduck.bdio2.Bdio2Factory;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
+import com.synopsys.integration.blackduck.developermode.DeveloperScanService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.dataservice.ProjectMappingService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
@@ -349,7 +350,8 @@ public class RunManager {
 
         if (runOptions.shouldPerformDeveloperModeScan()) {
             logger.info(ReportConstants.RUN_SEPARATOR);
-            BlackDuckDeveloperMode developerMode = new BlackDuckDeveloperMode(blackDuckRunData, blackDuckServicesFactory, detectConfigurationFactory);
+            DeveloperScanService developerScanService = blackDuckServicesFactory.createDeveloperScanService();
+            BlackDuckDeveloperMode developerMode = new BlackDuckDeveloperMode(blackDuckRunData, developerScanService, detectConfigurationFactory);
             List<DeveloperScanComponentResultView> results = developerMode.run(bdioResult);
             BlackDuckDeveloperPostActions postActions = new BlackDuckDeveloperPostActions(gson, eventSystem, directoryManager);
             postActions.perform(projectNameVersion, results);
