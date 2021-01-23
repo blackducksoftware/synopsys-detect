@@ -1614,6 +1614,10 @@
 <td>default: 300 <br /><br /> Detect Timeout: The amount of time in seconds Detect will wait for network connection, for scans to finish, and to generate reports (i.e. risk and policy check). When changing this value, keep in mind the checking of policies might have to wait for scans to process which can take some time. <br /><br /></td>
 </tr>
 <tr>
+<td><a href="../configuration/blackduck server/#detect-scan-mode-advanced">detect.blackduck.scan.mode</a> <br /> (Advanced)</td>
+<td>default: FULL_MODE <br /><br />  Acceptable Values: RAPID_MODE, FULL_MODE <br /><br />Detect Scan Mode: Set the scanning mode of Detect <br /><br /></td>
+</tr>
+<tr>
 <td><a href="../configuration/blackduck server/#black-duck-timeout-deprecated">blackduck.timeout</a> <br /> (Deprecated)</td>
 <td>default: 120 <br /><br /> Black Duck Timeout: The time to wait for network connections to complete (in seconds). <br /><br /> <strong>DEPRECATED: This property is now deprecated.  Please use --detect.timeout in the future. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
