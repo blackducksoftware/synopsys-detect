@@ -1,5 +1,3 @@
-package detectables.functional.gradle
-
 apply plugin: 'com.gradle.plugin-publish'
 apply plugin: 'com.github.ben-manes.versions'
 
