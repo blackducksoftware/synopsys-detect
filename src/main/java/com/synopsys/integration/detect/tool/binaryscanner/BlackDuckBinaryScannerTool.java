@@ -71,7 +71,7 @@ public class BlackDuckBinaryScannerTool {
     private final BinaryScanUploadService uploadService;
 
     public BlackDuckBinaryScannerTool(EventSystem eventSystem, CodeLocationNameManager codeLocationNameManager, DirectoryManager directoryManager, FileFinder fileFinder, BinaryScanOptions binaryScanOptions,
-        BinaryScanUploadService uploadService){
+        BinaryScanUploadService uploadService) {
         this.codeLocationNameManager = codeLocationNameManager;
         this.directoryManager = directoryManager;
         this.fileFinder = fileFinder;
@@ -98,7 +98,7 @@ public class BlackDuckBinaryScannerTool {
         if (singleTargetFilePath.isPresent()) {
             binaryUpload = singleTargetFilePath.get().toFile();
         } else if (binaryScanOptions.getMultipleTargetFileNamePatterns().stream().anyMatch(StringUtils::isNotBlank)) {
-            List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), binaryScanOptions.getMultipleTargetFileNamePatterns(), 0);
+            List<File> multipleTargets = fileFinder.findFiles(directoryManager.getSourceDirectory(), binaryScanOptions.getMultipleTargetFileNamePatterns(), binaryScanOptions.getSearchDepth());
             if (multipleTargets != null && multipleTargets.size() > 0) {
                 logger.info("Binary scan found {} files to archive for binary scan upload.", multipleTargets.size());
                 try {
