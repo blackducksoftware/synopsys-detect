@@ -107,7 +107,9 @@ public class BlackDuckRapidModePostActions {
         String escapedProjectVersionName = escapeUtil.replaceWithUnderscore(projectNameVersion.getVersion());
         File jsonScanFile = new File(directoryManager.getScanOutputDirectory(), escapedProjectName + "_" + escapedProjectVersionName + "_BlackDuck_DeveloperMode_Result.json");
         if (jsonScanFile.exists()) {
-            jsonScanFile.delete();
+            if (!jsonScanFile.delete()) {
+                logger.warn("Unable to delete an already-existing Black Duck Developer Mode Result file: {}", jsonScanFile.getAbsoluteFile());
+            }
         }
         String jsonString = gson.toJson(results);
         logger.debug("Developer Mode JSON result output: ");
