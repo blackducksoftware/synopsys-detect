@@ -31,6 +31,7 @@ import com.synopsys.integration.configuration.property.types.path.SimplePathReso
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
+import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConfigFactory;
 import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
 import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityResult;
@@ -39,10 +40,12 @@ import com.synopsys.integration.log.SilentIntLogger;
 public class BlackDuckConnectionDecisionBranch implements DecisionTree {
     public static final String SHOULD_TEST_CONNECTION = "Would you like to test the Black Duck connection now?";
     public static final String SHOULD_RETRY_CONNECTION = "Would you like to retry entering Black Duck information?";
+    private final DetectInfo detectInfo;
     private final List<PropertySource> existingPropertySources;
     private final BlackDuckConnectivityChecker blackDuckConnectivityChecker;
 
-    public BlackDuckConnectionDecisionBranch(BlackDuckConnectivityChecker blackDuckConnectivityChecker, List<PropertySource> existingPropertySources) {
+    public BlackDuckConnectionDecisionBranch(DetectInfo detectInfo, BlackDuckConnectivityChecker blackDuckConnectivityChecker, List<PropertySource> existingPropertySources) {
+        this.detectInfo = detectInfo;
         this.existingPropertySources = existingPropertySources;
         this.blackDuckConnectivityChecker = blackDuckConnectivityChecker;
     }
@@ -65,7 +68,7 @@ public class BlackDuckConnectionDecisionBranch implements DecisionTree {
 
                     PropertyConfiguration propertyConfiguration = new PropertyConfiguration(propertySources);
                     DetectConfigurationFactory detectConfigurationFactory = new DetectConfigurationFactory(propertyConfiguration, new SimplePathResolver());
-                    BlackDuckConfigFactory blackDuckConfigFactory = new BlackDuckConfigFactory(detectConfigurationFactory.createBlackDuckConnectionDetails());
+                    BlackDuckConfigFactory blackDuckConfigFactory = new BlackDuckConfigFactory(detectInfo, detectConfigurationFactory.createBlackDuckConnectionDetails());
                     BlackDuckServerConfig blackDuckServerConfig = blackDuckConfigFactory.createServerConfig(new SilentIntLogger());
 
                     blackDuckConnectivityResult = blackDuckConnectivityChecker.determineConnectivity(blackDuckServerConfig);
