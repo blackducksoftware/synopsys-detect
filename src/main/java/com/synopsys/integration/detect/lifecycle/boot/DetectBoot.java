@@ -26,7 +26,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,6 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.help.PropertyInfo;
+import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
@@ -60,6 +64,8 @@ import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticDecision;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
+import com.synopsys.integration.detect.workflow.event.Event;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
@@ -106,6 +112,7 @@ public class DetectBoot {
         }
 
         PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
+        publishCollectedPropertyValues(detectConfiguration.collectPropertyInfo(DetectProperties.allProperties(), true), detectBootFactory.getEventSystem());
 
         logger.debug("Configuration processed completely.");
 
@@ -211,6 +218,14 @@ public class DetectBoot {
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
         return Optional.of(DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem));
+    }
+
+    private void publishCollectedPropertyValues(List<PropertyInfo> propertyInfo, EventSystem eventSystem) {
+        Map<String, String> propertyValues = new HashMap<>();
+        propertyInfo.forEach(
+            it -> propertyValues.put(it.getKey(), it.getValue())
+        );
+        eventSystem.publishEvent(Event.PropertyValuesCollected, propertyValues);
     }
 
 }

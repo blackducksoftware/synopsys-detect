@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.workflow.event;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -68,4 +69,5 @@ public class Event {
     public static final EventType<NameVersion> ProjectNameVersionChosen = new EventType<>(NameVersion.class);
     public static final EventType<ExecutedExecutable> Executable = new EventType<>(ExecutedExecutable.class);
     public static final EventType<UnrecognizedPaths> UnrecognizedPaths = new EventType<>(UnrecognizedPaths.class);
+    public static final EventType<Map> PropertyValuesCollected = new EventType<>(Map.class);
 }

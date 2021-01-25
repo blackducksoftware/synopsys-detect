@@ -23,6 +23,7 @@
 package com.synopsys.integration.configuration.config;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -31,9 +32,11 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.Assert;
 
+import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.resolution.NoPropertyResolution;
 import com.synopsys.integration.configuration.config.resolution.PropertyResolution;
 import com.synopsys.integration.configuration.config.resolution.PropertyResolutionInfo;
@@ -42,6 +45,7 @@ import com.synopsys.integration.configuration.config.value.ExceptionPropertyValu
 import com.synopsys.integration.configuration.config.value.NoValuePropertyValue;
 import com.synopsys.integration.configuration.config.value.PropertyValue;
 import com.synopsys.integration.configuration.config.value.ValuedPropertyValue;
+import com.synopsys.integration.configuration.help.PropertyInfo;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
@@ -51,13 +55,37 @@ import com.synopsys.integration.configuration.property.base.ValuedProperty;
 import com.synopsys.integration.configuration.source.PropertySource;
 
 public class PropertyConfiguration {
-
     private final Map<String, PropertyResolution> resolutionCache = new HashMap<>();
     private final Map<String, PropertyValue<?>> valueCache = new HashMap<>();
     private final List<PropertySource> orderedPropertySources;
 
     public PropertyConfiguration(@NotNull final List<PropertySource> orderedPropertySources) {
         this.orderedPropertySources = orderedPropertySources;
+    }
+
+    public List<PropertyInfo> collectPropertyInfo(List<Property> knownProperties, boolean maskPasswords) {
+        List<Property> sortedProperties = sortProperties(knownProperties);
+        List<PropertyInfo> propertyValues = new LinkedList<>();
+        for (Property property : sortedProperties) {
+            if (!wasKeyProvided(property.getKey())) {
+                continue;
+            }
+
+            String value = getRaw(property).orElse("");
+            boolean containsPassword = property.getKey().toLowerCase().contains("password") || property.getKey().toLowerCase().contains("api.token") || property.getKey().toLowerCase().contains("access.token");
+            String maskedValue = value;
+            if (containsPassword && maskPasswords) {
+                maskedValue = StringUtils.repeat('*', maskedValue.length());
+            }
+            propertyValues.add(new PropertyInfo(property.getKey(), maskedValue, property));
+        }
+        return propertyValues;
+    }
+
+    public List<Property> sortProperties(List<Property> knownProperties) {
+        return Bds.of(knownProperties)
+                   .sortedBy(Property::getKey)
+                   .toList();
     }
 
     //region

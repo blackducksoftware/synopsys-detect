@@ -32,7 +32,6 @@ import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.property.Property;
@@ -66,39 +65,20 @@ public class PropertyConfigurationHelpContext {
         this.propertyConfiguration = propertyConfiguration;
     }
 
-    private List<Property> sortProperties(List<Property> knownProperties) {
-        return Bds.of(knownProperties)
-                   .sortedBy(Property::getKey)
-                   .toList();
-    }
-
     public void printCurrentValues(Consumer<String> logger, List<Property> knownProperties, Map<String, String> additionalNotes) {
         logger.accept("");
         logger.accept("Current property values:");
         logger.accept("--property = value [notes]");
         logger.accept(StringUtils.repeat("-", 60));
 
-        List<Property> sortedProperties = sortProperties(knownProperties);
-
-        for (Property property : sortedProperties) {
-            if (!propertyConfiguration.wasKeyProvided(property.getKey())) {
-                continue;
-            }
-
-            String value = propertyConfiguration.getRaw(property).orElse("");
-
-            boolean containsPassword = property.getKey().toLowerCase().contains("password") || property.getKey().toLowerCase().contains("api.token") || property.getKey().toLowerCase().contains("access.token");
-            String maskedValue = value;
-            if (containsPassword) {
-                maskedValue = StringUtils.repeat('*', maskedValue.length());
-            }
-
-            String sourceName = propertyConfiguration.getPropertySource(property).orElse("unknown");
+        List<PropertyInfo> propertyInfoList = propertyConfiguration.collectPropertyInfo(knownProperties, true);
+        for (PropertyInfo propertyInfo: propertyInfoList) {
+            String sourceName = propertyConfiguration.getPropertySource(propertyInfo.getProperty()).orElse("unknown");
             String sourceDisplayName = knownSourceDisplayNames.getOrDefault(sourceName, sourceName);
 
-            String notes = additionalNotes.getOrDefault(property.getKey(), "");
+            String notes = additionalNotes.getOrDefault(propertyInfo.getKey(), "");
 
-            logger.accept(property.getKey() + " = " + maskedValue + " [" + sourceDisplayName + "] " + notes);
+            logger.accept(propertyInfo.getKey() + " = " + propertyInfo.getValue() + " [" + sourceDisplayName + "] " + notes);
         }
 
         logger.accept(StringUtils.repeat("-", 60));
@@ -106,7 +86,7 @@ public class PropertyConfigurationHelpContext {
     }
 
     public void printPropertyErrors(Consumer<String> logger, List<Property> knownProperties, Map<String, List<String>> errors) {
-        List<Property> sortedProperties = sortProperties(knownProperties);
+        List<Property> sortedProperties = propertyConfiguration.sortProperties(knownProperties);
 
         sortedProperties.stream()
             .filter(property -> errors.containsKey(property.getKey()))
@@ -146,4 +126,5 @@ public class PropertyConfigurationHelpContext {
         }
         return exceptions;
     }
+
 }
