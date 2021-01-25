@@ -102,7 +102,9 @@ public class FormattedOutputManager {
         formattedOutput.unrecognizedPaths = new HashMap<>();
         unrecognizedPaths.keySet().forEach(key -> formattedOutput.unrecognizedPaths.put(key, unrecognizedPaths.get(key).stream().map(File::toString).collect(Collectors.toList())));
 
-        formattedOutput.propertyValues = propertyValues.getSortedMap();
+        if (propertyValues != null) {
+            formattedOutput.propertyValues = propertyValues.getSortedMap();
+        }
 
         return formattedOutput;
     }
