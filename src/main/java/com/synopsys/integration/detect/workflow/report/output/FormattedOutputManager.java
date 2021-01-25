@@ -53,7 +53,7 @@ public class FormattedOutputManager {
     private final List<DetectResult> detectResults = new ArrayList<>();
     private final List<DetectIssue> detectIssues = new ArrayList<>();
     private final Map<String, List<File>> unrecognizedPaths = new HashMap<>();
-    private final Map<String, String> propertyValues = new HashMap<>();
+    private PropertyValues propertyValues = null;
 
     public FormattedOutputManager(EventSystem eventSystem) {
         eventSystem.registerListener(Event.DetectorsComplete, this::detectorsComplete);
@@ -102,7 +102,7 @@ public class FormattedOutputManager {
         formattedOutput.unrecognizedPaths = new HashMap<>();
         unrecognizedPaths.keySet().forEach(key -> formattedOutput.unrecognizedPaths.put(key, unrecognizedPaths.get(key).stream().map(File::toString).collect(Collectors.toList())));
 
-        formattedOutput.propertyValues = propertyValues;
+        formattedOutput.propertyValues = propertyValues.getSortedMap();
 
         return formattedOutput;
     }
@@ -167,7 +167,7 @@ public class FormattedOutputManager {
         this.unrecognizedPaths.get(unrecognizedPaths.getGroup()).addAll(unrecognizedPaths.getPaths());
     }
 
-    private void propertyValuesCollected(Map<String, String> propertyValues) {
-        this.propertyValues.putAll(propertyValues);
+    private void propertyValuesCollected(PropertyValues propertyValues) {
+        this.propertyValues = propertyValues;
     }
 }

@@ -32,10 +32,13 @@ import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.synopsys.integration.common.util.Bds;
+import com.synopsys.integration.configuration.config.PropertyInfoCollector;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.TypedProperty;
+import com.synopsys.integration.configuration.util.PropertyUtils;
 
 //The idea is that this is here to help you log information about a particular property configuration with particular things you want to express.
 //  For example you may want to log deprecation warning when a particular property is set.
@@ -71,7 +74,8 @@ public class PropertyConfigurationHelpContext {
         logger.accept("--property = value [notes]");
         logger.accept(StringUtils.repeat("-", 60));
 
-        List<PropertyInfo> propertyInfoList = propertyConfiguration.collectPropertyInfo(knownProperties, true);
+        PropertyInfoCollector propertyInfoCollector = new PropertyInfoCollector(propertyConfiguration);
+        List<PropertyInfo> propertyInfoList = propertyInfoCollector.collectPropertyInfo(knownProperties, PropertyInfoCollector.maskPasswordsAndTokensPredicate());
         for (PropertyInfo propertyInfo: propertyInfoList) {
             String sourceName = propertyConfiguration.getPropertySource(propertyInfo.getProperty()).orElse("unknown");
             String sourceDisplayName = knownSourceDisplayNames.getOrDefault(sourceName, sourceName);
@@ -86,7 +90,7 @@ public class PropertyConfigurationHelpContext {
     }
 
     public void printPropertyErrors(Consumer<String> logger, List<Property> knownProperties, Map<String, List<String>> errors) {
-        List<Property> sortedProperties = propertyConfiguration.sortProperties(knownProperties);
+        List<Property> sortedProperties = sortPropertiesByKey(knownProperties);
 
         sortedProperties.stream()
             .filter(property -> errors.containsKey(property.getKey()))
@@ -98,6 +102,12 @@ public class PropertyConfigurationHelpContext {
                 logger.accept(header);
                 propertyErrors.forEach(errorMessage -> logger.accept(property.getKey() + ": " + errorMessage));
             });
+    }
+
+    private List<Property> sortPropertiesByKey(List<Property> knownProperties) {
+        return Bds.of(knownProperties)
+                   .sortedBy(Property::getKey)
+                   .toList();
     }
 
     public String pluralize(String singular, String plural, Integer number) {

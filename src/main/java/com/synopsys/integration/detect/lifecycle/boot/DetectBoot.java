@@ -35,9 +35,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.configuration.config.PropertyInfoCollector;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.help.PropertyInfo;
-import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
@@ -67,6 +67,7 @@ import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detect.workflow.report.output.PropertyValues;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 import freemarker.template.Configuration;
@@ -112,7 +113,8 @@ public class DetectBoot {
         }
 
         PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
-        publishCollectedPropertyValues(detectConfiguration.collectPropertyInfo(DetectProperties.allProperties(), true), detectBootFactory.getEventSystem());
+        EventSystem eventSystem = detectBootFactory.getEventSystem();
+        publishCollectedPropertyValues(detectConfiguration, eventSystem);
 
         logger.debug("Configuration processed completely.");
 
@@ -202,7 +204,7 @@ public class DetectBoot {
 
         //Finished, populate the detect context
         detectContext.registerBean(detectBootFactory.getDetectRun());
-        detectContext.registerBean(detectBootFactory.getEventSystem());
+        detectContext.registerBean(eventSystem);
         detectContext.registerBean(detectBootFactory.createDetectorProfiler());
 
         detectContext.registerBean(detectConfiguration);
@@ -220,12 +222,14 @@ public class DetectBoot {
         return Optional.of(DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 
-    private void publishCollectedPropertyValues(List<PropertyInfo> propertyInfo, EventSystem eventSystem) {
+    private void publishCollectedPropertyValues(PropertyConfiguration propertyConfiguration, EventSystem eventSystem) throws IllegalAccessException {
+        PropertyInfoCollector propertyInfoCollector = new PropertyInfoCollector(propertyConfiguration);
+        List<PropertyInfo> propertyInfo = propertyInfoCollector.collectPropertyInfo(DetectProperties.allProperties(), PropertyInfoCollector.maskPasswordsAndTokensPredicate());
         Map<String, String> propertyValues = new HashMap<>();
         propertyInfo.forEach(
             it -> propertyValues.put(it.getKey(), it.getValue())
         );
-        eventSystem.publishEvent(Event.PropertyValuesCollected, propertyValues);
+        eventSystem.publishEvent(Event.PropertyValuesCollected, new PropertyValues(propertyValues));
     }
 
 }

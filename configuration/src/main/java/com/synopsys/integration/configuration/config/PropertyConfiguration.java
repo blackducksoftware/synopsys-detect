@@ -63,31 +63,6 @@ public class PropertyConfiguration {
         this.orderedPropertySources = orderedPropertySources;
     }
 
-    public List<PropertyInfo> collectPropertyInfo(List<Property> knownProperties, boolean maskPasswords) {
-        List<Property> sortedProperties = sortProperties(knownProperties);
-        List<PropertyInfo> propertyValues = new LinkedList<>();
-        for (Property property : sortedProperties) {
-            if (!wasKeyProvided(property.getKey())) {
-                continue;
-            }
-
-            String value = getRaw(property).orElse("");
-            boolean containsPassword = property.getKey().toLowerCase().contains("password") || property.getKey().toLowerCase().contains("api.token") || property.getKey().toLowerCase().contains("access.token");
-            String maskedValue = value;
-            if (containsPassword && maskPasswords) {
-                maskedValue = StringUtils.repeat('*', maskedValue.length());
-            }
-            propertyValues.add(new PropertyInfo(property.getKey(), maskedValue, property));
-        }
-        return propertyValues;
-    }
-
-    public List<Property> sortProperties(List<Property> knownProperties) {
-        return Bds.of(knownProperties)
-                   .sortedBy(Property::getKey)
-                   .toList();
-    }
-
     //region
     @NotNull
     public <T> Optional<T> getValueOrEmpty(@NotNull final NullableProperty<T> property) {

@@ -32,6 +32,7 @@ import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.detector.executable.ExecutedExecutable;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationNamesResult;
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
+import com.synopsys.integration.detect.workflow.report.output.PropertyValues;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.Status;
@@ -69,5 +70,5 @@ public class Event {
     public static final EventType<NameVersion> ProjectNameVersionChosen = new EventType<>(NameVersion.class);
     public static final EventType<ExecutedExecutable> Executable = new EventType<>(ExecutedExecutable.class);
     public static final EventType<UnrecognizedPaths> UnrecognizedPaths = new EventType<>(UnrecognizedPaths.class);
-    public static final EventType<Map> PropertyValuesCollected = new EventType<>(Map.class);
+    public static final EventType<PropertyValues> PropertyValuesCollected = new EventType<>(PropertyValues.class);
 }
