@@ -1,6 +1,9 @@
 # Release notes
 
 ## Version 6.9.0
+### New Features
+* Added the property detect.binary.scan.search.depth to define the directory search depth for the binary scanner.
+
 ### Changed features
 * Added the timezone to the date format in the default log message format.
 
