@@ -76,7 +76,7 @@ import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisOptions
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisToolResult;
 import com.synopsys.integration.detect.tool.polaris.PolarisTool;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
-import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
+import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool1;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
@@ -364,8 +364,8 @@ public class RunManager {
             logger.info("Will include the signature scanner tool.");
             BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
             ConnectionFactory connectionFactory = detectContext.getBean(ConnectionFactory.class);
-            BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext, directoryManager, codeLocationNameManager, connectionFactory);
-            SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar());
+            BlackDuckSignatureScannerTool1 blackDuckSignatureScannerTool1 = new BlackDuckSignatureScannerTool1(blackDuckSignatureScannerOptions, detectContext, directoryManager, codeLocationNameManager, connectionFactory);
+            SignatureScannerToolResult signatureScannerToolResult = blackDuckSignatureScannerTool1.runScanTool(blackDuckRunData, projectNameVersion, runResult.getDockerTar());
             if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
                 codeLocationAccumulator.addWaitableCodeLocation(signatureScannerToolResult.getCreationData().get());
             } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
