@@ -2066,7 +2066,7 @@
 </code></pre>
 
 <p>Set the scanning mode of Detect</p>
-<p>Set the scanning mode of Detect to control how Black Duck will process BDIO output from detect.  The RAPID_MODE value supports a BlackDuck feature that is meant to be used with a later BlackDuck version.</p>
+<p>Set the scanning mode of Detect to control how Detect will send scan data to Black Duck.  The scan results are not persisted in Black Duck if RAPID_MODE is selected.  The RAPID_MODE value supports a Black Duck feature that is meant to be used with a later Black Duck version.  If RAPID_MODE is selected, then Detect also requires --detect.bdio2.enabled=true and --blackduck.offline.mode=false to perform a RAPID_MODE scan.</p>
 <table>
 <thead>
 <tr>
