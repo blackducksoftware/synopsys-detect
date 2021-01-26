@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -34,11 +34,11 @@ import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScannerZipInstaller;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.http.client.BlackDuckHttpClient;
+import com.synopsys.integration.blackduck.keystore.KeyStoreHelper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
-import com.synopsys.integration.rest.client.IntHttpClient;
 import com.synopsys.integration.util.CleanupZipExpander;
 import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.OperatingSystemType;
@@ -52,7 +52,7 @@ public class ScanBatchRunnerFactory {
     private final ScanPathsUtility scanPathsUtility;
     private final ScanCommandRunner scanCommandRunner;
 
-    public ScanBatchRunnerFactory(final IntEnvironmentVariables intEnvironmentVariables, final ExecutorService executorService) {
+    public ScanBatchRunnerFactory(IntEnvironmentVariables intEnvironmentVariables, ExecutorService executorService) {
         this.intEnvironmentVariables = intEnvironmentVariables;
         slf4jIntLogger = new SignatureScannerLogger(logger);
         operatingSystemType = OperatingSystemType.determineFromSystem();
@@ -60,22 +60,25 @@ public class ScanBatchRunnerFactory {
         scanCommandRunner = new ScanCommandRunner(slf4jIntLogger, intEnvironmentVariables, scanPathsUtility, executorService);
     }
 
-    public ScanBatchRunner withInstall(final BlackDuckServerConfig blackDuckServerConfig) {
+    public ScanBatchRunner withInstall(BlackDuckServerConfig blackDuckServerConfig) {
         // will will use the server to download/update the scanner - this is the most likely situation
         BlackDuckHttpClient blackDuckHttpClient = blackDuckServerConfig.createBlackDuckHttpClient(slf4jIntLogger);
         CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
-        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, blackDuckHttpClient, cleanupZipExpander, scanPathsUtility, blackDuckServerConfig.getBlackDuckUrl(), operatingSystemType);
-        final ScanBatchRunner scanBatchManager = ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
+        KeyStoreHelper keyStoreHelper = new KeyStoreHelper(slf4jIntLogger);
+        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, blackDuckHttpClient,
+            cleanupZipExpander, scanPathsUtility, keyStoreHelper,
+            blackDuckServerConfig.getBlackDuckUrl(), operatingSystemType);
+        ScanBatchRunner scanBatchManager = ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
         return scanBatchManager;
     }
 
-    public ScanBatchRunner withoutInstall(final File defaultInstallDirectory) {
+    public ScanBatchRunner withoutInstall(File defaultInstallDirectory) {
         // either we were given an existing path for the scanner or
         // we are offline - either way, we won't attempt to manage the install
         return ScanBatchRunner.createWithNoInstaller(intEnvironmentVariables, defaultInstallDirectory, scanPathsUtility, scanCommandRunner);
     }
 
-    public ScanBatchRunner withUserProvidedUrl(final String userProvidedScannerInstallUrl, final IntHttpClient restConnection) throws DetectUserFriendlyException {
+    public ScanBatchRunner withUserProvidedUrl(String userProvidedScannerInstallUrl, BlackDuckHttpClient blackDuckHttpClient) throws DetectUserFriendlyException {
         HttpUrl url;
         try {
             url = new HttpUrl(userProvidedScannerInstallUrl);
@@ -83,8 +86,10 @@ public class ScanBatchRunnerFactory {
             throw new DetectUserFriendlyException("User provided scanner install url could not be parsed: " + userProvidedScannerInstallUrl, e, ExitCodeType.FAILURE_CONFIGURATION);
         }
         // we will use the provided url to download/update the scanner
-        final CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
-        final ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, restConnection, cleanupZipExpander, scanPathsUtility, url, operatingSystemType);
+        CleanupZipExpander cleanupZipExpander = new CleanupZipExpander(slf4jIntLogger);
+        KeyStoreHelper keyStoreHelper = new KeyStoreHelper(slf4jIntLogger);
+        ScannerZipInstaller scannerZipInstaller = new ScannerZipInstaller(slf4jIntLogger, blackDuckHttpClient, cleanupZipExpander, scanPathsUtility,
+            keyStoreHelper, url, operatingSystemType);
 
         return ScanBatchRunner.createComplete(intEnvironmentVariables, scannerZipInstaller, scanPathsUtility, scanCommandRunner);
     }

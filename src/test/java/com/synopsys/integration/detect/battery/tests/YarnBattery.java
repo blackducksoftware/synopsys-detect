@@ -39,5 +39,15 @@ public class YarnBattery {
         test.expectBdioResources();
         test.run();
     }
+
+    @Test
+    void yarn2lock() {
+        final BatteryTest test = new BatteryTest("yarn2-lock");
+        test.sourceDirectoryNamed("yarn2-lock");
+        test.sourceFileFromResource("yarn.lock");
+        test.sourceFileFromResource("package.json");
+        test.expectBdioResources();
+        test.run();
+    }
 }
 

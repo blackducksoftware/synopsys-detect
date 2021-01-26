@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -122,8 +122,9 @@ public class NpmLockfilePackager {
     }
 
     private void transformTreeToGraph(NpmDependency npmDependency, NpmProject npmProject, MutableDependencyGraph dependencyGraph, boolean includeDevDependencies, final List<NameVersion> externalDependencies) {
-        if (!shouldIncludeDependency(npmDependency, includeDevDependencies))
+        if (!shouldIncludeDependency(npmDependency, includeDevDependencies)) {
             return;
+        }
 
         npmDependency.getRequires().forEach(required -> {
             logger.trace(String.format("Required package: %s of version: %s", required.getName(), required.getFuzzyVersion()));

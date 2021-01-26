@@ -2,10 +2,13 @@ import com.synopsys.integration.detect.artifactory.UpdateArtifactoryPropertiesTa
 import com.synopsys.integration.detect.battery.UpdateBatteryTask
 import com.synopsys.integration.detect.verification.VerifyBlackDuckDetectTask
 
+//TODO Remove this when the Spock dependency, Spock 2.0, is officially released. Upgrade to a Spring Boot version that depends on Groovy 3.0.0 and Spock 2.0 by default.
+ext['groovy.version'] = '3.0.0'
+
 buildscript {
     ext {
         springBootVersion = '2.2.4.RELEASE'
-        blackDuckCommonVersion = '50.2.0'
+        blackDuckCommonVersion = '51.0.0'
         junitPlatformDefaultTestTags = 'integration, performance, battery'
     }
 
@@ -18,7 +21,7 @@ buildscript {
 }
 
 group = 'com.synopsys.integration'
-version = '6.8.0-SNAPSHOT'
+version = '6.9.0-SNAPSHOT'
 
 apply plugin: 'com.synopsys.integration.solution'
 apply plugin: 'org.springframework.boot'
@@ -107,6 +110,7 @@ dependencies {
     testImplementation 'org.skyscreamer:jsonassert:1.5.0'
 
     testImplementation project(':configuration').sourceSets.test.output
+    testImplementation project(':common-test')
 }
 
 springBoot { mainClassName = 'com.synopsys.integration.detect.Application' }

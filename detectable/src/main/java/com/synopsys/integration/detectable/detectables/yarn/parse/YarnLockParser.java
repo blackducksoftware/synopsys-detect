@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -117,7 +117,7 @@ public class YarnLockParser {
                    .stream()
                    .filter(line -> countIndent(line) == 0)
                    .findFirst()
-                   .map(line -> cleanedYarnLockFileAsList.indexOf(line))
+                   .map(cleanedYarnLockFileAsList::indexOf)
                    .orElse(-1);
     }
 
@@ -171,7 +171,17 @@ public class YarnLockParser {
     }
 
     //Takes an entry of format "name@version" or "@name@version" where name has an @ symbol.
+    //Notice, this removes the workspace, so "name@workspace:version" will become simply "name@version"
     public YarnLockEntryId parseSingleEntry(String entry) {
+        YarnLockEntryId normalEntry = parseSingleEntryNormally(entry);
+        if (normalEntry.getVersion().contains(":")) {
+            return new YarnLockEntryId(normalEntry.getName(), StringUtils.substringAfter(normalEntry.getVersion(), ":"));
+        } else {
+            return normalEntry;
+        }
+    }
+
+    public YarnLockEntryId parseSingleEntryNormally(String entry) {
         if (StringUtils.countMatches(entry, "@") == 1 && entry.startsWith("@")) {
             return new YarnLockEntryId(entry, "");
         } else {

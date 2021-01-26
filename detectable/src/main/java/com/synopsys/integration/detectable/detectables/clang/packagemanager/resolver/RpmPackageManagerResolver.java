@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -54,9 +54,7 @@ public class RpmPackageManagerResolver implements ClangPackageManagerResolver {
         String[] packageLines = queryPackageOutput.split("\n");
         for (String packageLine : packageLines) {
             Optional<PackageDetails> dependencyDetails = generatePackageFromQueryOutputLine(packageLine);
-            if (dependencyDetails.isPresent()) {
-                packageDetailsList.add(dependencyDetails.get());
-            }
+            dependencyDetails.ifPresent(packageDetailsList::add);
         }
         return packageDetailsList;
     }

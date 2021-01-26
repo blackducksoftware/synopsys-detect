@@ -22,8 +22,8 @@
  */
 package com.synopsys.integration.detectable.detectables.docker.unit;
 
-import static junit.framework.TestCase.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 import java.io.File;

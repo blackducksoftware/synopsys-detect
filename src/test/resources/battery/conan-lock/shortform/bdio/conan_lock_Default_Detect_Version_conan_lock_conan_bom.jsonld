@@ -1,0 +1,278 @@
+[
+  {
+    "specVersion": "1.1.0",
+    "spdx:name": "conan-lock/Default Detect Version/conan-lock conan/bom",
+    "creationInfo": {
+      "spdx:creator": [
+        "Tool: Detect-6.8.0-SNAPSHOT",
+        "Tool: IntegrationBdio-22.0.0"
+      ],
+      "spdx:created": "2020-12-10T12:09:55.458Z"
+    },
+    "@id": "uuid:b19524ff-e445-41b1-9000-4ed7772eb37c",
+    "@type": "BillOfMaterials",
+    "relationship": []
+  },
+  {
+    "name": "conan-lock",
+    "revision": "Default Detect Version",
+    "@id": "http:detect/conan-lock",
+    "@type": "Project",
+    "externalIdentifier": {
+      "externalSystemTypeId": "detect",
+      "externalId": "conan-lock",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "detect",
+          "separator": "/"
+        },
+        "pieces": [
+          "conan-lock",
+          null
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:conan/boost/1.72.0%40_%2F_%23606bee7b2d011cb7c00469cf040b685e",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/hello/0.1%40user%2Ftesting%238d3b65dd66ce3a1f847f83bc57dc6748",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/poco/1.9.4%40_%2F_%231b40afc220b2536de1c6443c2ede140a",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "boost",
+    "revision": "1.72.0",
+    "@id": "http:conan/boost/1.72.0%40_%2F_%23606bee7b2d011cb7c00469cf040b685e",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "boost/1.72.0@_/_#606bee7b2d011cb7c00469cf040b685e",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "boost",
+          "1.72.0@_/_#606bee7b2d011cb7c00469cf040b685e"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:conan/bzip2/1.0.8%40_%2F_%23f85c479b79b300b1b5e17510aca55c35",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/zlib/1.2.11%40_%2F_%231a67b713610ae745694aa4df1725451d",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "bzip2",
+    "revision": "1.0.8",
+    "@id": "http:conan/bzip2/1.0.8%40_%2F_%23f85c479b79b300b1b5e17510aca55c35",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "bzip2/1.0.8@_/_#f85c479b79b300b1b5e17510aca55c35",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "bzip2",
+          "1.0.8@_/_#f85c479b79b300b1b5e17510aca55c35"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "zlib",
+    "revision": "1.2.11",
+    "@id": "http:conan/zlib/1.2.11%40_%2F_%231a67b713610ae745694aa4df1725451d",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "zlib/1.2.11@_/_#1a67b713610ae745694aa4df1725451d",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "zlib",
+          "1.2.11@_/_#1a67b713610ae745694aa4df1725451d"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "hello",
+    "revision": "0.1",
+    "@id": "http:conan/hello/0.1%40user%2Ftesting%238d3b65dd66ce3a1f847f83bc57dc6748",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "hello/0.1@user/testing#8d3b65dd66ce3a1f847f83bc57dc6748",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "hello",
+          "0.1@user/testing#8d3b65dd66ce3a1f847f83bc57dc6748"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "poco",
+    "revision": "1.9.4",
+    "@id": "http:conan/poco/1.9.4%40_%2F_%231b40afc220b2536de1c6443c2ede140a",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "poco/1.9.4@_/_#1b40afc220b2536de1c6443c2ede140a",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "poco",
+          "1.9.4@_/_#1b40afc220b2536de1c6443c2ede140a"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:conan/openssl/1.1.1h%40_%2F_%23a54ec92b792d10b6595c581a15ad2cd7",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/pcre/8.41%40_%2F_%23565ecd412dd6d96407b26a97967408b9",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/sqlite3/3.33.0%40_%2F_%23cba9be64f6dfa3dc60ec66fed937f573",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/zlib/1.2.11%40_%2F_%231a67b713610ae745694aa4df1725451d",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/expat/2.2.10%40_%2F_%234c8fdad7f019abf97feb37d8c1075712",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "openssl",
+    "revision": "1.1.1h",
+    "@id": "http:conan/openssl/1.1.1h%40_%2F_%23a54ec92b792d10b6595c581a15ad2cd7",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "openssl/1.1.1h@_/_#a54ec92b792d10b6595c581a15ad2cd7",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "openssl",
+          "1.1.1h@_/_#a54ec92b792d10b6595c581a15ad2cd7"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "pcre",
+    "revision": "8.41",
+    "@id": "http:conan/pcre/8.41%40_%2F_%23565ecd412dd6d96407b26a97967408b9",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "pcre/8.41@_/_#565ecd412dd6d96407b26a97967408b9",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "pcre",
+          "8.41@_/_#565ecd412dd6d96407b26a97967408b9"
+        ]
+      }
+    },
+    "relationship": [
+      {
+        "related": "http:conan/bzip2/1.0.8%40_%2F_%23f85c479b79b300b1b5e17510aca55c35",
+        "relationshipType": "DYNAMIC_LINK"
+      },
+      {
+        "related": "http:conan/zlib/1.2.11%40_%2F_%231a67b713610ae745694aa4df1725451d",
+        "relationshipType": "DYNAMIC_LINK"
+      }
+    ]
+  },
+  {
+    "name": "sqlite3",
+    "revision": "3.33.0",
+    "@id": "http:conan/sqlite3/3.33.0%40_%2F_%23cba9be64f6dfa3dc60ec66fed937f573",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "sqlite3/3.33.0@_/_#cba9be64f6dfa3dc60ec66fed937f573",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "sqlite3",
+          "3.33.0@_/_#cba9be64f6dfa3dc60ec66fed937f573"
+        ]
+      }
+    },
+    "relationship": []
+  },
+  {
+    "name": "expat",
+    "revision": "2.2.10",
+    "@id": "http:conan/expat/2.2.10%40_%2F_%234c8fdad7f019abf97feb37d8c1075712",
+    "@type": "Component",
+    "externalIdentifier": {
+      "externalSystemTypeId": "conan",
+      "externalId": "expat/2.2.10@_/_#4c8fdad7f019abf97feb37d8c1075712",
+      "externalIdMetaData": {
+        "forge": {
+          "name": "conan",
+          "separator": "/"
+        },
+        "pieces": [
+          "expat",
+          "2.2.10@_/_#4c8fdad7f019abf97feb37d8c1075712"
+        ]
+      }
+    },
+    "relationship": []
+  }
+]

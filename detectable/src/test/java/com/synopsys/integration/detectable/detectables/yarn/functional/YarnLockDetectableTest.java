@@ -31,9 +31,9 @@ import org.junit.jupiter.api.Assertions;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockOptions;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
@@ -51,7 +51,7 @@ public class YarnLockDetectableTest extends DetectableFunctionalTest {
             "   dependencies:",
             "     lodash \"4.17.4\"",
             "",
-            "lodash@4.17.4:",
+            "lodash@npm:4.17.4",
             "   version \"4.17.4\""
         );
 

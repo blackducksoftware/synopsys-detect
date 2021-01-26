@@ -37,6 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.json.JSONArray;
@@ -109,6 +110,11 @@ public final class BatteryTest {
                    .collect(Collectors.toList());
     }
 
+    /**
+     * NOTE: The order in which you provide the names of executable output resource files must match the order in which their corresponding commands are invoked at runtime.
+     *      ex) The GoModCliExtractor invokes the command 'go list' before the command 'go version', so go-list.xout must be ordered before go-version.xout in resourceFiles when constructing
+     *          a battery test for the go mod detectable.
+     */
     public void executableFromResourceFiles(Property detectProperty, String... resourceFiles) {
         ResourceTypingExecutableCreator creator = new ResourceTypingExecutableCreator(prefixResources(resourceFiles));
         executables.add(BatteryExecutable.propertyOverrideExecutable(detectProperty, creator));
@@ -225,7 +231,7 @@ public final class BatteryTest {
     private void executeDetectStatic(List<String> detectArguments) {
         boolean previous = Application.shouldExit();
         Application.setShouldExit(false);
-        Application.main(detectArguments.toArray(new String[0]));
+        Application.main(detectArguments.toArray(ArrayUtils.EMPTY_STRING_ARRAY));
         Application.setShouldExit(previous);
     }
 

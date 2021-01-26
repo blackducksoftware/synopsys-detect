@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -38,7 +38,7 @@ public class ExtractionEnvironmentProvider {
     }
 
     public ExtractionEnvironment createExtractionEnvironment(DetectorEvaluation detectorEvaluation) {
-        ExtractionId extractionId = new ExtractionId(detectorEvaluation.getDetectorRule().getDetectorType(), count);
+        ExtractionId extractionId = new ExtractionId(detectorEvaluation.getDetectorType(), count);
         count = count + 1;
 
         File outputDirectory = directoryManager.getExtractionOutputDirectory(extractionId);

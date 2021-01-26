@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -36,24 +36,24 @@ public class ExtractionLogger {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private Integer extractionCount = 0;
 
-    public void setExtractionCount(final Integer count) {
+    public void setExtractionCount(Integer count) {
         extractionCount = count;
     }
 
-    public void extractionStarted(final DetectorEvaluation detectorEvaluation) {
-        final DetectExtractionEnvironment detectExtractionEnvironment = (DetectExtractionEnvironment) detectorEvaluation.getExtractionEnvironment();
-        final Integer i = detectExtractionEnvironment.getExtractionId().getId();
-        final String progress = Integer.toString((int) Math.floor((i * 100.0f) / extractionCount));
+    public void extractionStarted(DetectorEvaluation detectorEvaluation) {
+        DetectExtractionEnvironment detectExtractionEnvironment = (DetectExtractionEnvironment) detectorEvaluation.getExtractionEnvironment();
+        Integer i = detectExtractionEnvironment.getExtractionId().getId();
+        String progress = Integer.toString((int) Math.floor((i * 100.0f) / extractionCount));
         logger.debug(String.format("Extracting %d of %d (%s%%)", i + 1, extractionCount, progress));
         logger.debug(ReportConstants.SEPERATOR);
 
-        logger.debug("Starting extraction: " + detectorEvaluation.getDetectorRule().getDetectorType() + " - " + detectorEvaluation.getDetectorRule().getName());
+        logger.debug("Starting extraction: " + detectorEvaluation.getDetectorType() + " - " + detectorEvaluation.getDetectorRule().getName());
         logger.debug("Identifier: " + detectExtractionEnvironment.getExtractionId().toUniqueString());
         ObjectPrinter.printObjectPrivate(new DebugLogReportWriter(logger), detectorEvaluation.getDetectable());
         logger.debug(ReportConstants.SEPERATOR);
     }
 
-    public void extractionEnded(final DetectorEvaluation detectorEvaluation) {
+    public void extractionEnded(DetectorEvaluation detectorEvaluation) {
         logger.debug(ReportConstants.SEPERATOR);
         logger.debug("Finished extraction: " + detectorEvaluation.getExtraction().getResult().toString());
         logger.debug("Code locations found: " + detectorEvaluation.getExtraction().getCodeLocations().size());

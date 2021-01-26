@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -25,9 +25,11 @@ package com.synopsys.integration.detect.lifecycle.boot;
 import java.io.File;
 import java.util.Optional;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -97,6 +99,20 @@ public class DetectBootResult {
         return Optional.ofNullable(exception);
     }
 
+    @NotNull
+    public Boolean shouldForceSuccess() {
+        return getDetectConfiguration()
+                   .map(configuration -> configuration.getValueOrDefault(DetectProperties.DETECT_FORCE_SUCCESS.getProperty()))
+                   .orElse(Boolean.FALSE);
+    }
+
+    @NotNull
+    public Boolean shouldPrintOutput() {
+        return getDetectConfiguration()
+                   .map(configuration -> !configuration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_RESULTS_OUTPUT.getProperty()))
+                   .orElse(Boolean.TRUE);
+    }
+
     public enum BootType {
         EXIT,
         RUN,
@@ -126,4 +142,5 @@ public class DetectBootResult {
     public static DetectBootResult exception(Exception exception, PropertyConfiguration detectConfiguration, DirectoryManager directoryManager, @Nullable DiagnosticSystem diagnosticSystem) {
         return new DetectBootResult(BootType.EXCEPTION, detectConfiguration, directoryManager, null, diagnosticSystem, null, exception);
     }
+
 }

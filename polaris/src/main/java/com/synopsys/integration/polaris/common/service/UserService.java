@@ -1,7 +1,7 @@
 /**
  * polaris
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.polaris.common.service;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +54,7 @@ public class UserService {
     }
 
     public Set<UserResource> getUsersForGroup(final GroupResource group) throws IntegrationException {
-        return getUsersForGroups(Arrays.asList(group));
+        return getUsersForGroups(Collections.singletonList(group));
     }
 
     public Set<UserResource> getUsersForGroups(final List<GroupResource> groups) throws IntegrationException {
@@ -63,7 +63,7 @@ public class UserService {
     }
 
     public Set<UserResource> getUsersForGroup(final List<UserResource> users, final GroupResource group) {
-        return getUsersForGroups(users, Arrays.asList(group));
+        return getUsersForGroups(users, Collections.singletonList(group));
     }
 
     public Set<UserResource> getUsersForGroups(final List<UserResource> users, final List<GroupResource> groups) {

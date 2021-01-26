@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -37,6 +37,8 @@ public class GoModCommandExecutor {
     private static final String FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH = "Querying for the go mod graph failed:";
     private static final String FAILURE_MSG_QUERYING_GO_FOR_THE_LIST_OF_MODULES = "Querying go for the list of modules failed: ";
     private static final String FAILURE_MSG_QUERYING_FOR_THE_VERSION = "Querying for the version failed: ";
+    private static final Pattern GENERATE_GO_LIST_U_JSON_OUTPUT_PATTERN = Pattern.compile("\\d+\\.[\\d.]+");
+
     private final DetectableExecutableRunner executableRunner;
 
     public GoModCommandExecutor(DetectableExecutableRunner executableRunner) {
@@ -49,8 +51,7 @@ public class GoModCommandExecutor {
 
     List<String> generateGoListUJsonOutput(File directory, File goExe) throws ExecutableRunnerException, DetectableException {
         List<String> goVersionOutput = execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_VERSION, "version");
-        Pattern pattern = Pattern.compile("\\d+\\.[\\d.]+");
-        Matcher matcher = pattern.matcher(goVersionOutput.get(0));
+        Matcher matcher = GENERATE_GO_LIST_U_JSON_OUTPUT_PATTERN.matcher(goVersionOutput.get(0));
         if (matcher.find()) {
             String version = matcher.group();
             String[] parts = version.split("\\.");

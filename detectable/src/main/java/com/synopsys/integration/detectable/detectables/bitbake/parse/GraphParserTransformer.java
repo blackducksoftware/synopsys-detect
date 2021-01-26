@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -37,10 +37,9 @@ public class GraphParserTransformer {
 
         for (GraphNode graphNode : graphParser.getNodes().values()) {
             String name = getNameFromNode(graphNode);
-            String version = getVersionFromNode(graphNode).orElse(null);
-            if (version != null) {
-                bitbakeGraph.addNode(name, version);
-            }
+            getVersionFromNode(graphNode).ifPresent(
+                    version -> bitbakeGraph.addNode(name, version)
+            );
         }
 
         for (GraphEdge graphEdge : graphParser.getEdges().values()) {

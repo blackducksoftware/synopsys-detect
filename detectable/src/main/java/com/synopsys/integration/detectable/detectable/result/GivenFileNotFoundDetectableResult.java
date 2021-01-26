@@ -1,7 +1,7 @@
 /**
- * synopsys-detect
+ * detectable
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -20,16 +20,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.diagnostic;
+package com.synopsys.integration.detectable.detectable.result;
 
-public class DiagnosticsDecision {
-    public final boolean isDiagnostic;
-    public final boolean isDiagnosticExtended;
-    public final boolean isConfiguredForDiagnostic;
+public class GivenFileNotFoundDetectableResult extends FailedDetectableResult {
+    private final String givenFilePath;
 
-    public DiagnosticsDecision(boolean isDiagnostic, boolean isDiagnosticExtended, boolean isConfiguredForDiagnostic) {
-        this.isDiagnostic = isDiagnostic;
-        this.isDiagnosticExtended = isDiagnosticExtended;
-        this.isConfiguredForDiagnostic = isConfiguredForDiagnostic;
+    public GivenFileNotFoundDetectableResult(String givenFilePath) {
+        this.givenFilePath = givenFilePath;
+    }
+
+    @Override
+    public String toDescription() {
+        return String.format("The given file (%s) was not found or not readable", givenFilePath);
     }
 }

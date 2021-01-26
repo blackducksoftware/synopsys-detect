@@ -1,7 +1,7 @@
 /**
  * detectable
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -152,7 +152,7 @@ public class CompileCommandParser {
         ESCAPED_DOUBLE
     }
 
-    private class ParserState extends Stringable {
+    private static class ParserState extends Stringable {
         private boolean lastCharWasEscapeChar = false;
         private QuoteType quoteType = QuoteType.NONE;
 

@@ -62,7 +62,7 @@ public class TestUtil {
         } catch (final IOException e) {
             throw new RuntimeException(e);
         }
-        return Arrays.asList(data.split("\r?\n")).stream().collect(Collectors.joining(System.lineSeparator()));
+        return Arrays.stream(data.split("\r?\n")).collect(Collectors.joining(System.lineSeparator()));
     }
 
     public InputStream getResourceAsInputStream(final String resourcePath) {

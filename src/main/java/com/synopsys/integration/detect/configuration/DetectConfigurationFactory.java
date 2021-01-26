@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -40,9 +40,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
 import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectCloneCategoriesType;
+import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersionDistributionType;
 import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
@@ -96,11 +96,10 @@ import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.proxy.ProxyInfoBuilder;
 
 public class DetectConfigurationFactory {
+    private final PropertyConfiguration detectConfiguration;
+    private final PathResolver pathResolver;
 
-    private PropertyConfiguration detectConfiguration;
-    private PathResolver pathResolver;
-
-    public DetectConfigurationFactory(final PropertyConfiguration detectConfiguration, final PathResolver pathResolver) {
+    public DetectConfigurationFactory(PropertyConfiguration detectConfiguration, PathResolver pathResolver) {
         this.detectConfiguration = detectConfiguration;
         this.pathResolver = pathResolver;
     }
@@ -225,7 +224,7 @@ public class DetectConfigurationFactory {
         List<String> proxyIgnoredHosts = PropertyConfigUtils
                                              .getFirstProvidedValueOrDefault(detectConfiguration, DetectProperties.BLACKDUCK_PROXY_IGNORED_HOSTS.getProperty(), DetectProperties.BLACKDUCK_HUB_PROXY_IGNORED_HOSTS.getProperty());
         List<Pattern> proxyPatterns = proxyIgnoredHosts.stream()
-                                          .map(it -> Pattern.compile(it))
+                                          .map(Pattern::compile)
                                           .collect(Collectors.toList());
         ProxyInfo proxyInformation = createBlackDuckProxyInfo();
         return new ConnectionDetails(proxyInformation, proxyPatterns, findTimeoutInSeconds(), alwaysTrust);
@@ -321,8 +320,7 @@ public class DetectConfigurationFactory {
         List<String> excludedDirectoryPatterns = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATTERNS);
         List<String> excludedDirectoryPaths = getValue(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_PATHS);
 
-        List<String> excludedDirectories = new ArrayList<>();
-        excludedDirectories.addAll(userProvidedExcludedDirectories);
+        List<String> excludedDirectories = new ArrayList<>(userProvidedExcludedDirectories);
         if (detectConfiguration.getValueOrDefault(DetectProperties.DETECT_DETECTOR_SEARCH_EXCLUSION_DEFAULTS.getProperty())) {
             List<String> defaultExcluded = Arrays.stream(DefaultDetectorExcludedDirectories.values())
                                                .map(DefaultDetectorExcludedDirectories::getDirectoryName)
@@ -479,11 +477,12 @@ public class DetectConfigurationFactory {
         return new ImpactAnalysisOptions(enabled, codeLocationPrefix, codeLocationSuffix, outputDirectory);
     }
 
-    public DetectExecutableOptions createExecutablePaths() {
+    public DetectExecutableOptions createDetectExecutableOptions() {
         return new DetectExecutableOptions(
             getValue(DetectProperties.DETECT_PYTHON_PYTHON3),
             getPathOrNull(DetectProperties.DETECT_BASH_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_BAZEL_PATH.getProperty()),
+            getPathOrNull(DetectProperties.DETECT_CONAN_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CONDA_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CPAN_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_CPANM_PATH.getProperty()),
@@ -491,6 +490,7 @@ public class DetectConfigurationFactory {
             getPathOrNull(DetectProperties.DETECT_MAVEN_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_NPM_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_PEAR_PATH.getProperty()),
+            getPathOrNull(DetectProperties.DETECT_PIP_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_PIPENV_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_PYTHON_PATH.getProperty()),
             getPathOrNull(DetectProperties.DETECT_HEX_REBAR3_PATH.getProperty()),

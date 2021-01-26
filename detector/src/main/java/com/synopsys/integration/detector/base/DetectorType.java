@@ -1,7 +1,7 @@
 /**
  * detector
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -30,6 +30,7 @@ public enum DetectorType {
     BITBAKE,
     CARGO,
     COCOAPODS,
+    CONAN,
     CONDA,
     CPAN,
     CRAN,

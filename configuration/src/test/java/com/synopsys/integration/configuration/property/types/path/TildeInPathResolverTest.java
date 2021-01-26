@@ -64,8 +64,6 @@ public class TildeInPathResolverTest {
     @EnabledOnOs(WINDOWS) // Path is more forgiving of whitespace on Unix systems.
     public void testWhitespacePath() {
         final TildeInPathResolver resolver = new TildeInPathResolver("/Users/ekerwin");
-        Assertions.assertThrows(InvalidPathException.class, () -> {
-            resolver.resolvePath("  ");
-        });
+        Assertions.assertThrows(InvalidPathException.class, () -> resolver.resolvePath("  "));
     }
 }

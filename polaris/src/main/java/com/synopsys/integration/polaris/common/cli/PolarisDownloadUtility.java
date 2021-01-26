@@ -1,7 +1,7 @@
 /**
  * polaris
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -231,7 +231,7 @@ public class PolarisDownloadUtility {
             File binDirectory = getBinDirectory();
             makeBinFilesExecutable(binDirectory);
 
-            logger.info(String.format("Polaris CLI downloaded successfully."));
+            logger.info("Polaris CLI downloaded successfully.");
 
             return binDirectory;
         }
@@ -240,7 +240,7 @@ public class PolarisDownloadUtility {
     // since we know that we only allow a single directory in installDirectory,
     // that single directory IS the expanded archive
     private File getBinDirectory() throws IntegrationException {
-        File[] directories = installDirectory.listFiles(file -> file.isDirectory());
+        File[] directories = installDirectory.listFiles(File::isDirectory);
         if (directories == null || directories.length == 0) {
             throw new IntegrationException(String.format("The %s directory is empty, so the Polaris CLI can not be run.", PolarisDownloadUtility.POLARIS_CLI_INSTALL_DIRECTORY));
         }

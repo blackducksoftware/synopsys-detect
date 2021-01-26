@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -65,7 +65,7 @@ public class DetectFileUtils {
             return "";
         }
         final String normalizedPath = FilenameUtils.normalizeNoEndSeparator(path, true);
-        return normalizedPath.substring(normalizedPath.lastIndexOf('/') + 1, normalizedPath.length());
+        return normalizedPath.substring(normalizedPath.lastIndexOf('/') + 1);
     }
 
     public static File writeToFile(final File file, final String contents) throws IOException {

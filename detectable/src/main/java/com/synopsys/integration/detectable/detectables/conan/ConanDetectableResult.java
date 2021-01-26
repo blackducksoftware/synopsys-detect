@@ -1,7 +1,7 @@
 /**
- * synopsys-detect
+ * detectable
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -20,16 +20,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.configuration.help.print;
+package com.synopsys.integration.detectable.detectables.conan;
 
-import java.io.PrintStream;
+import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 
-import com.synopsys.integration.detect.configuration.DetectInfo;
+public class ConanDetectableResult {
+    private final String projectName;
+    private final String projectVersion;
+    private final CodeLocation codeLocation;
 
-public class DetectInfoPrinter {
-    public void printInfo(final PrintStream printStream, final DetectInfo detectInfo) {
-        printStream.println("");
-        printStream.println("Detect Version: " + detectInfo.getDetectVersion());
-        printStream.println("");
+    public ConanDetectableResult(String projectName, String projectVersion, CodeLocation codeLocation) {
+        this.projectName = projectName;
+        this.projectVersion = projectVersion;
+        this.codeLocation = codeLocation;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public String getProjectVersion() {
+        return projectVersion;
+    }
+
+    public CodeLocation getCodeLocation() {
+        return codeLocation;
     }
 }

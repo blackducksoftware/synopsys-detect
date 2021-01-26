@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -61,13 +61,12 @@ public class DiagnosticFileCapture {
     }
 
     public void finish() {
-        if (fileNames.size() <= 0)
+        if (fileNames.size() <= 0) {
             return;
+        }
 
         final AtomicReference<String> executableMap = new AtomicReference<>("");
-        fileNames.forEach((key, value) -> {
-            executableMap.set(executableMap.get() + key + ": " + value + System.lineSeparator());
-        });
+        fileNames.forEach((key, value) -> executableMap.set(executableMap.get() + key + ": " + value + System.lineSeparator()));
 
         final File mapFile = new File(fileDirectory, "FILE-MAP.txt");
         try {

@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -46,14 +46,12 @@ public class AirGapCreator {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final AirGapPathFinder airGapPathFinder;
-
     private final EventSystem eventSystem;
     private final GradleAirGapCreator gradleAirGapCreator;
     private final NugetAirGapCreator nugetAirGapCreator;
     private final DockerAirGapCreator dockerAirGapCreator;
 
-    public AirGapCreator(AirGapPathFinder airGapPathFinder, EventSystem eventSystem,
-        GradleAirGapCreator gradleAirGapCreator, NugetAirGapCreator nugetAirGapCreator, DockerAirGapCreator dockerAirGapCreator) {
+    public AirGapCreator(AirGapPathFinder airGapPathFinder, EventSystem eventSystem, GradleAirGapCreator gradleAirGapCreator, NugetAirGapCreator nugetAirGapCreator, DockerAirGapCreator dockerAirGapCreator) {
         this.airGapPathFinder = airGapPathFinder;
         this.eventSystem = eventSystem;
         this.gradleAirGapCreator = gradleAirGapCreator;

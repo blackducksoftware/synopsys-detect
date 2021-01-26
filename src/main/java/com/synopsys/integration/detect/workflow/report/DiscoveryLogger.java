@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -37,28 +37,28 @@ public class DiscoveryLogger {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private Integer discoveryCount = 0;
 
-    public void setDiscoveryCount(final Integer count) {
+    public void setDiscoveryCount(Integer count) {
         discoveryCount = count;
     }
 
-    public void discoveryStarted(final DetectorEvaluation detectorEvaluation) {
-        final DetectExtractionEnvironment detectExtractionEnvironment = (DetectExtractionEnvironment) detectorEvaluation.getExtractionEnvironment();
-        final Integer i = detectExtractionEnvironment.getExtractionId().getId();
-        final String progress = Integer.toString((int) Math.floor((i * 100.0f) / discoveryCount));
+    public void discoveryStarted(DetectorEvaluation detectorEvaluation) {
+        DetectExtractionEnvironment detectExtractionEnvironment = (DetectExtractionEnvironment) detectorEvaluation.getExtractionEnvironment();
+        Integer i = detectExtractionEnvironment.getExtractionId().getId();
+        String progress = Integer.toString((int) Math.floor((i * 100.0f) / discoveryCount));
         logger.debug(String.format("Discovery %d of %d (%s%%)", i + 1, discoveryCount, progress));
         logger.debug(ReportConstants.SEPERATOR);
 
-        logger.debug("Starting discovery: " + detectorEvaluation.getDetectorRule().getDetectorType() + " - " + detectorEvaluation.getDetectorRule().getName());
+        logger.debug("Starting discovery: " + detectorEvaluation.getDetectorType() + " - " + detectorEvaluation.getDetectorRule().getName());
         logger.debug("Identifier: " + detectExtractionEnvironment.getExtractionId().toUniqueString());
         ObjectPrinter.printObjectPrivate(new DebugLogReportWriter(logger), detectorEvaluation.getDetectable());
         logger.debug(ReportConstants.SEPERATOR);
     }
 
-    public void discoveryEnded(final DetectorEvaluation detectorEvaluation) {
+    public void discoveryEnded(DetectorEvaluation detectorEvaluation) {
         logger.debug(ReportConstants.SEPERATOR);
         logger.debug("Finished discovery: " + detectorEvaluation.getDiscovery().getResult().toString());
 
-        final boolean projectInformationFound = StringUtils.isNotBlank(detectorEvaluation.getDiscovery().getProjectName());
+        boolean projectInformationFound = StringUtils.isNotBlank(detectorEvaluation.getDiscovery().getProjectName());
         logger.debug("Project information found: " + projectInformationFound);
         if (projectInformationFound) {
             logger.debug("Project name found: " + detectorEvaluation.getDiscovery().getProjectName());

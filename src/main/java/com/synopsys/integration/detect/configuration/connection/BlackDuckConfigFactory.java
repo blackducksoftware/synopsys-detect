@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -36,6 +36,7 @@ import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 public class BlackDuckConfigFactory {
     private final BlackDuckConnectionDetails blackDuckConnectionDetails;
+    private static final String BLACK_DUCK_SERVER_CONFIG_BUILDER_TIMEOUT_KEY = "blackduck.timeout";
 
     public BlackDuckConfigFactory(final BlackDuckConnectionDetails blackDuckConnectionDetails) {
         this.blackDuckConnectionDetails = blackDuckConnectionDetails;
@@ -55,6 +56,7 @@ public class BlackDuckConfigFactory {
                                                                               .setLogger(logger);
 
         blackDuckServerConfigBuilder.setProperties(blackDuckConnectionDetails.getBlackduckProperties().entrySet());
+        blackDuckServerConfigBuilder.setProperty(BLACK_DUCK_SERVER_CONFIG_BUILDER_TIMEOUT_KEY, blackDuckConnectionDetails.getConnectionDetails().getTimeout().toString());
 
         final Optional<Boolean> shouldIgnore = blackDuckConnectionDetails.getBlackDuckUrl().map(blackduckUrl -> ProxyUtil.shouldIgnoreUrl(blackduckUrl, connectionDetails.getIgnoredProxyHostPatterns(), logger));
         if (shouldIgnore.isPresent() && Boolean.TRUE.equals(shouldIgnore.get())) {

@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -54,7 +54,7 @@ public class FormattedOutputManager {
     private final List<DetectIssue> detectIssues = new ArrayList<>();
     private final Map<String, List<File>> unrecognizedPaths = new HashMap<>();
 
-    public FormattedOutputManager(final EventSystem eventSystem) {
+    public FormattedOutputManager(EventSystem eventSystem) {
         eventSystem.registerListener(Event.DetectorsComplete, this::detectorsComplete);
         eventSystem.registerListener(Event.StatusSummary, this::addStatusSummary);
         eventSystem.registerListener(Event.Issue, this::addIssue);
@@ -98,9 +98,7 @@ public class FormattedOutputManager {
                                             .toList();
 
         formattedOutput.unrecognizedPaths = new HashMap<>();
-        unrecognizedPaths.keySet().forEach(key -> {
-            formattedOutput.unrecognizedPaths.put(key, unrecognizedPaths.get(key).stream().map(File::toString).collect(Collectors.toList()));
-        });
+        unrecognizedPaths.keySet().forEach(key -> formattedOutput.unrecognizedPaths.put(key, unrecognizedPaths.get(key).stream().map(File::toString).collect(Collectors.toList())));
 
         return formattedOutput;
     }
@@ -110,7 +108,7 @@ public class FormattedOutputManager {
         detectorOutput.folder = evaluation.getDetectableEnvironment().getDirectory().toString();
         detectorOutput.descriptiveName = evaluation.getDetectorRule().getDescriptiveName();
         detectorOutput.detectorName = evaluation.getDetectorRule().getName();
-        detectorOutput.detectorType = evaluation.getDetectorRule().getDetectorType().toString();
+        detectorOutput.detectorType = evaluation.getDetectorType().toString();
 
         detectorOutput.extracted = evaluation.wasExtractionSuccessful();
         detectorOutput.discoverable = evaluation.wasDiscoverySuccessful();
@@ -134,19 +132,19 @@ public class FormattedOutputManager {
         return detectorOutput;
     }
 
-    private void detectorsComplete(final DetectorToolResult detectorToolResult) {
+    private void detectorsComplete(DetectorToolResult detectorToolResult) {
         this.detectorToolResult = detectorToolResult;
     }
 
-    private void codeLocationsCompleted(final Collection<String> codeLocations) {
+    private void codeLocationsCompleted(Collection<String> codeLocations) {
         this.codeLocations.addAll(codeLocations);
     }
 
-    private void projectNameVersionChosen(final NameVersion nameVersion) {
+    private void projectNameVersionChosen(NameVersion nameVersion) {
         this.projectNameVersion = nameVersion;
     }
 
-    public void addStatusSummary(final Status status) {
+    public void addStatusSummary(Status status) {
         statusSummaries.add(status);
     }
 
@@ -154,11 +152,11 @@ public class FormattedOutputManager {
         detectIssues.add(issue);
     }
 
-    public void addDetectResult(final DetectResult detectResult) {
+    public void addDetectResult(DetectResult detectResult) {
         detectResults.add(detectResult);
     }
 
-    public void addUnrecognizedPaths(final UnrecognizedPaths unrecognizedPaths) {
+    public void addUnrecognizedPaths(UnrecognizedPaths unrecognizedPaths) {
         if (!this.unrecognizedPaths.containsKey(unrecognizedPaths.getGroup())) {
             this.unrecognizedPaths.put(unrecognizedPaths.getGroup(), new ArrayList<>());
         }

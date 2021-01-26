@@ -1,34 +1,5 @@
 # Solutions to common problems
 
-## WARNING: An illegal reflective access operation has occurred
-
-### Symptom
-A block of warnings may appear in ${solution_name}'s logs similar to the following:
-```
-WARNING: An illegal reflective access operation has occurred
-WARNING: Illegal reflective access by org.codehaus.groovy.reflection.CachedClass (file:/Users/myuser/.gradle/caches/modules-2/files-2.1/org.codehaus.groovy/groovy-all/2.4.12/760afc568cbd94c09d78f801ce51aed1326710af/groovy-all-2.4.12.jar) to method java.lang.Object.finalize()
-WARNING: Please consider reporting this to the maintainers of org.codehaus.groovy.reflection.CachedClass
-WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
-WARNING: All illegal access operations will be denied in a future release
-```
-
-### Possible cause
-Running ${solution_name} with Java 11 can cause these warnings. <br/>
-This is a known issue with Apache since Groovy 2.4.11. See [GROOVY-8339](https://issues.apache.org/jira/browse/GROOVY-8339). <br/>
-${solution_name}'s use of Groovy 2 is the result of using Spring Boot 2.2.4.RELEASE which currently depends on Groovy 2. <br/>
-
-### Solution
-Currently we have observed no adverse effects on ${solution_name} as a result of these warnings. <br/>
-The issue has been fixed in Groovy 3 as per [GROOVY-8339](https://issues.apache.org/jira/browse/GROOVY-8339). <br/>
-Clients running ${solution_name} with Java 11 will have these warnings until the [Spring Boot project](https://github.com/spring-projects/spring-boot) upgrades its Groovy dependencies to Groovy 3 and ${solution_name} upgrades Spring Boot.
-
-### Source Code
-The relevant source code within ${solution_name}. <br/>
-[synopsys-detect/build.gradle#L15](https://github.com/blackducksoftware/synopsys-detect/blob/6f7f8026e188999f4a9cac4dfdbcf63dcda1d90b/build.gradle#L15))
-
-The relevant source code within [Spring Boot](https://github.com/spring-projects/spring-boot). <br/>
-[spring-boot-dependencies/pom.xml#L69](https://github.com/spring-projects/spring-boot/blob/58a45c53ac599588104dd82f9ddc81d73fd3f829/spring-boot-project/spring-boot-dependencies/pom.xml#L69)
-
 ## DETECT_SOURCE was not set or computed correctly
 
 ### Symptom
@@ -239,4 +210,3 @@ The problem may be intermittent.
 There is no harm in leaving the directories behind in the short term,
 but we recommend periodically removing them if the problem occurs frequently.
 Restarting Docker will force Docker to release the locks, and enable you to remove the directories.
-

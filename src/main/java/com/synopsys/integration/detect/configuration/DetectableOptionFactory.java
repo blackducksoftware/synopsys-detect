@@ -1,7 +1,7 @@
 /**
  * synopsys-detect
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -49,6 +49,8 @@ import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOpti
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDetectableOptions;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
+import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractorOptions;
+import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectableOptions;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleInspectorOptions;
@@ -153,7 +155,7 @@ public class DetectableOptionFactory {
         List<String> includedConfigurationNames = getValue(DetectProperties.DETECT_GRADLE_INCLUDED_CONFIGURATIONS);
         String configuredGradleInspectorRepositoryUrl = getNullableValue(DetectProperties.DETECT_GRADLE_INSPECTOR_REPOSITORY_URL);
         String customRepository = ArtifactoryConstants.GRADLE_INSPECTOR_MAVEN_REPO;
-        if (configuredGradleInspectorRepositoryUrl != null && StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
+        if (StringUtils.isNotBlank(configuredGradleInspectorRepositoryUrl)) {
             logger.warn("Using a custom gradle repository will not be supported in the future.");
             customRepository = configuredGradleInspectorRepositoryUrl;
         }
@@ -176,6 +178,21 @@ public class DetectableOptionFactory {
         List<String> mavenExcludedModules = getValue(DetectProperties.DETECT_MAVEN_EXCLUDED_MODULES);
         List<String> mavenIncludedModules = getValue(DetectProperties.DETECT_MAVEN_INCLUDED_MODULES);
         return new MavenCliExtractorOptions(mavenBuildCommand, mavenExcludedScopes, mavenIncludedScopes, mavenExcludedModules, mavenIncludedModules);
+    }
+
+    public ConanCliExtractorOptions createConanCliOptions() {
+        String lockfilePath = getNullableValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH);
+        String additionalArguments = getNullableValue(DetectProperties.DETECT_CONAN_ARGUMENTS);
+        Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
+        Boolean preferLongFormExternalIds = getValue(DetectProperties.DETECT_CONAN_REQUIRE_PREV_MATCH);
+        return new ConanCliExtractorOptions(lockfilePath, additionalArguments, includeBuildDependencies, preferLongFormExternalIds);
+    }
+
+    public ConanLockfileExtractorOptions createConanLockfileOptions() {
+        String lockfilePath = getNullableValue(DetectProperties.DETECT_CONAN_LOCKFILE_PATH);
+        Boolean includeBuildDependencies = getValue(DetectProperties.DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES);
+        Boolean preferLongFormExternalIds = getValue(DetectProperties.DETECT_CONAN_REQUIRE_PREV_MATCH);
+        return new ConanLockfileExtractorOptions(lockfilePath, includeBuildDependencies, preferLongFormExternalIds);
     }
 
     public NpmCliExtractorOptions createNpmCliExtractorOptions() {

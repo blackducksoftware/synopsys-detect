@@ -1,0 +1,186 @@
+string-view-lite/1.6.0: Not found in local cache, looking in remotes...
+string-view-lite/1.6.0: Trying with 'conan-center'...
+Downloading conanmanifest.txt
+Downloading conanfile.py
+Downloading conan_export.tgz
+string-view-lite/1.6.0: Downloaded recipe revision 326afcf276c7c791558045027b294501
+conanfile.txt
+    ID: 1db5bdbdb83d8fe9e17dfcc144b3ec97c2f158bb
+    BuildID: None
+    Requires:
+        poco/1.9.4
+        string-view-lite/1.6.0
+    Build Requires:
+        fmt/7.1.2
+bzip2/1.0.8
+    ID: da606cf731e334010b0bf6e85a2a6f891b9f36b0
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: http://www.bzip.org
+    License: bzip2-1.0.8
+    Description: bzip2 is a free and open-source file compression program that uses the Burrows Wheeler algorithm.
+    Topics: conan, bzip2, data-compressor, file-compression
+    Provides: bzip2
+    Recipe: Cache
+    Revision: 0
+    Package revision: 0
+    Binary: Cache
+    Binary remote: conan-center
+    Creation date: 2020-09-04 04:44:14
+    Required by:
+        pcre/8.41
+expat/2.2.10
+    ID: 6af9cc7cb931c5ad942174fd7838eb655717c709
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://github.com/libexpat/libexpat
+    License: MIT
+    Description: Fast streaming XML parser written in C.
+    Topics: conan, expat, xml, parsing
+    Provides: expat
+    Recipe: Cache
+    Revision: 0
+    Package revision: 0
+    Binary: Cache
+    Binary remote: conan-center
+    Creation date: 2020-10-03 15:58:42
+    Required by:
+        poco/1.9.4
+fmt/7.1.2
+    ID: b911f48570f9bb2902d9e83b2b9ebf9d376c8c56
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://github.com/fmtlib/fmt
+    License: MIT
+    Description: A safe and fast alternative to printf and IOStreams.
+    Topics: conan, fmt, format, iostream, printf
+    Provides: fmt
+    Recipe: Cache
+    Revision: a2b90b112a5e19a9569dcb45faf58071
+    Package revision: 2cf9344376a0a5459def686c41b6b8b8
+    Binary: Download
+    Binary remote: conan-center
+    Creation date: 2020-11-04 14:36:02
+    Required by:
+        conanfile.txt
+openssl/1.1.1h
+    ID: 6af9cc7cb931c5ad942174fd7838eb655717c709
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://github.com/openssl/openssl
+    License: OpenSSL
+    Description: A toolkit for the Transport Layer Security (TLS) and Secure Sockets Layer (SSL) protocols
+    Topics: conan, openssl, ssl, tls, encryption, security
+    Provides: openssl
+    Recipe: Cache
+    Revision: 0
+    Package revision: 0
+    Binary: Cache
+    Binary remote: conan-center
+    Creation date: 2020-10-26 18:03:23
+    Required by:
+        poco/1.9.4
+pcre/8.41
+    ID: c6f255e9fa58a43012d6da0e200d343c7458eac1
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://www.pcre.org
+    License: BSD-3-Clause
+    Description: Perl Compatible Regular Expressions
+    Topics: regex, regexp, PCRE
+    Provides: pcre
+    Recipe: Cache
+    Revision: 0
+    Package revision: None
+    Binary: Missing
+    Binary remote: conan-center
+    Creation date: 2020-09-03 10:39:35
+    Required by:
+        poco/1.9.4
+    Requires:
+        bzip2/1.0.8
+        zlib/1.2.11
+poco/1.9.4
+    ID: 5e808d2430cd1737085ec755c4f40b90bca7930d
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://pocoproject.org
+    License: BSL-1.0
+    Description: Modern, powerful open source C++ class libraries for building network- and internet-based applications that run on desktop, server, mobile and embedded systems.
+    Topics: conan, poco, building, networking, server, mobile, embedded
+    Provides: poco
+    Recipe: Cache
+    Revision: 0
+    Package revision: None
+    Binary: Missing
+    Binary remote: conan-center
+    Creation date: 2020-10-22 04:19:54
+    Required by:
+        conanfile.txt
+    Requires:
+        pcre/8.41
+        zlib/1.2.11
+        expat/2.2.10
+        sqlite3/3.33.0
+        openssl/1.1.1h
+sqlite3/3.33.0
+    ID: 01a8a96da981e1edfc87074a67d005b4b5f9950d
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://www.sqlite.org
+    License: Public Domain
+    Description: Self-contained, serverless, in-process SQL database engine.
+    Topics: conan, sqlite, database, sql, serverless
+    Provides: sqlite3
+    Recipe: Cache
+    Revision: 0
+    Package revision: 0
+    Binary: Cache
+    Binary remote: conan-center
+    Creation date: 2020-10-04 06:44:01
+    Required by:
+        poco/1.9.4
+string-view-lite/1.6.0
+    ID: 5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://github.com/martinmoene/string-view-lite
+    License: BSL-1.0
+    Description: string-view lite - A C++17-like string_view for C++98, C++11 and later in a single-file header-only library
+    Topics: conan, cpp98, cpp11, cpp14, cpp17, string-view, string-view-implementations
+    Provides: string-view-lite
+    Recipe: Downloaded
+    Revision: 326afcf276c7c791558045027b294501
+    Package revision: b5bfbac520eecdebb6c933c390c5c84e
+    Binary: Download
+    Binary remote: conan-center
+    Creation date: 2020-10-12 19:20:09
+    Required by:
+        conanfile.txt
+zlib/1.2.11
+    ID: 6af9cc7cb931c5ad942174fd7838eb655717c709
+    BuildID: None
+    Remote: conan-center=https://conan.bintray.com
+    URL: https://github.com/conan-io/conan-center-index
+    Homepage: https://zlib.net
+    License: Zlib
+    Description: A Massively Spiffy Yet Delicately Unobtrusive Compression Library (Also Free, Not to Mention Unencumbered by Patents)
+    Topics: conan, zlib, compression
+    Provides: zlib
+    Recipe: Cache
+    Revision: 0
+    Package revision: 0
+    Binary: Cache
+    Binary remote: conan-center
+    Creation date: 2020-09-04 09:48:36
+    Required by:
+        poco/1.9.4
+        pcre/8.41

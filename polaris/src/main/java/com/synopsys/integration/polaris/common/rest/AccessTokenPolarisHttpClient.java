@@ -1,7 +1,7 @@
 /**
  * polaris
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -109,7 +109,7 @@ public class AccessTokenPolarisHttpClient extends AuthenticatingIntHttpClient {
             return baseUrl.appendRelativeUrl(relativeUrl);
         } catch (IntegrationException e) {
             //TODO if supporting this library is important, we should do better
-            throw new RuntimeException(String.format("Can't combine the base url () with relative url ().", baseUrl.string(), relativeUrl));
+            throw new RuntimeException(String.format("Can't combine the base url %s with relative url %s.", baseUrl.string(), relativeUrl));
         }
     }
 

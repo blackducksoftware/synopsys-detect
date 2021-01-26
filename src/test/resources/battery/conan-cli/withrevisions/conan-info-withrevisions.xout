@@ -1,0 +1,22 @@
+Version ranges solved
+    Version range '>0.0' required by 'conanfile.py (pkgb/0.1)' resolved to 'pkga/0.1@user/testing' in local cache
+
+pkga/0.1@user/testing
+    ID: 4024617540c4f240a6a5e8911b0de9ef38a11a72
+    BuildID: None
+    Remote: None
+    Provides: pkga
+    Recipe: Cache
+    Revision: 4b881197000184e31e700eb95e7b5bf4
+    Package revision: d078f000bbc2d26fea807d4d0b89189a
+    Binary: Cache
+    Binary remote: None
+    Creation date: 2020-11-05 12:23:51
+    Required by:
+        conanfile.py (pkgb/0.1)
+conanfile.py (pkgb/0.1)
+    ID: d457765ab5503c5e929de43db7898fc05deadabb
+    BuildID: None
+    Provides: pkgb
+    Requires:
+        pkga/0.1@user/testing

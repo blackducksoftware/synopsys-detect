@@ -1,7 +1,7 @@
 /**
  * detector
  *
- * Copyright (c) 2020 Synopsys, Inc.
+ * Copyright (c) 2021 Synopsys, Inc.
  *
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -289,5 +289,9 @@ public class DetectorEvaluation {
 
     public void setFallbackFrom(DetectorEvaluation fallbackFrom) {
         this.fallbackFrom = fallbackFrom;
+    }
+
+    public DetectorType getDetectorType() {
+        return getDetectorRule().getDetectorType();
     }
 }
