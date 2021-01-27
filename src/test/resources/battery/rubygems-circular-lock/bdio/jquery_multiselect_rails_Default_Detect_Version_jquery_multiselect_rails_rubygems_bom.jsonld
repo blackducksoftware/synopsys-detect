@@ -407,10 +407,6 @@
     },
     "relationship": [
       {
-        "related": "http:rubygems/activejob/5.2.4.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:rubygems/activesupport/5.2.4.4",
         "relationshipType": "DYNAMIC_LINK"
       },
@@ -440,10 +436,6 @@
       }
     },
     "relationship": [
-      {
-        "related": "http:rubygems/activesupport/5.2.4.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
       {
         "related": "http:rubygems/concurrent-ruby/1.1.7",
         "relationshipType": "DYNAMIC_LINK"
@@ -623,10 +615,6 @@
       }
     },
     "relationship": [
-      {
-        "related": "http:rubygems/actionview/5.2.4.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
       {
         "related": "http:rubygems/activesupport/5.2.4.4",
         "relationshipType": "DYNAMIC_LINK"
@@ -866,10 +854,6 @@
     },
     "relationship": [
       {
-        "related": "http:rubygems/railties/5.2.4.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:rubygems/thor/1.0.1",
         "relationshipType": "DYNAMIC_LINK"
       },
@@ -997,10 +981,6 @@
       {
         "related": "http:rubygems/rails-dom-testing/2.0.3",
         "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:rubygems/actionpack/5.2.4.4",
-        "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
@@ -1077,10 +1057,6 @@
       },
       {
         "related": "http:rubygems/actionview/5.2.4.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:rubygems/actionmailer/5.2.4.4",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -1166,10 +1142,6 @@
     "relationship": [
       {
         "related": "http:rubygems/activesupport/5.2.4.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:rubygems/activemodel/5.2.4.4",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -1269,10 +1241,6 @@
       {
         "related": "http:rubygems/activemodel/5.2.4.4",
         "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:rubygems/activerecord/5.2.4.4",
-        "relationshipType": "DYNAMIC_LINK"
       }
     ]
   },
@@ -1323,10 +1291,6 @@
       },
       {
         "related": "http:rubygems/actionpack/5.2.4.4",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:rubygems/actioncable/5.2.4.4",
         "relationshipType": "DYNAMIC_LINK"
       },
       {
@@ -1433,10 +1397,6 @@
       },
       {
         "related": "http:rubygems/marcel/0.3.3",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:rubygems/activestorage/5.2.4.4",
         "relationshipType": "DYNAMIC_LINK"
       }
     ]
@@ -2746,12 +2706,7 @@
         ]
       }
     },
-    "relationship": [
-      {
-        "related": "http:rubygems/json/2.1.0",
-        "relationshipType": "DYNAMIC_LINK"
-      }
-    ]
+    "relationship": []
   },
   {
     "name": "exception_notification",
@@ -3128,10 +3083,6 @@
       }
     },
     "relationship": [
-      {
-        "related": "http:rubygems/axlsx_rails/0.5.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
       {
         "related": "http:rubygems/axlsx/3.0.0.pre",
         "relationshipType": "DYNAMIC_LINK"
@@ -3702,10 +3653,6 @@
         "relationshipType": "DYNAMIC_LINK"
       },
       {
-        "related": "http:rubygems/twitter-bootstrap-rails/2.2.8",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
         "related": "http:rubygems/actionpack/5.2.4.4",
         "relationshipType": "DYNAMIC_LINK"
       }
@@ -4249,10 +4196,6 @@
       },
       {
         "related": "http:rubygems/sprockets-rails/3.2.2",
-        "relationshipType": "DYNAMIC_LINK"
-      },
-      {
-        "related": "http:rubygems/sass-rails/5.0.7",
         "relationshipType": "DYNAMIC_LINK"
       },
       {

@@ -123,10 +123,7 @@ public class GemlockParser {
         if (!resolvedDependencies.contains(id.getName())) { //if this is our first time encountering a dependency of this name, we become the 'version-less'
             resolvedDependencies.add(id.getName());
             lazyBuilder.setDependencyInfo(nameOnlyId, id.getName(), id.getVersion(), externalId);
-        } else {//otherwise, add us as a child to the version-less
-            //lazyBuilder.addChildWithParent(id, nameOnlyId);
         }
-
     }
 
     private void addBundlerDependency(String trimmedLine) {
