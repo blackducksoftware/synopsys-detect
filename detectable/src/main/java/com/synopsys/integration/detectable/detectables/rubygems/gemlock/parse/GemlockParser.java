@@ -27,9 +27,10 @@ import static com.synopsys.integration.detectable.detectables.rubygems.gemlock.p
 import static com.synopsys.integration.detectable.detectables.rubygems.gemlock.parse.GemlockParser.GemfileLockSection.NONE;
 import static com.synopsys.integration.detectable.detectables.rubygems.gemlock.parse.GemlockParser.GemfileLockSection.SPECS;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -68,21 +69,21 @@ public class GemlockParser {
 
     private GemfileLockSection currentSection = NONE;
 
-    private List<String> encounteredDependencies = new ArrayList<>();
-    private List<String> resolvedDependencies = new ArrayList<>();
+    private Set<String> encounteredDependencies = new HashSet<>();
+    private Set<String> resolvedDependencies = new HashSet<>();
 
-    public GemlockParser(final ExternalIdFactory externalIdFactory) {
+    public GemlockParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
     }
 
-    public DependencyGraph parseProjectDependencies(final List<String> gemfileLockLines) throws MissingExternalIdException {
-        encounteredDependencies = new ArrayList<>();
-        resolvedDependencies = new ArrayList<>();
+    public DependencyGraph parseProjectDependencies(List<String> gemfileLockLines) throws MissingExternalIdException {
+        encounteredDependencies = new HashSet<>();
+        resolvedDependencies = new HashSet<>();
         lazyBuilder = new LazyExternalIdDependencyGraphBuilder();
         currentParent = null;
 
-        for (final String line : gemfileLockLines) {
-            final String trimmedLine = StringUtils.trimToEmpty(line);
+        for (String line : gemfileLockLines) {
+            String trimmedLine = StringUtils.trimToEmpty(line);
 
             if (StringUtils.isBlank(trimmedLine)) {
                 currentSection = NONE;
@@ -101,39 +102,39 @@ public class GemlockParser {
             }
         }
 
-        final List<String> missingDependencies = encounteredDependencies.stream().filter(it -> !resolvedDependencies.contains(it)).collect(Collectors.toList());
-        for (final String missingName : missingDependencies) {
+        List<String> missingDependencies = encounteredDependencies.stream().filter(it -> !resolvedDependencies.contains(it)).collect(Collectors.toList());
+        for (String missingName : missingDependencies) {
             final String missingVersion = "";
-            final DependencyId dependencyId = new NameDependencyId(missingName);
-            final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, missingName, missingVersion);
+            DependencyId dependencyId = new NameDependencyId(missingName);
+            ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, missingName, missingVersion);
             lazyBuilder.setDependencyInfo(dependencyId, missingName, missingVersion, externalId);
         }
 
         return lazyBuilder.build();
     }
 
-    private void discoveredDependencyInfo(final NameVersionDependencyId id) {
-        final NameDependencyId nameOnlyId = new NameDependencyId(id.getName());
+    private void discoveredDependencyInfo(NameVersionDependencyId id) {
+        NameDependencyId nameOnlyId = new NameDependencyId(id.getName());
 
         //regardless we found the external id for this specific dependency.
-        final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, id.getName(), id.getVersion());
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, id.getName(), id.getVersion());
         lazyBuilder.setDependencyInfo(id, id.getName(), id.getVersion(), externalId);
 
         if (!resolvedDependencies.contains(id.getName())) { //if this is our first time encountering a dependency of this name, we become the 'version-less'
             resolvedDependencies.add(id.getName());
             lazyBuilder.setDependencyInfo(nameOnlyId, id.getName(), id.getVersion(), externalId);
         } else {//otherwise, add us as a child to the version-less
-            lazyBuilder.addChildWithParent(id, nameOnlyId);
+            //lazyBuilder.addChildWithParent(id, nameOnlyId);
         }
 
     }
 
-    private void addBundlerDependency(final String trimmedLine) {
-        final NameVersionDependencyId bundlerId = new NameVersionDependencyId("bundler", trimmedLine);
+    private void addBundlerDependency(String trimmedLine) {
+        NameVersionDependencyId bundlerId = new NameVersionDependencyId("bundler", trimmedLine);
         discoveredDependencyInfo(bundlerId);
     }
 
-    private void parseSpecsSectionLine(final String untrimmedLine) {
+    private void parseSpecsSectionLine(String untrimmedLine) {
         if (untrimmedLine.startsWith(SPEC_RELATIONSHIP_PREFIX)) {
             parseSpecRelationshipLine(untrimmedLine.trim());
         } else if (untrimmedLine.startsWith(SPEC_PACKAGE_PREFIX)) {
@@ -143,18 +144,18 @@ public class GemlockParser {
         }
     }
 
-    private void parseSpecRelationshipLine(final String trimmedLine) {
+    private void parseSpecRelationshipLine(String trimmedLine) {
         if (currentParent == null) {
             logger.error(String.format("Trying to add a child without a parent: %s", trimmedLine));
         } else {
-            final NameVersion childNameVersion = parseNameVersion(trimmedLine);
-            final DependencyId childId = processNameVersion(childNameVersion);
+            NameVersion childNameVersion = parseNameVersion(trimmedLine);
+            DependencyId childId = processNameVersion(childNameVersion);
             lazyBuilder.addChildWithParent(childId, currentParent);
         }
     }
 
-    private void parseSpecPackageLine(final String trimmedLine) {
-        final NameVersion parentNameVersion = parseNameVersion(trimmedLine);
+    private void parseSpecPackageLine(String trimmedLine) {
+        NameVersion parentNameVersion = parseNameVersion(trimmedLine);
         if (StringUtils.isNotBlank(parentNameVersion.getVersion())) {
             currentParent = new NameDependencyId(parentNameVersion.getName());
             discoveredDependencyInfo(new NameVersionDependencyId(parentNameVersion.getName(), parentNameVersion.getVersion()));
@@ -165,10 +166,10 @@ public class GemlockParser {
 
     //If you have Version, you know everything. Otherwise, you need to find this version later.
     //Generally each parse/process call should either call this or add to encountered.
-    private DependencyId processNameVersion(final NameVersion nameVersion) {
-        final NameDependencyId nameDependencyId = new NameDependencyId(nameVersion.getName());
+    private DependencyId processNameVersion(NameVersion nameVersion) {
+        NameDependencyId nameDependencyId = new NameDependencyId(nameVersion.getName());
         if (StringUtils.isNotBlank(nameVersion.getVersion())) {
-            final NameVersionDependencyId nameVersionDependencyId = new NameVersionDependencyId(nameVersion.getName(), nameVersion.getVersion());
+            NameVersionDependencyId nameVersionDependencyId = new NameVersionDependencyId(nameVersion.getName(), nameVersion.getVersion());
             discoveredDependencyInfo(nameVersionDependencyId);
         } else {
             encounteredDependencies.add(nameVersion.getName());
@@ -176,23 +177,23 @@ public class GemlockParser {
         return nameDependencyId;
     }
 
-    private void parseDependencySectionLine(final String trimmedLine) {
-        final NameVersion dependencyNameVersionNode = parseNameVersion(trimmedLine);
+    private void parseDependencySectionLine(String trimmedLine) {
+        NameVersion dependencyNameVersionNode = parseNameVersion(trimmedLine);
         if (dependencyNameVersionNode.getName() == null) {
             logger.error(String.format("Line in dependencies section can't be parsed: %s", trimmedLine));
         } else {
-            final DependencyId dependencyId = processNameVersion(dependencyNameVersionNode);
+            DependencyId dependencyId = processNameVersion(dependencyNameVersionNode);
             lazyBuilder.addChildToRoot(dependencyId);
         }
     }
 
-    private NameVersion parseNameVersion(final String trimmedLine) {
-        final String[] pieces = trimmedLine.split(VERSION_PREFIX_PATTERN);
+    private NameVersion parseNameVersion(String trimmedLine) {
+        String[] pieces = trimmedLine.split(VERSION_PREFIX_PATTERN);
         String name = pieces[0].trim();
         String version = "";
 
         if (pieces.length > 1) {
-            final Optional<String> validVersion = parseValidVersion(pieces[1].trim());
+            Optional<String> validVersion = parseValidVersion(pieces[1].trim());
             version = validVersion.orElse("");
         }
 
@@ -204,7 +205,7 @@ public class GemlockParser {
     }
 
     // a valid version looks like (###.###.###)
-    private Optional<String> parseValidVersion(final String version) {
+    private Optional<String> parseValidVersion(String version) {
         String validVersion = null;
 
         if (version.endsWith(VERSION_SUFFIX) && StringUtils.containsNone(version, FUZZY_VERSION_CHARACTERS)) {

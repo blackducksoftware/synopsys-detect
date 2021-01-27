@@ -31,10 +31,19 @@ import com.synopsys.integration.detect.battery.BatteryTest;
 public class RubygemsBattery {
     @Test
     void lock() {
-        final BatteryTest test = new BatteryTest("rubygems-lock");
+        BatteryTest test = new BatteryTest("rubygems-lock");
         test.sourceDirectoryNamed("linux-rubygems");
         test.sourceFileFromResource("Gemfile.lock");
         test.git("https://github.com/BlackDuckCoPilot/example-rubygems-travis", "master");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void gemfileGeneratingCircularDependencies() {
+        BatteryTest test = new BatteryTest("rubygems-circular-lock");
+        test.sourceDirectoryNamed("linux-rubygems");
+        test.sourceFileFromResource("Gemfile.lock");
         test.expectBdioResources();
         test.run();
     }
