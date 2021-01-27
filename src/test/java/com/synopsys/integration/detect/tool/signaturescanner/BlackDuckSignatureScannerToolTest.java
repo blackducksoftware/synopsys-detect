@@ -110,7 +110,6 @@ public class BlackDuckSignatureScannerToolTest {
         ObjectMapper objectMapper = new ObjectMapper();
         ExecutorService executorService = Executors.newFixedThreadPool(1);
         IntLogger logger = new Slf4jIntLogger(LoggerFactory.getLogger(this.getClass()));
-        BlackDuckRequestFactory blackDuckRequestFactory = new BlackDuckRequestFactory();
         String apiToken = "ZmMyYWM4OWEtOTA2MC00ODU1LTk5ZDYtNjRiN2IxMWM5YTUzOmM3YWU4MDlhLWUxOWMtNDc0Yy05N2QyLWJkZDkwNTM3NDEyMQ==";
 
         BlackDuckServerConfigBuilder blackDuckServerConfigBuilder = new BlackDuckServerConfigBuilder();
