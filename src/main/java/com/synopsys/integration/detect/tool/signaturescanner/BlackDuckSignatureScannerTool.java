@@ -29,6 +29,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +38,7 @@ import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationServi
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchRunner;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.NotificationTaskRange;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -52,7 +54,7 @@ import com.synopsys.integration.util.IntEnvironmentVariables;
 import com.synopsys.integration.util.NameVersion;
 
 public class BlackDuckSignatureScannerTool {
-    private final Logger logger = LoggerFactory.getLogger(BlackDuckSignatureScannerTool1.class);
+    private final Logger logger = LoggerFactory.getLogger(BlackDuckSignatureScannerTool.class);
     private final DetectContext detectContext;
     private final BlackDuckSignatureScannerOptions signatureScannerOptions;
 
@@ -63,71 +65,90 @@ public class BlackDuckSignatureScannerTool {
 
     // TODO: Don't accept an Optional as a parameter.
     public SignatureScannerToolResult runScanTool(CodeLocationCreationService codeLocationCreationService, BlackDuckServerConfig blackDuckServerConfig, NameVersion projectNameVersion, Optional<File> dockerTar) throws DetectUserFriendlyException {
-        DetectConfigurationFactory detectConfigurationFactory = detectContext.getBean(DetectConfigurationFactory.class);
         ConnectionFactory connectionFactory = detectContext.getBean(ConnectionFactory.class);
         DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
         CodeLocationNameGenerator codeLocationNameService = detectContext.getBean(CodeLocationNameGenerator.class);
         CodeLocationNameManager codeLocationNameManager = detectContext.getBean(CodeLocationNameManager.class, codeLocationNameService);
 
-        Optional<Path> localScannerInstallPath = signatureScannerOptions.getOfflineLocalScannerInstallPath();
-        if (!localScannerInstallPath.isPresent()) {
-            localScannerInstallPath = signatureScannerOptions.getOnlineLocalScannerInstallPath();
-        }
-        localScannerInstallPath.ifPresent(path -> logger.debug(String.format("Determined local scanner path: %s", path.toString())));
+        Optional<Path> localScannerInstallPath = determineLocalScannerInstallPath();
 
-        BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = detectConfigurationFactory.createBlackDuckSignatureScannerOptions();
-        ExecutorService executorService = Executors.newFixedThreadPool(blackDuckSignatureScannerOptions.getParallelProcessors());
+        ExecutorService executorService = Executors.newFixedThreadPool(signatureScannerOptions.getParallelProcessors());
         IntEnvironmentVariables intEnvironmentVariables = IntEnvironmentVariables.includeSystemEnv();
-
         ScanBatchRunnerFactory scanBatchRunnerFactory = new ScanBatchRunnerFactory(intEnvironmentVariables, executorService);
-        ScanBatchRunner scanBatchRunner;
-        File installDirectory = directoryManager.getPermanentDirectory();
-        if (blackDuckServerConfig != null && !signatureScannerOptions.getUserProvidedScannerInstallUrl().isPresent() && !localScannerInstallPath.isPresent()) {
-            logger.debug("Signature scanner will use the Black Duck server to download/update the scanner - this is the most likely situation.");
-            scanBatchRunner = scanBatchRunnerFactory.withInstall(blackDuckServerConfig);
-        } else {
-            Optional<String> possiblyUserProvidedScannerInstallUrl = signatureScannerOptions.getUserProvidedScannerInstallUrl();
-            if (possiblyUserProvidedScannerInstallUrl.isPresent()) {
-                logger.debug("Signature scanner will use the provided url to download/update the scanner.");
-                String providedUrl = possiblyUserProvidedScannerInstallUrl.get();
-                IntHttpClient restConnection = connectionFactory.createConnection(providedUrl, new SilentIntLogger()); //TODO: Should this be silent?
-                BlackDuckHttpClientWrapper fakeBlackDuckHttpClient = new BlackDuckHttpClientWrapper(restConnection);
-                scanBatchRunner = scanBatchRunnerFactory.withUserProvidedUrl(providedUrl, fakeBlackDuckHttpClient);
-            } else {
-                logger.debug("Signature scanner either given an existing path for the scanner or is offline - either way, we won't attempt to manage the install.");
-                if (localScannerInstallPath.isPresent()) {
-                    logger.debug(String.format("Using provided path: %s", localScannerInstallPath));
-                    installDirectory = localScannerInstallPath.get().toFile();
-                } else {
-                    logger.debug("Using default scanner path.");
-                }
-                scanBatchRunner = scanBatchRunnerFactory.withoutInstall(installDirectory);
-            }
-        }
-        logger.debug(String.format("Determined install directory: %s", installDirectory.getAbsolutePath()));
+
+        File installDirectory = determineInstallDirectory(localScannerInstallPath.orElse(null), directoryManager);
+        ScanBatchRunner scanBatchRunner = createScanBatchRunner(blackDuckServerConfig, localScannerInstallPath.orElse(null), scanBatchRunnerFactory, installDirectory, connectionFactory);
 
         try {
-            // When offline, server config is null, otherwise scanner is created the same way online/offline.
             BlackDuckSignatureScanner blackDuckSignatureScanner = detectContext.getBean(BlackDuckSignatureScanner.class, signatureScannerOptions, scanBatchRunner, blackDuckServerConfig, codeLocationNameManager);
-            if (codeLocationCreationService != null && blackDuckServerConfig != null) {
-                logger.debug("Signature scan is online.");
-                // Since we are online, we need to calculate the notification task range to wait for code locations.
-                NotificationTaskRange notificationTaskRange = codeLocationCreationService.calculateCodeLocationRange();
-                ScanBatchOutput scanBatchOutput = blackDuckSignatureScanner.performScanActions(projectNameVersion, installDirectory, dockerTar.orElse(null));
-                CodeLocationCreationData<ScanBatchOutput> codeLocationCreationData = new CodeLocationCreationData<>(notificationTaskRange, scanBatchOutput);
-                return SignatureScannerToolResult.createOnlineResult(codeLocationCreationData);
-            } else {
-                logger.debug("Signature scan is offline.");
-                // Since we are offline, we can just perform the scan actions.
-                ScanBatchOutput scanBatchOutput = blackDuckSignatureScanner.performScanActions(projectNameVersion, installDirectory, dockerTar.orElse(null));
-                return SignatureScannerToolResult.createOfflineResult(scanBatchOutput);
-            }
+            return runScanner(blackDuckSignatureScanner, codeLocationCreationService, blackDuckServerConfig, projectNameVersion, installDirectory, dockerTar.orElse(null));
         } catch (IOException | IntegrationException e) {
             logger.error(String.format("Signature scan failed: %s", e.getMessage()));
             logger.debug("Signature scan error", e);
             return SignatureScannerToolResult.createFailureResult();
         } finally {
             executorService.shutdownNow();
+        }
+    }
+
+    private Optional<Path> determineLocalScannerInstallPath() {
+        Optional<Path> localScannerInstallPath = signatureScannerOptions.getOfflineLocalScannerInstallPath();
+        if (!localScannerInstallPath.isPresent()) {
+            localScannerInstallPath = signatureScannerOptions.getOnlineLocalScannerInstallPath();
+        }
+        localScannerInstallPath.ifPresent(path -> logger.debug(String.format("Determined local scanner path: %s", path.toString())));
+        return localScannerInstallPath;
+    }
+
+    private File determineInstallDirectory(@Nullable Path localScannerInstallPath, DirectoryManager directoryManager) {
+        logger.debug("Determining signature scanner install directory...");
+        File installDirectory = directoryManager.getPermanentDirectory();
+
+        if (localScannerInstallPath != null) {
+            logger.debug(String.format("Using provided path: %s", localScannerInstallPath));
+            installDirectory = localScannerInstallPath.toFile();
+        } else {
+            logger.debug("Using default scanner path.");
+        }
+        logger.debug(String.format("Determined install directory: %s", installDirectory.getAbsolutePath()));
+        return installDirectory;
+    }
+
+    private ScanBatchRunner createScanBatchRunner(@Nullable BlackDuckServerConfig blackDuckServerConfig, @Nullable Path localScannerInstallPath, ScanBatchRunnerFactory scanBatchRunnerFactory, File installDirectory, ConnectionFactory connectionFactory) throws DetectUserFriendlyException {
+        ScanBatchRunner scanBatchRunner;
+        if (blackDuckServerConfig != null && !signatureScannerOptions.getUserProvidedScannerInstallUrl().isPresent() && localScannerInstallPath == null) {
+            logger.debug("Signature scanner will use the Black Duck server to download/update the scanner - this is the most likely situation.");
+            scanBatchRunner = scanBatchRunnerFactory.withInstall(blackDuckServerConfig);
+        } else {
+            if (signatureScannerOptions.getUserProvidedScannerInstallUrl().isPresent()) {
+                logger.debug("Signature scanner will use the provided url to download/update the scanner.");
+                String providedUrl = signatureScannerOptions.getUserProvidedScannerInstallUrl().get();
+                IntHttpClient restConnection = connectionFactory.createConnection(providedUrl, new SilentIntLogger()); //TODO: Should this be silent?
+                BlackDuckHttpClientWrapper fakeBlackDuckHttpClient = new BlackDuckHttpClientWrapper(restConnection);
+                scanBatchRunner = scanBatchRunnerFactory.withUserProvidedUrl(providedUrl, fakeBlackDuckHttpClient);
+            } else {
+                logger.debug("Signature scanner either given an existing path for the scanner or is offline - either way, we won't attempt to manage the install.");
+                scanBatchRunner = scanBatchRunnerFactory.withoutInstall(installDirectory);
+            }
+        }
+        return scanBatchRunner;
+    }
+
+    private SignatureScannerToolResult runScanner(BlackDuckSignatureScanner blackDuckSignatureScanner, CodeLocationCreationService codeLocationCreationService, @Nullable BlackDuckServerConfig blackDuckServerConfig, NameVersion projectNameVersion, File installDirectory, @Nullable File dockerTar)
+        throws IntegrationException, IOException, DetectUserFriendlyException {
+        // When offline, server config is null, otherwise scanner is created the same way online/offline.
+        if (codeLocationCreationService != null && blackDuckServerConfig != null) {
+            logger.debug("Signature scan is online.");
+            // Since we are online, we need to calculate the notification task range to wait for code locations.
+            NotificationTaskRange notificationTaskRange = codeLocationCreationService.calculateCodeLocationRange();
+            ScanBatchOutput scanBatchOutput = blackDuckSignatureScanner.performScanActions(projectNameVersion, installDirectory, dockerTar);
+            CodeLocationCreationData<ScanBatchOutput> codeLocationCreationData = new CodeLocationCreationData<>(notificationTaskRange, scanBatchOutput);
+            return SignatureScannerToolResult.createOnlineResult(codeLocationCreationData);
+        } else {
+            logger.debug("Signature scan is offline.");
+            // Since we are offline, we can just perform the scan actions.
+            ScanBatchOutput scanBatchOutput = blackDuckSignatureScanner.performScanActions(projectNameVersion, installDirectory, dockerTar);
+            return SignatureScannerToolResult.createOfflineResult(scanBatchOutput);
         }
     }
 
