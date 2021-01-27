@@ -1,5 +1,7 @@
 package com.synopsys.integration.detectable.detectables.yarn.parse.entry;
 
+import java.util.Optional;
+
 public class YarnLockEntryParseResult {
     private final int lastParsedLineIndex;
     private final YarnLockEntry yarnLockEntry;
@@ -18,7 +20,7 @@ public class YarnLockEntryParseResult {
         return lastParsedLineIndex;
     }
 
-    public YarnLockEntry getYarnLockEntry() {
-        return yarnLockEntry;
+    public Optional<YarnLockEntry> getYarnLockEntry() {
+        return Optional.ofNullable(yarnLockEntry);
     }
 }

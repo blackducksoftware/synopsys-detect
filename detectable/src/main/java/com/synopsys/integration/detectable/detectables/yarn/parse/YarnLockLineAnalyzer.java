@@ -13,7 +13,7 @@ public class YarnLockLineAnalyzer {
 
     @NotNull
     public StringTokenizer createKeyValueTokenizer(String line) {
-        return createSpaceSeparatedTokenizer(line);
+        return createColonAndSpaceSeparatedTokenizer(line);
     }
 
     @NotNull
@@ -23,7 +23,7 @@ public class YarnLockLineAnalyzer {
 
     @NotNull
     public StringTokenizer createDependencySpecTokenizer(String line) {
-        return createSpaceSeparatedTokenizer(line);
+        return createColonAndSpaceSeparatedTokenizer(line);
     }
 
     public int measureIndentDepth(String line) {
@@ -38,9 +38,26 @@ public class YarnLockLineAnalyzer {
         return countLeadingSpaces(line) / SPACES_INDENT_PER_LEVEL;
     }
 
+    public String unquote(String s) {
+        while (isQuoted(s)) {
+            s = s.substring(1, s.length() - 1);
+        }
+        return s;
+    }
+
+    private boolean isQuoted(String s) {
+        if (s.startsWith("\"") && s.endsWith("\"")) {
+            return true;
+        }
+        if (s.startsWith("'") && s.endsWith("'")) {
+            return true;
+        }
+        return false;
+    }
+
     @NotNull
-    private StringTokenizer createSpaceSeparatedTokenizer(String line) {
-        return new StringTokenizer(line.trim(), " ");
+    private StringTokenizer createColonAndSpaceSeparatedTokenizer(String line) {
+        return new StringTokenizer(line.trim(), ": ");
     }
 
     private int countLeadingSpaces(String line) {

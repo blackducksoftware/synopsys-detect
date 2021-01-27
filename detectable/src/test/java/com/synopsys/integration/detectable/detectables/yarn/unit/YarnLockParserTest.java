@@ -35,9 +35,15 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParserNew;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.DependencyAdder;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockDependencySpecParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockEntryElementParser;
 
 @UnitTest
 public class YarnLockParserTest {
@@ -49,8 +55,13 @@ public class YarnLockParserTest {
             "  dependencies:",
             "    some-peer: ^10.0.0"
         );
+        YarnLockLineAnalyzer lineAnalyzer = new YarnLockLineAnalyzer();
+        YarnLockDependencySpecParser yarnLockDependencySpecParser = new YarnLockDependencySpecParser(lineAnalyzer);
+        DependencyAdder dependencyAdder = new DependencyAdder(yarnLockDependencySpecParser);
+        YarnLockEntryElementParser yarnLockEntryElementParser = new YarnLockEntryElementParser(lineAnalyzer, dependencyAdder);
+        YarnLockEntryParser entryParser = new YarnLockEntryParser(lineAnalyzer, yarnLockEntryElementParser);
+        YarnLockParserNew yarnLockParser = new YarnLockParserNew(entryParser);
 
-        YarnLockParser yarnLockParser = new YarnLockParser();
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
         Assertions.assertEquals(1, yarnLock.getEntries().size());

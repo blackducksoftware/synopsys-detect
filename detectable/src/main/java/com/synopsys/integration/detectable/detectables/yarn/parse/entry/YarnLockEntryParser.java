@@ -21,25 +21,29 @@ public class YarnLockEntryParser {
 
     public YarnLockEntryParseResult parseEntry(List<String> yarnLockFileLines, int nodeStartIndex) {
         YarnLockEntryBuilder yarnLockEntryBuilder = new YarnLockEntryBuilder();
-        int entryLineCount = 0;
-        for (int lineIndex = nodeStartIndex + 1; lineIndex < yarnLockFileLines.size(); lineIndex++) {
-            String nodeBodyLine = yarnLockFileLines.get(lineIndex);
-            logger.trace("Parsing line: {}: {}", lineIndex + 1, nodeBodyLine);
+        int entryLineIndex = 0;
+        for (int fileLineIndex = nodeStartIndex; fileLineIndex < yarnLockFileLines.size(); fileLineIndex++) {
+            String nodeBodyLine = yarnLockFileLines.get(fileLineIndex);
+            logger.trace("Parsing line: {}: {}", fileLineIndex + 1, nodeBodyLine);
             // Check to see if we've overshot the end of the node
-            Optional<YarnLockEntryParseResult> result = getResultIfDone(nodeBodyLine, lineIndex, nodeStartIndex, entryLineCount, yarnLockEntryBuilder);
+            Optional<YarnLockEntryParseResult> result = getResultIfDone(entryLineIndex, nodeBodyLine, fileLineIndex, nodeStartIndex, entryLineIndex, yarnLockEntryBuilder);
             if (result.isPresent()) {
                 return result.get();
             }
-            entryLineCount++;
             // parseElement tells this code what line to parse next (= where it left off)
-            lineIndex = yarnLockEntryElementParser.parseElement(yarnLockEntryBuilder, yarnLockFileLines, lineIndex);
+            fileLineIndex = yarnLockEntryElementParser.parseElement(yarnLockEntryBuilder, yarnLockFileLines, fileLineIndex);
+            entryLineIndex++;
         }
-        logger.trace("Reached end of conan info output");
+        logger.trace("Reached end of yarn lock entry");
         Optional<YarnLockEntry> entry = yarnLockEntryBuilder.build();
         return new YarnLockEntryParseResult(yarnLockFileLines.size() - 1, entry.orElse(null));
     }
 
-    private Optional<YarnLockEntryParseResult> getResultIfDone(String nodeBodyLine, int lineIndex, int entryStartIndex, int bodyLineCount, YarnLockEntryBuilder entryBuilder) {
+    private Optional<YarnLockEntryParseResult> getResultIfDone(int entryLineIndex, String nodeBodyLine, int lineIndex, int entryStartIndex, int bodyLineCount, YarnLockEntryBuilder entryBuilder) {
+        if (entryLineIndex == 0) {
+            // we're still on the first line, so can't be done yet
+            return Optional.empty();
+        }
         int indentDepth = yarnLockLineAnalyzer.measureIndentDepth(nodeBodyLine);
         if (indentDepth > 0) {
             // We're not done parsing this node
