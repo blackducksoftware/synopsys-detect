@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.any;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
@@ -19,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.sun.tools.javac.jvm.Code;
 import com.synopsys.integration.blackduck.api.generated.discovery.BlackDuckMediaTypeDiscovery;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
