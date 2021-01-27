@@ -14,7 +14,6 @@ import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class GoGradleDetectableTest extends DetectableFunctionalTest {
-
     public GoGradleDetectableTest() throws IOException {
         super("gogradle");
     }
@@ -43,12 +42,12 @@ public class GoGradleDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createGoGradleDetectable(detectableEnvironment);
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(0).getDependencyGraph());
@@ -56,4 +55,5 @@ public class GoGradleDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasRootDependency("github.com/golang/example", "0dea2d0bf90754ffa40e0cb2f23b638f3e3d7e09");
         graphAssert.hasRootDependency("crypto", "9756ffdc24725223350eb3266ffb92590d28f278");
     }
+
 }

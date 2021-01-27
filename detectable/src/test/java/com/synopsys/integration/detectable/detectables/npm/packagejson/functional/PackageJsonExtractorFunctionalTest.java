@@ -24,7 +24,6 @@ package com.synopsys.integration.detectable.detectables.npm.packagejson.function
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -38,10 +37,10 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
-import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.annotations.FunctionalTest;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.PackageJsonExtractor;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 import com.synopsys.integration.detectable.util.graph.GraphAssert;
 
@@ -57,8 +56,8 @@ public class PackageJsonExtractorFunctionalTest {
 
     @BeforeEach
     void setUp() {
-        final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        final ExternalIdFactory externalIdFactory = new ExternalIdFactory();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        ExternalIdFactory externalIdFactory = new ExternalIdFactory();
 
         testDep1 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "name1", "version1");
         testDep2 = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, "name2", "version2");
@@ -69,13 +68,13 @@ public class PackageJsonExtractorFunctionalTest {
     }
 
     @Test
-    void extractWithNoDevDependencies() throws FileNotFoundException {
-        final Extraction extraction = packageJsonExtractor.extract(packageJsonInputStream, false);
+    void extractWithNoDevDependencies() {
+        Extraction extraction = packageJsonExtractor.extract(packageJsonInputStream, false);
         assertEquals(1, extraction.getCodeLocations().size());
-        final CodeLocation codeLocation = extraction.getCodeLocations().get(0);
-        final DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
+        CodeLocation codeLocation = extraction.getCodeLocations().get(0);
+        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
 
-        final GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
+        GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
         graphAssert.hasRootDependency(testDep1);
         graphAssert.hasRootDependency(testDep2);
         graphAssert.hasNoDependency(testDevDep1);
@@ -84,13 +83,13 @@ public class PackageJsonExtractorFunctionalTest {
     }
 
     @Test
-    void extractWithDevDependencies() throws FileNotFoundException {
-        final Extraction extraction = packageJsonExtractor.extract(packageJsonInputStream, true);
+    void extractWithDevDependencies() {
+        Extraction extraction = packageJsonExtractor.extract(packageJsonInputStream, true);
         assertEquals(1, extraction.getCodeLocations().size());
-        final CodeLocation codeLocation = extraction.getCodeLocations().get(0);
-        final DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
+        CodeLocation codeLocation = extraction.getCodeLocations().get(0);
+        DependencyGraph dependencyGraph = codeLocation.getDependencyGraph();
 
-        final GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
+        GraphAssert graphAssert = new GraphAssert(Forge.RUBYGEMS, dependencyGraph);
         graphAssert.hasRootDependency(testDep1);
         graphAssert.hasRootDependency(testDep2);
         graphAssert.hasRootDependency(testDevDep1);

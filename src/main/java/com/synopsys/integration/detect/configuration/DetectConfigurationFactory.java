@@ -59,6 +59,7 @@ import com.synopsys.integration.configuration.property.types.path.PathValue;
 import com.synopsys.integration.detect.PropertyConfigUtils;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorExcludedDirectories;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -78,6 +79,7 @@ import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
+import com.synopsys.integration.detect.workflow.blackduck.BlackDuckRunOptions;
 import com.synopsys.integration.detect.workflow.blackduck.CustomFieldDocument;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
@@ -449,6 +451,11 @@ public class DetectConfigurationFactory {
         );
     }
 
+    public BlackDuckRunOptions createBlackDuckRunOptions() {
+        BlackduckScanMode scanMode = getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
+        return new BlackDuckRunOptions(scanMode);
+    }
+
     public BlackDuckPostOptions createBlackDuckPostOptions() {
         Boolean waitForResults = getValue(DetectProperties.DETECT_WAIT_FOR_RESULTS);
         Boolean runRiskReport = getValue(DetectProperties.DETECT_RISK_REPORT_PDF);
@@ -466,7 +473,8 @@ public class DetectConfigurationFactory {
         List<String> mutlipleTargets = getValue(DetectProperties.DETECT_BINARY_SCAN_FILE_NAME_PATTERNS);
         String codeLocationPrefix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_PREFIX);
         String codeLocationSuffix = getNullableValue(DetectProperties.DETECT_PROJECT_CODELOCATION_SUFFIX);
-        return new BinaryScanOptions(singleTarget, mutlipleTargets, codeLocationPrefix, codeLocationSuffix);
+        Integer searchDepth = getValue(DetectProperties.DETECT_BINARY_SCAN_SEARCH_DEPTH);
+        return new BinaryScanOptions(singleTarget, mutlipleTargets, codeLocationPrefix, codeLocationSuffix, searchDepth);
     }
 
     public ImpactAnalysisOptions createImpactAnalysisOptions() {

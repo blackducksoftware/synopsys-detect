@@ -20,23 +20,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.lifecycle.boot.product;
+package com.synopsys.integration.detect.configuration.enumeration;
 
-public class ProductBootOptions {
-    private final boolean ignoreConnectionFailures;
-    private final boolean testConnections;
-
-    public ProductBootOptions(boolean ignoreConnectionFailures, boolean testConnections) {
-        this.ignoreConnectionFailures = ignoreConnectionFailures;
-        this.testConnections = testConnections;
-    }
-
-    public boolean isIgnoreConnectionFailures() {
-        return ignoreConnectionFailures;
-    }
-
-    public boolean isTestConnections() {
-        return testConnections;
-    }
-
+public enum BlackduckScanMode {
+    RAPID_MODE,
+    FULL_MODE
 }

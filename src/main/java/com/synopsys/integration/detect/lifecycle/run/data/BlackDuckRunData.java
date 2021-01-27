@@ -29,43 +29,42 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 
 public class BlackDuckRunData {
-    private final boolean isOnline;
-    private final BlackDuckServicesFactory blackDuckServicesFactory;
     private final PhoneHomeManager phoneHomeManager;
     private final BlackDuckServerConfig blackDuckServerConfig;
+    private final BlackDuckServicesFactory blackDuckServicesFactory;
 
-    public static BlackDuckRunData offline() {
-        return new BlackDuckRunData(false, null, null, null);
-    }
-
-    public static BlackDuckRunData online(BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
-        return new BlackDuckRunData(true, blackDuckServicesFactory, phoneHomeManager, blackDuckServerConfig);
-    }
-
-    public static BlackDuckRunData onlineNoPhoneHome(BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig) {
-        return new BlackDuckRunData(true, blackDuckServicesFactory, null, blackDuckServerConfig);
-    }
-
-    private BlackDuckRunData(boolean isOnline, BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
-        this.isOnline = isOnline;
-        this.blackDuckServicesFactory = blackDuckServicesFactory;
+    protected BlackDuckRunData(PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig, BlackDuckServicesFactory blackDuckServicesFactory) {
         this.phoneHomeManager = phoneHomeManager;
         this.blackDuckServerConfig = blackDuckServerConfig;
+        this.blackDuckServicesFactory = blackDuckServicesFactory;
     }
 
     public boolean isOnline() {
-        return isOnline;
-    }
-
-    public Optional<BlackDuckServicesFactory> getBlackDuckServicesFactory() {
-        return Optional.ofNullable(blackDuckServicesFactory);
-    }
-
-    public Optional<BlackDuckServerConfig> getBlackDuckServerConfig() {
-        return Optional.ofNullable(blackDuckServerConfig);
+        return blackDuckServerConfig != null && blackDuckServicesFactory != null;
     }
 
     public Optional<PhoneHomeManager> getPhoneHomeManager() {
         return Optional.ofNullable(phoneHomeManager);
     }
+
+    public BlackDuckServerConfig getBlackDuckServerConfig() {
+        return blackDuckServerConfig;
+    }
+
+    public BlackDuckServicesFactory getBlackDuckServicesFactory() {
+        return blackDuckServicesFactory;
+    }
+
+    public static BlackDuckRunData offline() {
+        return new BlackDuckRunData(null, null, null);
+    }
+
+    public static BlackDuckRunData online(BlackDuckServicesFactory blackDuckServicesFactory, PhoneHomeManager phoneHomeManager, BlackDuckServerConfig blackDuckServerConfig) {
+        return new BlackDuckRunData(phoneHomeManager, blackDuckServerConfig, blackDuckServicesFactory);
+    }
+
+    public static BlackDuckRunData onlineNoPhoneHome(BlackDuckServicesFactory blackDuckServicesFactory, BlackDuckServerConfig blackDuckServerConfig) {
+        return new BlackDuckRunData(null, blackDuckServerConfig, blackDuckServicesFactory);
+    }
+
 }
