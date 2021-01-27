@@ -11,6 +11,7 @@ public class YarnLockEntryElementParser {
     private final List<YarnLockElementTypeParser> elementParsers = new ArrayList<>();
 
     public YarnLockEntryElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, DependencyAdder dependencyAdder) {
+        createElementTypeParser(() -> new YarnLockEntryHeaderParser(yarnLockLineAnalyzer));
         createElementTypeParser(() -> new YarnLockListElementParser(yarnLockLineAnalyzer, "dependencies", dependencyAdder::addDependencyToEntry));
         //createElementTypeParser(() -> new YarnLockListElementParser(yarnLockLineAnalyzer, "Build Requires", YarnLockEntryBuilder::addBuildRequiresRef));
         createElementTypeParser(() -> new YarnLockKeyValuePairElementParser(yarnLockLineAnalyzer, "version", YarnLockEntryBuilder::setVersion));

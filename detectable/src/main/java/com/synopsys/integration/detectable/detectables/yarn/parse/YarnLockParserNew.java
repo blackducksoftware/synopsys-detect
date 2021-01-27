@@ -28,7 +28,8 @@ public class YarnLockParserNew {
             YarnLockEntryParseResult entryParseResult = yarnLockNodeParser.parseEntry(yarnLockFileAsList, lineIndex);
             entryParseResult.getYarnLockEntry().ifPresent(entry -> entries.add(entry));
             lineIndex = entryParseResult.getLastParsedLineIndex();
+            lineIndex++;
         }
-        return new YarnLock(new ArrayList<>(0));
+        return new YarnLock(entries);
     }
 }
