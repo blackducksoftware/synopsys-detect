@@ -37,6 +37,8 @@ import com.synopsys.integration.bdio.model.dependencyid.StringDependencyId;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 import com.synopsys.integration.util.NameVersion;
 
 public class YarnTransformer {

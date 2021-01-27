@@ -32,6 +32,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import com.synopsys.integration.common.util.Bds;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 
 public class YarnLockParser {
     private static final String COMMENT_PREFIX = "#";

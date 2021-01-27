@@ -35,9 +35,9 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockEntry;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockEntryId;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 
 @UnitTest
 public class YarnLockParserTest {
