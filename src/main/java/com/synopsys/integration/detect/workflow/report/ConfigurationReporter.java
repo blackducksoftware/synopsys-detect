@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.workflow.report;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
@@ -41,7 +42,7 @@ public class ConfigurationReporter {
         writer.writeLine("Detect Configuration");
         writer.writeSeparator();
         final PropertyConfigurationHelpContext helpContext = new PropertyConfigurationHelpContext(propertyConfiguration);
-        helpContext.printCurrentValues(writer::writeLine, DetectProperties.allProperties(), new HashMap<>());
+        helpContext.printCurrentValues(writer::writeLine, new HashSet<>(DetectProperties.allProperties()), new HashMap<>());
         writer.writeSeparator();
     }
 }

@@ -134,6 +134,11 @@ public class PropertyConfiguration {
         return resolveFromCache(property.getKey()).getResolutionInfo().map(PropertyResolutionInfo::getSource);
     }
 
+    public Optional<String> getPropertySource(@NotNull final String key) {
+        Assert.notNull(key, "You must provide a key");
+        return resolveFromCache(key).getResolutionInfo().map(PropertyResolutionInfo::getSource);
+    }
+
     public Optional<String> getPropertyOrigin(@NotNull final Property property) {
         assertPropertyNotNull(property);
         return resolveFromCache(property.getKey()).getResolutionInfo().map(PropertyResolutionInfo::getOrigin);
@@ -170,6 +175,20 @@ public class PropertyConfiguration {
     public Map<String, String> getRaw(@NotNull final Set<String> keys) {
         Assert.notNull(keys, "Must supply a set of keys to get raw keys");
         return getRaw(keys::contains);
+    }
+
+    @NotNull
+    public Map<String, String> getRawKeyValueMap(@NotNull final Set<Property> properties) {
+        Map<String, String> rawMap = new HashMap<>();
+        for (Property property : properties) {
+            if (!wasKeyProvided(property.getKey())) {
+                continue;
+            }
+
+            String rawValue = getRaw(property).orElse("");
+            rawMap.put(property.getKey(), rawValue);
+        }
+        return rawMap;
     }
 
     @NotNull

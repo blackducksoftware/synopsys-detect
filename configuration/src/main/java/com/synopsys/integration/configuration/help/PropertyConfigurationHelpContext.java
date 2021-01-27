@@ -25,16 +25,21 @@ package com.synopsys.integration.configuration.help;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.PropertyInfoCollector;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.config.PropertyMasker;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.TypedProperty;
@@ -68,25 +73,38 @@ public class PropertyConfigurationHelpContext {
         this.propertyConfiguration = propertyConfiguration;
     }
 
-    public void printCurrentValues(Consumer<String> logger, List<Property> knownProperties, Map<String, String> additionalNotes) {
+    public void printCurrentValues(Consumer<String> logger, Set<Property> knownProperties, Map<String, String> additionalNotes) {
         logger.accept("");
         logger.accept("Current property values:");
         logger.accept("--property = value [notes]");
         logger.accept(StringUtils.repeat("-", 60));
 
-        PropertyInfoCollector propertyInfoCollector = new PropertyInfoCollector(propertyConfiguration);
-        List<PropertyInfo> propertyInfoList = propertyInfoCollector.collectPropertyInfo(knownProperties, PropertyInfoCollector.maskPasswordsAndTokensPredicate());
-        for (PropertyInfo propertyInfo: propertyInfoList) {
-            String sourceName = propertyConfiguration.getPropertySource(propertyInfo.getProperty()).orElse("unknown");
+        Map<String, String> sortedMaskedRawPropertyKeyValues = getSortedMaskedRawPropertyKeyValues(knownProperties);
+        for (Map.Entry<String, String> rawKeyValue: sortedMaskedRawPropertyKeyValues.entrySet()) {
+            String sourceName = propertyConfiguration.getPropertySource(rawKeyValue.getKey()).orElse("unknown");
             String sourceDisplayName = knownSourceDisplayNames.getOrDefault(sourceName, sourceName);
 
-            String notes = additionalNotes.getOrDefault(propertyInfo.getKey(), "");
+            String notes = additionalNotes.getOrDefault(rawKeyValue.getKey(), "");
 
-            logger.accept(propertyInfo.getKey() + " = " + propertyInfo.getValue() + " [" + sourceDisplayName + "] " + notes);
+            logger.accept(rawKeyValue.getKey() + " = " + rawKeyValue.getValue() + " [" + sourceDisplayName + "] " + notes);
         }
 
         logger.accept(StringUtils.repeat("-", 60));
         logger.accept("");
+    }
+
+    private Map<String, String> getSortedMaskedRawPropertyKeyValues(Set<Property> knownProperties) {
+        Map<String, String> rawPropertyKeyValues = propertyConfiguration.getRawKeyValueMap(knownProperties);
+        PropertyMasker propertyMasker = new PropertyMasker();
+        Predicate<String> shouldMaskRawValue = propertyKey -> propertyKey.toLowerCase().contains("password") || propertyKey.toLowerCase().contains("api.token") || propertyKey.toLowerCase().contains("access.token");
+        Map<String, String> maskedRawPropertyKeyValues = propertyMasker.maskRawValues(rawPropertyKeyValues, shouldMaskRawValue);
+        return maskedRawPropertyKeyValues.entrySet()
+                                                                   .stream()
+                                                                   .sorted(Map.Entry.<String, String>comparingByKey())
+                                                                   .collect(Collectors.toMap(
+                                                                       Map.Entry::getKey,
+                                                                       Map.Entry::getValue,
+                                                                       (oldValue, newValue) -> oldValue, LinkedHashMap::new));
     }
 
     public void printPropertyErrors(Consumer<String> logger, List<Property> knownProperties, Map<String, List<String>> errors) {

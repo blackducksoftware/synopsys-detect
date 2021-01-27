@@ -26,18 +26,18 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.configuration.config.PropertyInfoCollector;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.help.PropertyInfo;
+import com.synopsys.integration.configuration.config.PropertyMasker;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
@@ -223,13 +223,11 @@ public class DetectBoot {
     }
 
     private void publishCollectedPropertyValues(PropertyConfiguration propertyConfiguration, EventSystem eventSystem) throws IllegalAccessException {
-        PropertyInfoCollector propertyInfoCollector = new PropertyInfoCollector(propertyConfiguration);
-        List<PropertyInfo> propertyInfo = propertyInfoCollector.collectPropertyInfo(DetectProperties.allProperties(), PropertyInfoCollector.maskPasswordsAndTokensPredicate());
-        Map<String, String> propertyValues = new HashMap<>();
-        propertyInfo.forEach(
-            it -> propertyValues.put(it.getKey(), it.getValue())
-        );
-        eventSystem.publishEvent(Event.PropertyValuesCollected, new PropertyValues(propertyValues));
+        Map<String, String> rawPropertyKeyValues = propertyConfiguration.getRawKeyValueMap(new HashSet<>(DetectProperties.allProperties()));
+        PropertyMasker propertyMasker = new PropertyMasker();
+        Predicate<String> shouldMaskRawValue = propertyKey -> propertyKey.toLowerCase().contains("password") || propertyKey.toLowerCase().contains("api.token") || propertyKey.toLowerCase().contains("access.token");
+        Map<String, String> maskedRawPropertyKeyValues = propertyMasker.maskRawValues(rawPropertyKeyValues, shouldMaskRawValue);
+        eventSystem.publishEvent(Event.PropertyValuesCollected, new PropertyValues(maskedRawPropertyKeyValues));
     }
 
 }

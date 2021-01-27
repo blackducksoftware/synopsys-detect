@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.configuration.validation;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -89,7 +90,7 @@ public class DetectConfigurationBootManager {
     }
 
     public void printConfiguration(Map<String, String> additionalNotes) throws IllegalAccessException {
-        detectConfigurationReporter.printCurrentValues(logger::info, DetectProperties.allProperties(), additionalNotes);
+        detectConfigurationReporter.printCurrentValues(logger::info, new HashSet<>(DetectProperties.allProperties()), additionalNotes);
     }
 
     //Check for options that are just plain bad, ie giving an detector type we don't know about.
