@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -55,12 +56,7 @@ public class YarnLockParserTest {
             "  dependencies:",
             "    some-peer: ^10.0.0"
         );
-        YarnLockLineAnalyzer lineAnalyzer = new YarnLockLineAnalyzer();
-        YarnLockDependencySpecParser yarnLockDependencySpecParser = new YarnLockDependencySpecParser(lineAnalyzer);
-        DependencyAdder dependencyAdder = new DependencyAdder(yarnLockDependencySpecParser);
-        YarnLockEntryElementParser yarnLockEntryElementParser = new YarnLockEntryElementParser(lineAnalyzer, dependencyAdder);
-        YarnLockEntryParser entryParser = new YarnLockEntryParser(lineAnalyzer, yarnLockEntryElementParser);
-        YarnLockParserNew yarnLockParser = new YarnLockParserNew(entryParser);
+        YarnLockParserNew yarnLockParser = createYarnLockParser();
 
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
@@ -87,7 +83,7 @@ public class YarnLockParserTest {
             "      optional: true"
         );
 
-        YarnLockParser yarnLockParser = new YarnLockParser();
+        YarnLockParserNew yarnLockParser = createYarnLockParser();
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
         Assertions.assertEquals(1, yarnLock.getEntries().size());
@@ -108,7 +104,7 @@ public class YarnLockParserTest {
             "      optional: true"
         );
 
-        YarnLockParser yarnLockParser = new YarnLockParser();
+        YarnLockParserNew yarnLockParser = createYarnLockParser();
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
         Assertions.assertTrue(yarnLock.getEntries().size() > 0);
 
@@ -259,5 +255,16 @@ public class YarnLockParserTest {
             }
         }
         assertTrue(found, "Could not find yarn lock entry with name " + idName + " and version " + idVersion + ".");
+    }
+
+    @NotNull
+    private YarnLockParserNew createYarnLockParser() {
+        YarnLockLineAnalyzer lineAnalyzer = new YarnLockLineAnalyzer();
+        YarnLockDependencySpecParser yarnLockDependencySpecParser = new YarnLockDependencySpecParser(lineAnalyzer);
+        DependencyAdder dependencyAdder = new DependencyAdder(yarnLockDependencySpecParser);
+        YarnLockEntryElementParser yarnLockEntryElementParser = new YarnLockEntryElementParser(lineAnalyzer, dependencyAdder);
+        YarnLockEntryParser entryParser = new YarnLockEntryParser(lineAnalyzer, yarnLockEntryElementParser);
+        YarnLockParserNew yarnLockParser = new YarnLockParserNew(entryParser);
+        return yarnLockParser;
     }
 }
