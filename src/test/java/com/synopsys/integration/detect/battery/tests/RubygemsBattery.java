@@ -42,7 +42,7 @@ public class RubygemsBattery {
     @Test
     void gemfileGeneratingCircularDependencies() {
         BatteryTest test = new BatteryTest("rubygems-circular-lock");
-        test.sourceDirectoryNamed("linux-rubygems");
+        test.sourceDirectoryNamed("jquery-multiselect-rails");
         test.sourceFileFromResource("Gemfile.lock");
         test.expectBdioResources();
         test.run();
