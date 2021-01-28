@@ -30,18 +30,18 @@ import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.npm.packagejson.model.PackageJson;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParserNew;
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockResult;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnTransformer;
 import com.synopsys.integration.util.NameVersion;
 
 public class YarnPackager {
     private final Gson gson;
-    private final YarnLockParserNew yarnLockParser;
+    private final YarnLockParser yarnLockParser;
     private final YarnTransformer yarnTransformer;
     private final YarnLockOptions yarnLockOptions;
 
-    public YarnPackager(Gson gson, YarnLockParserNew yarnLockParser, YarnTransformer yarnTransformer, YarnLockOptions yarnLockOptions) {
+    public YarnPackager(Gson gson, YarnLockParser yarnLockParser, YarnTransformer yarnTransformer, YarnLockOptions yarnLockOptions) {
         this.gson = gson;
         this.yarnLockParser = yarnLockParser;
         this.yarnTransformer = yarnTransformer;
