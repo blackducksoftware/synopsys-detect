@@ -47,5 +47,15 @@ public class RubygemsBattery {
         test.expectBdioResources();
         test.run();
     }
+
+    @Test
+    void gemfileVersionLessDependencies() {
+        BatteryTest test = new BatteryTest("rubygems-versionless-lock");
+        test.sourceDirectoryNamed("rails");
+        test.sourceFileFromResource("Gemfile.lock");
+        test.expectBdioResources();
+        test.run();
+    }
+
 }
 

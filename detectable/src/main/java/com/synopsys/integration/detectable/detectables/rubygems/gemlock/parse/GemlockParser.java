@@ -27,8 +27,10 @@ import static com.synopsys.integration.detectable.detectables.rubygems.gemlock.p
 import static com.synopsys.integration.detectable.detectables.rubygems.gemlock.parse.GemlockParser.GemfileLockSection.NONE;
 import static com.synopsys.integration.detectable.detectables.rubygems.gemlock.parse.GemlockParser.GemfileLockSection.SPECS;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -70,7 +72,7 @@ public class GemlockParser {
     private GemfileLockSection currentSection = NONE;
 
     private Set<String> encounteredDependencies = new HashSet<>();
-    private Set<String> resolvedDependencies = new HashSet<>();
+    private Map<String, NameVersionDependencyId> resolvedDependencies = new HashMap<>();
 
     public GemlockParser(ExternalIdFactory externalIdFactory) {
         this.externalIdFactory = externalIdFactory;
@@ -78,7 +80,7 @@ public class GemlockParser {
 
     public DependencyGraph parseProjectDependencies(List<String> gemfileLockLines) throws MissingExternalIdException {
         encounteredDependencies = new HashSet<>();
-        resolvedDependencies = new HashSet<>();
+        resolvedDependencies = new HashMap<>();
         lazyBuilder = new LazyExternalIdDependencyGraphBuilder();
         currentParent = null;
 
@@ -102,7 +104,7 @@ public class GemlockParser {
             }
         }
 
-        List<String> missingDependencies = encounteredDependencies.stream().filter(it -> !resolvedDependencies.contains(it)).collect(Collectors.toList());
+        List<String> missingDependencies = encounteredDependencies.stream().filter(it -> !resolvedDependencies.containsKey(it)).collect(Collectors.toList());
         for (String missingName : missingDependencies) {
             final String missingVersion = "";
             DependencyId dependencyId = new NameDependencyId(missingName);
@@ -114,15 +116,25 @@ public class GemlockParser {
     }
 
     private void discoveredDependencyInfo(NameVersionDependencyId id) {
-        NameDependencyId nameOnlyId = new NameDependencyId(id.getName());
+        String dependencyName = id.getName();
+        NameDependencyId nameOnlyId = new NameDependencyId(dependencyName);
 
         //regardless we found the external id for this specific dependency.
-        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, id.getName(), id.getVersion());
-        lazyBuilder.setDependencyInfo(id, id.getName(), id.getVersion(), externalId);
+        ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.RUBYGEMS, dependencyName, id.getVersion());
+        lazyBuilder.setDependencyInfo(id, dependencyName, id.getVersion(), externalId);
 
-        if (!resolvedDependencies.contains(id.getName())) { //if this is our first time encountering a dependency of this name, we become the 'version-less'
-            resolvedDependencies.add(id.getName());
-            lazyBuilder.setDependencyInfo(nameOnlyId, id.getName(), id.getVersion(), externalId);
+        if (!resolvedDependencies.containsKey(dependencyName)) { //if this is our first time encountering a dependency of this name, we become the 'version-less'
+            resolvedDependencies.put(dependencyName, id);
+            lazyBuilder.setDependencyInfo(nameOnlyId, dependencyName, id.getVersion(), externalId);
+        } else {//otherwise, add us as a child to the version-less
+            if (resolvedDependencies.containsKey(dependencyName)) {
+                NameVersionDependencyId nameVersionDependencyId = resolvedDependencies.get(dependencyName);
+                // if the current processed version found is different than the resolved dependency version then add it.
+                // do not add the same version again to itself in the relationships which creates a circular dependency.
+                if (!nameVersionDependencyId.getVersion().equals(id.getVersion())) {
+                    lazyBuilder.addChildWithParent(id, nameOnlyId);
+                }
+            }
         }
     }
 
