@@ -29,6 +29,7 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.DetectPropertyUtil;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 
 public class ConfigurationReporter {
@@ -42,7 +43,7 @@ public class ConfigurationReporter {
         writer.writeLine("Detect Configuration");
         writer.writeSeparator();
         final PropertyConfigurationHelpContext helpContext = new PropertyConfigurationHelpContext(propertyConfiguration);
-        helpContext.printCurrentValues(writer::writeLine, new HashSet<>(DetectProperties.allProperties()), new HashMap<>());
+        helpContext.printCurrentValues(writer::writeLine, new HashSet<>(DetectProperties.allProperties()), new HashMap<>(), DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE);
         writer.writeSeparator();
     }
 }

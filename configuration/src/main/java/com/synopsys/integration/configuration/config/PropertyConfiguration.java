@@ -181,12 +181,7 @@ public class PropertyConfiguration {
     public Map<String, String> getRawKeyValueMap(@NotNull final Set<Property> properties) {
         Map<String, String> rawMap = new HashMap<>();
         for (Property property : properties) {
-            if (!wasKeyProvided(property.getKey())) {
-                continue;
-            }
-
-            String rawValue = getRaw(property).orElse("");
-            rawMap.put(property.getKey(), rawValue);
+            getRaw(property).ifPresent(rawValue -> rawMap.put(property.getKey(), rawValue));
         }
         return rawMap;
     }

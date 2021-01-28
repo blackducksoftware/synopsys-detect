@@ -44,6 +44,7 @@ import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.RunBeanConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.DetectPropertyUtil;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
@@ -225,9 +226,8 @@ public class DetectBoot {
     private void publishCollectedPropertyValues(PropertyConfiguration propertyConfiguration, EventSystem eventSystem) throws IllegalAccessException {
         Map<String, String> rawPropertyKeyValues = propertyConfiguration.getRawKeyValueMap(new HashSet<>(DetectProperties.allProperties()));
         PropertyMasker propertyMasker = new PropertyMasker();
-        Predicate<String> shouldMaskRawValue = propertyKey -> propertyKey.toLowerCase().contains("password") || propertyKey.toLowerCase().contains("api.token") || propertyKey.toLowerCase().contains("access.token");
-        Map<String, String> maskedRawPropertyKeyValues = propertyMasker.maskRawValues(rawPropertyKeyValues, shouldMaskRawValue);
-        eventSystem.publishEvent(Event.PropertyValuesCollected, new PropertyValues(maskedRawPropertyKeyValues));
+        Map<String, String> maskedRawPropertyKeyValues = propertyMasker.maskRawValues(rawPropertyKeyValues, DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE);
+        eventSystem.publishEvent(Event.RawMaskedPropertyValuesCollected, new PropertyValues(maskedRawPropertyKeyValues));
     }
 
 }

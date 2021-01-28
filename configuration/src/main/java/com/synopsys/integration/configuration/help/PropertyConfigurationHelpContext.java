@@ -73,13 +73,13 @@ public class PropertyConfigurationHelpContext {
         this.propertyConfiguration = propertyConfiguration;
     }
 
-    public void printCurrentValues(Consumer<String> logger, Set<Property> knownProperties, Map<String, String> additionalNotes) {
+    public void printCurrentValues(Consumer<String> logger, Set<Property> knownProperties, Map<String, String> additionalNotes, Predicate<String> shouldMask) {
         logger.accept("");
         logger.accept("Current property values:");
         logger.accept("--property = value [notes]");
         logger.accept(StringUtils.repeat("-", 60));
 
-        Map<String, String> sortedMaskedRawPropertyKeyValues = getSortedMaskedRawPropertyKeyValues(knownProperties);
+        Map<String, String> sortedMaskedRawPropertyKeyValues = getSortedMaskedRawPropertyKeyValues(knownProperties, shouldMask);
         for (Map.Entry<String, String> rawKeyValue: sortedMaskedRawPropertyKeyValues.entrySet()) {
             String sourceName = propertyConfiguration.getPropertySource(rawKeyValue.getKey()).orElse("unknown");
             String sourceDisplayName = knownSourceDisplayNames.getOrDefault(sourceName, sourceName);
@@ -93,10 +93,9 @@ public class PropertyConfigurationHelpContext {
         logger.accept("");
     }
 
-    private Map<String, String> getSortedMaskedRawPropertyKeyValues(Set<Property> knownProperties) {
+    private Map<String, String> getSortedMaskedRawPropertyKeyValues(Set<Property> knownProperties, Predicate<String> shouldMaskRawValue) {
         Map<String, String> rawPropertyKeyValues = propertyConfiguration.getRawKeyValueMap(knownProperties);
         PropertyMasker propertyMasker = new PropertyMasker();
-        Predicate<String> shouldMaskRawValue = propertyKey -> propertyKey.toLowerCase().contains("password") || propertyKey.toLowerCase().contains("api.token") || propertyKey.toLowerCase().contains("access.token");
         Map<String, String> maskedRawPropertyKeyValues = propertyMasker.maskRawValues(rawPropertyKeyValues, shouldMaskRawValue);
         return maskedRawPropertyKeyValues.entrySet()
                                                                    .stream()

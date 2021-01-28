@@ -63,7 +63,7 @@ public class FormattedOutputManager {
         eventSystem.registerListener(Event.CodeLocationsCompleted, this::codeLocationsCompleted);
         eventSystem.registerListener(Event.UnrecognizedPaths, this::addUnrecognizedPaths);
         eventSystem.registerListener(Event.ProjectNameVersionChosen, this::projectNameVersionChosen);
-        eventSystem.registerListener(Event.PropertyValuesCollected, this::propertyValuesCollected);
+        eventSystem.registerListener(Event.RawMaskedPropertyValuesCollected, this::propertyValuesCollected);
     }
 
     public FormattedOutput createFormattedOutput(DetectInfo detectInfo) {

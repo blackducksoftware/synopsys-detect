@@ -40,6 +40,7 @@ import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.PropertyDeprecationInfo;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.DetectPropertyUtil;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -90,7 +91,7 @@ public class DetectConfigurationBootManager {
     }
 
     public void printConfiguration(Map<String, String> additionalNotes) throws IllegalAccessException {
-        detectConfigurationReporter.printCurrentValues(logger::info, new HashSet<>(DetectProperties.allProperties()), additionalNotes);
+        detectConfigurationReporter.printCurrentValues(logger::info, new HashSet<>(DetectProperties.allProperties()), additionalNotes, DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE);
     }
 
     //Check for options that are just plain bad, ie giving an detector type we don't know about.

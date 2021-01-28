@@ -70,5 +70,5 @@ public class Event {
     public static final EventType<NameVersion> ProjectNameVersionChosen = new EventType<>(NameVersion.class);
     public static final EventType<ExecutedExecutable> Executable = new EventType<>(ExecutedExecutable.class);
     public static final EventType<UnrecognizedPaths> UnrecognizedPaths = new EventType<>(UnrecognizedPaths.class);
-    public static final EventType<PropertyValues> PropertyValuesCollected = new EventType<>(PropertyValues.class);
+    public static final EventType<PropertyValues> RawMaskedPropertyValuesCollected = new EventType<>(PropertyValues.class);
 }
