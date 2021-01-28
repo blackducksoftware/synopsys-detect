@@ -9,6 +9,7 @@
 
 ### Resolved issues
 * (IDETECT-1986) Resolved an issue where warnings regarding reflective access appear at the start of Detect.
+* (IDETECT-2400) Resolved an issue where 'dependencies' would be removed from arguments to the Gradle build command.
 
 ## Version 6.8.0
 ### New features
