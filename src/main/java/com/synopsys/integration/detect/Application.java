@@ -47,7 +47,8 @@ import com.synopsys.integration.detect.lifecycle.boot.DetectBootResult;
 import com.synopsys.integration.detect.lifecycle.exit.ExitManager;
 import com.synopsys.integration.detect.lifecycle.exit.ExitOptions;
 import com.synopsys.integration.detect.lifecycle.exit.ExitResult;
-import com.synopsys.integration.detect.lifecycle.run.RunManager;
+import com.synopsys.integration.detect.lifecycle.run.RunContext;
+import com.synopsys.integration.detect.lifecycle.run.RunManager2;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.CleanupUtility;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeManager;
@@ -165,20 +166,9 @@ public class Application implements ApplicationRunner {
         if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent()) {
             logger.debug("Detect will attempt to run.");
             ProductRunData productRunData = optionalProductRunData.get();
-            RunManager runManager = new RunManager(detectContext);
-            try {
-                logger.debug("Detect run begin: {}", detectRun.getRunId());
-                runManager.run(productRunData);
-                logger.debug("Detect run completed.");
-            } catch (Exception e) {
-                if (e.getMessage() != null) {
-                    logger.error("Detect run failed: {}", e.getMessage());
-                } else {
-                    logger.error("Detect run failed: {}", e.getClass().getSimpleName());
-                }
-                logger.debug("An exception was thrown during the detect run.", e);
-                exitCodeManager.requestExitCode(e);
-            }
+            RunManager2 runManager = new RunManager2(detectRun, exitCodeManager);
+            RunContext runContext = new RunContext(detectContext, productRunData);
+            runManager.run(runContext);
         } else {
             logger.debug("Detect will NOT attempt to run.");
             detectBootResult.getException().ifPresent(exitCodeManager::requestExitCode);
