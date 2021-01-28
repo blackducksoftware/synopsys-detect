@@ -37,7 +37,6 @@ import com.synopsys.integration.detectable.annotations.UnitTest;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
-import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParserNew;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
@@ -211,28 +210,6 @@ public class YarnLockParserTest {
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
         assertEntry(yarnLock, "cssstyle", ">= 0.2.37 < 0.3.0", "0.2.37", new YarnLockDependency("cssom", "0.3.x", false));
-    }
-
-    // TODO still test old class:
-
-    @Test
-    void testParserHandlesMissingSymbol() {
-        YarnLockParser yarnLockParser = new YarnLockParser();
-        List<YarnLockEntryId> ids = yarnLockParser.parseMultipleEntryLine("example, example@1");
-        Assertions.assertEquals(2, ids.size());
-        Assertions.assertEquals(ids.get(0).getName(), "example");
-        Assertions.assertEquals(ids.get(0).getVersion(), "");
-        Assertions.assertEquals(ids.get(1).getName(), "example");
-        Assertions.assertEquals(ids.get(1).getVersion(), "1");
-    }
-
-    @Test
-    void handlesSymbolInName() {
-        YarnLockParser yarnLockParser = new YarnLockParser();
-        List<YarnLockEntryId> ids = yarnLockParser.parseMultipleEntryLine("@example");
-        Assertions.assertEquals(1, ids.size());
-        Assertions.assertEquals(ids.get(0).getName(), "@example");
-        Assertions.assertEquals(ids.get(0).getVersion(), "");
     }
 
     void assertEntry(YarnLock yarnLock, String idName, String idVersion, String resolvedVersion, YarnLockDependency... dependencies) {
