@@ -46,6 +46,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.
 
 @UnitTest
 public class YarnLockParserTest {
+    
     @Test
     void testThatYarnParsesSemiColon() {
         List<String> yarnLockText = Arrays.asList(

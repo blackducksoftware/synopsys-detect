@@ -49,28 +49,18 @@ public class YarnLockKeyValuePairElementParser implements YarnLockElementTypePar
         if (!elementLine.contains(" ") && elementLine.endsWith(":")) {
             return false; // This is just a key:
         }
-        StringTokenizer tokenizer = yarnLockLineAnalyzer.createKeyValueTokenizer(elementLine);
+        StringTokenizer tokenizer = TokenizerFactory.createKeyValueTokenizer(elementLine);
         String parsedKey = tokenizer.nextToken();
         return targetKey.equalsIgnoreCase(parsedKey) && tokenizer.hasMoreTokens();
     }
 
     @Override
     public int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int bodyElementLineIndex) {
-        StringTokenizer tokenizer = yarnLockLineAnalyzer.createKeyValueTokenizer(yarnLockLines.get(bodyElementLineIndex));
+        StringTokenizer tokenizer = TokenizerFactory.createKeyValueTokenizer(yarnLockLines.get(bodyElementLineIndex));
         tokenizer.nextToken(); // skip over key
         String value = tokenizer.nextToken().trim();
         value = yarnLockLineAnalyzer.unquote(value);
         valueConsumer.accept(entryBuilder, value);
         return bodyElementLineIndex;
-        // TODO: See YarnLockParser.parseVersionFromLine() and make this method equivalent
     }
-
-    //    private String parseVersionFromLine(String line) {
-    //        for (String token : VERSION_TOKENS) {
-    //            if (line.startsWith(token)) {
-    //                return removeWrappingQuotes(StringUtils.substringAfter(line, token));
-    //            }
-    //        }
-    //        return line;
-    //    }
 }

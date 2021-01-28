@@ -39,10 +39,10 @@ public class YarnLockEntryHeaderParserTest {
         Assertions.assertTrue(entry.isPresent());
         List<YarnLockEntryId> ids = entry.get().getIds();
         Assertions.assertEquals(2, ids.size());
-        Assertions.assertEquals(ids.get(0).getName(), "@apollographql/apollo-tools");
-        Assertions.assertEquals(ids.get(0).getVersion(), "^0.4.2");
-        Assertions.assertEquals(ids.get(1).getName(), "@apollographql/apollo-tools");
-        Assertions.assertEquals(ids.get(1).getVersion(), "^0.4.3");
+        Assertions.assertEquals("@apollographql/apollo-tools", ids.get(0).getName());
+        Assertions.assertEquals("^0.4.2", ids.get(0).getVersion());
+        Assertions.assertEquals("@apollographql/apollo-tools", ids.get(1).getName());
+        Assertions.assertEquals("^0.4.3", ids.get(1).getVersion());
     }
 
     @Test

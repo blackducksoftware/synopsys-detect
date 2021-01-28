@@ -72,7 +72,7 @@ public class YarnLockDependencyMetaListElementParser implements YarnLockElementT
     }
 
     private void makeOptionalIfOptional(YarnLockEntryBuilder entryBuilder, String curDependencyName, String line) {
-        StringTokenizer tokenizer = yarnLockLineAnalyzer.createKeyValueTokenizer(line);
+        StringTokenizer tokenizer = TokenizerFactory.createKeyValueTokenizer(line);
         String key = tokenizer.nextToken();
         if ("optional".equals(key)) {
             if (tokenizer.hasMoreTokens()) {

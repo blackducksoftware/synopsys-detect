@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.yarn.parse.entry.element;
 
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -48,12 +49,12 @@ public class YarnLockEntryHeaderParser implements YarnLockElementTypeParser {
     @Override
     public int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int bodyElementLineIndex) {
         String line = yarnLockLines.get(bodyElementLineIndex);
-        // TODO make this more consistent with other (new) parsing? Use StringTokenizer perhaps?
-        String[] entries = line.split(",");
-        for (String entryRaw : entries) {
-            String entryNoColon = StringUtils.removeEnd(entryRaw.trim(), ":");
-            String entryNoColonOrQuotes = yarnLockLineAnalyzer.unquote(entryNoColon);
-            YarnLockEntryId entry = parseSingleEntry(entryNoColonOrQuotes);
+        StringTokenizer tokenizer = TokenizerFactory.createHeaderTokenizer(line);
+        while (tokenizer.hasMoreTokens()) {
+            String rawEntryString = tokenizer.nextToken().trim();
+            String entryString = StringUtils.removeEnd(rawEntryString, ":").trim();
+            String unquotedEntryString = yarnLockLineAnalyzer.unquote(entryString);
+            YarnLockEntryId entry = parseSingleEntry(unquotedEntryString);
             entryBuilder.addId(entry);
         }
         return bodyElementLineIndex;

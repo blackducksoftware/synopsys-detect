@@ -39,7 +39,7 @@ public class YarnLockDependencySpecParser {
     }
 
     public YarnLockDependency parse(String dependencySpec) {
-        StringTokenizer tokenizer = yarnLockLineAnalyzer.createDependencySpecTokenizer(dependencySpec);
+        StringTokenizer tokenizer = TokenizerFactory.createDependencySpecTokenizer(dependencySpec);
         String name = yarnLockLineAnalyzer.unquote(tokenizer.nextToken());
         String version = yarnLockLineAnalyzer.unquote(tokenizer.nextToken());
         logger.info("*** parsed dep '{}' to {}:{}", dependencySpec, name, version);
