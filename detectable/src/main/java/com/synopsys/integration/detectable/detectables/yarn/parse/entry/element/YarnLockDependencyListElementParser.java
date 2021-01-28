@@ -1,20 +1,18 @@
 package com.synopsys.integration.detectable.detectables.yarn.parse.entry.element;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryBuilder;
 
-public class YarnLockListElementParser implements YarnLockElementTypeParser {
+public class YarnLockDependencyListElementParser implements YarnLockElementTypeParser {
     private final YarnLockLineAnalyzer yarnLockLineAnalyzer;
-    private final String targetKey;
-    private final BiConsumer<YarnLockEntryBuilder, String> valueConsumer;
+    private final YarnLockDependencySpecParser yarnLockDependencySpecParser;
 
-    public YarnLockListElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, String targetKey, BiConsumer<YarnLockEntryBuilder, String> valueConsumer) {
+    public YarnLockDependencyListElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser) {
         this.yarnLockLineAnalyzer = yarnLockLineAnalyzer;
-        this.targetKey = targetKey;
-        this.valueConsumer = valueConsumer;
+        this.yarnLockDependencySpecParser = yarnLockDependencySpecParser;
     }
 
     @Override
@@ -22,7 +20,7 @@ public class YarnLockListElementParser implements YarnLockElementTypeParser {
         elementLine = elementLine.trim();
         if (!elementLine.contains(" ") && elementLine.endsWith(":")) {
             String listKey = elementLine.substring(0, elementLine.length() - 1);
-            return targetKey.equals(listKey);
+            return "dependencies".equals(listKey);
         }
         return false;
     }
@@ -35,7 +33,8 @@ public class YarnLockListElementParser implements YarnLockElementTypeParser {
             if (depth != 2) {
                 return curLineIndex - 1;
             }
-            valueConsumer.accept(entryBuilder, line.trim());
+            YarnLockDependency yarnLockDependency = yarnLockDependencySpecParser.parse(line.trim(), false);
+            entryBuilder.addDependency(yarnLockDependency);
         }
         return yarnLockLines.size() - 1;
     }

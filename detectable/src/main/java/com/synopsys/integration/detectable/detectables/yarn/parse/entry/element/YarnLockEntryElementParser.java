@@ -10,9 +10,15 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLock
 public class YarnLockEntryElementParser {
     private final List<YarnLockElementTypeParser> elementParsers = new ArrayList<>();
 
-    public YarnLockEntryElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, DependencyAdder dependencyAdder) {
+    public YarnLockEntryElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser) {
+        // TODO
+        // Instead of a generic ListElementParser, you need:
+        // 1. DependencyListParser
+        // 2. DependencyMetaListParser
+        // Then re-think dependencyAdder
         createElementTypeParser(() -> new YarnLockEntryHeaderParser(yarnLockLineAnalyzer));
-        createElementTypeParser(() -> new YarnLockListElementParser(yarnLockLineAnalyzer, "dependencies", dependencyAdder::addDependencyToEntry));
+        createElementTypeParser(() -> new YarnLockDependencyListElementParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser));
+        createElementTypeParser(() -> new YarnLockDependencyMetaListElementParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser));
         //createElementTypeParser(() -> new YarnLockListElementParser(yarnLockLineAnalyzer, "Build Requires", YarnLockEntryBuilder::addBuildRequiresRef));
         createElementTypeParser(() -> new YarnLockKeyValuePairElementParser(yarnLockLineAnalyzer, "version", YarnLockEntryBuilder::setVersion));
         //        createElementTypeParser(() -> new YarnLockKeyValuePairElementParser(yarnLockLineAnalyzer, "Revision", YarnLockEntryBuilder::setRecipeRevision));
@@ -25,6 +31,9 @@ public class YarnLockEntryElementParser {
 
     public int parseElement(YarnLockEntryBuilder entryBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex) {
         String line = conanInfoOutputLines.get(bodyElementLineIndex);
+        if (line.startsWith("#") || line.trim().isEmpty()) {
+            return bodyElementLineIndex;
+        }
         return elementParsers.stream()
                    .filter(ep -> ep.applies(line))
                    .findFirst()

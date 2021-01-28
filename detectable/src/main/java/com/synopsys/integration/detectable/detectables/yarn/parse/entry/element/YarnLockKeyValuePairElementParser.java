@@ -34,6 +34,7 @@ public class YarnLockKeyValuePairElementParser implements YarnLockElementTypePar
         StringTokenizer tokenizer = yarnLockLineAnalyzer.createKeyValueTokenizer(yarnLockLines.get(bodyElementLineIndex));
         tokenizer.nextToken(); // skip over key
         String value = tokenizer.nextToken().trim();
+        value = yarnLockLineAnalyzer.unquote(value);
         valueConsumer.accept(entryBuilder, value);
         return bodyElementLineIndex;
         // TODO: See YarnLockParser.parseVersionFromLine() and make this method equivalent

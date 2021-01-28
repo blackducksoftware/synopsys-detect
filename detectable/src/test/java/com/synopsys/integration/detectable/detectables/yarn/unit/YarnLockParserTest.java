@@ -42,7 +42,6 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
-import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.DependencyAdder;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockDependencySpecParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockEntryElementParser;
 
@@ -130,7 +129,7 @@ public class YarnLockParserTest {
         yarnLockText.add("  version \"1.0.3\"");
         yarnLockText.add("  resolved \"http://nexus.fr.murex.com/nexus3/repository/npm-all/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b\"");
 
-        YarnLockParser yarnLockParser = new YarnLockParser();
+        YarnLockParserNew yarnLockParser = createYarnLockParser();
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
         assertEntry(yarnLock, "async", "0.9.0", "0.9.0");
@@ -151,7 +150,7 @@ public class YarnLockParserTest {
         yarnLockText.add("  dependencies:\n");
         yarnLockText.add("    \"@graphql-typed-document-node/core\" \"^3.0.0\"\n");
 
-        YarnLockParser yarnLockParser = new YarnLockParser();
+        YarnLockParserNew yarnLockParser = createYarnLockParser();
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
         YarnLockDependency dep = new YarnLockDependency("@graphql-typed-document-node/core", "^3.0.0", false);
@@ -171,7 +170,7 @@ public class YarnLockParserTest {
         yarnLockText.add("  version \"0.9.0\"");
         yarnLockText.add("  resolved \"http://nexus.fr.murex.com/nexus3/repository/npm-all/http-server/-/http-server-0.9.0.tgz#8f1b06bdc733618d4dc42831c7ba1aff4e06001a\"");
 
-        YarnLockParser yarnLockParser = new YarnLockParser();
+        YarnLockParserNew yarnLockParser = createYarnLockParser();
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
         assertEntry(yarnLock, "http-proxy", "^1.8.1", "1.16.2", new YarnLockDependency("eventemitter3", "1.x.x", false), new YarnLockDependency("requires-port", "1.x.x", false));
@@ -187,7 +186,7 @@ public class YarnLockParserTest {
         yarnLockText.add("  dependencies:");
         yarnLockText.add("    ms \"2.0.0\"");
 
-        YarnLockParser yarnLockParser = new YarnLockParser();
+        YarnLockParserNew yarnLockParser = createYarnLockParser();
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
         assertEntry(yarnLock, "debug", "2", "2.6.9", new YarnLockDependency("ms", "2.0.0", false));
@@ -208,11 +207,13 @@ public class YarnLockParserTest {
         yarnLockText.add("  dependencies:");
         yarnLockText.add("    cssom \"0.3.x\"");
 
-        YarnLockParser yarnLockParser = new YarnLockParser();
+        YarnLockParserNew yarnLockParser = createYarnLockParser();
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
 
         assertEntry(yarnLock, "cssstyle", ">= 0.2.37 < 0.3.0", "0.2.37", new YarnLockDependency("cssom", "0.3.x", false));
     }
+
+    // TODO still test old class:
 
     @Test
     void testParserHandlesMissingSymbol() {
@@ -261,8 +262,7 @@ public class YarnLockParserTest {
     private YarnLockParserNew createYarnLockParser() {
         YarnLockLineAnalyzer lineAnalyzer = new YarnLockLineAnalyzer();
         YarnLockDependencySpecParser yarnLockDependencySpecParser = new YarnLockDependencySpecParser(lineAnalyzer);
-        DependencyAdder dependencyAdder = new DependencyAdder(yarnLockDependencySpecParser);
-        YarnLockEntryElementParser yarnLockEntryElementParser = new YarnLockEntryElementParser(lineAnalyzer, dependencyAdder);
+        YarnLockEntryElementParser yarnLockEntryElementParser = new YarnLockEntryElementParser(lineAnalyzer, yarnLockDependencySpecParser);
         YarnLockEntryParser entryParser = new YarnLockEntryParser(lineAnalyzer, yarnLockEntryElementParser);
         YarnLockParserNew yarnLockParser = new YarnLockParserNew(entryParser);
         return yarnLockParser;

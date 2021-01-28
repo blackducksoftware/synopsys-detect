@@ -18,8 +18,8 @@ public class YarnLockDependencySpecParser {
 
     public YarnLockDependency parse(String dependencySpec, boolean optional) {
         StringTokenizer tokenizer = yarnLockLineAnalyzer.createDependencySpecTokenizer(dependencySpec);
-        String name = tokenizer.nextToken();
-        String version = tokenizer.nextToken();
+        String name = yarnLockLineAnalyzer.unquote(tokenizer.nextToken());
+        String version = yarnLockLineAnalyzer.unquote(tokenizer.nextToken());
         logger.info("*** parsed dep '{}' to {}:{}", dependencySpec, name, version);
         return new YarnLockDependency(name, version, optional);
         // TODO orig code supported colon separator (see below)
