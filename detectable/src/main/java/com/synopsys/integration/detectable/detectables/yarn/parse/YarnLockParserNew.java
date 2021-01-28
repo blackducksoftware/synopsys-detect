@@ -34,10 +34,10 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLock
 
 public class YarnLockParserNew {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final YarnLockEntryParser yarnLockNodeParser;
+    private final YarnLockEntryParser yarnLockEntryParser;
 
-    public YarnLockParserNew(YarnLockEntryParser yarnLockNodeParser) {
-        this.yarnLockNodeParser = yarnLockNodeParser;
+    public YarnLockParserNew(YarnLockEntryParser yarnLockEntryParser) {
+        this.yarnLockEntryParser = yarnLockEntryParser;
     }
 
     public YarnLock parseYarnLock(List<String> yarnLockFileAsList) {
@@ -47,7 +47,7 @@ public class YarnLockParserNew {
             String line = yarnLockFileAsList.get(lineIndex);
             logger.trace("Parsing line: {}: {}", lineIndex + 1, line);
             // Parse the entire entry
-            YarnLockEntryParseResult entryParseResult = yarnLockNodeParser.parseEntry(yarnLockFileAsList, lineIndex);
+            YarnLockEntryParseResult entryParseResult = yarnLockEntryParser.parseEntry(yarnLockFileAsList, lineIndex);
             entryParseResult.getYarnLockEntry().ifPresent(entry -> entries.add(entry));
             lineIndex = entryParseResult.getLastParsedLineIndex();
             lineIndex++;
