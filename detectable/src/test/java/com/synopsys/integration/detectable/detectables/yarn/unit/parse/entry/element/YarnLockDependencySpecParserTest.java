@@ -15,7 +15,7 @@ public class YarnLockDependencySpecParserTest {
         YarnLockLineAnalyzer yarnLockLineAnalyzer = new YarnLockLineAnalyzer();
         YarnLockDependencySpecParser parser = new YarnLockDependencySpecParser(yarnLockLineAnalyzer);
 
-        YarnLockDependency dep = parser.parse("\"@babel/helper-plugin-utils\" \"^7.8.0\"", false);
+        YarnLockDependency dep = parser.parse("\"@babel/helper-plugin-utils\" \"^7.8.0\"");
 
         assertEquals("@babel/helper-plugin-utils", dep.getName());
         assertEquals("^7.8.0", dep.getVersion());
@@ -26,7 +26,7 @@ public class YarnLockDependencySpecParserTest {
         YarnLockLineAnalyzer yarnLockLineAnalyzer = new YarnLockLineAnalyzer();
         YarnLockDependencySpecParser parser = new YarnLockDependencySpecParser(yarnLockLineAnalyzer);
 
-        YarnLockDependency dep = parser.parse("\"@babel/helper-plugin-utils\": \"^7.8.0\"", false);
+        YarnLockDependency dep = parser.parse("\"@babel/helper-plugin-utils\": \"^7.8.0\"");
 
         assertEquals("@babel/helper-plugin-utils", dep.getName());
         assertEquals("^7.8.0", dep.getVersion());
@@ -37,7 +37,7 @@ public class YarnLockDependencySpecParserTest {
         YarnLockLineAnalyzer yarnLockLineAnalyzer = new YarnLockLineAnalyzer();
         YarnLockDependencySpecParser parser = new YarnLockDependencySpecParser(yarnLockLineAnalyzer);
 
-        YarnLockDependency dep = parser.parse("property-expr \"^2.0.0\"", false);
+        YarnLockDependency dep = parser.parse("property-expr \"^2.0.0\"");
 
         assertEquals("property-expr", dep.getName());
         assertEquals("^2.0.0", dep.getVersion());

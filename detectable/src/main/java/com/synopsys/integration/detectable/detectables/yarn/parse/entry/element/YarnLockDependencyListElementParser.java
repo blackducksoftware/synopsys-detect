@@ -58,7 +58,7 @@ public class YarnLockDependencyListElementParser implements YarnLockElementTypeP
             if (depth != 2) {
                 return curLineIndex - 1;
             }
-            YarnLockDependency yarnLockDependency = yarnLockDependencySpecParser.parse(line.trim(), false);
+            YarnLockDependency yarnLockDependency = yarnLockDependencySpecParser.parse(line.trim());
             entryBuilder.addDependency(yarnLockDependency);
         }
         return yarnLockLines.size() - 1;

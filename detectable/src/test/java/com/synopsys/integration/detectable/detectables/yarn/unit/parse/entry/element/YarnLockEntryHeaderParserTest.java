@@ -24,9 +24,31 @@ public class YarnLockEntryHeaderParserTest {
     }
 
     @Test
+    void testList() {
+        String line = "\"@apollographql/apollo-tools@^0.4.2\", \"@apollographql/apollo-tools@^0.4.3\":";
+        List<String> lines = Arrays.asList(line);
+        Assertions.assertTrue(yarnLockParser.applies(line));
+
+        YarnLockEntryBuilder builder = new YarnLockEntryBuilder();
+        yarnLockParser.parseElement(builder, lines, 0);
+
+        // Complete the builder requirements and build the entry
+        builder.setVersion("testVersion");
+        Optional<YarnLockEntry> entry = builder.build();
+
+        Assertions.assertTrue(entry.isPresent());
+        List<YarnLockEntryId> ids = entry.get().getIds();
+        Assertions.assertEquals(2, ids.size());
+        Assertions.assertEquals(ids.get(0).getName(), "@apollographql/apollo-tools");
+        Assertions.assertEquals(ids.get(0).getVersion(), "^0.4.2");
+        Assertions.assertEquals(ids.get(1).getName(), "@apollographql/apollo-tools");
+        Assertions.assertEquals(ids.get(1).getVersion(), "^0.4.3");
+    }
+
+    @Test
     void testParserHandlesMissingSymbol() {
         String line = "example, example@1";
-        List<String> lines = Arrays.asList("example, example@1");
+        List<String> lines = Arrays.asList(line);
         Assertions.assertTrue(yarnLockParser.applies(line));
 
         YarnLockEntryBuilder builder = new YarnLockEntryBuilder();

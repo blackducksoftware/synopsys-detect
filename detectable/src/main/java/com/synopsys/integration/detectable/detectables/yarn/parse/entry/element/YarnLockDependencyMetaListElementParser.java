@@ -23,6 +23,7 @@
 package com.synopsys.integration.detectable.detectables.yarn.parse.entry.element;
 
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,11 +36,9 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLock
 public class YarnLockDependencyMetaListElementParser implements YarnLockElementTypeParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final YarnLockLineAnalyzer yarnLockLineAnalyzer;
-    private final YarnLockDependencySpecParser yarnLockDependencySpecParser;
 
-    public YarnLockDependencyMetaListElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser) {
+    public YarnLockDependencyMetaListElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer) {
         this.yarnLockLineAnalyzer = yarnLockLineAnalyzer;
-        this.yarnLockDependencySpecParser = yarnLockDependencySpecParser;
     }
 
     @Override
@@ -66,16 +65,26 @@ public class YarnLockDependencyMetaListElementParser implements YarnLockElementT
             } else if (depth == 2) {
                 curDependencyName = parseMetaDependencyNameFromLine(line);
             } else if (depth == 3) {
-                // TODO this is orig code; flexible enough? Use tokenizer?
-                if (line.contains("optional: true")) {
-                    markDependencyOptional(entryBuilder, curDependencyName);
-                }
+                makeOptionalIfOptional(entryBuilder, curDependencyName, line);
             }
         }
         return yarnLockLines.size() - 1;
     }
 
-    private void markDependencyOptional(YarnLockEntryBuilder entryBuilder, String curDependencyName) {
+    private void makeOptionalIfOptional(YarnLockEntryBuilder entryBuilder, String curDependencyName, String line) {
+        StringTokenizer tokenizer = yarnLockLineAnalyzer.createKeyValueTokenizer(line);
+        String key = tokenizer.nextToken();
+        if ("optional".equals(key)) {
+            if (tokenizer.hasMoreTokens()) {
+                String value = tokenizer.nextToken();
+                if ("true".equalsIgnoreCase(value)) {
+                    makeDependencyOptional(entryBuilder, curDependencyName);
+                }
+            }
+        }
+    }
+
+    private void makeDependencyOptional(YarnLockEntryBuilder entryBuilder, String curDependencyName) {
         YarnLockDependency origDependency = entryBuilder.getDependencies().get(curDependencyName);
         if (origDependency == null) {
             logger.warn(String.format("Found metadata indicating dependency %s is optional, but it's not in the dependency list"));
