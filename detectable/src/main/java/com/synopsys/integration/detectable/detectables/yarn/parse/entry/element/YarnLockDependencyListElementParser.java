@@ -39,6 +39,9 @@ public class YarnLockDependencyListElementParser implements YarnLockElementTypeP
 
     @Override
     public boolean applies(String elementLine) {
+        if (yarnLockLineAnalyzer.measureIndentDepth(elementLine) != 1) {
+            return false;
+        }
         elementLine = elementLine.trim();
         if (!elementLine.contains(" ") && elementLine.endsWith(":")) {
             String listKey = elementLine.substring(0, elementLine.length() - 1);

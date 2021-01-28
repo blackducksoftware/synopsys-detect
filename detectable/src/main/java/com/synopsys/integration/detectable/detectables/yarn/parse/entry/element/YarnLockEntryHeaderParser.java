@@ -39,10 +39,10 @@ public class YarnLockEntryHeaderParser implements YarnLockElementTypeParser {
 
     @Override
     public boolean applies(String elementLine) {
-        if (elementLine.startsWith("#") || (elementLine.trim().length() == 0) || elementLine.startsWith(" ") || elementLine.startsWith("\t")) {
-            return false;
+        if (yarnLockLineAnalyzer.measureIndentDepth(elementLine) == 0) {
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override

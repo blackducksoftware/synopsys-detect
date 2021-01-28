@@ -44,17 +44,5 @@ public class YarnLockDependencySpecParser {
         String version = yarnLockLineAnalyzer.unquote(tokenizer.nextToken());
         logger.info("*** parsed dep '{}' to {}:{}", dependencySpec, name, version);
         return new YarnLockDependency(name, version, optional);
-        // TODO orig code supported colon separator (see below)
     }
-
-    //    private ParsedYarnLockDependency parseDependencyFromLine(String line) {
-    //        String[] pieces;
-    //        if (line.contains(":")) {
-    //            pieces = StringUtils.split(line, ":", 2);
-    //        } else {
-    //            pieces = StringUtils.split(line, " ", 2);
-    //        }
-    //        return new ParsedYarnLockDependency(removeWrappingQuotes(pieces[0]), removeWrappingQuotes(pieces[1]));
-    //    }
-
 }

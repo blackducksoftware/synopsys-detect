@@ -48,6 +48,7 @@ public class YarnLockLineAnalyzer {
         return createColonAndSpaceSeparatedTokenizer(line);
     }
 
+    // TODO this class seems to mix concepts
     public int measureIndentDepth(String line) {
         if (StringUtils.isBlank(line)) {
             return 0;

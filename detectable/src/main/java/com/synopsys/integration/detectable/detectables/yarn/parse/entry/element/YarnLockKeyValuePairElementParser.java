@@ -42,9 +42,12 @@ public class YarnLockKeyValuePairElementParser implements YarnLockElementTypePar
 
     @Override
     public boolean applies(String elementLine) {
+        if (yarnLockLineAnalyzer.measureIndentDepth(elementLine) != 1) {
+            return false;
+        }
         elementLine = elementLine.trim();
         if (!elementLine.contains(" ") && elementLine.endsWith(":")) {
-            return false; // looks like a key: (followed by a list)
+            return false; // This is just a key:
         }
         StringTokenizer tokenizer = yarnLockLineAnalyzer.createKeyValueTokenizer(elementLine);
         String parsedKey = tokenizer.nextToken();
@@ -61,4 +64,13 @@ public class YarnLockKeyValuePairElementParser implements YarnLockElementTypePar
         return bodyElementLineIndex;
         // TODO: See YarnLockParser.parseVersionFromLine() and make this method equivalent
     }
+
+    //    private String parseVersionFromLine(String line) {
+    //        for (String token : VERSION_TOKENS) {
+    //            if (line.startsWith(token)) {
+    //                return removeWrappingQuotes(StringUtils.substringAfter(line, token));
+    //            }
+    //        }
+    //        return line;
+    //    }
 }

@@ -44,7 +44,9 @@ public class YarnLockDependencyMetaListElementParser implements YarnLockElementT
 
     @Override
     public boolean applies(String elementLine) {
-        // TODO should test depth here and in others; maybe just ignore comments and empty lines first
+        if (yarnLockLineAnalyzer.measureIndentDepth(elementLine) != 1) {
+            return false;
+        }
         elementLine = elementLine.trim();
         if (!elementLine.contains(" ") && elementLine.endsWith(":")) {
             String listKey = elementLine.substring(0, elementLine.length() - 1);

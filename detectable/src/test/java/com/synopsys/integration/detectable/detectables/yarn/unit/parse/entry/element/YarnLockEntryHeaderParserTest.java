@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,7 @@ public class YarnLockEntryHeaderParserTest {
     @Test
     void testParserHandlesMissingSymbol() {
         String line = "example, example@1";
-        List<String> lines = Arrays.asList(line);
+        List<String> lines = Arrays.asList("example, example@1");
         Assertions.assertTrue(yarnLockParser.applies(line));
 
         YarnLockEntryBuilder builder = new YarnLockEntryBuilder();
@@ -64,12 +63,5 @@ public class YarnLockEntryHeaderParserTest {
         Assertions.assertEquals(1, ids.size());
         Assertions.assertEquals(ids.get(0).getName(), "@example");
         Assertions.assertEquals(ids.get(0).getVersion(), "");
-    }
-
-    @NotNull
-    private YarnLockEntryHeaderParser createYarnLockEntryHeaderParser() {
-        YarnLockLineAnalyzer yarnLockLineAnalyzer = new YarnLockLineAnalyzer();
-        YarnLockEntryHeaderParser yarnLockParser = new YarnLockEntryHeaderParser(yarnLockLineAnalyzer);
-        return yarnLockParser;
     }
 }

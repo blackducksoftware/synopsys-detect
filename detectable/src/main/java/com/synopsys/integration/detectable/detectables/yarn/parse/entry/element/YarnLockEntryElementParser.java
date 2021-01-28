@@ -33,18 +33,10 @@ public class YarnLockEntryElementParser {
     private final List<YarnLockElementTypeParser> elementParsers = new ArrayList<>();
 
     public YarnLockEntryElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser) {
-        // TODO
-        // Instead of a generic ListElementParser, you need:
-        // 1. DependencyListParser
-        // 2. DependencyMetaListParser
-        // Then re-think dependencyAdder
         createElementTypeParser(() -> new YarnLockEntryHeaderParser(yarnLockLineAnalyzer));
         createElementTypeParser(() -> new YarnLockDependencyListElementParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser));
         createElementTypeParser(() -> new YarnLockDependencyMetaListElementParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser));
-        //createElementTypeParser(() -> new YarnLockListElementParser(yarnLockLineAnalyzer, "Build Requires", YarnLockEntryBuilder::addBuildRequiresRef));
         createElementTypeParser(() -> new YarnLockKeyValuePairElementParser(yarnLockLineAnalyzer, "version", YarnLockEntryBuilder::setVersion));
-        //        createElementTypeParser(() -> new YarnLockKeyValuePairElementParser(yarnLockLineAnalyzer, "Revision", YarnLockEntryBuilder::setRecipeRevision));
-        //        createElementTypeParser(() -> new YarnLockKeyValuePairElementParser(yarnLockLineAnalyzer, "Package revision", YarnLockEntryBuilder::setPackageRevision));
     }
 
     private void createElementTypeParser(Supplier<YarnLockElementTypeParser> elementSupplier) {
