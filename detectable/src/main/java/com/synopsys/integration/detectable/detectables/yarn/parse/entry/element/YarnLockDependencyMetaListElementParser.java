@@ -74,12 +74,10 @@ public class YarnLockDependencyMetaListElementParser implements YarnLockElementT
     private void makeOptionalIfOptional(YarnLockEntryBuilder entryBuilder, String curDependencyName, String line) {
         StringTokenizer tokenizer = TokenizerFactory.createKeyValueTokenizer(line);
         String key = tokenizer.nextToken();
-        if ("optional".equals(key)) {
-            if (tokenizer.hasMoreTokens()) {
-                String value = tokenizer.nextToken();
-                if ("true".equalsIgnoreCase(value)) {
-                    makeDependencyOptional(entryBuilder, curDependencyName);
-                }
+        if ("optional".equals(key) && tokenizer.hasMoreTokens()) {
+            String value = tokenizer.nextToken();
+            if ("true".equalsIgnoreCase(value)) {
+                makeDependencyOptional(entryBuilder, curDependencyName);
             }
         }
     }
@@ -87,7 +85,7 @@ public class YarnLockDependencyMetaListElementParser implements YarnLockElementT
     private void makeDependencyOptional(YarnLockEntryBuilder entryBuilder, String curDependencyName) {
         YarnLockDependency origDependency = entryBuilder.getDependencies().get(curDependencyName);
         if (origDependency == null) {
-            logger.warn(String.format("Found metadata indicating dependency %s is optional, but it's not in the dependency list"));
+            logger.warn("Found metadata indicating dependency {} is optional, but it's not in the dependency list", curDependencyName);
             return;
         }
         entryBuilder.getDependencies().remove(curDependencyName);

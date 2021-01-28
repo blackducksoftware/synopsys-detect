@@ -40,10 +40,7 @@ public class YarnLockEntryHeaderParser implements YarnLockElementTypeParser {
 
     @Override
     public boolean applies(String elementLine) {
-        if (yarnLockLineAnalyzer.measureIndentDepth(elementLine) == 0) {
-            return true;
-        }
-        return false;
+        return yarnLockLineAnalyzer.measureIndentDepth(elementLine) == 0;
     }
 
     @Override

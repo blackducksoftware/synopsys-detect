@@ -63,7 +63,7 @@ public class YarnTransformer {
                     if (!productionOnly || !dependency.isOptional()) {
                         graphBuilder.addChildWithParent(stringDependencyId, id);
                     } else {
-                        logger.debug(String.format("Eluding optional dependency: %s", stringDependencyId.getValue()));
+                        logger.debug("Eluding optional dependency: {}", stringDependencyId.getValue());
                     }
                 }
             }

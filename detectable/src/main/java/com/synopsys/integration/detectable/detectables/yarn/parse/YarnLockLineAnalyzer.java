@@ -27,8 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class YarnLockLineAnalyzer {
+    private static final int SPACES_INDENT_PER_LEVEL = 2;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private final static int SPACES_INDENT_PER_LEVEL = 2;
 
     public int measureIndentDepth(String line) {
         if (StringUtils.isBlank(line)) {
@@ -53,10 +53,7 @@ public class YarnLockLineAnalyzer {
         if (s.startsWith("\"") && s.endsWith("\"")) {
             return true;
         }
-        if (s.startsWith("'") && s.endsWith("'")) {
-            return true;
-        }
-        return false;
+        return s.startsWith("'") && s.endsWith("'");
     }
 
     private int countLeadingSpaces(String line) {

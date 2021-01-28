@@ -28,6 +28,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class TokenizerFactory {
 
+    private TokenizerFactory() {}
+
     @NotNull
     public static StringTokenizer createHeaderTokenizer(String line) {
         return new StringTokenizer(line.trim(), ",");
