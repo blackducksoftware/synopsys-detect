@@ -63,12 +63,13 @@ public class YarnTransformer {
                     if (!productionOnly || !dependency.isOptional()) {
                         graphBuilder.addChildWithParent(stringDependencyId, id);
                     } else {
-                        logger.debug("Eluding optional dependency: {}", stringDependencyId.getValue());
+                        logger.debug("Excluding optional dependency: {}", stringDependencyId.getValue());
                     }
                 }
             }
         }
-
+        // TODO huh? externalDependencies comes in empty; how does it get populated?
+        // TODO half the detector's work is happening in this single LOC!
         return graphBuilder.build((dependencyId, lazyDependencyInfo) -> {
             Optional<NameVersion> externalDependency = externalDependencies.stream().filter(it -> it.getName().equals(lazyDependencyInfo.getName())).findFirst();
             Optional<ExternalId> externalId = externalDependency.map(it -> externalIdFactory.createNameVersionExternalId(Forge.NPMJS, it.getName(), it.getVersion()));
