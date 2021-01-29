@@ -38,6 +38,12 @@ public class Properties {
                    .collect(Collectors.toList());
     }
 
+    public List<String> getSortedPropertyKeys() {
+        return getPropertyKeys().stream()
+                   .sorted()
+                   .collect(Collectors.toList());
+    }
+
     public List<Property> getProperties() {
         return properties;
     }

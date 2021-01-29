@@ -28,10 +28,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PropertyMap<T extends Object> {
+public class KeyValueMap<T extends Object> {
     private Map<String, T> map;
 
-    public PropertyMap(final Map<String, T> map) {
+    public KeyValueMap(final Map<String, T> map) {
         this.map = map;
     }
 

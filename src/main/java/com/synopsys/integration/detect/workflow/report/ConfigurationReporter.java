@@ -28,11 +28,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.config.PropertyMap;
+import com.synopsys.integration.configuration.config.KeyValueMap;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.DetectPropertyUtil;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 
 public class ConfigurationReporter {
@@ -46,10 +45,8 @@ public class ConfigurationReporter {
         writer.writeLine("Detect Configuration");
         writer.writeSeparator();
         final PropertyConfigurationHelpContext helpContext = new PropertyConfigurationHelpContext(propertyConfiguration);
-        List<String> sortedPropertyKeys = DetectProperties.allProperties().getPropertyKeys().stream()
-                                              .sorted()
-                                              .collect(Collectors.toList());
-        helpContext.printKnownCurrentValues(writer::writeLine, sortedPropertyKeys, new PropertyMap<>(maskedRawPropertyValues), new HashMap<>());
+        List<String> sortedPropertyKeys = DetectProperties.allProperties().getSortedPropertyKeys();
+        helpContext.printKnownCurrentValues(writer::writeLine, sortedPropertyKeys, new KeyValueMap<>(maskedRawPropertyValues), new HashMap<>());
         writer.writeSeparator();
     }
 }

@@ -32,16 +32,14 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.PropertyValues;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.config.PropertyMap;
+import com.synopsys.integration.configuration.config.KeyValueMap;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.PropertyDeprecationInfo;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
-import com.synopsys.integration.detect.configuration.DetectPropertyUtil;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -92,10 +90,8 @@ public class DetectConfigurationBootManager {
     }
 
     public void printConfiguration(Map<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes) throws IllegalAccessException {
-        List<String> sortedPropertyKeys = DetectProperties.allProperties().getPropertyKeys().stream()
-                                        .sorted()
-                                        .collect(Collectors.toList());
-        detectConfigurationReporter.printKnownCurrentValues(logger::info, sortedPropertyKeys, new PropertyMap<>(maskedRawPropertyValues), additionalNotes);
+        List<String> sortedPropertyKeys = DetectProperties.allProperties().getSortedPropertyKeys();
+        detectConfigurationReporter.printKnownCurrentValues(logger::info, sortedPropertyKeys, new KeyValueMap<>(maskedRawPropertyValues), additionalNotes);
     }
 
     //Check for options that are just plain bad, ie giving an detector type we don't know about.
@@ -109,10 +105,8 @@ public class DetectConfigurationBootManager {
     }
 
     public void printFailingPropertiesMessages(Map<String, List<String>> deprecationMessages) throws IllegalAccessException {
-        List<String> sortedPropertyKeys = DetectProperties.allProperties().getPropertyKeys().stream()
-                                        .sorted()
-                                        .collect(Collectors.toList());
-        detectConfigurationReporter.printKnownPropertyErrors(logger::info, sortedPropertyKeys, new PropertyMap<>(deprecationMessages));
+        List<String> sortedPropertyKeys = DetectProperties.allProperties().getSortedPropertyKeys();
+        detectConfigurationReporter.printKnownPropertyErrors(logger::info, sortedPropertyKeys, new KeyValueMap<>(deprecationMessages));
 
         logger.warn(StringUtils.repeat("=", 60));
         logger.warn("Configuration is using deprecated properties that must be updated for this major version.");

@@ -67,7 +67,7 @@ import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.configuration.config.PropertyMap;
+import com.synopsys.integration.configuration.config.KeyValueMap;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 import freemarker.template.Configuration;
@@ -231,7 +231,7 @@ public class DetectBoot {
     }
 
     private void publishCollectedPropertyValues(Map<String, String> maskedRawPropertyValues, EventSystem eventSystem) throws IllegalAccessException {
-        eventSystem.publishEvent(Event.RawMaskedPropertyValuesCollected, new PropertyMap(maskedRawPropertyValues));
+        eventSystem.publishEvent(Event.RawMaskedPropertyValuesCollected, new KeyValueMap(maskedRawPropertyValues));
     }
 
 }
