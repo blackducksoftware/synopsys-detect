@@ -124,7 +124,6 @@ public class DetectBootFactory {
         }
     }
 
-
     public ObjectMapper createObjectMapper() {
         return BlackDuckServicesFactory.createDefaultObjectMapper();
     }
@@ -224,7 +223,7 @@ public class DetectBootFactory {
     public InteractiveManager createInteractiveManager(List<PropertySource> propertySources) {
         InteractiveWriter writer = InteractiveWriter.defaultWriter(System.console(), System.in, System.out);
         InteractivePropertySourceBuilder propertySourceBuilder = new InteractivePropertySourceBuilder(writer);
-        InteractiveModeDecisionTree interactiveModeDecisionTree = new InteractiveModeDecisionTree(blackDuckConnectivityChecker, propertySources);
+        InteractiveModeDecisionTree interactiveModeDecisionTree = new InteractiveModeDecisionTree(detectInfo, blackDuckConnectivityChecker, propertySources);
         return new InteractiveManager(propertySourceBuilder, writer, interactiveModeDecisionTree);
     }
 

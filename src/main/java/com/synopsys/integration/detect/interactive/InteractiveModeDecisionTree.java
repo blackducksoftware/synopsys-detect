@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.synopsys.integration.configuration.source.PropertySource;
+import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.boot.product.BlackDuckConnectivityChecker;
 
@@ -44,10 +45,12 @@ public class InteractiveModeDecisionTree implements DecisionTree {
     public static final String SET_PROJECT_VERSION = "What is the project version?";
     public static final String SHOULD_RUN_SIGNATURE_SCAN = "Would you like to run a signature scan?";
 
+    private final DetectInfo detectInfo;
     private final BlackDuckConnectivityChecker blackDuckConnectivityChecker;
     private final List<PropertySource> existingPropertySources;
 
-    public InteractiveModeDecisionTree(BlackDuckConnectivityChecker blackDuckConnectivityChecker, List<PropertySource> existingPropertySources) {
+    public InteractiveModeDecisionTree(DetectInfo detectInfo, BlackDuckConnectivityChecker blackDuckConnectivityChecker, List<PropertySource> existingPropertySources) {
+        this.detectInfo = detectInfo;
         this.blackDuckConnectivityChecker = blackDuckConnectivityChecker;
         this.existingPropertySources = new ArrayList<>(existingPropertySources);
     }
@@ -59,7 +62,7 @@ public class InteractiveModeDecisionTree implements DecisionTree {
 
         Boolean connectToHub = writer.askYesOrNo(SHOULD_CONNECT_TO_BLACKDUCK);
         if (connectToHub) {
-            BlackDuckConnectionDecisionBranch blackDuckConnectionDecisionBranch = new BlackDuckConnectionDecisionBranch(blackDuckConnectivityChecker, existingPropertySources);
+            BlackDuckConnectionDecisionBranch blackDuckConnectionDecisionBranch = new BlackDuckConnectionDecisionBranch(detectInfo, blackDuckConnectivityChecker, existingPropertySources);
             blackDuckConnectionDecisionBranch.traverse(propertySourceBuilder, writer);
 
             Boolean customDetails = writer.askYesOrNo(SHOULD_SET_PROJECT_NAME_VERSON);

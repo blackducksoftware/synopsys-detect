@@ -39,7 +39,7 @@ public class RunOptions {
     private final DetectToolFilter detectToolFilter;
     private final boolean useBdio2;
 
-    public RunOptions(final boolean unmapCodeLocations, @Nullable final String aggregateName, final AggregateMode aggregateMode, final List<DetectTool> preferredTools, final DetectToolFilter detectToolFilter, final boolean useBdio2) {
+    public RunOptions(boolean unmapCodeLocations, @Nullable String aggregateName, AggregateMode aggregateMode, List<DetectTool> preferredTools, DetectToolFilter detectToolFilter, boolean useBdio2) {
         this.unmapCodeLocations = unmapCodeLocations;
         this.aggregateName = aggregateName;
         this.aggregateMode = aggregateMode;

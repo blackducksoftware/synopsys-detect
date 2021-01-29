@@ -43,7 +43,6 @@ import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.api.generated.view.ProjectView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.service.BlackDuckApiClient;
-import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.dataservice.CodeLocationService;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -81,12 +80,9 @@ public class BlackDuckImpactAnalysisTool {
     private final CodeLocationService codeLocationService; // TODO: Use this when upgrading to blackduck-common:49.2.0
     private final boolean online;
 
-    public static BlackDuckImpactAnalysisTool ONLINE(DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager, ImpactAnalysisOptions impactAnalysisOptions, BlackDuckServicesFactory blackDuckServicesFactory,
-        EventSystem eventSystem) {
-        ImpactAnalysisUploadService impactAnalysisService = ImpactAnalysisUploadService.create(blackDuckServicesFactory);
-        BlackDuckApiClient blackDuckService = blackDuckServicesFactory.getBlackDuckApiClient();
-        CodeLocationService codeLocationService = blackDuckServicesFactory.createCodeLocationService();
-        return new BlackDuckImpactAnalysisTool(directoryManager, codeLocationNameManager, impactAnalysisOptions, eventSystem, impactAnalysisService, blackDuckService, codeLocationService, true);
+    public static BlackDuckImpactAnalysisTool ONLINE(DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager, ImpactAnalysisOptions impactAnalysisOptions, BlackDuckApiClient blackDuckApiClient,
+        ImpactAnalysisUploadService impactAnalysisService, CodeLocationService codeLocationService, EventSystem eventSystem) {
+        return new BlackDuckImpactAnalysisTool(directoryManager, codeLocationNameManager, impactAnalysisOptions, eventSystem, impactAnalysisService, blackDuckApiClient, codeLocationService, true);
     }
 
     public static BlackDuckImpactAnalysisTool OFFLINE(DirectoryManager directoryManager, CodeLocationNameManager codeLocationNameManager, ImpactAnalysisOptions impactAnalysisOptions, EventSystem eventSystem) {
