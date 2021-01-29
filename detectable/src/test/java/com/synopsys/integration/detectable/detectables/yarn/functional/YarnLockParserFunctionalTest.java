@@ -17,7 +17,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockEntryElementParser;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
-public class YarnLockParserTest {
+public class YarnLockParserFunctionalTest {
 
     @Test
     void testV1Lockfile() throws IOException {

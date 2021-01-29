@@ -31,10 +31,15 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLock
 public class YarnLockDependencyListElementParser implements YarnLockElementTypeParser {
     private final YarnLockLineAnalyzer yarnLockLineAnalyzer;
     private final YarnLockDependencySpecParser yarnLockDependencySpecParser;
+    private final String targetListKey;
+    private final boolean dependenciesAreOptional;
 
-    public YarnLockDependencyListElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser) {
+    public YarnLockDependencyListElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser,
+        String targetListKey, boolean dependenciesAreOptional) {
         this.yarnLockLineAnalyzer = yarnLockLineAnalyzer;
         this.yarnLockDependencySpecParser = yarnLockDependencySpecParser;
+        this.targetListKey = targetListKey;
+        this.dependenciesAreOptional = dependenciesAreOptional;
     }
 
     @Override
@@ -45,7 +50,7 @@ public class YarnLockDependencyListElementParser implements YarnLockElementTypeP
         elementLine = elementLine.trim();
         if (!elementLine.contains(" ") && elementLine.endsWith(":")) {
             String listKey = elementLine.substring(0, elementLine.length() - 1);
-            return "dependencies".equals(listKey);
+            return listKey.equals(targetListKey);
         }
         return false;
     }
@@ -58,7 +63,7 @@ public class YarnLockDependencyListElementParser implements YarnLockElementTypeP
             if (depth != 2) {
                 return curLineIndex - 1;
             }
-            YarnLockDependency yarnLockDependency = yarnLockDependencySpecParser.parse(line.trim());
+            YarnLockDependency yarnLockDependency = yarnLockDependencySpecParser.parse(line.trim(), dependenciesAreOptional);
             entryBuilder.addDependency(yarnLockDependency);
         }
         return yarnLockLines.size() - 1;

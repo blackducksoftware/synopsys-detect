@@ -34,7 +34,8 @@ public class YarnLockEntryElementParser {
 
     public YarnLockEntryElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser) {
         createElementTypeParser(() -> new YarnLockEntryHeaderParser(yarnLockLineAnalyzer));
-        createElementTypeParser(() -> new YarnLockDependencyListElementParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser));
+        createElementTypeParser(() -> new YarnLockDependencyListElementParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser, "dependencies", false));
+        createElementTypeParser(() -> new YarnLockDependencyListElementParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser, "optionalDependencies", true));
         createElementTypeParser(() -> new YarnLockDependencyMetaListElementParser(yarnLockLineAnalyzer));
         createElementTypeParser(() -> new YarnLockKeyValuePairElementParser(yarnLockLineAnalyzer, "version", YarnLockEntryBuilder::setVersion));
     }

@@ -38,11 +38,11 @@ public class YarnLockDependencySpecParser {
         this.yarnLockLineAnalyzer = yarnLockLineAnalyzer;
     }
 
-    public YarnLockDependency parse(String dependencySpec) {
+    public YarnLockDependency parse(String dependencySpec, boolean optional) {
         StringTokenizer tokenizer = TokenizerFactory.createDependencySpecTokenizer(dependencySpec);
         String name = yarnLockLineAnalyzer.unquote(tokenizer.nextToken());
         String version = yarnLockLineAnalyzer.unquote(tokenizer.nextToken(":").trim());
         logger.trace("Parsed dep '{}' to {}:{}", dependencySpec, name, version);
-        return new YarnLockDependency(name, version, false);
+        return new YarnLockDependency(name, version, optional);
     }
 }

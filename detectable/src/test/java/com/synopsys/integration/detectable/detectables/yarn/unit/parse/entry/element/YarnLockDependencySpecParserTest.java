@@ -20,7 +20,7 @@ public class YarnLockDependencySpecParserTest {
 
     @Test
     public void testNoColon() {
-        YarnLockDependency dep = parser.parse("\"@babel/helper-plugin-utils\" \"^7.8.0\"");
+        YarnLockDependency dep = parser.parse("\"@babel/helper-plugin-utils\" \"^7.8.0\"", true);
 
         assertEquals("@babel/helper-plugin-utils", dep.getName());
         assertEquals("^7.8.0", dep.getVersion());
@@ -28,7 +28,7 @@ public class YarnLockDependencySpecParserTest {
 
     @Test
     public void testWithColon() {
-        YarnLockDependency dep = parser.parse("\"@babel/helper-plugin-utils\": \"^7.8.0\"");
+        YarnLockDependency dep = parser.parse("\"@babel/helper-plugin-utils\": \"^7.8.0\"", true);
 
         assertEquals("@babel/helper-plugin-utils", dep.getName());
         assertEquals("^7.8.0", dep.getVersion());
@@ -36,7 +36,7 @@ public class YarnLockDependencySpecParserTest {
 
     @Test
     public void testUnquotedName() {
-        YarnLockDependency dep = parser.parse("property-expr \"^2.0.0\"");
+        YarnLockDependency dep = parser.parse("property-expr \"^2.0.0\"", true);
 
         assertEquals("property-expr", dep.getName());
         assertEquals("^2.0.0", dep.getVersion());
@@ -44,7 +44,7 @@ public class YarnLockDependencySpecParserTest {
 
     @Test
     void testQuotedMultipleVersion() {
-        YarnLockDependency dep = parser.parse("xtend \">=4.0.0 <4.1.0-0\"");
+        YarnLockDependency dep = parser.parse("xtend \">=4.0.0 <4.1.0-0\"", true);
 
         assertEquals("xtend", dep.getName());
         assertEquals(">=4.0.0 <4.1.0-0", dep.getVersion());
