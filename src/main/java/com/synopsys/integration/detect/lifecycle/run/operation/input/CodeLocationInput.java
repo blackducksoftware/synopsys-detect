@@ -1,5 +1,5 @@
-/*
- * buildSrc
+/**
+ * synopsys-detect
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
@@ -20,35 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.docs.copied;
+package com.synopsys.integration.detect.lifecycle.run.operation.input;
 
-//Copied from detect-configuration
-public class HelpJsonExitCode {
-    private String exitCodeKey = "";
-    private String exitCodeDescription = "";
-    private Integer exitCodeValue = 0;
+import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
+import com.synopsys.integration.util.NameVersion;
 
-    public Integer getExitCodeValue() {
-        return exitCodeValue;
+public class CodeLocationInput {
+    private NameVersion nameVersion;
+    private CodeLocationAccumulator codeLocationAccumulator;
+
+    public CodeLocationInput(NameVersion nameVersion, CodeLocationAccumulator codeLocationAccumulator) {
+        this.nameVersion = nameVersion;
+        this.codeLocationAccumulator = codeLocationAccumulator;
     }
 
-    public void setExitCodeValue(final Integer exitCodeValue) {
-        this.exitCodeValue = exitCodeValue;
+    public NameVersion getNameVersion() {
+        return nameVersion;
     }
 
-    public String getExitCodeKey() {
-        return exitCodeKey;
-    }
-
-    public void setExitCodeKey(final String exitCodeKey) {
-        this.exitCodeKey = exitCodeKey;
-    }
-
-    public String getExitCodeDescription() {
-        return exitCodeDescription;
-    }
-
-    public void setExitCodeDescription(final String exitCodeDescription) {
-        this.exitCodeDescription = exitCodeDescription;
+    public CodeLocationAccumulator getCodeLocationAccumulator() {
+        return codeLocationAccumulator;
     }
 }

@@ -22,21 +22,29 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.operation.Operation;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
-import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
-import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
+import com.synopsys.integration.detect.lifecycle.run.operation.input.BdioInput;
+import com.synopsys.integration.detect.workflow.bdio.BdioManager;
+import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
+import com.synopsys.integration.detect.workflow.bdio.BdioResult;
+import com.synopsys.integration.detect.workflow.event.Event;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class AggregateOptionsOperation extends Operation<Boolean, AggregateOptions> {
+public class BdioFileGenerationOperation extends Operation<BdioInput, BdioResult> {
     private final RunOptions runOptions;
+    private final BdioOptions bdioOptions;
+    private final BdioManager bdioManager;
+    private final EventSystem eventSystem;
 
-    public AggregateOptionsOperation(RunOptions runOptions) {
+    public BdioFileGenerationOperation(RunOptions runOptions, BdioOptions bdioOptions, BdioManager bdioManager, EventSystem eventSystem) {
         this.runOptions = runOptions;
+        this.bdioOptions = bdioOptions;
+        this.bdioManager = bdioManager;
+        this.eventSystem = eventSystem;
     }
 
     @Override
@@ -46,24 +54,13 @@ public class AggregateOptionsOperation extends Operation<Boolean, AggregateOptio
 
     @Override
     public String getOperationName() {
-        return "Aggregate Options Creation";
+        return "Bdio Generation";
     }
 
     @Override
-    protected OperationResult<AggregateOptions> executeOperation(Boolean input) throws DetectUserFriendlyException, IntegrationException {
-        String aggregateName = runOptions.getAggregateName().orElse(null);
-        AggregateMode aggregateMode = runOptions.getAggregateMode();
-        AggregateOptions aggregateOptions;
-        if (StringUtils.isNotBlank(aggregateName)) {
-            if (input) {
-                aggregateOptions = AggregateOptions.aggregateButSkipEmpty(aggregateName, aggregateMode);
-            } else {
-                aggregateOptions = AggregateOptions.aggregateAndAlwaysUpload(aggregateName, aggregateMode);
-            }
-        } else {
-            aggregateOptions = AggregateOptions.doNotAggregate();
-        }
-
-        return OperationResult.success(aggregateOptions);
+    protected OperationResult<BdioResult> executeOperation(BdioInput input) throws DetectUserFriendlyException, IntegrationException {
+        BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, input.getAggregateOptions(), input.getNameVersion(), input.getCodeLocations(), runOptions.shouldUseBdio2());
+        eventSystem.publishEvent(Event.DetectCodeLocationNamesCalculated, bdioResult.getCodeLocationNamesResult());
+        return OperationResult.success(bdioResult);
     }
 }

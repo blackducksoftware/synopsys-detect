@@ -22,21 +22,24 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
-import org.apache.commons.lang3.StringUtils;
+import java.util.List;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.operation.Operation;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
-import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
-import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
+import com.synopsys.integration.detect.workflow.project.DetectToolProjectInfo;
+import com.synopsys.integration.detect.workflow.project.ProjectNameVersionDecider;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.util.NameVersion;
 
-public class AggregateOptionsOperation extends Operation<Boolean, AggregateOptions> {
+public class ProjectDecisionOperation extends Operation<List<DetectToolProjectInfo>, NameVersion> {
     private final RunOptions runOptions;
+    private final ProjectNameVersionDecider projectNameVersionDecider;
 
-    public AggregateOptionsOperation(RunOptions runOptions) {
+    public ProjectDecisionOperation(RunOptions runOptions, ProjectNameVersionDecider projectNameVersionDecider) {
         this.runOptions = runOptions;
+        this.projectNameVersionDecider = projectNameVersionDecider;
     }
 
     @Override
@@ -46,24 +49,11 @@ public class AggregateOptionsOperation extends Operation<Boolean, AggregateOptio
 
     @Override
     public String getOperationName() {
-        return "Aggregate Options Creation";
+        return "Determine Project Information";
     }
 
     @Override
-    protected OperationResult<AggregateOptions> executeOperation(Boolean input) throws DetectUserFriendlyException, IntegrationException {
-        String aggregateName = runOptions.getAggregateName().orElse(null);
-        AggregateMode aggregateMode = runOptions.getAggregateMode();
-        AggregateOptions aggregateOptions;
-        if (StringUtils.isNotBlank(aggregateName)) {
-            if (input) {
-                aggregateOptions = AggregateOptions.aggregateButSkipEmpty(aggregateName, aggregateMode);
-            } else {
-                aggregateOptions = AggregateOptions.aggregateAndAlwaysUpload(aggregateName, aggregateMode);
-            }
-        } else {
-            aggregateOptions = AggregateOptions.doNotAggregate();
-        }
-
-        return OperationResult.success(aggregateOptions);
+    protected OperationResult<NameVersion> executeOperation(List<DetectToolProjectInfo> input) throws DetectUserFriendlyException, IntegrationException {
+        return OperationResult.success(projectNameVersionDecider.decideProjectNameVersion(runOptions.getPreferredTools(), input));
     }
 }

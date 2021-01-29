@@ -1,5 +1,5 @@
-/*
- * buildSrc
+/**
+ * synopsys-detect
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
@@ -20,35 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.docs.copied;
+package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
-//Copied from detect-configuration
-public class HelpJsonExitCode {
-    private String exitCodeKey = "";
-    private String exitCodeDescription = "";
-    private Integer exitCodeValue = 0;
+import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
+import com.synopsys.integration.detect.lifecycle.run.operation.Operation;
 
-    public Integer getExitCodeValue() {
-        return exitCodeValue;
+public abstract class BlackDuckOnlineOperation<I, T> extends Operation<I, T> {
+    private final ProductRunData productRunData;
+
+    public BlackDuckOnlineOperation(ProductRunData productRunData) {
+        this.productRunData = productRunData;
     }
 
-    public void setExitCodeValue(final Integer exitCodeValue) {
-        this.exitCodeValue = exitCodeValue;
+    @Override
+    protected boolean shouldExecute() {
+        return productRunData.shouldUseBlackDuckProduct() && getBlackDuckRunData().isOnline();
     }
 
-    public String getExitCodeKey() {
-        return exitCodeKey;
-    }
-
-    public void setExitCodeKey(final String exitCodeKey) {
-        this.exitCodeKey = exitCodeKey;
-    }
-
-    public String getExitCodeDescription() {
-        return exitCodeDescription;
-    }
-
-    public void setExitCodeDescription(final String exitCodeDescription) {
-        this.exitCodeDescription = exitCodeDescription;
+    public BlackDuckRunData getBlackDuckRunData() {
+        return productRunData.getBlackDuckRunData();
     }
 }

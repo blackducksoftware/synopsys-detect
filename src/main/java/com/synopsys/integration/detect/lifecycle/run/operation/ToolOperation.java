@@ -1,5 +1,5 @@
-/*
- * buildSrc
+/**
+ * synopsys-detect
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
@@ -20,35 +20,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.docs.copied;
+package com.synopsys.integration.detect.lifecycle.run.operation;
 
-//Copied from detect-configuration
-public class HelpJsonExitCode {
-    private String exitCodeKey = "";
-    private String exitCodeDescription = "";
-    private Integer exitCodeValue = 0;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    public Integer getExitCodeValue() {
-        return exitCodeValue;
+public abstract class ToolOperation<I, T> extends Operation<I, T> {
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Override
+    protected void logOperationStarted() {
+        logger.info("Will include the {} tool.", getOperationName());
     }
 
-    public void setExitCodeValue(final Integer exitCodeValue) {
-        this.exitCodeValue = exitCodeValue;
+    @Override
+    protected void logOperationFinished() {
+        logger.info("{} actions finished.", getOperationName());
     }
 
-    public String getExitCodeKey() {
-        return exitCodeKey;
-    }
-
-    public void setExitCodeKey(final String exitCodeKey) {
-        this.exitCodeKey = exitCodeKey;
-    }
-
-    public String getExitCodeDescription() {
-        return exitCodeDescription;
-    }
-
-    public void setExitCodeDescription(final String exitCodeDescription) {
-        this.exitCodeDescription = exitCodeDescription;
+    @Override
+    protected void logOperationSkipped() {
+        logger.info("{} tool will not be run.", getOperationName());
     }
 }
