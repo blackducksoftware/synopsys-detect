@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * configuration
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
@@ -20,24 +20,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.report.output;
+package com.synopsys.integration.configuration.config;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PropertyValues {
-    private Map<String, String> map;
+public class PropertyMap<T extends Object> {
+    private Map<String, T> map;
 
-    public PropertyValues(final Map<String, String> map) {
+    public PropertyMap(final Map<String, T> map) {
         this.map = map;
     }
 
-    public Map<String, String> getMap() {
+    public Map<String, T> getMap() {
         return map;
     }
 
-    public Map<String, String> getSortedMap() {
+    public List<String> getKeys() {
+        return new LinkedList<>(map.keySet());
+    }
+
+    public List<T> getValues() {
+        return new LinkedList<>(map.values());
+    }
+
+    public Map<String, T> getSortedMap() {
         return map.entrySet().stream()
                    .sorted(Map.Entry.comparingByKey())
                    .collect(Collectors.toMap(

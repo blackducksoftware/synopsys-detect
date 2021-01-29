@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.synopsys.integration.common.util.Bds;
+import com.synopsys.integration.configuration.config.PropertyMap;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.workflow.event.Event;
@@ -53,7 +54,7 @@ public class FormattedOutputManager {
     private final List<DetectResult> detectResults = new ArrayList<>();
     private final List<DetectIssue> detectIssues = new ArrayList<>();
     private final Map<String, List<File>> unrecognizedPaths = new HashMap<>();
-    private PropertyValues propertyValues = null;
+    private PropertyMap<String> propertyMap = null;
 
     public FormattedOutputManager(EventSystem eventSystem) {
         eventSystem.registerListener(Event.DetectorsComplete, this::detectorsComplete);
@@ -102,8 +103,8 @@ public class FormattedOutputManager {
         formattedOutput.unrecognizedPaths = new HashMap<>();
         unrecognizedPaths.keySet().forEach(key -> formattedOutput.unrecognizedPaths.put(key, unrecognizedPaths.get(key).stream().map(File::toString).collect(Collectors.toList())));
 
-        if (propertyValues != null) {
-            formattedOutput.propertyValues = propertyValues.getSortedMap();
+        if (propertyMap != null) {
+            formattedOutput.propertyValues = propertyMap.getSortedMap();
         }
 
         return formattedOutput;
@@ -169,7 +170,7 @@ public class FormattedOutputManager {
         this.unrecognizedPaths.get(unrecognizedPaths.getGroup()).addAll(unrecognizedPaths.getPaths());
     }
 
-    private void propertyValuesCollected(PropertyValues propertyValues) {
-        this.propertyValues = propertyValues;
+    private void propertyValuesCollected(PropertyMap propertyMap) {
+        this.propertyMap = propertyMap;
     }
 }

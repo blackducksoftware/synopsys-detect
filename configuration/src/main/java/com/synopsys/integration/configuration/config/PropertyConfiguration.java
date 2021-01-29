@@ -23,7 +23,6 @@
 package com.synopsys.integration.configuration.config;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -32,11 +31,9 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.Assert;
 
-import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.resolution.NoPropertyResolution;
 import com.synopsys.integration.configuration.config.resolution.PropertyResolution;
 import com.synopsys.integration.configuration.config.resolution.PropertyResolutionInfo;
@@ -45,7 +42,6 @@ import com.synopsys.integration.configuration.config.value.ExceptionPropertyValu
 import com.synopsys.integration.configuration.config.value.NoValuePropertyValue;
 import com.synopsys.integration.configuration.config.value.PropertyValue;
 import com.synopsys.integration.configuration.config.value.ValuedPropertyValue;
-import com.synopsys.integration.configuration.help.PropertyInfo;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.NullableProperty;

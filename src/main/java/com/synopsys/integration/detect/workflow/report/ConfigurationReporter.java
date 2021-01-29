@@ -23,10 +23,12 @@
 package com.synopsys.integration.detect.workflow.report;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.config.PropertyMap;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
@@ -44,7 +46,10 @@ public class ConfigurationReporter {
         writer.writeLine("Detect Configuration");
         writer.writeSeparator();
         final PropertyConfigurationHelpContext helpContext = new PropertyConfigurationHelpContext(propertyConfiguration);
-        helpContext.printCurrentValues(writer::writeLine, maskedRawPropertyValues, new HashMap<>(), DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE);
+        List<String> sortedPropertyKeys = DetectProperties.allProperties().getPropertyKeys().stream()
+                                              .sorted()
+                                              .collect(Collectors.toList());
+        helpContext.printKnownCurrentValues(writer::writeLine, sortedPropertyKeys, new PropertyMap<>(maskedRawPropertyValues), new HashMap<>());
         writer.writeSeparator();
     }
 }

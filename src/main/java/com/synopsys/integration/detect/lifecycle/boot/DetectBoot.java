@@ -67,7 +67,7 @@ import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detect.workflow.report.output.PropertyValues;
+import com.synopsys.integration.configuration.config.PropertyMap;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 import freemarker.template.Configuration;
@@ -92,7 +92,7 @@ public class DetectBoot {
     public Optional<DetectBootResult> boot(String detectVersion) throws IOException, IllegalAccessException {
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             HelpPrinter helpPrinter = new HelpPrinter();
-            helpPrinter.printAppropriateHelpMessage(DEFAULT_PRINT_STREAM, DetectProperties.allProperties(), Arrays.asList(DetectGroup.values()), DetectGroup.BLACKDUCK_SERVER, detectArgumentState);
+            helpPrinter.printAppropriateHelpMessage(DEFAULT_PRINT_STREAM, DetectProperties.allProperties().getProperties(), Arrays.asList(DetectGroup.values()), DetectGroup.BLACKDUCK_SERVER, detectArgumentState);
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 
@@ -225,13 +225,13 @@ public class DetectBoot {
     }
 
     private Map<String, String> collectMaskedRawPropertyValues(PropertyConfiguration propertyConfiguration) throws IllegalAccessException {
-        Map<String, String> rawPropertyKeyValues = propertyConfiguration.getRawValueMap(new HashSet<>(DetectProperties.allProperties()));
+        Map<String, String> rawPropertyKeyValues = propertyConfiguration.getRawValueMap(new HashSet<>(DetectProperties.allProperties().getProperties()));
         PropertyMasker propertyMasker = new PropertyMasker();
         return propertyMasker.maskRawValues(rawPropertyKeyValues, DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE);
     }
 
     private void publishCollectedPropertyValues(Map<String, String> maskedRawPropertyValues, EventSystem eventSystem) throws IllegalAccessException {
-        eventSystem.publishEvent(Event.RawMaskedPropertyValuesCollected, new PropertyValues(maskedRawPropertyValues));
+        eventSystem.publishEvent(Event.RawMaskedPropertyValuesCollected, new PropertyMap(maskedRawPropertyValues));
     }
 
 }

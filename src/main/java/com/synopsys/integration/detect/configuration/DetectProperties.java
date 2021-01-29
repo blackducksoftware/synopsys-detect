@@ -36,6 +36,7 @@ import com.synopsys.integration.blackduck.api.generated.enumeration.ProjectVersi
 import com.synopsys.integration.blackduck.api.manual.temporary.enumeration.ProjectVersionPhaseType;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.IndividualFileMatching;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.SnippetMatching;
+import com.synopsys.integration.configuration.property.Properties;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.PassthroughProperty;
 import com.synopsys.integration.configuration.property.types.bool.BooleanProperty;
@@ -1884,7 +1885,7 @@ public class DetectProperties {
             .setDeprecated(USERNAME_PASSWORD_DEPRECATION_MESSAGE, DetectMajorVersion.SEVEN, DetectMajorVersion.EIGHT);
 
     // Accessor to get all properties
-    public static List<Property> allProperties() throws IllegalAccessException {
+    public static Properties allProperties() throws IllegalAccessException {
         List<Property> properties = new ArrayList<>();
         Field[] allFields = DetectProperties.class.getDeclaredFields();
         for (Field field : allFields) {
@@ -1894,7 +1895,7 @@ public class DetectProperties {
                 properties.add(convertDetectPropertyToProperty(detectProperty));
             }
         }
-        return properties;
+        return new Properties(properties);
     }
 
     private static Property convertDetectPropertyToProperty(DetectProperty detectProperty) {

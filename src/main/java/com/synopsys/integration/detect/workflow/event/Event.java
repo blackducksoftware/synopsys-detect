@@ -24,7 +24,6 @@ package com.synopsys.integration.detect.workflow.event;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 
 import com.synopsys.integration.detect.lifecycle.shutdown.ExitCodeRequest;
@@ -32,7 +31,7 @@ import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.detector.executable.ExecutedExecutable;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationNamesResult;
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
-import com.synopsys.integration.detect.workflow.report.output.PropertyValues;
+import com.synopsys.integration.configuration.config.PropertyMap;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.Status;
@@ -70,5 +69,5 @@ public class Event {
     public static final EventType<NameVersion> ProjectNameVersionChosen = new EventType<>(NameVersion.class);
     public static final EventType<ExecutedExecutable> Executable = new EventType<>(ExecutedExecutable.class);
     public static final EventType<UnrecognizedPaths> UnrecognizedPaths = new EventType<>(UnrecognizedPaths.class);
-    public static final EventType<PropertyValues> RawMaskedPropertyValuesCollected = new EventType<>(PropertyValues.class);
+    public static final EventType<PropertyMap> RawMaskedPropertyValuesCollected = new EventType<>(PropertyMap.class);
 }
