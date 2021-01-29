@@ -39,7 +39,7 @@ public class YarnLockLineAnalyzer {
             logger.warn("Leading space count for '{}' is {}; expected it to be divisible by {}",
                 line, leadingSpaceCount, SPACES_INDENT_PER_LEVEL);
         }
-        return countLeadingSpaces(line) / SPACES_INDENT_PER_LEVEL;
+        return leadingSpaceCount / SPACES_INDENT_PER_LEVEL;
     }
 
     public String unquote(String s) {
