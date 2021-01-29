@@ -51,17 +51,17 @@ public class DiagnosticSystem {
     private final DirectoryManager directoryManager;
     private final EventSystem eventSystem;
 
-    public DiagnosticSystem(boolean isExtendedMode, PropertyConfiguration propertyConfiguration, DetectRun detectRun, DetectInfo detectInfo, DirectoryManager directoryManager, EventSystem eventSystem) {
+    public DiagnosticSystem(boolean isExtendedMode, PropertyConfiguration propertyConfiguration, DetectRun detectRun, DetectInfo detectInfo, DirectoryManager directoryManager, EventSystem eventSystem, Map<String, String> maskedRawPropertyValues) {
         this.propertyConfiguration = propertyConfiguration;
         this.detectRun = detectRun;
         this.detectInfo = detectInfo;
         this.directoryManager = directoryManager;
         this.eventSystem = eventSystem;
 
-        init(isExtendedMode);
+        init(isExtendedMode, maskedRawPropertyValues);
     }
 
-    private void init(boolean isExtendedMode) {
+    private void init(boolean isExtendedMode, Map<String, String> maskedRawPropertyValues) {
         System.out.println();
         System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         System.out.println("Diagnostic mode on.");
@@ -87,7 +87,7 @@ public class DiagnosticSystem {
 
         logger.info("Creating configuration diagnostics reports.");
 
-        diagnosticReportHandler.configurationsReport(detectInfo, propertyConfiguration);
+        diagnosticReportHandler.configurationsReport(detectInfo, propertyConfiguration, maskedRawPropertyValues);
 
         logger.info("Diagnostics is ready.");
     }

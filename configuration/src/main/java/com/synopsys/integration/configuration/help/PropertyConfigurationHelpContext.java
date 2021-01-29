@@ -37,13 +37,11 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.common.util.Bds;
-import com.synopsys.integration.configuration.config.PropertyInfoCollector;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.config.PropertyMasker;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.TypedProperty;
-import com.synopsys.integration.configuration.util.PropertyUtils;
 
 //The idea is that this is here to help you log information about a particular property configuration with particular things you want to express.
 //  For example you may want to log deprecation warning when a particular property is set.
@@ -73,13 +71,13 @@ public class PropertyConfigurationHelpContext {
         this.propertyConfiguration = propertyConfiguration;
     }
 
-    public void printCurrentValues(Consumer<String> logger, Set<Property> knownProperties, Map<String, String> additionalNotes, Predicate<String> shouldMask) {
+    public void printCurrentValues(Consumer<String> logger, Map<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes, Predicate<String> shouldMask) {
         logger.accept("");
         logger.accept("Current property values:");
         logger.accept("--property = value [notes]");
         logger.accept(StringUtils.repeat("-", 60));
 
-        Map<String, String> sortedMaskedRawPropertyKeyValues = getSortedMaskedRawPropertyKeyValues(knownProperties, shouldMask);
+        Map<String, String> sortedMaskedRawPropertyKeyValues = sortMap(maskedRawPropertyValues);
         for (Map.Entry<String, String> rawKeyValue: sortedMaskedRawPropertyKeyValues.entrySet()) {
             String sourceName = propertyConfiguration.getPropertySource(rawKeyValue.getKey()).orElse("unknown");
             String sourceDisplayName = knownSourceDisplayNames.getOrDefault(sourceName, sourceName);
@@ -93,11 +91,8 @@ public class PropertyConfigurationHelpContext {
         logger.accept("");
     }
 
-    private Map<String, String> getSortedMaskedRawPropertyKeyValues(Set<Property> knownProperties, Predicate<String> shouldMaskRawValue) {
-        Map<String, String> rawPropertyKeyValues = propertyConfiguration.getRawKeyValueMap(knownProperties);
-        PropertyMasker propertyMasker = new PropertyMasker();
-        Map<String, String> maskedRawPropertyKeyValues = propertyMasker.maskRawValues(rawPropertyKeyValues, shouldMaskRawValue);
-        return maskedRawPropertyKeyValues.entrySet()
+    private Map<String, String> sortMap(Map<String, String> maskedRawPropertyValues) {
+        return maskedRawPropertyValues.entrySet()
                                                                    .stream()
                                                                    .sorted(Map.Entry.<String, String>comparingByKey())
                                                                    .collect(Collectors.toMap(

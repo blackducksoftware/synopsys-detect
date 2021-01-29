@@ -161,11 +161,11 @@ public class DiagnosticReportHandler {
         }
     }
 
-    public void configurationsReport(final DetectInfo detectInfo, final PropertyConfiguration propertyConfiguration) {
+    public void configurationsReport(final DetectInfo detectInfo, final PropertyConfiguration propertyConfiguration, Map<String, String> maskedRawPropertyValues) {
         try {
             final ReportWriter profileWriter = getReportWriter(ReportTypes.CONFIGURATION);
             final ConfigurationReporter reporter = new ConfigurationReporter();
-            reporter.writeReport(profileWriter, detectInfo, propertyConfiguration);
+            reporter.writeReport(profileWriter, detectInfo, propertyConfiguration, maskedRawPropertyValues);
         } catch (final Exception e) {
             logger.error("Failed to write profiling report.", e);
         }

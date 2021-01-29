@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.workflow.report;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
@@ -33,7 +34,7 @@ import com.synopsys.integration.detect.configuration.DetectPropertyUtil;
 import com.synopsys.integration.detect.workflow.report.writer.ReportWriter;
 
 public class ConfigurationReporter {
-    public void writeReport(final ReportWriter writer, final DetectInfo detectInfo, final PropertyConfiguration propertyConfiguration) throws IllegalAccessException {
+    public void writeReport(final ReportWriter writer, final DetectInfo detectInfo, final PropertyConfiguration propertyConfiguration, Map<String, String> maskedRawPropertyValues) throws IllegalAccessException {
         writer.writeSeparator();
         writer.writeLine("Detect Info");
         writer.writeSeparator();
@@ -43,7 +44,7 @@ public class ConfigurationReporter {
         writer.writeLine("Detect Configuration");
         writer.writeSeparator();
         final PropertyConfigurationHelpContext helpContext = new PropertyConfigurationHelpContext(propertyConfiguration);
-        helpContext.printCurrentValues(writer::writeLine, new HashSet<>(DetectProperties.allProperties()), new HashMap<>(), DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE);
+        helpContext.printCurrentValues(writer::writeLine, maskedRawPropertyValues, new HashMap<>(), DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE);
         writer.writeSeparator();
     }
 }

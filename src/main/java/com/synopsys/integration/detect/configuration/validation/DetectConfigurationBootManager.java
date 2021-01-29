@@ -90,8 +90,8 @@ public class DetectConfigurationBootManager {
         return new DeprecationResult(additionalNotes, deprecationMessages, shouldFailFromDeprecations);
     }
 
-    public void printConfiguration(Map<String, String> additionalNotes) throws IllegalAccessException {
-        detectConfigurationReporter.printCurrentValues(logger::info, new HashSet<>(DetectProperties.allProperties()), additionalNotes, DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE);
+    public void printConfiguration(Map<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes) throws IllegalAccessException {
+        detectConfigurationReporter.printCurrentValues(logger::info, maskedRawPropertyValues, additionalNotes, DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE);
     }
 
     //Check for options that are just plain bad, ie giving an detector type we don't know about.
