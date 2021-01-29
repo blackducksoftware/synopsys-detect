@@ -18,7 +18,6 @@ import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 import com.synopsys.integration.executable.ExecutableOutput;
 
 public class GoModDetectableTest extends DetectableFunctionalTest {
-
     public GoModDetectableTest() throws IOException {
         super("gomod");
     }
@@ -101,4 +100,5 @@ public class GoModDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasRootDependency("github.com/sirupsen/logrus", "v2.0.0");
         graphAssert.hasParentChildRelationship("github.com/sirupsen/logrus", "v2.0.0", "github.com/davecgh/go-spew", "v1.1.1");
     }
+
 }

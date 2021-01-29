@@ -20,23 +20,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.lifecycle.boot.product;
+package com.synopsys.integration.detect.workflow.blackduck;
 
-public class ProductBootOptions {
-    private final boolean ignoreConnectionFailures;
-    private final boolean testConnections;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 
-    public ProductBootOptions(boolean ignoreConnectionFailures, boolean testConnections) {
-        this.ignoreConnectionFailures = ignoreConnectionFailures;
-        this.testConnections = testConnections;
+public class BlackDuckRunOptions {
+    private final BlackduckScanMode scanMode;
+
+    public BlackDuckRunOptions(BlackduckScanMode scanMode) {
+        this.scanMode = scanMode;
     }
 
-    public boolean isIgnoreConnectionFailures() {
-        return ignoreConnectionFailures;
+    public BlackduckScanMode getScanMode() {
+        return scanMode;
     }
 
-    public boolean isTestConnections() {
-        return testConnections;
+    public boolean shouldPerformRapidModeScan() {
+        return BlackduckScanMode.RAPID_MODE == scanMode;
     }
-
 }

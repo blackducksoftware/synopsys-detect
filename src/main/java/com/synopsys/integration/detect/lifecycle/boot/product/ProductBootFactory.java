@@ -43,22 +43,22 @@ public class ProductBootFactory {
     private final EventSystem eventSystem;
     private final DetectConfigurationFactory detectConfigurationFactory;
 
-    public ProductBootFactory(final DetectInfo detectInfo, final EventSystem eventSystem, final DetectConfigurationFactory detectConfigurationFactory) {
+    public ProductBootFactory(DetectInfo detectInfo, EventSystem eventSystem, DetectConfigurationFactory detectConfigurationFactory) {
         this.detectInfo = detectInfo;
         this.eventSystem = eventSystem;
         this.detectConfigurationFactory = detectConfigurationFactory;
     }
 
-    public PhoneHomeManager createPhoneHomeManager(final BlackDuckServicesFactory blackDuckServicesFactory) {
-        final ExecutorService executorService = Executors.newSingleThreadExecutor();
-        final BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(blackDuckServicesFactory, executorService);
-        final PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(detectConfigurationFactory.createPhoneHomeOptions().getPassthrough(), detectInfo, eventSystem, blackDuckPhoneHomeHelper);
+    public PhoneHomeManager createPhoneHomeManager(BlackDuckServicesFactory blackDuckServicesFactory) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        BlackDuckPhoneHomeHelper blackDuckPhoneHomeHelper = BlackDuckPhoneHomeHelper.createAsynchronousPhoneHomeHelper(blackDuckServicesFactory, executorService);
+        PhoneHomeManager phoneHomeManager = new OnlinePhoneHomeManager(detectConfigurationFactory.createPhoneHomeOptions().getPassthrough(), detectInfo, eventSystem, blackDuckPhoneHomeHelper);
         return phoneHomeManager;
     }
 
     public BlackDuckServerConfig createBlackDuckServerConfig() throws DetectUserFriendlyException {
         BlackDuckConnectionDetails connectionDetails = detectConfigurationFactory.createBlackDuckConnectionDetails();
-        BlackDuckConfigFactory blackDuckConfigFactory = new BlackDuckConfigFactory(connectionDetails);
+        BlackDuckConfigFactory blackDuckConfigFactory = new BlackDuckConfigFactory(detectInfo, connectionDetails);
         return blackDuckConfigFactory.createServerConfig(new SilentIntLogger());
     }
 }

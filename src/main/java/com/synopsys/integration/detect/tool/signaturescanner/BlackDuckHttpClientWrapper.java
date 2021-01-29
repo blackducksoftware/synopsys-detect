@@ -27,6 +27,8 @@ import java.util.Optional;
 
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.http.client.BlackDuckHttpClient;
 import com.synopsys.integration.exception.IntegrationException;
@@ -41,6 +43,7 @@ import com.synopsys.integration.rest.response.Response;
  * @deprecated Only for use while we must continue to support detect.blackduck.signature.scanner.host.url
  */
 public class BlackDuckHttpClientWrapper implements BlackDuckHttpClient {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final IntHttpClient httpClient;
 
     public BlackDuckHttpClientWrapper(IntHttpClient httpClient) {
@@ -74,10 +77,13 @@ public class BlackDuckHttpClientWrapper implements BlackDuckHttpClient {
 
     @Override
     public void handleErrorResponse(HttpUriRequest httpUriRequest, Response response) {
+        logger.error("HTTP {} {} response: {} {}", httpUriRequest.getMethod(), httpUriRequest.getURI(), response.getStatusCode(), response.getStatusMessage());
     }
 
     @Override
     public void throwExceptionForError(Response response) throws IntegrationException {
+        String msg = String.format("HTTP response: %d %s", response.getStatusCode(), response.getStatusMessage());
+        throw new IntegrationException(msg);
     }
 
     @Override

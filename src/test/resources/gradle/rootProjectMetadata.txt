@@ -1,6 +1,0 @@
-DETECT META DATA START
-rootProjectPath:/Users/ekerwin/Documents/source/integration/hub-detect
-rootProjectGroup:com.blackducksoftware.integration
-rootProjectName:hub-detect
-rootProjectVersion:2.0.0-SNAPSHOT
-DETECT META DATA END

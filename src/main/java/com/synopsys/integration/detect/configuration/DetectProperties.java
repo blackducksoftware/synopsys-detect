@@ -58,6 +58,7 @@ import com.synopsys.integration.configuration.property.types.string.NullableStri
 import com.synopsys.integration.configuration.property.types.string.StringListProperty;
 import com.synopsys.integration.configuration.property.types.string.StringProperty;
 import com.synopsys.integration.configuration.util.Group;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
 import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
@@ -252,6 +253,12 @@ public class DetectProperties {
             .setHelp(
                 "If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. The depth of the search is 0 (subdirectories are not searched). This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH);
+
+    public static final DetectProperty<IntegerProperty> DETECT_BINARY_SCAN_SEARCH_DEPTH =
+        new DetectProperty<>(new IntegerProperty("detect.binary.scan.search.depth", 0))
+            .setInfo("Binary Scan Search Depth", DetectPropertyFromVersion.VERSION_6_9_0)
+            .setHelp("The depth at which Detect will search for files to scan with the Binary Scanner.")
+            .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<StringProperty> DETECT_BITBAKE_BUILD_ENV_NAME =
         new DetectProperty<>(new StringProperty("detect.bitbake.build.env.name", "oe-init-build-env"))
@@ -1126,6 +1133,14 @@ public class DetectProperties {
             .setInfo("Wait For Results", DetectPropertyFromVersion.VERSION_5_5_0)
             .setHelp("If set to true, Detect will wait for Synopsys products until results are available or the detect.report.timeout is exceeded.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL);
+
+    public static final DetectProperty<EnumProperty<BlackduckScanMode>> DETECT_BLACKDUCK_SCAN_MODE =
+        new DetectProperty<>(new EnumProperty<>("detect.blackduck.scan.mode", BlackduckScanMode.FULL_MODE, BlackduckScanMode.class))
+            .setInfo("Detect Scan Mode", DetectPropertyFromVersion.VERSION_6_9_0)
+            .setHelp("Set the scanning mode of Detect",
+                "Set the scanning mode of Detect to control how Detect will send scan data to Black Duck.  The scan results are not persisted in Black Duck if RAPID_MODE is selected.  The RAPID_MODE value supports a Black Duck feature that is meant to be used with a later Black Duck version.  If RAPID_MODE is selected, then Detect also requires --detect.bdio2.enabled=true and --blackduck.offline.mode=false to perform a RAPID_MODE scan.")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
+            .setCategory(DetectCategory.Advanced);
 
     //#endregion Active Properties
 
