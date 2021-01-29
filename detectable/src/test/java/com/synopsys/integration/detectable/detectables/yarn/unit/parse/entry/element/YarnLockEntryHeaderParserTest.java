@@ -61,10 +61,10 @@ public class YarnLockEntryHeaderParserTest {
         Assertions.assertTrue(entry.isPresent());
         List<YarnLockEntryId> ids = entry.get().getIds();
         Assertions.assertEquals(2, ids.size());
-        Assertions.assertEquals(ids.get(0).getName(), "example");
-        Assertions.assertEquals(ids.get(0).getVersion(), "");
-        Assertions.assertEquals(ids.get(1).getName(), "example");
-        Assertions.assertEquals(ids.get(1).getVersion(), "1");
+        Assertions.assertEquals("example", ids.get(0).getName());
+        Assertions.assertEquals("", ids.get(0).getVersion());
+        Assertions.assertEquals("example", ids.get(1).getName());
+        Assertions.assertEquals("1", ids.get(1).getVersion());
     }
 
     @Test
@@ -83,7 +83,33 @@ public class YarnLockEntryHeaderParserTest {
         Assertions.assertTrue(entry.isPresent());
         List<YarnLockEntryId> ids = entry.get().getIds();
         Assertions.assertEquals(1, ids.size());
-        Assertions.assertEquals(ids.get(0).getName(), "@example");
-        Assertions.assertEquals(ids.get(0).getVersion(), "");
+        Assertions.assertEquals("@example", ids.get(0).getName());
+        Assertions.assertEquals("", ids.get(0).getVersion());
+    }
+
+    @Test
+    void testQuotedId() {
+        String line = "\"xtend@>=4.0.0 <4.1.0-0\", xtend@^4.0.0, xtend@~4.0.1:";
+        List<String> lines = Arrays.asList(line);
+        Assertions.assertTrue(yarnLockParser.applies(line));
+
+        YarnLockEntryBuilder builder = new YarnLockEntryBuilder();
+        yarnLockParser.parseElement(builder, lines, 0);
+
+        // Complete the builder requirements and build the entry
+        builder.setVersion("testVersion");
+        Optional<YarnLockEntry> entry = builder.build();
+
+        Assertions.assertTrue(entry.isPresent());
+        List<YarnLockEntryId> ids = entry.get().getIds();
+        Assertions.assertEquals(3, ids.size());
+        Assertions.assertEquals("xtend", ids.get(0).getName());
+        Assertions.assertEquals(">=4.0.0 <4.1.0-0", ids.get(0).getVersion());
+
+        Assertions.assertEquals("xtend", ids.get(1).getName());
+        Assertions.assertEquals("^4.0.0", ids.get(1).getVersion());
+
+        Assertions.assertEquals("xtend", ids.get(2).getName());
+        Assertions.assertEquals("~4.0.1", ids.get(2).getVersion());
     }
 }
