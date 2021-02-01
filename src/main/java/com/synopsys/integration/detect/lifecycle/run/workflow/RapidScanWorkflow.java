@@ -51,15 +51,21 @@ public class RapidScanWorkflow extends Workflow {
         ProjectDecisionOperation projectDecisionOperation = getOperationFactory().createProjectDecisionOperation();
         AggregateOptionsOperation aggregateOptionsOperation = getOperationFactory().createAggregateOptionsOperation();
         BdioFileGenerationOperation bdioFileGenerationOperation = getOperationFactory().createBdioFileGenerationOperation();
-        RapidScanOperation blackDuckOperation = getOperationFactory().createRapidScanOperation();
+        RapidScanOperation rapidScanOperation = getOperationFactory().createRapidScanOperation();
 
         OperationResult<RunResult> detectorResult = detectorOperation.execute(runResult);
-        OperationResult<NameVersion> projectInfo = projectDecisionOperation.execute(detectorResult.getContent().orElse(null).getDetectToolProjectInfo());
+
+        OperationResult<NameVersion> projectInfo = projectDecisionOperation.execute(runResult.getDetectToolProjectInfo());
+        NameVersion projectNameVersion = projectInfo.getContent();
+
         OperationResult<AggregateOptions> aggregateOptions = aggregateOptionsOperation.execute(detectorResult.hasFailed());
-        BdioInput bdioInput = new BdioInput(aggregateOptions.getContent().orElse(null), projectInfo.getContent().get(), detectorResult.getContent().get().getDetectCodeLocations());
+        BdioInput bdioInput = new BdioInput(aggregateOptions.getContent(), projectNameVersion, runResult.getDetectCodeLocations());
+
         OperationResult<BdioResult> bdioGeneration = bdioFileGenerationOperation.execute(bdioInput);
-        RapidScanInput rapidScanInput = new RapidScanInput(bdioInput.getNameVersion(), bdioGeneration.getContent().get());
-        blackDuckOperation.execute(rapidScanInput);
+        BdioResult bdioResult = bdioGeneration.getContent();
+
+        RapidScanInput rapidScanInput = new RapidScanInput(projectNameVersion, bdioResult);
+        rapidScanOperation.execute(rapidScanInput);
         return null;
     }
 }

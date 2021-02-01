@@ -22,14 +22,14 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 public class OperationResult<T> {
     private T content;
     private boolean success;
 
     public static <T> OperationResult<T> of(OperationResult<T> result) {
-        return new OperationResult<>(result.getContent().orElse(null), result.hasSucceeded());
+        return new OperationResult<>(result.getContent(), result.hasSucceeded());
     }
 
     public static <T> OperationResult<T> success(T content) {
@@ -53,8 +53,9 @@ public class OperationResult<T> {
         this.content = content;
     }
 
-    public Optional<T> getContent() {
-        return Optional.ofNullable(content);
+    @Nullable
+    public T getContent() {
+        return content;
     }
 
     public boolean hasFailed() {

@@ -83,35 +83,32 @@ public class DefaultWorkflow extends Workflow {
 
         boolean priorOperationsSucceeded = dockerResult.hasSucceeded() && bazelResult.hasSucceeded() && detectorResult.hasSucceeded();
 
-        OperationResult<NameVersion> projectInfo = projectDecisionOperation.execute(detectorResult.getContent().orElse(null).getDetectToolProjectInfo());
-        NameVersion projectNameVersion = projectInfo.getContent().orElse(null);
+        OperationResult<NameVersion> projectInfo = projectDecisionOperation.execute(runResult.getDetectToolProjectInfo());
+        NameVersion projectNameVersion = projectInfo.getContent();
 
         OperationResult<ProjectVersionWrapper> projectCreationResult = projectCreationOperation.execute(projectNameVersion);
-        ProjectVersionWrapper projectVersionWrapper = projectCreationResult.getContent().orElse(null);
+        ProjectVersionWrapper projectVersionWrapper = projectCreationResult.getContent();
 
         OperationResult<AggregateOptions> aggregateOptions = aggregateOptionsOperation.execute(priorOperationsSucceeded);
-        BdioInput bdioInput = new BdioInput(aggregateOptions.getContent().orElse(null), projectNameVersion, detectorResult.getContent().get().getDetectCodeLocations());
+        BdioInput bdioInput = new BdioInput(aggregateOptions.getContent(), projectNameVersion, runResult.getDetectCodeLocations());
 
         OperationResult<BdioResult> bdioGeneration = bdioFileGenerationOperation.execute(bdioInput);
-        BdioResult bdioResult = bdioGeneration.getContent().orElse(null);
+        BdioResult bdioResult = bdioGeneration.getContent();
 
         OperationResult<CodeLocationAccumulator> codeLocationResult = codeLocationOperation.execute(bdioResult);
-        CodeLocationAccumulator codeLocationAccumulator = codeLocationResult.getContent().orElse(null);
+        CodeLocationAccumulator codeLocationAccumulator = codeLocationResult.getContent();
         SignatureScanInput signatureScanInput = new SignatureScanInput(projectNameVersion, codeLocationAccumulator, runResult.getDockerTar().orElse(null));
 
         OperationResult<CodeLocationAccumulator> signatureScanResult = signatureScanOperation.execute(signatureScanInput);
-        codeLocationAccumulator = signatureScanResult.getContent().orElse(null);
         CodeLocationInput codeLocationInput = new CodeLocationInput(projectNameVersion, codeLocationAccumulator);
 
         OperationResult<CodeLocationAccumulator> binaryScanResult = binaryScanOperation.execute(codeLocationInput);
-        codeLocationAccumulator = binaryScanResult.getContent().orElse(null);
         ImpactAnalysisInput impactAnalysisInput = new ImpactAnalysisInput(projectNameVersion, codeLocationAccumulator, projectVersionWrapper);
 
         OperationResult<CodeLocationAccumulator> impactAnalysisResult = impactAnalysisOperation.execute(impactAnalysisInput);
-        codeLocationAccumulator = impactAnalysisResult.getContent().orElse(null);
 
         OperationResult<CodeLocationResults> codeLocationProcessingResult = codeLocationResultOperation.execute(codeLocationAccumulator);
-        FullScanPostProcessingInput postProcessingInput = new FullScanPostProcessingInput(projectNameVersion, bdioResult, codeLocationProcessingResult.getContent().orElse(null), projectVersionWrapper);
+        FullScanPostProcessingInput postProcessingInput = new FullScanPostProcessingInput(projectNameVersion, bdioResult, codeLocationProcessingResult.getContent(), projectVersionWrapper);
         OperationResult<Void> blackDuckPostProcessingResult = fullScanPostProcessingOperation.execute(postProcessingInput);
         return null;
     }
