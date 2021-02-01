@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.config.PropertyMasker;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
 import com.synopsys.integration.configuration.source.MapPropertySource;
 import com.synopsys.integration.configuration.source.PropertySource;
@@ -225,9 +224,7 @@ public class DetectBoot {
     }
 
     private Map<String, String> collectMaskedRawPropertyValues(PropertyConfiguration propertyConfiguration) throws IllegalAccessException {
-        Map<String, String> rawPropertyKeyValues = propertyConfiguration.getRawValueMap(new HashSet<>(DetectProperties.allProperties().getProperties()));
-        PropertyMasker propertyMasker = new PropertyMasker();
-        return propertyMasker.maskRawValues(rawPropertyKeyValues, DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE);
+        return propertyConfiguration.getRawValueMap(new HashSet<>(DetectProperties.allProperties().getProperties()), DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE);
     }
 
     private void publishCollectedPropertyValues(Map<String, String> maskedRawPropertyValues, EventSystem eventSystem) throws IllegalAccessException {

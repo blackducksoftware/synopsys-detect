@@ -209,9 +209,9 @@ public class PropertyConfigurationTest {
 
         PropertyConfiguration configuration = configOf(propertyMap);
 
-        Map<String, String> rawPropertyValues = configuration.getRawValueMap(properties);
+        Map<String, String> rawPropertyValues = configuration.getRawValueMap(properties, rawKey -> rawKey.contains("password"));
 
-        Assertions.assertEquals("password", rawPropertyValues.get("blackduck.password"));
+        Assertions.assertEquals("********", rawPropertyValues.get("blackduck.password"));
         Assertions.assertEquals("username", rawPropertyValues.get("blackduck.username"));
     }
 

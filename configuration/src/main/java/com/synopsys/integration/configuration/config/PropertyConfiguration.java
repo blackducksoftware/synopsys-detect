@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.Assert;
 
@@ -179,11 +180,25 @@ public class PropertyConfiguration {
 
     @NotNull
     public Map<String, String> getRawValueMap(@NotNull final Set<Property> properties) {
+        return getRawValueMap(properties, key -> false);
+    }
+
+    @NotNull
+    public Map<String, String> getRawValueMap(@NotNull final Set<Property> properties, Predicate<String> shouldMask) {
         Map<String, String> rawMap = new HashMap<>();
         for (Property property : properties) {
-            getRaw(property).ifPresent(rawValue -> rawMap.put(property.getKey(), rawValue));
+            String rawKey = property.getKey();
+            getRaw(property).ifPresent(rawValue -> rawMap.put(rawKey, maskValue(rawKey, rawValue, shouldMask)));
         }
         return rawMap;
+    }
+
+    public String maskValue(String rawKey, String rawValue, Predicate<String> shouldMask) {
+        String maskedValue = rawValue;
+        if (shouldMask.test(rawKey)) {
+            maskedValue = StringUtils.repeat('*', maskedValue.length());
+        }
+        return maskedValue;
     }
 
     @NotNull
