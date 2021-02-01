@@ -158,7 +158,11 @@ public class PropertyConfiguration {
     //region Advanced Usage
     public Optional<String> getRaw(@NotNull final Property property) {
         assertPropertyNotNull(property, "Must supply a property get raw keys.");
-        final PropertyResolution propertyResolution = resolveFromCache(property.getKey());
+        return resolveKey(property.getKey());
+    }
+
+    private Optional<String> resolveKey(String key) {
+        final PropertyResolution propertyResolution = resolveFromCache(key);
         return propertyResolution.getResolutionInfo().map(PropertyResolutionInfo::getRaw);
     }
 
@@ -193,11 +197,7 @@ public class PropertyConfiguration {
 
         final Map<String, String> keyMap = new HashMap<>();
         keys.forEach(key -> {
-            final PropertyResolution resolution = resolveFromCache(key);
-            if (resolution != null && resolution.getResolutionInfo().isPresent()) {
-                final String rawValue = resolution.getResolutionInfo().map(PropertyResolutionInfo::getRaw).get();
-                keyMap.put(key, rawValue);
-            }
+            resolveKey(key).ifPresent(rawValue -> keyMap.put(key, rawValue));
         });
         return keyMap;
     }
