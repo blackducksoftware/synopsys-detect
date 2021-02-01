@@ -213,6 +213,34 @@ public class YarnLockParserTest {
         assertEntry(yarnLock, "cssstyle", ">= 0.2.37 < 0.3.0", "0.2.37", new YarnLockDependency("cssom", "0.3.x", false));
     }
 
+    @Test
+    void testSkipIrrelevantStuff() {
+        List<String> yarnLockText = Arrays.asList(
+            "#",
+            "",
+            "any-root-dep@1:",
+            "  ignoredelement1",
+            "  version: 1.0.0", //must have a version to create an entry
+            "  ignoredelement2",
+            "  dependencies:",
+            "    some-peer: ^10.0.0",
+            "  ignoredelement3"
+        );
+        YarnLockParser yarnLockParser = createYarnLockParser();
+
+        YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockText);
+
+        Assertions.assertEquals(1, yarnLock.getEntries().size());
+        YarnLockEntry first = yarnLock.getEntries().get(0);
+        Assertions.assertEquals("1.0.0", first.getVersion());
+        Assertions.assertEquals(1, first.getDependencies().size());
+        YarnLockDependency dep = first.getDependencies().get(0);
+
+        Assertions.assertEquals("some-peer", dep.getName());
+        Assertions.assertEquals("^10.0.0", dep.getVersion());
+        Assertions.assertFalse(dep.isOptional());
+    }
+
     void assertEntry(YarnLock yarnLock, String idName, String idVersion, String resolvedVersion, YarnLockDependency... dependencies) {
         boolean found = false;
         for (YarnLockEntry entry : yarnLock.getEntries()) {
