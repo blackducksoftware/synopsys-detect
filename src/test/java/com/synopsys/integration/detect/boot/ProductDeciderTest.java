@@ -33,8 +33,8 @@ import com.synopsys.integration.builder.BuilderStatus;
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
-import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.DetectWorkflow;
 import com.synopsys.integration.detect.lifecycle.boot.decision.BlackDuckDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.PolarisDecision;
 import com.synopsys.integration.detect.lifecycle.boot.decision.ProductDecider;
@@ -50,7 +50,7 @@ class ProductDeciderTest {
     @Test
     public void shouldRunPolarisWhenConfigValid() {
         File userHome = Mockito.mock(File.class);
-        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(BlackduckScanMode.FULL_MODE);
+        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(DetectWorkflow.PERSISTENT_SCAN);
         DetectToolFilter detectToolFilter = mockToolFilterForPolaris(true);
         DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(true);
 
@@ -61,7 +61,7 @@ class ProductDeciderTest {
     @Test
     public void shouldNotRunPolarisWhenConfigInvalid() {
         File userHome = Mockito.mock(File.class);
-        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(BlackduckScanMode.FULL_MODE);
+        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(DetectWorkflow.PERSISTENT_SCAN);
         DetectToolFilter detectToolFilter = mockToolFilterForPolaris(true);
         DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(false);
 
@@ -72,7 +72,7 @@ class ProductDeciderTest {
     @Test
     public void shouldNotRunPolarisWhenExcluded() {
         File userHome = Mockito.mock(File.class);
-        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(BlackduckScanMode.FULL_MODE);
+        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(DetectWorkflow.PERSISTENT_SCAN);
         DetectToolFilter detectToolFilter = mockToolFilterForPolaris(false);
         DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(true);
 
@@ -82,7 +82,7 @@ class ProductDeciderTest {
 
     @Test
     public void shouldRunBlackDuckOfflineWhenOverride() {
-        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(BlackduckScanMode.FULL_MODE);
+        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(DetectWorkflow.PERSISTENT_SCAN);
         RunOptions runOptions = createTestRunOptions(false);
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
@@ -94,7 +94,7 @@ class ProductDeciderTest {
 
     @Test
     public void shouldRunBlackDuckOfflineWhenInstallUrl() {
-        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(BlackduckScanMode.FULL_MODE);
+        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(DetectWorkflow.PERSISTENT_SCAN);
         RunOptions runOptions = createTestRunOptions(false);
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, VALID_URL);
@@ -106,7 +106,7 @@ class ProductDeciderTest {
 
     @Test
     public void shouldRunBlackDuckOfflineWhenInstallPath() {
-        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(BlackduckScanMode.FULL_MODE);
+        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(DetectWorkflow.PERSISTENT_SCAN);
         RunOptions runOptions = createTestRunOptions(false);
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(Mockito.mock(Path.class), null);
@@ -118,7 +118,7 @@ class ProductDeciderTest {
 
     @Test
     public void shouldRunBlackDuckOnline() {
-        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(BlackduckScanMode.FULL_MODE);
+        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(DetectWorkflow.PERSISTENT_SCAN);
         RunOptions runOptions = createTestRunOptions(false);
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, VALID_URL);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(null, null);
@@ -131,7 +131,7 @@ class ProductDeciderTest {
     @Test
     public void shouldNotRunPolarisBlackDuckRapidMode() {
         File userHome = Mockito.mock(File.class);
-        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(BlackduckScanMode.RAPID_MODE);
+        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(DetectWorkflow.TRANSIENT_SCAN);
         DetectToolFilter detectToolFilter = mockToolFilterForPolaris(true);
         DetectConfigurationFactory detectConfigurationFactory = mockDetectConfigurationFactoryForPolaris(true);
 
@@ -141,7 +141,7 @@ class ProductDeciderTest {
 
     @Test
     public void shouldNotRunBlackduckRapidModeAndOffline() {
-        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(BlackduckScanMode.RAPID_MODE);
+        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(DetectWorkflow.TRANSIENT_SCAN);
         RunOptions runOptions = createTestRunOptions(false);
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(true, null);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(Mockito.mock(Path.class), null);
@@ -152,7 +152,7 @@ class ProductDeciderTest {
 
     @Test
     public void shouldNotRunBlackduckRapidModeAndBDIO2Disabled() {
-        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(BlackduckScanMode.RAPID_MODE);
+        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(DetectWorkflow.TRANSIENT_SCAN);
         RunOptions runOptions = createTestRunOptions(false);
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, null);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(Mockito.mock(Path.class), null);
@@ -163,7 +163,7 @@ class ProductDeciderTest {
 
     @Test
     public void shouldRunBlackduckRapidModeAndBDIO2Enabled() {
-        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(BlackduckScanMode.RAPID_MODE);
+        BlackDuckRunOptions blackDuckRunOptions = new BlackDuckRunOptions(DetectWorkflow.TRANSIENT_SCAN);
         RunOptions runOptions = createTestRunOptions(true);
         BlackDuckConnectionDetails blackDuckConnectionDetails = blackDuckConnectionDetails(false, null);
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = blackDuckSignatureScannerOptions(Mockito.mock(Path.class), null);

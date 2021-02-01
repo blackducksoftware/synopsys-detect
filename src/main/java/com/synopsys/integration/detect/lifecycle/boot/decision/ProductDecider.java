@@ -57,8 +57,8 @@ import com.synopsys.integration.builder.BuilderStatus;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
-import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.DetectWorkflow;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
@@ -84,7 +84,7 @@ public class ProductDecider {
         }
 
         if (blackDuckRunOptions.shouldPerformRapidModeScan()) {
-            logger.debug("Polaris will NOT run because BlackDuck {} scan configured.", BlackduckScanMode.RAPID_MODE.name());
+            logger.debug("Polaris will NOT run because BlackDuck {} scan configured.", DetectWorkflow.TRANSIENT_SCAN.name());
             return PolarisDecision.skip();
         }
 
@@ -110,13 +110,13 @@ public class ProductDecider {
         Optional<String> signatureScannerHostUrl = blackDuckSignatureScannerOptions.getUserProvidedScannerInstallUrl();
         Optional<Path> signatureScannerOfflineLocalPath = blackDuckSignatureScannerOptions.getOfflineLocalScannerInstallPath();
         if (offline && blackDuckRunOptions.shouldPerformRapidModeScan()) {
-            logger.debug("Black Duck will NOT run: Black Duck offline mode is set to true and Black Duck {} scan is enabled which requires online mode", BlackduckScanMode.RAPID_MODE.name());
+            logger.debug("Black Duck will NOT run: Black Duck offline mode is set to true and Black Duck {} scan is enabled which requires online mode", DetectWorkflow.TRANSIENT_SCAN.name());
             return BlackDuckDecision.skip();
         } else if (offline) {
             logger.debug("Black Duck will run: Black Duck offline mode was set to true.");
             return BlackDuckDecision.runOffline();
         } else if (blackDuckRunOptions.shouldPerformRapidModeScan() && !runOptions.shouldUseBdio2()) {
-            logger.debug("Black Duck will NOT run: Detect will not generate BDIO2 files and Black Duck {} scan is enabled which requires BDIO2 file generation", BlackduckScanMode.RAPID_MODE.name());
+            logger.debug("Black Duck will NOT run: Detect will not generate BDIO2 files and Black Duck {} scan is enabled which requires BDIO2 file generation", DetectWorkflow.TRANSIENT_SCAN.name());
             return BlackDuckDecision.skip();
         } else if (signatureScannerHostUrl.isPresent()) {
             logger.info("A Black Duck signature scanner url was provided, which requires Black Duck offline mode.");

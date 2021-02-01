@@ -23,7 +23,9 @@
 package com.synopsys.integration.detect.lifecycle.run.workflow;
 
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.lifecycle.run.EventAccumulator;
 import com.synopsys.integration.detect.lifecycle.run.RunResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.BazelOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.DetectorOperation;
@@ -54,12 +56,17 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class DefaultWorkflow extends Workflow {
-    public DefaultWorkflow(OperationFactory operationFactory) {
-        super(operationFactory);
+    public DefaultWorkflow(PropertyConfiguration detectConfiguration, OperationFactory operationFactory, EventAccumulator eventAccumulator) {
+        super(detectConfiguration, operationFactory, eventAccumulator);
     }
 
     @Override
-    public WorkflowResult execute() throws DetectUserFriendlyException, IntegrationException {
+    protected void assertRequiredProperties() throws DetectUserFriendlyException {
+        // no properties to validate here.
+    }
+
+    @Override
+    public WorkflowResult executeWorkflow() throws DetectUserFriendlyException, IntegrationException {
         RunResult runResult = new RunResult();
         PolarisOperation polarisOperation = getOperationFactory().createPolarisOperation();
         DockerOperation dockerOperation = getOperationFactory().createDockerOperation();

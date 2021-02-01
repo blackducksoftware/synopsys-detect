@@ -166,7 +166,8 @@ public class Application implements ApplicationRunner {
         if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent()) {
             logger.debug("Detect will attempt to run.");
             ProductRunData productRunData = optionalProductRunData.get();
-            RunManager2 runManager = new RunManager2(detectRun, exitCodeManager);
+            //RunManager runManager = new RunManager(detectContext);
+            RunManager2 runManager = new RunManager2(detectRun, exitCodeManager, eventSystem);
             RunContext runContext = new RunContext(detectContext, productRunData);
             runManager.run(runContext);
         } else {

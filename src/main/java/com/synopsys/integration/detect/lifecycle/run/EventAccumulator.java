@@ -20,9 +20,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.configuration.enumeration;
+package com.synopsys.integration.detect.lifecycle.run;
 
-public enum BlackduckScanMode {
-    RAPID_MODE,
-    FULL_MODE
+import java.util.LinkedList;
+
+public class EventAccumulator extends LinkedList<EventRequest> {
+
 }

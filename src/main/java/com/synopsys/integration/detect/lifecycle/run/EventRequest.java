@@ -20,22 +20,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.blackduck;
+package com.synopsys.integration.detect.lifecycle.run;
 
-import com.synopsys.integration.detect.configuration.enumeration.DetectWorkflow;
+import com.synopsys.integration.detect.workflow.event.EventType;
 
-public class BlackDuckRunOptions {
-    private final DetectWorkflow scanMode;
+public class EventRequest<T> {
+    private final EventType<T> eventType;
+    private final T payload;
 
-    public BlackDuckRunOptions(DetectWorkflow scanMode) {
-        this.scanMode = scanMode;
+    public static <T> EventRequest<T> of(EventType<T> eventType, T payload) {
+        return new EventRequest<>(eventType, payload);
     }
 
-    public DetectWorkflow getScanMode() {
-        return scanMode;
+    private EventRequest(EventType<T> eventType, T payload) {
+        this.eventType = eventType;
+        this.payload = payload;
     }
 
-    public boolean shouldPerformRapidModeScan() {
-        return DetectWorkflow.TRANSIENT_SCAN == scanMode;
+    public EventType<T> getEventType() {
+        return eventType;
+    }
+
+    public T getPayload() {
+        return payload;
     }
 }

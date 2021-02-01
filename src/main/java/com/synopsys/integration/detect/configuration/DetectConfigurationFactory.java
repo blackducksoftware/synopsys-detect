@@ -59,10 +59,10 @@ import com.synopsys.integration.configuration.property.types.path.PathValue;
 import com.synopsys.integration.detect.PropertyConfigUtils;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
-import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorExcludedDirectories;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.configuration.enumeration.DetectWorkflow;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
@@ -452,7 +452,7 @@ public class DetectConfigurationFactory {
     }
 
     public BlackDuckRunOptions createBlackDuckRunOptions() {
-        BlackduckScanMode scanMode = getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
+        DetectWorkflow scanMode = getValue(DetectProperties.DETECT_WORKFLOW);
         return new BlackDuckRunOptions(scanMode);
     }
 

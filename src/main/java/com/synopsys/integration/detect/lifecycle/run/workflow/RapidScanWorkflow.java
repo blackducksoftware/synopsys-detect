@@ -22,7 +22,17 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.workflow;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.synopsys.integration.configuration.config.PropertyConfiguration;
+import com.synopsys.integration.configuration.property.types.bool.BooleanProperty;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
+import com.synopsys.integration.detect.lifecycle.run.EventAccumulator;
 import com.synopsys.integration.detect.lifecycle.run.RunResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.DetectorOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
@@ -39,13 +49,34 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class RapidScanWorkflow extends Workflow {
-
-    public RapidScanWorkflow(OperationFactory operationFactory) {
-        super(operationFactory);
+    public RapidScanWorkflow(PropertyConfiguration detectConfiguration, OperationFactory operationFactory, EventAccumulator eventAccumulator) {
+        super(detectConfiguration, operationFactory, eventAccumulator);
     }
 
     @Override
-    public WorkflowResult execute() throws DetectUserFriendlyException, IntegrationException {
+    protected void assertRequiredProperties() throws DetectUserFriendlyException {
+        BooleanProperty blackduckOfflineModeProp = DetectProperties.BLACKDUCK_OFFLINE_MODE.getProperty();
+        BooleanProperty useBdio2Prop = DetectProperties.DETECT_BDIO2_ENABLED.getProperty();
+        Boolean blackDuckOffline = getDetectConfiguration().getValue(blackduckOfflineModeProp);
+        Boolean useBdio2 = getDetectConfiguration().getValue(useBdio2Prop);
+
+        List<String> errorMessages = new ArrayList<>(2);
+        if (blackDuckOffline) {
+            errorMessages.add(blackduckOfflineModeProp.getKey() + " must be set to false");
+        }
+
+        if (!useBdio2) {
+            errorMessages.add(useBdio2Prop.getKey() + " must be set to true");
+        }
+
+        if (!errorMessages.isEmpty()) {
+            String errorMessage = String.format("Your configuration is not valid. Details: %s", StringUtils.join(errorMessages, " "));
+            throw new DetectUserFriendlyException(errorMessage, ExitCodeType.FAILURE_CONFIGURATION);
+        }
+    }
+
+    @Override
+    public WorkflowResult executeWorkflow() throws DetectUserFriendlyException, IntegrationException {
         RunResult runResult = new RunResult();
         DetectorOperation detectorOperation = getOperationFactory().createDetectorOperation();
         ProjectDecisionOperation projectDecisionOperation = getOperationFactory().createProjectDecisionOperation();
