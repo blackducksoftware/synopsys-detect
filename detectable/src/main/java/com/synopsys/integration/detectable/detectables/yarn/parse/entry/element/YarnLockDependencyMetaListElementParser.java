@@ -88,6 +88,7 @@ public class YarnLockDependencyMetaListElementParser implements YarnLockElementT
             logger.warn("Found metadata indicating dependency {} is optional, but it's not in the dependency list", curDependencyName);
             return;
         }
+        logger.trace("Marking dependency {}:{} optional", origDependency.getName(), origDependency.getVersion());
         entryBuilder.getDependencies().remove(curDependencyName);
         YarnLockDependency replacementDependency = new YarnLockDependency(origDependency.getName(),
             origDependency.getVersion(), true);

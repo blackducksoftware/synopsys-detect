@@ -45,7 +45,6 @@ public class YarnLockParser {
         int lineIndex = 0;
         while (lineIndex < yarnLockFileAsList.size()) {
             String line = yarnLockFileAsList.get(lineIndex);
-            logger.trace("Parsing line: {}: {}", lineIndex + 1, line);
             // Parse the entire entry
             YarnLockEntryParseResult entryParseResult = yarnLockEntryParser.parseEntry(yarnLockFileAsList, lineIndex);
             entryParseResult.getYarnLockEntry().ifPresent(entries::add);

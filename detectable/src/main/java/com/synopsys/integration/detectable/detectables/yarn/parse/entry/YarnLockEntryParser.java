@@ -46,7 +46,6 @@ public class YarnLockEntryParser {
         int entryLineIndex = 0;
         for (int fileLineIndex = nodeStartIndex; fileLineIndex < yarnLockFileLines.size(); fileLineIndex++) {
             String nodeBodyLine = yarnLockFileLines.get(fileLineIndex);
-            logger.trace("Parsing line: {}: {}", fileLineIndex + 1, nodeBodyLine);
             // Check to see if we've overshot the end of the node
             Optional<YarnLockEntryParseResult> result = getResultIfDone(entryLineIndex, nodeBodyLine, fileLineIndex, nodeStartIndex, entryLineIndex, yarnLockEntryBuilder);
             if (result.isPresent()) {
@@ -56,7 +55,6 @@ public class YarnLockEntryParser {
             fileLineIndex = yarnLockEntryElementParser.parseElement(yarnLockEntryBuilder, yarnLockFileLines, fileLineIndex);
             entryLineIndex++;
         }
-        logger.trace("Reached end of yarn lock entry");
         Optional<YarnLockEntry> entry = yarnLockEntryBuilder.build();
         return new YarnLockEntryParseResult(yarnLockFileLines.size() - 1, entry.orElse(null));
     }
@@ -72,10 +70,8 @@ public class YarnLockEntryParser {
             return Optional.empty();
         }
         if (bodyLineCount == 0) {
-            logger.trace("This wasn't a node");
             return Optional.of(new YarnLockEntryParseResult(entryStartIndex));
         } else {
-            logger.trace("Reached end of node");
             Optional<YarnLockEntry> node = entryBuilder.build();
             return Optional.of(new YarnLockEntryParseResult(lineIndex - 1, node.orElse(null)));
         }

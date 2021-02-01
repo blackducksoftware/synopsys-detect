@@ -26,12 +26,15 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryBuilder;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 
 public class YarnLockEntryHeaderParser implements YarnLockElementTypeParser {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final YarnLockLineAnalyzer yarnLockLineAnalyzer;
 
     public YarnLockEntryHeaderParser(YarnLockLineAnalyzer yarnLockLineAnalyzer) {
@@ -52,6 +55,7 @@ public class YarnLockEntryHeaderParser implements YarnLockElementTypeParser {
             String entryString = StringUtils.removeEnd(rawEntryString, ":").trim();
             String unquotedEntryString = yarnLockLineAnalyzer.unquote(entryString);
             YarnLockEntryId entry = parseSingleEntry(unquotedEntryString);
+            logger.trace("Entry header ID: name: {}, version: {}", entry.getName(), entry.getVersion());
             entryBuilder.addId(entry);
         }
         return bodyElementLineIndex;

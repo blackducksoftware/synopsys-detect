@@ -26,10 +26,14 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.function.BiConsumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryBuilder;
 
 public class YarnLockKeyValuePairElementParser implements YarnLockElementTypeParser {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final YarnLockLineAnalyzer yarnLockLineAnalyzer;
     private final String targetKey;
     private final BiConsumer<YarnLockEntryBuilder, String> valueConsumer;
@@ -60,6 +64,7 @@ public class YarnLockKeyValuePairElementParser implements YarnLockElementTypePar
         tokenizer.nextToken(); // skip over key
         String value = tokenizer.nextToken().trim();
         value = yarnLockLineAnalyzer.unquote(value);
+        logger.trace("\t{}: {}", targetKey, value);
         valueConsumer.accept(entryBuilder, value);
         return bodyElementLineIndex;
     }
