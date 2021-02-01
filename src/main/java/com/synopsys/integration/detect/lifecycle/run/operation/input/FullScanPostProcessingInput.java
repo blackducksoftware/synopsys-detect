@@ -27,17 +27,22 @@ import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
 import com.synopsys.integration.util.NameVersion;
 
-public class BlackDuckPostProcessingInput {
+public class FullScanPostProcessingInput {
+    private final NameVersion projectNameVersion;
     private final BdioResult bdioResult;
     private final CodeLocationResults codeLocationResults;
     private final ProjectVersionWrapper projectVersionWrapper;
-    private final NameVersion projectNameVersion;
 
-    public BlackDuckPostProcessingInput(BdioResult bdioResult, CodeLocationResults codeLocationResults, ProjectVersionWrapper projectVersionWrapper, NameVersion projectNameVersion) {
+    public FullScanPostProcessingInput(NameVersion projectNameVersion, BdioResult bdioResult, CodeLocationResults codeLocationResults, ProjectVersionWrapper projectVersionWrapper) {
+        this.projectNameVersion = projectNameVersion;
         this.bdioResult = bdioResult;
         this.codeLocationResults = codeLocationResults;
         this.projectVersionWrapper = projectVersionWrapper;
-        this.projectNameVersion = projectNameVersion;
+
+    }
+
+    public NameVersion getProjectNameVersion() {
+        return projectNameVersion;
     }
 
     public BdioResult getBdioResult() {
@@ -52,7 +57,4 @@ public class BlackDuckPostProcessingInput {
         return projectVersionWrapper;
     }
 
-    public NameVersion getProjectNameVersion() {
-        return projectNameVersion;
-    }
 }

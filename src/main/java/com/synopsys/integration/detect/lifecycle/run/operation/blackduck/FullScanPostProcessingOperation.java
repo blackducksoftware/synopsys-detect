@@ -24,15 +24,14 @@ package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
 import java.util.Optional;
 
-import javax.annotation.Nullable;
-
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
-import com.synopsys.integration.detect.lifecycle.run.operation.input.BlackDuckPostProcessingInput;
+import com.synopsys.integration.detect.lifecycle.run.operation.input.FullScanPostProcessingInput;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostActions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
@@ -43,26 +42,19 @@ import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 
-public class FullScanPostProcessingOperation extends BlackDuckOnlineOperation<BlackDuckPostProcessingInput, Void> {
+public class FullScanPostProcessingOperation extends BlackDuckOnlineOperation<FullScanPostProcessingInput, Void> {
     private final DetectToolFilter detectToolFilter;
     private final BlackDuckPostOptions blackDuckPostOptions;
-    private final BlackDuckPostActions blackDuckPostActions;
     private final EventSystem eventSystem;
     private final Long detectTimeoutInSeconds;
 
     public FullScanPostProcessingOperation(ProductRunData productRunData, DetectToolFilter detectToolFilter, BlackDuckPostOptions blackDuckPostOptions,
-        @Nullable BlackDuckPostActions blackDuckPostActions, EventSystem eventSystem, Long detectTimeoutInSeconds) {
+        EventSystem eventSystem, Long detectTimeoutInSeconds) {
         super(productRunData);
         this.detectToolFilter = detectToolFilter;
         this.blackDuckPostOptions = blackDuckPostOptions;
-        this.blackDuckPostActions = blackDuckPostActions;
         this.eventSystem = eventSystem;
         this.detectTimeoutInSeconds = detectTimeoutInSeconds;
-    }
-
-    @Override
-    protected boolean shouldExecute() {
-        return super.shouldExecute() && null != blackDuckPostActions;
     }
 
     @Override
@@ -71,7 +63,10 @@ public class FullScanPostProcessingOperation extends BlackDuckOnlineOperation<Bl
     }
 
     @Override
-    protected OperationResult<Void> executeOperation(BlackDuckPostProcessingInput input) throws DetectUserFriendlyException, IntegrationException {
+    protected OperationResult<Void> executeOperation(FullScanPostProcessingInput input) throws DetectUserFriendlyException, IntegrationException {
+        BlackDuckServicesFactory blackDuckServicesFactory = getBlackDuckServicesFactory();
+        BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory.createCodeLocationCreationService(), eventSystem, blackDuckServicesFactory.getBlackDuckApiClient(),
+            blackDuckServicesFactory.createProjectBomService(), blackDuckServicesFactory.createReportService(detectTimeoutInSeconds));
         blackDuckPostActions.perform(blackDuckPostOptions, input.getCodeLocationResults().getCodeLocationWaitData(), input.getProjectVersionWrapper(), input.getProjectNameVersion(), detectTimeoutInSeconds);
 
         if ((!input.getBdioResult().getUploadTargets().isEmpty() || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {

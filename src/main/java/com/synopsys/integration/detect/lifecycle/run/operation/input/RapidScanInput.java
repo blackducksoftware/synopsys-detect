@@ -22,23 +22,23 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation.input;
 
-import java.io.File;
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
-import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
+import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.util.NameVersion;
 
-public class SignatureScanInput extends CodeLocationInput {
-    private File dockerTar;
+public class RapidScanInput {
+    private final NameVersion projectNameVersion;
+    private final BdioResult bdioResult;
 
-    public SignatureScanInput(NameVersion nameVersion, CodeLocationAccumulator codeLocationAccumulator, @Nullable File dockerTar) {
-        super(nameVersion, codeLocationAccumulator);
-        this.dockerTar = dockerTar;
+    public RapidScanInput(NameVersion projectNameVersion, BdioResult bdioResult) {
+        this.projectNameVersion = projectNameVersion;
+        this.bdioResult = bdioResult;
     }
 
-    public Optional<File> getDockerTar() {
-        return Optional.ofNullable(dockerTar);
+    public NameVersion getProjectNameVersion() {
+        return projectNameVersion;
+    }
+
+    public BdioResult getBdioResult() {
+        return bdioResult;
     }
 }

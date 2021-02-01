@@ -24,11 +24,19 @@ package com.synopsys.integration.detect.lifecycle.run.workflow;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.RunResult;
-import com.synopsys.integration.detect.lifecycle.run.operation.BlackDuckOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.DetectorOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
+import com.synopsys.integration.detect.lifecycle.run.operation.RapidScanOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.AggregateOptionsOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioFileGenerationOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ProjectDecisionOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.input.BdioInput;
+import com.synopsys.integration.detect.lifecycle.run.operation.input.RapidScanInput;
+import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
+import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.util.NameVersion;
 
 public class RapidScanWorkflow extends Workflow {
 
@@ -40,9 +48,18 @@ public class RapidScanWorkflow extends Workflow {
     public WorkflowResult execute() throws DetectUserFriendlyException, IntegrationException {
         RunResult runResult = new RunResult();
         DetectorOperation detectorOperation = getOperationFactory().createDetectorOperation();
+        ProjectDecisionOperation projectDecisionOperation = getOperationFactory().createProjectDecisionOperation();
+        AggregateOptionsOperation aggregateOptionsOperation = getOperationFactory().createAggregateOptionsOperation();
+        BdioFileGenerationOperation bdioFileGenerationOperation = getOperationFactory().createBdioFileGenerationOperation();
+        RapidScanOperation blackDuckOperation = getOperationFactory().createRapidScanOperation();
+
         OperationResult<RunResult> detectorResult = detectorOperation.execute(runResult);
-        BlackDuckOperation blackDuckOperation = getOperationFactory().createRapidScanOperation(detectorResult.hasSucceeded());
-        blackDuckOperation.execute(runResult);
+        OperationResult<NameVersion> projectInfo = projectDecisionOperation.execute(detectorResult.getContent().orElse(null).getDetectToolProjectInfo());
+        OperationResult<AggregateOptions> aggregateOptions = aggregateOptionsOperation.execute(detectorResult.hasFailed());
+        BdioInput bdioInput = new BdioInput(aggregateOptions.getContent().orElse(null), projectInfo.getContent().get(), detectorResult.getContent().get().getDetectCodeLocations());
+        OperationResult<BdioResult> bdioGeneration = bdioFileGenerationOperation.execute(bdioInput);
+        RapidScanInput rapidScanInput = new RapidScanInput(bdioInput.getNameVersion(), bdioGeneration.getContent().get());
+        blackDuckOperation.execute(rapidScanInput);
         return null;
     }
 }

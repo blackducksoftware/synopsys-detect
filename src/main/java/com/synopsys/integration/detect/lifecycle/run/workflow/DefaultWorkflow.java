@@ -22,16 +22,36 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.workflow;
 
+import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.RunResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.BazelOperation;
-import com.synopsys.integration.detect.lifecycle.run.operation.BlackDuckOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.DetectorOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.DockerOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.PolarisOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.AggregateOptionsOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioFileGenerationOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BinaryScanOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.CodeLocationOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.CodeLocationResultOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.FullScanPostProcessingOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ImpactAnalysisOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ProjectCreationOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ProjectDecisionOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.SignatureScanOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.input.BdioInput;
+import com.synopsys.integration.detect.lifecycle.run.operation.input.CodeLocationInput;
+import com.synopsys.integration.detect.lifecycle.run.operation.input.FullScanPostProcessingInput;
+import com.synopsys.integration.detect.lifecycle.run.operation.input.ImpactAnalysisInput;
+import com.synopsys.integration.detect.lifecycle.run.operation.input.SignatureScanInput;
+import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
+import com.synopsys.integration.detect.workflow.bdio.BdioResult;
+import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
+import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.util.NameVersion;
 
 public class DefaultWorkflow extends Workflow {
     public DefaultWorkflow(OperationFactory operationFactory) {
@@ -45,6 +65,16 @@ public class DefaultWorkflow extends Workflow {
         DockerOperation dockerOperation = getOperationFactory().createDockerOperation();
         BazelOperation bazelOperation = getOperationFactory().createBazelOperation();
         DetectorOperation detectorOperation = getOperationFactory().createDetectorOperation();
+        ProjectDecisionOperation projectDecisionOperation = getOperationFactory().createProjectDecisionOperation();
+        AggregateOptionsOperation aggregateOptionsOperation = getOperationFactory().createAggregateOptionsOperation();
+        ProjectCreationOperation projectCreationOperation = getOperationFactory().createProjectCreationOperation();
+        BdioFileGenerationOperation bdioFileGenerationOperation = getOperationFactory().createBdioFileGenerationOperation();
+        CodeLocationOperation codeLocationOperation = getOperationFactory().createCodeLocationOperation();
+        SignatureScanOperation signatureScanOperation = getOperationFactory().createSignatureScanOperation();
+        BinaryScanOperation binaryScanOperation = getOperationFactory().createBinaryScanOperation();
+        ImpactAnalysisOperation impactAnalysisOperation = getOperationFactory().createImpactAnalysisOperation();
+        CodeLocationResultOperation codeLocationResultOperation = getOperationFactory().createCodeLocationResultOperation();
+        FullScanPostProcessingOperation fullScanPostProcessingOperation = getOperationFactory().createFullScanPostProcessingOperation();
 
         polarisOperation.execute(null);
         OperationResult<RunResult> dockerResult = dockerOperation.execute(runResult);
@@ -53,8 +83,36 @@ public class DefaultWorkflow extends Workflow {
 
         boolean priorOperationsSucceeded = dockerResult.hasSucceeded() && bazelResult.hasSucceeded() && detectorResult.hasSucceeded();
 
-        BlackDuckOperation blackDuckOperation = getOperationFactory().createFullScanOperation(priorOperationsSucceeded);
-        OperationResult<RunResult> blackDuckResult = blackDuckOperation.execute(runResult);
+        OperationResult<NameVersion> projectInfo = projectDecisionOperation.execute(detectorResult.getContent().orElse(null).getDetectToolProjectInfo());
+        NameVersion projectNameVersion = projectInfo.getContent().orElse(null);
+
+        OperationResult<ProjectVersionWrapper> projectCreationResult = projectCreationOperation.execute(projectNameVersion);
+        ProjectVersionWrapper projectVersionWrapper = projectCreationResult.getContent().orElse(null);
+
+        OperationResult<AggregateOptions> aggregateOptions = aggregateOptionsOperation.execute(priorOperationsSucceeded);
+        BdioInput bdioInput = new BdioInput(aggregateOptions.getContent().orElse(null), projectNameVersion, detectorResult.getContent().get().getDetectCodeLocations());
+
+        OperationResult<BdioResult> bdioGeneration = bdioFileGenerationOperation.execute(bdioInput);
+        BdioResult bdioResult = bdioGeneration.getContent().orElse(null);
+
+        OperationResult<CodeLocationAccumulator> codeLocationResult = codeLocationOperation.execute(bdioResult);
+        CodeLocationAccumulator codeLocationAccumulator = codeLocationResult.getContent().orElse(null);
+        SignatureScanInput signatureScanInput = new SignatureScanInput(projectNameVersion, codeLocationAccumulator, runResult.getDockerTar().orElse(null));
+
+        OperationResult<CodeLocationAccumulator> signatureScanResult = signatureScanOperation.execute(signatureScanInput);
+        codeLocationAccumulator = signatureScanResult.getContent().orElse(null);
+        CodeLocationInput codeLocationInput = new CodeLocationInput(projectNameVersion, codeLocationAccumulator);
+
+        OperationResult<CodeLocationAccumulator> binaryScanResult = binaryScanOperation.execute(codeLocationInput);
+        codeLocationAccumulator = binaryScanResult.getContent().orElse(null);
+        ImpactAnalysisInput impactAnalysisInput = new ImpactAnalysisInput(projectNameVersion, codeLocationAccumulator, projectVersionWrapper);
+
+        OperationResult<CodeLocationAccumulator> impactAnalysisResult = impactAnalysisOperation.execute(impactAnalysisInput);
+        codeLocationAccumulator = impactAnalysisResult.getContent().orElse(null);
+
+        OperationResult<CodeLocationResults> codeLocationProcessingResult = codeLocationResultOperation.execute(codeLocationAccumulator);
+        FullScanPostProcessingInput postProcessingInput = new FullScanPostProcessingInput(projectNameVersion, bdioResult, codeLocationProcessingResult.getContent().orElse(null), projectVersionWrapper);
+        OperationResult<Void> blackDuckPostProcessingResult = fullScanPostProcessingOperation.execute(postProcessingInput);
         return null;
     }
 }

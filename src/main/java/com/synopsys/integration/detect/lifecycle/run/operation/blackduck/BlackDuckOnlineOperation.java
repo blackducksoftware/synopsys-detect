@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.Operation;
@@ -40,5 +41,9 @@ public abstract class BlackDuckOnlineOperation<I, T> extends Operation<I, T> {
 
     public BlackDuckRunData getBlackDuckRunData() {
         return productRunData.getBlackDuckRunData();
+    }
+
+    public BlackDuckServicesFactory getBlackDuckServicesFactory() {
+        return getBlackDuckRunData().getBlackDuckServicesFactory();
     }
 }

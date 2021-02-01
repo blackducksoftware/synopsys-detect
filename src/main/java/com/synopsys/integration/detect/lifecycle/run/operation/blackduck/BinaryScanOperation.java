@@ -22,29 +22,40 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
-import javax.annotation.Nullable;
-
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.ToolOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.CodeLocationInput;
+import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanToolResult;
 import com.synopsys.integration.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
+import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
+import com.synopsys.integration.detect.workflow.file.DirectoryManager;
+import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class BinaryScanOperation extends ToolOperation<CodeLocationInput, CodeLocationAccumulator> {
     private final BlackDuckRunData blackDuckRunData;
     private final DetectToolFilter detectToolFilter;
-    private final BlackDuckBinaryScannerTool blackDuckBinaryScanner;
+    private final BinaryScanOptions binaryScanOptions;
+    private final EventSystem eventSystem;
+    private final DirectoryManager directoryManager;
+    private final CodeLocationNameManager codeLocationNameManager;
 
-    public BinaryScanOperation(BlackDuckRunData blackDuckRunData, DetectToolFilter detectToolFilter, @Nullable BlackDuckBinaryScannerTool blackDuckBinaryScanner) {
+    public BinaryScanOperation(BlackDuckRunData blackDuckRunData, DetectToolFilter detectToolFilter, BinaryScanOptions binaryScanOptions, EventSystem eventSystem, DirectoryManager directoryManager,
+        CodeLocationNameManager codeLocationNameManager) {
         this.blackDuckRunData = blackDuckRunData;
         this.detectToolFilter = detectToolFilter;
-        this.blackDuckBinaryScanner = blackDuckBinaryScanner;
+        this.binaryScanOptions = binaryScanOptions;
+        this.eventSystem = eventSystem;
+        this.directoryManager = directoryManager;
+        this.codeLocationNameManager = codeLocationNameManager;
     }
 
     @Override
@@ -59,8 +70,11 @@ public class BinaryScanOperation extends ToolOperation<CodeLocationInput, CodeLo
 
     @Override
     protected OperationResult<CodeLocationAccumulator> executeOperation(CodeLocationInput input) throws DetectUserFriendlyException, IntegrationException {
-        if (blackDuckBinaryScanner.shouldRun()) {
-            BinaryScanToolResult result = blackDuckBinaryScanner.performBinaryScanActions(input.getNameVersion());
+        BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+        BlackDuckBinaryScannerTool binaryScannerTool = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, new WildcardFileFinder(), binaryScanOptions,
+            blackDuckServicesFactory.createBinaryScanUploadService());
+        if (binaryScannerTool.shouldRun()) {
+            BinaryScanToolResult result = binaryScannerTool.performBinaryScanActions(input.getNameVersion());
             if (result.isSuccessful()) {
                 input.getCodeLocationAccumulator().addWaitableCodeLocation(result.getCodeLocationCreationData());
             }

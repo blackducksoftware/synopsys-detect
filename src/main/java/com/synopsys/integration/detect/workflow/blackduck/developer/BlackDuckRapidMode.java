@@ -33,7 +33,6 @@ import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponent
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.blackduck.developermode.DeveloperScanService;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
-import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -44,12 +43,12 @@ public class BlackDuckRapidMode {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private BlackDuckRunData blackDuckRunData;
     private DeveloperScanService developerScanService;
-    private DetectConfigurationFactory detectConfigurationFactory;
+    private Long timeoutInSeconds;
 
-    public BlackDuckRapidMode(BlackDuckRunData blackDuckRunData, DeveloperScanService developerScanService, DetectConfigurationFactory detectConfigurationFactory) {
+    public BlackDuckRapidMode(BlackDuckRunData blackDuckRunData, DeveloperScanService developerScanService, Long timeoutInSeconds) {
         this.blackDuckRunData = blackDuckRunData;
         this.developerScanService = developerScanService;
-        this.detectConfigurationFactory = detectConfigurationFactory;
+        this.timeoutInSeconds = timeoutInSeconds;
     }
 
     public List<DeveloperScanComponentResultView> run(BdioResult bdioResult) throws DetectUserFriendlyException {
@@ -62,7 +61,7 @@ public class BlackDuckRapidMode {
         List<DeveloperScanComponentResultView> results = new LinkedList<>();
         try {
             for (UploadTarget uploadTarget : bdioResult.getUploadTargets()) {
-                results.addAll(developerScanService.performDeveloperScan(uploadTarget.getUploadFile(), detectConfigurationFactory.findTimeoutInSeconds()));
+                results.addAll(developerScanService.performDeveloperScan(uploadTarget.getUploadFile(), timeoutInSeconds));
             }
             logger.debug("Developer scan result count: {}", results.size());
         } catch (IllegalArgumentException e) {

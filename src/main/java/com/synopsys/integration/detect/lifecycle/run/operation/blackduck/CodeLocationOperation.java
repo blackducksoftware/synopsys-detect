@@ -24,8 +24,6 @@ package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +32,7 @@ import com.synopsys.integration.blackduck.codelocation.bdio2upload.Bdio2UploadSe
 import com.synopsys.integration.blackduck.codelocation.bdioupload.BdioUploadService;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
@@ -44,20 +43,9 @@ import com.synopsys.integration.exception.IntegrationException;
 
 public class CodeLocationOperation extends BlackDuckOnlineOperation<BdioResult, CodeLocationAccumulator> {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final BdioUploadService bdioUploadService;
-    private final Bdio2UploadService bdio2UploadService;
-    private final DetectBdioUploadService detectBdioUploadService;
 
-    public CodeLocationOperation(ProductRunData productRunData, @Nullable BdioUploadService bdioUploadService, @Nullable Bdio2UploadService bdio2UploadService, @Nullable DetectBdioUploadService detectBdioUploadService) {
+    public CodeLocationOperation(ProductRunData productRunData) {
         super(productRunData);
-        this.bdioUploadService = bdioUploadService;
-        this.bdio2UploadService = bdio2UploadService;
-        this.detectBdioUploadService = detectBdioUploadService;
-    }
-
-    @Override
-    protected boolean shouldExecute() {
-        return super.shouldExecute() && null != detectBdioUploadService && null != bdioUploadService && null != bdio2UploadService;
     }
 
     @Override
@@ -70,6 +58,10 @@ public class CodeLocationOperation extends BlackDuckOnlineOperation<BdioResult, 
         CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
         List<UploadTarget> uploadTargetList = input.getUploadTargets();
         if (!uploadTargetList.isEmpty()) {
+            BlackDuckServicesFactory blackDuckServicesFactory = getBlackDuckServicesFactory();
+            BdioUploadService bdioUploadService = blackDuckServicesFactory.createBdioUploadService();
+            Bdio2UploadService bdio2UploadService = blackDuckServicesFactory.createBdio2UploadService();
+            DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService();
             logger.info(String.format("Created %d BDIO files.", uploadTargetList.size()));
             logger.debug("Uploading BDIO files.");
             CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(input, bdioUploadService,

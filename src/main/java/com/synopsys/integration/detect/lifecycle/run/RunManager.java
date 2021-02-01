@@ -354,7 +354,7 @@ public class RunManager {
             logger.info(ReportConstants.RUN_SEPARATOR);
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             DeveloperScanService developerScanService = blackDuckServicesFactory.createDeveloperScanService();
-            BlackDuckRapidMode developerMode = new BlackDuckRapidMode(blackDuckRunData, developerScanService, detectConfigurationFactory);
+            BlackDuckRapidMode developerMode = new BlackDuckRapidMode(blackDuckRunData, developerScanService, detectConfigurationFactory.findTimeoutInSeconds());
             List<DeveloperScanComponentResultView> results = developerMode.run(bdioResult);
             BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(gson, eventSystem, directoryManager);
             postActions.perform(projectNameVersion, results);

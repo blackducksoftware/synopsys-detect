@@ -22,11 +22,10 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
-import javax.annotation.Nullable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
@@ -44,22 +43,13 @@ public class ProjectCreationOperation extends BlackDuckOnlineOperation<NameVersi
     private final RunOptions runOptions;
     private final DetectProjectServiceOptions detectProjectServiceOptions;
     private final DetectCustomFieldService detectCustomFieldService;
-    private final DetectProjectService detectProjectService;
-    private final DetectCodeLocationUnmapService detectCodeLocationUnmapService;
 
     public ProjectCreationOperation(ProductRunData productRunData, RunOptions runOptions, DetectProjectServiceOptions detectProjectServiceOptions,
-        DetectCustomFieldService detectCustomFieldService, @Nullable DetectProjectService detectProjectService, @Nullable DetectCodeLocationUnmapService detectCodeLocationUnmapService) {
+        DetectCustomFieldService detectCustomFieldService) {
         super(productRunData);
         this.runOptions = runOptions;
         this.detectProjectServiceOptions = detectProjectServiceOptions;
         this.detectCustomFieldService = detectCustomFieldService;
-        this.detectProjectService = detectProjectService;
-        this.detectCodeLocationUnmapService = detectCodeLocationUnmapService;
-    }
-
-    @Override
-    protected boolean shouldExecute() {
-        return super.shouldExecute() && null != detectProjectService && null != detectCodeLocationUnmapService;
     }
 
     @Override
@@ -69,6 +59,12 @@ public class ProjectCreationOperation extends BlackDuckOnlineOperation<NameVersi
 
     @Override
     protected OperationResult<ProjectVersionWrapper> executeOperation(NameVersion input) throws DetectUserFriendlyException, IntegrationException {
+        BlackDuckServicesFactory blackDuckServicesFactory = getBlackDuckServicesFactory();
+        DetectProjectService detectProjectService = new DetectProjectService(blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.createProjectService(),
+            blackDuckServicesFactory.createProjectBomService(), blackDuckServicesFactory.createProjectUsersService(), blackDuckServicesFactory.createTagService(), detectProjectServiceOptions,
+            blackDuckServicesFactory.createProjectMappingService(), detectCustomFieldService);
+        DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.createCodeLocationService());
+
         ProjectVersionWrapper projectVersionWrapper = detectProjectService.createOrUpdateBlackDuckProject(input);
         if (null != projectVersionWrapper && runOptions.shouldUnmapCodeLocations()) {
             logger.debug("Unmapping code locations.");
