@@ -25,15 +25,11 @@ package com.synopsys.integration.detectable.detectables.yarn.parse;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParseResult;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
 
 public class YarnLockParser {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final YarnLockEntryParser yarnLockEntryParser;
 
     public YarnLockParser(YarnLockEntryParser yarnLockEntryParser) {
@@ -44,8 +40,6 @@ public class YarnLockParser {
         List<YarnLockEntry> entries = new ArrayList<>();
         int lineIndex = 0;
         while (lineIndex < yarnLockFileAsList.size()) {
-            String line = yarnLockFileAsList.get(lineIndex);
-            // Parse the entire entry
             YarnLockEntryParseResult entryParseResult = yarnLockEntryParser.parseEntry(yarnLockFileAsList, lineIndex);
             entryParseResult.getYarnLockEntry().ifPresent(entries::add);
             lineIndex = entryParseResult.getLastParsedLineIndex();

@@ -25,14 +25,10 @@ package com.synopsys.integration.detectable.detectables.yarn.parse.entry;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockElementParser;
 
 public class YarnLockEntryParser {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final YarnLockLineAnalyzer yarnLockLineAnalyzer;
     private final YarnLockElementParser yarnLockEntryElementParser;
 
@@ -51,7 +47,7 @@ public class YarnLockEntryParser {
             if (result.isPresent()) {
                 return result.get();
             }
-            // parseElement tells this code what line to parse next (= where it left off)
+            // parseElement returns the last line it consumed; parsing resumes on the next line
             fileLineIndex = yarnLockEntryElementParser.parseElement(yarnLockEntryBuilder, yarnLockFileLines, fileLineIndex);
             entryLineIndex++;
         }

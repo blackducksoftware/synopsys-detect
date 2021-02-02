@@ -24,7 +24,6 @@ package com.synopsys.integration.detectable.detectables.yarn.parse.entry.element
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryBuilder;
@@ -33,15 +32,11 @@ public class YarnLockElementParser {
     private final List<YarnLockElementTypeParser> elementParsers = new ArrayList<>();
 
     public YarnLockElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser) {
-        createElementTypeParser(() -> new YarnLockHeaderElementParser(yarnLockLineAnalyzer));
-        createElementTypeParser(() -> new YarnLockDependencyListElementParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser, "dependencies", false));
-        createElementTypeParser(() -> new YarnLockDependencyListElementParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser, "optionalDependencies", true));
-        createElementTypeParser(() -> new YarnLockDependencyMetaListElementParser(yarnLockLineAnalyzer));
-        createElementTypeParser(() -> new YarnLockKeyValuePairElementParser(yarnLockLineAnalyzer, "version", YarnLockEntryBuilder::setVersion));
-    }
-
-    private void createElementTypeParser(Supplier<YarnLockElementTypeParser> elementSupplier) {
-        elementParsers.add(elementSupplier.get());
+        elementParsers.add(new YarnLockHeaderElementParser(yarnLockLineAnalyzer));
+        elementParsers.add(new YarnLockDependencyListElementParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser, "dependencies", false));
+        elementParsers.add(new YarnLockDependencyListElementParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser, "optionalDependencies", true));
+        elementParsers.add(new YarnLockDependencyMetaListElementParser(yarnLockLineAnalyzer));
+        elementParsers.add(new YarnLockKeyValuePairElementParser(yarnLockLineAnalyzer, "version", YarnLockEntryBuilder::setVersion));
     }
 
     public int parseElement(YarnLockEntryBuilder entryBuilder, List<String> conanInfoOutputLines, int bodyElementLineIndex) {
