@@ -39,8 +39,9 @@ public class YarnLockEntryParser {
 
     public YarnLockEntryParseResult parseEntry(List<String> yarnLockFileLines, int nodeStartIndex) {
         YarnLockEntryBuilder yarnLockEntryBuilder = new YarnLockEntryBuilder();
+        int fileLineIndex = nodeStartIndex;
         int entryLineIndex = 0;
-        for (int fileLineIndex = nodeStartIndex; fileLineIndex < yarnLockFileLines.size(); fileLineIndex++) {
+        while (fileLineIndex < yarnLockFileLines.size()) {
             String nodeBodyLine = yarnLockFileLines.get(fileLineIndex);
             // Check to see if we've overshot the end of the node
             Optional<YarnLockEntryParseResult> result = getResultIfDone(entryLineIndex, nodeBodyLine, fileLineIndex, nodeStartIndex, entryLineIndex, yarnLockEntryBuilder);
@@ -50,6 +51,7 @@ public class YarnLockEntryParser {
             // parseElement returns the last line it consumed; parsing resumes on the next line
             fileLineIndex = yarnLockEntryElementParser.parseElement(yarnLockEntryBuilder, yarnLockFileLines, fileLineIndex);
             entryLineIndex++;
+            fileLineIndex++;
         }
         Optional<YarnLockEntry> entry = yarnLockEntryBuilder.build();
         return new YarnLockEntryParseResult(yarnLockFileLines.size() - 1, entry.orElse(null));
