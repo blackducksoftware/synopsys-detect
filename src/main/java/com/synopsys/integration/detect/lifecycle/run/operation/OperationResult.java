@@ -32,15 +32,15 @@ public class OperationResult<T> {
         return new OperationResult<>(result.getContent(), result.hasSucceeded());
     }
 
-    public static <T> OperationResult<T> success(T content) {
+    public static <T> OperationResult<T> success(@Nullable T content) {
         return new OperationResult<>(content, true);
     }
 
     public static <T> OperationResult<T> success() {
-        return new OperationResult<T>(null, true);
+        return new OperationResult<>(null, true);
     }
 
-    public static <T> OperationResult<T> fail(T content) {
+    public static <T> OperationResult<T> fail(@Nullable T content) {
         return new OperationResult<>(content, false);
     }
 
@@ -48,7 +48,7 @@ public class OperationResult<T> {
         return new OperationResult<>(null, false);
     }
 
-    private OperationResult(T content, boolean success) {
+    private OperationResult(@Nullable T content, boolean success) {
         this.success = success;
         this.content = content;
     }

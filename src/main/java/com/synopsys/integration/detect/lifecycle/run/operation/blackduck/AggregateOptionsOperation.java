@@ -55,7 +55,7 @@ public class AggregateOptionsOperation extends Operation<Boolean, AggregateOptio
         AggregateMode aggregateMode = runOptions.getAggregateMode();
         AggregateOptions aggregateOptions;
         if (StringUtils.isNotBlank(aggregateName)) {
-            if (input) {
+            if (input.booleanValue()) {
                 aggregateOptions = AggregateOptions.aggregateButSkipEmpty(aggregateName, aggregateMode);
             } else {
                 aggregateOptions = AggregateOptions.aggregateAndAlwaysUpload(aggregateName, aggregateMode);

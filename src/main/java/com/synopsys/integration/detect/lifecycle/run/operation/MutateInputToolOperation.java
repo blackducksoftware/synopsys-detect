@@ -22,19 +22,24 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation;
 
-import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.exception.IntegrationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public abstract class Operation<I, T> extends AbstractOperation<I, T> {
-    public final OperationResult<T> execute(I input) throws DetectUserFriendlyException, IntegrationException {
-        OperationResult<T> result = OperationResult.success();
-        if (shouldExecute()) {
-            logOperationStarted();
-            result = executeOperation(input);
-            logOperationFinished();
-        } else {
-            logOperationSkipped();
-        }
-        return result;
+public abstract class MutateInputToolOperation<I> extends MutateInputOperation<I> {
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Override
+    protected void logOperationStarted() {
+        logger.info("Will include the {} tool.", getOperationName());
+    }
+
+    @Override
+    protected void logOperationFinished() {
+        logger.info("{} actions finished.", getOperationName());
+    }
+
+    @Override
+    protected void logOperationSkipped() {
+        logger.info("{} tool will not be run.", getOperationName());
     }
 }

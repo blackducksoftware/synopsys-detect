@@ -88,14 +88,6 @@ public class OperationFactory {
             runContext.getExtractionEnvironmentProvider(), runContext.getCodeLocationConverter());
     }
 
-    public final FullScanOperation createFullScanOperation(boolean hasPriorOperationsSucceeded) {
-        ImpactAnalysisOptions impactAnalysisOptions = runContext.getDetectConfigurationFactory().createImpactAnalysisOptions();
-        return new FullScanOperation(runContext.getDetectContext(), runContext.getDetectInfo(), runContext.getProductRunData(), runContext.getDirectoryManager(), runContext.getEventSystem(), runContext.getDetectConfigurationFactory(),
-            runOptions.getDetectToolFilter(),
-            runContext.getCodeLocationNameManager(), runContext.getBdioCodeLocationCreator(), runOptions, hasPriorOperationsSucceeded, impactAnalysisOptions);
-
-    }
-
     public final RapidScanOperation createRapidScanOperation() {
         return new RapidScanOperation(runContext.getProductRunData(), runContext.getGson(), runContext.getEventSystem(), runContext.getDirectoryManager(), runContext.getDetectConfigurationFactory().findTimeoutInSeconds());
     }
@@ -126,7 +118,6 @@ public class OperationFactory {
     }
 
     public final FullScanPostProcessingOperation createFullScanPostProcessingOperation() {
-        BlackDuckRunData blackDuckRunData = runContext.getProductRunData().getBlackDuckRunData();
         DetectConfigurationFactory detectConfigurationFactory = runContext.getDetectConfigurationFactory();
         BlackDuckPostOptions blackDuckPostOptions = detectConfigurationFactory.createBlackDuckPostOptions();
         Long timeoutInSeconds = detectConfigurationFactory.findTimeoutInSeconds();
@@ -154,7 +145,6 @@ public class OperationFactory {
 
     public final ProjectCreationOperation createProjectCreationOperation() throws DetectUserFriendlyException {
         DetectProjectServiceOptions options = runContext.getDetectConfigurationFactory().createDetectProjectServiceOptions();
-        BlackDuckRunData blackDuckRunData = runContext.getProductRunData().getBlackDuckRunData();
         DetectCustomFieldService detectCustomFieldService = new DetectCustomFieldService();
 
         return new ProjectCreationOperation(runContext.getProductRunData(), runOptions, options, detectCustomFieldService);

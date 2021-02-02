@@ -52,7 +52,7 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
-public class DetectorOperation extends ToolOperation<RunResult, RunResult> {
+public class DetectorOperation extends MutateInputToolOperation<RunResult> {
     private PropertyConfiguration detectConfiguration;
     private DetectConfigurationFactory detectConfigurationFactory;
     private DirectoryManager directoryManager;
@@ -85,7 +85,7 @@ public class DetectorOperation extends ToolOperation<RunResult, RunResult> {
     }
 
     @Override
-    protected OperationResult<RunResult> executeOperation(RunResult input) throws DetectUserFriendlyException, IntegrationException {
+    protected OperationResult<Void> executeOperation(RunResult input) throws DetectUserFriendlyException, IntegrationException {
         String projectBomTool = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_PROJECT_DETECTOR.getProperty()).orElse(null);
         List<DetectorType> requiredDetectors = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES.getProperty());
         boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_BUILDLESS.getProperty());
@@ -104,12 +104,12 @@ public class DetectorOperation extends ToolOperation<RunResult, RunResult> {
         detectorToolResult.getBomToolProjectNameVersion().ifPresent(it -> input.addToolNameVersion(DetectTool.DETECTOR, new NameVersion(it.getName(), it.getVersion())));
         input.addDetectCodeLocations(detectorToolResult.getBomToolCodeLocations());
 
-        OperationResult result;
+        OperationResult<Void> result;
         if (!detectorToolResult.getFailedDetectorTypes().isEmpty()) {
-            result = OperationResult.fail(input);
+            result = OperationResult.fail();
             eventSystem.publishEvent(Event.ExitCode, new ExitCodeRequest(ExitCodeType.FAILURE_DETECTOR, "A detector failed."));
         } else {
-            result = OperationResult.success(input);
+            result = OperationResult.success();
         }
 
         return result;

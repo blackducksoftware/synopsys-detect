@@ -54,7 +54,7 @@ public class RapidScanWorkflow extends Workflow {
         BdioFileGenerationOperation bdioFileGenerationOperation = getOperationFactory().createBdioFileGenerationOperation();
         RapidScanOperation rapidScanOperation = getOperationFactory().createRapidScanOperation();
 
-        OperationResult<RunResult> detectorResult = detectorOperation.execute(runResult);
+        OperationResult<Void> detectorResult = detectorOperation.execute(runResult);
 
         OperationResult<NameVersion> projectInfo = projectDecisionOperation.execute(runResult.getDetectToolProjectInfo());
         NameVersion projectNameVersion = projectInfo.getContent();

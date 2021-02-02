@@ -79,9 +79,9 @@ public class DefaultWorkflow extends Workflow {
         FullScanPostProcessingOperation fullScanPostProcessingOperation = getOperationFactory().createFullScanPostProcessingOperation();
 
         polarisOperation.execute(null);
-        OperationResult<RunResult> dockerResult = dockerOperation.execute(runResult);
-        OperationResult<RunResult> bazelResult = bazelOperation.execute(runResult);
-        OperationResult<RunResult> detectorResult = detectorOperation.execute(runResult);
+        OperationResult<Void> dockerResult = dockerOperation.execute(runResult);
+        OperationResult<Void> bazelResult = bazelOperation.execute(runResult);
+        OperationResult<Void> detectorResult = detectorOperation.execute(runResult);
 
         boolean priorOperationsSucceeded = dockerResult.hasSucceeded() && bazelResult.hasSucceeded() && detectorResult.hasSucceeded();
 
@@ -101,17 +101,17 @@ public class DefaultWorkflow extends Workflow {
         CodeLocationAccumulator codeLocationAccumulator = codeLocationResult.getContent();
         SignatureScanInput signatureScanInput = new SignatureScanInput(projectNameVersion, codeLocationAccumulator, runResult.getDockerTar().orElse(null));
 
-        OperationResult<CodeLocationAccumulator> signatureScanResult = signatureScanOperation.execute(signatureScanInput);
+        signatureScanOperation.execute(signatureScanInput);
         CodeLocationInput codeLocationInput = new CodeLocationInput(projectNameVersion, codeLocationAccumulator);
 
-        OperationResult<CodeLocationAccumulator> binaryScanResult = binaryScanOperation.execute(codeLocationInput);
+        binaryScanOperation.execute(codeLocationInput);
         ImpactAnalysisInput impactAnalysisInput = new ImpactAnalysisInput(projectNameVersion, codeLocationAccumulator, projectVersionWrapper);
 
-        OperationResult<CodeLocationAccumulator> impactAnalysisResult = impactAnalysisOperation.execute(impactAnalysisInput);
+        impactAnalysisOperation.execute(impactAnalysisInput);
 
         OperationResult<CodeLocationResults> codeLocationProcessingResult = codeLocationResultOperation.execute(codeLocationAccumulator);
         FullScanPostProcessingInput postProcessingInput = new FullScanPostProcessingInput(projectNameVersion, bdioResult, codeLocationProcessingResult.getContent(), projectVersionWrapper);
-        OperationResult<Void> blackDuckPostProcessingResult = fullScanPostProcessingOperation.execute(postProcessingInput);
+        fullScanPostProcessingOperation.execute(postProcessingInput);
         return WorkflowResult.success(getEventAccumulator());
     }
 }

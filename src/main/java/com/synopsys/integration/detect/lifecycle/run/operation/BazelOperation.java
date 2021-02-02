@@ -35,7 +35,7 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class BazelOperation extends ToolOperation<RunResult, RunResult> {
+public class BazelOperation extends MutateInputToolOperation<RunResult> {
     private DirectoryManager directoryManager;
     private EventSystem eventSystem;
     private DetectDetectableFactory detectDetectableFactory;
@@ -64,17 +64,17 @@ public class BazelOperation extends ToolOperation<RunResult, RunResult> {
     }
 
     @Override
-    protected OperationResult<RunResult> executeOperation(RunResult input) throws DetectUserFriendlyException, IntegrationException {
+    protected OperationResult<Void> executeOperation(RunResult input) throws DetectUserFriendlyException, IntegrationException {
         DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createBazelDetectable,
             extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL,
             eventSystem);
         DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
         input.addDetectableToolResult(detectableToolResult);
-        OperationResult result;
+        OperationResult<Void> result;
         if (detectableToolResult.isFailure()) {
-            result = OperationResult.fail(input);
+            result = OperationResult.fail();
         } else {
-            result = OperationResult.success(input);
+            result = OperationResult.success();
         }
         return result;
     }

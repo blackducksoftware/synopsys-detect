@@ -23,6 +23,6 @@
 package com.synopsys.integration.detect.configuration.enumeration;
 
 public enum DetectWorkflow {
-    TRANSIENT_SCAN,
-    PERSISTENT_SCAN
+    TRANSIENT,
+    PERSISTENT
 }

@@ -27,16 +27,15 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
+import com.synopsys.integration.detect.lifecycle.run.operation.MutateInputToolOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
-import com.synopsys.integration.detect.lifecycle.run.operation.ToolOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.ImpactAnalysisInput;
 import com.synopsys.integration.detect.tool.impactanalysis.BlackDuckImpactAnalysisTool;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
-import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class ImpactAnalysisOperation extends ToolOperation<ImpactAnalysisInput, CodeLocationAccumulator> {
+public class ImpactAnalysisOperation extends MutateInputToolOperation<ImpactAnalysisInput> {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private DetectToolFilter detectToolFilter;
     private final BlackDuckImpactAnalysisTool blackDuckImpactAnalysisTool;
@@ -57,19 +56,19 @@ public class ImpactAnalysisOperation extends ToolOperation<ImpactAnalysisInput, 
     }
 
     @Override
-    protected OperationResult<CodeLocationAccumulator> executeOperation(ImpactAnalysisInput input) throws DetectUserFriendlyException, IntegrationException {
+    protected OperationResult<Void> executeOperation(ImpactAnalysisInput input) throws DetectUserFriendlyException, IntegrationException {
         ImpactAnalysisToolResult impactAnalysisToolResult = blackDuckImpactAnalysisTool.performImpactAnalysisActions(input.getNameVersion(), input.getProjectVersionWrapper());
 
         /* TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020 */
         input.getCodeLocationAccumulator().addNonWaitableCodeLocation(impactAnalysisToolResult.getCodeLocationNames());
 
-        OperationResult result;
+        OperationResult<Void> result;
         if (impactAnalysisToolResult.isSuccessful()) {
             logger.info("Vulnerability Impact Analysis successful.");
-            result = OperationResult.success(input.getCodeLocationAccumulator());
+            result = OperationResult.success();
         } else {
             logger.warn("Something went wrong with the Vulnerability Impact Analysis tool.");
-            result = OperationResult.fail(input.getCodeLocationAccumulator());
+            result = OperationResult.fail();
         }
         return result;
     }

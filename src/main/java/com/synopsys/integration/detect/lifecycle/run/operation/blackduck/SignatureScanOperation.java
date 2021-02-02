@@ -31,13 +31,12 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
+import com.synopsys.integration.detect.lifecycle.run.operation.MutateInputToolOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
-import com.synopsys.integration.detect.lifecycle.run.operation.ToolOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.SignatureScanInput;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
-import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
@@ -46,7 +45,7 @@ import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class SignatureScanOperation extends ToolOperation<SignatureScanInput, CodeLocationAccumulator> {
+public class SignatureScanOperation extends MutateInputToolOperation<SignatureScanInput> {
     private final BlackDuckRunData blackDuckRunData;
     private final DetectToolFilter detectToolFilter;
     private final BlackDuckSignatureScannerTool signatureScannerTool;
@@ -71,7 +70,7 @@ public class SignatureScanOperation extends ToolOperation<SignatureScanInput, Co
     }
 
     @Override
-    protected OperationResult<CodeLocationAccumulator> executeOperation(SignatureScanInput input) throws DetectUserFriendlyException, IntegrationException {
+    protected OperationResult<Void> executeOperation(SignatureScanInput input) throws DetectUserFriendlyException, IntegrationException {
         BlackDuckServerConfig blackDuckServerConfig = null;
         CodeLocationCreationService codeLocationCreationService = null;
         if (null != blackDuckRunData && blackDuckRunData.isOnline()) {
@@ -86,6 +85,6 @@ public class SignatureScanOperation extends ToolOperation<SignatureScanInput, Co
             eventSystem.publishEvent(Event.StatusSummary, new Status("SIGNATURE_SCAN", StatusType.FAILURE));
             eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(signatureScannerToolResult.getResult().toString())));
         }
-        return OperationResult.success(input.getCodeLocationAccumulator());
+        return OperationResult.success();
     }
 }

@@ -25,9 +25,9 @@ package com.synopsys.integration.detect.lifecycle.run.operation;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.exception.IntegrationException;
 
-public abstract class Operation<I, T> extends AbstractOperation<I, T> {
-    public final OperationResult<T> execute(I input) throws DetectUserFriendlyException, IntegrationException {
-        OperationResult<T> result = OperationResult.success();
+public abstract class MutateInputOperation<I> extends AbstractOperation<I, Void> {
+    public final OperationResult<Void> execute(I input) throws DetectUserFriendlyException, IntegrationException {
+        OperationResult<Void> result = OperationResult.success();
         if (shouldExecute()) {
             logOperationStarted();
             result = executeOperation(input);

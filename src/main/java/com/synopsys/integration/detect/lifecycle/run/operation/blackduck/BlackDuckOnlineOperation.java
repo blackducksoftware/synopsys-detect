@@ -30,7 +30,7 @@ import com.synopsys.integration.detect.lifecycle.run.operation.Operation;
 public abstract class BlackDuckOnlineOperation<I, T> extends Operation<I, T> {
     private final ProductRunData productRunData;
 
-    public BlackDuckOnlineOperation(ProductRunData productRunData) {
+    protected BlackDuckOnlineOperation(ProductRunData productRunData) {
         this.productRunData = productRunData;
     }
 
