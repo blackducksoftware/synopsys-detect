@@ -43,14 +43,19 @@ public class GradleRunner {
         this.executableRunner = executableRunner;
     }
 
-    public void runGradleDependencies(File directory, File gradleExe, File gradleInspector, @Nullable String gradleCommand, ProxyInfo proxyInfo, File outputDirectory) throws IOException, ExecutableFailedException {
+    public List<String> splitUserArguments(@Nullable String gradleCommand) {
         List<String> arguments = new ArrayList<>();
         if (StringUtils.isNotBlank(gradleCommand)) {
-            gradleCommand = gradleCommand.replace("dependencies", "").trim();
             Arrays.stream(gradleCommand.split(" "))
                 .filter(StringUtils::isNotBlank)
+                .filter(it -> !it.equals("dependencies"))
                 .forEach(arguments::add);
         }
+        return arguments;
+    }
+
+    public void runGradleDependencies(File directory, File gradleExe, File gradleInspector, @Nullable String gradleCommand, ProxyInfo proxyInfo, File outputDirectory) throws IOException, ExecutableFailedException {
+        List<String> arguments = splitUserArguments(gradleCommand);
         arguments.add("dependencies");
         arguments.add(String.format("--init-script=%s", gradleInspector));
         arguments.add(String.format("-DGRADLEEXTRACTIONDIR=%s", outputDirectory.getCanonicalPath()));
