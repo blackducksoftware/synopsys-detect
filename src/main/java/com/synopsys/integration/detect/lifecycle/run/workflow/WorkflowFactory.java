@@ -23,7 +23,6 @@
 package com.synopsys.integration.detect.lifecycle.run.workflow;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.detect.lifecycle.run.EventAccumulator;
 import com.synopsys.integration.detect.lifecycle.run.RunContext;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
@@ -34,10 +33,9 @@ public class WorkflowFactory {
         PropertyConfiguration detectConfiguration = runContext.getDetectConfiguration();
         OperationFactory operationFactory = new OperationFactory(runContext);
         RunOptions runOptions = runContext.createRunOptions();
-        EventAccumulator eventAccumulator = new EventAccumulator();
         if (runOptions.shouldPerformRapidWorkflow()) {
-            return new RapidScanWorkflow(detectConfiguration, operationFactory, eventAccumulator);
+            return new RapidScanWorkflow(detectConfiguration, operationFactory);
         }
-        return new DefaultWorkflow(detectConfiguration, operationFactory, eventAccumulator);
+        return new DefaultWorkflow(detectConfiguration, operationFactory);
     }
 }

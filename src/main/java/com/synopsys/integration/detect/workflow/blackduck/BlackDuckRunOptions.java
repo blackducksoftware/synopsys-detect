@@ -36,6 +36,6 @@ public class BlackDuckRunOptions {
     }
 
     public boolean shouldPerformRapidModeScan() {
-        return DetectWorkflow.TRANSIENT_SCAN == scanMode;
+        return DetectWorkflow.TRANSIENT == scanMode;
     }
 }

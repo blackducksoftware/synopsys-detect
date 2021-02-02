@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -33,6 +35,7 @@ import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanToolResult;
 import com.synopsys.integration.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
+import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
@@ -76,7 +79,8 @@ public class BinaryScanOperation extends MutateInputToolOperation<CodeLocationIn
         if (binaryScannerTool.shouldRun()) {
             BinaryScanToolResult result = binaryScannerTool.performBinaryScanActions(input.getNameVersion());
             if (result.isSuccessful()) {
-                input.getCodeLocationAccumulator().addWaitableCodeLocation(result.getCodeLocationCreationData());
+                CodeLocationAccumulator<BinaryScanOutput, BinaryScanBatchOutput> accumulator = input.getCodeLocationAccumulator();
+                accumulator.addWaitableCodeLocation(result.getCodeLocationCreationData());
             }
         }
         return OperationResult.success();

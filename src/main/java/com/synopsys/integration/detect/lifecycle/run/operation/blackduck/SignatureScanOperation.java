@@ -26,6 +26,8 @@ import java.util.Arrays;
 
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
 import com.synopsys.integration.blackduck.codelocation.Result;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -37,6 +39,7 @@ import com.synopsys.integration.detect.lifecycle.run.operation.input.SignatureSc
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
+import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
@@ -80,7 +83,8 @@ public class SignatureScanOperation extends MutateInputToolOperation<SignatureSc
         }
         SignatureScannerToolResult signatureScannerToolResult = signatureScannerTool.runScanTool(codeLocationCreationService, blackDuckServerConfig, input.getNameVersion(), input.getDockerTar());
         if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
-            input.getCodeLocationAccumulator().addWaitableCodeLocation(signatureScannerToolResult.getCreationData().get());
+            CodeLocationAccumulator<ScanCommandOutput, ScanBatchOutput> accumulator = input.getCodeLocationAccumulator();
+            accumulator.addWaitableCodeLocation(signatureScannerToolResult.getCreationData().get());
         } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
             eventSystem.publishEvent(Event.StatusSummary, new Status("SIGNATURE_SCAN", StatusType.FAILURE));
             eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(signatureScannerToolResult.getResult().toString())));

@@ -22,6 +22,8 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation.input;
 
+import com.synopsys.integration.blackduck.codelocation.CodeLocationBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationOutput;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.util.NameVersion;
 
@@ -29,7 +31,7 @@ public class CodeLocationInput {
     private NameVersion nameVersion;
     private CodeLocationAccumulator codeLocationAccumulator;
 
-    public CodeLocationInput(NameVersion nameVersion, CodeLocationAccumulator codeLocationAccumulator) {
+    public <O extends CodeLocationOutput, T extends CodeLocationBatchOutput<O>> CodeLocationInput(NameVersion nameVersion, CodeLocationAccumulator<O, T> codeLocationAccumulator) {
         this.nameVersion = nameVersion;
         this.codeLocationAccumulator = codeLocationAccumulator;
     }
@@ -38,7 +40,7 @@ public class CodeLocationInput {
         return nameVersion;
     }
 
-    public CodeLocationAccumulator getCodeLocationAccumulator() {
+    public <O extends CodeLocationOutput, T extends CodeLocationBatchOutput<O>> CodeLocationAccumulator<O, T> getCodeLocationAccumulator() {
         return codeLocationAccumulator;
     }
 }

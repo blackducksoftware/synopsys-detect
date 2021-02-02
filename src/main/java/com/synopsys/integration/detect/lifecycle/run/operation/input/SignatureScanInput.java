@@ -27,13 +27,15 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import com.synopsys.integration.blackduck.codelocation.CodeLocationBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.CodeLocationOutput;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.util.NameVersion;
 
 public class SignatureScanInput extends CodeLocationInput {
     private File dockerTar;
 
-    public SignatureScanInput(NameVersion nameVersion, CodeLocationAccumulator codeLocationAccumulator, @Nullable File dockerTar) {
+    public <O extends CodeLocationOutput, T extends CodeLocationBatchOutput<O>> SignatureScanInput(NameVersion nameVersion, CodeLocationAccumulator<O, T> codeLocationAccumulator, @Nullable File dockerTar) {
         super(nameVersion, codeLocationAccumulator);
         this.dockerTar = dockerTar;
     }

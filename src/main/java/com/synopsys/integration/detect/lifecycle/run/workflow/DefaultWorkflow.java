@@ -22,10 +22,11 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.workflow;
 
+import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadOutput;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.lifecycle.run.EventAccumulator;
 import com.synopsys.integration.detect.lifecycle.run.RunResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.BazelOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.DetectorOperation;
@@ -56,8 +57,8 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class DefaultWorkflow extends Workflow {
-    public DefaultWorkflow(PropertyConfiguration detectConfiguration, OperationFactory operationFactory, EventAccumulator eventAccumulator) {
-        super(detectConfiguration, operationFactory, eventAccumulator);
+    public DefaultWorkflow(PropertyConfiguration detectConfiguration, OperationFactory operationFactory) {
+        super(detectConfiguration, operationFactory);
     }
 
     @Override
@@ -97,8 +98,8 @@ public class DefaultWorkflow extends Workflow {
         OperationResult<BdioResult> bdioGeneration = bdioFileGenerationOperation.execute(bdioInput);
         BdioResult bdioResult = bdioGeneration.getContent();
 
-        OperationResult<CodeLocationAccumulator> codeLocationResult = codeLocationOperation.execute(bdioResult);
-        CodeLocationAccumulator codeLocationAccumulator = codeLocationResult.getContent();
+        OperationResult<CodeLocationAccumulator<UploadOutput, UploadBatchOutput>> codeLocationResult = codeLocationOperation.execute(bdioResult);
+        CodeLocationAccumulator<UploadOutput, UploadBatchOutput> codeLocationAccumulator = codeLocationResult.getContent();
         SignatureScanInput signatureScanInput = new SignatureScanInput(projectNameVersion, codeLocationAccumulator, runResult.getDockerTar().orElse(null));
 
         signatureScanOperation.execute(signatureScanInput);
@@ -112,6 +113,6 @@ public class DefaultWorkflow extends Workflow {
         OperationResult<CodeLocationResults> codeLocationProcessingResult = codeLocationResultOperation.execute(codeLocationAccumulator);
         FullScanPostProcessingInput postProcessingInput = new FullScanPostProcessingInput(projectNameVersion, bdioResult, codeLocationProcessingResult.getContent(), projectVersionWrapper);
         fullScanPostProcessingOperation.execute(postProcessingInput);
-        return WorkflowResult.success(getEventAccumulator());
+        return WorkflowResult.success();
     }
 }

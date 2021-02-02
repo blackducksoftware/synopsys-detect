@@ -80,6 +80,6 @@ public class RunOptions {
     }
 
     public boolean shouldPerformRapidWorkflow() {
-        return DetectWorkflow.TRANSIENT_SCAN == detectWorkflow;
+        return DetectWorkflow.TRANSIENT == detectWorkflow;
     }
 }

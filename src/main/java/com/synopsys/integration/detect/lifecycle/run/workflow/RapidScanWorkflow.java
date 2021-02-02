@@ -24,7 +24,6 @@ package com.synopsys.integration.detect.lifecycle.run.workflow;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.lifecycle.run.EventAccumulator;
 import com.synopsys.integration.detect.lifecycle.run.RunResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.DetectorOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
@@ -41,8 +40,8 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
 public class RapidScanWorkflow extends Workflow {
-    public RapidScanWorkflow(PropertyConfiguration detectConfiguration, OperationFactory operationFactory, EventAccumulator eventAccumulator) {
-        super(detectConfiguration, operationFactory, eventAccumulator);
+    public RapidScanWorkflow(PropertyConfiguration detectConfiguration, OperationFactory operationFactory) {
+        super(detectConfiguration, operationFactory);
     }
 
     @Override
@@ -67,6 +66,6 @@ public class RapidScanWorkflow extends Workflow {
 
         RapidScanInput rapidScanInput = new RapidScanInput(projectNameVersion, bdioResult);
         rapidScanOperation.execute(rapidScanInput);
-        return WorkflowResult.success(getEventAccumulator());
+        return WorkflowResult.success();
     }
 }

@@ -31,6 +31,7 @@ import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.bdio2upload.Bdio2UploadService;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.BdioUploadService;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadOutput;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -41,7 +42,7 @@ import com.synopsys.integration.detect.workflow.blackduck.DetectBdioUploadServic
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class CodeLocationOperation extends BlackDuckOnlineOperation<BdioResult, CodeLocationAccumulator> {
+public class CodeLocationOperation extends BlackDuckOnlineOperation<BdioResult, CodeLocationAccumulator<UploadOutput, UploadBatchOutput>> {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public CodeLocationOperation(ProductRunData productRunData) {
@@ -54,8 +55,8 @@ public class CodeLocationOperation extends BlackDuckOnlineOperation<BdioResult, 
     }
 
     @Override
-    protected OperationResult<CodeLocationAccumulator> executeOperation(BdioResult input) throws DetectUserFriendlyException, IntegrationException {
-        CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator();
+    protected OperationResult<CodeLocationAccumulator<UploadOutput, UploadBatchOutput>> executeOperation(BdioResult input) throws DetectUserFriendlyException, IntegrationException {
+        CodeLocationAccumulator<UploadOutput, UploadBatchOutput> codeLocationAccumulator = new CodeLocationAccumulator<>();
         List<UploadTarget> uploadTargetList = input.getUploadTargets();
         if (!uploadTargetList.isEmpty()) {
             BlackDuckServicesFactory blackDuckServicesFactory = getBlackDuckServicesFactory();

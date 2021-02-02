@@ -54,9 +54,6 @@ public class RunManager2 {
             result.getException().ifPresent(exitCodeManager::requestExitCode);
         }
 
-        result.getEventRequests().stream()
-            .forEach(request -> eventSystem.publishEvent(request.getEventType(), request.getPayload()));
-
         return result;
     }
 }

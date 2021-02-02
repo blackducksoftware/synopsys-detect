@@ -22,28 +22,23 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.workflow;
 
-import java.util.List;
 import java.util.Optional;
-
-import com.synopsys.integration.detect.lifecycle.run.EventRequest;
 
 public class WorkflowResult {
     private final boolean success;
     private final Exception exception;
-    private final List<EventRequest> eventRequests;
 
-    public static WorkflowResult success(List<EventRequest> eventRequests) {
-        return new WorkflowResult(true, null, eventRequests);
+    public static WorkflowResult success() {
+        return new WorkflowResult(true, null);
     }
 
-    public static WorkflowResult fail(Exception ex, List<EventRequest> eventRequests) {
-        return new WorkflowResult(false, ex, eventRequests);
+    public static WorkflowResult fail(Exception ex) {
+        return new WorkflowResult(false, ex);
     }
 
-    private WorkflowResult(boolean success, Exception exception, List<EventRequest> eventRequests) {
+    private WorkflowResult(boolean success, Exception exception) {
         this.success = success;
         this.exception = exception;
-        this.eventRequests = eventRequests;
     }
 
     public boolean isSuccess() {
@@ -56,9 +51,5 @@ public class WorkflowResult {
 
     public Optional<Exception> getException() {
         return Optional.ofNullable(exception);
-    }
-
-    public List<EventRequest> getEventRequests() {
-        return eventRequests;
     }
 }
