@@ -29,14 +29,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
-import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockEntryElementParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockElementParser;
 
 public class YarnLockEntryParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final YarnLockLineAnalyzer yarnLockLineAnalyzer;
-    private final YarnLockEntryElementParser yarnLockEntryElementParser;
+    private final YarnLockElementParser yarnLockEntryElementParser;
 
-    public YarnLockEntryParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockEntryElementParser yarnLockEntryElementParser) {
+    public YarnLockEntryParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockElementParser yarnLockEntryElementParser) {
         this.yarnLockLineAnalyzer = yarnLockLineAnalyzer;
         this.yarnLockEntryElementParser = yarnLockEntryElementParser;
     }

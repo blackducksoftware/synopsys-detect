@@ -42,7 +42,7 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLock
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockDependencySpecParser;
-import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockEntryElementParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockElementParser;
 
 @UnitTest
 public class YarnLockParserTest {
@@ -268,7 +268,7 @@ public class YarnLockParserTest {
     private YarnLockParser createYarnLockParser() {
         YarnLockLineAnalyzer lineAnalyzer = new YarnLockLineAnalyzer();
         YarnLockDependencySpecParser yarnLockDependencySpecParser = new YarnLockDependencySpecParser(lineAnalyzer);
-        YarnLockEntryElementParser yarnLockEntryElementParser = new YarnLockEntryElementParser(lineAnalyzer, yarnLockDependencySpecParser);
+        YarnLockElementParser yarnLockEntryElementParser = new YarnLockElementParser(lineAnalyzer, yarnLockDependencySpecParser);
         YarnLockEntryParser entryParser = new YarnLockEntryParser(lineAnalyzer, yarnLockEntryElementParser);
         YarnLockParser yarnLockParser = new YarnLockParser(entryParser);
         return yarnLockParser;

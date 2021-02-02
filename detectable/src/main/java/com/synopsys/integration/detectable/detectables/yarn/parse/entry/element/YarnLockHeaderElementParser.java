@@ -33,11 +33,11 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAn
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryBuilder;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 
-public class YarnLockEntryHeaderParser implements YarnLockElementTypeParser {
+public class YarnLockHeaderElementParser implements YarnLockElementTypeParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final YarnLockLineAnalyzer yarnLockLineAnalyzer;
 
-    public YarnLockEntryHeaderParser(YarnLockLineAnalyzer yarnLockLineAnalyzer) {
+    public YarnLockHeaderElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer) {
         this.yarnLockLineAnalyzer = yarnLockLineAnalyzer;
     }
 

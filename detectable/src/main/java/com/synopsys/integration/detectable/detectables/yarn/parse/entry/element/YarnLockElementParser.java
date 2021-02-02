@@ -29,11 +29,11 @@ import java.util.function.Supplier;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryBuilder;
 
-public class YarnLockEntryElementParser {
+public class YarnLockElementParser {
     private final List<YarnLockElementTypeParser> elementParsers = new ArrayList<>();
 
-    public YarnLockEntryElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser) {
-        createElementTypeParser(() -> new YarnLockEntryHeaderParser(yarnLockLineAnalyzer));
+    public YarnLockElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser) {
+        createElementTypeParser(() -> new YarnLockHeaderElementParser(yarnLockLineAnalyzer));
         createElementTypeParser(() -> new YarnLockDependencyListElementParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser, "dependencies", false));
         createElementTypeParser(() -> new YarnLockDependencyListElementParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser, "optionalDependencies", true));
         createElementTypeParser(() -> new YarnLockDependencyMetaListElementParser(yarnLockLineAnalyzer));
