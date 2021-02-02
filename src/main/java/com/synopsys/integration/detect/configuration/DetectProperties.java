@@ -1138,7 +1138,7 @@ public class DetectProperties {
             .setInfo("Detect Workflow", DetectPropertyFromVersion.VERSION_6_9_0)
             .setHelp("Set the workflow to control the execution of Detect",
                 "Set the workflow to control how Detect will operate.  The scan results are not persisted in Black Duck if TRANSIENT_SCAN is selected.  The TRANSIENT_SCAN value supports a Black Duck rapid scan feature that is meant to be used with a later Black Duck version.  If TRANSIENT_SCAN is selected, then Detect also requires --detect.bdio2.enabled=true and --blackduck.offline.mode=false to perform a TRANSIENT_SCAN scan.")
-            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
+            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
     //#endregion Active Properties

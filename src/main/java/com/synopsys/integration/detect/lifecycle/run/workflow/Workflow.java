@@ -50,12 +50,9 @@ public abstract class Workflow {
 
     protected abstract WorkflowResult executeWorkflow() throws DetectUserFriendlyException, IntegrationException;
 
-    protected abstract void assertRequiredProperties() throws DetectUserFriendlyException;
-
     public WorkflowResult execute() {
         WorkflowResult result;
         try {
-            assertRequiredProperties();
             executeWorkflow();
             logger.info("All tools have finished.");
             logger.info(ReportConstants.RUN_SEPARATOR);

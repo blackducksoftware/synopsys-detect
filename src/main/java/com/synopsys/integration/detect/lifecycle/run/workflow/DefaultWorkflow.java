@@ -61,11 +61,6 @@ public class DefaultWorkflow extends Workflow {
     }
 
     @Override
-    protected void assertRequiredProperties() throws DetectUserFriendlyException {
-        // no properties to validate here.
-    }
-
-    @Override
     public WorkflowResult executeWorkflow() throws DetectUserFriendlyException, IntegrationException {
         RunResult runResult = new RunResult();
         PolarisOperation polarisOperation = getOperationFactory().createPolarisOperation();
@@ -117,6 +112,6 @@ public class DefaultWorkflow extends Workflow {
         OperationResult<CodeLocationResults> codeLocationProcessingResult = codeLocationResultOperation.execute(codeLocationAccumulator);
         FullScanPostProcessingInput postProcessingInput = new FullScanPostProcessingInput(projectNameVersion, bdioResult, codeLocationProcessingResult.getContent(), projectVersionWrapper);
         OperationResult<Void> blackDuckPostProcessingResult = fullScanPostProcessingOperation.execute(postProcessingInput);
-        return null;
+        return WorkflowResult.success(getEventAccumulator());
     }
 }
