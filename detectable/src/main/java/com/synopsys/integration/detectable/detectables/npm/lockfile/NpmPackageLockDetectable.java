@@ -29,13 +29,13 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "File: package-lock.json. Optionally for better results: package.json also.")
 public class NpmPackageLockDetectable extends Detectable {
@@ -59,21 +59,26 @@ public class NpmPackageLockDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        lockfile = fileFinder.findFile(environment.getDirectory(), PACKAGE_LOCK_JSON);
-        if (lockfile == null) {
-            return new FileNotFoundDetectableResult(PACKAGE_LOCK_JSON);
-        } else {
-            relevantFiles.add(lockfile);
-        }
-
-        packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
-        if (packageJson == null) {
-            logger.warn("Npm applied but it could not find a package.json so dependencies may not be entirely accurate.");
-        } else {
-            relevantFiles.add(packageJson);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requires = new Requirements();
+        lockfile = requires.file(fileFinder, environment, PACKAGE_LOCK_JSON);
+        packageJson = requires.file(fileFinder, environment, PACKAGE_JSON);
+        return requires.result();
+        //
+        //        lockfile = fileFinder.findFile(environment.getDirectory(), PACKAGE_LOCK_JSON);
+        //        if (lockfile == null) {
+        //            return new FileNotFoundDetectableResult(PACKAGE_LOCK_JSON);
+        //        } else {
+        //            relevantFiles.add(lockfile);
+        //        }
+        //
+        //        packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
+        //        if (packageJson == null) {
+        //            logger.warn("Npm applied but it could not find a package.json so dependencies may not be entirely accurate.");
+        //        } else {
+        //            relevantFiles.add(packageJson);
+        //        }
+        //
+        //        return new PassedDetectableResult();
     }
 
     @Override

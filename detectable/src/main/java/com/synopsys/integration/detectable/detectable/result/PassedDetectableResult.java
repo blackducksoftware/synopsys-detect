@@ -22,7 +22,26 @@
  */
 package com.synopsys.integration.detectable.detectable.result;
 
+import java.util.Collections;
+import java.util.List;
+
+import com.synopsys.integration.detectable.detectable.explanation.Explanation;
+
 public class PassedDetectableResult implements DetectableResult {
+    final List<Explanation> explanations;
+
+    public PassedDetectableResult(final List<Explanation> explanations) {
+        this.explanations = explanations;
+    }
+
+    public PassedDetectableResult() {
+        this.explanations = Collections.emptyList();
+    }
+
+    public PassedDetectableResult(Explanation explanation) {
+        this.explanations = Collections.singletonList(explanation);
+    }
+
     @Override
     public boolean getPassed() {
         return true;
@@ -31,5 +50,10 @@ public class PassedDetectableResult implements DetectableResult {
     @Override
     public String toDescription() {
         return "Passed.";
+    }
+
+    @Override
+    public List<Explanation> getExplanation() {
+        return explanations;
     }
 }

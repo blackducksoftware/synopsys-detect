@@ -22,18 +22,23 @@
  */
 package com.synopsys.integration.detector.result;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
+
+import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 
 public class PassedDetectorResult extends DetectorResult {
     public PassedDetectorResult() {
-        this("Passed.", null);
+        this("Passed.", null, Collections.emptyList());
     }
 
     public PassedDetectorResult(@NotNull final String description) {
-        this(description, null);
+        this(description, null, Collections.emptyList());
     }
 
-    public PassedDetectorResult(@NotNull final String description, final Class resultClass) {
-        super(true, description, resultClass);
+    public PassedDetectorResult(@NotNull final String description, final Class resultClass, List<Explanation> explanations) {
+        super(true, description, resultClass, explanations);
     }
 }

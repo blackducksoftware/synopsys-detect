@@ -22,6 +22,11 @@
  */
 package com.synopsys.integration.detectable.detectable.result;
 
+import java.util.Collections;
+import java.util.List;
+
+import com.synopsys.integration.detectable.detectable.explanation.Explanation;
+
 public class FailedDetectableResult implements DetectableResult {
     @Override
     public boolean getPassed() {
@@ -31,5 +36,10 @@ public class FailedDetectableResult implements DetectableResult {
     @Override
     public String toDescription() {
         return "Failed.";
+    }
+
+    @Override
+    public List<Explanation> getExplanation() {
+        return Collections.emptyList();
     }
 }

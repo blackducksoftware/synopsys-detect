@@ -22,10 +22,12 @@
  */
 package com.synopsys.integration.detector.result;
 
+import java.util.Collections;
+
 import org.jetbrains.annotations.NotNull;
 
 public class FailedDetectorResult extends DetectorResult {
     public FailedDetectorResult(@NotNull final String description, final Class resultClass) {
-        super(false, description, resultClass);
+        super(false, description, resultClass, Collections.emptyList());
     }
 }

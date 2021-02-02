@@ -22,28 +22,39 @@
  */
 package com.synopsys.integration.detector.result;
 
+import java.util.List;
+
 import org.jetbrains.annotations.NotNull;
+
+import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 
 public class DetectorResult {
     private final boolean passed;
     @NotNull
     private final String description;
     private final Class resultClass;
+    private List<Explanation> explanations;
 
-    public DetectorResult(final boolean passed, @NotNull final String description) {
+    public DetectorResult(final boolean passed, @NotNull final String description, final List<Explanation> explanations) {
         this.passed = passed;
         this.description = description;
+        this.explanations = explanations;
         this.resultClass = null;
     }
 
-    public DetectorResult(final boolean passed, @NotNull final String description, final Class resultClass) {
+    public DetectorResult(final boolean passed, @NotNull final String description, final Class resultClass, final List<Explanation> explanations) {
         this.passed = passed;
         this.description = description;
         this.resultClass = resultClass;
+        this.explanations = explanations;
     }
 
     public boolean getPassed() {
         return passed;
+    }
+
+    public List<Explanation> getExplanations() {
+        return explanations;
     }
 
     @NotNull

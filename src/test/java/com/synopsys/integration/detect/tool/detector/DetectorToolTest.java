@@ -124,7 +124,7 @@ public class DetectorToolTest {
         String projectBomTool = DetectorType.GO_MOD.name();
 
         DetectorToolResult result = executeToolTest(extraction, extractionResult, projectBomTool);
-        
+
         assertFalse(result.getApplicableDetectorTypes().isEmpty());
         assertTrue(result.getBomToolCodeLocations().isEmpty());
         assertFalse(result.getBomToolProjectNameVersion().isPresent());
@@ -214,7 +214,7 @@ public class DetectorToolTest {
         GoModCliDetectable detectable = Mockito.mock(GoModCliDetectable.class);
         Mockito.when(detectable.extractable()).thenReturn(extractionResult);
 
-        Mockito.when(detectable.applicable()).thenReturn(new PassedDetectableResult());
+        Mockito.when(detectable.applicable()).thenReturn(new PassedDetectableResult(explanations));
         Mockito.when(detectable.getFoundRelevantFiles()).thenReturn(relevantFiles);
         Mockito.when(detectable.extract(Mockito.any())).thenReturn(extraction);
         return detectable;
@@ -280,7 +280,7 @@ public class DetectorToolTest {
     private DetectorEvaluationTree createEvaluationTree(Extraction extraction, DetectableResult extractionResult, File directory, DetectorRule<GoModCliDetectable> rule, DetectorRuleSet detectorRuleSet) {
         DetectorEvaluation detectorEvaluation = new DetectorEvaluation(rule);
 
-        DetectorResult extractableResult = new DetectorResult(extractionResult.getPassed(), extractionResult.toDescription(), extractionResult.getClass());
+        DetectorResult extractableResult = new DetectorResult(extractionResult.getPassed(), extractionResult.toDescription(), extractionResult.getClass(), explanations);
         detectorEvaluation.setExtractable(extractableResult);
         detectorEvaluation.setExtraction(extraction);
         detectorEvaluation.setApplicable(new DetectorResult(true, "", null));

@@ -114,7 +114,7 @@ public class DiscoveryEvaluatorTest {
         Predicate<DetectorRule> rulePredicate = it -> true;
         Mockito.when(evaluationOptions.getDetectorFilter()).thenReturn(rulePredicate);
         Mockito.when(detectorRule.createDetectable(Mockito.any(DetectableEnvironment.class))).thenReturn(detectable);
-        Mockito.when(detectable.applicable()).thenReturn(new PassedDetectableResult());
+        Mockito.when(detectable.applicable()).thenReturn(new PassedDetectableResult(explanations));
         if (throwException) {
             Mockito.when(detectable.discover(Mockito.eq(extractionEnvironment))).thenThrow(new RuntimeException("JUnit expected exception."));
         } else {

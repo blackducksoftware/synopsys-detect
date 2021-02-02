@@ -33,6 +33,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Discovery;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
+import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 import com.synopsys.integration.detector.evaluation.SearchEnvironment;
@@ -106,6 +107,17 @@ public class DetectorEvaluation {
 
     public boolean wasDiscoveryException() {
         return isExtractable() && this.discovery != null && this.discovery.getResult() == Discovery.DiscoveryResultType.EXCEPTION;
+    }
+
+    public List<Explanation> getAllExplanations() {
+        List<Explanation> explanations = new ArrayList<>();
+        if (applicable != null) {
+            explanations.addAll(applicable.getExplanations());
+        }
+        if (extractable != null) {
+            explanations.addAll(extractable.getExplanations());
+        }
+        return explanations;
     }
 
     public void setSearchable(DetectorResult searchable) {

@@ -129,7 +129,7 @@ public class ExtractionEvaluatorTest {
         Mockito.when(evaluationOptions.getDetectorFilter()).thenReturn(rulePredicate);
 
         Mockito.when(detectorRule.createDetectable(Mockito.any(DetectableEnvironment.class))).thenReturn(detectable);
-        Mockito.when(detectable.applicable()).thenReturn(new PassedDetectableResult());
+        Mockito.when(detectable.applicable()).thenReturn(new PassedDetectableResult(explanations));
         if (throwException) {
             Mockito.when(detectable.extract(Mockito.eq(extractionEnvironment))).thenThrow(new RuntimeException("JUnit expected exception"));
         } else {
