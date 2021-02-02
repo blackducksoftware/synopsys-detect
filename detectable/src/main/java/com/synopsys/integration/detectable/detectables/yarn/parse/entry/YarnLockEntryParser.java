@@ -37,14 +37,14 @@ public class YarnLockEntryParser {
         this.yarnLockEntryElementParser = yarnLockEntryElementParser;
     }
 
-    public YarnLockEntryParseResult parseEntry(List<String> yarnLockFileLines, int nodeStartIndex) {
+    public YarnLockEntryParseResult parseEntry(List<String> yarnLockFileLines, int entryStartIndex) {
         YarnLockEntryBuilder yarnLockEntryBuilder = new YarnLockEntryBuilder();
-        int fileLineIndex = nodeStartIndex;
+        int fileLineIndex = entryStartIndex;
         int entryLineIndex = 0;
         while (fileLineIndex < yarnLockFileLines.size()) {
-            String nodeBodyLine = yarnLockFileLines.get(fileLineIndex);
-            // Check to see if we've overshot the end of the node
-            Optional<YarnLockEntryParseResult> result = getResultIfDone(entryLineIndex, nodeBodyLine, fileLineIndex, nodeStartIndex, entryLineIndex, yarnLockEntryBuilder);
+            String entryBodyLine = yarnLockFileLines.get(fileLineIndex);
+            // Check to see if we've overshot the end of the entry
+            Optional<YarnLockEntryParseResult> result = getResultIfDone(entryLineIndex, entryBodyLine, fileLineIndex, yarnLockEntryBuilder);
             if (result.isPresent()) {
                 return result.get();
             }
@@ -57,21 +57,17 @@ public class YarnLockEntryParser {
         return new YarnLockEntryParseResult(yarnLockFileLines.size() - 1, entry.orElse(null));
     }
 
-    private Optional<YarnLockEntryParseResult> getResultIfDone(int entryLineIndex, String nodeBodyLine, int lineIndex, int entryStartIndex, int bodyLineCount, YarnLockEntryBuilder entryBuilder) {
+    private Optional<YarnLockEntryParseResult> getResultIfDone(int entryLineIndex, String entryBodyLine, int fileLineIndex, YarnLockEntryBuilder entryBuilder) {
         if (entryLineIndex == 0) {
-            // we're still on the first line, so can't be done yet
+            // we're still on the first line of the entry, so can't be done yet
             return Optional.empty();
         }
-        int indentDepth = yarnLockLineAnalyzer.measureIndentDepth(nodeBodyLine);
+        int indentDepth = yarnLockLineAnalyzer.measureIndentDepth(entryBodyLine);
         if (indentDepth > 0) {
-            // We're not done parsing this node
+            // We're still in indented lines, so not done parsing this entry
             return Optional.empty();
         }
-        if (bodyLineCount == 0) {
-            return Optional.of(new YarnLockEntryParseResult(entryStartIndex));
-        } else {
-            Optional<YarnLockEntry> node = entryBuilder.build();
-            return Optional.of(new YarnLockEntryParseResult(lineIndex - 1, node.orElse(null)));
-        }
+        Optional<YarnLockEntry> entry = entryBuilder.build();
+        return Optional.of(new YarnLockEntryParseResult(fileLineIndex - 1, entry.orElse(null)));
     }
 }
