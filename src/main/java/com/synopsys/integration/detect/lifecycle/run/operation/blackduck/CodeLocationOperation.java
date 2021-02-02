@@ -55,7 +55,7 @@ public class CodeLocationOperation extends BlackDuckOnlineOperation<BdioResult, 
     }
 
     @Override
-    protected OperationResult<CodeLocationAccumulator<UploadOutput, UploadBatchOutput>> executeOperation(BdioResult input) throws DetectUserFriendlyException, IntegrationException {
+    public OperationResult<CodeLocationAccumulator<UploadOutput, UploadBatchOutput>> executeOperation(BdioResult input) throws DetectUserFriendlyException, IntegrationException {
         CodeLocationAccumulator<UploadOutput, UploadBatchOutput> codeLocationAccumulator = new CodeLocationAccumulator<>();
         List<UploadTarget> uploadTargetList = input.getUploadTargets();
         if (!uploadTargetList.isEmpty()) {

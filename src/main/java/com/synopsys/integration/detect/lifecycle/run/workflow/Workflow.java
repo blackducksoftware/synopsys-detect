@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
+import com.synopsys.integration.detect.lifecycle.run.operation.Operation;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.exception.IntegrationException;
@@ -39,10 +40,6 @@ public abstract class Workflow {
     public Workflow(PropertyConfiguration detectConfiguration, OperationFactory operationFactory) {
         this.detectConfiguration = detectConfiguration;
         this.operationFactory = operationFactory;
-    }
-
-    public OperationFactory getOperationFactory() {
-        return operationFactory;
     }
 
     protected abstract WorkflowResult executeWorkflow() throws DetectUserFriendlyException, IntegrationException;
@@ -67,7 +64,23 @@ public abstract class Workflow {
         return result;
     }
 
+    public OperationFactory getOperationFactory() {
+        return operationFactory;
+    }
+
     public PropertyConfiguration getDetectConfiguration() {
         return detectConfiguration;
+    }
+
+    protected void logToolStarted(Operation<?, ?> operation) {
+        logger.info("Will include the {} tool.", operation.getOperationName());
+    }
+
+    protected void logToolFinished(Operation<?, ?> operation) {
+        logger.info("{} actions finished.", operation.getOperationName());
+    }
+
+    protected void logToolSkipped(Operation<?, ?> operation) {
+        logger.info("{} tool will not be run.", operation.getOperationName());
     }
 }

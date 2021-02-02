@@ -33,7 +33,7 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.synopsys.integration.detect.lifecycle.run.operation.MutateInputToolOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.Operation;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.SignatureScanInput;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
@@ -48,7 +48,7 @@ import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class SignatureScanOperation extends MutateInputToolOperation<SignatureScanInput> {
+public class SignatureScanOperation extends Operation<SignatureScanInput, Void> {
     private final BlackDuckRunData blackDuckRunData;
     private final DetectToolFilter detectToolFilter;
     private final BlackDuckSignatureScannerTool signatureScannerTool;
@@ -63,7 +63,7 @@ public class SignatureScanOperation extends MutateInputToolOperation<SignatureSc
     }
 
     @Override
-    protected boolean shouldExecute() {
+    public boolean shouldExecute() {
         return detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN);
     }
 
@@ -73,7 +73,7 @@ public class SignatureScanOperation extends MutateInputToolOperation<SignatureSc
     }
 
     @Override
-    protected OperationResult<Void> executeOperation(SignatureScanInput input) throws DetectUserFriendlyException, IntegrationException {
+    public OperationResult<Void> executeOperation(SignatureScanInput input) throws DetectUserFriendlyException, IntegrationException {
         BlackDuckServerConfig blackDuckServerConfig = null;
         CodeLocationCreationService codeLocationCreationService = null;
         if (null != blackDuckRunData && blackDuckRunData.isOnline()) {

@@ -48,7 +48,7 @@ public class BdioFileGenerationOperation extends Operation<BdioInput, BdioResult
     }
 
     @Override
-    protected boolean shouldExecute() {
+    public boolean shouldExecute() {
         return true;
     }
 
@@ -58,7 +58,7 @@ public class BdioFileGenerationOperation extends Operation<BdioInput, BdioResult
     }
 
     @Override
-    protected OperationResult<BdioResult> executeOperation(BdioInput input) throws DetectUserFriendlyException, IntegrationException {
+    public OperationResult<BdioResult> executeOperation(BdioInput input) throws DetectUserFriendlyException, IntegrationException {
         BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, input.getAggregateOptions(), input.getNameVersion(), input.getCodeLocations(), runOptions.shouldUseBdio2());
         eventSystem.publishEvent(Event.DetectCodeLocationNamesCalculated, bdioResult.getCodeLocationNamesResult());
         return OperationResult.success(bdioResult);

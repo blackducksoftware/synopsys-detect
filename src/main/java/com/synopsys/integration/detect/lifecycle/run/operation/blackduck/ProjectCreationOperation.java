@@ -58,7 +58,7 @@ public class ProjectCreationOperation extends BlackDuckOnlineOperation<NameVersi
     }
 
     @Override
-    protected OperationResult<ProjectVersionWrapper> executeOperation(NameVersion input) throws DetectUserFriendlyException, IntegrationException {
+    public OperationResult<ProjectVersionWrapper> executeOperation(NameVersion input) throws DetectUserFriendlyException, IntegrationException {
         BlackDuckServicesFactory blackDuckServicesFactory = getBlackDuckServicesFactory();
         DetectProjectService detectProjectService = new DetectProjectService(blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.createProjectService(),
             blackDuckServicesFactory.createProjectBomService(), blackDuckServicesFactory.createProjectUsersService(), blackDuckServicesFactory.createTagService(), detectProjectServiceOptions,

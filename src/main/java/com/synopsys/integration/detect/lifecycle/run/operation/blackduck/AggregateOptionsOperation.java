@@ -40,7 +40,7 @@ public class AggregateOptionsOperation extends Operation<Boolean, AggregateOptio
     }
 
     @Override
-    protected boolean shouldExecute() {
+    public boolean shouldExecute() {
         return true;
     }
 
@@ -50,7 +50,7 @@ public class AggregateOptionsOperation extends Operation<Boolean, AggregateOptio
     }
 
     @Override
-    protected OperationResult<AggregateOptions> executeOperation(Boolean input) throws DetectUserFriendlyException, IntegrationException {
+    public OperationResult<AggregateOptions> executeOperation(Boolean input) throws DetectUserFriendlyException, IntegrationException {
         String aggregateName = runOptions.getAggregateName().orElse(null);
         AggregateMode aggregateMode = runOptions.getAggregateMode();
         AggregateOptions aggregateOptions;

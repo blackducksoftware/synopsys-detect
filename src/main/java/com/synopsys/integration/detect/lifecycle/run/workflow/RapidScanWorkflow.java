@@ -53,19 +53,33 @@ public class RapidScanWorkflow extends Workflow {
         BdioFileGenerationOperation bdioFileGenerationOperation = getOperationFactory().createBdioFileGenerationOperation();
         RapidScanOperation rapidScanOperation = getOperationFactory().createRapidScanOperation();
 
-        OperationResult<Void> detectorResult = detectorOperation.execute(runResult);
+        boolean priorOperationsFailed = false;
+        if (detectorOperation.shouldExecute()) {
+            logToolStarted(detectorOperation);
+            OperationResult<Void> detectorResult = detectorOperation.execute(runResult);
+            priorOperationsFailed = detectorResult.hasFailed();
+            logToolFinished(detectorOperation);
+        } else {
+            logToolSkipped(detectorOperation);
+        }
 
         OperationResult<NameVersion> projectInfo = projectDecisionOperation.execute(runResult.getDetectToolProjectInfo());
         NameVersion projectNameVersion = projectInfo.getContent();
 
-        OperationResult<AggregateOptions> aggregateOptions = aggregateOptionsOperation.execute(detectorResult.hasFailed());
+        OperationResult<AggregateOptions> aggregateOptions = aggregateOptionsOperation.execute(priorOperationsFailed);
         BdioInput bdioInput = new BdioInput(aggregateOptions.getContent(), projectNameVersion, runResult.getDetectCodeLocations());
 
         OperationResult<BdioResult> bdioGeneration = bdioFileGenerationOperation.execute(bdioInput);
         BdioResult bdioResult = bdioGeneration.getContent();
 
-        RapidScanInput rapidScanInput = new RapidScanInput(projectNameVersion, bdioResult);
-        rapidScanOperation.execute(rapidScanInput);
+        if (rapidScanOperation.shouldExecute()) {
+            logToolStarted(rapidScanOperation);
+            RapidScanInput rapidScanInput = new RapidScanInput(projectNameVersion, bdioResult);
+            rapidScanOperation.execute(rapidScanInput);
+            logToolFinished(rapidScanOperation);
+        } else {
+            logToolSkipped(rapidScanOperation);
+        }
         return WorkflowResult.success();
     }
 }

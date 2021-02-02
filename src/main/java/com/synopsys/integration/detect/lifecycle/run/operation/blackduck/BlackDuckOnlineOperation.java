@@ -35,7 +35,7 @@ public abstract class BlackDuckOnlineOperation<I, T> extends Operation<I, T> {
     }
 
     @Override
-    protected boolean shouldExecute() {
+    public boolean shouldExecute() {
         return productRunData.shouldUseBlackDuckProduct() && getBlackDuckRunData().isOnline();
     }
 

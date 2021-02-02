@@ -22,19 +22,25 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.exception.IntegrationException;
 
-public abstract class Operation<I, T> extends AbstractOperation<I, T> {
+public abstract class Operation<I, T> {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    public abstract boolean shouldExecute();
+
+    public abstract String getOperationName();
+
+    protected abstract OperationResult<T> executeOperation(I input) throws DetectUserFriendlyException, IntegrationException;
+
     public final OperationResult<T> execute(I input) throws DetectUserFriendlyException, IntegrationException {
-        OperationResult<T> result = OperationResult.success();
-        if (shouldExecute()) {
-            logOperationStarted();
-            result = executeOperation(input);
-            logOperationFinished();
-        } else {
-            logOperationSkipped();
-        }
+        logger.debug("Operation {} started.");
+        OperationResult<T> result = executeOperation(input);
+        logger.debug("Operation {} finished.");
         return result;
     }
 }

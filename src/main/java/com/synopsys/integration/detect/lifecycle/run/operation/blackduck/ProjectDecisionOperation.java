@@ -43,7 +43,7 @@ public class ProjectDecisionOperation extends Operation<List<DetectToolProjectIn
     }
 
     @Override
-    protected boolean shouldExecute() {
+    public boolean shouldExecute() {
         return true;
     }
 
@@ -53,7 +53,7 @@ public class ProjectDecisionOperation extends Operation<List<DetectToolProjectIn
     }
 
     @Override
-    protected OperationResult<NameVersion> executeOperation(List<DetectToolProjectInfo> input) throws DetectUserFriendlyException, IntegrationException {
+    public OperationResult<NameVersion> executeOperation(List<DetectToolProjectInfo> input) throws DetectUserFriendlyException, IntegrationException {
         return OperationResult.success(projectNameVersionDecider.decideProjectNameVersion(runOptions.getPreferredTools(), input));
     }
 }

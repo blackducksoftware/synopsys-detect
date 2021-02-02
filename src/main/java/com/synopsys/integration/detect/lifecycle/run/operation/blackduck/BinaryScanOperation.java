@@ -28,7 +28,7 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.synopsys.integration.detect.lifecycle.run.operation.MutateInputToolOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.Operation;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.CodeLocationInput;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
@@ -42,7 +42,7 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class BinaryScanOperation extends MutateInputToolOperation<CodeLocationInput> {
+public class BinaryScanOperation extends Operation<CodeLocationInput, Void> {
 
     private final BlackDuckRunData blackDuckRunData;
     private final DetectToolFilter detectToolFilter;
@@ -62,7 +62,7 @@ public class BinaryScanOperation extends MutateInputToolOperation<CodeLocationIn
     }
 
     @Override
-    protected boolean shouldExecute() {
+    public boolean shouldExecute() {
         return detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN) && null != blackDuckRunData && blackDuckRunData.isOnline();
     }
 
@@ -72,7 +72,7 @@ public class BinaryScanOperation extends MutateInputToolOperation<CodeLocationIn
     }
 
     @Override
-    protected OperationResult<Void> executeOperation(CodeLocationInput input) throws DetectUserFriendlyException, IntegrationException {
+    public OperationResult<Void> executeOperation(CodeLocationInput input) throws DetectUserFriendlyException, IntegrationException {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckBinaryScannerTool binaryScannerTool = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, new WildcardFileFinder(), binaryScanOptions,
             blackDuckServicesFactory.createBinaryScanUploadService());

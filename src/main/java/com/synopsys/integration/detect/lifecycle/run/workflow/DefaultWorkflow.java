@@ -79,40 +79,96 @@ public class DefaultWorkflow extends Workflow {
         CodeLocationResultOperation codeLocationResultOperation = getOperationFactory().createCodeLocationResultOperation();
         FullScanPostProcessingOperation fullScanPostProcessingOperation = getOperationFactory().createFullScanPostProcessingOperation();
 
-        polarisOperation.execute(null);
-        OperationResult<Void> dockerResult = dockerOperation.execute(runResult);
-        OperationResult<Void> bazelResult = bazelOperation.execute(runResult);
-        OperationResult<Void> detectorResult = detectorOperation.execute(runResult);
+        if (polarisOperation.shouldExecute()) {
+            logToolStarted(polarisOperation);
+            polarisOperation.execute(null);
+            logToolFinished(polarisOperation);
+        } else {
+            logToolSkipped(polarisOperation);
+        }
 
-        boolean priorOperationsSucceeded = dockerResult.hasSucceeded() && bazelResult.hasSucceeded() && detectorResult.hasSucceeded();
+        boolean priorOperationsFailed = false;
+        if (dockerOperation.shouldExecute()) {
+            logToolStarted(dockerOperation);
+            OperationResult<Void> dockerResult = dockerOperation.execute(runResult);
+            priorOperationsFailed = dockerResult.hasFailed();
+            logToolFinished(dockerOperation);
+        } else {
+            logToolSkipped(dockerOperation);
+        }
+        if (bazelOperation.shouldExecute()) {
+            logToolStarted(bazelOperation);
+            OperationResult<Void> bazelResult = bazelOperation.execute(runResult);
+            priorOperationsFailed = priorOperationsFailed || bazelResult.hasFailed();
+            logToolFinished(bazelOperation);
+        } else {
+            logToolSkipped(bazelOperation);
+        }
+        if (detectorOperation.shouldExecute()) {
+            logToolStarted(detectorOperation);
+            OperationResult<Void> detectorResult = detectorOperation.execute(runResult);
+            priorOperationsFailed = priorOperationsFailed || detectorResult.hasFailed();
+            logToolFinished(detectorOperation);
+        } else {
+            logToolSkipped(detectorOperation);
+        }
 
         OperationResult<NameVersion> projectInfo = projectDecisionOperation.execute(runResult.getDetectToolProjectInfo());
         NameVersion projectNameVersion = projectInfo.getContent();
 
-        OperationResult<ProjectVersionWrapper> projectCreationResult = projectCreationOperation.execute(projectNameVersion);
-        ProjectVersionWrapper projectVersionWrapper = projectCreationResult.getContent();
+        ProjectVersionWrapper projectVersionWrapper = null;
+        if (projectCreationOperation.shouldExecute()) {
+            OperationResult<ProjectVersionWrapper> projectCreationResult = projectCreationOperation.execute(projectNameVersion);
+            projectVersionWrapper = projectCreationResult.getContent();
+        }
 
-        OperationResult<AggregateOptions> aggregateOptions = aggregateOptionsOperation.execute(priorOperationsSucceeded);
+        OperationResult<AggregateOptions> aggregateOptions = aggregateOptionsOperation.execute(priorOperationsFailed);
         BdioInput bdioInput = new BdioInput(aggregateOptions.getContent(), projectNameVersion, runResult.getDetectCodeLocations());
 
         OperationResult<BdioResult> bdioGeneration = bdioFileGenerationOperation.execute(bdioInput);
         BdioResult bdioResult = bdioGeneration.getContent();
 
-        OperationResult<CodeLocationAccumulator<UploadOutput, UploadBatchOutput>> codeLocationResult = codeLocationOperation.execute(bdioResult);
-        CodeLocationAccumulator<UploadOutput, UploadBatchOutput> codeLocationAccumulator = codeLocationResult.getContent();
-        SignatureScanInput signatureScanInput = new SignatureScanInput(projectNameVersion, codeLocationAccumulator, runResult.getDockerTar().orElse(null));
+        CodeLocationAccumulator codeLocationAccumulator = null;
+        if (codeLocationOperation.shouldExecute()) {
+            OperationResult<CodeLocationAccumulator<UploadOutput, UploadBatchOutput>> codeLocationResult = codeLocationOperation.execute(bdioResult);
+            codeLocationAccumulator = codeLocationResult.getContent();
+        }
+        if (signatureScanOperation.shouldExecute()) {
+            logToolStarted(signatureScanOperation);
+            SignatureScanInput signatureScanInput = new SignatureScanInput(projectNameVersion, codeLocationAccumulator, runResult.getDockerTar().orElse(null));
+            signatureScanOperation.execute(signatureScanInput);
+            logToolFinished(signatureScanOperation);
+        } else {
+            logToolSkipped(signatureScanOperation);
+        }
+        if (binaryScanOperation.shouldExecute()) {
+            logToolStarted(binaryScanOperation);
+            CodeLocationInput codeLocationInput = new CodeLocationInput(projectNameVersion, codeLocationAccumulator);
+            binaryScanOperation.execute(codeLocationInput);
+            logToolFinished(binaryScanOperation);
+        } else {
+            logToolSkipped(binaryScanOperation);
+        }
+        if (impactAnalysisOperation.shouldExecute()) {
+            logToolStarted(impactAnalysisOperation);
+            ImpactAnalysisInput impactAnalysisInput = new ImpactAnalysisInput(projectNameVersion, codeLocationAccumulator, projectVersionWrapper);
+            impactAnalysisOperation.execute(impactAnalysisInput);
+            logToolFinished(impactAnalysisOperation);
+        } else {
+            logToolSkipped(impactAnalysisOperation);
+        }
 
-        signatureScanOperation.execute(signatureScanInput);
-        CodeLocationInput codeLocationInput = new CodeLocationInput(projectNameVersion, codeLocationAccumulator);
+        CodeLocationResults codeLocationResults = null;
+        if (codeLocationResultOperation.shouldExecute()) {
+            OperationResult<CodeLocationResults> codeLocationProcessingResult = codeLocationResultOperation.execute(codeLocationAccumulator);
+            codeLocationResults = codeLocationProcessingResult.getContent();
+        }
 
-        binaryScanOperation.execute(codeLocationInput);
-        ImpactAnalysisInput impactAnalysisInput = new ImpactAnalysisInput(projectNameVersion, codeLocationAccumulator, projectVersionWrapper);
-
-        impactAnalysisOperation.execute(impactAnalysisInput);
-
-        OperationResult<CodeLocationResults> codeLocationProcessingResult = codeLocationResultOperation.execute(codeLocationAccumulator);
-        FullScanPostProcessingInput postProcessingInput = new FullScanPostProcessingInput(projectNameVersion, bdioResult, codeLocationProcessingResult.getContent(), projectVersionWrapper);
-        fullScanPostProcessingOperation.execute(postProcessingInput);
+        if (fullScanPostProcessingOperation.shouldExecute()) {
+            FullScanPostProcessingInput postProcessingInput = new FullScanPostProcessingInput(projectNameVersion, bdioResult, codeLocationResults, projectVersionWrapper);
+            fullScanPostProcessingOperation.execute(postProcessingInput);
+        }
         return WorkflowResult.success();
     }
 }
+

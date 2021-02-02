@@ -48,7 +48,7 @@ public class CodeLocationResultOperation extends BlackDuckOnlineOperation<CodeLo
     }
 
     @Override
-    protected OperationResult<CodeLocationResults> executeOperation(CodeLocationAccumulator input) throws DetectUserFriendlyException, IntegrationException {
+    public OperationResult<CodeLocationResults> executeOperation(CodeLocationAccumulator input) throws DetectUserFriendlyException, IntegrationException {
         CodeLocationResults codeLocationResults = codeLocationResultCalculator.calculateCodeLocationResults(input);
         eventSystem.publishEvent(Event.CodeLocationsCompleted, codeLocationResults.getAllCodeLocationNames());
         return OperationResult.success(codeLocationResults);

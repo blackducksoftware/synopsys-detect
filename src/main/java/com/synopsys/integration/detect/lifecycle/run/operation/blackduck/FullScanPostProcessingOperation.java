@@ -63,7 +63,7 @@ public class FullScanPostProcessingOperation extends BlackDuckOnlineOperation<Fu
     }
 
     @Override
-    protected OperationResult<Void> executeOperation(FullScanPostProcessingInput input) throws DetectUserFriendlyException, IntegrationException {
+    public OperationResult<Void> executeOperation(FullScanPostProcessingInput input) throws DetectUserFriendlyException, IntegrationException {
         BlackDuckServicesFactory blackDuckServicesFactory = getBlackDuckServicesFactory();
         BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory.createCodeLocationCreationService(), eventSystem, blackDuckServicesFactory.getBlackDuckApiClient(),
             blackDuckServicesFactory.createProjectBomService(), blackDuckServicesFactory.createReportService(detectTimeoutInSeconds));

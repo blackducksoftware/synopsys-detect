@@ -35,7 +35,7 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class DockerOperation extends MutateInputToolOperation<RunResult> {
+public class DockerOperation extends Operation<RunResult, Void> {
     private DirectoryManager directoryManager;
     private EventSystem eventSystem;
     private DetectDetectableFactory detectDetectableFactory;
@@ -64,7 +64,7 @@ public class DockerOperation extends MutateInputToolOperation<RunResult> {
     }
 
     @Override
-    protected OperationResult<Void> executeOperation(RunResult input) throws DetectUserFriendlyException, IntegrationException {
+    public OperationResult<Void> executeOperation(RunResult input) throws DetectUserFriendlyException, IntegrationException {
         DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createDockerDetectable,
             extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
             eventSystem);

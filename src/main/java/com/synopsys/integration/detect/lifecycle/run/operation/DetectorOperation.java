@@ -52,7 +52,7 @@ import com.synopsys.integration.detector.rule.DetectorRuleSet;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
-public class DetectorOperation extends MutateInputToolOperation<RunResult> {
+public class DetectorOperation extends Operation<RunResult, Void> {
     private PropertyConfiguration detectConfiguration;
     private DetectConfigurationFactory detectConfigurationFactory;
     private DirectoryManager directoryManager;
@@ -85,7 +85,7 @@ public class DetectorOperation extends MutateInputToolOperation<RunResult> {
     }
 
     @Override
-    protected OperationResult<Void> executeOperation(RunResult input) throws DetectUserFriendlyException, IntegrationException {
+    public OperationResult<Void> executeOperation(RunResult input) throws DetectUserFriendlyException, IntegrationException {
         String projectBomTool = detectConfiguration.getValueOrEmpty(DetectProperties.DETECT_PROJECT_DETECTOR.getProperty()).orElse(null);
         List<DetectorType> requiredDetectors = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_REQUIRED_DETECTOR_TYPES.getProperty());
         boolean buildless = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_BUILDLESS.getProperty());

@@ -37,7 +37,7 @@ import com.synopsys.integration.detectable.detectable.executable.DetectableExecu
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.polaris.common.configuration.PolarisServerConfig;
 
-public class PolarisOperation extends ToolOperation<Void, Void> {
+public class PolarisOperation extends Operation<Void, Void> {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private ProductRunData productRunData;
@@ -65,7 +65,7 @@ public class PolarisOperation extends ToolOperation<Void, Void> {
     }
 
     @Override
-    protected OperationResult<Void> executeOperation(Void input) {
+    public OperationResult<Void> executeOperation(Void input) {
         PolarisServerConfig polarisServerConfig = productRunData.getPolarisRunData().getPolarisServerConfig();
         DetectableExecutableRunner polarisExecutableRunner = DetectExecutableRunner.newInfo(eventSystem);
         PolarisTool polarisTool = new PolarisTool(eventSystem, directoryManager, polarisExecutableRunner, detectConfiguration, polarisServerConfig);

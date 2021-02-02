@@ -41,6 +41,7 @@ import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class BlackDuckRapidMode {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final int DEFAULT_WAIT_INTERVAL_IN_SECONDS = 1;
     private BlackDuckRunData blackDuckRunData;
     private DeveloperScanService developerScanService;
     private Long timeoutInSeconds;
@@ -61,7 +62,7 @@ public class BlackDuckRapidMode {
         List<DeveloperScanComponentResultView> results = new LinkedList<>();
         try {
             for (UploadTarget uploadTarget : bdioResult.getUploadTargets()) {
-                results.addAll(developerScanService.performDeveloperScan(uploadTarget.getUploadFile(), timeoutInSeconds));
+                results.addAll(developerScanService.performDeveloperScan(uploadTarget.getUploadFile(), timeoutInSeconds, DEFAULT_WAIT_INTERVAL_IN_SECONDS));
             }
             logger.debug("Developer scan result count: {}", results.size());
         } catch (IllegalArgumentException e) {

@@ -60,7 +60,7 @@ public class RapidScanOperation extends BlackDuckOnlineOperation<RapidScanInput,
     }
 
     @Override
-    protected OperationResult<Void> executeOperation(RapidScanInput input) throws DetectUserFriendlyException, IntegrationException {
+    public OperationResult<Void> executeOperation(RapidScanInput input) throws DetectUserFriendlyException, IntegrationException {
         BlackDuckRunData blackDuckRunData = getBlackDuckRunData();
         blackDuckRunData.getPhoneHomeManager().ifPresent(PhoneHomeManager::startPhoneHome);
 
