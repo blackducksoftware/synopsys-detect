@@ -25,17 +25,17 @@ package com.synopsys.integration.detect.lifecycle.run.workflow;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.detect.lifecycle.run.EventAccumulator;
 import com.synopsys.integration.detect.lifecycle.run.RunContext;
+import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
-import com.synopsys.integration.detect.workflow.blackduck.BlackDuckRunOptions;
 
 public class WorkflowFactory {
 
     public Workflow createWorkflow(RunContext runContext) {
         PropertyConfiguration detectConfiguration = runContext.getDetectConfiguration();
         OperationFactory operationFactory = new OperationFactory(runContext);
-        BlackDuckRunOptions blackDuckRunOptions = runContext.createBlackDuckRunOptions();
+        RunOptions runOptions = runContext.createRunOptions();
         EventAccumulator eventAccumulator = new EventAccumulator();
-        if (blackDuckRunOptions.shouldPerformRapidModeScan()) {
+        if (runOptions.shouldPerformRapidWorkflow()) {
             return new RapidScanWorkflow(detectConfiguration, operationFactory, eventAccumulator);
         }
         return new DefaultWorkflow(detectConfiguration, operationFactory, eventAccumulator);

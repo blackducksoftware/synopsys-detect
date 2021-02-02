@@ -32,7 +32,6 @@ import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.tool.detector.CodeLocationConverter;
 import com.synopsys.integration.detect.tool.detector.DetectDetectableFactory;
 import com.synopsys.integration.detect.tool.detector.extraction.ExtractionEnvironmentProvider;
-import com.synopsys.integration.detect.workflow.blackduck.BlackDuckRunOptions;
 import com.synopsys.integration.detect.workflow.codelocation.BdioCodeLocationCreator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameGenerator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
@@ -133,10 +132,6 @@ public class RunContext {
 
     public RunOptions createRunOptions() {
         return detectConfigurationFactory.createRunOptions();
-    }
-
-    public BlackDuckRunOptions createBlackDuckRunOptions() {
-        return detectConfigurationFactory.createBlackDuckRunOptions();
     }
 
     public Gson getGson() {

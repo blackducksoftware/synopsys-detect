@@ -88,7 +88,6 @@ import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostActions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
-import com.synopsys.integration.detect.workflow.blackduck.BlackDuckRunOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectBdioUploadService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCodeLocationUnmapService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
@@ -156,7 +155,6 @@ public class RunManager {
         RunResult runResult = new RunResult();
         RunOptions runOptions = detectConfigurationFactory.createRunOptions();
         DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
-        BlackDuckRunOptions blackDuckRunOptions = detectConfigurationFactory.createBlackDuckRunOptions();
 
         logger.info(ReportConstants.RUN_SEPARATOR);
 
@@ -166,14 +164,13 @@ public class RunManager {
             logger.info("Polaris tools will not be run.");
         }
 
-        UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, detectDetectableFactory, runResult, runOptions, detectToolFilter,
-            blackDuckRunOptions);
+        UniversalToolsResult universalToolsResult = runUniversalProjectTools(detectConfiguration, detectConfigurationFactory, directoryManager, eventSystem, detectDetectableFactory, runResult, runOptions, detectToolFilter);
 
         if (productRunData.shouldUseBlackDuckProduct()) {
             AggregateOptions aggregateOptions = determineAggregationStrategy(runOptions.getAggregateName().orElse(null), runOptions.getAggregateMode(), universalToolsResult);
             ImpactAnalysisOptions impactAnalysisOptions = detectConfigurationFactory.createImpactAnalysisOptions();
             runBlackDuckProduct(productRunData.getBlackDuckRunData(), detectConfigurationFactory, directoryManager, eventSystem, codeLocationNameManager, bdioCodeLocationCreator, detectInfo, runResult, runOptions, detectToolFilter,
-                universalToolsResult.getNameVersion(), aggregateOptions, impactAnalysisOptions, gson, blackDuckRunOptions);
+                universalToolsResult.getNameVersion(), aggregateOptions, impactAnalysisOptions, gson);
         } else {
             logger.info("Black Duck tools will not be run.");
         }
@@ -204,8 +201,7 @@ public class RunManager {
         DetectDetectableFactory detectDetectableFactory,
         RunResult runResult,
         RunOptions runOptions,
-        DetectToolFilter detectToolFilter,
-        BlackDuckRunOptions blackDuckRunOptions
+        DetectToolFilter detectToolFilter
     ) throws DetectUserFriendlyException {
 
         ExtractionEnvironmentProvider extractionEnvironmentProvider = new ExtractionEnvironmentProvider(directoryManager);
@@ -214,7 +210,7 @@ public class RunManager {
         boolean anythingFailed = false;
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (!blackDuckRunOptions.shouldPerformRapidModeScan() && detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
+        if (!runOptions.shouldPerformRapidWorkflow() && detectToolFilter.shouldInclude(DetectTool.DOCKER)) {
             logger.info("Will include the Docker tool.");
             DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createDockerDetectable,
                 extractionEnvironmentProvider, codeLocationConverter, "DOCKER", DetectTool.DOCKER,
@@ -230,7 +226,7 @@ public class RunManager {
         }
 
         logger.info(ReportConstants.RUN_SEPARATOR);
-        if (!blackDuckRunOptions.shouldPerformRapidModeScan() && detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
+        if (!runOptions.shouldPerformRapidWorkflow() && detectToolFilter.shouldInclude(DetectTool.BAZEL)) {
             logger.info("Will include the Bazel tool.");
             DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createBazelDetectable,
                 extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL,
@@ -311,14 +307,14 @@ public class RunManager {
 
     private void runBlackDuckProduct(BlackDuckRunData blackDuckRunData, DetectConfigurationFactory detectConfigurationFactory, DirectoryManager directoryManager, EventSystem eventSystem,
         CodeLocationNameManager codeLocationNameManager, BdioCodeLocationCreator bdioCodeLocationCreator, DetectInfo detectInfo, RunResult runResult, RunOptions runOptions,
-        DetectToolFilter detectToolFilter, NameVersion projectNameVersion, AggregateOptions aggregateOptions, ImpactAnalysisOptions impactAnalysisOptions, Gson gson, BlackDuckRunOptions blackDuckRunOptions)
+        DetectToolFilter detectToolFilter, NameVersion projectNameVersion, AggregateOptions aggregateOptions, ImpactAnalysisOptions impactAnalysisOptions, Gson gson)
         throws IntegrationException, DetectUserFriendlyException {
 
         logger.debug("Black Duck tools will run.");
 
         ProjectVersionWrapper projectVersionWrapper = null;
 
-        if (blackDuckRunData.isOnline() && !blackDuckRunOptions.shouldPerformRapidModeScan()) {
+        if (blackDuckRunData.isOnline() && !runOptions.shouldPerformRapidWorkflow()) {
             blackDuckRunData.getPhoneHomeManager().ifPresent(PhoneHomeManager::startPhoneHome);
 
             logger.debug("Getting or creating project.");
@@ -350,7 +346,7 @@ public class RunManager {
         BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations(), runOptions.shouldUseBdio2());
         eventSystem.publishEvent(Event.DetectCodeLocationNamesCalculated, bdioResult.getCodeLocationNamesResult());
 
-        if (blackDuckRunOptions.shouldPerformRapidModeScan()) {
+        if (runOptions.shouldPerformRapidWorkflow()) {
             logger.info(ReportConstants.RUN_SEPARATOR);
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             DeveloperScanService developerScanService = blackDuckServicesFactory.createDeveloperScanService();
