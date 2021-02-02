@@ -36,7 +36,6 @@ import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
 public class GoDepCliDetectableTest extends DetectableFunctionalTest {
-
     public GoDepCliDetectableTest() throws IOException {
         super("godep");
     }
@@ -65,12 +64,12 @@ public class GoDepCliDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createGoLockDetectable(detectableEnvironment);
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.GOLANG, extraction.getCodeLocations().get(0).getDependencyGraph());
@@ -78,6 +77,6 @@ public class GoDepCliDetectableTest extends DetectableFunctionalTest {
         graphAssert.hasRootDependency("github.com/davecgh/go-spew/spew", "v1.1.0");
         graphAssert.hasRootDependency("github.com/golang/protobuf/proto", null);
         graphAssert.hasRootDependency("github.com/gorilla/context", "v1.1");
-
     }
+
 }

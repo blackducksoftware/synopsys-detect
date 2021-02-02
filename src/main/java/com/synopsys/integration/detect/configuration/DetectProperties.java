@@ -253,6 +253,12 @@ public class DetectProperties {
                 "If specified, all files in the source directory whose names match these file name patterns will be zipped and uploaded for binary scan analysis. This property will not be used if detect.binary.scan.file.path is specified. The depth of the search is 0 (subdirectories are not searched). This property accepts filename globbing-style wildcards. Refer to the <i>Advanced</i> > <i>Property wildcard support</i> page for more details.")
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_PATH);
 
+    public static final DetectProperty<IntegerProperty> DETECT_BINARY_SCAN_SEARCH_DEPTH =
+        new DetectProperty<>(new IntegerProperty("detect.binary.scan.search.depth", 0))
+            .setInfo("Binary Scan Search Depth", DetectPropertyFromVersion.VERSION_6_9_0)
+            .setHelp("The depth at which Detect will search for files to scan with the Binary Scanner.")
+            .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_SCAN);
+
     public static final DetectProperty<StringProperty> DETECT_BITBAKE_BUILD_ENV_NAME =
         new DetectProperty<>(new StringProperty("detect.bitbake.build.env.name", "oe-init-build-env"))
             .setInfo("BitBake Init Script Name", DetectPropertyFromVersion.VERSION_4_4_0)
@@ -1131,7 +1137,7 @@ public class DetectProperties {
         new DetectProperty<>(new EnumProperty<>("detect.blackduck.scan.mode", BlackduckScanMode.FULL_MODE, BlackduckScanMode.class))
             .setInfo("Detect Scan Mode", DetectPropertyFromVersion.VERSION_6_9_0)
             .setHelp("Set the scanning mode of Detect",
-                "Set the scanning mode of Detect to control how Black Duck will process BDIO output from detect.  The RAPID_MODE value supports a BlackDuck feature that is meant to be used with a later BlackDuck version.")
+                "Set the scanning mode of Detect to control how Detect will send scan data to Black Duck.  The scan results are not persisted in Black Duck if RAPID_MODE is selected.  The RAPID_MODE value supports a Black Duck feature that is meant to be used with a later Black Duck version.  If RAPID_MODE is selected, then Detect also requires --detect.bdio2.enabled=true and --blackduck.offline.mode=false to perform a RAPID_MODE scan.")
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
             .setCategory(DetectCategory.Advanced);
 
