@@ -1,5 +1,6 @@
 package com.synopsys.integration.detectable.detectables.gradle.functional;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.jupiter.api.Assertions;
@@ -14,20 +15,24 @@ import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 @FunctionalTest
 public class BuildGradleParserTest {
     @Test
-    public void testComplexBuildGradle() {
+    public void testComplexBuildGradle() throws IOException {
         BuildGradleParser buildGradleParser = new BuildGradleParser(new ExternalIdFactory());
-        InputStream buildGradle = FunctionalTestFiles.asInputStream("/gradle/complexBuild.gradle");
-        DependencyGraph dependencyGraph = buildGradleParser.parse(buildGradle).get();
+        DependencyGraph dependencyGraph;
+        try (InputStream buildGradle = FunctionalTestFiles.asInputStream("/gradle/complexBuild.gradle")) {
+            dependencyGraph = buildGradleParser.parse(buildGradle).get();
+        }
 
         Assertions.assertTrue(dependencyGraph.getRootDependencies().size() > 0);
 
     }
 
     @Test
-    public void testSimpleBuildGradle() {
+    public void testSimpleBuildGradle() throws IOException {
         BuildGradleParser buildGradleParser = new BuildGradleParser(new ExternalIdFactory());
-        InputStream buildGradle = FunctionalTestFiles.asInputStream("/gradle/intCommonBuild.gradle");
-        DependencyGraph dependencyGraph = buildGradleParser.parse(buildGradle).get();
+        DependencyGraph dependencyGraph;
+        try (InputStream buildGradle = FunctionalTestFiles.asInputStream("/gradle/intCommonBuild.gradle")) {
+            dependencyGraph = buildGradleParser.parse(buildGradle).get();
+        }
 
         Assertions.assertEquals(13, dependencyGraph.getRootDependencies().size());
     }
