@@ -13,8 +13,8 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLock;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockParser;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryParser;
-import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockDependencySpecParser;
-import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockElementParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockDependencySpecParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockEntrySectionParserSet;
 import com.synopsys.integration.detectable.util.FunctionalTestFiles;
 
 public class YarnLockParserFunctionalTest {
@@ -26,7 +26,7 @@ public class YarnLockParserFunctionalTest {
         Assertions.assertTrue(lockfile.exists());
         YarnLockLineAnalyzer yarnLockLineAnalyzer = new YarnLockLineAnalyzer();
         YarnLockDependencySpecParser yarnLockDependencySpecParser = new YarnLockDependencySpecParser(yarnLockLineAnalyzer);
-        YarnLockElementParser yarnLockEntryElementParser = new YarnLockElementParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser);
+        YarnLockEntrySectionParserSet yarnLockEntryElementParser = new YarnLockEntrySectionParserSet(yarnLockLineAnalyzer, yarnLockDependencySpecParser);
         YarnLockEntryParser yarnLockEntryParser = new YarnLockEntryParser(yarnLockLineAnalyzer, yarnLockEntryElementParser);
         YarnLockParser yarnLockParser = new YarnLockParser(yarnLockEntryParser);
         YarnLock yarnLock = yarnLockParser.parseYarnLock(yarnLockLines);

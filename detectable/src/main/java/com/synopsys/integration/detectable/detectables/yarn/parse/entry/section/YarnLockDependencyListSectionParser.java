@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn.parse.entry.element;
+package com.synopsys.integration.detectable.detectables.yarn.parse.entry.section;
 
 import java.util.List;
 
@@ -28,13 +28,13 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDepend
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryBuilder;
 
-public class YarnLockDependencyListElementParser implements YarnLockElementTypeParser {
+public class YarnLockDependencyListSectionParser implements YarnLockEntrySectionParser {
     private final YarnLockLineAnalyzer yarnLockLineAnalyzer;
     private final YarnLockDependencySpecParser yarnLockDependencySpecParser;
     private final String targetListKey;
     private final boolean dependenciesAreOptional;
 
-    public YarnLockDependencyListElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser,
+    public YarnLockDependencyListSectionParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser,
         String targetListKey, boolean dependenciesAreOptional) {
         this.yarnLockLineAnalyzer = yarnLockLineAnalyzer;
         this.yarnLockDependencySpecParser = yarnLockDependencySpecParser;
@@ -56,8 +56,8 @@ public class YarnLockDependencyListElementParser implements YarnLockElementTypeP
     }
 
     @Override
-    public int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int bodyElementLineIndex) {
-        for (int curLineIndex = bodyElementLineIndex + 1; curLineIndex < yarnLockLines.size(); curLineIndex++) {
+    public int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection) {
+        for (int curLineIndex = lineIndexOfStartOfSection + 1; curLineIndex < yarnLockLines.size(); curLineIndex++) {
             String line = yarnLockLines.get(curLineIndex);
             int depth = yarnLockLineAnalyzer.measureIndentDepth(line);
             if (depth != 2) {

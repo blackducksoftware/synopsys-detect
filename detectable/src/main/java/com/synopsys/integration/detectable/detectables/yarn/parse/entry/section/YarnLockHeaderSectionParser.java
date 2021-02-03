@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn.parse.entry.element;
+package com.synopsys.integration.detectable.detectables.yarn.parse.entry.section;
 
 import java.util.List;
 import java.util.StringTokenizer;
@@ -33,11 +33,11 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAn
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryBuilder;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
 
-public class YarnLockHeaderElementParser implements YarnLockElementTypeParser {
+public class YarnLockHeaderSectionParser implements YarnLockEntrySectionParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final YarnLockLineAnalyzer yarnLockLineAnalyzer;
 
-    public YarnLockHeaderElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer) {
+    public YarnLockHeaderSectionParser(YarnLockLineAnalyzer yarnLockLineAnalyzer) {
         this.yarnLockLineAnalyzer = yarnLockLineAnalyzer;
     }
 
@@ -47,8 +47,8 @@ public class YarnLockHeaderElementParser implements YarnLockElementTypeParser {
     }
 
     @Override
-    public int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int bodyElementLineIndex) {
-        String line = yarnLockLines.get(bodyElementLineIndex);
+    public int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection) {
+        String line = yarnLockLines.get(lineIndexOfStartOfSection);
         StringTokenizer tokenizer = TokenizerFactory.createHeaderTokenizer(line);
         while (tokenizer.hasMoreTokens()) {
             String rawEntryString = tokenizer.nextToken().trim();
@@ -58,7 +58,7 @@ public class YarnLockHeaderElementParser implements YarnLockElementTypeParser {
             logger.trace("Entry header ID: name: {}, version: {}", entry.getName(), entry.getVersion());
             entryBuilder.addId(entry);
         }
-        return bodyElementLineIndex;
+        return lineIndexOfStartOfSection;
     }
 
     //Takes an entry of format "name@version" or "@name@version" where name has an @ symbol.

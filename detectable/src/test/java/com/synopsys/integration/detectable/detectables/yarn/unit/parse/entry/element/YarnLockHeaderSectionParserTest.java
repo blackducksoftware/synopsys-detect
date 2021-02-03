@@ -12,15 +12,15 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAn
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryBuilder;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
-import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockHeaderElementParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockHeaderSectionParser;
 
-public class YarnLockHeaderElementParserTest {
-    private static YarnLockHeaderElementParser yarnLockParser;
+public class YarnLockHeaderSectionParserTest {
+    private static YarnLockHeaderSectionParser yarnLockParser;
 
     @BeforeAll
     static void setup() {
         YarnLockLineAnalyzer yarnLockLineAnalyzer = new YarnLockLineAnalyzer();
-        yarnLockParser = new YarnLockHeaderElementParser(yarnLockLineAnalyzer);
+        yarnLockParser = new YarnLockHeaderSectionParser(yarnLockLineAnalyzer);
     }
 
     @Test

@@ -20,14 +20,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn.parse.entry.element;
+package com.synopsys.integration.detectable.detectables.yarn.parse.entry.section;
 
 import java.util.List;
 
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryBuilder;
 
-public interface YarnLockElementTypeParser {
+public interface YarnLockEntrySectionParser {
     boolean applies(String elementLine);
 
-    int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int bodyElementLineIndex);
+    int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection);
 }

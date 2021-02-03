@@ -20,7 +20,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn.parse.entry.element;
+package com.synopsys.integration.detectable.detectables.yarn.parse.entry.section;
 
 import java.util.List;
 import java.util.StringTokenizer;
@@ -33,11 +33,11 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDepend
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryBuilder;
 
-public class YarnLockDependencyMetaListElementParser implements YarnLockElementTypeParser {
+public class YarnLockDependencyMetaListSectionParser implements YarnLockEntrySectionParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final YarnLockLineAnalyzer yarnLockLineAnalyzer;
 
-    public YarnLockDependencyMetaListElementParser(YarnLockLineAnalyzer yarnLockLineAnalyzer) {
+    public YarnLockDependencyMetaListSectionParser(YarnLockLineAnalyzer yarnLockLineAnalyzer) {
         this.yarnLockLineAnalyzer = yarnLockLineAnalyzer;
     }
 
@@ -55,9 +55,9 @@ public class YarnLockDependencyMetaListElementParser implements YarnLockElementT
     }
 
     @Override
-    public int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int bodyElementLineIndex) {
+    public int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection) {
         String curDependencyName = null;
-        for (int curLineIndex = bodyElementLineIndex + 1; curLineIndex < yarnLockLines.size(); curLineIndex++) {
+        for (int curLineIndex = lineIndexOfStartOfSection + 1; curLineIndex < yarnLockLines.size(); curLineIndex++) {
             String line = yarnLockLines.get(curLineIndex);
             int depth = yarnLockLineAnalyzer.measureIndentDepth(line);
             if (depth == 1) {

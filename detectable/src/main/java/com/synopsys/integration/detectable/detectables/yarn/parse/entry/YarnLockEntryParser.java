@@ -26,27 +26,25 @@ import java.util.List;
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAnalyzer;
-import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockElementParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockEntrySectionParserSet;
 
 public class YarnLockEntryParser {
     private final YarnLockLineAnalyzer yarnLockLineAnalyzer;
-    private final YarnLockElementParser yarnLockEntryElementParser;
+    private final YarnLockEntrySectionParserSet yarnLockEntryElementParser;
 
-    public YarnLockEntryParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockElementParser yarnLockEntryElementParser) {
+    public YarnLockEntryParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockEntrySectionParserSet yarnLockEntryElementParser) {
         this.yarnLockLineAnalyzer = yarnLockLineAnalyzer;
         this.yarnLockEntryElementParser = yarnLockEntryElementParser;
     }
 
-    public YarnLockEntryParseResult parseEntry(List<String> yarnLockFileLines, int entryStartIndex) {
+    public YarnLockEntryParseResult parseNextEntry(List<String> yarnLockFileLines, int entryStartIndex) {
         YarnLockEntryBuilder yarnLockEntryBuilder = new YarnLockEntryBuilder();
         int fileLineIndex = entryStartIndex;
         int entryLineIndex = 0;
         while (fileLineIndex < yarnLockFileLines.size()) {
-            String entryBodyLine = yarnLockFileLines.get(fileLineIndex);
-            // Check to see if we've overshot the end of the entry
-            Optional<YarnLockEntryParseResult> result = getResultIfDone(entryLineIndex, entryBodyLine, fileLineIndex, yarnLockEntryBuilder);
-            if (result.isPresent()) {
-                return result.get();
+            String curLine = yarnLockFileLines.get(fileLineIndex);
+            if (finishedWithThisEntry(entryLineIndex, curLine)) {
+                return createResult(fileLineIndex, yarnLockEntryBuilder);
             }
             // parseElement returns the last line it consumed; parsing resumes on the next line
             fileLineIndex = yarnLockEntryElementParser.parseElement(yarnLockEntryBuilder, yarnLockFileLines, fileLineIndex);
@@ -57,17 +55,18 @@ public class YarnLockEntryParser {
         return new YarnLockEntryParseResult(yarnLockFileLines.size() - 1, entry.orElse(null));
     }
 
-    private Optional<YarnLockEntryParseResult> getResultIfDone(int entryLineIndex, String entryBodyLine, int fileLineIndex, YarnLockEntryBuilder entryBuilder) {
+    private YarnLockEntryParseResult createResult(int fileLineIndex, YarnLockEntryBuilder entryBuilder) {
+        Optional<YarnLockEntry> entry = entryBuilder.build();
+        return new YarnLockEntryParseResult(fileLineIndex - 1, entry.orElse(null));
+    }
+
+    private boolean finishedWithThisEntry(int entryLineIndex, String curLine) {
         if (entryLineIndex == 0) {
             // we're still on the first line of the entry, so can't be done yet
-            return Optional.empty();
+            return false;
         }
-        int indentDepth = yarnLockLineAnalyzer.measureIndentDepth(entryBodyLine);
-        if (indentDepth > 0) {
-            // We're still in indented lines, so not done parsing this entry
-            return Optional.empty();
-        }
-        Optional<YarnLockEntry> entry = entryBuilder.build();
-        return Optional.of(new YarnLockEntryParseResult(fileLineIndex - 1, entry.orElse(null)));
+        // If we've left the indented lines, we're done parsing this entry
+        int indentDepth = yarnLockLineAnalyzer.measureIndentDepth(curLine);
+        return (indentDepth == 0);
     }
 }

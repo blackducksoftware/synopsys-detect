@@ -40,7 +40,7 @@ public class YarnLockParser {
         List<YarnLockEntry> entries = new ArrayList<>();
         int lineIndex = 0;
         while (lineIndex < yarnLockFileAsList.size()) {
-            YarnLockEntryParseResult entryParseResult = yarnLockEntryParser.parseEntry(yarnLockFileAsList, lineIndex);
+            YarnLockEntryParseResult entryParseResult = yarnLockEntryParser.parseNextEntry(yarnLockFileAsList, lineIndex);
             entryParseResult.getYarnLockEntry().ifPresent(entries::add);
             lineIndex = entryParseResult.getLastParsedLineIndex();
             lineIndex++;

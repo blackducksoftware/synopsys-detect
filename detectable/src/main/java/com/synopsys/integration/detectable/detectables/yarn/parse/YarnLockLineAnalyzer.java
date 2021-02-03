@@ -62,7 +62,6 @@ public class YarnLockLineAnalyzer {
             if (line.charAt(i) == ' ') {
                 leadingSpaceCount++;
             } else if (line.charAt(i) == '\t') {
-                logger.warn("yarn.lock indented with tabs; assuming 1 tab is equivalent to 4 spaces");
                 leadingSpaceCount += 4;
             } else {
                 break;

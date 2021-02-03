@@ -12,14 +12,14 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAn
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryBuilder;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryId;
-import com.synopsys.integration.detectable.detectables.yarn.parse.entry.element.YarnLockKeyValuePairElementParser;
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.YarnLockKeyValuePairSectionParser;
 
-public class YarnLockKeyValuePairElementParserTest {
-    private static YarnLockKeyValuePairElementParser yarnLockKeyValuePairElementParser;
+public class YarnLockKeyValuePairSectionParserTest {
+    private static YarnLockKeyValuePairSectionParser yarnLockKeyValuePairElementParser;
 
     @BeforeAll
     static void setup() {
-        yarnLockKeyValuePairElementParser = new YarnLockKeyValuePairElementParser(
+        yarnLockKeyValuePairElementParser = new YarnLockKeyValuePairSectionParser(
             new YarnLockLineAnalyzer(), "version", YarnLockEntryBuilder::setVersion);
     }
 
