@@ -23,8 +23,6 @@
 package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
-import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResultCalculator;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationResults;
@@ -32,25 +30,18 @@ import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class CodeLocationResultOperation extends BlackDuckOnlineOperation<CodeLocationAccumulator, CodeLocationResults> {
+public class CodeLocationResultOperation {
     private final CodeLocationResultCalculator codeLocationResultCalculator;
     private final EventSystem eventSystem;
 
-    public CodeLocationResultOperation(ProductRunData productRunData, CodeLocationResultCalculator codeLocationResultCalculator, EventSystem eventSystem) {
-        super(productRunData);
+    public CodeLocationResultOperation(CodeLocationResultCalculator codeLocationResultCalculator, EventSystem eventSystem) {
         this.codeLocationResultCalculator = codeLocationResultCalculator;
         this.eventSystem = eventSystem;
     }
 
-    @Override
-    public String getOperationName() {
-        return "Code Location Results";
-    }
-
-    @Override
-    public OperationResult<CodeLocationResults> executeOperation(CodeLocationAccumulator input) throws DetectUserFriendlyException, IntegrationException {
-        CodeLocationResults codeLocationResults = codeLocationResultCalculator.calculateCodeLocationResults(input);
+    public CodeLocationResults execute(CodeLocationAccumulator codeLocationAccumulator) throws DetectUserFriendlyException, IntegrationException {
+        CodeLocationResults codeLocationResults = codeLocationResultCalculator.calculateCodeLocationResults(codeLocationAccumulator);
         eventSystem.publishEvent(Event.CodeLocationsCompleted, codeLocationResults.getAllCodeLocationNames());
-        return OperationResult.success(codeLocationResults);
+        return codeLocationResults;
     }
 }

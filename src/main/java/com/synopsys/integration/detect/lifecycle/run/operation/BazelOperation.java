@@ -35,11 +35,10 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class BazelOperation extends Operation<RunResult, Void> {
+public class BazelOperation {
     private DirectoryManager directoryManager;
     private EventSystem eventSystem;
     private DetectDetectableFactory detectDetectableFactory;
-    private DetectToolFilter detectToolFilter;
     private ExtractionEnvironmentProvider extractionEnvironmentProvider;
     private CodeLocationConverter codeLocationConverter;
 
@@ -48,34 +47,16 @@ public class BazelOperation extends Operation<RunResult, Void> {
         this.directoryManager = directoryManager;
         this.eventSystem = eventSystem;
         this.detectDetectableFactory = detectDetectableFactory;
-        this.detectToolFilter = detectToolFilter;
         this.extractionEnvironmentProvider = extractionEnvironmentProvider;
         this.codeLocationConverter = codeLocationConverter;
     }
 
-    @Override
-    public boolean shouldExecute() {
-        return detectToolFilter.shouldInclude(DetectTool.BAZEL);
-    }
-
-    @Override
-    public String getOperationName() {
-        return "Bazel";
-    }
-
-    @Override
-    public OperationResult<Void> executeOperation(RunResult input) throws DetectUserFriendlyException, IntegrationException {
+    public boolean execute(RunResult runResult) throws DetectUserFriendlyException, IntegrationException {
         DetectableTool detectableTool = new DetectableTool(detectDetectableFactory::createBazelDetectable,
             extractionEnvironmentProvider, codeLocationConverter, "BAZEL", DetectTool.BAZEL,
             eventSystem);
         DetectableToolResult detectableToolResult = detectableTool.execute(directoryManager.getSourceDirectory());
-        input.addDetectableToolResult(detectableToolResult);
-        OperationResult<Void> result;
-        if (detectableToolResult.isFailure()) {
-            result = OperationResult.fail();
-        } else {
-            result = OperationResult.success();
-        }
-        return result;
+        runResult.addDetectableToolResult(detectableToolResult);
+        return detectableToolResult.isFailure();
     }
 }

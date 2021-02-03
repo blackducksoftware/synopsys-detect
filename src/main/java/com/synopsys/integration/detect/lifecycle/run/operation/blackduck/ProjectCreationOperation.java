@@ -29,8 +29,6 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
-import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
-import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCodeLocationUnmapService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectService;
@@ -38,40 +36,32 @@ import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOp
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.NameVersion;
 
-public class ProjectCreationOperation extends BlackDuckOnlineOperation<NameVersion, ProjectVersionWrapper> {
+public class ProjectCreationOperation {
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private final RunOptions runOptions;
     private final DetectProjectServiceOptions detectProjectServiceOptions;
     private final DetectCustomFieldService detectCustomFieldService;
 
-    public ProjectCreationOperation(ProductRunData productRunData, RunOptions runOptions, DetectProjectServiceOptions detectProjectServiceOptions,
+    public ProjectCreationOperation(RunOptions runOptions, DetectProjectServiceOptions detectProjectServiceOptions,
         DetectCustomFieldService detectCustomFieldService) {
-        super(productRunData);
         this.runOptions = runOptions;
         this.detectProjectServiceOptions = detectProjectServiceOptions;
         this.detectCustomFieldService = detectCustomFieldService;
     }
 
-    @Override
-    public String getOperationName() {
-        return "Project Creation";
-    }
-
-    @Override
-    public OperationResult<ProjectVersionWrapper> executeOperation(NameVersion input) throws DetectUserFriendlyException, IntegrationException {
-        BlackDuckServicesFactory blackDuckServicesFactory = getBlackDuckServicesFactory();
+    public ProjectVersionWrapper execute(BlackDuckServicesFactory blackDuckServicesFactory, NameVersion projectNameVersion) throws DetectUserFriendlyException, IntegrationException {
         DetectProjectService detectProjectService = new DetectProjectService(blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.createProjectService(),
             blackDuckServicesFactory.createProjectBomService(), blackDuckServicesFactory.createProjectUsersService(), blackDuckServicesFactory.createTagService(), detectProjectServiceOptions,
             blackDuckServicesFactory.createProjectMappingService(), detectCustomFieldService);
         DetectCodeLocationUnmapService detectCodeLocationUnmapService = new DetectCodeLocationUnmapService(blackDuckServicesFactory.getBlackDuckApiClient(), blackDuckServicesFactory.createCodeLocationService());
 
-        ProjectVersionWrapper projectVersionWrapper = detectProjectService.createOrUpdateBlackDuckProject(input);
+        ProjectVersionWrapper projectVersionWrapper = detectProjectService.createOrUpdateBlackDuckProject(projectNameVersion);
         if (null != projectVersionWrapper && runOptions.shouldUnmapCodeLocations()) {
             logger.debug("Unmapping code locations.");
             detectCodeLocationUnmapService.unmapCodeLocations(projectVersionWrapper.getProjectVersionView());
         } else {
             logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");
         }
-        return OperationResult.success(projectVersionWrapper);
+        return projectVersionWrapper;
     }
 }

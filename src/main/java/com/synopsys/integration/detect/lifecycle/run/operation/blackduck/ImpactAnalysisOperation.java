@@ -26,50 +26,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.detect.lifecycle.run.operation.Operation;
-import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.ImpactAnalysisInput;
 import com.synopsys.integration.detect.tool.impactanalysis.BlackDuckImpactAnalysisTool;
 import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisToolResult;
-import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class ImpactAnalysisOperation extends Operation<ImpactAnalysisInput, Void> {
+public class ImpactAnalysisOperation {
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private DetectToolFilter detectToolFilter;
     private final BlackDuckImpactAnalysisTool blackDuckImpactAnalysisTool;
 
-    public ImpactAnalysisOperation(DetectToolFilter detectToolFilter, BlackDuckImpactAnalysisTool blackDuckImpactAnalysisTool) {
-        this.detectToolFilter = detectToolFilter;
+    public ImpactAnalysisOperation(BlackDuckImpactAnalysisTool blackDuckImpactAnalysisTool) {
         this.blackDuckImpactAnalysisTool = blackDuckImpactAnalysisTool;
     }
 
-    @Override
-    public boolean shouldExecute() {
-        return detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS) && blackDuckImpactAnalysisTool.shouldRun();
-    }
-
-    @Override
-    public String getOperationName() {
-        return "Vulnerability Impact Analysis";
-    }
-
-    @Override
-    public OperationResult<Void> executeOperation(ImpactAnalysisInput input) throws DetectUserFriendlyException, IntegrationException {
-        ImpactAnalysisToolResult impactAnalysisToolResult = blackDuckImpactAnalysisTool.performImpactAnalysisActions(input.getNameVersion(), input.getProjectVersionWrapper());
+    public void execute(ImpactAnalysisInput impactAnalysisInput) throws DetectUserFriendlyException, IntegrationException {
+        ImpactAnalysisToolResult impactAnalysisToolResult = blackDuckImpactAnalysisTool.performImpactAnalysisActions(impactAnalysisInput.getNameVersion(), impactAnalysisInput.getProjectVersionWrapper());
 
         /* TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020 */
-        input.getCodeLocationAccumulator().addNonWaitableCodeLocation(impactAnalysisToolResult.getCodeLocationNames());
-
-        OperationResult<Void> result;
+        impactAnalysisInput.getCodeLocationAccumulator().addNonWaitableCodeLocation(impactAnalysisToolResult.getCodeLocationNames());
         if (impactAnalysisToolResult.isSuccessful()) {
             logger.info("Vulnerability Impact Analysis successful.");
-            result = OperationResult.success();
         } else {
             logger.warn("Something went wrong with the Vulnerability Impact Analysis tool.");
-            result = OperationResult.fail();
         }
-        return result;
+    }
+
+    public boolean shouldImpactAnalysisToolRun() {
+        return blackDuckImpactAnalysisTool.shouldRun();
     }
 }

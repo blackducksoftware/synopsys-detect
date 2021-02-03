@@ -29,8 +29,6 @@ import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
-import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.FullScanPostProcessingInput;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostActions;
@@ -42,35 +40,28 @@ import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 
-public class FullScanPostProcessingOperation extends BlackDuckOnlineOperation<FullScanPostProcessingInput, Void> {
+public class FullScanPostProcessingOperation {
     private final DetectToolFilter detectToolFilter;
     private final BlackDuckPostOptions blackDuckPostOptions;
     private final EventSystem eventSystem;
     private final Long detectTimeoutInSeconds;
 
-    public FullScanPostProcessingOperation(ProductRunData productRunData, DetectToolFilter detectToolFilter, BlackDuckPostOptions blackDuckPostOptions,
+    public FullScanPostProcessingOperation(DetectToolFilter detectToolFilter, BlackDuckPostOptions blackDuckPostOptions,
         EventSystem eventSystem, Long detectTimeoutInSeconds) {
-        super(productRunData);
         this.detectToolFilter = detectToolFilter;
         this.blackDuckPostOptions = blackDuckPostOptions;
         this.eventSystem = eventSystem;
         this.detectTimeoutInSeconds = detectTimeoutInSeconds;
     }
 
-    @Override
-    public String getOperationName() {
-        return "Black Duck Post Full Scan";
-    }
-
-    @Override
-    public OperationResult<Void> executeOperation(FullScanPostProcessingInput input) throws DetectUserFriendlyException, IntegrationException {
-        BlackDuckServicesFactory blackDuckServicesFactory = getBlackDuckServicesFactory();
+    public void execute(BlackDuckServicesFactory blackDuckServicesFactory, FullScanPostProcessingInput postProcessingInput) throws DetectUserFriendlyException, IntegrationException {
         BlackDuckPostActions blackDuckPostActions = new BlackDuckPostActions(blackDuckServicesFactory.createCodeLocationCreationService(), eventSystem, blackDuckServicesFactory.getBlackDuckApiClient(),
             blackDuckServicesFactory.createProjectBomService(), blackDuckServicesFactory.createReportService(detectTimeoutInSeconds));
-        blackDuckPostActions.perform(blackDuckPostOptions, input.getCodeLocationResults().getCodeLocationWaitData(), input.getProjectVersionWrapper(), input.getProjectNameVersion(), detectTimeoutInSeconds);
+        blackDuckPostActions
+            .perform(blackDuckPostOptions, postProcessingInput.getCodeLocationResults().getCodeLocationWaitData(), postProcessingInput.getProjectVersionWrapper(), postProcessingInput.getProjectNameVersion(), detectTimeoutInSeconds);
 
-        if ((!input.getBdioResult().getUploadTargets().isEmpty() || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
-            Optional<String> componentsLink = Optional.ofNullable(input.getProjectVersionWrapper())
+        if ((!postProcessingInput.getBdioResult().getUploadTargets().isEmpty() || detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN))) {
+            Optional<String> componentsLink = Optional.ofNullable(postProcessingInput.getProjectVersionWrapper())
                                                   .map(ProjectVersionWrapper::getProjectVersionView)
                                                   .flatMap(projectVersionView -> projectVersionView.getFirstLinkSafely(ProjectVersionView.COMPONENTS_LINK))
                                                   .map(HttpUrl::string);
@@ -80,7 +71,5 @@ public class FullScanPostProcessingOperation extends BlackDuckOnlineOperation<Fu
                 eventSystem.publishEvent(Event.ResultProduced, detectResult);
             }
         }
-
-        return OperationResult.success();
     }
 }

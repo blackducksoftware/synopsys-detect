@@ -35,42 +35,35 @@ import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadOutput;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
-import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
+import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.DetectBdioUploadService;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class CodeLocationOperation extends BlackDuckOnlineOperation<BdioResult, CodeLocationAccumulator<UploadOutput, UploadBatchOutput>> {
+public class CodeLocationOperation {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public CodeLocationOperation(ProductRunData productRunData) {
-        super(productRunData);
-    }
-
-    @Override
-    public String getOperationName() {
-        return "Create Code Locations";
-    }
-
-    @Override
-    public OperationResult<CodeLocationAccumulator<UploadOutput, UploadBatchOutput>> executeOperation(BdioResult input) throws DetectUserFriendlyException, IntegrationException {
+    public CodeLocationAccumulator<UploadOutput, UploadBatchOutput> execute(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException, IntegrationException {
         CodeLocationAccumulator<UploadOutput, UploadBatchOutput> codeLocationAccumulator = new CodeLocationAccumulator<>();
-        List<UploadTarget> uploadTargetList = input.getUploadTargets();
+        List<UploadTarget> uploadTargetList = bdioResult.getUploadTargets();
         if (!uploadTargetList.isEmpty()) {
-            BlackDuckServicesFactory blackDuckServicesFactory = getBlackDuckServicesFactory();
-            BdioUploadService bdioUploadService = blackDuckServicesFactory.createBdioUploadService();
-            Bdio2UploadService bdio2UploadService = blackDuckServicesFactory.createBdio2UploadService();
-            DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService();
-            logger.info(String.format("Created %d BDIO files.", uploadTargetList.size()));
-            logger.debug("Uploading BDIO files.");
-            CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(input, bdioUploadService,
-                bdio2UploadService);
-            codeLocationAccumulator.addWaitableCodeLocation(uploadBatchOutputCodeLocationCreationData);
+            logger.info(String.format("Created %d BDIO files.", bdioResult.getUploadTargets().size()));
+            if (blackDuckRunData.isOnline()) {
+                logger.debug("Uploading BDIO files.");
+                BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
+                BdioUploadService bdioUploadService = blackDuckServicesFactory.createBdioUploadService();
+                Bdio2UploadService bdio2UploadService = blackDuckServicesFactory.createBdio2UploadService();
+                DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService();
+                logger.info(String.format("Created %d BDIO files.", uploadTargetList.size()));
+                logger.debug("Uploading BDIO files.");
+                CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult, bdioUploadService,
+                    bdio2UploadService);
+                codeLocationAccumulator.addWaitableCodeLocation(uploadBatchOutputCodeLocationCreationData);
+            }
         } else {
             logger.debug("Did not create any BDIO files.");
         }
-        return OperationResult.success(codeLocationAccumulator);
+        return codeLocationAccumulator;
     }
 }

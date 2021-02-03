@@ -26,15 +26,11 @@ import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanB
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.synopsys.integration.detect.lifecycle.run.operation.Operation;
-import com.synopsys.integration.detect.lifecycle.run.operation.OperationResult;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.CodeLocationInput;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanToolResult;
 import com.synopsys.integration.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
-import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -42,47 +38,33 @@ import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class BinaryScanOperation extends Operation<CodeLocationInput, Void> {
+public class BinaryScanOperation {
 
     private final BlackDuckRunData blackDuckRunData;
-    private final DetectToolFilter detectToolFilter;
     private final BinaryScanOptions binaryScanOptions;
     private final EventSystem eventSystem;
     private final DirectoryManager directoryManager;
     private final CodeLocationNameManager codeLocationNameManager;
 
-    public BinaryScanOperation(BlackDuckRunData blackDuckRunData, DetectToolFilter detectToolFilter, BinaryScanOptions binaryScanOptions, EventSystem eventSystem, DirectoryManager directoryManager,
+    public BinaryScanOperation(BlackDuckRunData blackDuckRunData, BinaryScanOptions binaryScanOptions, EventSystem eventSystem, DirectoryManager directoryManager,
         CodeLocationNameManager codeLocationNameManager) {
         this.blackDuckRunData = blackDuckRunData;
-        this.detectToolFilter = detectToolFilter;
         this.binaryScanOptions = binaryScanOptions;
         this.eventSystem = eventSystem;
         this.directoryManager = directoryManager;
         this.codeLocationNameManager = codeLocationNameManager;
     }
 
-    @Override
-    public boolean shouldExecute() {
-        return detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN) && null != blackDuckRunData && blackDuckRunData.isOnline();
-    }
-
-    @Override
-    public String getOperationName() {
-        return "binary scanner";
-    }
-
-    @Override
-    public OperationResult<Void> executeOperation(CodeLocationInput input) throws DetectUserFriendlyException, IntegrationException {
+    public void execute(CodeLocationInput codeLocationInput) throws DetectUserFriendlyException, IntegrationException {
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckBinaryScannerTool binaryScannerTool = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, new WildcardFileFinder(), binaryScanOptions,
             blackDuckServicesFactory.createBinaryScanUploadService());
         if (binaryScannerTool.shouldRun()) {
-            BinaryScanToolResult result = binaryScannerTool.performBinaryScanActions(input.getNameVersion());
+            BinaryScanToolResult result = binaryScannerTool.performBinaryScanActions(codeLocationInput.getNameVersion());
             if (result.isSuccessful()) {
-                CodeLocationAccumulator<BinaryScanOutput, BinaryScanBatchOutput> accumulator = input.getCodeLocationAccumulator();
+                CodeLocationAccumulator<BinaryScanOutput, BinaryScanBatchOutput> accumulator = codeLocationInput.getCodeLocationAccumulator();
                 accumulator.addWaitableCodeLocation(result.getCodeLocationCreationData());
             }
         }
-        return OperationResult.success();
     }
 }

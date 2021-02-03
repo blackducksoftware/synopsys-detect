@@ -30,47 +30,32 @@ import com.synopsys.integration.blackduck.developermode.DeveloperScanService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
-import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BlackDuckOnlineOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.RapidScanInput;
 import com.synopsys.integration.detect.workflow.blackduck.developer.BlackDuckRapidMode;
 import com.synopsys.integration.detect.workflow.blackduck.developer.BlackDuckRapidModePostActions;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.detect.workflow.phonehome.PhoneHomeManager;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class RapidScanOperation extends BlackDuckOnlineOperation<RapidScanInput, Void> {
+public class RapidScanOperation {
     private final Gson gson;
     private final EventSystem eventSystem;
     private final DirectoryManager directoryManager;
     private final Long timeoutInSeconds;
 
-    public RapidScanOperation(ProductRunData productRunData, Gson gson, EventSystem eventSystem, DirectoryManager directoryManager, Long timeoutInSeconds) {
-        super(productRunData);
+    public RapidScanOperation(Gson gson, EventSystem eventSystem, DirectoryManager directoryManager, Long timeoutInSeconds) {
         this.gson = gson;
         this.eventSystem = eventSystem;
         this.directoryManager = directoryManager;
         this.timeoutInSeconds = timeoutInSeconds;
     }
 
-    @Override
-    public String getOperationName() {
-        return "Black Duck (Rapid Scan)";
-    }
-
-    @Override
-    public OperationResult<Void> executeOperation(RapidScanInput input) throws DetectUserFriendlyException, IntegrationException {
-        BlackDuckRunData blackDuckRunData = getBlackDuckRunData();
-        blackDuckRunData.getPhoneHomeManager().ifPresent(PhoneHomeManager::startPhoneHome);
-
-        BlackDuckServicesFactory blackDuckServicesFactory = getBlackDuckServicesFactory();
+    public void execute(BlackDuckRunData blackDuckRunData, BlackDuckServicesFactory blackDuckServicesFactory, RapidScanInput input) throws DetectUserFriendlyException, IntegrationException {
         DeveloperScanService developerScanService = blackDuckServicesFactory.createDeveloperScanService();
         BlackDuckRapidMode rapidScanMode = new BlackDuckRapidMode(blackDuckRunData, developerScanService, timeoutInSeconds);
         BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(gson, eventSystem, directoryManager);
 
         List<DeveloperScanComponentResultView> results = rapidScanMode.run(input.getBdioResult());
         postActions.perform(input.getProjectNameVersion(), results);
-        return OperationResult.success();
     }
 }
