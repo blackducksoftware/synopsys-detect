@@ -45,21 +45,21 @@ public class YarnLockKeyValuePairSectionParser implements YarnLockEntrySectionPa
     }
 
     @Override
-    public boolean applies(String elementLine) {
-        if (yarnLockLineAnalyzer.measureIndentDepth(elementLine) != 1) {
+    public boolean applies(String sectionFirstLine) {
+        if (yarnLockLineAnalyzer.measureIndentDepth(sectionFirstLine) != 1) {
             return false;
         }
-        elementLine = elementLine.trim();
-        if (!elementLine.contains(" ") && elementLine.endsWith(":")) {
+        sectionFirstLine = sectionFirstLine.trim();
+        if (!sectionFirstLine.contains(" ") && sectionFirstLine.endsWith(":")) {
             return false; // This is just a key:
         }
-        StringTokenizer tokenizer = TokenizerFactory.createKeyValueTokenizer(elementLine);
+        StringTokenizer tokenizer = TokenizerFactory.createKeyValueTokenizer(sectionFirstLine);
         String parsedKey = tokenizer.nextToken();
         return targetKey.equalsIgnoreCase(parsedKey) && tokenizer.hasMoreTokens();
     }
 
     @Override
-    public int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection) {
+    public int parseSection(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection) {
         StringTokenizer tokenizer = TokenizerFactory.createKeyValueTokenizer(yarnLockLines.get(lineIndexOfStartOfSection));
         tokenizer.nextToken(); // skip over key
         String value = tokenizer.nextToken().trim();

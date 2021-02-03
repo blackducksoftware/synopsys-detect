@@ -27,7 +27,7 @@ import java.util.List;
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryBuilder;
 
 public interface YarnLockEntrySectionParser {
-    boolean applies(String elementLine);
+    boolean applies(String sectionFirstLine);
 
-    int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection);
+    int parseSection(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection);
 }

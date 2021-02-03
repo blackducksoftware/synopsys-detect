@@ -30,7 +30,7 @@ public class YarnLockHeaderSectionParserTest {
         Assertions.assertTrue(yarnLockParser.applies(line));
 
         YarnLockEntryBuilder builder = new YarnLockEntryBuilder();
-        yarnLockParser.parseElement(builder, lines, 0);
+        yarnLockParser.parseSection(builder, lines, 0);
 
         // Complete the builder requirements and build the entry
         builder.setVersion("testVersion");
@@ -52,7 +52,7 @@ public class YarnLockHeaderSectionParserTest {
         Assertions.assertTrue(yarnLockParser.applies(line));
 
         YarnLockEntryBuilder builder = new YarnLockEntryBuilder();
-        yarnLockParser.parseElement(builder, lines, 0);
+        yarnLockParser.parseSection(builder, lines, 0);
 
         // Complete the builder requirements and build the entry
         builder.setVersion("testVersion");
@@ -74,7 +74,7 @@ public class YarnLockHeaderSectionParserTest {
         Assertions.assertTrue(yarnLockParser.applies(line));
 
         YarnLockEntryBuilder builder = new YarnLockEntryBuilder();
-        yarnLockParser.parseElement(builder, lines, 0);
+        yarnLockParser.parseSection(builder, lines, 0);
 
         // Complete the builder requirements and build the entry
         builder.setVersion("testVersion");
@@ -94,7 +94,7 @@ public class YarnLockHeaderSectionParserTest {
         Assertions.assertTrue(yarnLockParser.applies(line));
 
         YarnLockEntryBuilder builder = new YarnLockEntryBuilder();
-        yarnLockParser.parseElement(builder, lines, 0);
+        yarnLockParser.parseSection(builder, lines, 0);
 
         // Complete the builder requirements and build the entry
         builder.setVersion("testVersion");

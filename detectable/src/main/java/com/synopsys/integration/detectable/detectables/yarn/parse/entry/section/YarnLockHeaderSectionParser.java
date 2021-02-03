@@ -42,12 +42,12 @@ public class YarnLockHeaderSectionParser implements YarnLockEntrySectionParser {
     }
 
     @Override
-    public boolean applies(String elementLine) {
-        return yarnLockLineAnalyzer.measureIndentDepth(elementLine) == 0;
+    public boolean applies(String sectionFirstLine) {
+        return yarnLockLineAnalyzer.measureIndentDepth(sectionFirstLine) == 0;
     }
 
     @Override
-    public int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection) {
+    public int parseSection(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection) {
         String line = yarnLockLines.get(lineIndexOfStartOfSection);
         StringTokenizer tokenizer = TokenizerFactory.createHeaderTokenizer(line);
         while (tokenizer.hasMoreTokens()) {

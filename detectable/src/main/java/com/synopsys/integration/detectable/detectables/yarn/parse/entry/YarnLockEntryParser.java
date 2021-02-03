@@ -30,11 +30,11 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.entry.section.
 
 public class YarnLockEntryParser {
     private final YarnLockLineAnalyzer yarnLockLineAnalyzer;
-    private final YarnLockEntrySectionParserSet yarnLockEntryElementParser;
+    private final YarnLockEntrySectionParserSet yarnLockEntrySectionParserSet;
 
-    public YarnLockEntryParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockEntrySectionParserSet yarnLockEntryElementParser) {
+    public YarnLockEntryParser(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockEntrySectionParserSet yarnLockEntrySectionParserSet) {
         this.yarnLockLineAnalyzer = yarnLockLineAnalyzer;
-        this.yarnLockEntryElementParser = yarnLockEntryElementParser;
+        this.yarnLockEntrySectionParserSet = yarnLockEntrySectionParserSet;
     }
 
     public YarnLockEntryParseResult parseNextEntry(List<String> yarnLockFileLines, int entryStartIndex) {
@@ -46,8 +46,8 @@ public class YarnLockEntryParser {
             if (finishedWithThisEntry(entryLineIndex, curLine)) {
                 return createResult(fileLineIndex, yarnLockEntryBuilder);
             }
-            // parseElement returns the last line it consumed; parsing resumes on the next line
-            fileLineIndex = yarnLockEntryElementParser.parseElement(yarnLockEntryBuilder, yarnLockFileLines, fileLineIndex);
+            // parseSection returns the last line it consumed; parsing resumes on the next line
+            fileLineIndex = yarnLockEntrySectionParserSet.parseSection(yarnLockEntryBuilder, yarnLockFileLines, fileLineIndex);
             entryLineIndex++;
             fileLineIndex++;
         }

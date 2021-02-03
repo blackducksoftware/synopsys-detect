@@ -43,20 +43,20 @@ public class YarnLockDependencyListSectionParser implements YarnLockEntrySection
     }
 
     @Override
-    public boolean applies(String elementLine) {
-        if (yarnLockLineAnalyzer.measureIndentDepth(elementLine) != 1) {
+    public boolean applies(String sectionFirstLine) {
+        if (yarnLockLineAnalyzer.measureIndentDepth(sectionFirstLine) != 1) {
             return false;
         }
-        elementLine = elementLine.trim();
-        if (!elementLine.contains(" ") && elementLine.endsWith(":")) {
-            String listKey = elementLine.substring(0, elementLine.length() - 1);
+        sectionFirstLine = sectionFirstLine.trim();
+        if (!sectionFirstLine.contains(" ") && sectionFirstLine.endsWith(":")) {
+            String listKey = sectionFirstLine.substring(0, sectionFirstLine.length() - 1);
             return listKey.equals(targetListKey);
         }
         return false;
     }
 
     @Override
-    public int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection) {
+    public int parseSection(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection) {
         for (int curLineIndex = lineIndexOfStartOfSection + 1; curLineIndex < yarnLockLines.size(); curLineIndex++) {
             String line = yarnLockLines.get(curLineIndex);
             int depth = yarnLockLineAnalyzer.measureIndentDepth(line);

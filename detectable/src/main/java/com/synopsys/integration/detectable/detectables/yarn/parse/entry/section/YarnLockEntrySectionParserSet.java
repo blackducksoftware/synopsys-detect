@@ -29,25 +29,25 @@ import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockLineAn
 import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntryBuilder;
 
 public class YarnLockEntrySectionParserSet {
-    private final List<YarnLockEntrySectionParser> elementParsers = new ArrayList<>();
+    private final List<YarnLockEntrySectionParser> yarnLockEntrySectionParsers = new ArrayList<>();
 
     public YarnLockEntrySectionParserSet(YarnLockLineAnalyzer yarnLockLineAnalyzer, YarnLockDependencySpecParser yarnLockDependencySpecParser) {
-        elementParsers.add(new YarnLockHeaderSectionParser(yarnLockLineAnalyzer));
-        elementParsers.add(new YarnLockDependencyListSectionParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser, "dependencies", false));
-        elementParsers.add(new YarnLockDependencyListSectionParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser, "optionalDependencies", true));
-        elementParsers.add(new YarnLockDependencyMetaListSectionParser(yarnLockLineAnalyzer));
-        elementParsers.add(new YarnLockKeyValuePairSectionParser(yarnLockLineAnalyzer, "version", YarnLockEntryBuilder::setVersion));
+        yarnLockEntrySectionParsers.add(new YarnLockHeaderSectionParser(yarnLockLineAnalyzer));
+        yarnLockEntrySectionParsers.add(new YarnLockDependencyListSectionParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser, "dependencies", false));
+        yarnLockEntrySectionParsers.add(new YarnLockDependencyListSectionParser(yarnLockLineAnalyzer, yarnLockDependencySpecParser, "optionalDependencies", true));
+        yarnLockEntrySectionParsers.add(new YarnLockDependencyMetaListSectionParser(yarnLockLineAnalyzer));
+        yarnLockEntrySectionParsers.add(new YarnLockKeyValuePairSectionParser(yarnLockLineAnalyzer, "version", YarnLockEntryBuilder::setVersion));
     }
 
-    public int parseElement(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection) {
+    public int parseSection(YarnLockEntryBuilder entryBuilder, List<String> yarnLockLines, int lineIndexOfStartOfSection) {
         String line = yarnLockLines.get(lineIndexOfStartOfSection);
         if (line.startsWith("#") || line.trim().isEmpty()) {
             return lineIndexOfStartOfSection;
         }
-        return elementParsers.stream()
+        return yarnLockEntrySectionParsers.stream()
                    .filter(ep -> ep.applies(line))
                    .findFirst()
-                   .map(ep -> ep.parseElement(entryBuilder, yarnLockLines, lineIndexOfStartOfSection))
+                   .map(ep -> ep.parseSection(entryBuilder, yarnLockLines, lineIndexOfStartOfSection))
                    .orElse(lineIndexOfStartOfSection);
     }
 }

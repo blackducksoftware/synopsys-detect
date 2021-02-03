@@ -49,7 +49,7 @@ public class YarnLockKeyValuePairSectionParserTest {
         YarnLockEntryBuilder builder = new YarnLockEntryBuilder();
         builder.addId(new YarnLockEntryId("idname", "idversion"));
         List<String> lines = Arrays.asList(line);
-        yarnLockKeyValuePairElementParser.parseElement(builder, lines, 0);
+        yarnLockKeyValuePairElementParser.parseSection(builder, lines, 0);
 
         Optional<YarnLockEntry> entry = builder.build();
         Assertions.assertTrue(entry.isPresent());
