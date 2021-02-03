@@ -54,15 +54,17 @@ public class LocalPipInspectorResolver implements PipInspectorResolver {
                 resolvedInspector = installInspector();
             }
             return resolvedInspector;
-        } catch (final Exception e) {
+        } catch (Exception e) {
             throw new DetectableException(e);
         }
     }
 
     private File installInspector() throws IOException {
-        final InputStream inspectorFileStream = getClass().getResourceAsStream(String.format("/%s", INSPECTOR_NAME));
-        final String inspectorScriptContents = IOUtils.toString(inspectorFileStream, StandardCharsets.UTF_8);
-        final File inspectorScript = directoryManager.getSharedFile("pip", INSPECTOR_NAME); //Moved the file getting so the pip folder would not be created every time. -jp
+        String inspectorScriptContents;
+        try (InputStream inspectorFileStream = getClass().getResourceAsStream(String.format("/%s", INSPECTOR_NAME))) {
+            inspectorScriptContents = IOUtils.toString(inspectorFileStream, StandardCharsets.UTF_8);
+        }
+        File inspectorScript = directoryManager.getSharedFile("pip", INSPECTOR_NAME); //Moved the file getting so the pip folder would not be created every time. -jp
         FileUtils.write(inspectorScript, inspectorScriptContents, StandardCharsets.UTF_8);
         return inspectorScript;
     }
