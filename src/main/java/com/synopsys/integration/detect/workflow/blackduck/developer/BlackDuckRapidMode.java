@@ -53,9 +53,9 @@ public class BlackDuckRapidMode {
     }
 
     public List<DeveloperScanComponentResultView> run(BdioResult bdioResult) throws DetectUserFriendlyException {
-        logger.info("Begin Developer Mode Scan");
+        logger.info("Begin Rapid Scan");
         if (!blackDuckRunData.isOnline()) {
-            logger.warn("Black Duck isn't online skipping developer mode scan.");
+            logger.warn("Black Duck isn't online skipping rapid scan.");
             return Collections.emptyList();
         }
 
@@ -64,7 +64,7 @@ public class BlackDuckRapidMode {
             for (UploadTarget uploadTarget : bdioResult.getUploadTargets()) {
                 results.addAll(developerScanService.performDeveloperScan(uploadTarget.getUploadFile(), timeoutInSeconds, DEFAULT_WAIT_INTERVAL_IN_SECONDS));
             }
-            logger.debug("Developer scan result count: {}", results.size());
+            logger.debug("Rapid scan result count: {}", results.size());
         } catch (IllegalArgumentException e) {
             throw new DetectUserFriendlyException(String.format("Your Black Duck configuration is not valid: %s", e.getMessage()), e, ExitCodeType.FAILURE_BLACKDUCK_CONNECTIVITY);
         } catch (IntegrationRestException e) {
