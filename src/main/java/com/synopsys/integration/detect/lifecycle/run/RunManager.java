@@ -43,7 +43,7 @@ import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationServi
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
-import com.synopsys.integration.blackduck.developermode.DeveloperScanService;
+import com.synopsys.integration.blackduck.developermode.RapidScanService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
@@ -353,7 +353,7 @@ public class RunManager {
         if (blackDuckRunOptions.shouldPerformRapidModeScan()) {
             logger.info(ReportConstants.RUN_SEPARATOR);
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
-            DeveloperScanService developerScanService = blackDuckServicesFactory.createDeveloperScanService();
+            RapidScanService developerScanService = blackDuckServicesFactory.createRapidScanService();
             BlackDuckRapidMode developerMode = new BlackDuckRapidMode(blackDuckRunData, developerScanService, detectConfigurationFactory);
             List<DeveloperScanComponentResultView> results = developerMode.run(bdioResult);
             BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(gson, eventSystem, directoryManager);

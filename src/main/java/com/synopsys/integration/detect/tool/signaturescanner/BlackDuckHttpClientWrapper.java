@@ -31,9 +31,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.http.client.BlackDuckHttpClient;
+import com.synopsys.integration.blackduck.useragent.BlackDuckCommon;
+import com.synopsys.integration.blackduck.useragent.UserAgentBuilder;
+import com.synopsys.integration.blackduck.useragent.UserAgentItem;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.log.IntLogger;
 import com.synopsys.integration.rest.HttpUrl;
 import com.synopsys.integration.rest.client.IntHttpClient;
+import com.synopsys.integration.rest.proxy.ProxyInfo;
 import com.synopsys.integration.rest.request.Request;
 import com.synopsys.integration.rest.response.ErrorResponse;
 import com.synopsys.integration.rest.response.Response;
@@ -45,9 +50,16 @@ import com.synopsys.integration.rest.response.Response;
 public class BlackDuckHttpClientWrapper implements BlackDuckHttpClient {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final IntHttpClient httpClient;
+    private final HttpUrl baseUrl;
+    private final String userAgentString;
 
-    public BlackDuckHttpClientWrapper(IntHttpClient httpClient) {
+    public BlackDuckHttpClientWrapper(IntHttpClient httpClient, HttpUrl baseUrl, UserAgentItem solutionUserAgentItem) {
         this.httpClient = httpClient;
+        this.baseUrl = baseUrl;
+        UserAgentBuilder userAgentBuilder = new UserAgentBuilder();
+        userAgentBuilder.addUserAgent(solutionUserAgentItem);
+        userAgentBuilder.addUserAgent(BlackDuckCommon.createUserAgentItem());
+        this.userAgentString = userAgentBuilder.createFullUserAgentString();
     }
 
     @Override
@@ -88,12 +100,12 @@ public class BlackDuckHttpClientWrapper implements BlackDuckHttpClient {
 
     @Override
     public HttpUrl getBaseUrl() {
-        return null;
+        return baseUrl;
     }
 
     @Override
     public String getUserAgentString() {
-        return null;
+        return userAgentString;
     }
 
     @Override
@@ -101,4 +113,23 @@ public class BlackDuckHttpClientWrapper implements BlackDuckHttpClient {
         return httpClient.getClientBuilder();
     }
 
+    @Override
+    public int getTimeoutInSeconds() {
+        return httpClient.getTimeoutInSeconds();
+    }
+
+    @Override
+    public boolean isAlwaysTrustServerCertificate() {
+        return httpClient.isAlwaysTrustServerCertificate();
+    }
+
+    @Override
+    public ProxyInfo getProxyInfo() {
+        return httpClient.getProxyInfo();
+    }
+
+    @Override
+    public IntLogger getLogger() {
+        return httpClient.getLogger();
+    }
 }
