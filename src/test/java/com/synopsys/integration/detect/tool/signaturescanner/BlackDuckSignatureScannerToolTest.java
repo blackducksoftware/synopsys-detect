@@ -46,10 +46,10 @@ import com.synopsys.integration.util.NameVersion;
 public class BlackDuckSignatureScannerToolTest {
 
     @Test
-    public void testRunScanTool() throws URISyntaxException, DetectUserFriendlyException, IOException, IntegrationException {
+    public void testRunScanTool() throws DetectUserFriendlyException, IOException, IntegrationException {
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = new BlackDuckSignatureScannerOptions(null, null, null, null, null, null, null, 1, null, null, false, null, null, null, null, null, null, null);
 
-        File signatureScannerInstallationDirectory = new File(BlackDuckSignatureScannerToolTest.class.getClassLoader().getResource("tool/signaturescanner/tools").toURI());
+        File signatureScannerInstallationDirectory = new File(new File("").getAbsolutePath()); // get absolute reference to the current directory
         DirectoryOptions directoryOptions = new DirectoryOptions(null, null, null, null, signatureScannerInstallationDirectory.toPath());
         DirectoryManager directoryManager = new DirectoryManager(directoryOptions, new DetectRun(""));
 
@@ -71,14 +71,7 @@ public class BlackDuckSignatureScannerToolTest {
 
         BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, detectContext);
 
-        testOffline(blackDuckSignatureScannerTool, scanBatchOutput, projectNameVersion);
         testOnline(blackDuckSignatureScannerTool, scanBatchOutput, projectNameVersion);
-    }
-
-    private void testOffline(BlackDuckSignatureScannerTool blackDuckSignatureScannerTool, ScanBatchOutput scanBatchOutput, NameVersion projectNameVersion) throws DetectUserFriendlyException {
-        SignatureScannerToolResult expected = SignatureScannerToolResult.createOfflineResult(scanBatchOutput);
-        SignatureScannerToolResult actual = blackDuckSignatureScannerTool.runScanTool(null, null, projectNameVersion, Optional.empty());
-        Assertions.assertTrue(areEqualResults(expected, actual));
     }
 
     private void testOnline(BlackDuckSignatureScannerTool blackDuckSignatureScannerTool, ScanBatchOutput scanBatchOutput, NameVersion projectNameVersion) throws IntegrationException, DetectUserFriendlyException {
