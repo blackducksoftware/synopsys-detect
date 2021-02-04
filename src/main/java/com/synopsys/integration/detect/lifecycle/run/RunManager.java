@@ -168,7 +168,7 @@ public class RunManager {
 
         BdioInput bdioInput = new BdioInput(aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations());
         BdioResult bdioResult = operationFactory.createBdioFileGenerationOperation().execute(bdioInput);
-        if (runOptions.shouldPerformRapidModeScan()) {
+        if (runOptions.shouldPerformRapidModeScan() && blackDuckRunData.isOnline()) {
             logger.info(ReportConstants.RUN_SEPARATOR);
             RapidScanInput rapidScanInput = new RapidScanInput(projectNameVersion, bdioResult);
             operationFactory.createRapidScanOperation().execute(blackDuckRunData, blackDuckRunData.getBlackDuckServicesFactory(), rapidScanInput);
