@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.KeyValueMap;
 import com.synopsys.integration.detect.configuration.DetectInfo;
+import com.synopsys.integration.detect.configuration.DetectProperties;
 import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
@@ -54,7 +56,7 @@ public class FormattedOutputManager {
     private final List<DetectResult> detectResults = new ArrayList<>();
     private final List<DetectIssue> detectIssues = new ArrayList<>();
     private final Map<String, List<File>> unrecognizedPaths = new HashMap<>();
-    private KeyValueMap<String> keyValueMap = null;
+    private KeyValueMap<String> rawMaskedPropertyValues = null;
 
     public FormattedOutputManager(EventSystem eventSystem) {
         eventSystem.registerListener(Event.DetectorsComplete, this::detectorsComplete);
@@ -67,7 +69,7 @@ public class FormattedOutputManager {
         eventSystem.registerListener(Event.RawMaskedPropertyValuesCollected, this::propertyValuesCollected);
     }
 
-    public FormattedOutput createFormattedOutput(DetectInfo detectInfo) {
+    public FormattedOutput createFormattedOutput(DetectInfo detectInfo) throws IllegalAccessException{
         FormattedOutput formattedOutput = new FormattedOutput();
         formattedOutput.formatVersion = "0.4.0";
         formattedOutput.detectVersion = detectInfo.getDetectVersion();
@@ -103,8 +105,8 @@ public class FormattedOutputManager {
         formattedOutput.unrecognizedPaths = new HashMap<>();
         unrecognizedPaths.keySet().forEach(key -> formattedOutput.unrecognizedPaths.put(key, unrecognizedPaths.get(key).stream().map(File::toString).collect(Collectors.toList())));
 
-        if (keyValueMap != null) {
-            formattedOutput.propertyValues = keyValueMap.getSortedMap();
+        if (rawMaskedPropertyValues != null) {
+            formattedOutput.propertyValues = sortRawPropertyValueMap(rawMaskedPropertyValues.getMap());
         }
 
         return formattedOutput;
@@ -139,6 +141,22 @@ public class FormattedOutputManager {
         return detectorOutput;
     }
 
+    private Map<String, String> sortRawPropertyValueMap(Map<String, String> rawPropertyValueMap) throws IllegalAccessException {
+        Map<String, String> sorted = new LinkedHashMap<>();
+        List<String> propertyKeys;
+
+        propertyKeys = DetectProperties.allProperties().getPropertyKeys();
+
+        propertyKeys.stream()
+            .sorted()
+            .filter(key -> rawPropertyValueMap.containsKey(key))
+            .forEach(key ->
+                sorted.put(key, rawPropertyValueMap.get(key))
+            );
+
+        return sorted;
+    }
+
     private void detectorsComplete(DetectorToolResult detectorToolResult) {
         this.detectorToolResult = detectorToolResult;
     }
@@ -171,6 +189,6 @@ public class FormattedOutputManager {
     }
 
     private void propertyValuesCollected(KeyValueMap keyValueMap) {
-        this.keyValueMap = keyValueMap;
+        this.rawMaskedPropertyValues = keyValueMap;
     }
 }
