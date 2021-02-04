@@ -47,6 +47,7 @@ import com.synopsys.integration.detect.lifecycle.boot.DetectBootResult;
 import com.synopsys.integration.detect.lifecycle.exit.ExitManager;
 import com.synopsys.integration.detect.lifecycle.exit.ExitOptions;
 import com.synopsys.integration.detect.lifecycle.exit.ExitResult;
+import com.synopsys.integration.detect.lifecycle.run.RunContext;
 import com.synopsys.integration.detect.lifecycle.run.RunManager;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.shutdown.CleanupUtility;
@@ -163,13 +164,12 @@ public class Application implements ApplicationRunner {
     private void runApplication(DetectContext detectContext, DetectRun detectRun, EventSystem eventSystem, ExitCodeManager exitCodeManager, DetectBootResult detectBootResult) {
         Optional<ProductRunData> optionalProductRunData = detectBootResult.getProductRunData();
         if (detectBootResult.getBootType() == DetectBootResult.BootType.RUN && optionalProductRunData.isPresent()) {
-            logger.debug("Detect will attempt to run.");
-            ProductRunData productRunData = optionalProductRunData.get();
-            RunManager runManager = new RunManager(detectContext);
             try {
-                logger.debug("Detect run begin: {}", detectRun.getRunId());
-                runManager.run(productRunData);
-                logger.debug("Detect run completed.");
+                logger.debug("Detect will attempt to run.");
+                ProductRunData productRunData = optionalProductRunData.get();
+                RunManager runManager = new RunManager();
+                RunContext runContext = new RunContext(detectContext, productRunData);
+                runManager.run(runContext);
             } catch (Exception e) {
                 if (e.getMessage() != null) {
                     logger.error("Detect run failed: {}", e.getMessage());
