@@ -180,11 +180,11 @@ public class PropertyConfiguration {
 
     @NotNull
     public Map<String, String> getRawValueMap(@NotNull final Set<Property> properties) {
-        return getRawValueMap(properties, key -> false);
+        return getMaskedRawValueMap(properties, key -> false);
     }
 
     @NotNull
-    public Map<String, String> getRawValueMap(@NotNull final Set<Property> properties, Predicate<String> shouldMask) {
+    public Map<String, String> getMaskedRawValueMap(@NotNull final Set<Property> properties, Predicate<String> shouldMask) {
         Map<String, String> rawMap = new HashMap<>();
         for (Property property : properties) {
             String rawKey = property.getKey();
