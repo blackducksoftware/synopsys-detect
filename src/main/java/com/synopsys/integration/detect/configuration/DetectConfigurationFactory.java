@@ -59,10 +59,10 @@ import com.synopsys.integration.configuration.property.types.path.PathValue;
 import com.synopsys.integration.detect.PropertyConfigUtils;
 import com.synopsys.integration.detect.configuration.connection.BlackDuckConnectionDetails;
 import com.synopsys.integration.detect.configuration.connection.ConnectionDetails;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultDetectorExcludedDirectories;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.detect.configuration.enumeration.DetectWorkflow;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
 import com.synopsys.integration.detect.lifecycle.boot.product.ProductBootOptions;
 import com.synopsys.integration.detect.lifecycle.run.RunOptions;
@@ -79,6 +79,7 @@ import com.synopsys.integration.detect.workflow.airgap.AirGapOptions;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detect.workflow.bdio.BdioOptions;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
+import com.synopsys.integration.detect.workflow.blackduck.BlackDuckRunOptions;
 import com.synopsys.integration.detect.workflow.blackduck.CustomFieldDocument;
 import com.synopsys.integration.detect.workflow.blackduck.DetectProjectServiceOptions;
 import com.synopsys.integration.detect.workflow.file.DirectoryOptions;
@@ -285,9 +286,8 @@ public class DetectConfigurationFactory {
         AggregateMode aggregateMode = getValue(DetectProperties.DETECT_BOM_AGGREGATE_REMEDIATION_MODE);
         List<DetectTool> preferredTools = getValue(DetectProperties.DETECT_PROJECT_TOOL);
         Boolean useBdio2 = getValue(DetectProperties.DETECT_BDIO2_ENABLED);
-        DetectWorkflow detectWorkflow = getValue(DetectProperties.DETECT_WORKFLOW);
 
-        return new RunOptions(unmapCodeLocations, aggregateName, aggregateMode, preferredTools, detectToolFilter, useBdio2, detectWorkflow);
+        return new RunOptions(unmapCodeLocations, aggregateName, aggregateMode, preferredTools, detectToolFilter, useBdio2);
     }
 
     public DirectoryOptions createDirectoryOptions() throws IOException {
@@ -449,6 +449,11 @@ public class DetectConfigurationFactory {
             licenseSearch,
             copyrightSearch
         );
+    }
+
+    public BlackDuckRunOptions createBlackDuckRunOptions() {
+        BlackduckScanMode scanMode = getValue(DetectProperties.DETECT_BLACKDUCK_SCAN_MODE);
+        return new BlackDuckRunOptions(scanMode);
     }
 
     public BlackDuckPostOptions createBlackDuckPostOptions() {

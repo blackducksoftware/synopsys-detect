@@ -22,7 +22,7 @@
  */
 package com.synopsys.integration.detect.configuration.enumeration;
 
-public enum DetectWorkflow {
-    TRANSIENT,
-    PERSISTENT
+public enum BlackduckScanMode {
+    RAPID_MODE,
+    FULL_MODE
 }

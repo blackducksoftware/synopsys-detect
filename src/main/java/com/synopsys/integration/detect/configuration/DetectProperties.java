@@ -57,12 +57,12 @@ import com.synopsys.integration.configuration.property.types.string.NullableStri
 import com.synopsys.integration.configuration.property.types.string.StringListProperty;
 import com.synopsys.integration.configuration.property.types.string.StringProperty;
 import com.synopsys.integration.configuration.util.Group;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DefaultVersionNameScheme;
 import com.synopsys.integration.detect.configuration.enumeration.DetectCategory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
 import com.synopsys.integration.detect.configuration.enumeration.DetectMajorVersion;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.detect.configuration.enumeration.DetectWorkflow;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
@@ -1133,12 +1133,12 @@ public class DetectProperties {
             .setHelp("If set to true, Detect will wait for Synopsys products until results are available or the detect.report.timeout is exceeded.")
             .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<EnumProperty<DetectWorkflow>> DETECT_WORKFLOW =
-        new DetectProperty<>(new EnumProperty<>("detect.workflow", DetectWorkflow.PERSISTENT, DetectWorkflow.class))
-            .setInfo("Detect Workflow", DetectPropertyFromVersion.VERSION_6_9_0)
-            .setHelp("Set the workflow to control the execution of Detect",
-                "Set the workflow to control how Detect will operate.  The scan results are not persisted in Black Duck if TRANSIENT_SCAN workflow is selected.  The TRANSIENT_SCAN value supports a Black Duck rapid scan feature that is meant to be used with a later Black Duck version.  If TRANSIENT_SCAN is selected, then Detect also requires --detect.bdio2.enabled=true and --blackduck.offline.mode=false to perform a TRANSIENT_SCAN workflow.")
-            .setGroups(DetectGroup.GENERAL, DetectGroup.GLOBAL)
+    public static final DetectProperty<EnumProperty<BlackduckScanMode>> DETECT_BLACKDUCK_SCAN_MODE =
+        new DetectProperty<>(new EnumProperty<>("detect.blackduck.scan.mode", BlackduckScanMode.FULL_MODE, BlackduckScanMode.class))
+            .setInfo("Detect Scan Mode", DetectPropertyFromVersion.VERSION_6_9_0)
+            .setHelp("Set the Black Duck scanning mode of Detect",
+                "Set the scanning mode of Detect to control how Detect will send data to Black Duck.  The scan results are not persisted in Black Duck if RAPID_MODE is selected.  The RAPID_MODE value supports a Black Duck rapid scan feature that is meant to be used with a later Black Duck version.  If RAPID_MODE is selected, then Detect also requires --detect.bdio2.enabled=true and --blackduck.offline.mode=false to perform a RAPID_MODE scan.")
+            .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK)
             .setCategory(DetectCategory.Advanced);
 
     //#endregion Active Properties

@@ -22,20 +22,20 @@
  */
 package com.synopsys.integration.detect.workflow.blackduck;
 
-import com.synopsys.integration.detect.configuration.enumeration.DetectWorkflow;
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 
 public class BlackDuckRunOptions {
-    private final DetectWorkflow scanMode;
+    private final BlackduckScanMode scanMode;
 
-    public BlackDuckRunOptions(DetectWorkflow scanMode) {
+    public BlackDuckRunOptions(BlackduckScanMode scanMode) {
         this.scanMode = scanMode;
     }
 
-    public DetectWorkflow getScanMode() {
+    public BlackduckScanMode getScanMode() {
         return scanMode;
     }
 
     public boolean shouldPerformRapidModeScan() {
-        return DetectWorkflow.TRANSIENT == scanMode;
+        return BlackduckScanMode.RAPID_MODE == scanMode;
     }
 }
