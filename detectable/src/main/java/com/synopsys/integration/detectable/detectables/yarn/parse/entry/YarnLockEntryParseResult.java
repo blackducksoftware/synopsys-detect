@@ -20,16 +20,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn.parse;
+package com.synopsys.integration.detectable.detectables.yarn.parse.entry;
 
-import org.slf4j.Logger;
+import java.util.Optional;
 
-import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
-import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import org.jetbrains.annotations.Nullable;
 
-@FunctionalInterface
-public interface MissingYarnDependencyHandler {
-    ExternalId handleMissingYarnDependency(Logger logger, ExternalIdFactory externalIdFactory, DependencyId dependencyId, LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo, String yarnLockFilePath);
+public class YarnLockEntryParseResult {
+    private final int lastParsedLineIndex;
+    @Nullable
+    private final YarnLockEntry yarnLockEntry;
+
+    public YarnLockEntryParseResult(int lastParsedLineIndex, @Nullable YarnLockEntry yarnLockEntry) {
+        this.lastParsedLineIndex = lastParsedLineIndex;
+        this.yarnLockEntry = yarnLockEntry;
+    }
+
+    public int getLastParsedLineIndex() {
+        return lastParsedLineIndex;
+    }
+
+    public Optional<YarnLockEntry> getYarnLockEntry() {
+        return Optional.ofNullable(yarnLockEntry);
+    }
 }
