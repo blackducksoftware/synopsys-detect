@@ -27,13 +27,13 @@ import java.io.File;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Discovery;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonDiscoverer;
@@ -71,15 +71,9 @@ public class NpmCliDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
-
-        if (packageJson == null) {
-            return new FileNotFoundDetectableResult(PACKAGE_JSON);
-        } else {
-            relevantFiles.add(packageJson);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        packageJson = requirements.file(PACKAGE_JSON);
+        return requirements.result();
     }
 
     @Override

@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detector.result;
 
+import java.io.File;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
@@ -34,19 +35,22 @@ public class DetectorResult {
     private final String description;
     private final Class resultClass;
     private List<Explanation> explanations;
+    private List<File> relevantFiles;
 
-    public DetectorResult(final boolean passed, @NotNull final String description, final List<Explanation> explanations) {
+    public DetectorResult(final boolean passed, @NotNull final String description, final List<Explanation> explanations, List<File> relevantFiles) {
         this.passed = passed;
         this.description = description;
         this.explanations = explanations;
         this.resultClass = null;
+        this.relevantFiles = relevantFiles;
     }
 
-    public DetectorResult(final boolean passed, @NotNull final String description, final Class resultClass, final List<Explanation> explanations) {
+    public DetectorResult(final boolean passed, @NotNull final String description, final Class resultClass, final List<Explanation> explanations, List<File> relevantFiles) {
         this.passed = passed;
         this.description = description;
         this.resultClass = resultClass;
         this.explanations = explanations;
+        this.relevantFiles = relevantFiles;
     }
 
     public boolean getPassed() {
@@ -55,6 +59,10 @@ public class DetectorResult {
 
     public List<Explanation> getExplanations() {
         return explanations;
+    }
+
+    public List<File> getRelevantFiles() {
+        return relevantFiles;
     }
 
     @NotNull

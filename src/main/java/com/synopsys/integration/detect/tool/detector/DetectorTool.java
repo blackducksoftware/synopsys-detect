@@ -265,7 +265,7 @@ public class DetectorTool {
         logger.debug("Publishing file events.");
         for (DetectorEvaluation detectorEvaluation : detectorEvaluations) {
             if (detectorEvaluation.getDetectable() != null) {
-                for (File file : detectorEvaluation.getDetectable().getFoundRelevantFiles()) {
+                for (File file : detectorEvaluation.getAllRelevantFiles()) {
                     eventSystem.publishEvent(Event.CustomerFileOfInterest, file);
                 }
             }

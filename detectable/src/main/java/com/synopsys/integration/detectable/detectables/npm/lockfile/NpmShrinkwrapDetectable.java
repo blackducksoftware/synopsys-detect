@@ -29,10 +29,10 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
@@ -60,21 +60,10 @@ public class NpmShrinkwrapDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        lockfile = fileFinder.findFile(environment.getDirectory(), SHRINKWRAP_JSON);
-        if (lockfile == null) {
-            return new FileNotFoundDetectableResult(SHRINKWRAP_JSON);
-        } else {
-            relevantFiles.add(lockfile);
-        }
-
-        packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
-        if (packageJson == null) {
-            logger.warn("Npm applied but it could not find a package.json so dependencies may not be entirely accurate.");
-        } else {
-            relevantFiles.add(packageJson);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        lockfile = requirements.file(SHRINKWRAP_JSON);
+        packageJson = requirements.optionalFile(PACKAGE_JSON, () -> logger.warn("Npm applied but it could not find a package.json so dependencies may not be entirely accurate."));
+        return requirements.result();
     }
 
     @Override

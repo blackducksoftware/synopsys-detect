@@ -70,7 +70,7 @@ public class ExtractableEvaluator extends Evaluator {
                 DetectableResult detectableExtractableResult = getDetectableExtractableResult(detectorEvaluationTree, detectorEvaluation);
 
                 DetectorResult extractableResult = new DetectorResult(detectableExtractableResult.getPassed(), detectableExtractableResult.toDescription(), detectableExtractableResult.getClass(),
-                    detectableExtractableResult.getExplanation());
+                    detectableExtractableResult.getExplanation(), detectableExtractableResult.getRelevantFiles());
                 detectorEvaluation.setExtractable(extractableResult);
                 if (detectorEvaluation.isExtractable()) {
                     logger.trace("Extractable passed. Done evaluating for now.");

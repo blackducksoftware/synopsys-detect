@@ -28,10 +28,10 @@ import java.io.InputStream;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
@@ -56,15 +56,9 @@ public class NpmPackageJsonParseDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        packageJsonFile = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
-
-        if (packageJsonFile == null) {
-            return new FileNotFoundDetectableResult(PACKAGE_JSON);
-        } else {
-            relevantFiles.add(packageJsonFile);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        packageJsonFile = requirements.file(PACKAGE_JSON);
+        return requirements.result();
     }
 
     @Override

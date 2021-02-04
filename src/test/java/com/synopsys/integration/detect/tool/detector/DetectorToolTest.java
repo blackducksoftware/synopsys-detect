@@ -214,8 +214,7 @@ public class DetectorToolTest {
         GoModCliDetectable detectable = Mockito.mock(GoModCliDetectable.class);
         Mockito.when(detectable.extractable()).thenReturn(extractionResult);
 
-        Mockito.when(detectable.applicable()).thenReturn(new PassedDetectableResult(explanations));
-        Mockito.when(detectable.getFoundRelevantFiles()).thenReturn(relevantFiles);
+        Mockito.when(detectable.applicable()).thenReturn(new PassedDetectableResult(Collections.emptyList(), relevantFiles));
         Mockito.when(detectable.extract(Mockito.any())).thenReturn(extraction);
         return detectable;
     }
@@ -280,11 +279,11 @@ public class DetectorToolTest {
     private DetectorEvaluationTree createEvaluationTree(Extraction extraction, DetectableResult extractionResult, File directory, DetectorRule<GoModCliDetectable> rule, DetectorRuleSet detectorRuleSet) {
         DetectorEvaluation detectorEvaluation = new DetectorEvaluation(rule);
 
-        DetectorResult extractableResult = new DetectorResult(extractionResult.getPassed(), extractionResult.toDescription(), extractionResult.getClass(), explanations);
+        DetectorResult extractableResult = new DetectorResult(extractionResult.getPassed(), extractionResult.toDescription(), extractionResult.getClass(), Collections.emptyList(), Collections.emptyList());
         detectorEvaluation.setExtractable(extractableResult);
         detectorEvaluation.setExtraction(extraction);
-        detectorEvaluation.setApplicable(new DetectorResult(true, "", null));
-        detectorEvaluation.setSearchable(new DetectorResult(true, "", null));
+        detectorEvaluation.setApplicable(new DetectorResult(true, "", Collections.emptyList(), Collections.emptyList()));
+        detectorEvaluation.setSearchable(new DetectorResult(true, "", Collections.emptyList(), Collections.emptyList()));
         detectorEvaluation.setDetectableEnvironment(new DetectableEnvironment(new File("")));
         return new DetectorEvaluationTree(directory, 0, detectorRuleSet, Collections.singletonList(detectorEvaluation), new HashSet<>());
     }

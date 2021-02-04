@@ -28,6 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class FailedDetectorResult extends DetectorResult {
     public FailedDetectorResult(@NotNull final String description, final Class resultClass) {
-        super(false, description, resultClass, Collections.emptyList());
+        super(false, description, resultClass, Collections.emptyList(), Collections.emptyList());
     }
 }

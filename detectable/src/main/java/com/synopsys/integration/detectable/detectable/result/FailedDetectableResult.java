@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectable.result;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,6 +41,11 @@ public class FailedDetectableResult implements DetectableResult {
 
     @Override
     public List<Explanation> getExplanation() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<File> getRelevantFiles() {
         return Collections.emptyList();
     }
 }

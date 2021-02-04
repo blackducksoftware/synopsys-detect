@@ -22,6 +22,7 @@
  */
 package com.synopsys.integration.detectable.detectable.result;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,17 +30,27 @@ import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 
 public class PassedDetectableResult implements DetectableResult {
     final List<Explanation> explanations;
+    final List<File> relevantFiles;
+
+    //TODO: Remove constructors when all detectables use Requirements.
+    public PassedDetectableResult(final List<Explanation> explanations, List<File> relevantFiles) {
+        this.explanations = explanations;
+        this.relevantFiles = relevantFiles;
+    }
 
     public PassedDetectableResult(final List<Explanation> explanations) {
         this.explanations = explanations;
+        this.relevantFiles = Collections.emptyList();
     }
 
     public PassedDetectableResult() {
         this.explanations = Collections.emptyList();
+        this.relevantFiles = Collections.emptyList();
     }
 
     public PassedDetectableResult(Explanation explanation) {
         this.explanations = Collections.singletonList(explanation);
+        this.relevantFiles = Collections.emptyList();
     }
 
     @Override
@@ -55,5 +66,10 @@ public class PassedDetectableResult implements DetectableResult {
     @Override
     public List<Explanation> getExplanation() {
         return explanations;
+    }
+
+    @Override
+    public List<File> getRelevantFiles() {
+        return relevantFiles;
     }
 }

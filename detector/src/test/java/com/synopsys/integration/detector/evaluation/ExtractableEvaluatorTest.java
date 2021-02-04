@@ -121,7 +121,7 @@ public class ExtractableEvaluatorTest {
         Mockito.when(detectorEvaluation.isApplicable()).thenReturn(true);
         Mockito.when(detectorEvaluation.isExtractable()).thenReturn(extractable);
         Mockito.when(detectorRule.createDetectable(Mockito.any(DetectableEnvironment.class))).thenReturn(detectable);
-        Mockito.when(detectable.applicable()).thenReturn(new PassedDetectableResult(explanations));
+        Mockito.when(detectable.applicable()).thenReturn(new PassedDetectableResult());
         if (throwException) {
             Mockito.when(detectable.extractable()).thenThrow(new DetectableException("JUnit Expected Exception."));
         } else {

@@ -78,7 +78,7 @@ public class ApplicableEvaluator extends Evaluator {
                 detectorEvaluation.setDetectable(detectable);
 
                 DetectableResult applicable = detectable.applicable();
-                DetectorResult applicableResult = new DetectorResult(applicable.getPassed(), applicable.toDescription(), applicable.getClass(), applicable.getExplanation());
+                DetectorResult applicableResult = new DetectorResult(applicable.getPassed(), applicable.toDescription(), applicable.getClass(), applicable.getExplanation(), applicable.getRelevantFiles());
                 detectorEvaluation.setApplicable(applicableResult);
 
                 if (detectorEvaluation.isApplicable()) {

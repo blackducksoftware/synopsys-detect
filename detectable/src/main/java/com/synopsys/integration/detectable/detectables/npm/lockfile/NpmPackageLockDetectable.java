@@ -59,26 +59,10 @@ public class NpmPackageLockDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        Requirements requires = new Requirements(fileFinder, environment);
-        lockfile = requires.file(fileFinder, environment, PACKAGE_LOCK_JSON);
-        packageJson = requires.file(fileFinder, environment, PACKAGE_JSON);
-        return requires.result();
-        //
-        //        lockfile = fileFinder.findFile(environment.getDirectory(), PACKAGE_LOCK_JSON);
-        //        if (lockfile == null) {
-        //            return new FileNotFoundDetectableResult(PACKAGE_LOCK_JSON);
-        //        } else {
-        //            relevantFiles.add(lockfile);
-        //        }
-        //
-        //        packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
-        //        if (packageJson == null) {
-        //            logger.warn("Npm applied but it could not find a package.json so dependencies may not be entirely accurate.");
-        //        } else {
-        //            relevantFiles.add(packageJson);
-        //        }
-        //
-        //        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        lockfile = requirements.file(PACKAGE_LOCK_JSON);
+        packageJson = requirements.optionalFile(PACKAGE_JSON, () -> logger.warn("Npm applied but it could not find a package.json so dependencies may not be entirely accurate."));
+        return requirements.result();
     }
 
     @Override
