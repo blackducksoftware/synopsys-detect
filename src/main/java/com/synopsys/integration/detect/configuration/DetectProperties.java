@@ -473,7 +473,7 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.docker.tar"))
             .setInfo("Docker Image Archive File", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
-                "A Docker image saved to a .tar file using the 'docker save' command. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
+                "A Docker image saved to a .tar file using the 'docker save' command. The file must be readable by all. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties).")
             .setExample("./ubuntu21_04.tar")
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH);
 
