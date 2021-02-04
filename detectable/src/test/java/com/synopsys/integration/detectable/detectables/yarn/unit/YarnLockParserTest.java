@@ -224,7 +224,9 @@ public class YarnLockParserTest {
             "  ignoredelement2",
             "  dependencies:",
             "    some-peer: ^10.0.0",
-            "  ignoredelement3"
+            "  ignoredelement3",
+            "#",
+            ""
         );
         YarnLockParser yarnLockParser = createYarnLockParser();
 

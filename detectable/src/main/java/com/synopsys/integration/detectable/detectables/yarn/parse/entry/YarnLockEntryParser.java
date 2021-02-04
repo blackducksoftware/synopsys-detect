@@ -43,7 +43,7 @@ public class YarnLockEntryParser {
         int entryLineIndex = 0;
         while (fileLineIndex < yarnLockFileLines.size()) {
             String curLine = yarnLockFileLines.get(fileLineIndex);
-            if (finishedWithThisEntry(entryLineIndex, curLine)) {
+            if (passedEndOfEntry(entryLineIndex, yarnLockEntryBuilder, curLine)) {
                 return createResult(fileLineIndex, yarnLockEntryBuilder);
             }
             // parseSection returns the last line it consumed; parsing resumes on the next line
@@ -51,18 +51,17 @@ public class YarnLockEntryParser {
             entryLineIndex++;
             fileLineIndex++;
         }
-        Optional<YarnLockEntry> entry = yarnLockEntryBuilder.build();
+        Optional<YarnLockEntry> entry = yarnLockEntryBuilder.buildIfValid();
         return new YarnLockEntryParseResult(yarnLockFileLines.size() - 1, entry.orElse(null));
     }
 
     private YarnLockEntryParseResult createResult(int fileLineIndex, YarnLockEntryBuilder entryBuilder) {
-        Optional<YarnLockEntry> entry = entryBuilder.build();
-        return new YarnLockEntryParseResult(fileLineIndex - 1, entry.orElse(null));
+        YarnLockEntry entry = entryBuilder.build();
+        return new YarnLockEntryParseResult(fileLineIndex - 1, entry);
     }
 
-    private boolean finishedWithThisEntry(int entryLineIndex, String curLine) {
-        if (entryLineIndex == 0) {
-            // we're still on the first line of the entry, so can't be done yet
+    private boolean passedEndOfEntry(int entryLineIndex, YarnLockEntryBuilder builder, String curLine) {
+        if ((entryLineIndex == 0) || !builder.valid()) {
             return false;
         }
         // If we've left the indented lines, we're done parsing this entry

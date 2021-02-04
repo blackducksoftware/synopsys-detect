@@ -2,7 +2,6 @@ package com.synopsys.integration.detectable.detectables.yarn.unit.parse.entry.el
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,10 +33,9 @@ public class YarnLockHeaderSectionParserTest {
 
         // Complete the builder requirements and build the entry
         builder.setVersion("testVersion");
-        Optional<YarnLockEntry> entry = builder.build();
+        YarnLockEntry entry = builder.build();
 
-        Assertions.assertTrue(entry.isPresent());
-        List<YarnLockEntryId> ids = entry.get().getIds();
+        List<YarnLockEntryId> ids = entry.getIds();
         Assertions.assertEquals(2, ids.size());
         Assertions.assertEquals("@apollographql/apollo-tools", ids.get(0).getName());
         Assertions.assertEquals("^0.4.2", ids.get(0).getVersion());
@@ -56,10 +54,9 @@ public class YarnLockHeaderSectionParserTest {
 
         // Complete the builder requirements and build the entry
         builder.setVersion("testVersion");
-        Optional<YarnLockEntry> entry = builder.build();
+        YarnLockEntry entry = builder.build();
 
-        Assertions.assertTrue(entry.isPresent());
-        List<YarnLockEntryId> ids = entry.get().getIds();
+        List<YarnLockEntryId> ids = entry.getIds();
         Assertions.assertEquals(2, ids.size());
         Assertions.assertEquals("example", ids.get(0).getName());
         Assertions.assertEquals("", ids.get(0).getVersion());
@@ -78,10 +75,9 @@ public class YarnLockHeaderSectionParserTest {
 
         // Complete the builder requirements and build the entry
         builder.setVersion("testVersion");
-        Optional<YarnLockEntry> entry = builder.build();
+        YarnLockEntry entry = builder.build();
 
-        Assertions.assertTrue(entry.isPresent());
-        List<YarnLockEntryId> ids = entry.get().getIds();
+        List<YarnLockEntryId> ids = entry.getIds();
         Assertions.assertEquals(1, ids.size());
         Assertions.assertEquals("@example", ids.get(0).getName());
         Assertions.assertEquals("", ids.get(0).getVersion());
@@ -98,10 +94,9 @@ public class YarnLockHeaderSectionParserTest {
 
         // Complete the builder requirements and build the entry
         builder.setVersion("testVersion");
-        Optional<YarnLockEntry> entry = builder.build();
+        YarnLockEntry entry = builder.build();
 
-        Assertions.assertTrue(entry.isPresent());
-        List<YarnLockEntryId> ids = entry.get().getIds();
+        List<YarnLockEntryId> ids = entry.getIds();
         Assertions.assertEquals(3, ids.size());
         Assertions.assertEquals("xtend", ids.get(0).getName());
         Assertions.assertEquals(">=4.0.0 <4.1.0-0", ids.get(0).getVersion());

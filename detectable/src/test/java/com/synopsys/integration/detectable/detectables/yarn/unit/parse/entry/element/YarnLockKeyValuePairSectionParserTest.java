@@ -2,7 +2,6 @@ package com.synopsys.integration.detectable.detectables.yarn.unit.parse.entry.el
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -51,8 +50,7 @@ public class YarnLockKeyValuePairSectionParserTest {
         List<String> lines = Arrays.asList(line);
         yarnLockKeyValuePairElementParser.parseSection(builder, lines, 0);
 
-        Optional<YarnLockEntry> entry = builder.build();
-        Assertions.assertTrue(entry.isPresent());
-        Assertions.assertEquals(versionValue, entry.get().getVersion());
+        YarnLockEntry entry = builder.build();
+        Assertions.assertEquals(versionValue, entry.getVersion());
     }
 }

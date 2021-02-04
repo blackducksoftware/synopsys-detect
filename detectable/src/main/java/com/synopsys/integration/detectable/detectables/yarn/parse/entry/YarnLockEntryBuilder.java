@@ -54,8 +54,19 @@ public class YarnLockEntryBuilder {
         return dependencies;
     }
 
-    public Optional<YarnLockEntry> build() {
-        if (ids.isEmpty() || version == null) {
+    public boolean valid() {
+        return !ids.isEmpty() && (version != null);
+    }
+
+    public YarnLockEntry build() {
+        if (!valid()) {
+            throw new UnsupportedOperationException("Attempted to build an incomplete yarn.lock entry");
+        }
+        return new YarnLockEntry(ids, version, new LinkedList<>(dependencies.values()));
+    }
+
+    public Optional<YarnLockEntry> buildIfValid() {
+        if (!valid()) {
             return Optional.empty();
         }
         return Optional.of(new YarnLockEntry(ids, version, new LinkedList<>(dependencies.values())));
