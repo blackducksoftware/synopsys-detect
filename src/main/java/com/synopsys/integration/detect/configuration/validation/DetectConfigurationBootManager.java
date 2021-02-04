@@ -24,9 +24,11 @@ package com.synopsys.integration.detect.configuration.validation;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -90,8 +92,8 @@ public class DetectConfigurationBootManager {
     }
 
     public void printConfiguration(Map<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes) throws IllegalAccessException {
-        List<String> sortedPropertyKeys = DetectProperties.allProperties().getSortedPropertyKeys();
-        detectConfigurationReporter.printKnownCurrentValues(logger::info, sortedPropertyKeys, new TreeMap(maskedRawPropertyValues), additionalNotes);
+        Set<String> propertyKeys = new HashSet(DetectProperties.allProperties().getPropertyKeys());
+        detectConfigurationReporter.printKnownCurrentValues(logger::info, propertyKeys, new TreeMap(maskedRawPropertyValues), additionalNotes);
     }
 
     //Check for options that are just plain bad, ie giving an detector type we don't know about.
@@ -105,7 +107,7 @@ public class DetectConfigurationBootManager {
     }
 
     public void printFailingPropertiesMessages(Map<String, List<String>> deprecationMessages) throws IllegalAccessException {
-        List<String> sortedPropertyKeys = DetectProperties.allProperties().getSortedPropertyKeys();
+        Set<String> sortedPropertyKeys = new HashSet(DetectProperties.allProperties().getPropertyKeys());
         detectConfigurationReporter.printKnownPropertyErrors(logger::info, sortedPropertyKeys, new TreeMap(deprecationMessages));
 
         logger.warn(StringUtils.repeat("=", 60));
