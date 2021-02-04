@@ -33,9 +33,9 @@ import com.synopsys.integration.detect.lifecycle.run.RunOptions;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.AggregateOptionsOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioFileGenerationOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BdioUploadOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.BinaryScanOperation;
-import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.CodeLocationOperation;
-import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.CodeLocationResultOperation;
+import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.CodeLocationResultCalculationOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.FullScanPostProcessingOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ImpactAnalysisOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ProjectCreationOperation;
@@ -48,7 +48,6 @@ import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysi
 import com.synopsys.integration.detect.tool.impactanalysis.service.ImpactAnalysisUploadService;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerOptions;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
-import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.BdioManager;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectCustomFieldService;
@@ -108,12 +107,12 @@ public class OperationFactory {
         return new BinaryScanOperation(blackDuckRunData, binaryScanOptions, runContext.getEventSystem(), runContext.getDirectoryManager(), runContext.getCodeLocationNameManager());
     }
 
-    public final CodeLocationOperation createCodeLocationOperation() {
-        return new CodeLocationOperation();
+    public final BdioUploadOperation createBdioUploadOperation() {
+        return new BdioUploadOperation();
     }
 
-    public final CodeLocationResultOperation createCodeLocationResultOperation() {
-        return new CodeLocationResultOperation(new CodeLocationResultCalculator(), runContext.getEventSystem());
+    public final CodeLocationResultCalculationOperation createCodeLocationResultCalculationOperation() {
+        return new CodeLocationResultCalculationOperation(new CodeLocationResultCalculator(), runContext.getEventSystem());
     }
 
     public final FullScanPostProcessingOperation createFullScanPostProcessingOperation() {
@@ -156,7 +155,6 @@ public class OperationFactory {
     }
 
     public final SignatureScanOperation createSignatureScanOperation() throws DetectUserFriendlyException {
-        DetectToolFilter detectToolFilter = runOptions.getDetectToolFilter();
         BlackDuckRunData blackDuckRunData = runContext.getProductRunData().getBlackDuckRunData();
         BlackDuckSignatureScannerOptions blackDuckSignatureScannerOptions = runContext.getDetectConfigurationFactory().createBlackDuckSignatureScannerOptions();
         BlackDuckSignatureScannerTool blackDuckSignatureScannerTool = new BlackDuckSignatureScannerTool(blackDuckSignatureScannerOptions, runContext.getDetectContext());

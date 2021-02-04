@@ -22,27 +22,30 @@
  */
 package com.synopsys.integration.detect.lifecycle.run;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadOutput;
+import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
+import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
-import com.synopsys.integration.detect.lifecycle.DetectContext;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.data.ProductRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.OperationFactory;
 import com.synopsys.integration.detect.lifecycle.run.operation.blackduck.ImpactAnalysisOperation;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.BdioInput;
-import com.synopsys.integration.detect.lifecycle.run.operation.input.CodeLocationInput;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.FullScanPostProcessingInput;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.ImpactAnalysisInput;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.RapidScanInput;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.SignatureScanInput;
 import com.synopsys.integration.detect.tool.UniversalToolsResult;
+import com.synopsys.integration.detect.tool.impactanalysis.ImpactAnalysisToolResult;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateOptions;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
@@ -57,12 +60,6 @@ import com.synopsys.integration.util.NameVersion;
 
 public class RunManager {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    private final DetectContext detectContext;
-
-    public RunManager(DetectContext detectContext) {
-        this.detectContext = detectContext;
-    }
 
     public RunResult run(RunContext runContext) throws DetectUserFriendlyException, IntegrationException {
         RunResult runResult = new RunResult();
@@ -188,15 +185,18 @@ public class RunManager {
             logger.debug("Completed project and version actions.");
             logger.debug("Processing Detect Code Locations.");
 
-            CodeLocationAccumulator<UploadOutput, UploadBatchOutput> codeLocationAccumulator = operationFactory.createCodeLocationOperation().execute(blackDuckRunData, bdioResult);
+            CodeLocationAccumulator codeLocationAccumulator = new CodeLocationAccumulator<>();
+            Optional<CodeLocationCreationData<UploadBatchOutput>> uploadResult = operationFactory.createBdioUploadOperation().execute(blackDuckRunData, bdioResult);
+            uploadResult.ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
 
             logger.debug("Completed Detect Code Location processing.");
 
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.SIGNATURE_SCAN)) {
                 logger.info("Will include the signature scanner tool.");
-                SignatureScanInput signatureScanInput = new SignatureScanInput(projectNameVersion, codeLocationAccumulator, runResult.getDockerTar().orElse(null));
-                operationFactory.createSignatureScanOperation().execute(signatureScanInput);
+                SignatureScanInput signatureScanInput = new SignatureScanInput(projectNameVersion, runResult.getDockerTar().orElse(null));
+                Optional<CodeLocationCreationData<ScanBatchOutput>> signatureScanResult = operationFactory.createSignatureScanOperation().execute(signatureScanInput);
+                signatureScanResult.ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
                 logger.info("Signature scanner actions finished.");
             } else {
                 logger.info("Signature scan tool will not be run.");
@@ -206,8 +206,8 @@ public class RunManager {
             if (detectToolFilter.shouldInclude(DetectTool.BINARY_SCAN)) {
                 logger.info("Will include the binary scanner tool.");
                 if (blackDuckRunData.isOnline()) {
-                    CodeLocationInput codeLocationInput = new CodeLocationInput(projectNameVersion, codeLocationAccumulator);
-                    operationFactory.createBinaryScanOperation().execute(codeLocationInput);
+                    Optional<CodeLocationCreationData<BinaryScanBatchOutput>> binaryScanResult = operationFactory.createBinaryScanOperation().execute(projectNameVersion);
+                    binaryScanResult.ifPresent(codeLocationAccumulator::addWaitableCodeLocation);
                 }
                 logger.info("Binary scanner actions finished.");
             } else {
@@ -217,8 +217,10 @@ public class RunManager {
             logger.info(ReportConstants.RUN_SEPARATOR);
             if (detectToolFilter.shouldInclude(DetectTool.IMPACT_ANALYSIS) && impactAnalysisOperation.shouldImpactAnalysisToolRun()) {
                 logger.info("Will include the Vulnerability Impact Analysis tool.");
-                ImpactAnalysisInput impactAnalysisInput = new ImpactAnalysisInput(projectNameVersion, codeLocationAccumulator, projectVersionWrapper);
-                impactAnalysisOperation.execute(impactAnalysisInput);
+                ImpactAnalysisInput impactAnalysisInput = new ImpactAnalysisInput(projectNameVersion, projectVersionWrapper);
+                ImpactAnalysisToolResult impactAnalysisToolResult = impactAnalysisOperation.execute(impactAnalysisInput);
+                /* TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020 */
+                codeLocationAccumulator.addNonWaitableCodeLocation(impactAnalysisToolResult.getCodeLocationNames());
                 logger.info("Vulnerability Impact Analysis tool actions finished.");
             } else if (impactAnalysisOperation.shouldImpactAnalysisToolRun()) {
                 logger.info("Vulnerability Impact Analysis tool is enabled but will not run due to tool configuration.");
@@ -228,7 +230,7 @@ public class RunManager {
 
             logger.info(ReportConstants.RUN_SEPARATOR);
             //We have finished code locations.
-            CodeLocationResults codeLocationResults = operationFactory.createCodeLocationResultOperation().execute(codeLocationAccumulator);
+            CodeLocationResults codeLocationResults = operationFactory.createCodeLocationResultCalculationOperation().execute(codeLocationAccumulator);
 
             if (blackDuckRunData.isOnline()) {
                 logger.info("Will perform Black Duck post actions.");

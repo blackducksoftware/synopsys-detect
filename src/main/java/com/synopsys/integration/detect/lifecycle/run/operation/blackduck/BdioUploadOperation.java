@@ -23,6 +23,7 @@
 package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,21 +32,19 @@ import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.bdio2upload.Bdio2UploadService;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.BdioUploadService;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadOutput;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.blackduck.DetectBdioUploadService;
-import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class CodeLocationOperation {
+public class BdioUploadOperation {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public CodeLocationAccumulator<UploadOutput, UploadBatchOutput> execute(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException, IntegrationException {
-        CodeLocationAccumulator<UploadOutput, UploadBatchOutput> codeLocationAccumulator = new CodeLocationAccumulator<>();
+    public Optional<CodeLocationCreationData<UploadBatchOutput>> execute(BlackDuckRunData blackDuckRunData, BdioResult bdioResult) throws DetectUserFriendlyException, IntegrationException {
+        Optional<CodeLocationCreationData<UploadBatchOutput>> result = Optional.empty();
         List<UploadTarget> uploadTargetList = bdioResult.getUploadTargets();
         if (!uploadTargetList.isEmpty()) {
             logger.info(String.format("Created %d BDIO files.", bdioResult.getUploadTargets().size()));
@@ -57,13 +56,12 @@ public class CodeLocationOperation {
                 DetectBdioUploadService detectBdioUploadService = new DetectBdioUploadService();
                 logger.info(String.format("Created %d BDIO files.", uploadTargetList.size()));
                 logger.debug("Uploading BDIO files.");
-                CodeLocationCreationData<UploadBatchOutput> uploadBatchOutputCodeLocationCreationData = detectBdioUploadService.uploadBdioFiles(bdioResult, bdioUploadService,
-                    bdio2UploadService);
-                codeLocationAccumulator.addWaitableCodeLocation(uploadBatchOutputCodeLocationCreationData);
+                result = Optional.of(detectBdioUploadService.uploadBdioFiles(bdioResult, bdioUploadService,
+                    bdio2UploadService));
             }
         } else {
             logger.debug("Did not create any BDIO files.");
         }
-        return codeLocationAccumulator;
+        return result;
     }
 }

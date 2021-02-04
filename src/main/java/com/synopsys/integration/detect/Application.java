@@ -167,7 +167,7 @@ public class Application implements ApplicationRunner {
             try {
                 logger.debug("Detect will attempt to run.");
                 ProductRunData productRunData = optionalProductRunData.get();
-                RunManager runManager = new RunManager(detectContext);
+                RunManager runManager = new RunManager();
                 RunContext runContext = new RunContext(detectContext, productRunData);
                 runManager.run(runContext);
             } catch (Exception e) {

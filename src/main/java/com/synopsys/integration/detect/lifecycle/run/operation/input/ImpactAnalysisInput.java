@@ -22,19 +22,20 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation.input;
 
-import com.synopsys.integration.blackduck.codelocation.CodeLocationBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.CodeLocationOutput;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
-import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.util.NameVersion;
 
-public class ImpactAnalysisInput extends CodeLocationInput {
-    private ProjectVersionWrapper projectVersionWrapper;
+public class ImpactAnalysisInput {
+    private final NameVersion projectNameVersion;
+    private final ProjectVersionWrapper projectVersionWrapper;
 
-    public <O extends CodeLocationOutput, T extends CodeLocationBatchOutput<O>> ImpactAnalysisInput(NameVersion nameVersion, CodeLocationAccumulator<O, T> codeLocationAccumulator,
-        ProjectVersionWrapper projectVersionWrapper) {
-        super(nameVersion, codeLocationAccumulator);
+    public ImpactAnalysisInput(NameVersion projectNameVersion, ProjectVersionWrapper projectVersionWrapper) {
+        this.projectNameVersion = projectNameVersion;
         this.projectVersionWrapper = projectVersionWrapper;
+    }
+
+    public NameVersion getProjectNameVersion() {
+        return projectNameVersion;
     }
 
     public ProjectVersionWrapper getProjectVersionWrapper() {

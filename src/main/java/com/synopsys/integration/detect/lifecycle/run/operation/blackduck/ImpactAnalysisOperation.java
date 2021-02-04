@@ -39,16 +39,16 @@ public class ImpactAnalysisOperation {
         this.blackDuckImpactAnalysisTool = blackDuckImpactAnalysisTool;
     }
 
-    public void execute(ImpactAnalysisInput impactAnalysisInput) throws DetectUserFriendlyException, IntegrationException {
-        ImpactAnalysisToolResult impactAnalysisToolResult = blackDuckImpactAnalysisTool.performImpactAnalysisActions(impactAnalysisInput.getNameVersion(), impactAnalysisInput.getProjectVersionWrapper());
+    public ImpactAnalysisToolResult execute(ImpactAnalysisInput impactAnalysisInput) throws DetectUserFriendlyException, IntegrationException {
+        ImpactAnalysisToolResult impactAnalysisToolResult = blackDuckImpactAnalysisTool.performImpactAnalysisActions(impactAnalysisInput.getProjectNameVersion(), impactAnalysisInput.getProjectVersionWrapper());
 
-        /* TODO: There is currently no mechanism within Black Duck for checking the completion status of an Impact Analysis code location. Waiting should happen here when such a mechanism exists. See HUB-25142. JM - 08/2020 */
-        impactAnalysisInput.getCodeLocationAccumulator().addNonWaitableCodeLocation(impactAnalysisToolResult.getCodeLocationNames());
         if (impactAnalysisToolResult.isSuccessful()) {
             logger.info("Vulnerability Impact Analysis successful.");
         } else {
             logger.warn("Something went wrong with the Vulnerability Impact Analysis tool.");
         }
+
+        return impactAnalysisToolResult;
     }
 
     public boolean shouldImpactAnalysisToolRun() {

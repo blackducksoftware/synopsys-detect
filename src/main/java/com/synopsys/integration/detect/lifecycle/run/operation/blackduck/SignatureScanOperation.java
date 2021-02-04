@@ -23,11 +23,12 @@
 package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
 import java.util.Arrays;
+import java.util.Optional;
 
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationService;
 import com.synopsys.integration.blackduck.codelocation.Result;
 import com.synopsys.integration.blackduck.codelocation.signaturescanner.ScanBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.signaturescanner.command.ScanCommandOutput;
 import com.synopsys.integration.blackduck.configuration.BlackDuckServerConfig;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
@@ -35,7 +36,6 @@ import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
 import com.synopsys.integration.detect.lifecycle.run.operation.input.SignatureScanInput;
 import com.synopsys.integration.detect.tool.signaturescanner.BlackDuckSignatureScannerTool;
 import com.synopsys.integration.detect.tool.signaturescanner.SignatureScannerToolResult;
-import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
@@ -56,7 +56,8 @@ public class SignatureScanOperation {
         this.eventSystem = eventSystem;
     }
 
-    public void execute(SignatureScanInput signatureScanInput) throws DetectUserFriendlyException, IntegrationException {
+    public Optional<CodeLocationCreationData<ScanBatchOutput>> execute(SignatureScanInput signatureScanInput) throws DetectUserFriendlyException, IntegrationException {
+        Optional<CodeLocationCreationData<ScanBatchOutput>> result = Optional.empty();
         BlackDuckServerConfig blackDuckServerConfig = null;
         CodeLocationCreationService codeLocationCreationService = null;
         if (null != blackDuckRunData && blackDuckRunData.isOnline()) {
@@ -64,13 +65,13 @@ public class SignatureScanOperation {
             codeLocationCreationService = blackDuckServicesFactory.createCodeLocationCreationService();
             blackDuckServerConfig = blackDuckRunData.getBlackDuckServerConfig();
         }
-        SignatureScannerToolResult signatureScannerToolResult = signatureScannerTool.runScanTool(codeLocationCreationService, blackDuckServerConfig, signatureScanInput.getNameVersion(), signatureScanInput.getDockerTar());
+        SignatureScannerToolResult signatureScannerToolResult = signatureScannerTool.runScanTool(codeLocationCreationService, blackDuckServerConfig, signatureScanInput.getProjectNameVersion(), signatureScanInput.getDockerTar());
         if (signatureScannerToolResult.getResult() == Result.SUCCESS && signatureScannerToolResult.getCreationData().isPresent()) {
-            CodeLocationAccumulator<ScanCommandOutput, ScanBatchOutput> accumulator = signatureScanInput.getCodeLocationAccumulator();
-            accumulator.addWaitableCodeLocation(signatureScannerToolResult.getCreationData().get());
+            result = signatureScannerToolResult.getCreationData();
         } else if (signatureScannerToolResult.getResult() != Result.SUCCESS) {
             eventSystem.publishEvent(Event.StatusSummary, new Status("SIGNATURE_SCAN", StatusType.FAILURE));
             eventSystem.publishEvent(Event.Issue, new DetectIssue(DetectIssueType.SIGNATURE_SCANNER, Arrays.asList(signatureScannerToolResult.getResult().toString())));
         }
+        return result;
     }
 }

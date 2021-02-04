@@ -22,21 +22,22 @@
  */
 package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
+import java.util.Optional;
+
+import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
 import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanBatchOutput;
-import com.synopsys.integration.blackduck.codelocation.binaryscanner.BinaryScanOutput;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
-import com.synopsys.integration.detect.lifecycle.run.operation.input.CodeLocationInput;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanOptions;
 import com.synopsys.integration.detect.tool.binaryscanner.BinaryScanToolResult;
 import com.synopsys.integration.detect.tool.binaryscanner.BlackDuckBinaryScannerTool;
-import com.synopsys.integration.detect.workflow.blackduck.codelocation.CodeLocationAccumulator;
 import com.synopsys.integration.detect.workflow.codelocation.CodeLocationNameManager;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.util.NameVersion;
 
 public class BinaryScanOperation {
 
@@ -55,16 +56,18 @@ public class BinaryScanOperation {
         this.codeLocationNameManager = codeLocationNameManager;
     }
 
-    public void execute(CodeLocationInput codeLocationInput) throws DetectUserFriendlyException, IntegrationException {
+    public Optional<CodeLocationCreationData<BinaryScanBatchOutput>> execute(NameVersion projectNameVersion) throws DetectUserFriendlyException, IntegrationException {
+        Optional<CodeLocationCreationData<BinaryScanBatchOutput>> operationResult = Optional.empty();
         BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
         BlackDuckBinaryScannerTool binaryScannerTool = new BlackDuckBinaryScannerTool(eventSystem, codeLocationNameManager, directoryManager, new WildcardFileFinder(), binaryScanOptions,
             blackDuckServicesFactory.createBinaryScanUploadService());
         if (binaryScannerTool.shouldRun()) {
-            BinaryScanToolResult result = binaryScannerTool.performBinaryScanActions(codeLocationInput.getNameVersion());
+            BinaryScanToolResult result = binaryScannerTool.performBinaryScanActions(projectNameVersion);
             if (result.isSuccessful()) {
-                CodeLocationAccumulator<BinaryScanOutput, BinaryScanBatchOutput> accumulator = codeLocationInput.getCodeLocationAccumulator();
-                accumulator.addWaitableCodeLocation(result.getCodeLocationCreationData());
+                operationResult = Optional.of(result.getCodeLocationCreationData());
             }
         }
+
+        return operationResult;
     }
 }

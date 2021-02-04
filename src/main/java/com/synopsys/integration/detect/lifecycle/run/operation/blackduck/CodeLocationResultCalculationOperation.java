@@ -30,11 +30,11 @@ import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.exception.IntegrationException;
 
-public class CodeLocationResultOperation {
+public class CodeLocationResultCalculationOperation {
     private final CodeLocationResultCalculator codeLocationResultCalculator;
     private final EventSystem eventSystem;
 
-    public CodeLocationResultOperation(CodeLocationResultCalculator codeLocationResultCalculator, EventSystem eventSystem) {
+    public CodeLocationResultCalculationOperation(CodeLocationResultCalculator codeLocationResultCalculator, EventSystem eventSystem) {
         this.codeLocationResultCalculator = codeLocationResultCalculator;
         this.eventSystem = eventSystem;
     }
