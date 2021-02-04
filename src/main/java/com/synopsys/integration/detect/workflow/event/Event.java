@@ -32,7 +32,6 @@ import com.synopsys.integration.detect.tool.detector.DetectorToolResult;
 import com.synopsys.integration.detect.tool.detector.executable.ExecutedExecutable;
 import com.synopsys.integration.detect.workflow.codelocation.DetectCodeLocationNamesResult;
 import com.synopsys.integration.detect.workflow.profiling.DetectorTimings;
-import com.synopsys.integration.configuration.config.KeyValueMap;
 import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.Status;

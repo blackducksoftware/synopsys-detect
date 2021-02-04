@@ -25,10 +25,9 @@ package com.synopsys.integration.detect.workflow.report;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.TreeMap;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.config.KeyValueMap;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectProperties;
@@ -46,7 +45,7 @@ public class ConfigurationReporter {
         writer.writeSeparator();
         final PropertyConfigurationHelpContext helpContext = new PropertyConfigurationHelpContext(propertyConfiguration);
         List<String> sortedPropertyKeys = DetectProperties.allProperties().getSortedPropertyKeys();
-        helpContext.printKnownCurrentValues(writer::writeLine, sortedPropertyKeys, new KeyValueMap<>(maskedRawPropertyValues), new HashMap<>());
+        helpContext.printKnownCurrentValues(writer::writeLine, sortedPropertyKeys, new TreeMap(maskedRawPropertyValues), new HashMap<>());
         writer.writeSeparator();
     }
 }

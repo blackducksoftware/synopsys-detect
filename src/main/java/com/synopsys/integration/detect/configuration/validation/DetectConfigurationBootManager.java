@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -34,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.config.KeyValueMap;
 import com.synopsys.integration.configuration.help.PropertyConfigurationHelpContext;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.PropertyDeprecationInfo;
@@ -91,7 +91,7 @@ public class DetectConfigurationBootManager {
 
     public void printConfiguration(Map<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes) throws IllegalAccessException {
         List<String> sortedPropertyKeys = DetectProperties.allProperties().getSortedPropertyKeys();
-        detectConfigurationReporter.printKnownCurrentValues(logger::info, sortedPropertyKeys, new KeyValueMap<>(maskedRawPropertyValues), additionalNotes);
+        detectConfigurationReporter.printKnownCurrentValues(logger::info, sortedPropertyKeys, new TreeMap(maskedRawPropertyValues), additionalNotes);
     }
 
     //Check for options that are just plain bad, ie giving an detector type we don't know about.
@@ -106,7 +106,7 @@ public class DetectConfigurationBootManager {
 
     public void printFailingPropertiesMessages(Map<String, List<String>> deprecationMessages) throws IllegalAccessException {
         List<String> sortedPropertyKeys = DetectProperties.allProperties().getSortedPropertyKeys();
-        detectConfigurationReporter.printKnownPropertyErrors(logger::info, sortedPropertyKeys, new KeyValueMap<>(deprecationMessages));
+        detectConfigurationReporter.printKnownPropertyErrors(logger::info, sortedPropertyKeys, new TreeMap(deprecationMessages));
 
         logger.warn(StringUtils.repeat("=", 60));
         logger.warn("Configuration is using deprecated properties that must be updated for this major version.");

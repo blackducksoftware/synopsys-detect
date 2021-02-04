@@ -25,16 +25,17 @@ package com.synopsys.integration.configuration.help;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.SortedMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
-import com.synopsys.integration.configuration.config.KeyValueMap;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.TypedProperty;
@@ -67,22 +68,21 @@ public class PropertyConfigurationHelpContext {
         this.propertyConfiguration = propertyConfiguration;
     }
 
-    public void printCurrentValues(Consumer<String> logger, KeyValueMap<String> maskedRawPropertyValues, Map<String, String> additionalNotes) {
-        List<String> sortedPropertyKeys = sortPropertyMapKeys(maskedRawPropertyValues);
+    public void printCurrentValues(Consumer<String> logger, SortedMap<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes) {
+        List<String> sortedPropertyKeys = new LinkedList<>(maskedRawPropertyValues.keySet());
         printKnownCurrentValues(logger, sortedPropertyKeys, maskedRawPropertyValues, additionalNotes);
     }
 
-    public void printKnownCurrentValues(Consumer<String> logger, List<String> knownPropertyKeys, KeyValueMap<String> maskedRawPropertyValues, Map<String, String> additionalNotes) {
+    public void printKnownCurrentValues(Consumer<String> logger, List<String> knownPropertyKeys, Map<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes) {
         logger.accept("");
         logger.accept("Current property values:");
         logger.accept("--property = value [notes]");
         logger.accept(StringUtils.repeat("-", 60));
 
-        Map<String, String> maskedRawPropertyValuesMap = maskedRawPropertyValues.getMap();
         knownPropertyKeys.stream()
-            .filter(propertyKey -> maskedRawPropertyValuesMap.containsKey(propertyKey))
+            .filter(propertyKey -> maskedRawPropertyValues.containsKey(propertyKey))
             .forEach(propertyKey -> {
-            String rawMaskedValue = maskedRawPropertyValuesMap.get(propertyKey);
+            String rawMaskedValue = maskedRawPropertyValues.get(propertyKey);
             String sourceName = propertyConfiguration.getPropertySource(propertyKey).orElse("unknown");
             String sourceDisplayName = knownSourceDisplayNames.getOrDefault(sourceName, sourceName);
 
@@ -95,29 +95,22 @@ public class PropertyConfigurationHelpContext {
         logger.accept("");
     }
 
-    public void printPropertyErrors(Consumer<String> logger, KeyValueMap<List<String>> errors) {
-        List<String> sortedErroryKeys = sortPropertyMapKeys(errors);
-        printKnownPropertyErrors(logger, sortedErroryKeys, errors);
+    public void printPropertyErrors(Consumer<String> logger, SortedMap<String, List<String>> errors) {
+        List<String> sortedErrorKeys = new LinkedList<>(errors.keySet());
+        printKnownPropertyErrors(logger, sortedErrorKeys, errors);
     }
 
-    public void printKnownPropertyErrors(Consumer<String> logger, List<String> knownPropertyKeys, KeyValueMap<List<String>> errors) {
-        Map<String, List<String>> errorsMap = errors.getMap();
+    public void printKnownPropertyErrors(Consumer<String> logger, List<String> knownPropertyKeys, SortedMap<String, List<String>> errors) {
         knownPropertyKeys.stream()
-            .filter(propertyKey -> errorsMap.containsKey(propertyKey))
+            .filter(propertyKey -> errors.containsKey(propertyKey))
             .forEach(propertyKey -> {
                 logger.accept(StringUtils.repeat("=", 60));
-                List<String> propertyErrors = errorsMap.get(propertyKey);
+                List<String> propertyErrors = errors.get(propertyKey);
                 int errorCount = propertyErrors.size();
                 String header = String.format("%s (%s)", pluralize("ERROR", "ERRORS", errorCount), errorCount);
                 logger.accept(header);
                 propertyErrors.forEach(errorMessage -> logger.accept(propertyKey + ": " + errorMessage));
             });
-    }
-
-    private <T> List<String> sortPropertyMapKeys(KeyValueMap<T> keyValueMap) {
-        return keyValueMap.getKeys().stream()
-                   .sorted()
-                   .collect(Collectors.toList());
     }
 
     public String pluralize(String singular, String plural, Integer number) {
