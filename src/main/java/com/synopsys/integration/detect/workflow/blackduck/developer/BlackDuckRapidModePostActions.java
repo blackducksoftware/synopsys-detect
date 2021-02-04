@@ -112,8 +112,8 @@ public class BlackDuckRapidModePostActions {
             }
         }
         String jsonString = gson.toJson(results);
-        logger.debug("Developer Mode JSON result output: ");
-        logger.debug("{}", jsonString);
+        logger.trace("Developer Mode JSON result output: ");
+        logger.trace("{}", jsonString);
         try {
             DetectFileUtils.writeToFile(jsonScanFile, jsonString);
         } catch (IOException ex) {
@@ -142,10 +142,6 @@ public class BlackDuckRapidModePostActions {
             if (hasWarning) {
                 logger.info(vulnerabilityPolicyViolation.getWarningMessage());
             }
-
-            if (!hasError && !hasWarning) {
-                printViolatedPolicyNames(componentName, componentVersion, vulnerabilityPolicyViolation.getViolatingPolicyNames());
-            }
         }
     }
 
@@ -159,10 +155,6 @@ public class BlackDuckRapidModePostActions {
 
             if (hasWarning) {
                 logger.info(licensePolicyViolation.getWarningMessage());
-            }
-
-            if (!hasError && !hasWarning) {
-                printViolatedPolicyNames(componentName, componentVersion, licensePolicyViolation.getViolatingPolicyNames());
             }
         }
     }
