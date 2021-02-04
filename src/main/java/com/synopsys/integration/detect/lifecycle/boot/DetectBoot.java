@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -66,7 +67,6 @@ import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detect.workflow.event.Event;
 import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
-import com.synopsys.integration.configuration.config.KeyValueMap;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 import freemarker.template.Configuration;
@@ -227,8 +227,8 @@ public class DetectBoot {
         return propertyConfiguration.getMaskedRawValueMap(new HashSet<>(DetectProperties.allProperties().getProperties()), DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE);
     }
 
-    private void publishCollectedPropertyValues(Map<String, String> maskedRawPropertyValues, EventSystem eventSystem) throws IllegalAccessException {
-        eventSystem.publishEvent(Event.RawMaskedPropertyValuesCollected, new KeyValueMap(maskedRawPropertyValues));
+    private void publishCollectedPropertyValues(Map<String, String> maskedRawPropertyValues, EventSystem eventSystem) {
+        eventSystem.publishEvent(Event.RawMaskedPropertyValuesCollected, new TreeMap(maskedRawPropertyValues));
     }
 
 }
