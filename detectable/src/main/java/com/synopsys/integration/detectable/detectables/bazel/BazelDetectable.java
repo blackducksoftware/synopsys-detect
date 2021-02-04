@@ -68,15 +68,15 @@ public class BazelDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        Requirements requires = new Requirements();
-        File workspaceFile = requires.file(fileFinder, environment, WORKSPACE_FILENAME);
+        Requirements requirements = new Requirements(fileFinder, environment);
+        File workspaceFile = requirements.file(WORKSPACE_FILENAME);
 
-        requires.ifNotFailed(() -> {
+        requirements.ifCurrentlyMet(() -> {
             bazelWorkspace = new BazelWorkspace(workspaceFile);
         });
 
-        bazelExe = requires.executable(bazelResolver::resolveBazel, "bazel");
-        return requires.result();
+        bazelExe = requirements.executable(bazelResolver::resolveBazel, "bazel");
+        return requirements.result();
     }
 
     @Override

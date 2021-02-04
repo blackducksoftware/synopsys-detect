@@ -54,7 +54,7 @@ public class GitParseDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        Requirements requires = new Requirements();
+        Requirements requires = new Requirements(fileFinder, environment);
         File gitDirectory = requires.file(fileFinder, environment, GIT_DIRECTORY_NAME);
         gitConfigFile = requires.file(fileFinder, gitDirectory, GIT_CONFIG_FILENAME);
         gitHeadFile = requires.file(fileFinder, gitDirectory, GIT_HEAD_FILENAME);

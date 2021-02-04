@@ -53,14 +53,14 @@ public class GitCliDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        Requirements requires = new Requirements();
+        Requirements requires = new Requirements(fileFinder, environment);
         requires.file(fileFinder, environment, GIT_DIRECTORY_NAME);
         return requires.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        Requirements requires = new Requirements();
+        Requirements requires = new Requirements(fileFinder, environment);
         gitExecutable = requires.executable(gitResolver::resolveGit, "git");
         return requires.result();
     }

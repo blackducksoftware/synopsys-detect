@@ -20,11 +20,19 @@ public class Requirements {
     private DetectableResult failure;
     private List<Explanation> explanations = new ArrayList<>();
 
-    public File file(final FileFinder fileFinder, final DetectableEnvironment environment, final String filename) {
-        return file(fileFinder, environment.getDirectory(), filename);
+    private final FileFinder fileFinder;
+    private final DetectableEnvironment environment;
+
+    public Requirements(final FileFinder fileFinder, final DetectableEnvironment environment) {
+        this.fileFinder = fileFinder;
+        this.environment = environment;
     }
 
-    public File file(final FileFinder fileFinder, File directory, final String filename) {
+    public File file(final String filename) {
+        return file(environment.getDirectory(), filename);
+    }
+
+    public File file(File directory, final String filename) {
         if (isAlreadyFailed())
             return null;
 
@@ -41,10 +49,14 @@ public class Requirements {
         return failure != null;
     }
 
-    public void ifNotFailed(Runnable runnable) {
-        if (!isAlreadyFailed()) {
+    public void ifCurrentlyMet(Runnable runnable) {
+        if (isCurrentlyMet()) {
             runnable.run();
         }
+    }
+
+    public boolean isCurrentlyMet() {
+        return !isAlreadyFailed();
     }
 
     public File executable(Resolver resolver, String name) throws DetectableException {

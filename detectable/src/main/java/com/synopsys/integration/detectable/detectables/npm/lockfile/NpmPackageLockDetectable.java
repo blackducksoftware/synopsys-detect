@@ -59,7 +59,7 @@ public class NpmPackageLockDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        Requirements requires = new Requirements();
+        Requirements requires = new Requirements(fileFinder, environment);
         lockfile = requires.file(fileFinder, environment, PACKAGE_LOCK_JSON);
         packageJson = requires.file(fileFinder, environment, PACKAGE_JSON);
         return requires.result();
