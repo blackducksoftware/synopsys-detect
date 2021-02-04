@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
 import com.synopsys.integration.blackduck.codelocation.bdioupload.UploadTarget;
-import com.synopsys.integration.blackduck.developermode.DeveloperScanService;
+import com.synopsys.integration.blackduck.developermode.RapidScanService;
 import com.synopsys.integration.blackduck.exception.BlackDuckIntegrationException;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.enumeration.ExitCodeType;
@@ -40,29 +40,29 @@ import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.rest.exception.IntegrationRestException;
 
 public class BlackDuckRapidMode {
+    public static final int DEFAULT_WAIT_INTERVAL_IN_SECONDS = 1;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    private static final int DEFAULT_WAIT_INTERVAL_IN_SECONDS = 1;
     private BlackDuckRunData blackDuckRunData;
-    private DeveloperScanService developerScanService;
+    private RapidScanService rapidScanService;
     private Long timeoutInSeconds;
 
-    public BlackDuckRapidMode(BlackDuckRunData blackDuckRunData, DeveloperScanService developerScanService, Long timeoutInSeconds) {
+    public BlackDuckRapidMode(BlackDuckRunData blackDuckRunData, RapidScanService rapidScanService, Long timeoutInSeconds) {
         this.blackDuckRunData = blackDuckRunData;
-        this.developerScanService = developerScanService;
+        this.rapidScanService = rapidScanService;
         this.timeoutInSeconds = timeoutInSeconds;
     }
 
     public List<DeveloperScanComponentResultView> run(BdioResult bdioResult) throws DetectUserFriendlyException {
-        logger.info("Begin Rapid Scan");
+        logger.info("Begin Rapid Mode Scan");
         if (!blackDuckRunData.isOnline()) {
-            logger.warn("Black Duck isn't online skipping rapid scan.");
+            logger.warn("Black Duck isn't online skipping rapid mode scan.");
             return Collections.emptyList();
         }
 
         List<DeveloperScanComponentResultView> results = new LinkedList<>();
         try {
             for (UploadTarget uploadTarget : bdioResult.getUploadTargets()) {
-                results.addAll(developerScanService.performDeveloperScan(uploadTarget.getUploadFile(), timeoutInSeconds, DEFAULT_WAIT_INTERVAL_IN_SECONDS));
+                results.addAll(rapidScanService.performDeveloperScan(uploadTarget.getUploadFile(), timeoutInSeconds, DEFAULT_WAIT_INTERVAL_IN_SECONDS));
             }
             logger.debug("Rapid scan result count: {}", results.size());
         } catch (IllegalArgumentException e) {

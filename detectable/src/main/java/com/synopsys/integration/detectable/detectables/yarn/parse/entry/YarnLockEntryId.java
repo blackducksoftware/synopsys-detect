@@ -1,5 +1,5 @@
 /**
- * synopsys-detect
+ * detectable
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
@@ -20,22 +20,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.blackduck;
+package com.synopsys.integration.detectable.detectables.yarn.parse.entry;
 
-import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
+import com.synopsys.integration.util.Stringable;
 
-public class BlackDuckRunOptions {
-    private final BlackduckScanMode scanMode;
+public class YarnLockEntryId extends Stringable {
+    private final String name;
+    private final String version;
 
-    public BlackDuckRunOptions(BlackduckScanMode scanMode) {
-        this.scanMode = scanMode;
+    public YarnLockEntryId(String name, String version) {
+        this.name = name;
+        this.version = version;
     }
 
-    public BlackduckScanMode getScanMode() {
-        return scanMode;
+    public String getName() {
+        return name;
     }
 
-    public boolean shouldPerformRapidModeScan() {
-        return BlackduckScanMode.RAPID_MODE == scanMode;
+    public String getVersion() {
+        return version;
     }
 }

@@ -20,19 +20,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn.parse;
+package com.synopsys.integration.detectable.detectables.yarn.parse.entry;
 
-public class YarnLockEntryId {
-    private final String name;
+import java.util.List;
+
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
+
+public class YarnLockEntry {
+    private final List<YarnLockEntryId> ids;
     private final String version;
+    private final List<YarnLockDependency> dependencies;
 
-    public YarnLockEntryId(final String name, final String version) {
-        this.name = name;
+    public YarnLockEntry(List<YarnLockEntryId> ids, String version, List<YarnLockDependency> dependencies) {
+        this.ids = ids;
         this.version = version;
+        this.dependencies = dependencies;
     }
 
-    public String getName() {
-        return name;
+    public List<YarnLockEntryId> getIds() {
+        return ids;
+    }
+
+    public List<YarnLockDependency> getDependencies() {
+        return dependencies;
     }
 
     public String getVersion() {

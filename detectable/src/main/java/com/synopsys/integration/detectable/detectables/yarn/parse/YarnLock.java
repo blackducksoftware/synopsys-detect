@@ -24,10 +24,12 @@ package com.synopsys.integration.detectable.detectables.yarn.parse;
 
 import java.util.List;
 
+import com.synopsys.integration.detectable.detectables.yarn.parse.entry.YarnLockEntry;
+
 public class YarnLock {
     private final List<YarnLockEntry> entries;
 
-    public YarnLock(final List<YarnLockEntry> entries) {
+    public YarnLock(List<YarnLockEntry> entries) {
         this.entries = entries;
     }
 

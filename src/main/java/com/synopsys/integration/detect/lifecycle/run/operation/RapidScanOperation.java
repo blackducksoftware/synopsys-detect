@@ -26,7 +26,7 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.synopsys.integration.blackduck.api.manual.view.DeveloperScanComponentResultView;
-import com.synopsys.integration.blackduck.developermode.DeveloperScanService;
+import com.synopsys.integration.blackduck.developermode.RapidScanService;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.lifecycle.run.data.BlackDuckRunData;
@@ -51,7 +51,7 @@ public class RapidScanOperation {
     }
 
     public void execute(BlackDuckRunData blackDuckRunData, BlackDuckServicesFactory blackDuckServicesFactory, RapidScanInput input) throws DetectUserFriendlyException, IntegrationException {
-        DeveloperScanService developerScanService = blackDuckServicesFactory.createDeveloperScanService();
+        RapidScanService developerScanService = blackDuckServicesFactory.createRapidScanService();
         BlackDuckRapidMode rapidScanMode = new BlackDuckRapidMode(blackDuckRunData, developerScanService, timeoutInSeconds);
         BlackDuckRapidModePostActions postActions = new BlackDuckRapidModePostActions(gson, eventSystem, directoryManager);
 
