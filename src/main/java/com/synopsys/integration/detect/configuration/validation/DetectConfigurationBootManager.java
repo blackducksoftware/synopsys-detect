@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -91,9 +92,8 @@ public class DetectConfigurationBootManager {
         return new DeprecationResult(additionalNotes, deprecationMessages, shouldFailFromDeprecations);
     }
 
-    public void printConfiguration(Map<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes) throws IllegalAccessException {
-        Set<String> propertyKeys = new HashSet(DetectProperties.allProperties().getPropertyKeys());
-        detectConfigurationReporter.printKnownCurrentValues(logger::info, propertyKeys, new TreeMap(maskedRawPropertyValues), additionalNotes);
+    public void printConfiguration(SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys, Map<String, String> additionalNotes) throws IllegalAccessException {
+        detectConfigurationReporter.printKnownCurrentValues(logger::info, propertyKeys, maskedRawPropertyValues, additionalNotes);
     }
 
     //Check for options that are just plain bad, ie giving an detector type we don't know about.

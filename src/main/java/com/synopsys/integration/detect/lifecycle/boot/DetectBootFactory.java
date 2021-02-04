@@ -25,7 +25,8 @@ package com.synopsys.integration.detect.lifecycle.boot;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -159,8 +160,8 @@ public class DetectBootFactory {
         return pathResolver;
     }
 
-    public DiagnosticSystem createDiagnosticSystem(boolean isDiagnosticExtended, PropertyConfiguration detectConfiguration, DirectoryManager directoryManager, Map<String, String> maskedRawPropertyValues) {
-        return new DiagnosticSystem(isDiagnosticExtended, detectConfiguration, detectRun, detectInfo, directoryManager, eventSystem, maskedRawPropertyValues);
+    public DiagnosticSystem createDiagnosticSystem(boolean isDiagnosticExtended, PropertyConfiguration detectConfiguration, DirectoryManager directoryManager, SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
+        return new DiagnosticSystem(isDiagnosticExtended, detectConfiguration, detectRun, detectInfo, directoryManager, eventSystem, maskedRawPropertyValues, propertyKeys);
     }
 
     public AirGapCreator createAirGapCreator(ConnectionDetails connectionDetails, DetectExecutableOptions detectExecutableOptions, Configuration freemarkerConfiguration) {

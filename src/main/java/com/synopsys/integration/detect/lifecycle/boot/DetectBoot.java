@@ -30,6 +30,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
@@ -114,7 +116,9 @@ public class DetectBoot {
         PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
         EventSystem eventSystem = detectBootFactory.getEventSystem();
 
-        Map<String, String> maskedRawPropertyValues = collectMaskedRawPropertyValues(detectConfiguration);
+        SortedMap<String, String> maskedRawPropertyValues = collectMaskedRawPropertyValues(detectConfiguration);
+        Set<String> propertyKeys = new HashSet(DetectProperties.allProperties().getPropertyKeys());
+
         publishCollectedPropertyValues(maskedRawPropertyValues, eventSystem);
 
         logger.debug("Configuration processed completely.");
@@ -124,7 +128,7 @@ public class DetectBoot {
 
         Boolean suppressConfigurationOutput = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_CONFIGURATION_OUTPUT.getProperty());
         if (Boolean.FALSE.equals(suppressConfigurationOutput)) {
-            detectConfigurationBootManager.printConfiguration(maskedRawPropertyValues, deprecationResult.getAdditionalNotes());
+            detectConfigurationBootManager.printConfiguration(maskedRawPropertyValues, propertyKeys, deprecationResult.getAdditionalNotes());
         }
 
         Optional<DetectUserFriendlyException> possiblePropertyParseError = detectConfigurationBootManager.validateForPropertyParseErrors();
@@ -148,7 +152,7 @@ public class DetectBoot {
         DiagnosticSystem diagnosticSystem = null;
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, detectConfiguration);
         if (diagnosticDecision.shouldCreateDiagnosticSystem()) {
-            diagnosticSystem = detectBootFactory.createDiagnosticSystem(diagnosticDecision.isExtended(), detectConfiguration, directoryManager, maskedRawPropertyValues);
+            diagnosticSystem = detectBootFactory.createDiagnosticSystem(diagnosticDecision.isExtended(), detectConfiguration, directoryManager, maskedRawPropertyValues, propertyKeys);
         }
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
@@ -223,8 +227,8 @@ public class DetectBoot {
         return Optional.of(DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem));
     }
 
-    private Map<String, String> collectMaskedRawPropertyValues(PropertyConfiguration propertyConfiguration) throws IllegalAccessException {
-        return propertyConfiguration.getMaskedRawValueMap(new HashSet<>(DetectProperties.allProperties().getProperties()), DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE);
+    private SortedMap<String, String> collectMaskedRawPropertyValues(PropertyConfiguration propertyConfiguration) throws IllegalAccessException {
+        return new TreeMap(propertyConfiguration.getMaskedRawValueMap(new HashSet<>(DetectProperties.allProperties().getProperties()), DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE));
     }
 
     private void publishCollectedPropertyValues(Map<String, String> maskedRawPropertyValues, EventSystem eventSystem) {

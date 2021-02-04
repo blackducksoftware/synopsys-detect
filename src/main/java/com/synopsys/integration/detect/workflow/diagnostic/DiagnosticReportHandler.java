@@ -25,6 +25,8 @@ package com.synopsys.integration.detect.workflow.diagnostic;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -161,11 +163,11 @@ public class DiagnosticReportHandler {
         }
     }
 
-    public void configurationsReport(final DetectInfo detectInfo, final PropertyConfiguration propertyConfiguration, Map<String, String> maskedRawPropertyValues) {
+    public void configurationsReport(final DetectInfo detectInfo, final PropertyConfiguration propertyConfiguration, SortedMap<String, String> maskedRawPropertyValues, Set<String> propertyKeys) {
         try {
             final ReportWriter profileWriter = getReportWriter(ReportTypes.CONFIGURATION);
             final ConfigurationReporter reporter = new ConfigurationReporter();
-            reporter.writeReport(profileWriter, detectInfo, propertyConfiguration, maskedRawPropertyValues);
+            reporter.writeReport(profileWriter, detectInfo, propertyConfiguration, maskedRawPropertyValues, propertyKeys);
         } catch (final Exception e) {
             logger.error("Failed to write profiling report.", e);
         }
