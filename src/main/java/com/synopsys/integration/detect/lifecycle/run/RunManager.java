@@ -350,7 +350,7 @@ public class RunManager {
         BdioResult bdioResult = bdioManager.createBdioFiles(bdioOptions, aggregateOptions, projectNameVersion, runResult.getDetectCodeLocations(), runOptions.shouldUseBdio2());
         eventSystem.publishEvent(Event.DetectCodeLocationNamesCalculated, bdioResult.getCodeLocationNamesResult());
 
-        if (blackDuckRunOptions.shouldPerformRapidModeScan()) {
+        if (blackDuckRunOptions.shouldPerformRapidModeScan() && blackDuckRunData.isOnline()) {
             logger.info(ReportConstants.RUN_SEPARATOR);
             BlackDuckServicesFactory blackDuckServicesFactory = blackDuckRunData.getBlackDuckServicesFactory();
             RapidScanService developerScanService = blackDuckServicesFactory.createRapidScanService();
