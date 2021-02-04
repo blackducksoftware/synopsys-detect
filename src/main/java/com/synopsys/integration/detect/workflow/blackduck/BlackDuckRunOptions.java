@@ -36,6 +36,6 @@ public class BlackDuckRunOptions {
     }
 
     public boolean shouldPerformRapidModeScan() {
-        return BlackduckScanMode.RAPID_MODE == scanMode;
+        return BlackduckScanMode.RAPID == scanMode;
     }
 }

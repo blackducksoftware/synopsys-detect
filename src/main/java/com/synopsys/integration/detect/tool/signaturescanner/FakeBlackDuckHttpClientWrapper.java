@@ -47,13 +47,13 @@ import com.synopsys.integration.rest.response.Response;
 /**
  * @deprecated Only for use while we must continue to support detect.blackduck.signature.scanner.host.url
  */
-public class BlackDuckHttpClientWrapper implements BlackDuckHttpClient {
+public class FakeBlackDuckHttpClientWrapper implements BlackDuckHttpClient {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final IntHttpClient httpClient;
     private final HttpUrl baseUrl;
     private final String userAgentString;
 
-    public BlackDuckHttpClientWrapper(IntHttpClient httpClient, HttpUrl baseUrl, UserAgentItem solutionUserAgentItem) {
+    public FakeBlackDuckHttpClientWrapper(IntHttpClient httpClient, HttpUrl baseUrl, UserAgentItem solutionUserAgentItem) {
         this.httpClient = httpClient;
         this.baseUrl = baseUrl;
         UserAgentBuilder userAgentBuilder = new UserAgentBuilder();

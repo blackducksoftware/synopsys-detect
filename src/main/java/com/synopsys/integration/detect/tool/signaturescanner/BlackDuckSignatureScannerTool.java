@@ -72,6 +72,7 @@ public class BlackDuckSignatureScannerTool {
         DirectoryManager directoryManager = detectContext.getBean(DirectoryManager.class);
         CodeLocationNameGenerator codeLocationNameService = detectContext.getBean(CodeLocationNameGenerator.class);
         CodeLocationNameManager codeLocationNameManager = detectContext.getBean(CodeLocationNameManager.class, codeLocationNameService);
+        DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
 
         Optional<Path> localScannerInstallPath = determineLocalScannerInstallPath();
 
@@ -80,7 +81,7 @@ public class BlackDuckSignatureScannerTool {
         ScanBatchRunnerFactory scanBatchRunnerFactory = new ScanBatchRunnerFactory(intEnvironmentVariables, executorService);
 
         File installDirectory = determineInstallDirectory(localScannerInstallPath.orElse(null), directoryManager);
-        ScanBatchRunner scanBatchRunner = createScanBatchRunner(blackDuckServerConfig, localScannerInstallPath.orElse(null), scanBatchRunnerFactory, installDirectory, connectionFactory);
+        ScanBatchRunner scanBatchRunner = createScanBatchRunner(blackDuckServerConfig, localScannerInstallPath.orElse(null), scanBatchRunnerFactory, installDirectory, connectionFactory, detectInfo);
 
         try {
             BlackDuckSignatureScanner blackDuckSignatureScanner = detectContext.getBean(BlackDuckSignatureScanner.class, signatureScannerOptions, scanBatchRunner, blackDuckServerConfig, codeLocationNameManager);
@@ -118,7 +119,7 @@ public class BlackDuckSignatureScannerTool {
     }
 
     private ScanBatchRunner createScanBatchRunner(@Nullable BlackDuckServerConfig blackDuckServerConfig, @Nullable Path localScannerInstallPath, ScanBatchRunnerFactory scanBatchRunnerFactory, File installDirectory,
-        ConnectionFactory connectionFactory) throws DetectUserFriendlyException {
+        ConnectionFactory connectionFactory, DetectInfo detectInfo) throws DetectUserFriendlyException {
         ScanBatchRunner scanBatchRunner;
         if (blackDuckServerConfig != null && !signatureScannerOptions.getUserProvidedScannerInstallUrl().isPresent() && localScannerInstallPath == null) {
             logger.debug("Signature scanner will use the Black Duck server to download/update the scanner - this is the most likely situation.");
@@ -133,9 +134,9 @@ public class BlackDuckSignatureScannerTool {
                 } catch (IntegrationException e) {
                     throw new DetectUserFriendlyException("User provided scanner install url could not be parsed: " + providedUrl, e, ExitCodeType.FAILURE_CONFIGURATION);
                 }
-                UserAgentItem solutionUserAgentItem = createSolutionUserAgentItem();
+                UserAgentItem solutionUserAgentItem = createSolutionUserAgentItem(detectInfo);
                 IntHttpClient restConnection = connectionFactory.createConnection(providedUrl, new SilentIntLogger()); //TODO: Should this be silent?
-                BlackDuckHttpClientWrapper fakeBlackDuckHttpClient = new BlackDuckHttpClientWrapper(restConnection, baseUrl, solutionUserAgentItem);
+                FakeBlackDuckHttpClientWrapper fakeBlackDuckHttpClient = new FakeBlackDuckHttpClientWrapper(restConnection, baseUrl, solutionUserAgentItem);
                 scanBatchRunner = scanBatchRunnerFactory.withUserProvidedUrl(providedUrl, fakeBlackDuckHttpClient);
             } else {
                 logger.debug("Signature scanner either given an existing path for the scanner or is offline - either way, we won't attempt to manage the install.");
@@ -145,8 +146,7 @@ public class BlackDuckSignatureScannerTool {
         return scanBatchRunner;
     }
 
-    private UserAgentItem createSolutionUserAgentItem() {
-        DetectInfo detectInfo = detectContext.getBean(DetectInfo.class);
+    private UserAgentItem createSolutionUserAgentItem(DetectInfo detectInfo) {
         String version = null;
         if (null != detectInfo) {
             version = detectInfo.getDetectVersion();
