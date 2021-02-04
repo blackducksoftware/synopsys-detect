@@ -28,11 +28,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.SortedMap;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.property.Property;
@@ -66,57 +67,46 @@ public class PropertyConfigurationHelpContext {
         this.propertyConfiguration = propertyConfiguration;
     }
 
-    private List<Property> sortProperties(List<Property> knownProperties) {
-        return Bds.of(knownProperties)
-                   .sortedBy(Property::getKey)
-                   .toList();
+    public void printCurrentValues(Consumer<String> logger, SortedMap<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes) {
+        printKnownCurrentValues(logger, maskedRawPropertyValues.keySet(), maskedRawPropertyValues, additionalNotes);
     }
 
-    public void printCurrentValues(Consumer<String> logger, List<Property> knownProperties, Map<String, String> additionalNotes) {
+    public void printKnownCurrentValues(Consumer<String> logger, Set<String> knownPropertyKeys, SortedMap<String, String> maskedRawPropertyValues, Map<String, String> additionalNotes) {
         logger.accept("");
         logger.accept("Current property values:");
         logger.accept("--property = value [notes]");
         logger.accept(StringUtils.repeat("-", 60));
 
-        List<Property> sortedProperties = sortProperties(knownProperties);
-
-        for (Property property : sortedProperties) {
-            if (!propertyConfiguration.wasKeyProvided(property.getKey())) {
-                continue;
-            }
-
-            String value = propertyConfiguration.getRaw(property).orElse("");
-
-            boolean containsPassword = property.getKey().toLowerCase().contains("password") || property.getKey().toLowerCase().contains("api.token") || property.getKey().toLowerCase().contains("access.token");
-            String maskedValue = value;
-            if (containsPassword) {
-                maskedValue = StringUtils.repeat('*', maskedValue.length());
-            }
-
-            String sourceName = propertyConfiguration.getPropertySource(property).orElse("unknown");
+        maskedRawPropertyValues.entrySet().stream()
+            .filter(rawPropertyValue -> knownPropertyKeys.contains(rawPropertyValue.getKey()))
+            .forEach(rawPropertyValue -> {
+            String rawMaskedValue = maskedRawPropertyValues.get(rawPropertyValue.getKey());
+            String sourceName = propertyConfiguration.getPropertySource(rawPropertyValue.getKey()).orElse("unknown");
             String sourceDisplayName = knownSourceDisplayNames.getOrDefault(sourceName, sourceName);
 
-            String notes = additionalNotes.getOrDefault(property.getKey(), "");
+            String notes = additionalNotes.getOrDefault(rawPropertyValue.getKey(), "");
 
-            logger.accept(property.getKey() + " = " + maskedValue + " [" + sourceDisplayName + "] " + notes);
-        }
+            logger.accept(rawPropertyValue.getKey() + " = " + rawMaskedValue + " [" + sourceDisplayName + "] " + notes);
+            });
 
         logger.accept(StringUtils.repeat("-", 60));
         logger.accept("");
     }
 
-    public void printPropertyErrors(Consumer<String> logger, List<Property> knownProperties, Map<String, List<String>> errors) {
-        List<Property> sortedProperties = sortProperties(knownProperties);
+    public void printPropertyErrors(Consumer<String> logger, SortedMap<String, List<String>> errors) {
+        printKnownPropertyErrors(logger, errors.keySet(), errors);
+    }
 
-        sortedProperties.stream()
-            .filter(property -> errors.containsKey(property.getKey()))
-            .forEach(property -> {
+    public void printKnownPropertyErrors(Consumer<String> logger, Set<String> knownPropertyKeys, SortedMap<String, List<String>> errors) {
+        errors.entrySet().stream()
+            .filter(error -> knownPropertyKeys.contains(error.getKey()))
+            .forEach(error -> {
                 logger.accept(StringUtils.repeat("=", 60));
-                List<String> propertyErrors = errors.get(property.getKey());
+                List<String> propertyErrors = errors.get(error.getKey());
                 int errorCount = propertyErrors.size();
                 String header = String.format("%s (%s)", pluralize("ERROR", "ERRORS", errorCount), errorCount);
                 logger.accept(header);
-                propertyErrors.forEach(errorMessage -> logger.accept(property.getKey() + ": " + errorMessage));
+                propertyErrors.forEach(errorMessage -> logger.accept(error.getKey() + ": " + errorMessage));
             });
     }
 
@@ -146,4 +136,5 @@ public class PropertyConfigurationHelpContext {
         }
         return exceptions;
     }
+
 }
