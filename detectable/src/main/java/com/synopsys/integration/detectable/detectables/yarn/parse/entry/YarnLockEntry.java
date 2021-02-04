@@ -20,35 +20,32 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn.parse;
+package com.synopsys.integration.detectable.detectables.yarn.parse.entry;
 
-public class ParsedYarnLockDependency {
-    private final String name;
+import java.util.List;
+
+import com.synopsys.integration.detectable.detectables.yarn.parse.YarnLockDependency;
+
+public class YarnLockEntry {
+    private final List<YarnLockEntryId> ids;
     private final String version;
-    private boolean optional = false;
+    private final List<YarnLockDependency> dependencies;
 
-    public ParsedYarnLockDependency(final String name, final String version) {
-        this.name = name;
+    public YarnLockEntry(List<YarnLockEntryId> ids, String version, List<YarnLockDependency> dependencies) {
+        this.ids = ids;
         this.version = version;
+        this.dependencies = dependencies;
     }
 
-    public String getName() {
-        return name;
+    public List<YarnLockEntryId> getIds() {
+        return ids;
+    }
+
+    public List<YarnLockDependency> getDependencies() {
+        return dependencies;
     }
 
     public String getVersion() {
         return version;
-    }
-
-    public boolean isOptional() {
-        return optional;
-    }
-
-    public void setOptional(boolean value) {
-        optional = value;
-    }
-
-    public YarnLockDependency toDependency() {
-        return new YarnLockDependency(name, version, optional);
     }
 }

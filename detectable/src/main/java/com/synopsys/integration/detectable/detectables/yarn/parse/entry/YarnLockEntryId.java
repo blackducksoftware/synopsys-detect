@@ -20,13 +20,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn.parse;
+package com.synopsys.integration.detectable.detectables.yarn.parse.entry;
 
-public class YarnLockEntryId {
+import com.synopsys.integration.util.Stringable;
+
+public class YarnLockEntryId extends Stringable {
     private final String name;
     private final String version;
 
-    public YarnLockEntryId(final String name, final String version) {
+    public YarnLockEntryId(String name, String version) {
         this.name = name;
         this.version = version;
     }
