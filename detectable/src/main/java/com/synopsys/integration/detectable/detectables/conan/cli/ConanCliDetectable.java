@@ -26,11 +26,13 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -56,10 +58,19 @@ public class ConanCliDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        Requirements requirements = new Requirements(fileFinder, environment);
-        requirements.file(CONANFILETXT);
-        requirements.ifCurrentlyMet(() -> requirements.file(CONANFILEPY));//This is how it was written, don't really see why it was this way - jp
-        return requirements.result();
+        PassedResultBuilder passedResultBuilder = new PassedResultBuilder();
+        File conanTxtFile = fileFinder.findFile(environment.getDirectory(), CONANFILETXT);
+        if (conanTxtFile == null) {
+            File conanPyFile = fileFinder.findFile(environment.getDirectory(), CONANFILEPY);
+            if (conanPyFile == null) {
+                return new FileNotFoundDetectableResult(CONANFILETXT);
+            } else {
+                passedResultBuilder.foundFile(conanPyFile);
+            }
+        } else {
+            passedResultBuilder.foundFile(conanTxtFile);
+        }
+        return passedResultBuilder.build();
     }
 
     @Override
