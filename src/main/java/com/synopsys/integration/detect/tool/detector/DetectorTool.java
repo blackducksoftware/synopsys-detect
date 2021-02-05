@@ -48,6 +48,7 @@ import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.nameversion.DetectorNameVersionHandler;
 import com.synopsys.integration.detect.workflow.nameversion.PreferredDetectorNameVersionHandler;
 import com.synopsys.integration.detect.workflow.report.util.DetectorEvaluationUtils;
+import com.synopsys.integration.detect.workflow.report.util.ReportConstants;
 import com.synopsys.integration.detect.workflow.status.DetectorStatus;
 import com.synopsys.integration.detect.workflow.status.StatusType;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
@@ -164,9 +165,14 @@ public class DetectorTool {
     }
 
     private void printExplanations(DetectorEvaluationTree root) {
+        logger.info(ReportConstants.HEADING);
+        logger.info("Detector Report");
+        logger.info(ReportConstants.HEADING);
+        boolean anyFound = false;
         for (DetectorEvaluationTree tree : root.asFlatList()) {
             List<DetectorEvaluation> applicable = DetectorEvaluationUtils.applicableChildren(tree);
             if (applicable.size() > 0) {
+                anyFound = true;
                 logger.info("\t" + tree.getDirectory() + " (depth " + tree.getDepthFromRoot() + ")");
                 applicable.forEach(evaluation -> {
                     logger.info("\t\t" + evaluation.getDetectorRule().getDescriptiveName());
@@ -176,6 +182,10 @@ public class DetectorTool {
                 });
             }
         }
+        if (!anyFound) {
+            logger.info("No detectors found.");
+        }
+        logger.info(ReportConstants.RUN_SEPARATOR);
     }
 
     private DetectorNameVersionHandler createNameVersionHandler(String projectDetector) {
