@@ -29,10 +29,9 @@ import java.util.List;
 import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 
 public class PassedDetectableResult implements DetectableResult {
-    final List<Explanation> explanations;
-    final List<File> relevantFiles;
+    private final List<Explanation> explanations;
+    private final List<File> relevantFiles;
 
-    //TODO: Remove constructors when all detectables use Requirements.
     public PassedDetectableResult(final List<Explanation> explanations, List<File> relevantFiles) {
         this.explanations = explanations;
         this.relevantFiles = relevantFiles;

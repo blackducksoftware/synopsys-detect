@@ -43,8 +43,8 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 
 public class Requirements {
     private DetectableResult failure;
-    private List<Explanation> explanations = new ArrayList<>();
-    private List<File> relevantFiles = new ArrayList<>();
+    private final List<Explanation> explanations = new ArrayList<>();
+    private final List<File> relevantFiles = new ArrayList<>();
 
     private final FileFinder fileFinder;
     private final DetectableEnvironment environment;

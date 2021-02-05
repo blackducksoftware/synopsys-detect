@@ -36,8 +36,8 @@ import com.synopsys.integration.detectable.detectable.explanation.FoundInspector
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 
 public class PassedResultBuilder {
-    private List<Explanation> explanations = new ArrayList<>();
-    private List<File> relevantFiles = new ArrayList<>();
+    private final List<Explanation> explanations = new ArrayList<>();
+    private final List<File> relevantFiles = new ArrayList<>();
 
     public void foundFile(@NotNull File file) {
         explanations.add(new FoundFile(file));
