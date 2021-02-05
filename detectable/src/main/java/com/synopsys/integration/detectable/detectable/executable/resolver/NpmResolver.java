@@ -22,11 +22,10 @@
  */
 package com.synopsys.integration.detectable.detectable.executable.resolver;
 
-import java.io.File;
-
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
 public interface NpmResolver {
-    File resolveNpm(final DetectableEnvironment environment) throws DetectableException;
+    ExecutableTarget resolveNpm(DetectableEnvironment environment) throws DetectableException;
 }

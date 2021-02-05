@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Set;
 
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.extraction.Extraction;
 
@@ -42,7 +43,7 @@ public class GoModCliExtractor {
         this.goModGraphTransformer = goModGraphTransformer;
     }
 
-    public Extraction extract(File directory, File goExe) {
+    public Extraction extract(File directory, ExecutableTarget goExe) {
         try {
             List<String> listOutput = goModCommandExecutor.generateGoListOutput(directory, goExe);
             List<String> listUJsonOutput = goModCommandExecutor.generateGoListUJsonOutput(directory, goExe);

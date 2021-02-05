@@ -31,6 +31,8 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.pip.model.NameVersionCodeLocation;
@@ -47,7 +49,7 @@ public class PipInspectorExtractor {
         this.pipInspectorTreeParser = pipInspectorTreeParser;
     }
 
-    public Extraction extract(File directory, File pythonExe, File pipInspector, File setupFile, List<Path> requirementFilePaths, String providedProjectName) {
+    public Extraction extract(File directory, ExecutableTarget pythonExe, File pipInspector, File setupFile, List<Path> requirementFilePaths, String providedProjectName) {
         Extraction extractionResult;
         try {
             String projectName = getProjectName(directory, pythonExe, setupFile, providedProjectName);
@@ -90,7 +92,7 @@ public class PipInspectorExtractor {
         return extractionResult;
     }
 
-    private List<String> runInspector(File sourceDirectory, File pythonExe, File inspectorScript, String projectName, Path requirementsFilePath) throws ExecutableRunnerException {
+    private List<String> runInspector(File sourceDirectory, ExecutableTarget pythonExe, File inspectorScript, String projectName, Path requirementsFilePath) throws ExecutableRunnerException {
         List<String> inspectorArguments = new ArrayList<>();
         inspectorArguments.add(inspectorScript.getAbsolutePath());
 
@@ -102,15 +104,15 @@ public class PipInspectorExtractor {
             inspectorArguments.add(String.format("--projectname=%s", projectName));
         }
 
-        return executableRunner.execute(sourceDirectory, pythonExe, inspectorArguments).getStandardOutputAsList();
+        return executableRunner.execute(ExecutableUtils.createFromTarget(sourceDirectory, pythonExe, inspectorArguments)).getStandardOutputAsList();
     }
 
-    private String getProjectName(File directory, File pythonExe, File setupFile, String providedProjectName) throws ExecutableRunnerException {
+    private String getProjectName(File directory, ExecutableTarget pythonExe, File setupFile, String providedProjectName) throws ExecutableRunnerException {
         String projectName = providedProjectName;
 
         if (StringUtils.isBlank(projectName) && setupFile != null && setupFile.exists()) {
             List<String> pythonArguments = Arrays.asList(setupFile.getAbsolutePath(), "--name");
-            List<String> output = executableRunner.execute(directory, pythonExe, pythonArguments).getStandardOutputAsList();
+            List<String> output = executableRunner.execute(ExecutableUtils.createFromTarget(directory, pythonExe, pythonArguments)).getStandardOutputAsList();
             projectName = output.get(output.size() - 1).replace('_', '-').trim();
         }
 

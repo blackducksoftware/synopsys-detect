@@ -9,6 +9,8 @@ import org.mockito.Mockito;
 
 import com.google.gson.GsonBuilder;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCliExtractor;
 import com.synopsys.integration.detectable.detectables.go.gomod.GoModCommandExecutor;
@@ -26,16 +28,16 @@ public class GoModCliExtractorTest {
     public void handleMultipleReplacementsForOneComponentTest() throws ExecutableRunnerException {
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         File directory = new File("");
-        File goExe = new File("");
+        ExecutableTarget goExe = ExecutableTarget.forFile(new File(""));
 
         String[] goListArgs = { "list", "-m" };
-        Mockito.when(executableRunner.execute(directory, goExe, goListArgs)).thenReturn(goListOutput());
+        Mockito.when(executableRunner.execute(ExecutableUtils.createFromTarget(directory, goExe, goListArgs))).thenReturn(goListOutput());
 
         String[] goListJsonArgs = { "list", "-m", "-u", "-json", "all" };
-        Mockito.when(executableRunner.execute(directory, goExe, goListJsonArgs)).thenReturn(goListJsonOutput());
+        Mockito.when(executableRunner.execute(ExecutableUtils.createFromTarget(directory, goExe, goListJsonArgs))).thenReturn(goListJsonOutput());
 
         String[] goModGraphArgs = { "mod", "graph" };
-        Mockito.when(executableRunner.execute(directory, goExe, goModGraphArgs)).thenReturn(goModGraphOutput());
+        Mockito.when(executableRunner.execute(ExecutableUtils.createFromTarget(directory, goExe, goModGraphArgs))).thenReturn(goModGraphOutput());
 
         GoModGraphParser goModGraphParser = new GoModGraphParser(new ExternalIdFactory());
         GoModWhyParser goModWhyParser = new GoModWhyParser();

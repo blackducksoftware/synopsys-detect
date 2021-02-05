@@ -26,8 +26,7 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
@@ -36,6 +35,8 @@ import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Erlang", forge = "Hex", requirementsMarkdown = "File: rebar.config.<br/><br/>Executable: rebar3.")
 public class RebarDetectable extends Detectable {
@@ -45,9 +46,9 @@ public class RebarDetectable extends Detectable {
     private final Rebar3Resolver rebar3Resolver;
     private final RebarExtractor rebarExtractor;
 
-    private File rebarExe;
+    private ExecutableTarget rebarExe;
 
-    public RebarDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final Rebar3Resolver rebar3Resolver, final RebarExtractor rebarExtractor) {
+    public RebarDetectable(DetectableEnvironment environment, FileFinder fileFinder, Rebar3Resolver rebar3Resolver, RebarExtractor rebarExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.rebarExtractor = rebarExtractor;
@@ -56,7 +57,7 @@ public class RebarDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        final File rebar = fileFinder.findFile(environment.getDirectory(), REBAR_CONFIG);
+        File rebar = fileFinder.findFile(environment.getDirectory(), REBAR_CONFIG);
         if (rebar == null) {
             return new FileNotFoundDetectableResult(REBAR_CONFIG);
         }
@@ -76,7 +77,7 @@ public class RebarDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return rebarExtractor.extract(environment.getDirectory(), rebarExe);
     }
 

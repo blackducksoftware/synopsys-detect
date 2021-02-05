@@ -31,6 +31,7 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipResolver;
@@ -57,7 +58,7 @@ public class PipInspectorDetectable extends Detectable {
     private final PipInspectorExtractor pipInspectorExtractor;
     private final PipInspectorDetectableOptions pipInspectorDetectableOptions;
 
-    private File pythonExe;
+    private ExecutableTarget pythonExe;
     private File pipInspector;
     private File setupFile;
     private List<Path> requirementsFiles;
@@ -101,7 +102,7 @@ public class PipInspectorDetectable extends Detectable {
             return new ExecutableNotFoundDetectableResult("python");
         }
 
-        File pipExe = pipResolver.resolvePip();
+        ExecutableTarget pipExe = pipResolver.resolvePip();
         if (pipExe == null) {
             return new ExecutableNotFoundDetectableResult("pip");
         }

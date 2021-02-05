@@ -31,6 +31,8 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaPackage;
 import com.synopsys.integration.executable.ExecutableOutput;
@@ -45,8 +47,8 @@ public class LernaPackageDiscoverer {
         this.gson = gson;
     }
 
-    public List<LernaPackage> discoverLernaPackages(File workingDirectory, File lernaExecutable) throws ExecutableRunnerException {
-        ExecutableOutput lernaLsExecutableOutput = executableRunner.execute(workingDirectory, lernaExecutable, "ls", "--all", "--json");
+    public List<LernaPackage> discoverLernaPackages(File workingDirectory, ExecutableTarget lernaExecutable) throws ExecutableRunnerException {
+        ExecutableOutput lernaLsExecutableOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, lernaExecutable, "ls", "--all", "--json"));
         String lernaLsOutput = lernaLsExecutableOutput.getStandardOutput();
 
         Type lernaPackageListType = new TypeToken<ArrayList<LernaPackage>>() {

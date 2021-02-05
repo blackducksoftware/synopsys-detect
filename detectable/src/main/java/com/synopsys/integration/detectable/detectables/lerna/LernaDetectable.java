@@ -26,8 +26,7 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.LernaResolver;
@@ -40,6 +39,8 @@ import com.synopsys.integration.detectable.detectable.result.PassedDetectableRes
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmPackageLockDetectable;
 import com.synopsys.integration.detectable.detectables.npm.lockfile.NpmShrinkwrapDetectable;
 import com.synopsys.integration.detectable.detectables.yarn.YarnLockDetectable;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "File: " + LernaDetectable.PACKAGE_JSON + ", and one of the following: " + LernaDetectable.PACKAGE_LOCK_JSON + ", " + LernaDetectable.SHRINKWRAP_JSON + ", "
                                                                                   + LernaDetectable.YARN_LOCK + ".")
@@ -54,7 +55,7 @@ public class LernaDetectable extends Detectable {
     private final LernaResolver lernaResolver;
     private final LernaExtractor lernaExtractor;
 
-    private File lernaExecutable;
+    private ExecutableTarget lernaExecutable;
     private File packageJson;
 
     public LernaDetectable(DetectableEnvironment environment, FileFinder fileFinder, LernaResolver lernaResolver, LernaExtractor lernaExtractor) {
