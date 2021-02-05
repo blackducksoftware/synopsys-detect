@@ -73,7 +73,7 @@ public class BitbakeDetectable extends Detectable {
     @Override
     public DetectableResult extractable() throws DetectableException {
         Requirements requirements = new Requirements(fileFinder, environment);
-        requirements.executable(bashResolver::resolveBash, "bash");
+        bashExe = requirements.executable(bashResolver::resolveBash, "bash");
         return requirements.result();
     }
 
