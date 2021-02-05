@@ -34,6 +34,8 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.pear.model.PackageDependency;
@@ -56,8 +58,8 @@ public class PearCliExtractor {
     private final PearPackageDependenciesParser pearPackageDependenciesParser;
     private final PearListParser pearListParser;
 
-    public PearCliExtractor(final ExternalIdFactory externalIdFactory, final DetectableExecutableRunner executableRunner, final PearDependencyGraphTransformer pearDependencyGraphTransformer, final PearPackageXmlParser pearPackageXmlParser,
-        final PearPackageDependenciesParser pearPackageDependenciesParser, final PearListParser pearListParser) {
+    public PearCliExtractor(ExternalIdFactory externalIdFactory, DetectableExecutableRunner executableRunner, PearDependencyGraphTransformer pearDependencyGraphTransformer, PearPackageXmlParser pearPackageXmlParser,
+        PearPackageDependenciesParser pearPackageDependenciesParser, PearListParser pearListParser) {
         this.externalIdFactory = externalIdFactory;
         this.executableRunner = executableRunner;
         this.pearDependencyGraphTransformer = pearDependencyGraphTransformer;
@@ -66,21 +68,21 @@ public class PearCliExtractor {
         this.pearListParser = pearListParser;
     }
 
-    public Extraction extract(final File pearExe, final File packageXmlFile, final File workingDirectory, final boolean onlyGatherRequired) {
+    public Extraction extract(ExecutableTarget pearExe, File packageXmlFile, File workingDirectory, boolean onlyGatherRequired) {
         try {
-            final ExecutableOutput pearListOutput = executableRunner.execute(workingDirectory, pearExe, "list");
-            final ExecutableOutput packageDependenciesOutput = executableRunner.execute(workingDirectory, pearExe, "package-dependencies", PACKAGE_XML_FILENAME);
+            ExecutableOutput pearListOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, pearExe, "list"));
+            ExecutableOutput packageDependenciesOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, pearExe, "package-dependencies", PACKAGE_XML_FILENAME));
             assertValidExecutableOutput(pearListOutput, packageDependenciesOutput);
 
-            final Map<String, String> dependencyNameVersionMap = pearListParser.parse(pearListOutput.getStandardOutputAsList());
-            final List<PackageDependency> packageDependencies = pearPackageDependenciesParser.parse(packageDependenciesOutput.getStandardOutputAsList());
-            final DependencyGraph dependencyGraph = pearDependencyGraphTransformer.buildDependencyGraph(dependencyNameVersionMap, packageDependencies, onlyGatherRequired);
+            Map<String, String> dependencyNameVersionMap = pearListParser.parse(pearListOutput.getStandardOutputAsList());
+            List<PackageDependency> packageDependencies = pearPackageDependenciesParser.parse(packageDependenciesOutput.getStandardOutputAsList());
+            DependencyGraph dependencyGraph = pearDependencyGraphTransformer.buildDependencyGraph(dependencyNameVersionMap, packageDependencies, onlyGatherRequired);
 
-            try (final InputStream packageXmlInputStream = new FileInputStream(packageXmlFile)) {
-                final NameVersion projectNameVersion = pearPackageXmlParser.parse(packageXmlInputStream);
+            try (InputStream packageXmlInputStream = new FileInputStream(packageXmlFile)) {
+                NameVersion projectNameVersion = pearPackageXmlParser.parse(packageXmlInputStream);
 
-                final ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PEAR, projectNameVersion.getName(), projectNameVersion.getVersion());
-                final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, externalId);
+                ExternalId externalId = externalIdFactory.createNameVersionExternalId(Forge.PEAR, projectNameVersion.getName(), projectNameVersion.getVersion());
+                CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph, externalId);
 
                 return new Extraction.Builder()
                            .success(detectCodeLocation)
@@ -88,12 +90,12 @@ public class PearCliExtractor {
                            .projectVersion(projectNameVersion.getVersion())
                            .build();
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    private void assertValidExecutableOutput(final ExecutableOutput pearListing, final ExecutableOutput pearDependencies) throws IntegrationException {
+    private void assertValidExecutableOutput(ExecutableOutput pearListing, ExecutableOutput pearDependencies) throws IntegrationException {
         if (pearDependencies.getReturnCode() != 0 || StringUtils.isNotBlank(pearDependencies.getErrorOutput())) {
             throw new IntegrationException("Pear dependencies exit code must be 0 and have no error output.");
         } else if (pearListing.getReturnCode() != 0 || StringUtils.isNotBlank(pearListing.getErrorOutput())) {

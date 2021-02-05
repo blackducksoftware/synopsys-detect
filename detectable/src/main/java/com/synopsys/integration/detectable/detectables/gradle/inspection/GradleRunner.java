@@ -31,9 +31,10 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
-import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
 public class GradleRunner {
@@ -54,7 +55,7 @@ public class GradleRunner {
         return arguments;
     }
 
-    public void runGradleDependencies(File directory, File gradleExe, File gradleInspector, @Nullable String gradleCommand, ProxyInfo proxyInfo, File outputDirectory) throws IOException, ExecutableFailedException {
+    public void runGradleDependencies(File directory, ExecutableTarget gradleExe, File gradleInspector, @Nullable String gradleCommand, ProxyInfo proxyInfo, File outputDirectory) throws IOException, ExecutableFailedException {
         List<String> arguments = splitUserArguments(gradleCommand);
         arguments.add("dependencies");
         arguments.add(String.format("--init-script=%s", gradleInspector));
@@ -68,6 +69,6 @@ public class GradleRunner {
             arguments.add("-Dhttps.proxyPort=" + proxyInfo.getPort());
         }
 
-        executableRunner.executeSuccessfully(Executable.create(directory, gradleExe, arguments));
+        executableRunner.executeSuccessfully(ExecutableUtils.createFromTarget(directory, gradleExe, arguments));
     }
 }

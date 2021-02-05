@@ -26,6 +26,8 @@ import java.io.File;
 import java.util.List;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.cpan.parse.CpanListParser;
@@ -36,23 +38,23 @@ public class CpanCliExtractor {
     private final CpanListParser cpanListParser;
     private final DetectableExecutableRunner executableRunner;
 
-    public CpanCliExtractor(final CpanListParser cpanListParser, final DetectableExecutableRunner executableRunner) {
+    public CpanCliExtractor(CpanListParser cpanListParser, DetectableExecutableRunner executableRunner) {
         this.cpanListParser = cpanListParser;
         this.executableRunner = executableRunner;
     }
 
-    public Extraction extract(final File cpanExe, final File cpanmExe, final File workingDirectory) {
+    public Extraction extract(ExecutableTarget cpanExe, ExecutableTarget cpanmExe, File workingDirectory) {
         try {
-            final ExecutableOutput cpanListOutput = executableRunner.execute(workingDirectory, cpanExe, "-l");
-            final List<String> listText = cpanListOutput.getStandardOutputAsList();
+            ExecutableOutput cpanListOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, cpanExe, "-l"));
+            List<String> listText = cpanListOutput.getStandardOutputAsList();
 
-            final ExecutableOutput showdepsOutput = executableRunner.execute(workingDirectory, cpanmExe, "--showdeps", ".");
-            final List<String> showdeps = showdepsOutput.getStandardOutputAsList();
+            ExecutableOutput showdepsOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, cpanmExe, "--showdeps", "."));
+            List<String> showdeps = showdepsOutput.getStandardOutputAsList();
 
-            final DependencyGraph dependencyGraph = cpanListParser.parse(listText, showdeps);
-            final CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
+            DependencyGraph dependencyGraph = cpanListParser.parse(listText, showdeps);
+            CodeLocation detectCodeLocation = new CodeLocation(dependencyGraph);
             return new Extraction.Builder().success(detectCodeLocation).build();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }

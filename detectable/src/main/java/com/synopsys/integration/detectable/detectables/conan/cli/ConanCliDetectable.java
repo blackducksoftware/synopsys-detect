@@ -26,6 +26,7 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -45,7 +46,7 @@ public class ConanCliDetectable extends Detectable {
     private final ConanCliExtractor conanCliExtractor;
     private final ConanCliExtractorOptions conanCliExtractorOptions;
 
-    private File conanExe;
+    private ExecutableTarget conanExe;
 
     public ConanCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, ConanResolver conanResolver, ConanCliExtractor conanCliExtractor,
         ConanCliExtractorOptions conanCliExtractorOptions) {

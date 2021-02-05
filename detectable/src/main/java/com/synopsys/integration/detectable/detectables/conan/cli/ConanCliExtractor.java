@@ -32,6 +32,8 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.conan.ConanDetectableResult;
@@ -49,11 +51,11 @@ public class ConanCliExtractor {
         this.conanInfoParser = conanInfoParser;
     }
 
-    public Extraction extract(File projectDir, File conanExe, ConanCliExtractorOptions conanCliExtractorOptions) {
+    public Extraction extract(File projectDir, ExecutableTarget conanExe, ConanCliExtractorOptions conanCliExtractorOptions) {
         List<String> exeArgs = generateConanInfoCmdArgs(projectDir, conanCliExtractorOptions);
         ExecutableOutput conanInfoOutput;
         try {
-            conanInfoOutput = executableRunner.execute(projectDir, conanExe, exeArgs);
+            conanInfoOutput = executableRunner.execute(ExecutableUtils.createFromTarget(projectDir, conanExe, exeArgs));
         } catch (Exception e) {
             logger.error(String.format("Exception thrown executing conan info command: %s", e.getMessage()));
             return new Extraction.Builder().exception(e).build();

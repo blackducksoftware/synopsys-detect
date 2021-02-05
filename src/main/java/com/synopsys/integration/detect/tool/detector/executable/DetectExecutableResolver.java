@@ -128,83 +128,83 @@ public class DetectExecutableResolver
     }
 
     @Override
-    public File resolveBash() throws DetectableException {
-        return resolveCachedSystemExecutable("bash", detectExecutableOptions.getBashUserPath());
+    public ExecutableTarget resolveBash() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("bash", detectExecutableOptions.getBashUserPath()));
     }
 
     @Override
-    public File resolveBazel() throws DetectableException {
-        return resolveCachedSystemExecutable("bazel", detectExecutableOptions.getBazelUserPath());
+    public ExecutableTarget resolveBazel() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("bazel", detectExecutableOptions.getBazelUserPath()));
     }
 
     @Override
-    public File resolveConda() throws DetectableException {
-        return resolveCachedSystemExecutable("conda", detectExecutableOptions.getCondaUserPath());
+    public ExecutableTarget resolveConda() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("conda", detectExecutableOptions.getCondaUserPath()));
     }
 
     @Override
-    public File resolveCpan() throws DetectableException {
-        return resolveCachedSystemExecutable("cpan", detectExecutableOptions.getCpanUserPath());
+    public ExecutableTarget resolveCpan() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("cpan", detectExecutableOptions.getCpanUserPath()));
     }
 
     @Override
-    public File resolveCpanm() throws DetectableException {
-        return resolveCachedSystemExecutable("cpanm", detectExecutableOptions.getCpanmUserPath());
+    public ExecutableTarget resolveCpanm() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("cpanm", detectExecutableOptions.getCpanmUserPath()));
     }
 
     @Override
-    public File resolveGradle(DetectableEnvironment environment) throws DetectableException {
-        return resolveLocalNonCachedExecutable("gradlew", "gradle", environment, detectExecutableOptions.getGradleUserPath());
+    public ExecutableTarget resolveGradle(DetectableEnvironment environment) throws DetectableException {
+        return ExecutableTarget.forFile(resolveLocalNonCachedExecutable("gradlew", "gradle", environment, detectExecutableOptions.getGradleUserPath()));
     }
 
     @Override
-    public File resolveMaven(DetectableEnvironment environment) throws DetectableException {
-        return resolveLocalNonCachedExecutable("mvnw", "mvn", environment, detectExecutableOptions.getMavenUserPath());
+    public ExecutableTarget resolveMaven(DetectableEnvironment environment) throws DetectableException {
+        return ExecutableTarget.forFile(resolveLocalNonCachedExecutable("mvnw", "mvn", environment, detectExecutableOptions.getMavenUserPath()));
     }
 
     @Override
-    public File resolveNpm(DetectableEnvironment environment) throws DetectableException {
-        return resolveLocalNonCachedExecutable("npm", "npm", environment, detectExecutableOptions.getNpmUserPath());
+    public ExecutableTarget resolveNpm(DetectableEnvironment environment) throws DetectableException {
+        return ExecutableTarget.forFile(resolveLocalNonCachedExecutable("npm", "npm", environment, detectExecutableOptions.getNpmUserPath()));
     }
 
     @Override
-    public File resolvePear() throws DetectableException {
-        return resolveCachedSystemExecutable("pear", detectExecutableOptions.getPearUserPath());
+    public ExecutableTarget resolvePear() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("pear", detectExecutableOptions.getPearUserPath()));
     }
 
     @Override
-    public File resolvePip() throws DetectableException {
-        return resolveCachedSystemExecutable(detectExecutableOptions.isPython3() ? "pip3" : "pip", detectExecutableOptions.getPipUserPath());
+    public ExecutableTarget resolvePip() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable(detectExecutableOptions.isPython3() ? "pip3" : "pip", detectExecutableOptions.getPipUserPath()));
     }
 
     @Override
-    public File resolvePipenv() throws DetectableException {
-        return resolveCachedSystemExecutable("pipenv", detectExecutableOptions.getPipenvUserPath());
+    public ExecutableTarget resolvePipenv() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("pipenv", detectExecutableOptions.getPipenvUserPath()));
     }
 
     @Override
-    public File resolvePython() throws DetectableException {
-        return resolveCachedSystemExecutable(detectExecutableOptions.isPython3() ? "python3" : "python", detectExecutableOptions.getPythonUserPath());
+    public ExecutableTarget resolvePython() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable(detectExecutableOptions.isPython3() ? "python3" : "python", detectExecutableOptions.getPythonUserPath()));
     }
 
     @Override
-    public File resolveRebar3() throws DetectableException {
-        return resolveCachedSystemExecutable("rebar3", detectExecutableOptions.getRebarUserPath());
+    public ExecutableTarget resolveRebar3() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("rebar3", detectExecutableOptions.getRebarUserPath()));
     }
 
     @Override
-    public File resolveJava() throws DetectableException {
-        return resolveCachedSystemExecutable("java", detectExecutableOptions.getJavaUserPath());
+    public ExecutableTarget resolveJava() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("java", detectExecutableOptions.getJavaUserPath()));
     }
 
     @Override
-    public File resolveDocker() throws DetectableException {
-        return resolveCachedSystemExecutable("docker", detectExecutableOptions.getDockerUserPath());
+    public ExecutableTarget resolveDocker() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("docker", detectExecutableOptions.getDockerUserPath()));
     }
 
     @Override
-    public File resolveDotNet() throws DetectableException {
-        return resolveCachedSystemExecutable("dotnet", detectExecutableOptions.getDotnetUserPath());
+    public ExecutableTarget resolveDotNet() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("dotnet", detectExecutableOptions.getDotnetUserPath()));
     }
 
     @Override
@@ -213,23 +213,23 @@ public class DetectExecutableResolver
     }
 
     @Override
-    public File resolveSwift() throws DetectableException {
-        return resolveCachedSystemExecutable("swift", detectExecutableOptions.getSwiftUserPath());
+    public ExecutableTarget resolveSwift() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("swift", detectExecutableOptions.getSwiftUserPath()));
     }
 
     @Override
-    public File resolveGo() throws DetectableException {
-        return resolveCachedSystemExecutable("go", detectExecutableOptions.getGoUserPath());
+    public ExecutableTarget resolveGo() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("go", detectExecutableOptions.getGoUserPath()));
     }
 
     @Override
-    public File resolveLerna() throws DetectableException {
-        return resolveCachedSystemExecutable("lerna", detectExecutableOptions.getLernaUserPath());
+    public ExecutableTarget resolveLerna() throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("lerna", detectExecutableOptions.getLernaUserPath()));
     }
 
     @Override
-    public File resolveConan(DetectableEnvironment environment) throws DetectableException {
-        return resolveCachedSystemExecutable("conan", detectExecutableOptions.getConanUserPath());
+    public ExecutableTarget resolveConan(DetectableEnvironment environment) throws DetectableException {
+        return ExecutableTarget.forFile(resolveCachedSystemExecutable("conan", detectExecutableOptions.getConanUserPath()));
     }
 }
 

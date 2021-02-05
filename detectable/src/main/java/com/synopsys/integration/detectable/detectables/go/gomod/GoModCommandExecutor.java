@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.executable.ExecutableOutput;
@@ -45,11 +47,11 @@ public class GoModCommandExecutor {
         this.executableRunner = executableRunner;
     }
 
-    List<String> generateGoListOutput(File directory, File goExe) throws ExecutableRunnerException, DetectableException {
+    List<String> generateGoListOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
         return execute(directory, goExe, FAILURE_MSG_QUERYING_GO_FOR_THE_LIST_OF_MODULES, "list", "-m");
     }
 
-    List<String> generateGoListUJsonOutput(File directory, File goExe) throws ExecutableRunnerException, DetectableException {
+    List<String> generateGoListUJsonOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
         List<String> goVersionOutput = execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_VERSION, "version");
         Matcher matcher = GENERATE_GO_LIST_U_JSON_OUTPUT_PATTERN.matcher(goVersionOutput.get(0));
         if (matcher.find()) {
@@ -64,16 +66,16 @@ public class GoModCommandExecutor {
         return new ArrayList<>();
     }
 
-    List<String> generateGoModGraphOutput(File directory, File goExe) throws ExecutableRunnerException, DetectableException {
+    List<String> generateGoModGraphOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
         return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "mod", "graph");
     }
 
-    List<String> generateGoModWhyOutput(File directory, File goExe) throws ExecutableRunnerException, DetectableException {
+    List<String> generateGoModWhyOutput(File directory, ExecutableTarget goExe) throws ExecutableRunnerException, DetectableException {
         return execute(directory, goExe, FAILURE_MSG_QUERYING_FOR_THE_GO_MOD_GRAPH, "mod", "why", "-m", "all");
     }
 
-    private List<String> execute(File directory, File goExe, String failureMessage, String... arguments) throws DetectableException, ExecutableRunnerException {
-        ExecutableOutput output = executableRunner.execute(directory, goExe, arguments);
+    private List<String> execute(File directory, ExecutableTarget goExe, String failureMessage, String... arguments) throws DetectableException, ExecutableRunnerException {
+        ExecutableOutput output = executableRunner.execute(ExecutableUtils.createFromTarget(directory, goExe, arguments));
 
         if (output.getReturnCode() == 0) {
             return output.getStandardOutputAsList();

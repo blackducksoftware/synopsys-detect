@@ -29,6 +29,8 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.conda.parser.CondaListParser;
@@ -44,7 +46,7 @@ public class CondaCliExtractor {
         this.executableRunner = executableRunner;
     }
 
-    public Extraction extract(File directory, File condaExe, File workingDirectory, String condaEnvironmentName) {
+    public Extraction extract(File directory, ExecutableTarget condaExe, File workingDirectory, String condaEnvironmentName) {
         try {
             List<String> condaListOptions = new ArrayList<>();
             condaListOptions.add("list");
@@ -53,11 +55,11 @@ public class CondaCliExtractor {
                 condaListOptions.add(condaEnvironmentName);
             }
             condaListOptions.add("--json");
-            ExecutableOutput condaListOutput = executableRunner.execute(directory, condaExe, condaListOptions);
+            ExecutableOutput condaListOutput = executableRunner.execute(ExecutableUtils.createFromTarget(directory, condaExe, condaListOptions));
 
             String listJsonText = condaListOutput.getStandardOutput();
 
-            ExecutableOutput condaInfoOutput = executableRunner.execute(workingDirectory, condaExe, "info", "--json");
+            ExecutableOutput condaInfoOutput = executableRunner.execute(ExecutableUtils.createFromTarget(workingDirectory, condaExe, "info", "--json"));
             String infoJsonText = condaInfoOutput.getStandardOutput();
 
             DependencyGraph dependencyGraph = condaListParser.parse(listJsonText, infoJsonText);
