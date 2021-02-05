@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -27,6 +30,21 @@ public class Requirements {
     public Requirements(final FileFinder fileFinder, final DetectableEnvironment environment) {
         this.fileFinder = fileFinder;
         this.environment = environment;
+    }
+
+    public void explain(Explanation explanation) {
+        explanations.add(explanation);
+    }
+
+    public void explainFile(@NotNull File file) {
+        relevantFiles.add(file);
+        explanations.add(new FoundFile(file));
+    }
+
+    public void explainNullableFile(@Nullable File file) {
+        if (file == null)
+            return;
+        explainFile(file);
     }
 
     public File file(final String filename) {
@@ -64,6 +82,12 @@ public class Requirements {
 
     public void ifCurrentlyMet(Runnable runnable) {
         if (isCurrentlyMet()) {
+            runnable.run();
+        }
+    }
+
+    public void ifNotCurrentlyMet(Runnable runnable) {
+        if (!isCurrentlyMet()) {
             runnable.run();
         }
     }

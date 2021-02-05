@@ -29,10 +29,10 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
@@ -56,18 +56,10 @@ public class GoVendorDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        final File vendorDir = fileFinder.findFile(environment.getDirectory(), VENDOR_JSON_DIRNAME);
-        if (vendorDir == null) {
-            logger.trace(String.format("Dir %s not found", VENDOR_JSON_DIRNAME));
-            return new FileNotFoundDetectableResult(VENDOR_JSON_FILENAME);
-        }
-        vendorJson = fileFinder.findFile(vendorDir, VENDOR_JSON_FILENAME);
-        if (vendorJson == null) {
-            logger.trace(String.format("File %s not found", VENDOR_JSON_FILENAME));
-            return new FileNotFoundDetectableResult(VENDOR_JSON_FILENAME);
-        }
-        logger.trace(String.format("%s/%s found", VENDOR_JSON_DIRNAME, VENDOR_JSON_FILENAME));
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        File vendorDir = requirements.file(VENDOR_JSON_DIRNAME);
+        vendorJson = requirements.file(vendorDir, VENDOR_JSON_FILENAME);
+        return requirements.result();
     }
 
     @Override

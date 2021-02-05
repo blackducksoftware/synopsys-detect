@@ -29,12 +29,13 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
+import com.synopsys.integration.detectable.detectable.explanation.FoundFile;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.GivenFileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -60,16 +61,13 @@ public class ConanLockfileDetectable extends Detectable {
     @Override
     public DetectableResult applicable() {
         if (conanLockfileExtractorOptions.getLockfilePath().isPresent()) {
-            logger.debug("Conan Lockfile detectable applies because user supplied lockfile path {}", conanLockfileExtractorOptions.getLockfilePath().get());
-            return new PassedDetectableResult();
+            String conanLockFile = conanLockfileExtractorOptions.getLockfilePath().get();
+            logger.debug("Conan Lockfile detectable applies because user supplied lockfile path {}", conanLockFile);
+            return new PassedDetectableResult(new FoundFile(conanLockFile)); //TODO: Should lock file be reported as a relevant file?
         }
-        File discoveredLockfile = fileFinder.findFile(environment.getDirectory(), CONANLOCKFILE);
-        if (discoveredLockfile == null) {
-            return new FileNotFoundDetectableResult(CONANLOCKFILE);
-        }
-        logger.debug("Conan Lockfile detectable applies because Detect found the default lockfile {}", discoveredLockfile.getAbsolutePath());
-        lockfile = discoveredLockfile;
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        lockfile = requirements.file(CONANLOCKFILE);
+        return requirements.result();
     }
 
     @Override

@@ -26,10 +26,10 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
@@ -51,13 +51,9 @@ public class PackratLockDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        packratLockFile = fileFinder.findFile(environment.getDirectory(), PACKRATLOCK_FILE_NAME);
-
-        if (packratLockFile == null) {
-            return new FileNotFoundDetectableResult(PACKRATLOCK_FILE_NAME);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        packratLockFile = requirements.file(PACKRATLOCK_FILE_NAME);
+        return requirements.result();
     }
 
     @Override

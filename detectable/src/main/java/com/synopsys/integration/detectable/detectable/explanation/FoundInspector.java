@@ -3,14 +3,18 @@ package com.synopsys.integration.detectable.detectable.explanation;
 import java.io.File;
 
 public class FoundInspector extends Explanation {
-    private final File file;
+    private final String inspectorDescription;
 
     public FoundInspector(File file) {
-        this.file = file;
+        this.inspectorDescription = file.toString();
+    }
+
+    public FoundInspector(String description) {
+        this.inspectorDescription = description;
     }
 
     @Override
     public String describeSelf() {
-        return "Found inspector: " + file.toString();
+        return "Found inspector: " + inspectorDescription;
     }
 }

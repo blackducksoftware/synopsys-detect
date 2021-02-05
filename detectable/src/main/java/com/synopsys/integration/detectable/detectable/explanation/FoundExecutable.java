@@ -15,6 +15,10 @@ public class FoundExecutable extends Explanation {
         this.executableString = executableTarget.toCommand();
     }
 
+    public FoundExecutable(String name) {
+        this.executableString = name;
+    }
+
     @Override
     public String describeSelf() {
         return "Found executable: " + executableString;

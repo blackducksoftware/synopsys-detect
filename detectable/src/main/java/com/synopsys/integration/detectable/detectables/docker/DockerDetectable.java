@@ -29,10 +29,12 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.DockerResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.JavaResolver;
+import com.synopsys.integration.detectable.detectable.explanation.PropertyProvided;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.InspectorNotFoundDetectableResult;
@@ -69,14 +71,17 @@ public class DockerDetectable extends Detectable {
         if (!dockerDetectableOptions.hasDockerImageOrTar()) {
             return new PropertyInsufficientDetectableResult();
         }
-        return new PassedDetectableResult();
+        return new PassedDetectableResult(new PropertyProvided("docker image or tar"));
     }
 
     @Override
-    public DetectableResult extractable() throws DetectableException {
+    public DetectableResult extractable() throws DetectableException { //TODO: Can this be improved with a Requirements object? - jp
+        PassedResultBuilder passedResultBuilder = new PassedResultBuilder();
         javaExe = javaResolver.resolveJava();
         if (javaExe == null) {
             return new ExecutableNotFoundDetectableResult("java");
+        } else {
+            passedResultBuilder.foundExecutable(javaExe);
         }
         try {
             dockerExe = dockerResolver.resolveDocker();
@@ -89,12 +94,16 @@ public class DockerDetectable extends Detectable {
             } else {
                 logger.debug("Docker executable not found, but it has been configured as not-required; proceeding with execution of Docker tool. Running in air-gap mode will not work without a Docker executable.");
             }
+        } else {
+            passedResultBuilder.foundExecutable(dockerExe);
         }
         dockerInspectorInfo = dockerInspectorResolver.resolveDockerInspector();
         if (dockerInspectorInfo == null) {
             return new InspectorNotFoundDetectableResult("docker");
+        } else {
+            passedResultBuilder.foundInspector(dockerInspectorInfo.getDockerInspectorJar());
         }
-        return new PassedDetectableResult();
+        return passedResultBuilder.build();
     }
 
     @Override
@@ -106,3 +115,4 @@ public class DockerDetectable extends Detectable {
             new DockerProperties(dockerDetectableOptions)); //TODO, doesn't feel right to construct properties here. -jp
     }
 }
+

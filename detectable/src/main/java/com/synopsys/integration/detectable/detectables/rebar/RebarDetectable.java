@@ -26,14 +26,12 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.Rebar3Resolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -56,23 +54,16 @@ public class RebarDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        final File rebar = fileFinder.findFile(environment.getDirectory(), REBAR_CONFIG);
-        if (rebar == null) {
-            return new FileNotFoundDetectableResult(REBAR_CONFIG);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        requirements.file(REBAR_CONFIG);
+        return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        rebarExe = rebar3Resolver.resolveRebar3();
-
-        if (rebarExe == null) {
-            return new ExecutableNotFoundDetectableResult("rebar3");
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        rebarExe = requirements.executable(rebar3Resolver::resolveRebar3, "rebar3");
+        return requirements.result();
     }
 
     @Override

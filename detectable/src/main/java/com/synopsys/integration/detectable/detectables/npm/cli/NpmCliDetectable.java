@@ -33,9 +33,7 @@ import com.synopsys.integration.detectable.detectable.exception.DetectableExcept
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonDiscoverer;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
@@ -82,13 +80,12 @@ public class NpmCliDetectable extends Detectable {
         if (nodeModules == null) {
             return new NpmNodeModulesNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
         }
+        Requirements requirements = new Requirements(fileFinder, environment);
+        requirements.explainFile(nodeModules);
 
-        npmExe = npmResolver.resolveNpm(environment);
-        if (npmExe == null) {
-            return new ExecutableNotFoundDetectableResult("npm");
-        }
+        npmExe = requirements.executable(() -> npmResolver.resolveNpm(environment), "npm");
 
-        return new PassedDetectableResult();
+        return requirements.result();
     }
 
     @Override

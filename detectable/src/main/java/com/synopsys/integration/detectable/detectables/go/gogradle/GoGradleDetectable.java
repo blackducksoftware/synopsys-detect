@@ -26,10 +26,10 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
@@ -51,12 +51,9 @@ public class GoGradleDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        goLock = fileFinder.findFile(environment.getDirectory(), GO_GRADLE_LOCK);
-        if (goLock == null) {
-            return new FileNotFoundDetectableResult(GO_GRADLE_LOCK);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        goLock = requirements.file(GO_GRADLE_LOCK);
+        return requirements.result();
     }
 
     @Override

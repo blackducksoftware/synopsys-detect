@@ -27,6 +27,7 @@ import java.util.Optional;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.CargoLockfileNotFoundDetectableResult;
@@ -55,12 +56,19 @@ public class CargoDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
+        Requirements requirements = new Requirements(fileFinder, environment);
         cargoLock = fileFinder.findFile(environment.getDirectory(), CARGO_LOCK_FILENAME);
         cargoToml = fileFinder.findFile(environment.getDirectory(), CARGO_TOML_FILENAME);
         if (cargoLock == null && cargoToml == null) {
             return new FilesNotFoundDetectableResult(CARGO_LOCK_FILENAME, CARGO_TOML_FILENAME);
         }
-        return new PassedDetectableResult();
+        if (cargoLock != null) {
+            requirements.explainFile(cargoLock);
+        }
+        if (cargoToml != null) {
+            requirements.explainFile(cargoToml);
+        }
+        return requirements.result();
     }
 
     @Override
