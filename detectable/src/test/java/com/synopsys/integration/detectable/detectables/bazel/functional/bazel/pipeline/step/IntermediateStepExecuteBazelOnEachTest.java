@@ -50,13 +50,9 @@ public class IntermediateStepExecuteBazelOnEachTest {
         File workspaceDir = new File(".");
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
         ExecutableTarget bazelExe = ExecutableTarget.forCommand("/usr/bin/bazel");
-        List<String> bazelArgs = new ArrayList<>();
-        bazelArgs.add("cquery");
-        bazelArgs.add("filter(\\\"@.*:jar\\\", deps(//:ProjectRunner))");
         ExecutableOutput bazelCmdExecutableOutput = Mockito.mock(ExecutableOutput.class);
         Mockito.when(bazelCmdExecutableOutput.getReturnCode()).thenReturn(0);
         Mockito.when(bazelCmdExecutableOutput.getStandardOutput()).thenReturn("@org_apache_commons_commons_io//jar:jar\n@com_google_guava_guava//jar:jar");
-        //TODO: This probably needs to be looked at if we want new arguments.
         Mockito.when(executableRunner.execute(Mockito.any(Executable.class))).thenReturn(bazelCmdExecutableOutput);
         BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
         BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("//:ProjectRunner", null);
