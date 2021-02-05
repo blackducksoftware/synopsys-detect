@@ -1722,7 +1722,7 @@
 </tr>
 <tr>
 <td><a href="../detectors/docker/#docker-image-archive-file">detect.docker.tar</a></td>
-<td>Docker Image Archive File: A Docker image saved to a .tar file using the 'docker save' command. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties). <br /><br /></td>
+<td>Docker Image Archive File: A Docker image saved to a .tar file using the 'docker save' command. The file must be readable by all. detect.docker.image, detect.docker.tar, and detect.docker.image.id are three alternative ways to specify an image (you should only set one of these properties). <br /><br /></td>
 </tr>
 <tr>
 <td><a href="../detectors/docker/#docker-passthrough-advanced">detect.docker.passthrough</a> <br /> (Advanced)</td>
@@ -2456,6 +2456,58 @@
 </thead>
 <tbody>
 <tr>
+<td><a href="../configuration/signature scanner/#signature-scanner-arguments">detect.blackduck.signature.scanner.arguments</a></td>
+<td>Signature Scanner Arguments: Additional arguments to use when running the Black Duck signature scanner. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/signature scanner/#signature-scanner-copyright-search">detect.blackduck.signature.scanner.copyright.search</a></td>
+<td>default: false <br /><br /> Signature Scanner Copyright Search: When set to true, user will be able to scan and discover copyright names in Black Duck. Corresponding Signature Scanner CLI Argument: --copyright-search. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/signature scanner/#signature-scanner-dry-run">detect.blackduck.signature.scanner.dry.run</a></td>
+<td>default: false <br /><br /> Signature Scanner Dry Run: If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk via the Signature Scanner CLI argument: --dryRunWriteDir. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/signature scanner/#directory-name-exclusion-patterns">detect.blackduck.signature.scanner.exclusion.name.patterns</a></td>
+<td>default: node_modules <br /><br /> Directory Name Exclusion Patterns: A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/signature scanner/#exclusion-patterns-search-depth">detect.blackduck.signature.scanner.exclusion.pattern.search.depth</a></td>
+<td>default: 4 <br /><br /> Exclusion Patterns Search Depth: Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/signature scanner/#exclusion-patterns">detect.blackduck.signature.scanner.exclusion.patterns</a></td>
+<td>Exclusion Patterns: A comma-separated list of values (each value is a directory name pattern surrounded by '/' characters) to be used with the Signature Scanner --exclude flag. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/signature scanner/#individual-file-matching">detect.blackduck.signature.scanner.individual.file.matching</a></td>
+<td>default: NONE <br /><br />  Acceptable Values: NONE, SOURCE, BINARY, ALL <br /><br />Individual File Matching: Users may set this property to indicate what types of files they want to match. Corresponding Signature Scanner CLI Argument: --individualFileMatching. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/signature scanner/#signature-scanner-license-search">detect.blackduck.signature.scanner.license.search</a></td>
+<td>default: false <br /><br /> Signature Scanner License Search: When set to true, user will be able to scan and discover license names in Black Duck. Corresponding Signature Scanner CLI Argument: --license-search. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/signature scanner/#signature-scanner-local-path">detect.blackduck.signature.scanner.local.path</a></td>
+<td>Signature Scanner Local Path: To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/signature scanner/#signature-scanner-target-paths">detect.blackduck.signature.scanner.paths</a></td>
+<td>Signature Scanner Target Paths: If this property is not set, the signature scanner target path is the source path (see property detect.source.path). If this property is set, the paths provided in this property's value will be signature scanned instead (the signature scanner will be executed once for each provided path). <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/signature scanner/#snippet-matching">detect.blackduck.signature.scanner.snippet.matching</a></td>
+<td>default: NONE <br /><br />  Acceptable Values: NONE, SNIPPET_MATCHING, SNIPPET_MATCHING_ONLY, FULL_SNIPPET_MATCHING, FULL_SNIPPET_MATCHING_ONLY <br /><br />Snippet Matching: Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --snippet-matching, --snippet-matching-only, --full-snippet-scan. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/signature scanner/#upload-source-mode">detect.blackduck.signature.scanner.upload.source.mode</a></td>
+<td>default: false <br /><br /> Upload source mode: If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. Corresponding Signature Scanner CLI Argument: --upload-source. <br /><br /></td>
+</tr>
+<tr>
+<td><a href="../configuration/signature scanner/#signature-scanner-memory-advanced">detect.blackduck.signature.scanner.memory</a> <br /> (Advanced)</td>
+<td>default: 4096 <br /><br /> Signature Scanner Memory: The memory for the scanner to use. <br /><br /></td>
+</tr>
+<tr>
 <td><a href="../configuration/signature scanner/#detect-hub-signature-scanner-dry-run-deprecated">detect.hub.signature.scanner.dry.run</a> <br /> (Deprecated)</td>
 <td>default: false <br /><br /> Detect Hub Signature Scanner Dry Run: If set to true, the signature scanner results will not be uploaded to the Hub and the scanner results will be written to disk. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.dry.run in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
 </tr>
@@ -2496,10 +2548,6 @@
 <td>Detect Hub Signature Scanner Local Path: To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.local.path in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/signature scanner/#snippet-matching-deprecated">detect.blackduck.signature.scanner.snippet.matching</a> <br /> (Deprecated)</td>
-<td>default: NONE <br /><br />  Acceptable Values: NONE, SNIPPET_MATCHING, SNIPPET_MATCHING_ONLY, FULL_SNIPPET_MATCHING, FULL_SNIPPET_MATCHING_ONLY <br /><br />Snippet Matching: Use this value to enable the various snippet scanning modes. For a full explanation, please refer to the 'Running a component scan using the Signature Scanner command line' section in your Black Duck server's online help. Corresponding Signature Scanner CLI Arguments: --snippet-matching, --snippet-matching-only, --full-snippet-scan. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
-</tr>
-<tr>
 <td><a href="../configuration/signature scanner/#detect-hub-signature-scanner-host-url-deprecated">detect.hub.signature.scanner.host.url</a> <br /> (Deprecated)</td>
 <td>Detect Hub Signature Scanner Host Url: If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Hub's urls for different operating systems. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.host.url in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
 </tr>
@@ -2516,64 +2564,16 @@
 <td>Detect Hub Signature Scanner Arguments: Additional arguments to use when running the Hub signature scanner. <br /><br /> <strong>DEPRECATED: This property is changing. Please use --detect.blackduck.signature.scanner.arguments in the future. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/signature scanner/#signature-scanner-copyright-search-deprecated">detect.blackduck.signature.scanner.copyright.search</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> Signature Scanner Copyright Search: When set to true, user will be able to scan and discover copyright names in Black Duck. Corresponding Signature Scanner CLI Argument: --copyright-search. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
-</tr>
-<tr>
-<td><a href="../configuration/signature scanner/#signature-scanner-dry-run-deprecated">detect.blackduck.signature.scanner.dry.run</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> Signature Scanner Dry Run: If set to true, the signature scanner results are not uploaded to Black Duck, and the scanner results are written to disk via the Signature Scanner CLI argument: --dryRunWriteDir. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
-</tr>
-<tr>
-<td><a href="../configuration/signature scanner/#directory-name-exclusion-patterns-deprecated">detect.blackduck.signature.scanner.exclusion.name.patterns</a> <br /> (Deprecated)</td>
-<td>default: node_modules <br /><br /> Directory Name Exclusion Patterns: A comma-separated list of directory name patterns for which Detect searches and adds to the signature scanner --exclude flag values. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
-</tr>
-<tr>
-<td><a href="../configuration/signature scanner/#exclusion-patterns-search-depth-deprecated">detect.blackduck.signature.scanner.exclusion.pattern.search.depth</a> <br /> (Deprecated)</td>
-<td>default: 4 <br /><br /> Exclusion Patterns Search Depth: Enables you to adjust the depth to which Detect will search when creating signature scanner exclusion patterns. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
-</tr>
-<tr>
-<td><a href="../configuration/signature scanner/#exclusion-patterns-deprecated">detect.blackduck.signature.scanner.exclusion.patterns</a> <br /> (Deprecated)</td>
-<td>Exclusion Patterns: A comma-separated list of values (each value is a directory name pattern surrounded by '/' characters) to be used with the Signature Scanner --exclude flag. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
-</tr>
-<tr>
-<td><a href="../configuration/signature scanner/#individual-file-matching-deprecated">detect.blackduck.signature.scanner.individual.file.matching</a> <br /> (Deprecated)</td>
-<td>default: NONE <br /><br />  Acceptable Values: NONE, SOURCE, BINARY, ALL <br /><br />Individual File Matching: Users may set this property to indicate what types of files they want to match. Corresponding Signature Scanner CLI Argument: --individualFileMatching. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
-</tr>
-<tr>
-<td><a href="../configuration/signature scanner/#signature-scanner-host-url-deprecated">detect.blackduck.signature.scanner.host.url</a> <br /> (Deprecated)</td>
-<td>Signature Scanner Host URL: If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Black Duck's urls for different operating systems. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
-</tr>
-<tr>
-<td><a href="../configuration/signature scanner/#signature-scanner-license-search-deprecated">detect.blackduck.signature.scanner.license.search</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> Signature Scanner License Search: When set to true, user will be able to scan and discover license names in Black Duck. Corresponding Signature Scanner CLI Argument: --license-search. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
-</tr>
-<tr>
-<td><a href="../configuration/signature scanner/#signature-scanner-local-path-deprecated">detect.blackduck.signature.scanner.local.path</a> <br /> (Deprecated)</td>
-<td>Signature Scanner Local Path: To use a local signature scanner, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
-</tr>
-<tr>
-<td><a href="../configuration/signature scanner/#signature-scanner-memory-deprecated">detect.blackduck.signature.scanner.memory</a> <br /> (Deprecated)</td>
-<td>default: 4096 <br /><br /> Signature Scanner Memory: The memory for the scanner to use. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+<td><a href="../configuration/signature scanner/#snippet-scanning-deprecated">detect.blackduck.signature.scanner.snippet.mode</a> <br /> (Deprecated)</td>
+<td>default: false <br /><br /> Snippet Scanning: If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode. <br /><br /> <strong>DEPRECATED: This property is now deprecated. Please use --detect.blackduck.signature.scanner.snippet.matching in the future. NOTE the new property is one of a particular set of values. You will need to consult the documentation for the Signature Scanner in Black Duck for details. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
 </tr>
 <tr>
 <td><a href="../configuration/signature scanner/#signature-scanner-local-path-40offline41-deprecated">detect.blackduck.signature.scanner.offline.local.path</a> <br /> (Deprecated)</td>
-<td>Signature Scanner Local Path (Offline): To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
+<td>Signature Scanner Local Path (Offline): To use a local signature scanner and force offline, specify the path where the signature scanner was unzipped. This will likely look similar to 'scan.cli-x.y.z' and includes the 'bin, icon, jre, and lib' directories of the expanded scan.cli. <br /><br /> <strong>DEPRECATED: This property is being deprecated.  In the future, please use detect.blackduck.signature.scanner.local.path to specify a local signature scanner zip, and blackduck.offline.mode to run offline. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 <tr>
-<td><a href="../configuration/signature scanner/#signature-scanner-target-paths-deprecated">detect.blackduck.signature.scanner.paths</a> <br /> (Deprecated)</td>
-<td>Signature Scanner Target Paths: If this property is not set, the signature scanner target path is the source path (see property detect.source.path). If this property is set, the paths provided in this property's value will be signature scanned instead (the signature scanner will be executed once for each provided path). <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
-</tr>
-<tr>
-<td><a href="../configuration/signature scanner/#upload-source-mode-deprecated">detect.blackduck.signature.scanner.upload.source.mode</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> Upload source mode: If set to true, the signature scanner will, if supported by your Black Duck version, upload source code to Black Duck. Corresponding Signature Scanner CLI Argument: --upload-source. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
-</tr>
-<tr>
-<td><a href="../configuration/signature scanner/#signature-scanner-arguments-deprecated">detect.blackduck.signature.scanner.arguments</a> <br /> (Deprecated)</td>
-<td>Signature Scanner Arguments: Additional arguments to use when running the Black Duck signature scanner. <br /><br /> <strong>DEPRECATED: This property is now deprecated.  In future releases, all signature scanner arguments will be passed to Detect via an alternative mechanism. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
-</tr>
-<tr>
-<td><a href="../configuration/signature scanner/#snippet-scanning-deprecated">detect.blackduck.signature.scanner.snippet.mode</a> <br /> (Deprecated)</td>
-<td>default: false <br /><br /> Snippet Scanning: If set to true, the signature scanner will, if supported by your Black Duck version, run in snippet scanning mode. <br /><br /> <strong>DEPRECATED: This property is now deprecated. Please use --detect.blackduck.signature.scanner.snippet.matching in the future. NOTE the new property is one of a particular set of values. You will need to consult the documentation for the Signature Scanner in Black Duck for details. It will cause failure in 6.0.0 and be removed in 7.0.0.</strong></td>
+<td><a href="../configuration/signature scanner/#signature-scanner-host-url-deprecated">detect.blackduck.signature.scanner.host.url</a> <br /> (Deprecated)</td>
+<td>Signature Scanner Host URL: If this url is set, an attempt will be made to use it to download the signature scanner. The server url provided must respect the Black Duck's urls for different operating systems. <br /><br /> <strong>DEPRECATED: This property is being deprecated. Detect will no longer support downloading a signature scanner from a custom url. It will cause failure in 7.0.0 and be removed in 8.0.0.</strong></td>
 </tr>
 </tbody>
 </table>

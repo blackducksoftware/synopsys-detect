@@ -563,6 +563,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#file-permissions" class="md-nav__link">
+    File permissions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#passing-docker-inspector-property-values-to-docker-inspector-from-synopsys-detect" class="md-nav__link">
     Passing Docker Inspector property values to Docker Inspector from Synopsys Detect
   </a>
@@ -1453,6 +1460,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#file-permissions" class="md-nav__link">
+    File permissions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#passing-docker-inspector-property-values-to-docker-inspector-from-synopsys-detect" class="md-nav__link">
     Passing Docker Inspector property values to Docker Inspector from Synopsys Detect
   </a>
@@ -1549,6 +1563,12 @@ the Black Duck Signature Scanner on the "container file system"
 (the file system a container created from the image has at startup time).
 Refer to <a href="#scantarget">Synopsys Detect's scan target</a> for more details.
 This creates a second code location.</p>
+<h3 id="file-permissions">File permissions<a class="headerlink" href="#file-permissions" title="Permanent link">#</a></h3>
+<p>When using Docker Inspector, Synopsys Detect must be run in an environment configured so that files created
+by Docker Inspector are readable by all. On Linux, this means an appropriate umask value
+(for example, 002 or 022 will work). On Windows, this means that the Synopsys Detect
+output directory must be readable by all.</p>
+<p>Docker image tarfiles passed to Synopsys Detect via the <em>detect.docker.tar</em> property must be readable by all.</p>
 <h3 id="passing-docker-inspector-property-values-to-docker-inspector-from-synopsys-detect">Passing Docker Inspector property values to Docker Inspector from Synopsys Detect<a class="headerlink" href="#passing-docker-inspector-property-values-to-docker-inspector-from-synopsys-detect" title="Permanent link">#</a></h3>
 <p>For more complex use cases, you may need to pass Docker Inspector property values to Docker Inspector using Synopsys Detect. To do this, construct the Synopsys Detect property name by prefixing the Docker Inspector property name with <code>detect.docker.passthrough.</code>.</p>
 <p>For example, suppose you need to set Docker Inspector's service.timeout value (the length of time Docker Inspector waits for a response from the Image Inspector services that it uses) to 480000 milliseconds. You add the prefix to the Docker Inspector property name to derive the Synopsys Detect property name <code>detect.docker.passthrough.service.timeout</code>. Therefore, add <code>--detect.docker.passthrough.service.timeout=480000</code> to the Synopsys Detect command line.</p>
