@@ -41,6 +41,7 @@ import com.synopsys.integration.detect.workflow.result.DetectResult;
 import com.synopsys.integration.detect.workflow.status.DetectIssue;
 import com.synopsys.integration.detect.workflow.status.Status;
 import com.synopsys.integration.detect.workflow.status.UnrecognizedPaths;
+import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 import com.synopsys.integration.detector.base.DetectorEvaluation;
 import com.synopsys.integration.detector.base.DetectorEvaluationTree;
 import com.synopsys.integration.util.NameVersion;
@@ -115,6 +116,7 @@ public class FormattedOutputManager {
         detectorOutput.status = evaluation.getStatus().name();
         detectorOutput.statusCode = evaluation.getStatusCode();
         detectorOutput.statusReason = evaluation.getStatusReason();
+        detectorOutput.explanations = Bds.of(evaluation.getAllExplanations()).map(Explanation::describeSelf).toList();
 
         if (evaluation.getDiscovery() != null) {
             detectorOutput.discoveryReason = evaluation.getDiscovery().getDescription();
