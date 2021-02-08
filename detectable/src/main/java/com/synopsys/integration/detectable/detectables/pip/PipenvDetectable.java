@@ -26,6 +26,8 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -33,9 +35,7 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.Pipenv
 import com.synopsys.integration.detectable.detectable.executable.resolver.PythonResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -71,7 +71,10 @@ public class PipenvDetectable extends Detectable {
         File pipfileDotLock = fileFinder.findFile(environment.getDirectory(), PIPFILE_DOT_LOCK_FILE_NAME);
 
         if (pipfile != null || pipfileDotLock != null) {
-            return new PassedDetectableResult();
+            PassedResultBuilder passedResultBuilder = new PassedResultBuilder();
+            passedResultBuilder.foundNullableFile(pipfile);
+            passedResultBuilder.foundNullableFile(pipfileDotLock);
+            return passedResultBuilder.build();
         } else {
             return new FilesNotFoundDetectableResult(PIPFILE_FILE_NAME, PIPFILE_DOT_LOCK_FILE_NAME);
         }
@@ -80,19 +83,14 @@ public class PipenvDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        pythonExe = pythonResolver.resolvePython();
-        if (pythonExe == null) {
-            return new ExecutableNotFoundDetectableResult("python");
-        }
-
-        pipenvExe = pipenvResolver.resolvePipenv();
-        if (pipenvExe == null) {
-            return new ExecutableNotFoundDetectableResult("pipenv");
-        }
+        Requirements requirements = new Requirements(fileFinder, environment);
+        pythonExe = requirements.executable(pythonResolver::resolvePython, "python");
+        pipenvExe = requirements.executable(pipenvResolver::resolvePipenv, "pipenv");
 
         setupFile = fileFinder.findFile(environment.getDirectory(), SETUPTOOLS_DEFAULT_FILE_NAME);
+        requirements.explainNullableFile(setupFile);
 
-        return new PassedDetectableResult();
+        return requirements.result();
     }
 
     @Override
@@ -103,3 +101,4 @@ public class PipenvDetectable extends Detectable {
     }
 
 }
+

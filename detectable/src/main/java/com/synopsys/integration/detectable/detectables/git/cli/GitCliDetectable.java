@@ -22,19 +22,15 @@
  */
 package com.synopsys.integration.detectable.detectables.git.cli;
 
-import java.io.File;
-
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GitResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -57,21 +53,16 @@ public class GitCliDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        final File gitDirectory = fileFinder.findFile(environment.getDirectory(), GIT_DIRECTORY_NAME);
-        if (gitDirectory == null) {
-            return new FileNotFoundDetectableResult(GIT_DIRECTORY_NAME);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requires = new Requirements(fileFinder, environment);
+        requires.file(GIT_DIRECTORY_NAME);
+        return requires.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        gitExecutable = gitResolver.resolveGit();
-        if (gitExecutable == null) {
-            return new ExecutableNotFoundDetectableResult("git");
-        }
-        return new PassedDetectableResult();
+        Requirements requires = new Requirements(fileFinder, environment);
+        gitExecutable = requires.executable(gitResolver::resolveGit, "git");
+        return requires.result();
     }
 
     @Override

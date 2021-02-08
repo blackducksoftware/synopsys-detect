@@ -1,5 +1,5 @@
 /**
- * detector
+ * detectable
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
@@ -20,12 +20,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.result;
+package com.synopsys.integration.detectable.detectable;
 
-import java.util.Collections;
-
-public class ForcedNestedPassedDetectorResult extends PassedDetectorResult {
-    public ForcedNestedPassedDetectorResult() {
-        super("Forced to pass because nested forced by user.", ForcedNestedPassedDetectorResult.class, Collections.emptyList(), Collections.emptyList());
-    }
+public interface RequirementNotMetAction {
+    void requirementNotMet();
 }

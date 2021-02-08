@@ -2,6 +2,7 @@
 
 ## Version 6.9.0
 ### New Features
+* Added ability for detectors to explain why they applied. It will appear in the logs at info level and in the status.json.
 * Added the property detect.binary.scan.search.depth to define the directory search depth for the binary scanner.
 
 ### Changed features

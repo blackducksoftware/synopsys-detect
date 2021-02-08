@@ -20,33 +20,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.result;
+package com.synopsys.integration.detector.explanation;
 
-import java.util.Collections;
-import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-
-import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.detectable.explanation.Explanation;
-import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
-import com.synopsys.integration.detector.explanation.FallbackNotNeeded;
-import com.synopsys.integration.detector.rule.DetectorRule;
 
-public class FallbackNotNeededDetectorResult extends FailedDetectableResult {
-    private final DetectorRule<Detectable> passingDetector;
+public class FallbackNotNeeded extends Explanation {
+    private final String passingDetector;
 
-    public FallbackNotNeededDetectorResult(@NotNull final DetectorRule<Detectable> passingDetector) {
+    public FallbackNotNeeded(final String passingDetector) {
         this.passingDetector = passingDetector;
     }
 
     @Override
-    public String toDescription() {
-        return String.format("No fallback needed, detector passed: %s", passingDetector.getDescriptiveName());
-    }
-
-    @Override
-    public List<Explanation> getExplanation() {
-        return Collections.singletonList(new FallbackNotNeeded(passingDetector.getDescriptiveName()));
+    public String describeSelf() {
+        return "Not needed as fallback: " + passingDetector + " successful";
     }
 }

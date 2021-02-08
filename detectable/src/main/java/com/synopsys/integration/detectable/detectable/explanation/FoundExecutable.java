@@ -1,5 +1,5 @@
 /**
- * detector
+ * detectable
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
@@ -20,12 +20,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detector.result;
+package com.synopsys.integration.detectable.detectable.explanation;
 
-import java.util.Collections;
+import java.io.File;
 
-public class ForcedNestedPassedDetectorResult extends PassedDetectorResult {
-    public ForcedNestedPassedDetectorResult() {
-        super("Forced to pass because nested forced by user.", ForcedNestedPassedDetectorResult.class, Collections.emptyList(), Collections.emptyList());
+import com.synopsys.integration.detectable.ExecutableTarget;
+
+public class FoundExecutable extends Explanation {
+    private final String executableString;
+
+    public FoundExecutable(File file) {
+        this.executableString = file.toString();
+    }
+
+    public FoundExecutable(ExecutableTarget executableTarget) {
+        this.executableString = executableTarget.toCommand();
+    }
+
+    public FoundExecutable(String name) {
+        this.executableString = name;
+    }
+
+    @Override
+    public String describeSelf() {
+        return "Found executable: " + executableString;
     }
 }

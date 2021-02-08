@@ -26,15 +26,13 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -57,22 +55,16 @@ public class SwiftCliDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        File foundPackageSwift = fileFinder.findFile(environment.getDirectory(), PACKAGE_SWIFT_FILENAME);
-        if (foundPackageSwift == null) {
-            return new FileNotFoundDetectableResult(PACKAGE_SWIFT_FILENAME);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        requirements.file(PACKAGE_SWIFT_FILENAME);
+        return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        swiftExecutable = swiftResolver.resolveSwift();
-        if (swiftExecutable == null) {
-            return new ExecutableNotFoundDetectableResult("swift");
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        swiftExecutable = requirements.executable(swiftResolver::resolveSwift, "swift");
+        return requirements.result();
     }
 
     @Override

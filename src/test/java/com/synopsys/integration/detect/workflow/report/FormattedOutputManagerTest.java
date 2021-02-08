@@ -39,10 +39,10 @@ public class FormattedOutputManagerTest {
 
         DetectorEvaluation detectorEvaluation = new DetectorEvaluation(rule);
         ExecutableNotFoundDetectableResult result = new ExecutableNotFoundDetectableResult("go");
-        final DetectorResult extractableResult = new DetectorResult(result.getPassed(), result.toDescription(), result.getClass());
+        final DetectorResult extractableResult = new DetectorResult(result.getPassed(), result.toDescription(), result.getClass(), Collections.emptyList(), Collections.emptyList());
         detectorEvaluation.setExtractable(extractableResult);
-        detectorEvaluation.setApplicable(new DetectorResult(true, "", null));
-        detectorEvaluation.setSearchable(new DetectorResult(true, "", null));
+        detectorEvaluation.setApplicable(new DetectorResult(true, "", Collections.emptyList(), Collections.emptyList()));
+        detectorEvaluation.setSearchable(new DetectorResult(true, "", Collections.emptyList(), Collections.emptyList()));
         detectorEvaluation.setDetectableEnvironment(new DetectableEnvironment(new File("")));
 
         final DetectorToolResult detectorToolResult = new DetectorToolResult(

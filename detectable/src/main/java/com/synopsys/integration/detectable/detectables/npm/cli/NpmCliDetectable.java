@@ -28,15 +28,13 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Discovery;
 import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.NpmResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.NpmNodeModulesNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.npm.NpmPackageJsonDiscoverer;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
@@ -72,15 +70,9 @@ public class NpmCliDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        packageJson = fileFinder.findFile(environment.getDirectory(), PACKAGE_JSON);
-
-        if (packageJson == null) {
-            return new FileNotFoundDetectableResult(PACKAGE_JSON);
-        } else {
-            relevantFiles.add(packageJson);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        packageJson = requirements.file(PACKAGE_JSON);
+        return requirements.result();
     }
 
     @Override
@@ -89,13 +81,12 @@ public class NpmCliDetectable extends Detectable {
         if (nodeModules == null) {
             return new NpmNodeModulesNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
         }
+        Requirements requirements = new Requirements(fileFinder, environment);
+        requirements.explainFile(nodeModules);
 
-        npmExe = npmResolver.resolveNpm(environment);
-        if (npmExe == null) {
-            return new ExecutableNotFoundDetectableResult("npm");
-        }
+        npmExe = requirements.executable(() -> npmResolver.resolveNpm(environment), "npm");
 
-        return new PassedDetectableResult();
+        return requirements.result();
     }
 
     @Override

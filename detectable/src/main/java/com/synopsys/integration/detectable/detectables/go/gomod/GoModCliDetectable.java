@@ -26,15 +26,13 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GoResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -57,22 +55,16 @@ public class GoModCliDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        File found = fileFinder.findFile(environment.getDirectory(), GOMOD_FILENAME_PATTERN);
-        if (found == null) {
-            return new FileNotFoundDetectableResult(GOMOD_FILENAME_PATTERN);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        requirements.file(GOMOD_FILENAME_PATTERN);
+        return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        goExe = goResolver.resolveGo();
-        if (goExe == null) {
-            return new ExecutableNotFoundDetectableResult("go");
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        goExe = requirements.executable(goResolver::resolveGo, "go");
+        return requirements.result();
     }
 
     @Override

@@ -26,13 +26,13 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Node JS", forge = "npmjs", requirementsMarkdown = "Files: yarn.lock and package.json.")
 public class YarnLockDetectable extends Detectable {
@@ -53,17 +53,10 @@ public class YarnLockDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        yarnLock = fileFinder.findFile(environment.getDirectory(), YARN_LOCK_FILENAME);
-        if (yarnLock == null) {
-            return new FileNotFoundDetectableResult(YARN_LOCK_FILENAME);
-        }
-
-        packageJson = fileFinder.findFile(environment.getDirectory(), YARN_PACKAGE_JSON);
-        if (packageJson == null) {
-            return new FileNotFoundDetectableResult(YARN_PACKAGE_JSON);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        yarnLock = requirements.file(YARN_LOCK_FILENAME);
+        packageJson = requirements.file(YARN_PACKAGE_JSON);
+        return requirements.result();
     }
 
     @Override
