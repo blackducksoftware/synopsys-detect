@@ -29,6 +29,7 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 import com.synopsys.integration.detectable.detectable.explanation.FoundExecutable;
 import com.synopsys.integration.detectable.detectable.explanation.FoundFile;
@@ -55,6 +56,10 @@ public class PassedResultBuilder {
     }
 
     public void foundExecutable(final File exe) {
+        explanations.add(new FoundExecutable(exe));
+    }
+
+    public void foundExecutable(final ExecutableTarget exe) {
         explanations.add(new FoundExecutable(exe));
     }
 
