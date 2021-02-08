@@ -1,6 +1,5 @@
 package com.synopsys.integration.detectable.detectables.pip.functional;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -13,8 +12,9 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectables.pip.PipInspectorDetectableOptions;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
@@ -31,7 +31,7 @@ public class PipInspectorDetectableTest extends DetectableFunctionalTest {
     @Override
     protected void setup() throws IOException {
         pipInspectorPath = addOutputFile("pip-inspector");
-        final Path setupFilePath = addFile("setup.py");
+        Path setupFilePath = addFile("setup.py");
 
         addExecutableOutput(createStandardOutput("project-name"), PYTHON_CMD, setupFilePath.toAbsolutePath().toString(), "--name");
 
@@ -45,20 +45,21 @@ public class PipInspectorDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
-        final List<Path> requirementTxtPaths = new ArrayList<>();
-        final PipInspectorDetectableOptions pipInspectorDetectableOptions = new PipInspectorDetectableOptions("project-name", requirementTxtPaths);
-        return detectableFactory.createPipInspectorDetectable(detectableEnvironment, pipInspectorDetectableOptions, () -> pipInspectorPath.toFile(), () -> new File(PYTHON_CMD), () -> new File(PIP_CMD));
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
+        List<Path> requirementTxtPaths = new ArrayList<>();
+        PipInspectorDetectableOptions pipInspectorDetectableOptions = new PipInspectorDetectableOptions("project-name", requirementTxtPaths);
+        return detectableFactory.createPipInspectorDetectable(detectableEnvironment, pipInspectorDetectableOptions, () -> pipInspectorPath.toFile(), () -> ExecutableTarget.forCommand(PYTHON_CMD),
+            () -> ExecutableTarget.forCommand(PIP_CMD));
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals("project-name", extraction.getProjectName());
         Assertions.assertEquals("project-version", extraction.getProjectVersion());
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
-        final DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
-        final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, dependencyGraph);
+        DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, dependencyGraph);
 
         graphAssert.hasNoDependency("project-name", "project-version");
         graphAssert.hasRootDependency("dep1", "1.0");

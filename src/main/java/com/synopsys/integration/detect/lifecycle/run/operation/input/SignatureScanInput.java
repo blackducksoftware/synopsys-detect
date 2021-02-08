@@ -1,5 +1,5 @@
 /**
- * detectable
+ * synopsys-detect
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
@@ -20,16 +20,29 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn.parse;
+package com.synopsys.integration.detect.lifecycle.run.operation.input;
 
-import org.slf4j.Logger;
+import java.io.File;
+import java.util.Optional;
 
-import com.synopsys.integration.bdio.graph.builder.LazyExternalIdDependencyGraphBuilder;
-import com.synopsys.integration.bdio.model.dependencyid.DependencyId;
-import com.synopsys.integration.bdio.model.externalid.ExternalId;
-import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import javax.annotation.Nullable;
 
-@FunctionalInterface
-public interface MissingYarnDependencyHandler {
-    ExternalId handleMissingYarnDependency(Logger logger, ExternalIdFactory externalIdFactory, DependencyId dependencyId, LazyExternalIdDependencyGraphBuilder.LazyDependencyInfo lazyDependencyInfo, String yarnLockFilePath);
+import com.synopsys.integration.util.NameVersion;
+
+public class SignatureScanInput {
+    private final NameVersion projectNameVersion;
+    private final File dockerTar;
+
+    public SignatureScanInput(NameVersion projectNameVersion, @Nullable File dockerTar) {
+        this.projectNameVersion = projectNameVersion;
+        this.dockerTar = dockerTar;
+    }
+
+    public NameVersion getProjectNameVersion() {
+        return projectNameVersion;
+    }
+
+    public Optional<File> getDockerTar() {
+        return Optional.ofNullable(dockerTar);
+    }
 }

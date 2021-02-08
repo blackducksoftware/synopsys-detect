@@ -20,22 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detect.workflow.blackduck;
+package com.synopsys.integration.detect.lifecycle.run.operation.input;
 
-import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
+import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.util.NameVersion;
 
-public class BlackDuckRunOptions {
-    private final BlackduckScanMode scanMode;
+public class ImpactAnalysisInput {
+    private final NameVersion projectNameVersion;
+    private final ProjectVersionWrapper projectVersionWrapper;
 
-    public BlackDuckRunOptions(BlackduckScanMode scanMode) {
-        this.scanMode = scanMode;
+    public ImpactAnalysisInput(NameVersion projectNameVersion, ProjectVersionWrapper projectVersionWrapper) {
+        this.projectNameVersion = projectNameVersion;
+        this.projectVersionWrapper = projectVersionWrapper;
     }
 
-    public BlackduckScanMode getScanMode() {
-        return scanMode;
+    public NameVersion getProjectNameVersion() {
+        return projectNameVersion;
     }
 
-    public boolean shouldPerformRapidModeScan() {
-        return BlackduckScanMode.RAPID_MODE == scanMode;
+    public ProjectVersionWrapper getProjectVersionWrapper() {
+        return projectVersionWrapper;
     }
 }

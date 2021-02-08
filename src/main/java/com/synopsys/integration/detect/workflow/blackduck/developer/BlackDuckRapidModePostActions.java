@@ -108,16 +108,16 @@ public class BlackDuckRapidModePostActions {
         File jsonScanFile = new File(directoryManager.getScanOutputDirectory(), escapedProjectName + "_" + escapedProjectVersionName + "_BlackDuck_DeveloperMode_Result.json");
         if (jsonScanFile.exists()) {
             if (!jsonScanFile.delete()) {
-                logger.warn("Unable to delete an already-existing Black Duck Developer Mode Result file: {}", jsonScanFile.getAbsoluteFile());
+                logger.warn("Unable to delete an already-existing Black Duck Rapid Scan Result file: {}", jsonScanFile.getAbsoluteFile());
             }
         }
         String jsonString = gson.toJson(results);
-        logger.debug("Developer Mode JSON result output: ");
-        logger.debug("{}", jsonString);
+        logger.trace("Rapid Scan JSON result output: ");
+        logger.trace("{}", jsonString);
         try {
             DetectFileUtils.writeToFile(jsonScanFile, jsonString);
         } catch (IOException ex) {
-            throw new DetectUserFriendlyException("Cannot create developer scan mode output file", ex, ExitCodeType.FAILURE_UNKNOWN_ERROR);
+            throw new DetectUserFriendlyException("Cannot create rapid scan output file", ex, ExitCodeType.FAILURE_UNKNOWN_ERROR);
         }
     }
 
@@ -142,10 +142,6 @@ public class BlackDuckRapidModePostActions {
             if (hasWarning) {
                 logger.info(vulnerabilityPolicyViolation.getWarningMessage());
             }
-
-            if (!hasError && !hasWarning) {
-                printViolatedPolicyNames(componentName, componentVersion, vulnerabilityPolicyViolation.getViolatingPolicyNames());
-            }
         }
     }
 
@@ -159,10 +155,6 @@ public class BlackDuckRapidModePostActions {
 
             if (hasWarning) {
                 logger.info(licensePolicyViolation.getWarningMessage());
-            }
-
-            if (!hasError && !hasWarning) {
-                printViolatedPolicyNames(componentName, componentVersion, licensePolicyViolation.getViolatingPolicyNames());
             }
         }
     }

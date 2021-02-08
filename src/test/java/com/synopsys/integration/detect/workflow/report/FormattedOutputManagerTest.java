@@ -28,7 +28,7 @@ import com.synopsys.integration.detector.rule.DetectorRule;
 public class FormattedOutputManagerTest {
 
     @Test
-    public <T extends Detectable> void detectorOutputStatusDataTest() {
+    public <T extends Detectable> void detectorOutputStatusDataTest() throws IllegalAccessException {
         EventSystem eventSystem = new EventSystem();
         FormattedOutputManager formattedOutputManager = new FormattedOutputManager(eventSystem);
 

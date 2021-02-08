@@ -22,13 +22,12 @@
  */
 package com.synopsys.integration.detectable.detectables.docker;
 
-import java.io.File;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -52,8 +51,8 @@ public class DockerDetectable extends Detectable {
     private final DockerExtractor dockerExtractor;
     private final DockerDetectableOptions dockerDetectableOptions;
 
-    private File javaExe;
-    private File dockerExe;
+    private ExecutableTarget javaExe;
+    private ExecutableTarget dockerExe;
     private DockerInspectorInfo dockerInspectorInfo;
 
     public DockerDetectable(DetectableEnvironment environment, DockerInspectorResolver dockerInspectorResolver, JavaResolver javaResolver, DockerResolver dockerResolver,

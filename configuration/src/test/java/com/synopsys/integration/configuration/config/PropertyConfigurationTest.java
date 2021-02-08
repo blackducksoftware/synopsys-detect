@@ -28,6 +28,7 @@ import static com.synopsys.integration.configuration.util.ConfigTestUtils.proper
 import static java.util.Collections.emptyMap;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -40,6 +41,7 @@ import org.junit.jupiter.api.Test;
 import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.configuration.parse.ValueParseException;
 import com.synopsys.integration.configuration.parse.ValueParser;
+import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.PassthroughProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
@@ -190,6 +192,27 @@ public class PropertyConfigurationTest {
         final PropertyConfiguration config = configOf(propertyMap);
         Assertions.assertEquals(propertyMap, config.getRaw(), "The map provided by the config should match the property source it was given.");
         Assertions.assertEquals(emptyMap(), emptyConfig().getRaw(), "The config should not have any values to provide.");
+    }
+
+    @Test
+    public void getRawValueMap() {
+        Set<Property> properties = new HashSet<>();
+        NullableTestProperty password = new NullableTestProperty("blackduck.password");
+        NullableTestProperty username = new NullableTestProperty("blackduck.username");
+        properties.add(password);
+        properties.add(username);
+
+        final Map<String, String> propertyMap = Bds.mapOf(
+            Pair.of(password.getKey(), "password"),
+            Pair.of(username.getKey(), "username")
+        );
+
+        PropertyConfiguration configuration = configOf(propertyMap);
+
+        Map<String, String> rawPropertyValues = configuration.getMaskedRawValueMap(properties, rawKey -> rawKey.contains("password"));
+
+        Assertions.assertEquals("********", rawPropertyValues.get("blackduck.password"));
+        Assertions.assertEquals("username", rawPropertyValues.get("blackduck.username"));
     }
 
     @Test

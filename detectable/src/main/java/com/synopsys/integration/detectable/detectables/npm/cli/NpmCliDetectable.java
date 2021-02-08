@@ -27,6 +27,7 @@ import java.io.File;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.Discovery;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -50,9 +51,9 @@ public class NpmCliDetectable extends Detectable {
     private final NpmCliExtractorOptions npmCliExtractorOptions;
 
     private File packageJson;
-    private File npmExe;
+    private ExecutableTarget npmExe;
 
-    public NpmCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final NpmResolver npmResolver, final NpmCliExtractor npmCliExtractor, final NpmPackageJsonDiscoverer npmPackageJsonDiscoverer,
+    public NpmCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, NpmResolver npmResolver, NpmCliExtractor npmCliExtractor, NpmPackageJsonDiscoverer npmPackageJsonDiscoverer,
         NpmCliExtractorOptions npmCliExtractorOptions) {
         super(environment);
         this.fileFinder = fileFinder;
@@ -63,7 +64,7 @@ public class NpmCliDetectable extends Detectable {
     }
 
     @Override
-    public Discovery discover(final ExtractionEnvironment extractionEnvironment) {
+    public Discovery discover(ExtractionEnvironment extractionEnvironment) {
         return npmPackageJsonDiscoverer.discover(packageJson);
     }
 
@@ -76,7 +77,7 @@ public class NpmCliDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        final File nodeModules = fileFinder.findFile(environment.getDirectory(), NODE_MODULES);
+        File nodeModules = fileFinder.findFile(environment.getDirectory(), NODE_MODULES);
         if (nodeModules == null) {
             return new NpmNodeModulesNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
         }
@@ -89,7 +90,7 @@ public class NpmCliDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return npmCliExtractor.extract(environment.getDirectory(), npmExe, npmCliExtractorOptions);
     }
 

@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.rebar.model.RebarParseResult;
@@ -39,31 +41,31 @@ public class RebarExtractor {
     private final DetectableExecutableRunner executableRunner;
     private final Rebar3TreeParser rebarTreeParser;
 
-    public RebarExtractor(final DetectableExecutableRunner executableRunner, final Rebar3TreeParser rebarTreeParser) {
+    public RebarExtractor(DetectableExecutableRunner executableRunner, Rebar3TreeParser rebarTreeParser) {
         this.executableRunner = executableRunner;
         this.rebarTreeParser = rebarTreeParser;
     }
 
-    public Extraction extract(final File directory, final File rebarExe) {
+    public Extraction extract(File directory, ExecutableTarget rebarExe) {
         try {
-            final List<CodeLocation> codeLocations = new ArrayList<>();
+            List<CodeLocation> codeLocations = new ArrayList<>();
 
-            final Map<String, String> envVars = new HashMap<>();
+            Map<String, String> envVars = new HashMap<>();
             envVars.put("REBAR_COLOR", "none");
 
-            final List<String> arguments = new ArrayList<>();
+            List<String> arguments = new ArrayList<>();
             arguments.add("tree");
 
-            final Executable rebar3TreeExe = Executable.create(directory, envVars, rebarExe.toString(), arguments);
-            final List<String> output = executableRunner.execute(rebar3TreeExe).getStandardOutputAsList();
-            final RebarParseResult parseResult = rebarTreeParser.parseRebarTreeOutput(output);
+            Executable rebar3TreeExe = ExecutableUtils.createFromTarget(directory, envVars, rebarExe, arguments);
+            List<String> output = executableRunner.execute(rebar3TreeExe).getStandardOutputAsList();
+            RebarParseResult parseResult = rebarTreeParser.parseRebarTreeOutput(output);
 
             codeLocations.add(parseResult.getCodeLocation());
 
-            final Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
+            Extraction.Builder builder = new Extraction.Builder().success(codeLocations);
             parseResult.getProjectNameVersion().ifPresent(projectNameVersion -> builder.projectName(projectNameVersion.getName()).projectVersion(projectNameVersion.getVersion()));
             return builder.build();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             return new Extraction.Builder().exception(e).build();
         }
     }

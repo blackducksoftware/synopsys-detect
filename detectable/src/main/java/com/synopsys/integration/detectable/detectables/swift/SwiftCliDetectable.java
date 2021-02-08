@@ -27,6 +27,7 @@ import java.io.File;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.SwiftResolver;
@@ -43,9 +44,9 @@ public class SwiftCliDetectable extends Detectable {
     private final SwiftExtractor swiftExtractor;
     private final SwiftResolver swiftResolver;
 
-    private File swiftExecutable;
+    private ExecutableTarget swiftExecutable;
 
-    public SwiftCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final SwiftExtractor swiftExtractor, final SwiftResolver swiftResolver) {
+    public SwiftCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, SwiftExtractor swiftExtractor, SwiftResolver swiftResolver) {
         super(environment);
         this.fileFinder = fileFinder;
         this.swiftExtractor = swiftExtractor;
@@ -67,7 +68,7 @@ public class SwiftCliDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return swiftExtractor.extract(environment.getDirectory(), swiftExecutable);
     }
 

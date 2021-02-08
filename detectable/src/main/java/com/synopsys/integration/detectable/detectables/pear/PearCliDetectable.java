@@ -27,6 +27,7 @@ import java.io.File;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
@@ -44,10 +45,10 @@ public class PearCliDetectable extends Detectable {
     private final PearCliExtractor pearCliExtractor;
     private final PearCliDetectableOptions pearCliDetectableOptions;
 
-    private File pearExe;
+    private ExecutableTarget pearExe;
     private File packageDotXml;
 
-    public PearCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final PearResolver pearResolver, final PearCliExtractor pearCliExtractor, final PearCliDetectableOptions pearCliDetectableOptions) {
+    public PearCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, PearResolver pearResolver, PearCliExtractor pearCliExtractor, PearCliDetectableOptions pearCliDetectableOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.pearResolver = pearResolver;
@@ -70,7 +71,7 @@ public class PearCliDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return pearCliExtractor.extract(pearExe, packageDotXml, environment.getDirectory(), pearCliDetectableOptions.onlyGatherRequired());
     }
 

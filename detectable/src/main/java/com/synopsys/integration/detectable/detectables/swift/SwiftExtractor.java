@@ -24,6 +24,8 @@ package com.synopsys.integration.detectable.detectables.swift;
 
 import java.io.File;
 
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.swift.model.SwiftPackage;
@@ -37,29 +39,29 @@ public class SwiftExtractor {
     private final SwiftCliParser swiftCliParser;
     private final SwiftPackageTransformer swiftPackageTransformer;
 
-    public SwiftExtractor(final DetectableExecutableRunner executableRunner, final SwiftCliParser swiftCliParser, final SwiftPackageTransformer swiftPackageTransformer) {
+    public SwiftExtractor(DetectableExecutableRunner executableRunner, SwiftCliParser swiftCliParser, SwiftPackageTransformer swiftPackageTransformer) {
         this.executableRunner = executableRunner;
         this.swiftCliParser = swiftCliParser;
         this.swiftPackageTransformer = swiftPackageTransformer;
     }
 
-    public Extraction extract(final File environmentDirectory, final File swiftExecutable) {
+    public Extraction extract(File environmentDirectory, ExecutableTarget swiftExecutable) {
         try {
-            final SwiftPackage rootSwiftPackage = getRootSwiftPackage(environmentDirectory, swiftExecutable);
-            final CodeLocation codeLocation = swiftPackageTransformer.transform(rootSwiftPackage);
+            SwiftPackage rootSwiftPackage = getRootSwiftPackage(environmentDirectory, swiftExecutable);
+            CodeLocation codeLocation = swiftPackageTransformer.transform(rootSwiftPackage);
 
             return new Extraction.Builder()
                        .success(codeLocation)
                        .projectName(rootSwiftPackage.getName())
                        .projectVersion(rootSwiftPackage.getVersion())
                        .build();
-        } catch (final IntegrationException | ExecutableRunnerException e) {
+        } catch (IntegrationException | ExecutableRunnerException e) {
             return new Extraction.Builder().exception(e).build();
         }
     }
 
-    private SwiftPackage getRootSwiftPackage(final File environmentDirectory, final File swiftExecutable) throws ExecutableRunnerException, IntegrationException {
-        final ExecutableOutput executableOutput = executableRunner.execute(environmentDirectory, swiftExecutable, "package", "show-dependencies", "--format", "json");
+    private SwiftPackage getRootSwiftPackage(File environmentDirectory, ExecutableTarget swiftExecutable) throws ExecutableRunnerException, IntegrationException {
+        ExecutableOutput executableOutput = executableRunner.execute(ExecutableUtils.createFromTarget(environmentDirectory, swiftExecutable, "package", "show-dependencies", "--format", "json"));
         if (executableOutput.getReturnCode() == 0) {
             return swiftCliParser.parseOutput(executableOutput.getStandardOutputAsList());
         } else {

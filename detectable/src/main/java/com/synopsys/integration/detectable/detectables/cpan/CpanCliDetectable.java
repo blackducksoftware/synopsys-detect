@@ -27,6 +27,7 @@ import java.io.File;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.Requirements;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
@@ -45,10 +46,10 @@ public class CpanCliDetectable extends Detectable {
     private final CpanmResolver cpanmResolver;
     private final CpanCliExtractor cpanCliExtractor;
 
-    private File cpanExe;
-    private File cpanmExe;
+    private ExecutableTarget cpanExe;
+    private ExecutableTarget cpanmExe;
 
-    public CpanCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final CpanResolver cpanResolver, final CpanmResolver cpanmResolver, final CpanCliExtractor cpanCliExtractor) {
+    public CpanCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, CpanResolver cpanResolver, CpanmResolver cpanmResolver, CpanCliExtractor cpanCliExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.cpanResolver = cpanResolver;
@@ -72,7 +73,7 @@ public class CpanCliDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return cpanCliExtractor.extract(cpanExe, cpanmExe, extractionEnvironment.getOutputDirectory());
     }
 

@@ -9,9 +9,11 @@ import org.mockito.Mockito;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.lerna.LernaPackageDiscoverer;
 import com.synopsys.integration.detectable.detectables.lerna.model.LernaPackage;
+import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
@@ -20,10 +22,10 @@ class LernaPackageDiscovererTest {
     @Test
     void discoverLernaPackages() throws ExecutableRunnerException {
         File workingDirectory = new File("workingDir");
-        File lernaExecutable = new File("lerna");
+        ExecutableTarget lernaExecutable = ExecutableTarget.forCommand("lerna");
 
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
-        Mockito.when(executableRunner.execute(workingDirectory, lernaExecutable, "ls", "--all", "--json")).thenReturn(
+        Mockito.when(executableRunner.execute(Mockito.any(Executable.class))).thenReturn(
             new ExecutableOutput(0, String.join(System.lineSeparator(),
                 "[",
                 "  {",

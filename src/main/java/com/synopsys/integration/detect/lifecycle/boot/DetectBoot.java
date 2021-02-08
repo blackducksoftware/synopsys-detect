@@ -26,8 +26,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -40,6 +45,7 @@ import com.synopsys.integration.configuration.source.PropertySource;
 import com.synopsys.integration.detect.RunBeanConfiguration;
 import com.synopsys.integration.detect.configuration.DetectConfigurationFactory;
 import com.synopsys.integration.detect.configuration.DetectProperties;
+import com.synopsys.integration.detect.configuration.DetectPropertyUtil;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.configuration.enumeration.DetectGroup;
@@ -60,6 +66,8 @@ import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.airgap.AirGapCreator;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticDecision;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
+import com.synopsys.integration.detect.workflow.event.Event;
+import com.synopsys.integration.detect.workflow.event.EventSystem;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.rest.proxy.ProxyInfo;
 
@@ -85,7 +93,7 @@ public class DetectBoot {
     public Optional<DetectBootResult> boot(String detectVersion) throws IOException, IllegalAccessException {
         if (detectArgumentState.isHelp() || detectArgumentState.isDeprecatedHelp() || detectArgumentState.isVerboseHelp()) {
             HelpPrinter helpPrinter = new HelpPrinter();
-            helpPrinter.printAppropriateHelpMessage(DEFAULT_PRINT_STREAM, DetectProperties.allProperties(), Arrays.asList(DetectGroup.values()), DetectGroup.BLACKDUCK_SERVER, detectArgumentState);
+            helpPrinter.printAppropriateHelpMessage(DEFAULT_PRINT_STREAM, DetectProperties.allProperties().getProperties(), Arrays.asList(DetectGroup.values()), DetectGroup.BLACKDUCK_SERVER, detectArgumentState);
             return Optional.of(DetectBootResult.exit(new PropertyConfiguration(propertySources)));
         }
 
@@ -106,6 +114,12 @@ public class DetectBoot {
         }
 
         PropertyConfiguration detectConfiguration = new PropertyConfiguration(propertySources);
+        EventSystem eventSystem = detectBootFactory.getEventSystem();
+
+        SortedMap<String, String> maskedRawPropertyValues = collectMaskedRawPropertyValues(detectConfiguration);
+        Set<String> propertyKeys = new HashSet(DetectProperties.allProperties().getPropertyKeys());
+
+        publishCollectedPropertyValues(maskedRawPropertyValues, eventSystem);
 
         logger.debug("Configuration processed completely.");
 
@@ -114,7 +128,7 @@ public class DetectBoot {
 
         Boolean suppressConfigurationOutput = detectConfiguration.getValueOrDefault(DetectProperties.DETECT_SUPPRESS_CONFIGURATION_OUTPUT.getProperty());
         if (Boolean.FALSE.equals(suppressConfigurationOutput)) {
-            detectConfigurationBootManager.printConfiguration(deprecationResult.getAdditionalNotes());
+            detectConfigurationBootManager.printConfiguration(maskedRawPropertyValues, propertyKeys, deprecationResult.getAdditionalNotes());
         }
 
         Optional<DetectUserFriendlyException> possiblePropertyParseError = detectConfigurationBootManager.validateForPropertyParseErrors();
@@ -138,7 +152,7 @@ public class DetectBoot {
         DiagnosticSystem diagnosticSystem = null;
         DiagnosticDecision diagnosticDecision = DiagnosticDecision.decide(detectArgumentState, detectConfiguration);
         if (diagnosticDecision.shouldCreateDiagnosticSystem()) {
-            diagnosticSystem = detectBootFactory.createDiagnosticSystem(diagnosticDecision.isExtended(), detectConfiguration, directoryManager);
+            diagnosticSystem = detectBootFactory.createDiagnosticSystem(diagnosticDecision.isExtended(), detectConfiguration, directoryManager, maskedRawPropertyValues, propertyKeys);
         }
 
         logger.debug("Main boot completed. Deciding what Detect should do.");
@@ -195,7 +209,7 @@ public class DetectBoot {
 
         //Finished, populate the detect context
         detectContext.registerBean(detectBootFactory.getDetectRun());
-        detectContext.registerBean(detectBootFactory.getEventSystem());
+        detectContext.registerBean(eventSystem);
         detectContext.registerBean(detectBootFactory.createDetectorProfiler());
 
         detectContext.registerBean(detectConfiguration);
@@ -211,6 +225,14 @@ public class DetectBoot {
         detectContext.lock(); //can only refresh once, this locks and triggers refresh.
 
         return Optional.of(DetectBootResult.run(detectConfiguration, productRunData, directoryManager, diagnosticSystem));
+    }
+
+    private SortedMap<String, String> collectMaskedRawPropertyValues(PropertyConfiguration propertyConfiguration) throws IllegalAccessException {
+        return new TreeMap(propertyConfiguration.getMaskedRawValueMap(new HashSet<>(DetectProperties.allProperties().getProperties()), DetectPropertyUtil.PASSWORDS_AND_TOKENS_PREDICATE));
+    }
+
+    private void publishCollectedPropertyValues(Map<String, String> maskedRawPropertyValues, EventSystem eventSystem) {
+        eventSystem.publishEvent(Event.RawMaskedPropertyValuesCollected, new TreeMap(maskedRawPropertyValues));
     }
 
 }

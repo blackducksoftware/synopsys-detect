@@ -26,6 +26,7 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -45,10 +46,10 @@ public class BitbakeDetectable extends Detectable {
     private final BashResolver bashResolver;
 
     private File foundBuildEnvScript;
-    private File bashExe;
+    private ExecutableTarget bashExe;
 
-    public BitbakeDetectable(final DetectableEnvironment detectableEnvironment, final FileFinder fileFinder, final BitbakeDetectableOptions bitbakeDetectableOptions, final BitbakeExtractor bitbakeExtractor,
-        final BashResolver bashResolver) {
+    public BitbakeDetectable(DetectableEnvironment detectableEnvironment, FileFinder fileFinder, BitbakeDetectableOptions bitbakeDetectableOptions, BitbakeExtractor bitbakeExtractor,
+        BashResolver bashResolver) {
         super(detectableEnvironment);
         this.fileFinder = fileFinder;
         this.bitbakeDetectableOptions = bitbakeDetectableOptions;
@@ -78,7 +79,7 @@ public class BitbakeDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return bitbakeExtractor.extract(environment.getDirectory(), foundBuildEnvScript, bitbakeDetectableOptions.getSourceArguments(), bitbakeDetectableOptions.getPackageNames(), bitbakeDetectableOptions.getSearchDepth(), bashExe);
     }
 }

@@ -27,6 +27,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.detect.configuration.enumeration.BlackduckScanMode;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.util.filter.DetectToolFilter;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
@@ -38,14 +39,16 @@ public class RunOptions {
     private final List<DetectTool> preferredTools;
     private final DetectToolFilter detectToolFilter;
     private final boolean useBdio2;
+    private final BlackduckScanMode scanMode;
 
-    public RunOptions(boolean unmapCodeLocations, @Nullable String aggregateName, AggregateMode aggregateMode, List<DetectTool> preferredTools, DetectToolFilter detectToolFilter, boolean useBdio2) {
+    public RunOptions(boolean unmapCodeLocations, @Nullable String aggregateName, AggregateMode aggregateMode, List<DetectTool> preferredTools, DetectToolFilter detectToolFilter, boolean useBdio2, BlackduckScanMode scanMode) {
         this.unmapCodeLocations = unmapCodeLocations;
         this.aggregateName = aggregateName;
         this.aggregateMode = aggregateMode;
         this.preferredTools = preferredTools;
         this.detectToolFilter = detectToolFilter;
         this.useBdio2 = useBdio2;
+        this.scanMode = scanMode;
     }
 
     public boolean shouldUnmapCodeLocations() {
@@ -70,5 +73,13 @@ public class RunOptions {
 
     public boolean shouldUseBdio2() {
         return useBdio2;
+    }
+
+    public BlackduckScanMode getScanMode() {
+        return scanMode;
+    }
+
+    public boolean shouldPerformRapidModeScan() {
+        return BlackduckScanMode.RAPID == scanMode;
     }
 }

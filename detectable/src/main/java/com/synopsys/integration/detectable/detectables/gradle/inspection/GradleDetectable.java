@@ -28,6 +28,7 @@ import java.util.List;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
@@ -57,7 +58,7 @@ public class GradleDetectable extends Detectable {
     private final GradleInspectorExtractor gradleInspectorExtractor;
     private final GradleInspectorOptions gradleInspectorOptions;
 
-    private File gradleExe;
+    private ExecutableTarget gradleExe;
     private File gradleInspector;
 
     public GradleDetectable(DetectableEnvironment environment, FileFinder fileFinder, GradleResolver gradleResolver, GradleInspectorResolver gradleInspectorResolver,

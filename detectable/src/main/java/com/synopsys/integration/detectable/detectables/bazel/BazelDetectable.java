@@ -26,6 +26,7 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -33,6 +34,8 @@ import com.synopsys.integration.detectable.detectable.executable.resolver.BazelR
 import com.synopsys.integration.detectable.detectable.explanation.PropertyProvided;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
+import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
+import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -45,7 +48,7 @@ public class BazelDetectable extends Detectable {
     private final BazelExtractor bazelExtractor;
     private final BazelResolver bazelResolver;
     private final BazelDetectableOptions bazelDetectableOptions;
-    private File bazelExe;
+    private ExecutableTarget bazelExe;
     private BazelWorkspace bazelWorkspace;
 
     public BazelDetectable(DetectableEnvironment environment, FileFinder fileFinder, BazelExtractor bazelExtractor,

@@ -28,6 +28,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
 import com.synopsys.integration.detectable.detectable.Requirements;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PipenvResolver;
@@ -50,12 +51,12 @@ public class PipenvDetectable extends Detectable {
     private final PipenvResolver pipenvResolver;
     private final PipenvExtractor pipenvExtractor;
 
-    private File pythonExe;
-    private File pipenvExe;
+    private ExecutableTarget pythonExe;
+    private ExecutableTarget pipenvExe;
     private File setupFile;
 
-    public PipenvDetectable(final DetectableEnvironment environment, final PipenvDetectableOptions pipenvDetectableOptions, final FileFinder fileFinder, final PythonResolver pythonResolver, final PipenvResolver pipenvResolver,
-        final PipenvExtractor pipenvExtractor) {
+    public PipenvDetectable(DetectableEnvironment environment, PipenvDetectableOptions pipenvDetectableOptions, FileFinder fileFinder, PythonResolver pythonResolver, PipenvResolver pipenvResolver,
+        PipenvExtractor pipenvExtractor) {
         super(environment);
         this.pipenvDetectableOptions = pipenvDetectableOptions;
         this.fileFinder = fileFinder;
@@ -66,8 +67,8 @@ public class PipenvDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        final File pipfile = fileFinder.findFile(environment.getDirectory(), PIPFILE_FILE_NAME);
-        final File pipfileDotLock = fileFinder.findFile(environment.getDirectory(), PIPFILE_DOT_LOCK_FILE_NAME);
+        File pipfile = fileFinder.findFile(environment.getDirectory(), PIPFILE_FILE_NAME);
+        File pipfileDotLock = fileFinder.findFile(environment.getDirectory(), PIPFILE_DOT_LOCK_FILE_NAME);
 
         if (pipfile != null || pipfileDotLock != null) {
             PassedResultBuilder passedResultBuilder = new PassedResultBuilder();
@@ -93,7 +94,7 @@ public class PipenvDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         //TODO: Handle null better.
         return pipenvExtractor.extract(environment.getDirectory(), pythonExe, pipenvExe, setupFile, pipenvDetectableOptions.getPipProjectName().orElse(""), pipenvDetectableOptions.getPipProjectVersionName().orElse(""),
             pipenvDetectableOptions.isPipProjectTreeOnly());
