@@ -73,6 +73,6 @@ public class CargoDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return cargoExtractor.extract(cargoLock, Optional.ofNullable(cargoToml));
+        return cargoExtractor.extract(cargoLock, cargoToml);
     }
 }
