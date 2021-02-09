@@ -24,6 +24,7 @@ package com.synopsys.integration.detect.workflow.blackduck.developer;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -80,18 +81,21 @@ public class BlackDuckRapidModePostActions {
                                                  .collect(Collectors.toSet());
             policyNames.removeAll(vulnerabilityPolicyNames);
             policyNames.removeAll(licensePolicyNames);
+            boolean hasVulnerabilityErrors = false;
+            boolean hasLicenseErrors = false;
             if (!policyNames.isEmpty()) {
-                violatedPolicyComponentNames.add(componentName);
                 printViolatedPolicyNames(componentName, componentVersion, policyNames);
             }
 
             if (!vulnerabilityPolicyNames.isEmpty()) {
-                printVulnerabilityErrorsAndWarnings(componentName, componentVersion, vulnerabilityViolations);
-                violatedPolicyComponentNames.add(componentName);
+                hasVulnerabilityErrors = checkVulnerabilityErrorsAndLog(vulnerabilityViolations);
             }
 
             if (!licensePolicyNames.isEmpty()) {
-                printLicenseErrorsAndWarnings(componentName, componentVersion, licenseViolations);
+                hasLicenseErrors = checkLicenseErrorsAndLog(licenseViolations);
+            }
+
+            if (hasVulnerabilityErrors || hasLicenseErrors) {
                 violatedPolicyComponentNames.add(componentName);
             }
         }
@@ -107,10 +111,13 @@ public class BlackDuckRapidModePostActions {
         String escapedProjectVersionName = escapeUtil.replaceWithUnderscore(projectNameVersion.getVersion());
         File jsonScanFile = new File(directoryManager.getScanOutputDirectory(), escapedProjectName + "_" + escapedProjectVersionName + "_BlackDuck_DeveloperMode_Result.json");
         if (jsonScanFile.exists()) {
-            if (!jsonScanFile.delete()) {
-                logger.warn("Unable to delete an already-existing Black Duck Rapid Scan Result file: {}", jsonScanFile.getAbsoluteFile());
+            try {
+                Files.delete(jsonScanFile.toPath());
+            } catch (IOException ex) {
+                logger.warn("Unable to delete an already-existing Black Duck Rapid Scan Result file: {}", jsonScanFile.getAbsoluteFile(), ex);
             }
         }
+
         String jsonString = gson.toJson(results);
         logger.trace("Rapid Scan JSON result output: ");
         logger.trace("{}", jsonString);
@@ -131,32 +138,38 @@ public class BlackDuckRapidModePostActions {
         }
     }
 
-    private void printVulnerabilityErrorsAndWarnings(String componentName, String componentVersion, Set<PolicyViolationVulnerabilityView> vulnerabilites) {
+    private boolean checkVulnerabilityErrorsAndLog(Set<PolicyViolationVulnerabilityView> vulnerabilites) {
+        boolean hasErrors = false;
         for (PolicyViolationVulnerabilityView vulnerabilityPolicyViolation : vulnerabilites) {
             boolean hasError = StringUtils.isNotBlank(vulnerabilityPolicyViolation.getErrorMessage());
             boolean hasWarning = StringUtils.isNotBlank(vulnerabilityPolicyViolation.getWarningMessage());
             if (hasError) {
-                logger.info(vulnerabilityPolicyViolation.getErrorMessage());
+                logger.error(vulnerabilityPolicyViolation.getErrorMessage());
+                hasErrors = true;
             }
 
             if (hasWarning) {
-                logger.info(vulnerabilityPolicyViolation.getWarningMessage());
+                logger.warn(vulnerabilityPolicyViolation.getWarningMessage());
             }
         }
+        return hasErrors;
     }
 
-    private void printLicenseErrorsAndWarnings(String componentName, String componentVersion, Set<PolicyViolationLicenseView> licenses) {
+    private boolean checkLicenseErrorsAndLog(Set<PolicyViolationLicenseView> licenses) {
+        boolean hasErrors = false;
         for (PolicyViolationLicenseView licensePolicyViolation : licenses) {
             boolean hasError = StringUtils.isNotBlank(licensePolicyViolation.getErrorMessage());
             boolean hasWarning = StringUtils.isNotBlank(licensePolicyViolation.getWarningMessage());
             if (hasError) {
-                logger.info(licensePolicyViolation.getErrorMessage());
+                logger.error(licensePolicyViolation.getErrorMessage());
+                hasErrors = true;
             }
 
             if (hasWarning) {
-                logger.info(licensePolicyViolation.getWarningMessage());
+                logger.warn(licensePolicyViolation.getWarningMessage());
             }
         }
+        return hasErrors;
     }
 
     private String createViolationMessage(Set<String> violatedPolicyNames) {

@@ -63,6 +63,10 @@ public class Requirements {
         explanations.add(new FoundFile(file));
     }
 
+    public void explainDirectory(@NotNull File file) {
+        explanations.add(new FoundFile(file));
+    }
+
     public void explainNullableFile(@Nullable File file) {
         if (file == null)
             return;
@@ -73,11 +77,19 @@ public class Requirements {
         return file(environment.getDirectory(), filename);
     }
 
+    public File directory(final String filename) { //We don't include directory in a relevant file.
+        return file(environment.getDirectory(), filename, false);
+    }
+
     public File optionalFile(final String filename, RequirementNotMetAction ifNotMet) {
         return optionalFile(environment.getDirectory(), filename, ifNotMet);
     }
 
     public File optionalFile(File directory, final String filename, RequirementNotMetAction ifNotMet) {
+        return optionalFile(directory, filename, ifNotMet, true);
+    }
+
+    public File optionalFile(File directory, final String filename, RequirementNotMetAction ifNotMet, boolean isRelevant) {
         if (isAlreadyFailed())
             return null;
 
@@ -85,17 +97,23 @@ public class Requirements {
         if (file == null) {
             ifNotMet.requirementNotMet();
         } else {
-            relevantFiles.add(file);
+            if (isRelevant) {
+                relevantFiles.add(file);
+            }
             explanations.add(new FoundFile(file));
         }
         return file;
     }
 
     public File file(File directory, final String filename) {
+        return file(directory, filename, true);
+    }
+
+    public File file(File directory, final String filename, boolean isRelevant) {
         //Only difference between Optional File and Required File is Required populate failure, so if optional 'is not met' we can capture that by setting failure.
         return optionalFile(directory, filename, () -> {
             failure = new FileNotFoundDetectableResult(filename);
-        });
+        }, isRelevant);
     }
 
     private boolean isAlreadyFailed() {

@@ -82,7 +82,7 @@ public class NpmCliDetectable extends Detectable {
             return new NpmNodeModulesNotFoundDetectableResult(environment.getDirectory().getAbsolutePath());
         }
         Requirements requirements = new Requirements(fileFinder, environment);
-        requirements.explainFile(nodeModules);
+        requirements.explainDirectory(nodeModules);
 
         npmExe = requirements.executable(() -> npmResolver.resolveNpm(environment), "npm");
 
