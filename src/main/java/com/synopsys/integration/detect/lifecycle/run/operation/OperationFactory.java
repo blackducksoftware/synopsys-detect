@@ -87,7 +87,7 @@ public class OperationFactory {
     }
 
     public final RapidScanOperation createRapidScanOperation() {
-        return new RapidScanOperation(runContext.getGson(), runContext.getEventSystem(), runContext.getDirectoryManager(), runContext.getDetectConfigurationFactory().findTimeoutInSeconds());
+        return new RapidScanOperation(runContext.getHtmlEscapeDisabledGson(), runContext.getEventSystem(), runContext.getDirectoryManager(), runContext.getDetectConfigurationFactory().findTimeoutInSeconds());
     }
 
     public final AggregateOptionsOperation createAggregateOptionsOperation() {
