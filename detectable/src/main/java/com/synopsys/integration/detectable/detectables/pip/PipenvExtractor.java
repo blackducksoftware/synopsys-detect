@@ -28,6 +28,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.ExecutableUtils;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.pip.model.NameVersionCodeLocation;
 import com.synopsys.integration.detectable.detectables.pip.model.PipFreeze;
@@ -52,15 +54,15 @@ public class PipenvExtractor {
         this.pipEnvJsonGraphParser = pipEnvJsonGraphParser;
     }
 
-    public Extraction extract(File directory, File pythonExe, File pipenvExe, File setupFile, String providedProjectName, String providedProjectVersionName, boolean includeOnlyProjectTree) {
+    public Extraction extract(File directory, ExecutableTarget pythonExe, ExecutableTarget pipenvExe, File setupFile, String providedProjectName, String providedProjectVersionName, boolean includeOnlyProjectTree) {
         Extraction extraction;
 
         try {
             String projectName = resolveProjectName(directory, pythonExe, setupFile, providedProjectName);
             String projectVersionName = resolveProjectVersionName(directory, pythonExe, setupFile, providedProjectVersionName);
 
-            ExecutableOutput pipFreezeOutput = executableRunner.execute(directory, pipenvExe, Arrays.asList("run", "pip", "freeze"));
-            ExecutableOutput graphOutput = executableRunner.execute(directory, pipenvExe, Arrays.asList("graph", "--bare", "--json-tree"));
+            ExecutableOutput pipFreezeOutput = executableRunner.execute(ExecutableUtils.createFromTarget(directory, pipenvExe, Arrays.asList("run", "pip", "freeze")));
+            ExecutableOutput graphOutput = executableRunner.execute(ExecutableUtils.createFromTarget(directory, pipenvExe, Arrays.asList("graph", "--bare", "--json-tree")));
 
             PipFreeze pipFreeze = pipenvFreezeParser.parse(pipFreezeOutput.getStandardOutputAsList());
             PipenvGraph pipenvGraph = pipEnvJsonGraphParser.parse(graphOutput.getStandardOutput());
@@ -74,24 +76,24 @@ public class PipenvExtractor {
         return extraction;
     }
 
-    private String resolveProjectName(File directory, File pythonExe, File setupFile, String providedProjectName) throws ExecutableRunnerException {
+    private String resolveProjectName(File directory, ExecutableTarget pythonExe, File setupFile, String providedProjectName) throws ExecutableRunnerException {
         String projectName = providedProjectName;
 
         if (StringUtils.isBlank(projectName) && setupFile != null && setupFile.exists()) {
             List<String> arguments = Arrays.asList(setupFile.getAbsolutePath(), "--name");
-            List<String> output = executableRunner.execute(directory, pythonExe, arguments).getStandardOutputAsList();
+            List<String> output = executableRunner.execute(ExecutableUtils.createFromTarget(directory, pythonExe, arguments)).getStandardOutputAsList();
             projectName = output.get(output.size() - 1).replace('_', '-').trim();
         }
 
         return projectName;
     }
 
-    private String resolveProjectVersionName(File directory, File pythonExe, File setupFile, String providedProjectVersionName) throws ExecutableRunnerException {
+    private String resolveProjectVersionName(File directory, ExecutableTarget pythonExe, File setupFile, String providedProjectVersionName) throws ExecutableRunnerException {
         String projectVersionName = providedProjectVersionName;
 
         if (StringUtils.isBlank(projectVersionName) && setupFile != null && setupFile.exists()) {
             List<String> arguments = Arrays.asList(setupFile.getAbsolutePath(), "--version");
-            List<String> output = executableRunner.execute(directory, pythonExe, arguments).getStandardOutputAsList();
+            List<String> output = executableRunner.execute(ExecutableUtils.createFromTarget(directory, pythonExe, arguments)).getStandardOutputAsList();
             projectVersionName = output.get(output.size() - 1).trim();
         }
 

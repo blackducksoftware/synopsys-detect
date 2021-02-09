@@ -1,5 +1,5 @@
 /**
- * detectable
+ * detector
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
@@ -20,30 +20,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn.parse;
+package com.synopsys.integration.detector.explanation;
 
-import java.util.List;
+import com.synopsys.integration.detectable.detectable.explanation.Explanation;
 
-public class YarnLockEntry {
-    private final List<YarnLockEntryId> ids;
-    private final String version;
-    private final List<YarnLockDependency> dependencies;
+public class FallbackNotNeeded extends Explanation {
+    private final String passingDetector;
 
-    public YarnLockEntry(final List<YarnLockEntryId> ids, final String version, final List<YarnLockDependency> dependencies) {
-        this.ids = ids;
-        this.version = version;
-        this.dependencies = dependencies;
+    public FallbackNotNeeded(final String passingDetector) {
+        this.passingDetector = passingDetector;
     }
 
-    public List<YarnLockEntryId> getIds() {
-        return ids;
-    }
-
-    public List<YarnLockDependency> getDependencies() {
-        return dependencies;
-    }
-
-    public String getVersion() {
-        return version;
+    @Override
+    public String describeSelf() {
+        return "Not needed as fallback: " + passingDetector + " successful";
     }
 }

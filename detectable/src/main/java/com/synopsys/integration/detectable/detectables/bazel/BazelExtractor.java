@@ -38,6 +38,7 @@ import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableMapDependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
@@ -62,7 +63,7 @@ public class BazelExtractor {
         this.workspaceRuleChooser = workspaceRuleChooser;
     }
 
-    public Extraction extract(File bazelExe, File workspaceDir, BazelWorkspace bazelWorkspace, String bazelTarget,
+    public Extraction extract(ExecutableTarget bazelExe, File workspaceDir, BazelWorkspace bazelWorkspace, String bazelTarget,
         BazelProjectNameGenerator bazelProjectNameGenerator, Set<WorkspaceRule> providedDependencyRuleTypes,
         List<String> providedCqueryAdditionalOptions) {
         logger.debug("Bazel extraction:");

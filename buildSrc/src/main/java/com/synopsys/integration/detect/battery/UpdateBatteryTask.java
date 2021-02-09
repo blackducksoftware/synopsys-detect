@@ -69,8 +69,9 @@ public class UpdateBatteryTask extends DefaultTask {
                     JsonObject headerElement = json.get(0).getAsJsonObject();
                     headerElement.remove("@id");
                     headerElement.remove("creationInfo");
-                    FileWriter fileWriter = new FileWriter(bdioFile);
-                    fileWriter.write(gson.toJson(json));
+                    try (FileWriter fileWriter = new FileWriter(bdioFile)) {
+                        fileWriter.write(gson.toJson(json));
+                    }
 
                     System.out.println("COPIED FROM: $actualBdioFile");
                     System.out.println("COPIED TO  : $bdioFile");

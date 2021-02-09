@@ -26,13 +26,13 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Ruby", forge = "RubyGems", requirementsMarkdown = "File: Gemfile.lock.")
 public class GemlockDetectable extends Detectable {
@@ -51,13 +51,9 @@ public class GemlockDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        gemlock = fileFinder.findFile(environment.getDirectory(), GEMFILE_LOCK_FILENAME);
-
-        if (gemlock == null) {
-            return new FileNotFoundDetectableResult(GEMFILE_LOCK_FILENAME);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        gemlock = requirements.file(GEMFILE_LOCK_FILENAME);
+        return requirements.result();
     }
 
     @Override

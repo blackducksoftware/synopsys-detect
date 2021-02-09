@@ -22,17 +22,15 @@
  */
 package com.synopsys.integration.detectable.detectables.sbt;
 
-import java.io.File;
-
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Scala", forge = "Maven Central", requirementsMarkdown = "File: build.sbt.")
 public class SbtResolutionCacheDetectable extends Detectable {
@@ -52,12 +50,9 @@ public class SbtResolutionCacheDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        final File build = fileFinder.findFile(environment.getDirectory(), BUILD_SBT_FILENAME);
-        if (build == null) {
-            return new FileNotFoundDetectableResult(BUILD_SBT_FILENAME);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        requirements.file(BUILD_SBT_FILENAME);
+        return requirements.result();
     }
 
     @Override

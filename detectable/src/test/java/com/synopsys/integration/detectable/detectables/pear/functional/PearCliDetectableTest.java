@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.pear.functional;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -33,6 +32,7 @@ import org.junit.jupiter.api.Assertions;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.executable.resolver.PearResolver;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
 import com.synopsys.integration.detectable.extraction.Extraction;
@@ -87,21 +87,21 @@ public class PearCliDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         class LocalPearResolver implements PearResolver {
             @Override
-            public File resolvePear() {
-                return new File("pear");
+            public ExecutableTarget resolvePear() {
+                return ExecutableTarget.forCommand("pear");
             }
         }
         return detectableFactory.createPearCliDetectable(detectableEnvironment, new PearCliDetectableOptions(true), new LocalPearResolver());
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertNotEquals(0, extraction.getCodeLocations().size(), "A code location should have been generated.");
 
-        final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PEAR, extraction.getCodeLocations().get(0).getDependencyGraph());
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PEAR, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(2);
         graphAssert.hasRootDependency("PHP", "7.1.0");
         graphAssert.hasRootDependency("PearInstaller", "1.10.1");

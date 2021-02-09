@@ -13,6 +13,16 @@ the ${blackduck_signature_scanner_name} on the "container file system"
 Refer to [${solution_name}'s scan target](#scantarget) for more details.
 This creates a second code location.
 
+### File permissions
+
+When using Docker Inspector, ${solution_name} must be run in an environment configured so that files created
+by Docker Inspector are readable by all. On Linux, this means an appropriate umask value
+(for example, 002 or 022 will work). On Windows, this means that the ${solution_name}
+output directory must be readable by all.
+
+Docker image tarfiles passed to ${solution_name} via the *detect.docker.tar* property must be readable by all.
+
+
 ### Passing Docker Inspector property values to Docker Inspector from ${solution_name}
 
 For more complex use cases, you may need to pass Docker Inspector property values to Docker Inspector using ${solution_name}. To do this, construct the ${solution_name} property name by prefixing the Docker Inspector property name with ```detect.docker.passthrough.```.

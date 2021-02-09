@@ -23,13 +23,20 @@
 package com.synopsys.integration.detectable.detectables.gradle.inspection;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.GradleResolver;
+import com.synopsys.integration.detectable.detectable.explanation.Explanation;
+import com.synopsys.integration.detectable.detectable.explanation.FoundExecutable;
+import com.synopsys.integration.detectable.detectable.explanation.FoundFile;
+import com.synopsys.integration.detectable.detectable.explanation.FoundInspector;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -51,7 +58,7 @@ public class GradleDetectable extends Detectable {
     private final GradleInspectorExtractor gradleInspectorExtractor;
     private final GradleInspectorOptions gradleInspectorOptions;
 
-    private File gradleExe;
+    private ExecutableTarget gradleExe;
     private File gradleInspector;
 
     public GradleDetectable(DetectableEnvironment environment, FileFinder fileFinder, GradleResolver gradleResolver, GradleInspectorResolver gradleInspectorResolver,
@@ -68,12 +75,12 @@ public class GradleDetectable extends Detectable {
     public DetectableResult applicable() {
         File buildGradle = fileFinder.findFile(environment.getDirectory(), BUILD_GRADLE_FILENAME);
         if (buildGradle != null) {
-            return new PassedDetectableResult();
+            return new PassedDetectableResult(new FoundFile(buildGradle));
         }
 
         File kotlinBuildGradle = fileFinder.findFile(environment.getDirectory(), KOTLIN_BUILD_GRADLE_FILENAME);
         if (kotlinBuildGradle != null) {
-            return new PassedDetectableResult();
+            return new PassedDetectableResult(new FoundFile(kotlinBuildGradle));
         }
 
         return new FilesNotFoundDetectableResult(BUILD_GRADLE_FILENAME, KOTLIN_BUILD_GRADLE_FILENAME);
@@ -81,17 +88,22 @@ public class GradleDetectable extends Detectable {
 
     @Override
     public DetectableResult extractable() throws DetectableException {
+        List<Explanation> explanations = new ArrayList<>();
         gradleExe = gradleResolver.resolveGradle(environment);
         if (gradleExe == null) {
             return new ExecutableNotFoundDetectableResult("gradle");
+        } else {
+            explanations.add(new FoundExecutable(gradleExe));
         }
 
         gradleInspector = gradleInspectorResolver.resolveGradleInspector();
         if (gradleInspector == null) {
             return new InspectorNotFoundDetectableResult("gradle");
+        } else {
+            explanations.add(new FoundInspector(gradleInspector));
         }
 
-        return new PassedDetectableResult();
+        return new PassedDetectableResult(explanations);
     }
 
     @Override

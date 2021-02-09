@@ -32,12 +32,14 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelCommandExecutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.BazelVariableSubstitutor;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStep;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.step.IntermediateStepExecuteBazelOnEach;
 import com.synopsys.integration.exception.IntegrationException;
+import com.synopsys.integration.executable.Executable;
 import com.synopsys.integration.executable.ExecutableOutput;
 import com.synopsys.integration.executable.ExecutableRunnerException;
 
@@ -47,14 +49,11 @@ public class IntermediateStepExecuteBazelOnEachTest {
     public void testNoInput() throws ExecutableRunnerException, IntegrationException {
         File workspaceDir = new File(".");
         DetectableExecutableRunner executableRunner = Mockito.mock(DetectableExecutableRunner.class);
-        File bazelExe = new File("/usr/bin/bazel");
-        List<String> bazelArgs = new ArrayList<>();
-        bazelArgs.add("cquery");
-        bazelArgs.add("filter(\\\"@.*:jar\\\", deps(//:ProjectRunner))");
+        ExecutableTarget bazelExe = ExecutableTarget.forCommand("/usr/bin/bazel");
         ExecutableOutput bazelCmdExecutableOutput = Mockito.mock(ExecutableOutput.class);
         Mockito.when(bazelCmdExecutableOutput.getReturnCode()).thenReturn(0);
         Mockito.when(bazelCmdExecutableOutput.getStandardOutput()).thenReturn("@org_apache_commons_commons_io//jar:jar\n@com_google_guava_guava//jar:jar");
-        Mockito.when(executableRunner.execute(workspaceDir, bazelExe, bazelArgs)).thenReturn(bazelCmdExecutableOutput);
+        Mockito.when(executableRunner.execute(Mockito.any(Executable.class))).thenReturn(bazelCmdExecutableOutput);
         BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
         BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("//:ProjectRunner", null);
         IntermediateStep executor = new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("cquery", "filter(\\\"@.*:jar\\\", deps(${detect.bazel.target}))"), false);

@@ -29,14 +29,15 @@ import java.io.InputStream;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.PassedResultBuilder;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.GoPkgLockfileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Golang", forge = "GitHub", requirementsMarkdown = "File: Gopkg.lock.")
 public class GoDepLockDetectable extends Detectable {
@@ -57,15 +58,20 @@ public class GoDepLockDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
+        PassedResultBuilder passedResultBuilder = new PassedResultBuilder();
         goLock = fileFinder.findFile(environment.getDirectory(), GOPKG_LOCK_FILENAME);
         if (goLock == null) {
             goToml = fileFinder.findFile(environment.getDirectory(), GOFILE_FILENAME_PATTERN);
             if (goToml == null) {
                 return new FilesNotFoundDetectableResult(GOPKG_LOCK_FILENAME, GOFILE_FILENAME_PATTERN);
+            } else {
+                passedResultBuilder.foundFile(goToml);
             }
+        } else {
+            passedResultBuilder.foundFile(goLock);
         }
 
-        return new PassedDetectableResult();
+        return passedResultBuilder.build();
     }
 
     @Override

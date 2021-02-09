@@ -26,13 +26,13 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Golang", forge = "GitHub", requirementsMarkdown = "File: vendor.conf.")
 public class GoVndrDetectable extends Detectable {
@@ -51,12 +51,9 @@ public class GoVndrDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        vndrConfig = fileFinder.findFile(environment.getDirectory(), VNDR_CONF_FILENAME);
-        if (vndrConfig == null) {
-            return new FileNotFoundDetectableResult(VNDR_CONF_FILENAME);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        vndrConfig = requirements.file(VNDR_CONF_FILENAME);
+        return requirements.result();
     }
 
     @Override

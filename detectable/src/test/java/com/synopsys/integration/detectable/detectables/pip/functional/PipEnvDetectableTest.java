@@ -1,6 +1,5 @@
 package com.synopsys.integration.detectable.detectables.pip.functional;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -11,8 +10,9 @@ import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectables.pip.PipenvDetectableOptions;
+import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
 
@@ -28,7 +28,7 @@ public class PipEnvDetectableTest extends DetectableFunctionalTest {
     protected void setup() throws IOException {
         addFile("Pipfile");
         addFile("Pipfile.lock");
-        final Path setupFilePath = addFile("setup.py");
+        Path setupFilePath = addFile("setup.py");
 
         addExecutableOutput(createStandardOutput("project-name"), PYTHON_CMD, setupFilePath.toAbsolutePath().toString(), "--name");
 
@@ -78,19 +78,19 @@ public class PipEnvDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
-        final PipenvDetectableOptions pipenvDetectableOptions = new PipenvDetectableOptions("simple", "1", false);
-        return detectableFactory.createPipenvDetectable(detectableEnvironment, pipenvDetectableOptions, () -> new File(PYTHON_CMD), () -> new File(PIPENV_CMD));
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
+        PipenvDetectableOptions pipenvDetectableOptions = new PipenvDetectableOptions("simple", "1", false);
+        return detectableFactory.createPipenvDetectable(detectableEnvironment, pipenvDetectableOptions, () -> ExecutableTarget.forCommand(PYTHON_CMD), () -> ExecutableTarget.forCommand(PIPENV_CMD));
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals("simple", extraction.getProjectName());
         Assertions.assertEquals("1", extraction.getProjectVersion());
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
-        final DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
-        final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, dependencyGraph);
+        DependencyGraph dependencyGraph = extraction.getCodeLocations().get(0).getDependencyGraph();
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.PYPI, dependencyGraph);
 
         graphAssert.hasNoDependency("simple", "1");
         graphAssert.hasRootDependency("with-dashes", "2.0");

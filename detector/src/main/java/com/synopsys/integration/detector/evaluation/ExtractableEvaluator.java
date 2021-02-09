@@ -69,7 +69,8 @@ public class ExtractableEvaluator extends Evaluator {
                 logger.trace("Checking to see if this detector is a fallback detector.");
                 DetectableResult detectableExtractableResult = getDetectableExtractableResult(detectorEvaluationTree, detectorEvaluation);
 
-                DetectorResult extractableResult = new DetectorResult(detectableExtractableResult.getPassed(), detectableExtractableResult.toDescription(), detectableExtractableResult.getClass());
+                DetectorResult extractableResult = new DetectorResult(detectableExtractableResult.getPassed(), detectableExtractableResult.toDescription(), detectableExtractableResult.getClass(),
+                    detectableExtractableResult.getExplanation(), detectableExtractableResult.getRelevantFiles());
                 detectorEvaluation.setExtractable(extractableResult);
                 if (detectorEvaluation.isExtractable()) {
                     logger.trace("Extractable passed. Done evaluating for now.");

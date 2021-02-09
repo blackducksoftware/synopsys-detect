@@ -2,6 +2,7 @@
 
 ## Version 6.9.0
 ### New Features
+* Added ability for detectors to explain why they applied. It will appear in the logs at info level and in the status.json.
 * Added the property detect.binary.scan.search.depth to define the directory search depth for the binary scanner.
 * The status.json file now features a list of the provided Detect property values.
 * When Detect is not configured to connect to blackduck or run offline, a link to the Detect help is included in an error message.
