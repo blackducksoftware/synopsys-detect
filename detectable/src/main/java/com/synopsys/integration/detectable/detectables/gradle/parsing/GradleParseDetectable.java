@@ -26,13 +26,13 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: build.gradle.")
 public class GradleParseDetectable extends Detectable {
@@ -51,13 +51,9 @@ public class GradleParseDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        buildFile = fileFinder.findFile(environment.getDirectory(), BUILD_GRADLE_FILENAME);
-
-        if (buildFile == null) {
-            return new FileNotFoundDetectableResult(BUILD_GRADLE_FILENAME);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        buildFile = requirements.file(BUILD_GRADLE_FILENAME);
+        return requirements.result();
     }
 
     @Override

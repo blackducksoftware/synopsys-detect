@@ -26,6 +26,7 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
@@ -47,10 +48,10 @@ public class MavenPomWrapperDetectable extends Detectable {
     private final MavenCliExtractor mavenCliExtractor;
     private final MavenCliExtractorOptions mavenCliExtractorOptions;
 
-    private File mavenExe;
+    private ExecutableTarget mavenExe;
 
-    public MavenPomWrapperDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final MavenResolver mavenResolver, final MavenCliExtractor mavenCliExtractor,
-        final MavenCliExtractorOptions mavenCliExtractorOptions) {
+    public MavenPomWrapperDetectable(DetectableEnvironment environment, FileFinder fileFinder, MavenResolver mavenResolver, MavenCliExtractor mavenCliExtractor,
+        MavenCliExtractorOptions mavenCliExtractorOptions) {
         super(environment);
         this.fileFinder = fileFinder;
         this.mavenResolver = mavenResolver;
@@ -60,7 +61,7 @@ public class MavenPomWrapperDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        final File pom = fileFinder.findFile(environment.getDirectory(), POM_WRAPPER_FILENAME);
+        File pom = fileFinder.findFile(environment.getDirectory(), POM_WRAPPER_FILENAME);
 
         if (pom == null) {
             return new FileNotFoundDetectableResult(POM_WRAPPER_FILENAME);
@@ -81,7 +82,7 @@ public class MavenPomWrapperDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException {
         return mavenCliExtractor.extract(environment.getDirectory(), mavenExe, mavenCliExtractorOptions);
     }
 

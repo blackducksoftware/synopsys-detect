@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.runtime.DotNetRuntimeManager;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
@@ -86,7 +87,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
 
     private NugetInspector install() throws IntegrationException {
         //dotnet
-        File dotnetExecutable = executableResolver.resolveDotNet();
+        ExecutableTarget dotnetExecutable = executableResolver.resolveDotNet();
 
         boolean useDotnet = true;
         if (shouldForceExeInspector(detectInfo)) {
@@ -115,7 +116,7 @@ public class LocatorNugetInspectorResolver implements NugetInspectorResolver {
         }
     }
 
-    private NugetInspector findDotnetCoreInspector(File nupkgFolder, File dotnetExecutable, String dotnetInspectorName) throws DetectableException {
+    private NugetInspector findDotnetCoreInspector(File nupkgFolder, ExecutableTarget dotnetExecutable, String dotnetInspectorName) throws DetectableException {
         Function<String, NugetInspector> constructor = (String exePath) -> new DotNetCoreNugetInspector(dotnetExecutable, exePath, executableRunner);
         return findInspector(nupkgFolder, dotnetInspectorName, constructor);
     }

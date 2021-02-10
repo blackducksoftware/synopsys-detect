@@ -1,5 +1,5 @@
 /**
- * detectable
+ * synopsys-detect
  *
  * Copyright (c) 2021 Synopsys, Inc.
  *
@@ -20,22 +20,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectables.yarn.parse;
+package com.synopsys.integration.detect.lifecycle.run.operation.input;
 
-public class YarnLockEntryId {
-    private final String name;
-    private final String version;
+import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
+import com.synopsys.integration.util.NameVersion;
 
-    public YarnLockEntryId(final String name, final String version) {
-        this.name = name;
-        this.version = version;
+public class ImpactAnalysisInput {
+    private final NameVersion projectNameVersion;
+    private final ProjectVersionWrapper projectVersionWrapper;
+
+    public ImpactAnalysisInput(NameVersion projectNameVersion, ProjectVersionWrapper projectVersionWrapper) {
+        this.projectNameVersion = projectNameVersion;
+        this.projectVersionWrapper = projectVersionWrapper;
     }
 
-    public String getName() {
-        return name;
+    public NameVersion getProjectNameVersion() {
+        return projectNameVersion;
     }
 
-    public String getVersion() {
-        return version;
+    public ProjectVersionWrapper getProjectVersionWrapper() {
+        return projectVersionWrapper;
     }
 }

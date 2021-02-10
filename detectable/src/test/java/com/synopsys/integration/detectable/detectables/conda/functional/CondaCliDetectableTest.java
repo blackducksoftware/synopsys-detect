@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.conda.functional;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +30,7 @@ import org.junit.jupiter.api.Assertions;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CondaResolver;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectableOptions;
@@ -94,19 +94,19 @@ public class CondaCliDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         class CondaResolverTest implements CondaResolver {
 
             @Override
-            public File resolveConda() throws DetectableException {
-                return new File("conda");
+            public ExecutableTarget resolveConda() throws DetectableException {
+                return ExecutableTarget.forCommand("conda");
             }
         }
         return detectableFactory.createCondaCliDetectable(detectableEnvironment, new CondaResolverTest(), new CondaCliDetectableOptions("conda-env"));
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
         NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.ANACONDA, extraction.getCodeLocations().get(0).getDependencyGraph());

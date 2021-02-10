@@ -26,17 +26,16 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanResolver;
 import com.synopsys.integration.detectable.detectable.executable.resolver.CpanmResolver;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "Perl", forge = "CPAN", requirementsMarkdown = "File: Makefile.PL. <br /><br /> Executable: cpan.")
 public class CpanCliDetectable extends Detectable {
@@ -47,10 +46,10 @@ public class CpanCliDetectable extends Detectable {
     private final CpanmResolver cpanmResolver;
     private final CpanCliExtractor cpanCliExtractor;
 
-    private File cpanExe;
-    private File cpanmExe;
+    private ExecutableTarget cpanExe;
+    private ExecutableTarget cpanmExe;
 
-    public CpanCliDetectable(final DetectableEnvironment environment, final FileFinder fileFinder, final CpanResolver cpanResolver, final CpanmResolver cpanmResolver, final CpanCliExtractor cpanCliExtractor) {
+    public CpanCliDetectable(DetectableEnvironment environment, FileFinder fileFinder, CpanResolver cpanResolver, CpanmResolver cpanmResolver, CpanCliExtractor cpanCliExtractor) {
         super(environment);
         this.fileFinder = fileFinder;
         this.cpanResolver = cpanResolver;
@@ -60,38 +59,23 @@ public class CpanCliDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        final File makeFile = fileFinder.findFile(environment.getDirectory(), MAKEFILE);
-        if (makeFile == null) {
-            return new FileNotFoundDetectableResult(MAKEFILE);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        requirements.file(MAKEFILE);
+        return requirements.result();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        final File cpan = cpanResolver.resolveCpan();
-
-        if (cpan == null) {
-            return new ExecutableNotFoundDetectableResult("cpan");
-        } else {
-            cpanExe = cpan;
-        }
-
-        final File cpanm = cpanmResolver.resolveCpanm();
-
-        if (cpanm == null) {
-            return new ExecutableNotFoundDetectableResult("cpanm");
-        } else {
-            cpanmExe = cpanm;
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        cpanExe = requirements.executable(cpanResolver::resolveCpan, "cpan");
+        cpanmExe = requirements.executable(cpanmResolver::resolveCpanm, "cpanm");
+        return requirements.result();
     }
 
     @Override
-    public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return cpanCliExtractor.extract(cpanExe, cpanmExe, extractionEnvironment.getOutputDirectory());
     }
 
 }
+

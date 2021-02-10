@@ -26,13 +26,13 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: pom.xml.")
 public class MavenParseDetectable extends Detectable {
@@ -53,13 +53,9 @@ public class MavenParseDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        pomXmlFile = fileFinder.findFile(environment.getDirectory(), POM_XML_FILENAME);
-
-        if (pomXmlFile == null) {
-            return new FileNotFoundDetectableResult(POM_XML_FILENAME);
-        }
-
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        pomXmlFile = requirements.file(POM_XML_FILENAME);
+        return requirements.result();
     }
 
     @Override

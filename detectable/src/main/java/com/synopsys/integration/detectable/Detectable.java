@@ -22,10 +22,6 @@
  */
 package com.synopsys.integration.detectable;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.ExecutableFailedException;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
@@ -34,7 +30,6 @@ import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 public abstract class Detectable {
     protected DetectableEnvironment environment;
-    protected List<File> relevantFiles = new ArrayList<>();
 
     public Detectable(final DetectableEnvironment environment) {
         this.environment = environment;
@@ -71,8 +66,4 @@ public abstract class Detectable {
      * Perform the extraction and try not to throw an exception. Instead return an extraction built with an exception.
      */
     public abstract Extraction extract(ExtractionEnvironment extractionEnvironment) throws ExecutableFailedException;
-
-    public List<File> getFoundRelevantFiles() {
-        return relevantFiles;
-    }
 }

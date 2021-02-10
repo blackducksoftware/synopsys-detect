@@ -22,7 +22,6 @@
  */
 package com.synopsys.integration.detectable.detectables.cpan.functional;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +30,7 @@ import org.junit.jupiter.api.Assertions;
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
@@ -45,14 +45,14 @@ public class CpanCliDetectableTest extends DetectableFunctionalTest {
     protected void setup() throws IOException {
         addFile("Makefile.PL");
 
-        final ExecutableOutput cpanListOutput = createStandardOutput(
+        ExecutableOutput cpanListOutput = createStandardOutput(
             "ExtUtils::MakeMaker\t7.24",
             "perl\t5.1",
             "Test::More\t1.3"
         );
         addExecutableOutput(getOutputDirectory(), cpanListOutput, "cpan", "-l");
 
-        final ExecutableOutput cpanmShowDepsOutput = createStandardOutput(
+        ExecutableOutput cpanmShowDepsOutput = createStandardOutput(
             "--> Working on .",
             "Configuring App-cpanminus-1.7043 ... OK",
             "ExtUtils::MakeMaker~6.58",
@@ -65,15 +65,15 @@ public class CpanCliDetectableTest extends DetectableFunctionalTest {
 
     @NotNull
     @Override
-    public Detectable create(@NotNull final DetectableEnvironment detectableEnvironment) {
-        return detectableFactory.createCpanCliDetectable(detectableEnvironment, () -> new File("cpan"), () -> new File("cpanm"));
+    public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
+        return detectableFactory.createCpanCliDetectable(detectableEnvironment, () -> ExecutableTarget.forCommand("cpan"), () -> ExecutableTarget.forCommand("cpanm"));
     }
 
     @Override
-    public void assertExtraction(@NotNull final Extraction extraction) {
+    public void assertExtraction(@NotNull Extraction extraction) {
         Assertions.assertEquals(1, extraction.getCodeLocations().size());
 
-        final NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CPAN, extraction.getCodeLocations().get(0).getDependencyGraph());
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CPAN, extraction.getCodeLocations().get(0).getDependencyGraph());
         graphAssert.hasRootSize(3);
         graphAssert.hasRootDependency("Test-More", "1.3");
         graphAssert.hasRootDependency("ExtUtils-MakeMaker", "7.24");

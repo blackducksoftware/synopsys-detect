@@ -26,17 +26,20 @@ import java.io.File;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
-import com.synopsys.integration.detectable.extraction.Extraction;
-import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.ExecutableTarget;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.resolver.BazelResolver;
+import com.synopsys.integration.detectable.detectable.explanation.PropertyProvided;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.FilesNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
+import com.synopsys.integration.detectable.extraction.Extraction;
+import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
 @DetectableInfo(language = "various", forge = "Maven Central", requirementsMarkdown = "File: WORKSPACE. <br /><br /> Executable: bazel.")
 public class BazelDetectable extends Detectable {
@@ -45,7 +48,7 @@ public class BazelDetectable extends Detectable {
     private final BazelExtractor bazelExtractor;
     private final BazelResolver bazelResolver;
     private final BazelDetectableOptions bazelDetectableOptions;
-    private File bazelExe;
+    private ExecutableTarget bazelExe;
     private BazelWorkspace bazelWorkspace;
 
     public BazelDetectable(DetectableEnvironment environment, FileFinder fileFinder, BazelExtractor bazelExtractor,
@@ -59,24 +62,24 @@ public class BazelDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        if (!bazelDetectableOptions.getTargetName().isPresent()) {
+        if (bazelDetectableOptions.getTargetName().isPresent()) {
+            return new PassedDetectableResult(new PropertyProvided("Bazel Target"));
+        } else {
             return new PropertyInsufficientDetectableResult();
         }
-        return new PassedDetectableResult();
     }
 
     @Override
     public DetectableResult extractable() throws DetectableException {
-        File workspaceFile = fileFinder.findFile(environment.getDirectory(), WORKSPACE_FILENAME);
-        if (workspaceFile == null) {
-            return new FilesNotFoundDetectableResult(WORKSPACE_FILENAME);
-        }
-        bazelWorkspace = new BazelWorkspace(workspaceFile);
-        bazelExe = bazelResolver.resolveBazel();
-        if (bazelExe == null) {
-            return new ExecutableNotFoundDetectableResult("bazel");
-        }
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        File workspaceFile = requirements.file(WORKSPACE_FILENAME);
+
+        requirements.ifCurrentlyMet(() -> {
+            bazelWorkspace = new BazelWorkspace(workspaceFile);
+        });
+
+        bazelExe = requirements.executable(bazelResolver::resolveBazel, "bazel");
+        return requirements.result();
     }
 
     @Override

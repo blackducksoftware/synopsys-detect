@@ -30,13 +30,14 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.Requirements;
 import com.synopsys.integration.detectable.detectable.annotation.DetectableInfo;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectable.explanation.FoundExecutable;
 import com.synopsys.integration.detectable.detectable.file.FileFinder;
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.ExecutableNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.result.FileNotFoundDetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PassedDetectableResult;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManager;
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerRunner;
@@ -72,11 +73,9 @@ public class ClangDetectable extends Detectable {
 
     @Override
     public DetectableResult applicable() {
-        jsonCompilationDatabaseFile = fileFinder.findFile(environment.getDirectory(), JSON_COMPILATION_DATABASE_FILENAME);
-        if (jsonCompilationDatabaseFile == null) {
-            return new FileNotFoundDetectableResult(JSON_COMPILATION_DATABASE_FILENAME);
-        }
-        return new PassedDetectableResult();
+        Requirements requirements = new Requirements(fileFinder, environment);
+        jsonCompilationDatabaseFile = requirements.file(JSON_COMPILATION_DATABASE_FILENAME);
+        return requirements.result();
     }
 
     @Override
@@ -86,12 +85,11 @@ public class ClangDetectable extends Detectable {
             logger.warn("Unable to execute any supported package manager; Please make sure that one of the supported clang package managers is on the PATH");
             return new ExecutableNotFoundDetectableResult("supported Linux package manager");
         }
-        return new PassedDetectableResult();
+        return new PassedDetectableResult(new FoundExecutable(selectedPackageManager.getPackageManagerInfo().getPkgMgrName()));
     }
 
     @Override
     public Extraction extract(final ExtractionEnvironment extractionEnvironment) {
-        //addRelevantDiagnosticFile(jsonCompilationDatabaseFile);
         return clangExtractor.extract(selectedPackageManager, packageManagerRunner, environment.getDirectory(), extractionEnvironment.getOutputDirectory(), jsonCompilationDatabaseFile, options.isCleanup());
     }
 

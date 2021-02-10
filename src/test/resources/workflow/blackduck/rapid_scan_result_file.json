@@ -1,0 +1,98 @@
+[
+  {
+    "componentName": "gogo-protobuf",
+    "versionName": "v1.3.1",
+    "componentIdentifier": "golang:github.com/gogo/protobuf:v1.3.1",
+    "violatingPolicyNames": [
+      "overall score => 9"
+    ],
+    "policyViolationVulnerabilities": [
+      {
+        "violatingPolicyNames": [
+          "overall score => 9"
+        ],
+        "errorMessage": "Component gogo-protobuf version v1.3.1 with ID golang:github.com/gogo/protobuf:v1.3.1 violates policy overall score => 9: found vulnerability CVE-2021-3121 with severity CRITICAL and CVSS score 9.8",
+        "_meta": {
+          "allow": [
+            "GET"
+          ],
+          "href": "https://example.com/api/vulnerabilities/CVE-2021-3121",
+          "links": []
+        }
+      }
+    ],
+    "policyViolationLicenses": [],
+    "_meta": {
+      "allow": [
+        "GET",
+        "PUT"
+      ],
+      "href": "https://example.com/api/developer-scans/6f6fbc45-a918-4e09-8345-3765a2eba381",
+      "links": []
+    }
+  },
+  {
+    "componentName": "gogo-protobuf",
+    "versionName": "v1.3.1",
+    "componentIdentifier": "golang:github.com/gogo/protobuf:v1.3.1",
+    "violatingPolicyNames": [
+      "overall score => 9"
+    ],
+    "policyViolationVulnerabilities": [
+      {
+        "violatingPolicyNames": [
+          "overall score => 9"
+        ],
+        "errorMessage": "Component gogo-protobuf version v1.3.1 with ID golang:github.com/gogo/protobuf:v1.3.1 violates policy overall score => 9: found vulnerability CVE-2021-3121 with severity CRITICAL and CVSS score 9.8",
+        "_meta": {
+          "allow": [
+            "GET"
+          ],
+          "href": "https://example.com/api/vulnerabilities/CVE-2021-3121",
+          "links": []
+        }
+      }
+    ],
+    "policyViolationLicenses": [],
+    "_meta": {
+      "allow": [
+        "GET",
+        "PUT"
+      ],
+      "href": "https://example.com/api/developer-scans/6f6fbc45-a918-4e09-8345-3765a2eba381",
+      "links": []
+    }
+  },
+  {
+    "componentName": "gogo-protobuf",
+    "versionName": "v1.2.0",
+    "componentIdentifier": "golang:github.com/gogo/protobuf:v1.2.0",
+    "violatingPolicyNames": [
+      "overall score => 9"
+    ],
+    "policyViolationVulnerabilities": [
+      {
+        "violatingPolicyNames": [
+          "overall score => 9"
+        ],
+        "errorMessage": "Component gogo-protobuf version v1.2.0 with ID golang:github.com/gogo/protobuf:v1.2.0 violates policy overall score => 9: found vulnerability CVE-2021-3121 with severity CRITICAL and CVSS score 9.8",
+        "_meta": {
+          "allow": [
+            "GET"
+          ],
+          "href": "https://example.com/api/vulnerabilities/CVE-2021-3121",
+          "links": []
+        }
+      }
+    ],
+    "policyViolationLicenses": [],
+    "_meta": {
+      "allow": [
+        "GET",
+        "PUT"
+      ],
+      "href": "https://example.com/api/developer-scans/6f6fbc45-a918-4e09-8345-3765a2eba381",
+      "links": []
+    }
+  }
+]

@@ -22,13 +22,12 @@
  */
 package com.synopsys.integration.detectable.detectable.executable.resolver;
 
-import java.io.File;
-
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
 public interface LernaResolver {
     @Nullable
-    File resolveLerna() throws DetectableException;
+    ExecutableTarget resolveLerna() throws DetectableException;
 }
