@@ -13,6 +13,7 @@ import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
 import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryExtractor;
 import com.synopsys.integration.detectable.detectables.pip.poetry.parser.PoetryLockParser;
+import com.synopsys.integration.detectable.detectables.pip.poetry.parser.ToolPoetrySectionParser;
 
 public class PoetryFalsePositiveTest {
     @Test
@@ -21,7 +22,7 @@ public class PoetryFalsePositiveTest {
         File currentDirectory = new File(System.getProperty("user.dir"));
         File pyprojectToml = new File(getClass().getClassLoader().getResource("detectables/unit/pip/poetry/false_positive_pyproject.toml").toURI());
         Mockito.when(fileFinder.findFile(currentDirectory, "pyproject.toml")).thenReturn(pyprojectToml);
-        PoetryDetectable poetryDetectable = new PoetryDetectable(new DetectableEnvironment(currentDirectory), fileFinder, new PoetryExtractor(new PoetryLockParser()));
+        PoetryDetectable poetryDetectable = new PoetryDetectable(new DetectableEnvironment(currentDirectory), fileFinder, new PoetryExtractor(new PoetryLockParser()), new ToolPoetrySectionParser());
         Assertions.assertFalse(poetryDetectable.applicable().getPassed());
     }
 }

@@ -22,23 +22,26 @@
  */
 package com.synopsys.integration.detectable.detectable.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.util.List;
+import java.util.Optional;
 
-import org.tomlj.Toml;
-import org.tomlj.TomlParseResult;
+import org.tomlj.TomlTable;
 
+public class PoetrySectionResult {
+    private final boolean found;
+    private final TomlTable poetrySection;
 
-public class TomlFileParser {
-    public static TomlParseResult parse(File tomlFile) throws IOException {
-        return Toml.parse(getFileAsString(tomlFile, Charset.defaultCharset()));
+    public static PoetrySectionResult SECTION_NOT_FOUND = new PoetrySectionResult(false, null);
+
+    public PoetrySectionResult(final boolean found, final TomlTable poetrySection) {
+        this.found = found;
+        this.poetrySection = poetrySection;
     }
 
-    private static String getFileAsString(File cargoLock, Charset encoding) throws IOException {
-        List<String> goLockAsList = Files.readAllLines(cargoLock.toPath(), encoding);
-        return String.join(System.lineSeparator(), goLockAsList);
+    public boolean wasFound() {
+        return found;
+    }
+
+    public Optional<TomlTable> getPoetrySection() {
+        return Optional.ofNullable(poetrySection);
     }
 }

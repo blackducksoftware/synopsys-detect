@@ -32,11 +32,9 @@ import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
-import org.tomlj.TomlParseResult;
 import org.tomlj.TomlTable;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.detectable.detectable.util.TomlFileParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectables.pip.poetry.parser.PoetryLockParser;

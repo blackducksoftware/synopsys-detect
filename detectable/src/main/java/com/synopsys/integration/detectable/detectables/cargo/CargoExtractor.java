@@ -36,7 +36,7 @@ import org.tomlj.TomlParseResult;
 import org.tomlj.TomlTable;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
-import com.synopsys.integration.detectable.detectable.util.TomlFileParser;
+import com.synopsys.integration.detectable.detectable.util.TomlFileUtils;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -82,7 +82,7 @@ public class CargoExtractor {
 
     private Optional<NameVersion> extractNameVersionFromCargoToml(@Nullable File cargoToml) throws IOException {
         if (cargoToml != null) {
-            TomlParseResult cargoTomlObject = TomlFileParser.parse(cargoToml);
+            TomlParseResult cargoTomlObject = TomlFileUtils.parseFile(cargoToml);
             if (cargoTomlObject.get(PACKAGE_KEY) != null) {
                 TomlTable cargoTomlPackageInfo = cargoTomlObject.getTable(PACKAGE_KEY);
                 if (cargoTomlPackageInfo.get(NAME_KEY) != null && cargoTomlPackageInfo.get(VERSION_KEY) != null) {
