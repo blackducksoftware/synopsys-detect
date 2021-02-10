@@ -69,7 +69,7 @@ public class PoetryDetectable extends Detectable {
         if (poetryLock == null && pyprojectToml == null) {
             return new FilesNotFoundDetectableResult(PYPROJECT_TOML_FILE_NAME, POETRY_LOCK);
         }
-        if (!containsToolDotPoetrySection(pyprojectToml)) {
+        if (poetryLock == null && !containsToolDotPoetrySection(pyprojectToml)) {
             return new SectionNotFoundDetectableResult(pyprojectToml.getName(), TOOL_DOT_POETRY_KEY);
         }
         return new PassedDetectableResult();

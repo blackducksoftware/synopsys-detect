@@ -52,7 +52,7 @@ public class PoetryExtractor {
         this.poetryLockParser = poetryLockParser;
     }
 
-    public Extraction extract(File poetryLock, TomlTable toolDotPoetrySection) {
+    public Extraction extract(File poetryLock, @Nullable TomlTable toolDotPoetrySection) {
         try {
             final DependencyGraph graph = poetryLockParser.parseLockFile(FileUtils.readFileToString(poetryLock, StandardCharsets.UTF_8));
             final CodeLocation codeLocation = new CodeLocation(graph);
@@ -76,9 +76,11 @@ public class PoetryExtractor {
         return String.join(System.lineSeparator(), goLockAsList);
     }
 
-    private Optional<NameVersion> extractNameVersionFromToolDotPoetrySection(TomlTable toolDotPoetry) {
-        if (toolDotPoetry.get(NAME_KEY) != null && toolDotPoetry.get(VERSION_KEY) != null) {
-            return Optional.of(new NameVersion(toolDotPoetry.getString(NAME_KEY), toolDotPoetry.getString(VERSION_KEY)));
+    private Optional<NameVersion> extractNameVersionFromToolDotPoetrySection(@Nullable TomlTable toolDotPoetry) {
+        if (toolDotPoetry != null) {
+            if (toolDotPoetry.get(NAME_KEY) != null && toolDotPoetry.get(VERSION_KEY) != null) {
+                return Optional.of(new NameVersion(toolDotPoetry.getString(NAME_KEY), toolDotPoetry.getString(VERSION_KEY)));
+            }
         }
         return Optional.empty();
     }
