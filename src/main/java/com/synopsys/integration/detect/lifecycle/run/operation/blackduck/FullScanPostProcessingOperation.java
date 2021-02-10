@@ -24,9 +24,6 @@ package com.synopsys.integration.detect.lifecycle.run.operation.blackduck;
 
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
@@ -44,7 +41,6 @@ import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.rest.HttpUrl;
 
 public class FullScanPostProcessingOperation {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final DetectToolFilter detectToolFilter;
     private final BlackDuckPostOptions blackDuckPostOptions;
     private final EventSystem eventSystem;
