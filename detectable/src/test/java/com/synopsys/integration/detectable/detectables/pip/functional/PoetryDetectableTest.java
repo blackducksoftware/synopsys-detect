@@ -1,14 +1,24 @@
 package com.synopsys.integration.detectable.detectables.pip.functional;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import com.synopsys.integration.bdio.model.Forge;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
+import com.synopsys.integration.detectable.detectable.file.FileFinder;
+import com.synopsys.integration.detectable.detectable.file.WildcardFileFinder;
+import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryDetectable;
+import com.synopsys.integration.detectable.detectables.pip.poetry.PoetryExtractor;
+import com.synopsys.integration.detectable.detectables.pip.poetry.parser.PoetryLockParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
@@ -21,7 +31,9 @@ public class PoetryDetectableTest extends DetectableFunctionalTest {
 
     @Override
     protected void setup() throws IOException {
-        addFile(Paths.get("pyproject.toml"));
+        addFile(Paths.get("pyproject.toml"),
+            "[tool.poetry]"
+        );
 
         addFile(Paths.get("poetry.lock"),
             "[[package]]",
