@@ -20,28 +20,34 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package com.synopsys.integration.detectable.detectable.util;
+package com.synopsys.integration.detectable.detectables.pip.poetry.parser;
 
 import java.util.Optional;
 
 import org.tomlj.TomlTable;
 
-public class PoetrySectionResult {
+public class ToolPoetrySectionResult {
     private final boolean found;
-    private final TomlTable poetrySection;
+    private final TomlTable toolPoetrySection;
 
-    public static PoetrySectionResult SECTION_NOT_FOUND = new PoetrySectionResult(false, null);
+    public static ToolPoetrySectionResult FOUND(TomlTable poetrySection) {
+        return new ToolPoetrySectionResult(true, poetrySection);
+    }
 
-    public PoetrySectionResult(final boolean found, final TomlTable poetrySection) {
+    public static ToolPoetrySectionResult NOT_FOUND() {
+        return new ToolPoetrySectionResult(false, null);
+    }
+
+    private ToolPoetrySectionResult(final boolean found, final TomlTable toolPoetrySection) {
         this.found = found;
-        this.poetrySection = poetrySection;
+        this.toolPoetrySection = toolPoetrySection;
     }
 
     public boolean wasFound() {
         return found;
     }
 
-    public Optional<TomlTable> getPoetrySection() {
-        return Optional.ofNullable(poetrySection);
+    public Optional<TomlTable> getToolPoetrySection() {
+        return Optional.ofNullable(toolPoetrySection);
     }
 }
