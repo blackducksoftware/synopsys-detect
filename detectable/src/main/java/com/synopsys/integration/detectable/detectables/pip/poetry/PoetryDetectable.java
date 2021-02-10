@@ -24,12 +24,10 @@ package com.synopsys.integration.detectable.detectables.pip.poetry;
 
 import java.io.File;
 
-import org.tomlj.TomlTable;
-
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.detectable.result.SectionNotFoundDetectableResult;
-import com.synopsys.integration.detectable.detectable.util.PoetrySectionResult;
+import com.synopsys.integration.detectable.detectables.pip.poetry.parser.ToolPoetrySectionResult;
 import com.synopsys.integration.detectable.detectables.pip.poetry.parser.ToolPoetrySectionParser;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
@@ -51,13 +49,13 @@ public class PoetryDetectable extends Detectable {
 
     private File pyprojectToml;
     private File poetryLock;
-    private TomlTable toolPoetrySection;
+    private ToolPoetrySectionResult toolPoetrySectionResult;
 
     public PoetryDetectable(DetectableEnvironment environment, FileFinder fileFinder, PoetryExtractor poetryExtractor, ToolPoetrySectionParser tomlPoetrySectionParser) {
         super(environment);
         this.fileFinder = fileFinder;
         this.poetryExtractor = poetryExtractor;
-        this.toolPoetrySection = null;
+        this.toolPoetrySectionResult = null;
         this.poetrySectionParser = tomlPoetrySectionParser;
     }
 
@@ -69,10 +67,9 @@ public class PoetryDetectable extends Detectable {
             return new FilesNotFoundDetectableResult(PYPROJECT_TOML_FILE_NAME, POETRY_LOCK);
         }
 
-        PoetrySectionResult poetrySectionResult = poetrySectionParser.parseToolPoetrySection(pyprojectToml);
-        this.toolPoetrySection = poetrySectionResult.getPoetrySection().orElse(null);
+        this.toolPoetrySectionResult = poetrySectionParser.parseToolPoetrySection(pyprojectToml);
 
-        if (poetryLock == null && !poetrySectionResult.wasFound()) {
+        if (poetryLock == null && !toolPoetrySectionResult.wasFound()) {
             return new SectionNotFoundDetectableResult(pyprojectToml.getName(), ToolPoetrySectionParser.TOOL_POETRY_KEY);
         }
         return new PassedDetectableResult();
@@ -88,6 +85,6 @@ public class PoetryDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
-        return poetryExtractor.extract(poetryLock, toolPoetrySection);
+        return poetryExtractor.extract(poetryLock, toolPoetrySectionResult.getToolPoetrySection().orElse(null));
     }
 }
